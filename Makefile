@@ -1,0 +1,111 @@
+# Makefile of the Prolog course.
+#
+# Meant to be run from Git Bash (MINGW64). `make` on its own lists what can be
+# done.
+#
+# All the Python tooling lives in .venv, declared in pyproject.toml, and runs
+# through `uv run --frozen`: the version that runs is exactly the one in
+# uv.lock, the same one CI runs. On top of that it needs SWI-Prolog (`swipl`) on
+# the PATH, which is what loads and tests the examples.
+
+.DEFAULT_GOAL := help
+
+UV := uv run --frozen
+
+# A chapter is a directory under docs/ with its index.md; its PDF is named after
+# the directory, and .gitignore keeps it out of the repository.
+CAPITULOS := $(sort $(wildcard docs/capitulo-*) $(wildcard docs/apendice-*))
+PDFS      := $(foreach d,$(CAPITULOS),$(d)/$(notdir $(d)).pdf)
+
+# Janus embeds the machine's SWI-Prolog and on Windows needs to be told where it
+# is. When it does not come from the environment, ask swipl itself.
+SWI_HOME_DIR ?= $(shell swipl --dump-runtime-variables 2>/dev/null | sed -n 's/^PLBASE="\(.*\)";/\1/p')
+
+.PHONY: help install browser test swish part-1 sync sql appendix \
+        docs docs-serve pdf lint format check clean clean-pdf
+
+help: ## List the available targets
+	@echo "Curso de Prolog"
+	@echo ""
+	@grep -hE '^[a-zA-Z0-9_-]+:.*?## ' $(MAKEFILE_LIST) \
+	| awk 'BEGIN {FS = ":.*?## "}; {printf "  make %-12s %s\n", $$1, $$2}'
+	@echo ""
+
+## --- Environment -----------------------------------------------------------
+
+install: ## Build .venv from uv.lock and install the git hooks
+	uv sync --frozen
+	$(UV) pre-commit install
+
+browser: ## Fetch the headless Chromium the PDFs need
+	$(UV) playwright install chromium
+
+## --- Examples --------------------------------------------------------------
+
+test: ## Run the plunit tests of every example (just one: make test e=familia)
+	$(UV) tools/run-examples.py $(e)
+
+swish: ## Check against library(sandbox) that every example can run in SWISH
+	$(UV) tools/check-swish.py $(e)
+
+part-1: ## Check that chapters 1 to 11 use nothing from part II
+	$(UV) tools/check-part-1.py
+
+sync: ## Copy into the text the code blocks that declare they come from ejemplos/
+	$(UV) tools/sync-examples.py --write
+
+sql: ## Run the SQL/Prolog pairs of chapter 34 and compare the results
+	$(UV) references/ejercicios/sql-prolog/verificar.py
+
+# Each recipe line is its own shell, so the guard and the command have to be one
+# line: an `exit 0` on the line above would only leave that shell, and pytest
+# would run anyway against a directory that is not there.
+appendix: ## Run the tests of the appendix A examples (Janus)
+	@if [ -d ejemplos/apendice-a ]; then \
+	  SWI_HOME_DIR="$(SWI_HOME_DIR)" $(UV) --group apendice-a pytest ejemplos/apendice-a; \
+	else \
+	  echo "There is no ejemplos/apendice-a yet: nothing to test."; \
+	fi
+
+## --- The book --------------------------------------------------------------
+
+docs: ## Build the site into site/ (a warning is an error)
+	$(UV) mkdocs build --strict
+
+docs-serve: ## Serve the site locally with live reload
+	$(UV) mkdocs serve --dev-addr $(DIRECCION)
+
+DIRECCION ?= 0.0.0.0:8000
+
+pdf: $(PDFS) ## Build the PDF of every chapter (only the ones that changed)
+
+define REGLA_PDF
+$(1)/$(notdir $(1)).pdf: $(1)/index.md tools/md2pdf.py tools/pdf-style.css tools/swish_links.py tools/examples.py
+	$$(UV) tools/md2pdf.py $$< -o $$@
+endef
+$(foreach d,$(CAPITULOS),$(eval $(call REGLA_PDF,$(d))))
+
+## --- Verification ----------------------------------------------------------
+
+lint: ## Check formatting and lint rules without touching any file
+	$(UV) ruff check .
+	$(UV) ruff format --check .
+
+format: ## Fix formatting and whatever ruff can fix on its own
+	$(UV) ruff format .
+	$(UV) ruff check --fix .
+
+# The order runs cheapest to dearest, and in the order that explains a failure
+# best: first the part I rule (static), then the examples, then the sandbox,
+# then the text matching the examples, and the site last.
+check: part-1 test swish ## Everything that has to be green before a commit
+	$(UV) tools/sync-examples.py
+	$(MAKE) docs
+
+## --- Cleaning --------------------------------------------------------------
+
+clean: ## Remove the built site and the Python leftovers
+	rm -rf site __pycache__ tools/__pycache__ .ruff_cache .pytest_cache
+
+clean-pdf: ## Remove the generated PDFs (`make pdf` rebuilds them)
+	rm -f $(PDFS)

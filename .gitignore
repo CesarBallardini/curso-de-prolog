@@ -1,0 +1,19 @@
+# The source books are about 100 MB and are not ours: they are cited, not
+# published. What books/ does contribute is the Markdown conversions, which are
+# text and are versioned.
+books/*.pdf
+
+# The PDF of each chapter is built by `make pdf` and rebuilt by the publishing
+# workflow. They are downloaded from the site; they do not live in the repository.
+docs/**/*.pdf
+
+# Environment and build artefacts
+.venv/
+site/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+# Anchored to the root: this is the working scratch directory of this tree. An
+# example that happens to be called tmp/ inside a chapter is still versioned.
+/tmp/

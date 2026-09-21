@@ -1,0 +1,92 @@
+# Builds the book and publishes it to GitHub Pages. Because the user site
+# CesarBallardini.github.io carries the custom domain katra.ballardini.com.ar,
+# this project site is served at https://katra.ballardini.com.ar/curso-de-prolog/
+# -- the same way ley5110 and programacion-drracket already are. No DNS record
+# and no CNAME file are involved; the domain comes from the user site.
+#
+# Requires Settings > Pages > Source = "GitHub Actions".
+name: Publish the book
+
+on:
+  push:
+    branches: [main]
+  # On a pull request everything runs except the publishing step: the examples,
+  # the SWISH sandbox and the part I rule have to be green before a chapter
+  # gets in.
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deployment at a time, and never cancel one that is already publishing.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Install uv
+        # Pinned to a full version on purpose: setup-uv stopped publishing
+        # floating major tags after v7, so `@v10` does not resolve.
+        uses: astral-sh/setup-uv@v10.1.0
+        with:
+          enable-cache: true
+
+      # --frozen everywhere: the build uses exactly uv.lock, and a lockfile out
+      # of sync with pyproject.toml fails here instead of resolving silently.
+      - name: Install dependencies
+        run: uv sync --frozen
+
+      # The examples are loaded and tested with the same swipl the author uses.
+      # The Ubuntu package lags well behind, so it comes from the stable PPA.
+      - name: Install SWI-Prolog
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y software-properties-common
+          sudo apt-add-repository -y ppa:swi-prolog/stable
+          sudo apt-get update
+          sudo apt-get install -y swi-prolog-nox
+          swipl --version
+
+      - name: Chromium for the PDFs
+        run: uv run --frozen playwright install --with-deps chromium
+
+      # Before `make check`, because each chapter's PDF is copied into the site
+      # and building the site is the last thing check does.
+      - name: Build the chapter PDFs
+        run: make pdf
+
+      # The book's rules (part I), the plunit tests of every example, the SWISH
+      # sandbox, the text kept in sync with the examples, and the site built
+      # with --strict.
+      - name: Check and build
+        run: make check
+
+      - name: Lint the tooling
+        run: make lint
+
+      - name: Upload the site
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publish to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

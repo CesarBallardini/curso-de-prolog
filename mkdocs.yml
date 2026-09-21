@@ -1,0 +1,219 @@
+# Configuration of the web book. Built with `make docs` and published to
+# GitHub Pages by the .github/workflows/deploy-book.yml workflow.
+#
+# The three URLs below are the only thing to touch if the repository changes
+# its name or its account.
+
+site_name: Curso de Prolog
+site_description: >-
+  Curso de SWI-Prolog en castellano, autoguiado, para estudiantes de segundo año
+  que nunca vieron Prolog. Todos los ejemplos se abren y se corren en SWISH.
+site_author: César Ballardini
+# The user site CesarBallardini.github.io carries the custom domain
+# katra.ballardini.com.ar, so this project site is served from that domain
+# under the repository name. The trailing slash matters: the canonical links,
+# the sitemap and 404.html are all built from this value.
+site_url: https://katra.ballardini.com.ar/curso-de-prolog/
+repo_url: https://github.com/CesarBallardini/curso-de-prolog
+repo_name: CesarBallardini/curso-de-prolog
+edit_uri: edit/main/docs/
+
+docs_dir: docs
+site_dir: site
+
+# A warning is an error: a broken link or a chapter left out of the navigation
+# has to turn the build red, not rot quietly inside the book.
+strict: true
+
+# A page that exists but is missing from the nav is unreachable for a reader,
+# and MkDocs only mentions it at INFO level, where nobody sees it. Raised to a
+# warning so that `strict: true` above turns it into a failed build: every
+# chapter page and every solutions page has to be in the nav.
+validation:
+  nav:
+    omitted_files: warn
+
+theme:
+  name: material
+  language: es
+  icon:
+    repo: fontawesome/brands/github
+  features:
+    - navigation.instant
+    - navigation.sections
+    - navigation.top
+    - navigation.tracking
+    - navigation.indexes
+    - toc.follow
+    - content.code.copy
+    - content.action.edit
+    - search.highlight
+    - search.suggest
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-night
+        name: Modo oscuro
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-sunny
+        name: Modo claro
+
+plugins:
+  - search:
+      lang: es
+
+# Puts the "Abrir en SWISH" link under every block that declares an example,
+# with the whole source inside the link. See tools/swish_links.py
+hooks:
+  - tools/swish_links.py
+
+extra_css:
+  - estilos/swish.css
+
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  # Typographic dashes, quotes and ellipses: the same conversion markdown-it
+  # does when it builds the PDF, so the site and the PDF agree.
+  - smarty
+  - tables
+  - toc:
+      permalink: true
+      toc_depth: 3
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+
+# Rendered at the foot of every page, chapters included, so the licence notice
+# does not have to be repeated in each file.
+copyright: >-
+  Copyright &copy; 2026 César Ballardini &mdash;
+  <a href="https://github.com/CesarBallardini/curso-de-prolog/blob/main/LICENSE">licencia MIT</a>.
+  Las fuentes que se citan mantienen la suya.
+
+nav:
+  - Presentación: index.md
+  - Parte I — Introducción:
+      - Capítulo 1 — La primera hora:
+          - capitulo-01-la-primera-hora/index.md
+          - Soluciones: capitulo-01-la-primera-hora/soluciones.md
+      - Capítulo 2 — Hechos, consultas y variables:
+          - capitulo-02-hechos-consultas-y-variables/index.md
+          - Soluciones: capitulo-02-hechos-consultas-y-variables/soluciones.md
+      - Capítulo 3 — Reglas y conjunciones:
+          - capitulo-03-reglas-y-conjunciones/index.md
+          - Soluciones: capitulo-03-reglas-y-conjunciones/soluciones.md
+      - Capítulo 4 — Términos y unificación:
+          - capitulo-04-terminos-y-unificacion/index.md
+          - Soluciones: capitulo-04-terminos-y-unificacion/soluciones.md
+      - Capítulo 5 — Cómo responde Prolog:
+          - capitulo-05-como-responde-prolog/index.md
+          - Soluciones: capitulo-05-como-responde-prolog/soluciones.md
+      - Capítulo 6 — Recursión:
+          - capitulo-06-recursion/index.md
+          - Soluciones: capitulo-06-recursion/soluciones.md
+      - Capítulo 7 — Listas:
+          - capitulo-07-listas/index.md
+          - Soluciones: capitulo-07-listas/soluciones.md
+      - Capítulo 8 — Aritmética:
+          - capitulo-08-aritmetica/index.md
+          - Soluciones: capitulo-08-aritmetica/soluciones.md
+      - Capítulo 9 — Backtracking y corte:
+          - capitulo-09-backtracking-y-corte/index.md
+          - Soluciones: capitulo-09-backtracking-y-corte/soluciones.md
+      - Capítulo 10 — Negación como falla:
+          - capitulo-10-negacion-como-falla/index.md
+          - Soluciones: capitulo-10-negacion-como-falla/soluciones.md
+      - Capítulo 11 — Prolog y la lógica:
+          - capitulo-11-prolog-y-la-logica/index.md
+          - Soluciones: capitulo-11-prolog-y-la-logica/soluciones.md
+  - Parte II — Prolog para programadores:
+      - Capítulo 12 — Estilo y documentación:
+          - capitulo-12-estilo-y-documentacion/index.md
+          - Soluciones: capitulo-12-estilo-y-documentacion/soluciones.md
+      - Capítulo 13 — Control:
+          - capitulo-13-control/index.md
+          - Soluciones: capitulo-13-control/soluciones.md
+      - Capítulo 14 — Rendimiento:
+          - capitulo-14-rendimiento/index.md
+          - Soluciones: capitulo-14-rendimiento/soluciones.md
+      - Capítulo 15 — Todas las soluciones:
+          - capitulo-15-todas-las-soluciones/index.md
+          - Soluciones: capitulo-15-todas-las-soluciones/soluciones.md
+      - Capítulo 16 — Orden superior:
+          - capitulo-16-orden-superior/index.md
+          - Soluciones: capitulo-16-orden-superior/soluciones.md
+      - Capítulo 17 — Base de datos dinámica:
+          - capitulo-17-base-de-datos-dinamica/index.md
+          - Soluciones: capitulo-17-base-de-datos-dinamica/soluciones.md
+      - Capítulo 18 — Texto:
+          - capitulo-18-texto/index.md
+          - Soluciones: capitulo-18-texto/soluciones.md
+      - Capítulo 19 — Gramáticas (DCG):
+          - capitulo-19-gramaticas-dcg/index.md
+          - Soluciones: capitulo-19-gramaticas-dcg/soluciones.md
+      - Capítulo 20 — Estructuras de datos de la biblioteca:
+          - capitulo-20-estructuras-de-datos-de-la-biblioteca/index.md
+          - Soluciones: capitulo-20-estructuras-de-datos-de-la-biblioteca/soluciones.md
+      - Capítulo 21 — Módulos y organización:
+          - capitulo-21-modulos-y-organizacion/index.md
+          - Soluciones: capitulo-21-modulos-y-organizacion/soluciones.md
+      - Capítulo 22 — Errores y excepciones:
+          - capitulo-22-errores-y-excepciones/index.md
+          - Soluciones: capitulo-22-errores-y-excepciones/soluciones.md
+      - Capítulo 23 — Pruebas y depuración:
+          - capitulo-23-pruebas-y-depuracion/index.md
+          - Soluciones: capitulo-23-pruebas-y-depuracion/soluciones.md
+  - Parte III — Lo avanzado:
+      - Capítulo 24 — Inspección de términos:
+          - capitulo-24-inspeccion-de-terminos/index.md
+          - Soluciones: capitulo-24-inspeccion-de-terminos/soluciones.md
+      - Capítulo 25 — Introspección y metaintérpretes:
+          - capitulo-25-introspeccion-y-metainterpretes/index.md
+          - Soluciones: capitulo-25-introspeccion-y-metainterpretes/soluciones.md
+      - Capítulo 26 — Estructuras incompletas y listas diferencia:
+          - capitulo-26-estructuras-incompletas-y-listas-diferencia/index.md
+          - Soluciones: capitulo-26-estructuras-incompletas-y-listas-diferencia/soluciones.md
+      - Capítulo 27 — Transformación de programas y compilación:
+          - capitulo-27-transformacion-de-programas-y-compilacion/index.md
+          - Soluciones: capitulo-27-transformacion-de-programas-y-compilacion/soluciones.md
+      - Capítulo 28 — Archivos y streams:
+          - capitulo-28-archivos-y-streams/index.md
+          - Soluciones: capitulo-28-archivos-y-streams/soluciones.md
+      - Capítulo 29 — Interfaces de usuario:
+          - capitulo-29-interfaces-de-usuario/index.md
+          - Soluciones: capitulo-29-interfaces-de-usuario/soluciones.md
+      - Capítulo 30 — Concurrencia y paralelismo:
+          - capitulo-30-concurrencia-y-paralelismo/index.md
+          - Soluciones: capitulo-30-concurrencia-y-paralelismo/soluciones.md
+      - Capítulo 31 — Tabulación:
+          - capitulo-31-tabulacion/index.md
+          - Soluciones: capitulo-31-tabulacion/soluciones.md
+      - Capítulo 32 — Programación con restricciones:
+          - capitulo-32-programacion-con-restricciones/index.md
+          - Soluciones: capitulo-32-programacion-con-restricciones/soluciones.md
+      - Capítulo 33 — Búsqueda y juegos:
+          - capitulo-33-busqueda-y-juegos/index.md
+          - Soluciones: capitulo-33-busqueda-y-juegos/soluciones.md
+  - Capítulo 34 — Prolog y SQL:
+      - capitulo-34-prolog-y-sql/index.md
+      - Soluciones: capitulo-34-prolog-y-sql/soluciones.md
+  - Apéndice A — Prolog desde Python:
+      - apendice-a-prolog-desde-python/index.md
+      - Soluciones: apendice-a-prolog-desde-python/soluciones.md
+  - Licencia: licencia.md

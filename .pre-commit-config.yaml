@@ -1,0 +1,83 @@
+# `pre-commit install` has to wire up the commit-msg and pre-push stages too,
+# not just pre-commit, or the last two hooks below never run.
+default_install_hook_types:
+  - pre-commit
+  - commit-msg
+  - pre-push
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      # The PDFs under books/ are in .gitignore; this is the second barrier, in
+      # case one gets in with `git add -f`.
+      - id: check-added-large-files
+      - id: check-ast
+      - id: check-case-conflict
+      - id: check-json
+      - id: check-merge-conflict
+      - id: check-toml
+      - id: check-yaml
+      - id: detect-private-key
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: mixed-line-ending
+
+      # Work leaves on a branch and comes in through a pull request, which is
+      # what CI and the publishing workflow hang off.
+      - id: no-commit-to-branch
+        args: [--branch=main]
+
+  - repo: local
+    hooks:
+      # ruff and commitizen run through `uv run --frozen`, at the exact version
+      # in uv.lock. A separately pinned hook revision can drift from what
+      # `make lint` and CI actually run.
+      - id: ruff-check
+        name: ruff check --fix
+        entry: uv run --frozen ruff check --fix --force-exclude
+        language: system
+        types: [python]
+
+      - id: ruff-format
+        name: ruff format
+        entry: uv run --frozen ruff format --force-exclude
+        language: system
+        types: [python]
+
+      - id: uv-lock-check
+        name: uv lock --check
+        description: fail if uv.lock has drifted from pyproject.toml
+        entry: uv lock --check
+        language: system
+        pass_filenames: false
+
+      # Every `.pl` in the book starts with `:- encoding(utf8).`: without it the
+      # local SWI-Prolog on Windows reads the source in the system encoding, and
+      # an accented atom is a syntax error that brings the whole file down.
+      - id: encoding-utf8
+        name: every .pl declares :- encoding(utf8).
+        entry: tools/check-encoding.sh
+        language: script
+        files: ^ejemplos/.*\.plt?$
+
+      # Conventional Commits.
+      - id: commitizen
+        name: commitizen (conventional commit message)
+        entry: uv run --frozen cz check --commit-msg-file
+        language: system
+        stages: [commit-msg]
+
+      # Runs at push time, not at commit time: what it validates is the branch
+      # name, which is what GitHub derives the default pull request title from.
+      # Catching it here costs one push instead of a round trip through CI.
+      - id: check-branch-name
+        name: branch naming convention
+        entry: .pre-commit-hooks/check-branch-name.sh
+        language: script
+        stages: [pre-push]
+        pass_filenames: false
+        always_run: true
+        # pre-commit swallows the output when a hook passes, and that would hide
+        # the advice about the pull request title, which is the whole point.
+        verbose: true

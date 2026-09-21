@@ -1,0 +1,211 @@
+@page {
+  size: A4;
+  margin: 2.5cm 2cm 2.5cm 2cm;
+}
+
+body {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-size: 11pt;
+  line-height: 1.6;
+  color: #1a1a1a;
+  max-width: 100%;
+}
+
+h1 {
+  font-size: 22pt;
+  font-weight: bold;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  color: #111;
+  page-break-before: always;
+}
+
+h1:first-of-type {
+  page-break-before: avoid;
+}
+
+h2 {
+  font-size: 16pt;
+  font-weight: bold;
+  margin-top: 1.5em;
+  margin-bottom: 0.4em;
+  color: #222;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 4px;
+}
+
+h3 {
+  font-size: 13pt;
+  font-weight: bold;
+  margin-top: 1.2em;
+  margin-bottom: 0.3em;
+  color: #333;
+}
+
+p {
+  text-align: justify;
+  margin-bottom: 0.6em;
+}
+
+blockquote {
+  border-left: 3px solid #666;
+  margin: 1em 0 1em 0;
+  padding: 0.5em 0 0.5em 1.2em;
+  background-color: #f7f7f7;
+  font-style: italic;
+  font-size: 10.5pt;
+  color: #333;
+}
+
+blockquote p {
+  margin-bottom: 0.3em;
+}
+
+pre {
+  background-color: #f4f4f4;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 0.8em 1em;
+  font-size: 9.5pt;
+  line-height: 1.4;
+  overflow-x: auto;
+  page-break-inside: avoid;
+}
+
+code {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 9.5pt;
+  background-color: #f0f0f0;
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+pre code {
+  background-color: transparent;
+  padding: 0;
+  border-radius: 0;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+  font-size: 10.5pt;
+  page-break-inside: avoid;
+}
+
+th, td {
+  border: 1px solid #bbb;
+  padding: 6px 10px;
+  text-align: left;
+}
+
+th {
+  background-color: #eee;
+  font-weight: bold;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+ul, ol {
+  margin-bottom: 0.6em;
+  padding-left: 2em;
+}
+
+li {
+  margin-bottom: 0.2em;
+}
+
+strong {
+  color: #111;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #ccc;
+  margin: 2em 0;
+}
+
+/* Footnotes */
+.footnote-ref {
+  font-size: 0.75em;
+  vertical-align: super;
+  line-height: 0;
+  text-decoration: none;
+}
+
+section.footnotes {
+  margin-top: 2em;
+  border-top: 1px solid #ccc;
+  padding-top: 0.5em;
+  font-size: 9pt;
+  line-height: 1.4;
+  color: #444;
+}
+
+section.footnotes ol {
+  padding-left: 1.5em;
+}
+
+section.footnotes li {
+  margin-bottom: 0.4em;
+}
+
+section.footnotes .footnote-backref {
+  text-decoration: none;
+  font-size: 0.8em;
+}
+
+/* Mermaid diagrams */
+pre.mermaid {
+  background-color: transparent;
+  border: none;
+  text-align: center;
+  padding: 1em 0;
+  page-break-inside: avoid;
+}
+
+pre.mermaid svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* --- Added for this book ----------------------------------------------- */
+
+/* The Material admonitions (!!! note / warning / info). On the site the theme
+   draws them; here they have to be drawn, because the PDF has no theme. */
+.admonition {
+  border-left: 4px solid #5c6bc0;
+  background: #f5f6fa;
+  padding: 0.6em 1em;
+  margin: 1.2em 0;
+  page-break-inside: avoid;
+}
+
+.admonition-title {
+  font-weight: bold;
+  margin: 0 0 0.4em;
+  color: #3949ab;
+}
+
+.admonition.warning {
+  border-left-color: #f9a825;
+  background: #fffdf3;
+}
+
+.admonition.warning > .admonition-title {
+  color: #f57f17;
+}
+
+/* The SWISH link that tools/swish_links.py puts under every example. In the
+   PDF it is still a link: Chromium keeps them. */
+.swish {
+  display: inline-block;
+  margin: -0.8em 0 1.4em;
+  font-size: 9pt;
+  font-weight: bold;
+  text-decoration: none;
+  color: #3949ab;
+}

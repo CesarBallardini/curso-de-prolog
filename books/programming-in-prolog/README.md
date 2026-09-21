@@ -1,0 +1,22 @@
+# William F. Clocksin, Christopher S. Mellish-Programming in Prolog-Springer (2003)
+
+- [Cover](00-cover.md) — pages 1–3
+- [Copyright](01-copyright.md) — pages 4–4
+- [Preface to the Fifth Edition](02-preface-to-the-fifth-edition.md) — pages 5–8
+- [Table of Contents](03-table-of-contents.md) — pages 9–14
+- [1 Tutorial Introduction](04-1-tutorial-introduction.md) — pages 15–38
+- [2 A Closer Look](05-2-a-closer-look.md) — pages 39–60
+- [3 Using Data Structures](06-3-using-data-structures.md) — pages 61–86
+- [4 Backtracking and the "Cut"](07-4-backtracking-and-the-cut.md) — pages 87–112
+- [5 Input and Output](08-5-input-and-output.md) — pages 113–132
+- [6 Built-in Predicates](09-6-built-in-predicates.md) — pages 133–158
+- [7 More Example Programs](10-7-more-example-programs.md) — pages 159–200
+- [8 Debugging Prolog Programs](11-8-debugging-prolog-programs.md) — pages 201–226
+- [9 Using Prolog Grammar Rules](12-9-using-prolog-grammar-rules.md) — pages 227–250
+- [10 The Relation of Prolog to Logic](13-10-the-relation-of-prolog-to-logic.md) — pages 251–272
+- [11 Projects in Prolog](14-11-projects-in-prolog.md) — pages 273–280
+- [A Answers to Selected Exercises](15-a-answers-to-selected-exercises.md) — pages 281–284
+- [B Clausal Form Program Listings](16-b-clausal-form-program-listings.md) — pages 285–290
+- [C Writing Portable Standard Prolog Programs](17-c-writing-portable-standard-prolog-programs.md) — pages 291–302
+- [D Code to Support DCGs](18-d-code-to-support-dcgs.md) — pages 303–308
+- [Index](19-index.md) — pages 309–314

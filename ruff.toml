@@ -1,0 +1,54 @@
+line-length = 119
+target-version = "py314"
+
+# These three scripts predate this quality gate and are not part of the book's
+# build: pdf2md.py converts a source book into Markdown, indice-ejercicios.py
+# regenerates the exercise index, and verificar.py checks the SQL/Prolog pairs.
+# They work, they are run by hand, and pdf2md.py would need a real refactor to
+# pass C901. Bring each one in when it is next touched, rather than reformatting
+# them all now for no reason.
+extend-exclude = [
+    "tools/pdf2md.py",
+    "tools/indice-ejercicios.py",
+    "references/ejercicios/sql-prolog/verificar.py",
+]
+
+[lint]
+select = [
+    "E", "F", "W",  # pycodestyle + pyflakes
+    "I",            # isort
+    "N",            # pep8-naming
+    "UP",           # pyupgrade
+    "B",            # flake8-bugbear
+    "C90",          # mccabe complexity -- honors [lint.mccabe] max-complexity below
+    "S",            # flake8-bandit
+    "SIM",          # flake8-simplify
+    "RET",          # flake8-return
+    "PIE",          # flake8-pie
+    "TCH",          # flake8-type-checking
+    "YTT",          # flake8-2020
+    "D",            # pydocstyle
+]
+ignore = [
+    "D203",  # one-blank-line-before-class -- conflicts with D211
+    "D213",  # multi-line-summary-second-line -- conflicts with D212
+]
+
+[lint.pydocstyle]
+convention = "google"
+
+[lint.mccabe]
+max-complexity = 15
+
+[lint.per-file-ignores]
+# The book tools are single-file scripts with a module docstring and nothing
+# else: there is no point documenting every internal function.
+"tools/**" = ["D"]
+"ejemplos/**" = ["D", "S101"]
+
+[format]
+quote-style = "single"
+
+# .gitattributes stores LF; keep ruff from writing CRLF on Windows and leaving
+# half the repository "modified" by a line ending.
+line-ending = "lf"

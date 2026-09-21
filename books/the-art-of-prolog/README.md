@@ -1,0 +1,42 @@
+# the-art-of-prolog-end-ed1408
+
+- [Cover](00-cover.md) — pages 1–7
+- [Contents](01-contents.md) — pages 8–13
+- [Figures](02-figures.md) — pages 14–17
+- [Programs](03-programs.md) — pages 18–25
+- [Series Foreword](04-series-foreword.md) — pages 26–27
+- [Foreword](05-foreword.md) — pages 28–31
+- [Preface](06-preface.md) — pages 32–35
+- [Preface to First Edition](07-preface-to-first-edition.md) — pages 36–41
+- [Introduction](08-introduction.md) — pages 42–49
+- [I Logic Programs](09-i-logic-programs.md) — pages 50–51
+- [1 Basic Constructs](10-1-basic-constructs.md) — pages 52–69
+- [2 Database Programming](11-2-database-programming.md) — pages 70–85
+- [3 Recursive Programming](12-3-recursive-programming.md) — pages 86–127
+- [4 The Computation Model of Logic Programs](13-4-the-computation-model-of-logic-programs.md) — pages 128–141
+- [5 Theory of Logic Programs](14-5-theory-of-logic-programs.md) — pages 142–157
+- [II The Prolog Language](15-ii-the-prolog-language.md) — pages 158–159
+- [6 Pure Prolog](16-6-pure-prolog.md) — pages 160–169
+- [7 Programming in Pure Prolog](17-7-programming-in-pure-prolog.md) — pages 170–189
+- [8 Arithmetic](18-8-arithmetic.md) — pages 190–203
+- [9 Structure Inspection](19-9-structure-inspection.md) — pages 204–215
+- [10 Meta-Logical Predicates](20-10-meta-logical-predicates.md) — pages 216–229
+- [11 Cuts and Negation](21-11-cuts-and-negation.md) — pages 230–255
+- [12 Extra-Logical Predicates](22-12-extra-logical-predicates.md) — pages 256–273
+- [13 Program Development](23-13-program-development.md) — pages 274–287
+- [III Advanced Prolog Programming Techniques](24-iii-advanced-prolog-programming-techniques.md) — pages 288–289
+- [14 Nondeterministic Programming](25-14-nondeterministic-programming.md) — pages 290–323
+- [15 Incomplete Data Structures](26-15-incomplete-data-structures.md) — pages 324–341
+- [16 Second-Order Programming](27-16-second-order-programming.md) — pages 342–359
+- [17 Interpreters](28-17-interpreters.md) — pages 360–397
+- [18 Program Transformation](29-18-program-transformation.md) — pages 398–415
+- [19 Logic Grammars](30-19-logic-grammars.md) — pages 416–429
+- [20 Search Techniques](31-20-search-techniques.md) — pages 430–449
+- [IV Applications](32-iv-applications.md) — pages 450–451
+- [21 Game-Playing Programs](33-21-game-playing-programs.md) — pages 452–469
+- [22 A Credit Evaluation Expert System](34-22-a-credit-evaluation-expert-system.md) — pages 470–479
+- [23 An Equation Solver](35-23-an-equation-solver.md) — pages 480–499
+- [24 A Compiler](36-24-a-compiler.md) — pages 500–519
+- [A Operators](37-a-operators.md) — pages 520–523
+- [References](38-references.md) — pages 524–537
+- [Index](39-index.md) — pages 538–553

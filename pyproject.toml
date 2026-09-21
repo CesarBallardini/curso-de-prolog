@@ -1,0 +1,50 @@
+[project]
+name = "curso-de-prolog"
+version = "0.1.0"
+description = "Curso de SWI-Prolog en castellano, autoguiado, con ejemplos que corren en SWISH"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+# Proyecto de herramental: esto es un libro, no un paquete instalable.
+requires-python = ">=3.14"
+dependencies = [
+    # Acotado a proposito: MkDocs 2.0 elimina el sistema de plugins, que es de
+    # donde sale Material, y mueve la configuracion de YAML a TOML sin camino de
+    # migracion. El salto de mayor tiene que ser una decision, no el resultado
+    # de un `uv sync`.
+    # Ver https://squidfunk.github.io/mkdocs-material/blog/2026/02/18/mkdocs-2.0/
+    #
+    # 9.7.5 es la primera version de Material que ella misma acota mkdocs <2, asi
+    # que este piso es lo que hace que la proteccion no dependa del tope de arriba.
+    "mkdocs>=1.6,<2",
+    "mkdocs-material>=9.7.5",
+    # md2pdf.py: el PDF de cada capitulo.
+    "markdown-it-py[plugins]",
+    "pygments",
+    "playwright",
+]
+
+[tool.uv]
+package = false
+
+[dependency-groups]
+dev = [
+    "ruff",
+    "pre-commit",
+    "commitizen",
+]
+# Solo el apendice A. Janus embebe el SWI-Prolog instalado en la maquina, asi
+# que su instalacion falla donde no haya `swipl`: por eso es un grupo aparte y
+# no una dependencia del libro.
+apendice-a = [
+    "janus-swi",
+    "pytest",
+]
+
+[tool.commitizen]
+# Conventional Commits, que verifica el hook de commit-msg en cada commit local.
+name = "cz_conventional_commits"
+tag_format = "v$version"
+version_scheme = "pep440"
+version_provider = "scm"
+update_changelog_on_bump = false
