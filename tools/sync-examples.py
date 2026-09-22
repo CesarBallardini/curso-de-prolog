@@ -33,6 +33,7 @@ Exits 1 when they differ (with --write, when something could not be resolved).
 
 import difflib
 import sys
+from pathlib import Path
 
 import examples
 
@@ -52,9 +53,9 @@ def expected(marker):
     path = examples.EXAMPLES / marker.group('file')
     if not path.exists():
         raise FileNotFoundError(path.relative_to(examples.ROOT).as_posix())
-    piece, _, warning = (marker.group('piece') or '').partition('aviso:')
-    code = piece_of(path.read_text(encoding='utf-8'), piece.strip())
-    return f'% {warning.strip()}\n{code}' if warning.strip() else code
+    parts = examples.marker_parts(marker.group('piece'))
+    code = piece_of(path.read_text(encoding='utf-8'), parts['pieza'])
+    return f'% {parts["aviso"]}\n{code}' if parts['aviso'] else code
 
 
 def process(path, write):
@@ -104,13 +105,33 @@ def process(path, write):
     return total, not trouble
 
 
+def wanted(argv):
+    """The pages to process: the ones named on the command line, or all of them.
+
+    Naming pages matters when more than one person is writing at once: a global
+    run rewrites every chapter's blocks from its example files, which is right
+    when you are the only author and wrong when somebody else is mid-edit
+    somewhere else in the book.
+    """
+    named = [Path(a).resolve() for a in argv if not a.startswith('-')]
+    if not named:
+        return sorted(examples.DOCS.rglob('*.md'))
+    pages = []
+    for path in named:
+        if path.is_dir():
+            pages += sorted(path.rglob('*.md'))
+        else:
+            pages.append(path)
+    return pages
+
+
 def main():
     write = '--write' in sys.argv
     if not examples.DOCS.is_dir():
         print(f'There is no {examples.DOCS} yet.', file=sys.stderr)
         return 1
     total, all_good = 0, True
-    for path in sorted(examples.DOCS.rglob('*.md')):
+    for path in wanted(sys.argv[1:]):
         counted, ok = process(path, write)
         total += counted
         all_good = all_good and ok

@@ -396,3 +396,28 @@ MARKER = re.compile(
     r'```(?P<language>\w*)\n(?P<body>.*?)^```$',
     re.M | re.S,
 )
+
+
+# The tail of a marker, after the file name, carries the piece to copy and up to
+# two named fields:
+#
+#     <!-- ejemplo: capitulo-01/familia.pl predicado: abuelo/2 consulta: abuelo(juan, Q). -->
+#
+# `consulta:` overrides which query the SWISH link opens with, which matters when
+# several sections of a chapter show pieces of the same file and each one wants
+# to be tried a different way. Without it the link uses the first `%?-` of the
+# example. `aviso:` opens the block with a comment, for code shown to be
+# criticised.
+MARKER_FIELDS = re.compile(r'\b(consulta|aviso):')
+
+
+def marker_parts(tail: str | None) -> dict[str, str | None]:
+    """The tail of a marker as {'pieza', 'consulta', 'aviso'}."""
+    parts: dict[str, str | None] = {'pieza': '', 'consulta': None, 'aviso': None}
+    if not tail:
+        return parts
+    split = MARKER_FIELDS.split(tail)
+    parts['pieza'] = split[0].strip()
+    for key, value in zip(split[1::2], split[2::2], strict=False):
+        parts[key] = value.strip()
+    return parts

@@ -1,0 +1,22 @@
+# covington-nlp-for-prolog-programmers
+
+- [FrontMatter600dpi - Copy.pdf](00-frontmatter600dpi-copy-pdf.md) — pages 1–14
+- [Chapter1](01-chapter1.md) — pages 15–28
+- [Chapter2](02-chapter2.md) — pages 29–50
+- [Chapter3_Part1](03-chapter3-part1.md) — pages 51–70
+- [Chapter3_Part2](04-chapter3-part2.md) — pages 71–90
+- [Chapter4_Part1](05-chapter4-part1.md) — pages 91–110
+- [Chapter4_Part2](06-chapter4-part2.md) — pages 111–124
+- [Chapter5_Part1](07-chapter5-part1.md) — pages 125–144
+- [Chapter5_Part2](08-chapter5-part2.md) — pages 145–164
+- [Chapter6_Part1](09-chapter6-part1.md) — pages 165–189
+- [Chapter6_Part2](10-chapter6-part2.md) — pages 190–209
+- [Chapter7_Part1](11-chapter7-part1.md) — pages 210–229
+- [Chapter7_Part2](12-chapter7-part2.md) — pages 230–246
+- [Chapter8](13-chapter8.md) — pages 247–270
+- [Chapter9](14-chapter9.md) — pages 271–296
+- [AppendixA_Part1](15-appendixa-part1.md) — pages 297–316
+- [AppendixA_Part2](16-appendixa-part2.md) — pages 317–330
+- [AppendixB](17-appendixb.md) — pages 331–338
+- [Bibliography](18-bibliography.md) — pages 339–348
+- [Index](19-index.md) — pages 349–361

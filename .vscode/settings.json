@@ -1,0 +1,46 @@
+// Settings that travel with the repository, so the book does not depend on how
+// each contributor happens to have VS Code set up.
+//
+// The file is JSONC: VS Code allows comments here, unlike plain JSON.
+{
+  // Markdown is never reformatted on save. The text of this book is wrapped by
+  // hand at about 80 columns and its tables are written compact (`|---|---|`),
+  // and a formatter undoes both.
+  //
+  // There is also a case where reformatting corrupts the source. A table cell
+  // such as `[Primero|Resto]` holds a pipe inside an inline code span. GFM
+  // requires that pipe to be escaped, so a formatter reads it as a column
+  // boundary, counts one column too many, and pads the cell *inside* the
+  // backticks — leaving `[Primero        | Resto]` in the rendered page. It
+  // happened to the summary table of chapter 1 more than once.
+  //
+  // The book does not escape those pipes, because Python-Markdown renders the
+  // site and would print the backslash. `tools/md2pdf.py` adds the escape on
+  // the fly for the PDF, which is the renderer that needs it.
+  "[markdown]": {
+    "editor.formatOnSave": false
+  },
+
+  // Belt and braces: this is the setting of "Markdown All in One", the most
+  // common source of the reformatting described above.
+  "markdown.extension.tableFormatter.enabled": false,
+
+  // Prolog examples are indented with four spaces and no tabs, which is what
+  // `make check` compares against the text.
+  "[prolog]": {
+    "editor.insertSpaces": true,
+    "editor.tabSize": 4
+  },
+
+  // Python under tools/ is formatted by ruff, through pre-commit. Leaving the
+  // editor out of it keeps the two from disagreeing.
+  "[python]": {
+    "editor.formatOnSave": false
+  },
+
+  // The repository stores LF; see .gitattributes. Writing CRLF from the editor
+  // turns every touched file into a whole-file diff.
+  "files.eol": "\n",
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true
+}

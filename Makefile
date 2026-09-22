@@ -12,16 +12,20 @@
 
 UV := uv run --frozen
 
-# A chapter is a directory under docs/ with its index.md; its PDF is named after
-# the directory, and .gitignore keeps it out of the repository.
+# A chapter is a directory under docs/ with its index.md and its soluciones.md.
+# Each one gives a PDF named after the directory, and .gitignore keeps both out
+# of the repository.
 CAPITULOS := $(sort $(wildcard docs/capitulo-*) $(wildcard docs/apendice-*))
-PDFS      := $(foreach d,$(CAPITULOS),$(d)/$(notdir $(d)).pdf)
+PDFS_CAP  := $(foreach d,$(CAPITULOS),$(d)/$(notdir $(d)).pdf)
+# Only for the chapters that actually have a solutions page.
+PDFS_SOL  := $(foreach d,$(wildcard docs/*/soluciones.md),$(dir $(d))$(notdir $(patsubst %/,%,$(dir $(d))))-soluciones.pdf)
+PDFS      := $(PDFS_CAP) $(PDFS_SOL)
 
 # Janus embeds the machine's SWI-Prolog and on Windows needs to be told where it
 # is. When it does not come from the environment, ask swipl itself.
 SWI_HOME_DIR ?= $(shell swipl --dump-runtime-variables 2>/dev/null | sed -n 's/^PLBASE="\(.*\)";/\1/p')
 
-.PHONY: help install browser test swish part-1 sync sql appendix \
+.PHONY: help install browser test swish part-1 transcripts math time sync sql appendix \
         docs docs-serve pdf lint format check clean clean-pdf
 
 help: ## List the available targets
@@ -51,6 +55,15 @@ swish: ## Check against library(sandbox) that every example can run in SWISH
 part-1: ## Check that chapters 1 to 11 use nothing from part II
 	$(UV) tools/check-part-1.py
 
+transcripts: ## Run every transcript of the book against swipl and compare the answers
+	$(UV) tools/check-transcripts.py $(e)
+
+math: ## Parse every formula of the book with KaTeX and report the ones it rejects
+	$(UV) tools/check-math.py $(e)
+
+time: ## Recompute every chapter time estimate and report the ones that drifted
+	$(UV) tools/check-time.py $(e)
+
 sync: ## Copy into the text the code blocks that declare they come from ejemplos/
 	$(UV) tools/sync-examples.py --write
 
@@ -79,8 +92,14 @@ DIRECCION ?= 0.0.0.0:8000
 
 pdf: $(PDFS) ## Build the PDF of every chapter (only the ones that changed)
 
+# The PDF machinery, which every page rebuild depends on.
+PDF_DEPS := tools/md2pdf.py tools/pdf-style.css tools/katex_pdf.py tools/swish_links.py tools/examples.py
+
 define REGLA_PDF
-$(1)/$(notdir $(1)).pdf: $(1)/index.md tools/md2pdf.py tools/pdf-style.css tools/swish_links.py tools/examples.py
+$(1)/$(notdir $(1)).pdf: $(1)/index.md $$(PDF_DEPS)
+	$$(UV) tools/md2pdf.py $$< -o $$@
+
+$(1)/$(notdir $(1))-soluciones.pdf: $(1)/soluciones.md $$(PDF_DEPS)
 	$$(UV) tools/md2pdf.py $$< -o $$@
 endef
 $(foreach d,$(CAPITULOS),$(eval $(call REGLA_PDF,$(d))))
@@ -98,7 +117,7 @@ format: ## Fix formatting and whatever ruff can fix on its own
 # The order runs cheapest to dearest, and in the order that explains a failure
 # best: first the part I rule (static), then the examples, then the sandbox,
 # then the text matching the examples, and the site last.
-check: part-1 test swish ## Everything that has to be green before a commit
+check: part-1 test swish transcripts math time ## Everything that has to be green before a commit
 	$(UV) tools/sync-examples.py
 	$(MAKE) docs
 

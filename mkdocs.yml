@@ -76,10 +76,23 @@ hooks:
 
 extra_css:
   - estilos/swish.css
+  # KaTeX typesets the logic formulas of chapter 11. Fetched from a CDN, like
+  # mermaid, rather than vendoring the library and its fonts.
+  - https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css
+
+extra_javascript:
+  - javascripts/katex.js
+  - https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js
+  - https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js
 
 markdown_extensions:
   - abbr
   - admonition
+  # Math written as $inline$ and $$display$$ in the Markdown. `generic: true`
+  # emits \(...\) and \[...\], which KaTeX renders and which GitHub also
+  # understands when the source is read in the repository.
+  - pymdownx.arithmatex:
+      generic: true
   - attr_list
   - def_list
   - footnotes
@@ -95,7 +108,13 @@ markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: true
   - pymdownx.inlinehilite
-  - pymdownx.superfences
+  # Mermaid diagrams are drawn in the browser from the same ```mermaid block
+  # that GitHub already renders when the Markdown is read in the repository.
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.tabbed:
       alternate_style: true
 
@@ -108,6 +127,7 @@ copyright: >-
 
 nav:
   - Presentación: index.md
+  - Plantillas: plantillas.md
   - Parte I — Introducción:
       - Capítulo 1 — La primera hora:
           - capitulo-01-la-primera-hora/index.md

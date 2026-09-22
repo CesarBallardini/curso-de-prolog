@@ -5,6 +5,10 @@ block from the file, and this adds the link while the site is built. The link is
 therefore never stale and never written by hand: it carries the whole source of
 the example, URL-encoded, so there is nothing to host.
 
+The query the link opens with is the first `%?-` of the example, or whatever the
+marker's `consulta:` field says, which is how several sections showing pieces of
+one file each get the query that suits them.
+
 An example whose header says `% solo-local:` gets its reason printed instead of a
 link, which is the honest thing to tell a reader who cannot run it in a browser.
 """
@@ -21,7 +25,7 @@ LOCAL_ONLY = 'Solo local (`swipl`)'
 PLAY = '&#9654;'
 
 
-def footer(relative):
+def footer(relative, query):
     """The line that goes under the block: the link, or why there is none."""
     path = examples.EXAMPLES / relative
     if not path.exists():
@@ -29,9 +33,17 @@ def footer(relative):
     example = examples.read(path)
     if example.local_only:
         return f'\n!!! info "{LOCAL_ONLY}"\n    {example.local_only}\n'
-    return f'\n[{PLAY} {OPEN_IN_SWISH}]({example.swish_link}){{ .swish target="_blank" rel="noopener" }}\n'
+    if query is None:
+        query = example.queries[0] if example.queries else None
+    link = examples.swish_link(example.source, query)
+    return f'\n[{PLAY} {OPEN_IN_SWISH}]({link})' + '{ .swish target="_blank" rel="noopener" }\n'
 
 
 def on_page_markdown(markdown, page, config, files):  # noqa: ARG001  (MkDocs calls it this way)
     """MkDocs hands each page's source here, before it becomes HTML."""
-    return examples.MARKER.sub(lambda m: m.group(0) + footer(m.group('file')), markdown)
+
+    def add(match):
+        query = examples.marker_parts(match.group('piece'))['consulta']
+        return match.group(0) + footer(match.group('file'), query)
+
+    return examples.MARKER.sub(add, markdown)

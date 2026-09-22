@@ -1,0 +1,5 @@
+# Acknowledgements
+
+<!-- page 4 -->
+A number of people have helped make this book possible. They include Dave Litwack and Bill Linn of Cullinet who provided the opportunity and encouragement to explore these ideas. Further thanks goes to Park Gerald and the Boston Computer Society, sounding boards for many of the programs in the book. Without the excellent Prolog products from Cogent (now Amzi!), AAIS, Arity, and Logic Programming Associates none of the code would have been developed. A special thanks goes to Peter Gable and Paul Weiss of Arity for their early help and Allan Littleford, provider of both Cogent Prolog and feedback on the book. Jim Humphreys of Suffolk University gave the most careful reading of the book, and advice based on years of experience. As have many other Mac converts, I feel compelled to mention my Macintosh SE, Microsoft Word and Cricket Draw for creating an enjoyable environment for writing books. And finally without both the technical and emotional support of Mary Kroening the book would not have been started or finished.
+

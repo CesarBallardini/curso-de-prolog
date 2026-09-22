@@ -209,3 +209,17 @@ pre.mermaid svg {
   text-decoration: none;
   color: #3949ab;
 }
+
+/* A display formula, from a $$…$$ block. KaTeX centres its own output, but the
+   paragraph that holds it inherits the justified text of the body, which would
+   stretch the formula across the line. */
+p.formula {
+  text-align: center;
+  margin: 1.4em 0;
+}
+
+/* KaTeX breaks a long formula only where the author allows it, so a wide one
+   would otherwise run past the right margin of the page. */
+p.formula .katex-display {
+  margin: 0;
+}
