@@ -5,8 +5,10 @@
 #
 # All the Python tooling lives in .venv, declared in pyproject.toml, and runs
 # through `uv run --frozen`: the version that runs is exactly the one in
-# uv.lock, the same one CI runs. On top of that it needs SWI-Prolog (`swipl`) on
-# the PATH, which is what loads and tests the examples.
+# uv.lock, the same one CI runs. On top of that it needs SWI-Prolog 9 (`swipl`)
+# on the PATH, which is what loads and tests the examples. Version 10 changed
+# clause indexing, and with it the choice points the transcripts of part I
+# show, so `make transcripts` fails against it.
 
 .DEFAULT_GOAL := help
 

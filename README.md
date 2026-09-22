@@ -29,9 +29,13 @@ El contenido se escribe por hitos, según `2026-09-18-plan-guide-prolog.md`.
 - [uv](https://docs.astral.sh/uv/) con Python 3.14. Todas las herramientas de
   Python residen en `.venv` y se declaran en `pyproject.toml`: no se instala
   nada de manera global.
-- [SWI-Prolog](https://www.swi-prolog.org/) 9 o posterior, con `swipl` en el
-  PATH. Se usa para cargar los ejemplos, ejecutar sus pruebas y consultar el
-  sandbox de SWISH.
+- [SWI-Prolog](https://www.swi-prolog.org/) 9, con `swipl` en el PATH. Se usa
+  para cargar los ejemplos, ejecutar sus pruebas y consultar el sandbox de
+  SWISH. La versión 10 modificó la indexación de cláusulas, y con ella las
+  consultas que dejan una alternativa pendiente: varias transcripciones del
+  texto terminan en `true.` donde el libro muestra `true ;`, y a la inversa.
+  `make transcripts` las informa como errores, de modo que el curso se escribe
+  y se verifica con la versión 9.
 - GNU make. En Windows, los comandos se ejecutan desde Git Bash.
 
 ```bash
