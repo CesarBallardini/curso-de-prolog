@@ -28,7 +28,10 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    # Pinned, and not `ubuntu-latest`: the swipl that runs the book's
+    # transcripts comes from this image's own archive, so which image it is
+    # forms part of what the build checks. See the SWI-Prolog step below.
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -45,16 +48,32 @@ jobs:
       - name: Install dependencies
         run: uv sync --frozen
 
-      # The examples are loaded and tested with the same swipl the author uses.
-      # The Ubuntu package lags well behind, so it comes from the stable PPA.
+      # The examples are loaded and tested with the same swipl the author uses,
+      # 9.2.9, which is what Ubuntu 26.04 carries in universe.
+      #
+      # The version is not an implementation detail here. SWI-Prolog 10 changed
+      # clause indexing, and with it which queries leave a choice point, which
+      # is exactly what the transcripts of part I show: `abuelo(juan, luis)`
+      # answers `true ; false.` under 9 and `true.` under 10, and
+      # `gusta(Quien, prolog)` does the reverse. The book states in its writing
+      # criteria that it shows the answers of SWI-Prolog 9, so this is the
+      # version that has to run here.
+      #
+      # It no longer comes from ppa:swi-prolog/stable: that PPA publishes only
+      # 10 now, and removed its last 9.2.9 build for noble in February 2026.
       - name: Install SWI-Prolog
         run: |
           sudo apt-get update
-          sudo apt-get install -y software-properties-common
-          sudo apt-add-repository -y ppa:swi-prolog/stable
-          sudo apt-get update
           sudo apt-get install -y swi-prolog-nox
           swipl --version
+
+      # A jump to SWI-Prolog 10 would not break any of the steps below: it would
+      # quietly turn six of the book's transcripts into failures, reported as if
+      # the text were the thing that was wrong. Fail here instead, where the
+      # cause is written down.
+      - name: Check that it is SWI-Prolog 9
+        run: |
+          swipl -q -t halt -g 'current_prolog_flag(version, V), ( V >= 90000, V < 100000 -> true ; format(user_error, "this book shows the answers of SWI-Prolog 9; this is ~w~n", [V]), halt(1) )'
 
       - name: Chromium for the PDFs
         run: uv run --frozen playwright install --with-deps chromium
