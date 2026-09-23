@@ -84,7 +84,9 @@ appendix: ## Run the tests of the appendix A examples (Janus)
 
 ## --- The book --------------------------------------------------------------
 
-docs: ## Build the site into site/ (a warning is an error)
+# The PDFs first: the site links to every one of them from docs/pdf.md, and
+# the strict build fails on a link to a file that is not there.
+docs: $(PDFS) ## Build the site into site/ (a warning is an error)
 	$(UV) mkdocs build --strict
 
 docs-serve: ## Serve the site locally with live reload

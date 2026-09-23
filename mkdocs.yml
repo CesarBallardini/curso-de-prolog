@@ -242,4 +242,5 @@ nav:
   - Apéndice A — Prolog desde Python:
       - apendice-a-prolog-desde-python/index.md
       - Soluciones: apendice-a-prolog-desde-python/soluciones.md
+  - Apéndice B — Los capítulos en PDF: pdf.md
   - Licencia: licencia.md

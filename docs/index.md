@@ -28,6 +28,8 @@ navegador**: cada bloque de código incluye un enlace "▶ Abrir en SWISH".
   entre ambos lenguajes, y sus diferencias.
 - **Apéndice A — Prolog desde Python**. Cómo usar Prolog, con sus reglas y su
   backtracking, desde un programa Python.
+- **[Apéndice B — Los capítulos en PDF](pdf.md)**. Cada capítulo y sus
+  soluciones, en PDF, para leer o imprimir.
 
 Cada capítulo tiene la misma estructura: objetivos, desarrollo con ejemplos
 ejecutables, actividades intercaladas, ejercicios con nivel de dificultad,
