@@ -16,7 +16,9 @@ edad(luis, 12).
 edad(eva, 8).
 edad(sofia, 3).
 
-% etapa(P, E): E es la etapa de la vida en la que está P, según su edad.
+%!  etapa(?P, ?E) is nondet.
+%
+%   E es la etapa de la vida en la que está P, según su edad.
 etapa(P, bebe) :-
     edad(P, A),
     A < 4.

@@ -10397,4 +10397,3 @@ diﬀquicksort v2([H|T],Ans-Hole2):-
 Note that we can now use the same split/4 as for quicksort/2. The eﬃciency of this version is now better than the performance of quicksort/2.
 
 6. This one is up to you!
-

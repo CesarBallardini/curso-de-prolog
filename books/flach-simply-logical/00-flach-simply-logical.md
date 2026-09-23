@@ -10112,4 +10112,3 @@ reverse([H|T],A,[RH|RT]):-reverse(T,[H|A],[RH|RT])
 ```
 
 This is the recursive clause in the version with accumulator of the `reverse/3` predicate (section 3.6), with one small difference: here, the third argument is required to be a nonempty list (which it always is). Notice that this clause is not strictly constrained, and cannot be inferred by the induction programs in sections 9.2 and 9.3 (see als Exercise 9.4).
-

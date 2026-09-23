@@ -337,4 +337,3 @@ Tree(s)
 in¿nite. 23. 250 micro-Prolog. 253 Modularisation. in Prolog. 252. 254
 
 WARPLAN. 2I6—226 MPROLOG. 253-254
-

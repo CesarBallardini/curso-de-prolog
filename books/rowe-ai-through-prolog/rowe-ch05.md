@@ -1006,4 +1006,3 @@ It will help to define a predicate different of two arguments that says whether 
 Go to book index
 
 Page 19 of 19 http://faculty.nps.edu/ncrowe/book/chap5.html
-

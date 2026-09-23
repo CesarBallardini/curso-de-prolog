@@ -13,13 +13,17 @@ padre(juan, ana).
 padre(juan, pedro).
 padre(pedro, luis).
 
-% abuelo(A, N): A es abuelo de N.
+%!  abuelo(?A, ?N) is nondet.
+%
+%   A es abuelo de N.
 abuelo(A, N) :-
     padre(A, P),
     padre(P, N).
 
-% abuelo_al_reves(A, N): la misma regla con los dos objetivos en orden inverso.
-% Produce las mismas respuestas; cambia la cantidad de búsqueda.
+%!  abuelo_al_reves(?A, ?N) is nondet.
+%
+%   A es abuelo de N: la misma regla con los dos objetivos en orden inverso.
+%   Produce las mismas respuestas; cambia la cantidad de búsqueda.
 abuelo_al_reves(A, N) :-
     padre(P, N),
     padre(A, P).

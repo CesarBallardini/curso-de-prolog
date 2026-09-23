@@ -840,4 +840,3 @@ set be either forward or backward chaining, and use the appropriate inference en
 for both. 7.3 Build another expert system using *Foops*.
 
 *Building Expert Systems in Prolog*
-

@@ -700,4 +700,3 @@ member( X, [ _ I Y ] ) :- member( X, Y ).
 ```
 
 bagof(TERM, CALL, TERM) tries to unify PAR3 with the list of PARI’s instantiations after all possible computations of PAR2 (see Section 4.2.4 for details). Prolog-I0 has a more sophisticated version of this procedure. De¿ned in Prolog.
-

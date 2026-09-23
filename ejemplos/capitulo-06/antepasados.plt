@@ -1,3 +1,5 @@
+:- encoding(utf8).
+
 :- begin_tests(antepasados).
 
 test(un_progenitor_es_antepasado, [nondet]) :-

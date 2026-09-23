@@ -47,7 +47,7 @@ Argumento por argumento: el primero es `juan` con `X`, y `X` queda ligada a
 `juan`. La unificación se reduce entonces a determinar si `juan` y `ana` son el
 mismo átomo, y no lo son.
 
-Es el caso de la sección 4.9, con las apariciones de la variable distribuidas
+Es el caso de la [sección 4.9](index.md#49-una-misma-variable-que-aparece-dos-veces), con las apariciones de la variable distribuidas
 entre los dos términos: la restricción se aplica de la misma manera.
 
 ## 5
@@ -103,7 +103,9 @@ una suma **o** para un producto.
 
 <!-- ejemplo: capitulo-04/soluciones.pl predicado: misma_especie/2 consulta: misma_especie(F1, F2). -->
 ```prolog
-% misma_especie(F1, F2): dos fichas distintas de la misma especie.
+%!  misma_especie(?F1, ?F2) is nondet.
+%
+%   F1 y F2 son dos fichas distintas de la misma especie.
 misma_especie(F1, F2) :-
     registro(F1),
     registro(F2),
@@ -113,11 +115,17 @@ misma_especie(F1, F2) :-
 ```
 
 `F1 \== F2` es una aplicación de la plantilla 6. Sin esa condición, cada ficha
-sería de la misma especie que ella misma: es el defecto del capítulo 3 en otro
+sería de la misma especie que ella misma: es el defecto del [capítulo 3](../capitulo-03-reglas-y-conjunciones/index.md) en otro
 contexto.
 
 Las respuestas aparecen en los dos órdenes —felix con gaturro, y gaturro con felix—,
 porque la regla no establece ninguna condición sobre el orden.
+
+Los dos argumentos son `?`: pueden llegar libres, porque `registro(F1)` y
+`registro(F2)` los generan a partir de la base, y si llegan ligados esos mismos
+objetivos verifican que sean fichas registradas. La cantidad de respuestas es
+`nondet`: puede haber varios pares, o ninguno, como ocurre cuando `F1` es la
+ficha de rocco, el único perro.
 
 ## 10
 
@@ -148,7 +156,7 @@ casos la respuesta es afirmativa y no queda ninguna ligadura por informar.
 
 El tercer caso es el que conviene retener: `12` y `12.0` son términos distintos,
 un entero y un número de punto flotante, y la regla 1 exige que sean **el
-mismo**. El capítulo 8 retoma la diferencia entre unificar y comparar valores.
+mismo**. El [capítulo 8](../capitulo-08-aritmetica/index.md) retoma la diferencia entre unificar y comparar valores.
 
 En el último, `F` y `F2` quedan ligadas entre sí sin que ninguna tenga valor: es
 la segunda mitad de la regla 2.
@@ -193,7 +201,9 @@ haga falta, y `_` en las demás. Acá `E` está dos niveles adentro.
 
 <!-- ejemplo: capitulo-04/soluciones.pl predicado: ficha_de/2 consulta: ficha_de(ana, F). -->
 ```prolog
-% ficha_de(P, F): F es un registro cuyo propietario es P.
+%!  ficha_de(?P, ?F) is nondet.
+%
+%   F es un registro cuyo propietario es P.
 ficha_de(P, F) :-
     registro(F),
     F = ficha(_, _, P).
@@ -224,7 +234,7 @@ término que le corresponde, y ese término puede tener la estructura que sea.
 aridad identifican al término, y `-/1` y `-/2` son dos términos distintos.
 
 `[ana]` es un término compuesto como los demás, y su nombre no es `[]`. El
-capítulo 7 lo desarrolla; por ahora alcanza con haber anotado que una lista no
+[capítulo 7](../capitulo-07-listas/index.md) lo desarrolla; por ahora alcanza con haber anotado que una lista no
 es una clase de término aparte.
 
 ## 16
@@ -245,7 +255,9 @@ recibiera un valor, `M` lo reflejaría, porque son el mismo término.
 
 <!-- ejemplo: capitulo-04/soluciones.pl predicado: mismo_propietario/2 consulta: mismo_propietario(F1, F2). -->
 ```prolog
-% mismo_propietario(F1, F2): dos fichas distintas con el mismo propietario.
+%!  mismo_propietario(?F1, ?F2) is nondet.
+%
+%   F1 y F2 son dos fichas distintas con el mismo propietario.
 mismo_propietario(F1, F2) :-
     registro(F1),
     registro(F2),

@@ -386,4 +386,3 @@ An in depth understanding of expert systems is not required, but the reader will
 8
 
 *Chapter 1 - Introduction*
-

@@ -21,13 +21,17 @@ padre(juan, pedro).
 padre(pedro, luis).
 padre(pedro, eva).
 
-% hermana(A, B): A es hermana de B. La regla es incompleta: ver la sección 3.5.
+%!  hermana(?A, ?B) is nondet.
+%
+%   A es hermana de B. La regla es incompleta: ver la sección 3.5.
 hermana(A, B) :-
     mujer(A),
     padre(P, A),
     padre(P, B).
 
-% hermana_de_verdad(A, B): A es hermana de B, y no son la misma persona.
+%!  hermana_de_verdad(?A, ?B) is nondet.
+%
+%   A es hermana de B, y no son la misma persona.
 hermana_de_verdad(A, B) :-
     mujer(A),
     padre(P, A),

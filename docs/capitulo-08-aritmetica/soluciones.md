@@ -24,7 +24,9 @@ valores coinciden.
 
 <!-- ejemplo: capitulo-08/soluciones.pl predicado: triple/2 consulta: triple(5, T). -->
 ```prolog
-% triple(N, T): T es el triple de N.
+%!  triple(+N, -T) is det.
+%
+%   T es el triple de N.
 triple(N, T) :-
     T is N * 3.
 ```
@@ -37,7 +39,7 @@ T = 15.
 ERROR: Arguments are not sufficiently instantiated
 ```
 
-La segunda consulta corresponde a la sección 8.3: `is/2` no despeja incógnitas.
+La segunda consulta corresponde a la [sección 8.3](index.md#83-argumentos-sin-instanciar): `is/2` no despeja incógnitas.
 Para evaluar `N * 3` requiere el valor de `N`, y `N` está libre. Que el
 resultado esperado sea 15 no aporta ninguna información a la evaluación.
 
@@ -51,7 +53,7 @@ resultado esperado sea 15 no aporta ninguna información a la evaluación.
 | `7 =:= 7.0` | verdadera: tienen el mismo valor numérico |
 | `7 = 7.0` | **falsa**: un entero y un número de punto flotante no son el mismo término |
 
-Respuesta a la actividad de la sección 8.2:
+Respuesta a la actividad de la [sección 8.2](index.md#82-comparacion-de-numeros):
 
 ```prolog
 ?- luis = luis.
@@ -69,7 +71,9 @@ explícita.
 
 <!-- ejemplo: capitulo-08/soluciones.pl predicado: es_par/1 consulta: es_par(8). -->
 ```prolog
-% es_par(N): N es par.
+%!  es_par(+N) is semidet.
+%
+%   N es par.
 es_par(N) :-
     0 =:= N mod 2.
 ```
@@ -81,7 +85,9 @@ porque ambos lados se evalúan antes de la comparación.
 
 <!-- ejemplo: capitulo-08/soluciones.pl predicado: mayor_de_los_dos/3 consulta: mayor_de_los_dos(3, 9, M). -->
 ```prolog
-% mayor_de_los_dos(A, B, M): M es el mayor de los dos números.
+%!  mayor_de_los_dos(+A, +B, -M) is det.
+%
+%   M es el mayor de los dos números.
 mayor_de_los_dos(A, B, A) :-
     A >= B.
 mayor_de_los_dos(A, B, B) :-
@@ -97,7 +103,9 @@ números iguales no se cumpliría ninguna de las dos cláusulas.
 
 <!-- ejemplo: capitulo-08/soluciones.pl predicado: cuantos_mayores/2 consulta: cuantos_mayores([12, 41, 8, 68], N). -->
 ```prolog
-% cuantos_mayores(L, N): N es la cantidad de números de L mayores que 18.
+%!  cuantos_mayores(+L, -N) is det.
+%
+%   N es la cantidad de números de L mayores que 18.
 cuantos_mayores([], 0).
 cuantos_mayores([X|Resto], N) :-
     X > 18,
@@ -117,13 +125,19 @@ se obtendrían respuestas de más.
 
 <!-- ejemplo: capitulo-08/soluciones.pl predicado: promedio/2 recorriendo/5 consulta: promedio([10, 20, 30], P). -->
 ```prolog
-% promedio(L, P): P es el promedio de los números de L.
-% Un único recorrido con dos acumuladores: la suma y la cantidad.
+%!  promedio(+L, -P) is semidet.
+%
+%   P es el promedio de los números de L.
+%   Un único recorrido con dos acumuladores: la suma y la cantidad.
 promedio(L, P) :-
     recorriendo(L, 0, 0, Suma, Cuantos),
     Cuantos > 0,
     P is Suma / Cuantos.
 
+%!  recorriendo(+L, +SumaHasta, +CuantosHasta, -Suma, -Cuantos) is det.
+%
+%   Suma y Cuantos son SumaHasta y CuantosHasta más la suma y la cantidad de
+%   los elementos de L.
 recorriendo([], Suma, Cuantos, Suma, Cuantos).
 recorriendo([X|Resto], SumaHasta, CuantosHasta, Suma, Cuantos) :-
     SumaAhora is SumaHasta + X,
@@ -141,17 +155,22 @@ falla, que es el comportamiento adecuado.
 
 Se debe tener en cuenta el tipo del resultado: `promedio([10, 20, 30], P)`
 produce `20`, y no `20.0`, porque el cociente es exacto. Es el comportamiento
-descripto en la sección 8.1.
+descripto en la [sección 8.1](index.md#81-evaluacion-de-expresiones).
 
 ## 8
 
 <!-- ejemplo: capitulo-08/soluciones.pl predicado: maximo/2 buscando_maximo/3 consulta: maximo([3, 9, 4], M). -->
 ```prolog
-% maximo(L, M): M es el mayor de L. La lista vacía no tiene máximo, por lo que
-% el predicado falla para ella.
+%!  maximo(+L, -M) is semidet.
+%
+%   M es el mayor de L. La lista vacía no tiene máximo, por lo que el predicado
+%   falla para ella.
 maximo([X|Resto], M) :-
     buscando_maximo(Resto, X, M).
 
+%!  buscando_maximo(+L, +Hasta, -M) is det.
+%
+%   M es el mayor entre Hasta y los elementos de L.
 buscando_maximo([], M, M).
 buscando_maximo([X|Resto], Hasta, M) :-
     X > Hasta,
@@ -174,7 +193,9 @@ preferible a devolver un valor arbitrario.
 
 <!-- ejemplo: capitulo-08/soluciones.pl predicado: factorial/2 consulta: factorial(5, F). -->
 ```prolog
-% factorial(N, F): F es el factorial de N.
+%!  factorial(+N, -F) is semidet.
+%
+%   F es el factorial de N.
 factorial(0, 1).
 factorial(N, F) :-
     N > 0,
@@ -196,13 +217,15 @@ false.
 El límite no está dado por la magnitud del número sino por la profundidad de la
 recursión: cada llamada deja una multiplicación pendiente hasta el retorno, y
 esa operación pendiente ocupa memoria. Con un acumulador, ese límite se extiende
-de manera considerable; el capítulo 14 trata el tema.
+de manera considerable; el [capítulo 14](../capitulo-14-rendimiento/index.md) trata el tema.
 
 ## 10
 
 <!-- ejemplo: capitulo-08/soluciones.pl predicado: cuenta_atras/2 consulta: cuenta_atras(3, L). -->
 ```prolog
-% cuenta_atras(N, L): L es la lista de los enteros de N a 1, en ese orden.
+%!  cuenta_atras(+N, -L) is semidet.
+%
+%   L es la lista de los enteros de N a 1, en ese orden.
 cuenta_atras(0, []).
 cuenta_atras(N, [N|Resto]) :-
     N > 0,
@@ -247,7 +270,7 @@ Las tres primeras muestran que `is/2` **evalúa y después unifica**: con una
 variable libre la unificación siempre se cumple; con un número, se cumple o no
 según el valor; y el resultado de esa unificación es la respuesta del objetivo.
 
-Los dos errores pertenecen a las dos clases de la sección 8.3: `dos` no es un
+Los dos errores pertenecen a las dos clases de la [sección 8.3](index.md#83-argumentos-sin-instanciar): `dos` no es un
 número y nunca lo será —hay que corregir el programa—; `Y` no tiene valor pero
 podría tenerlo —hay que corregir el orden de los objetivos—.
 
@@ -255,7 +278,7 @@ La última no usa `is/2` y por eso no evalúa nada: construye el término.
 
 ## 12
 
-La causa es la de la sección 8.3: al pasar de `s(s(0))` a los números
+La causa es la de la [sección 8.3](index.md#83-argumentos-sin-instanciar): al pasar de `s(s(cero))` a los números
 predefinidos se pierde la garantía de terminación que daba la unificación con la
 estructura. El predicado tiene caso base y el caso recursivo avanza, pero nada
 impide que siga avanzando **más allá** de `N`: después de alcanzar `N` con la
@@ -266,9 +289,11 @@ Se corrige reponiendo a mano la condición que antes daba la estructura:
 
 <!-- ejemplo: capitulo-08/soluciones.pl predicado: hasta/2 consulta: hasta(3, 1). -->
 ```prolog
-% hasta(N, X): X recorre los enteros de X a N. Con los números predefinidos, la
-% unificación ya no garantiza la terminación, y hay que reponer la guarda X < N
-% que en s(s(0)) daba la estructura del término.
+%!  hasta(+N, +X) is semidet.
+%
+%   X recorre los enteros de X a N. Con los números predefinidos, la
+%   unificación ya no garantiza la terminación, y hay que reponer la guarda
+%   X < N que en s(s(cero)) daba la estructura del término.
 hasta(N, N).
 hasta(N, X) :-
     X < N,
@@ -294,19 +319,31 @@ completa; el segundo argumento solo participa de la unificación final, de modo
 que da lo mismo que llegue con valor o sin él.
 
 La cuarta falla porque el recorrido no tiene por dónde avanzar: `recorriendo/5`
-intenta `SumaAhora is SumaHasta + X` con `X` sin valor. Es el error que el
-predicado **debería** documentar en su comentario: la lista tiene que llegar
-completa.
+intenta `SumaAhora is SumaHasta + X` con `X` sin valor.
 
 La quinta responde `false.` y no da error, por la condición `Cuantos > 0`: es la
 decisión de diseño que evita dividir por cero, y hace que el promedio de la
 lista vacía simplemente no exista.
 
+Las cinco respuestas determinan el encabezado:
+
+```prolog
+%!  promedio(+L, -P) is semidet.
+```
+
+- `L` es `+` por la cuarta consulta: la lista tiene que llegar completa.
+- `P` es `-` por las tres primeras: el predicado lo calcula, y si llega con
+  valor, compara el resultado con ese valor.
+- La cantidad de respuestas es `semidet` por la quinta: una lista tiene un solo
+  promedio, y la lista vacía no tiene ninguno.
+
 ## 14
 
 <!-- ejemplo: capitulo-08/soluciones.pl predicado: suma_hasta_sin/2 suma_hasta_con/2 sumando_hasta/3 consulta: suma_hasta_con(5, S). -->
 ```prolog
-% suma_hasta_sin(N, S): la suma de 1 a N, sin acumulador.
+%!  suma_hasta_sin(+N, -S) is semidet.
+%
+%   S es la suma de 1 a N, sin acumulador.
 suma_hasta_sin(0, 0).
 suma_hasta_sin(N, S) :-
     N > 0,
@@ -314,10 +351,15 @@ suma_hasta_sin(N, S) :-
     suma_hasta_sin(Anterior, SumaAnterior),
     S is SumaAnterior + N.
 
-% suma_hasta_con(N, S): la misma suma, con acumulador.
+%!  suma_hasta_con(+N, -S) is semidet.
+%
+%   La misma suma, con acumulador.
 suma_hasta_con(N, S) :-
     sumando_hasta(N, 0, S).
 
+%!  sumando_hasta(+N, +Hasta, -S) is semidet.
+%
+%   S es Hasta más la suma de 1 a N.
 sumando_hasta(0, Acumulado, Acumulado).
 sumando_hasta(N, Hasta, S) :-
     N > 0,
@@ -334,7 +376,7 @@ La pregunta del ejercicio sugiere que alguna de las dos podría hacerlo, y
 conviene ver por qué no. Ninguna de las dos versiones **enumera** valores de
 `N`: las dos lo reciben. Para responder en ese sentido habría que agregar un
 objetivo que genere candidatos antes de la comparación, que es la plantilla 15
-del capítulo 9, o usar la técnica del capítulo 32.
+del [capítulo 9](../capitulo-09-backtracking-y-corte/index.md), o usar la técnica del [capítulo 32](../capitulo-32-programacion-con-restricciones/index.md).
 
 ## 15
 

@@ -6,13 +6,12 @@ capítulo trata sobre los elementos con los que todos ellos se construyen.
 En Prolog existe una única clase de dato: el **término**. Un nombre es un
 término, un número es un término, una variable es un término, y
 `mascota(gato, felix)` es un término. También lo son un hecho, el cuerpo de una
-regla y una consulta. Por eso conviene estudiarlos en detalle.
+regla y una consulta.
 
 Existe además una única operación que los relaciona: la **unificación**, que
 responde la pregunta "¿pueden estos dos términos hacerse idénticos?". Se la
-presentó en el capítulo 1 con el operador `=`, se la usó de manera implícita
-cada vez que una consulta encontró un hecho, y es el mecanismo sobre el que se
-apoya todo el resto del lenguaje.
+presentó en el [capítulo 1](../capitulo-01-la-primera-hora/index.md) con el operador `=`, se la usó de manera implícita
+cada vez que una consulta encontró un hecho.
 
 ## Objetivos del capítulo
 
@@ -58,8 +57,7 @@ idéntico a sí mismo. `ana`, `gato` y `prolog` son átomos.
 Se escriben de tres maneras:
 
 **Con minúscula inicial.** Los caracteres siguientes pueden ser letras, dígitos
-o guiones bajos: `ana`, `gato_persa`, `casa2`. Es la forma habitual, y la
-recomendada siempre que sea posible.
+o guiones bajos: `ana`, `gato_persa`, `casa2`.
 
 **Entre comillas simples**, en cuyo caso el nombre puede contener cualquier
 carácter:
@@ -71,12 +69,12 @@ X = 'consulta veterinaria'.
 
 Las comillas forman parte de la notación, no del átomo. Son necesarias cuando el
 nombre contiene espacios, cuando comienza con mayúscula —de lo contrario sería
-una variable— o cuando contiene caracteres especiales. Por eso en el capítulo 1
+una variable— o cuando contiene caracteres especiales. Por eso en el [capítulo 1](../capitulo-01-la-primera-hora/index.md)
 se escribió `write('Hola, ')`: el espacio y la coma hacen obligatorias las
 comillas.
 
 **Como símbolos.** `+`, `-`, `*`, `=` y `<` también son átomos. Esta propiedad es
-la base de la sección 4.6.
+la base de la [sección 4.6](#46-los-operadores-tambien-son-terminos).
 
 `hola` y `'hola'` son **el mismo átomo**, escrito de dos maneras:
 
@@ -107,8 +105,7 @@ X = 3.5.
 X = 3.
 ```
 
-Los números son constantes, igual que los átomos: `12` es idéntico a `12` y no
-tiene componentes.
+Los números son constantes, igual que los átomos: `12` es idéntico a `12`.
 
 ## 4.4 Variables
 
@@ -134,7 +131,7 @@ Juan = juan.
 
 `juan`, con minúscula, es un átomo; `Juan`, con mayúscula, es una variable. La
 respuesta indica que, para que los dos términos sean idénticos, `Juan` debe
-quedar ligada a `juan`.
+quedar ligada a `juan`.  Note que el signo `=` no representa la asignación sino unificación. La unificación se puede dar entre dos términos, los cuales pueden estar de cualquier lado del signo igual.
 
 ## 4.5 Términos compuestos
 
@@ -170,14 +167,10 @@ Cada ficha es **un único término** que contiene otros dos, `mascota/2` y
 
 ### Un término no es un hecho
 
-`mascota(gato, felix)`, escrito como cláusula del programa y terminado en punto,
-es un hecho: afirma algo. El mismo `mascota(gato, felix)`, como argumento de otro
-término, es un dato, y no afirma nada.
+`mascota(gato, felix).`, escrito como cláusula del programa y terminado en punto,
+es un hecho: afirma una relación o propiedad. El mismo `mascota(gato, felix)`, como argumento de otro término, es un dato.
 
-La diferencia no está en la forma del término, sino en el lugar que ocupa. Es la
-misma diferencia que existe entre la oración "Oliva es una gata" y la anotación
-"gata, Oliva" en un formulario: la segunda no afirma nada por sí sola; es un
-dato registrado.
+La diferencia no está en la forma del término, sino en el lugar que ocupa dentro de la estructura sintáctica del lenguaje.
 
 ## 4.6 Los operadores también son términos
 
@@ -213,7 +206,7 @@ Ninguna de las dos cláusulas realiza operaciones aritméticas. Reciben un térm
 escrito con `+` en notación infija y lo tratan como lo que es: un término
 compuesto con dos argumentos.
 
-Con esto se completa la explicación del capítulo 1: `X = 2 + 1` liga `X` al
+Con esto se completa la explicación del [capítulo 1](../capitulo-01-la-primera-hora/index.md): `X = 2 + 1` liga `X` al
 **término** `2+1`, con sus dos argumentos sin modificar. `is` es el predicado
 que recibe ese término, lo evalúa y produce un número. Sin `is` no se realiza
 ninguna evaluación.
@@ -235,7 +228,7 @@ Las reglas son cuatro, y se aplican examinando los dos términos a la vez:
 
 1. **Dos constantes unifican si son la misma.** `ana` con `ana`, sí; `ana` con
    `eva`, no; `12` con `12`, sí.
-2. **Una variable unifica con cualquier término**, y queda instanciada con él.
+2. **Una variable libre unifica con cualquier término**, y queda instanciada con él.
    Si ambos términos son variables, quedan ligadas entre sí: a partir de ese
    momento son la misma variable, aunque todavía no tengan valor.
 3. **Dos términos compuestos unifican si** tienen el mismo nombre, la misma
@@ -246,10 +239,7 @@ Las reglas son cuatro, y se aplican examinando los dos términos a la vez:
    en todo lo que resta por unificar.** Si `P` quedó ligada a `ana`, cualquier
    aparición posterior de `P` se compara como si dijera `ana`.
 
-La tercera regla es la más relevante, porque es la que permite operar sobre
-términos con estructura. La cuarta es la que explica la sección 4.9: sin ella,
-una variable repetida dentro de un mismo término sería un caso aparte, y con
-ella es una consecuencia.
+La tercera regla permite operar sobre términos con estructura.
 
 !!! warning "Una variable dentro del término con el que se la unifica"
     La regla 2 dice que una variable unifica con cualquier término, y eso
@@ -318,9 +308,9 @@ M = mascota(gato, felix),
 F = fecha(A, 5, 3).
 ```
 
-`M` queda ligada a un término concreto. Pero `F` y `A` no reciben ningún valor:
+`M` queda ligada a un término concreto. Pero `A` no recibe ningún valor:
 para que los dos términos coincidan alcanza con que `F` sea `fecha(A, 5, 3)`, y
-nada exige saber cuál es el año. `A` aparece en la respuesta porque `F` quedó
+no hay ninguna restricción sobre el año. `A` aparece en la respuesta porque `F` quedó
 ligada a un término que la contiene: las dos variables quedaron **ligadas entre
 sí**, que es la segunda mitad de la regla 2. Si más adelante `A` recibiera un
 valor, `F` lo reflejaría de inmediato.
@@ -343,7 +333,7 @@ restricción.
 false.
 ```
 
-La unificación falla, y conviene examinar en qué punto. El primer argumento
+La unificación falla. El primer argumento
 unifica: `P` queda ligada a `juan`. En el segundo argumento interviene la regla
 4: `P` ya está ligada, de modo que se la compara como si dijera `juan`, y la
 unificación se reduce a determinar si `juan` y `ana` son el mismo átomo. No lo
@@ -360,7 +350,7 @@ Con dos argumentos iguales, la unificación tiene éxito:
 P = juan.
 ```
 
-Es el mismo mecanismo que operaba en la regla `abuelo/2` del capítulo 3, donde
+Es el mismo mecanismo que operaba en la regla `abuelo/2` del [capítulo 3](../capitulo-03-reglas-y-conjunciones/index.md), donde
 la `P` repetida exigía que la persona intermedia fuera la misma en los dos
 objetivos. Allí se lo presentó como una condición de la regla; aquí se muestra
 su origen.
@@ -420,7 +410,7 @@ ficha concreta, `A` queda ligada al año y el resto se ignora.
 Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
 va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
 Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
-tiene de propio, y los capítulos siguientes los dan por hechos.
+tiene de propio, y los capítulos siguientes los dan por resueltos.
 
 1. **(1)** ¿Qué clase de término es cada uno? `ana` · `Ana` · `12` · `_` ·
    `mascota(gato, felix)` · `'mi gato'` · `2 + 3`
@@ -441,7 +431,8 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
    Después, escribir `operacion(T, A, B)`, que se cumple para una suma **o** un
    producto.
 9. **(3)** Escribir `misma_especie(F1, F2)`, que se cumple cuando dos fichas son
-   de la misma especie y no son la misma ficha.
+   de la misma especie y no son la misma ficha, y escribir su encabezado: cómo
+   puede llegar cada argumento y cuántas respuestas produce.
 10. **(3)** ¿Por qué `mascota(gato, felix) = mascota(gato, felix)` responde
     `true.` sin instanciar ninguna variable? Explicarlo con las reglas de 4.7.
 11. ★ **(1)** Para cada par, decidir si unifica y, en caso afirmativo, escribir
@@ -467,18 +458,20 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 13. ★ **(2)** Escribir `propietario_y_especie(F, P, E)`, que extrae de una ficha
     el propietario y la especie de la mascota, en una sola cláusula y sin
     cuerpo. Es la plantilla 7 con dos componentes en lugar de uno.
-14. **(2)** Escribir `ficha_de(P, F)`, que se cumple cuando `F` es un registro
+14. **(2)** Escribir `ficha_de/2`, con el encabezado
+    `%! ficha_de(?P, ?F) is nondet.`, que se cumple cuando `F` es un registro
     cuyo propietario es `P`. Después ejecutar `ficha_de(ana, F).` y explicar por
     qué la respuesta muestra el término completo.
 15. **(2)** ¿Cuál es el nombre y la aridad de cada uno de estos términos?
     `mascota(gato, felix)` · `2 + 3` · `ana` · `fecha(2021, 5, 3)` ·
-    `-(5)` · `[ana]`. El último se retoma en el capítulo 7; conviene anotar la
+    `-(5)` · `[ana]`. El último se retoma en el [capítulo 7](../capitulo-07-listas/index.md); conviene anotar la
     respuesta ahora y verificarla entonces.
 16. ★ **(3)** Sin ejecutarla, determinar qué responde
     `?- ficha(M, F, ana) = ficha(mascota(E, felix), fecha(2021, Mes, 3), P).`
     Prestar atención a cuáles variables quedan con valor y cuáles quedan ligadas
     a otra variable.
-17. **(3)** Escribir `mismo_propietario(F1, F2)` usando la plantilla 7 y la
+17. **(3)** Escribir `mismo_propietario/2`, con el encabezado
+    `%! mismo_propietario(?F1, ?F2) is nondet.`, usando la plantilla 7 y la
     condición de la plantilla 6. Después, explicar por qué no alcanza con
     escribir la misma variable dos veces en la cabeza.
 
@@ -498,7 +491,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | `//` | división entera, a diferencia de `/`, que puede producir punto flotante |
 
 Las cuatro reglas de la unificación: dos constantes unifican si son la misma;
-una variable unifica con cualquier término y queda instanciada; dos términos
+una variable libre unifica con cualquier término y queda instanciada; dos términos
 compuestos unifican si tienen el mismo nombre, la misma aridad, y sus argumentos
 unifican de a pares; y una variable ya ligada se compara como si dijera el
 término al que se ligó.
@@ -507,9 +500,9 @@ término al que se ligó.
 
 | Tema | Se retoma en |
 |---|---|
-| La unificación dentro de la búsqueda, representada paso a paso | capítulo 5 |
-| Construcción y descomposición de términos mediante recursión | capítulo 6 |
-| Las listas, que son términos compuestos con notación propia | capítulo 7 |
-| `is` y la diferencia entre el término `2+3` y el número `5` | capítulo 8 |
-| `==` y `\==`, similares a `=` pero con otro significado | capítulo 10 |
-| Inspección de un término cuya forma no se conoce de antemano | capítulo 24 |
+| La unificación dentro de la búsqueda, representada paso a paso | [capítulo 5](../capitulo-05-como-responde-prolog/index.md) |
+| Construcción y descomposición de términos mediante recursión | [capítulo 6](../capitulo-06-recursion/index.md) |
+| Las listas, que son términos compuestos con notación propia | [capítulo 7](../capitulo-07-listas/index.md) |
+| `is` y la diferencia entre el término `2+3` y el número `5` | [capítulo 8](../capitulo-08-aritmetica/index.md) |
+| `==` y `\==`, similares a `=` pero con otro significado | [capítulo 10](../capitulo-10-negacion-como-falla/index.md) |
+| Inspección de un término cuya forma no se conoce de antemano | [capítulo 24](../capitulo-24-inspeccion-de-terminos/index.md) |

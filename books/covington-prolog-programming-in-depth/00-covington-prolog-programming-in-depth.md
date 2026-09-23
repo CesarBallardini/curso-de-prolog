@@ -22152,4 +22152,3 @@ parameters, 283 predicates, 279 properties, 281 starting query, 289 XSHELL.PL, 2
 Yale Shooting Problem (YSP), 399-400 yes-no questions, 53
 
 Zadeh, L., 344
-

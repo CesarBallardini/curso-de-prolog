@@ -1161,4 +1161,3 @@ user should be able to say such things as Show me all the programmers and then W
 them have salary over 25000? or the like.
 
 “Some linguists reserve the term ANAPHORA for pronoun reference only.
-

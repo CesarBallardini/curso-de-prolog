@@ -14,7 +14,9 @@ padre(juan, pedro).
 padre(pedro, luis).
 padre(pedro, eva).
 
-% abuelo(A, N): A es abuelo de N cuando es el padre de su padre.
+%!  abuelo(?A, ?N) is nondet.
+%
+%   A es abuelo de N cuando es el padre de su padre.
 abuelo(A, N) :-
     padre(A, P),
     padre(P, N).

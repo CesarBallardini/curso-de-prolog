@@ -25,4 +25,3 @@ The diskette enclosed with this book contains source text of all the programs li
 The material in this book, supplemented by some additional reading and a programming assignment, can be used for a two-semester course at the level of third-year computer science majors. Re-implementation of or extensions to the interpreter of Chapter 7 might make interesting assignments for a translator-writing course.
 
 While working on this book, we used the computing facilities of the Institute of Infortnatics, Warsaw University. We would like to thank Pawel Gburzynski and Krzysztof Kimbler, who helped us switch almost painlessly to a diÀ'erent machine when the one we originally used broke down for a protracted period oftime. We thank David I-I. D. Warren for permitting us to include the listings of WARPLAN. We are also grateful to all those who have provided us with logic programming literature for the past I0 years.
-

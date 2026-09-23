@@ -20,7 +20,7 @@ La respuesta termina en `false.` y no en punto, por la razón que estudia el
 ejercicio 13: `luis` es el **primero** de los dos hijos de `pedro`, de modo que
 al encontrar la respuesta todavía queda `padre(pedro, eva)` por examinar.
 
-Conviene no elegir a `sofia` para este ejercicio: el capítulo 2 deja sin padre
+Conviene no elegir a `sofia` para este ejercicio: el [capítulo 2](../capitulo-02-hechos-consultas-y-variables/index.md) deja sin padre
 a `sofia` de manera deliberada, y usa esa ausencia para explicar qué significa
 `false.`
 
@@ -60,7 +60,9 @@ Quien = ana.
 
 <!-- ejemplo: capitulo-01/soluciones.pl predicado: nieto/2 consulta: nieto(N, juan). -->
 ```prolog
-% --- Ejercicio 5: nieto(N, A): N es nieto de A ----------------------------
+%!  nieto(?N, ?A) is nondet.
+%
+%   N es nieto de A.
 nieto(N, A) :-
     padre(A, P),
     padre(P, N).
@@ -73,9 +75,15 @@ consultados desde el otro extremo de la relación.
 
 <!-- ejemplo: capitulo-01/soluciones.pl predicado: propietario_de_perro/1 tiene_mascota/1 consulta: tiene_mascota(Quien). -->
 ```prolog
+%!  propietario_de_perro(?P) is nondet.
+%
+%   P tiene por lo menos un perro.
 propietario_de_perro(P) :-
     tiene(P, mascota(perro, _)).
 
+%!  tiene_mascota(?P) is nondet.
+%
+%   P tiene alguna mascota.
 tiene_mascota(P) :-
     tiene(P, _).
 ```
@@ -87,8 +95,11 @@ interesa la especie ni el nombre.
 
 <!-- ejemplo: capitulo-01/soluciones.pl predicado: menor_que/2 consulta: menor_que(eva, luis). -->
 ```prolog
-% Se puede definir de manera independiente, o a partir de mayor_que/2 con los
-% argumentos en orden inverso.
+%!  menor_que(?A, ?B) is nondet.
+%
+%   A tiene menos años que B.
+%   Se puede definir de manera independiente, o a partir de mayor_que/2 con
+%   los argumentos en orden inverso.
 menor_que(A, B) :-
     mayor_que(B, A).
 ```
@@ -103,12 +114,14 @@ predicados.
 
 <!-- ejemplo: capitulo-01/soluciones.pl predicado: triple/2 consulta: triple(11, T). -->
 ```prolog
-% --- Ejercicio 8: triple ---------------------------------------------------
+%!  triple(+N, -T) is det.
+%
+%   T es el triple de N.
 triple(N, T) :-
     T is N * 3.
 ```
 
-`triple(X, 33).` no responde `X = 11`: produce el error de la sección 1.10,
+`triple(X, 33).` no responde `X = 11`: produce el error de la [sección 1.10](index.md#110-aritmetica),
 porque `is` requiere que la expresión de la derecha se pueda evaluar, y `X` no
 tiene valor.
 
@@ -116,7 +129,9 @@ tiene valor.
 
 <!-- ejemplo: capitulo-01/soluciones.pl predicado: cuenta_al_reves/2 consulta: cuenta_al_reves(5, 1). -->
 ```prolog
-% --- Ejercicio 9: cuenta descendente --------------------------------------
+%!  cuenta_al_reves(+Desde, +Hasta) is det.
+%
+%   Escribe los números de Desde a Hasta en orden descendente, uno por línea.
 cuenta_al_reves(Desde, Hasta) :-
     Desde >= Hasta,
     format("~w~n", [Desde]),
@@ -133,7 +148,10 @@ de una suma, y `<` en el caso base.
 
 <!-- ejemplo: capitulo-01/hermanos.pl predicado: hermano/2 consulta: hermano(lot, Quien). -->
 ```prolog
-% Ejercicio 10: la regla directa. Su defecto se corrige en el ejercicio 11.
+%!  hermano(?A, ?B) is nondet.
+%
+%   A y B tienen el mismo padre.
+%   Ejercicio 10: la regla directa. Su defecto se corrige en el ejercicio 11.
 hermano(A, B) :-
     padre(P, A),
     padre(P, B).
@@ -156,7 +174,10 @@ Se agrega la condición de que las dos personas sean distintas:
 
 <!-- ejemplo: capitulo-01/hermanos.pl predicado: hermano_de_verdad/2 consulta: hermano_de_verdad(lot, Quien). -->
 ```prolog
-% Ejercicio 11: se agrega la condición de que no sean la misma persona.
+%!  hermano_de_verdad(?A, ?B) is nondet.
+%
+%   A y B tienen el mismo padre y no son la misma persona.
+%   Ejercicio 11: se agrega la condición de que no sean la misma persona.
 hermano_de_verdad(A, B) :-
     padre(P, A),
     padre(P, B),
@@ -176,6 +197,10 @@ Clocksin y Mellish con el mismo defecto.
 
 <!-- ejemplo: capitulo-01/soluciones.pl predicado: cuantos_invitados_mas/2 consulta: cuantos_invitados_mas(pedro, N). -->
 ```prolog
+%!  cuantos_invitados_mas(?P, -N) is det.
+%
+%   N es la cantidad de invitados que habría si se agregara P, sin modificar
+%   la lista original.
 cuantos_invitados_mas(P, N) :-
     invitados(Invitados),
     append(Invitados, [P], Con),
@@ -205,13 +230,16 @@ descartó la posibilidad de que la haya.
 
 <!-- ejemplo: capitulo-01/soluciones.pl predicado: mayor_de/2 en_edad_escolar/1 consulta: mayor_de(Quien, 40). -->
 ```prolog
-% --- Ejercicio 14: mayor de N años, y en edad escolar ---------------------
-% mayor_de(P, N): P tiene más de N años.
+%!  mayor_de(?P, +N) is nondet.
+%
+%   P tiene más de N años.
 mayor_de(P, N) :-
     edad(P, A),
     A > N.
 
-% en_edad_escolar(P): P tiene más de 5 años y menos de 18.
+%!  en_edad_escolar(?P) is nondet.
+%
+%   P tiene más de 5 años y menos de 18.
 en_edad_escolar(P) :-
     mayor_de(P, 5),
     edad(P, A),
@@ -237,6 +265,10 @@ inversa: hay una enumeración seguida de una comprobación.
 `triple(X, 33)` no puede hacer lo mismo porque `T is N * 3` no enumera nada:
 exige que `N` ya tenga valor. La diferencia no está en la aritmética sino en si
 existe un objetivo que produzca candidatos antes de la comparación.
+
+Los encabezados de las dos soluciones registran esa diferencia:
+`mayor_de(?P, +N)` admite la persona sin especificar, y `triple(+N, -T)` exige
+el número. La notación se explica en la [sección 2.8](../capitulo-02-hechos-consultas-y-variables/index.md#28-como-se-documenta-el-uso-de-un-predicado).
 
 ## 15
 

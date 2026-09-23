@@ -8,7 +8,9 @@ de `ana`, para que existan primos en la familia.
 
 <!-- ejemplo: capitulo-03/soluciones.pl predicado: hijo/2 consulta: hijo(Quien, pedro). -->
 ```prolog
-% hijo(H, P): H es hijo de P. Es progenitor/2 con los argumentos invertidos.
+%!  hijo(?H, ?P) is nondet.
+%
+%   H es hijo de P. Es progenitor/2 con los argumentos invertidos.
 hijo(H, P) :-
     progenitor(P, H).
 ```
@@ -42,7 +44,9 @@ que tenga progenitor.
 
 <!-- ejemplo: capitulo-03/soluciones.pl predicado: hermano_de/2 consulta: hermano_de(luis, Quien). -->
 ```prolog
-% hermano_de(A, B): A es hermano de B. A \== B es la misma condición de 3.5.
+%!  hermano_de(?A, ?B) is nondet.
+%
+%   A es hermano de B. A \== B es la misma condición de 3.5.
 hermano_de(A, B) :-
     varon(A),
     padre(P, A),
@@ -50,20 +54,33 @@ hermano_de(A, B) :-
     A \== B.
 ```
 
-`A \== B` es la misma condición de la sección 3.5. Sin ella, luis sería hermano
+`A \== B` es la misma condición de la [sección 3.5](index.md#35-una-regla-que-produce-respuestas-de-mas). Sin ella, luis sería hermano
 de sí mismo.
+
+El encabezado es `%! hermano_de(?A, ?B) is nondet.` Los dos argumentos son `?`:
+ninguno necesita llegar ligado, porque `varon(A)` y los dos objetivos `padre/2`
+les dan valor antes de llegar a `A \== B`. Por eso la comparación va al final,
+como en la [sección 3.5](index.md#35-una-regla-que-produce-respuestas-de-mas). Es `nondet` porque la cantidad de respuestas depende de
+la consulta: `hermano_de(luis, Quien)` tiene una, `hermano_de(ana, Quien)` no
+tiene ninguna, y `hermano_de(A, B)` tiene dos.
 
 ## 5
 
 <!-- ejemplo: capitulo-03/soluciones.pl predicado: abuelo_o_abuela/2 abuelo_o_abuela_directo/2 consulta: abuelo_o_abuela(Quien, luis). -->
 ```prolog
-% Con dos cláusulas: o es abuelo, o es abuela.
+%!  abuelo_o_abuela(?A, ?N) is nondet.
+%
+%   A es abuelo o abuela de N.
+%   Con dos cláusulas: o es abuelo, o es abuela.
 abuelo_o_abuela(A, N) :-
     abuelo(A, N).
 abuelo_o_abuela(A, N) :-
     abuela(A, N).
 
-% Con una sola: dos objetivos progenitor/2, sin considerar el sexo.
+%!  abuelo_o_abuela_directo(?A, ?N) is nondet.
+%
+%   A es abuelo o abuela de N.
+%   Con una sola cláusula: dos objetivos progenitor/2, sin considerar el sexo.
 abuelo_o_abuela_directo(A, N) :-
     progenitor(A, P),
     progenitor(P, N).
@@ -91,7 +108,9 @@ combinaciones. Con `Que` en ambas posiciones, en cambio, se obtiene una sola.
 
 <!-- ejemplo: capitulo-03/soluciones.pl predicado: nieto/2 consulta: nieto(Quien, juan). -->
 ```prolog
-% nieto(N, A): N es nieto de A.
+%!  nieto(?N, ?A) is nondet.
+%
+%   N es nieto de A.
 nieto(N, A) :-
     abuelo_o_abuela(A, N).
 ```
@@ -105,11 +124,21 @@ relación en el sentido en que se la piensa; `abuelo_o_abuela(juan, tomas)`
 expresa lo mismo en sentido inverso. Una regla de una línea que mejora la
 legibilidad del resto del programa justifica su costo.
 
+El encabezado es `%! nieto(?N, ?A) is nondet.` Los dos argumentos son `?`, como
+en `abuelo_o_abuela/2`: la regla solo encadena relaciones que se apoyan en
+hechos, sin ningún objetivo que exija un valor, y por eso se puede consultar en
+cualquiera de sus sentidos, que es la observación del párrafo anterior. Es
+`nondet` porque la cantidad de respuestas varía: juan tiene tres nietos, y
+`nieto(Quien, sofia)` no tiene ninguna respuesta.
+
 ## 8
 
 <!-- ejemplo: capitulo-03/soluciones.pl predicado: hermana_con_progenitor/2 consulta: hermana_con_progenitor(ana, Quien). -->
 ```prolog
-% La regla de 3.5 con progenitor/2: se obtienen respuestas repetidas.
+%!  hermana_con_progenitor(?A, ?B) is nondet.
+%
+%   A es hermana de B.
+%   La regla de 3.5 con progenitor/2: se obtienen respuestas repetidas.
 hermana_con_progenitor(A, B) :-
     mujer(A),
     progenitor(P, A),
@@ -131,23 +160,27 @@ ana y pedro tienen en común el padre *y* la madre. El objetivo
 cada una de esas soluciones conduce a `pedro`. Prolog no elimina respuestas
 repetidas: entrega una por cada demostración de la consulta.
 
-Con `padre/2`, como en la sección 3.5, existe una sola demostración, y por eso la
+Con `padre/2`, como en la [sección 3.5](index.md#35-una-regla-que-produce-respuestas-de-mas), existe una sola demostración, y por eso la
 respuesta no se repetía.
 
 Es posible eliminar los duplicados, pero requiere herramientas que se presentan
-en el capítulo 15.
+en el [capítulo 15](../capitulo-15-todas-las-soluciones/index.md).
 
 ## 9
 
 <!-- ejemplo: capitulo-03/soluciones.pl predicado: hermano_o_hermana/2 primo/2 consulta: primo(tomas, Quien). -->
 ```prolog
-% hermano_o_hermana(A, B): A y B tienen el mismo padre; no se considera el sexo.
+%!  hermano_o_hermana(?A, ?B) is nondet.
+%
+%   A y B tienen el mismo padre; no se considera el sexo.
 hermano_o_hermana(A, B) :-
     padre(P, A),
     padre(P, B),
     A \== B.
 
-% primo(A, B): un progenitor de A y un progenitor de B son hermanos.
+%!  primo(?A, ?B) is nondet.
+%
+%   Un progenitor de A y un progenitor de B son hermanos.
 primo(A, B) :-
     progenitor(PA, A),
     progenitor(PB, B),
@@ -167,7 +200,7 @@ de dos primos pueden ser dos hermanas, o un hermano y una hermana.
 Respecto de que nadie sea primo de sí mismo: **no se requiere ninguna condición
 adicional**. Si A y B fueran la misma persona, sus progenitores serían los
 mismos, y `hermano_o_hermana/2` ya exige que los dos hermanos sean distintos. La
-condición de la sección 3.5, escrita una sola vez, es suficiente para las dos
+condición de la [sección 3.5](index.md#35-una-regla-que-produce-respuestas-de-mas), escrita una sola vez, es suficiente para las dos
 reglas.
 
 ## 10
@@ -237,16 +270,19 @@ cláusula de la regla.
 
 ## 13
 
-El defecto es el de la sección 3.5: los dos objetivos pueden satisfacerse con el
+El defecto es el de la [sección 3.5](index.md#35-una-regla-que-produce-respuestas-de-mas): los dos objetivos pueden satisfacerse con el
 **mismo** hecho. Si `A` y `B` son la misma persona, `madre(M, A)` y
 `madre(M, B)` se cumplen los dos con la única madre de esa persona, y la regla
 concluye que tiene la misma madre que sí misma.
 
 <!-- ejemplo: capitulo-03/soluciones.pl predicado: misma_madre/2 consulta: misma_madre(ana, Quien). -->
 ```prolog
-% misma_madre(A, B): A y B tienen la misma madre y no son la misma persona.
-% Sin el último objetivo, toda persona con madre registrada cumple la relación
-% consigo misma, porque los dos objetivos se satisfacen con el mismo hecho.
+%!  misma_madre(?A, ?B) is nondet.
+%
+%   A y B tienen la misma madre y no son la misma persona.
+%   Sin el último objetivo, toda persona con madre registrada cumple la
+%   relación consigo misma, porque los dos objetivos se satisfacen con el
+%   mismo hecho.
 misma_madre(A, B) :-
     madre(M, A),
     madre(M, B),
@@ -259,7 +295,9 @@ La condición se ubica al final, cuando las dos variables ya tienen valor.
 
 <!-- ejemplo: capitulo-03/soluciones.pl predicado: tia/2 consulta: tia(Quien, luis). -->
 ```prolog
-% tia(T, S): T es hermana de alguno de los progenitores de S.
+%!  tia(?T, ?S) is nondet.
+%
+%   T es hermana de alguno de los progenitores de S.
 tia(T, S) :-
     mujer(T),
     progenitor(P, S),
@@ -295,5 +333,5 @@ test(abuelo_o_abuela_una_clausula,
 ```
 
 El par `A-N` es un término compuesto de nombre `-` y dos argumentos, como los
-del capítulo 4: sirve para que cada respuesta quede registrada con sus dos
+del [capítulo 4](../capitulo-04-terminos-y-unificacion/index.md): sirve para que cada respuesta quede registrada con sus dos
 valores juntos, y así comparar las secuencias completas y no solo una columna.

@@ -16,7 +16,9 @@ padre(juan, ana).
 padre(ana, luis).
 padre(luis, eva).
 
-% generaciones(A, D, N): D está N generaciones por debajo de A.
+%!  generaciones(?A, ?D, -N) is nondet.
+%
+%   D está N generaciones por debajo de A.
 % Caso base: una generación, cuando A es el padre de D.
 generaciones(A, D, 1) :-
     padre(A, D).

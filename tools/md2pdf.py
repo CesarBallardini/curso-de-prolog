@@ -14,6 +14,7 @@ Chromium comes from Playwright, installed by `make browser`.
 """
 
 import argparse
+import base64
 import html
 import re
 import sys
@@ -65,6 +66,67 @@ def escape_pipes_in_table_code(text):
         return CODE_SPAN.sub(lambda span: span.group(0).replace('|', r'\|'), match.group(0))
 
     return ROW.sub(row, text)
+
+
+SITE_URL = re.search(
+    r'^site_url:\s*(\S+)', (swish_links.examples.ROOT / 'mkdocs.yml').read_text(encoding='utf-8'), re.M
+).group(1)
+
+
+def site_links(body, source):
+    """Send the links between chapters and sections to the published site.
+
+    A PDF holds one chapter, so `../capitulo-02-.../index.md#28-...` and even
+    `#56-ramas-infinitas` lead nowhere inside it. Each becomes the absolute URL
+    of the same page and anchor on the site, which is where the reader can
+    follow it. Links that already point outside are left alone.
+    """
+    docs = swish_links.examples.DOCS
+
+    def page_url(page):
+        relative = page.resolve().relative_to(docs.resolve()).as_posix()
+        # MkDocs publishes docs/x/index.md at /x/ and docs/x/y.md at /x/y/.
+        relative = relative[: -len('index.md')] if relative.endswith('index.md') else relative[:-3] + '/'
+        return SITE_URL + relative
+
+    def fix(match):
+        href = match.group(1)
+        path, _, fragment = href.partition('#')
+        if path == '':
+            page = source
+        elif path.endswith('.md') and '://' not in path:
+            page = source.parent / path
+        else:
+            return match.group(0)
+        try:
+            url = page_url(page)
+        except ValueError:  # outside docs/: not a page of the site
+            return match.group(0)
+        return f'href="{url}#{fragment}"' if fragment else f'href="{url}"'
+
+    return re.sub(r'href="([^"]*)"', fix, body)
+
+
+MIME = {'.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg'}
+
+
+def embed_images(body, source):
+    """Put each local image inside the HTML itself, as a data: URI.
+
+    The page is handed to Chromium as a string, so a relative `src` has no
+    directory to resolve against. Embedding the bytes sidesteps that, and keeps
+    the PDF a single file with nothing to fetch.
+    """
+
+    def fix(match):
+        src = match.group(1)
+        image = source.parent / src
+        mime = MIME.get(image.suffix.lower())
+        if '://' in src or mime is None or not image.exists():
+            return match.group(0)
+        return f'src="data:{mime};base64,{base64.b64encode(image.read_bytes()).decode("ascii")}"'
+
+    return re.sub(r'src="([^"]*)"', fix, body)
 
 
 def to_html(text):
@@ -120,7 +182,8 @@ def document(body, css):
     if has_diagrams(body):
         mermaid = (
             f'<script src="{MERMAID}"></script>\n'
-            "<script>mermaid.initialize({startOnLoad: true, theme: 'neutral'});</script>"
+            "<script>mermaid.initialize({startOnLoad: true, theme: 'neutral', "
+            'flowchart: {wrappingWidth: 280}});</script>'
         )
     katex = katex_pdf.TAGS if katex_pdf.has_formulas(body) else ''
     return '\n'.join(
@@ -200,7 +263,8 @@ def main():
         text,
     )
     output = args.output or str(source.with_suffix('.pdf'))
-    to_pdf(document(to_html(text), css.read_text(encoding='utf-8') if css.exists() else ''), output)
+    body = embed_images(site_links(to_html(text), source.resolve()), source.resolve())
+    to_pdf(document(body, css.read_text(encoding='utf-8') if css.exists() else ''), output)
     print(f'PDF written: {output}')
     return 0
 

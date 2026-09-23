@@ -1507,4 +1507,3 @@ a( ( d, !, fail ))
 then the cut will commit all choices made by d and b and a—the procedure will fail without executing c.
 
 One should avoid taking advantage of this peculiar property of the cut. It is doubtful whether it is necessary.
-

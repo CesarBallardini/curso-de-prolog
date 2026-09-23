@@ -647,4 +647,3 @@ and there is no other frame to provide the answer. This will allow the frame sys
 be used as a backward chaining expert system.
 
 *Building Expert Systems in Prolog*
-

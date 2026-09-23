@@ -172,6 +172,15 @@ pre.mermaid svg {
   height: auto;
 }
 
+/* Las etiquetas de los nodos son <p> dentro de un foreignObject, de modo que
+   heredan el `text-align: justify` de arriba: sin esto, un recuadro de dos
+   líneas reparte los términos con huecos enormes y `padre(P, Quien)` parece
+   cortado. */
+pre.mermaid p {
+  text-align: center;
+  margin: 0;
+}
+
 /* --- Added for this book ----------------------------------------------- */
 
 /* The Material admonitions (!!! note / warning / info). On the site the theme
@@ -222,4 +231,11 @@ p.formula {
    would otherwise run past the right margin of the page. */
 p.formula .katex-display {
   margin: 0;
+}
+
+/* Illustrations: centred, never wider than the text column. */
+img {
+  display: block;
+  max-width: 100%;
+  margin: 1.2em auto;
 }

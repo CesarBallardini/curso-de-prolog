@@ -969,4 +969,3 @@ of Foops. 8.4 Figure out a way to allow Rete-Foops to use inheritance in frame p
 it so the rule which finds electric plugs works. 8.5 Build an indexed version of Clam and make performance experiments with it.
 
 *Building Expert Systems in Prolog*
-

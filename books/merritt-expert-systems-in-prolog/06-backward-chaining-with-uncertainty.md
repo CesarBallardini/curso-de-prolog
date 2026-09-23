@@ -731,4 +731,3 @@ Add attribute object value triples to the knowledge representation of *Clam*.
 34
 
 *Chapter 3 - Backward Chaining with Uncertainty*
-

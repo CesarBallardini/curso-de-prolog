@@ -30,7 +30,9 @@ false.
 
 <!-- ejemplo: capitulo-07/soluciones.pl predicado: primero_y_ultimo/3 consulta: primero_y_ultimo([ana, luis, eva], P, U). -->
 ```prolog
-% primero_y_ultimo(L, P, U): P es el primero de L y U el último.
+%!  primero_y_ultimo(+L, -P, -U) is semidet.
+%
+%   P es el primero de L y U el último.
 primero_y_ultimo([P|Resto], P, U) :-
     last([P|Resto], U).
 ```
@@ -38,6 +40,12 @@ primero_y_ultimo([P|Resto], P, U) :-
 El primer elemento se obtiene por la unificación de la cabeza; el último, con
 `last/2`. La cabeza exige `[P|Resto]` para que el predicado no se cumpla con la
 lista vacía, que no tiene primer ni último elemento.
+
+El encabezado es `primero_y_ultimo(+L, -P, -U) is semidet`. `L` debe llegar
+ligada: con `L` libre, `last/2` produce listas cada vez más largas, sin fin,
+como `esta_en/2` en la advertencia de la [sección 7.6](index.md#76-una-relacion-varios-sentidos). `P` y `U` son de salida.
+La cantidad de respuestas es una o ninguna: una lista tiene un solo primer
+elemento y un solo último, y la lista vacía no tiene ninguno de los dos.
 
 ## 4
 
@@ -56,7 +64,9 @@ es suficiente una unificación.
 
 <!-- ejemplo: capitulo-07/soluciones.pl predicado: cuantos_gatos/2 consulta: cuantos_gatos([gato, perro, gato], N). -->
 ```prolog
-% cuantos_gatos(L, N): N es la cantidad de apariciones de gato en L.
+%!  cuantos_gatos(+L, -N) is det.
+%
+%   N es la cantidad de apariciones de gato en L.
 cuantos_gatos([], 0).
 cuantos_gatos([gato|Resto], N) :-
     cuantos_gatos(Resto, Faltan),
@@ -79,12 +89,14 @@ considera distinta de `gato`.
 
 <!-- ejemplo: capitulo-07/soluciones.pl predicado: empieza_con/2 consulta: empieza_con([ana, luis, eva], [ana, luis]). -->
 ```prolog
-% empieza_con(L, Principio): L empieza con los elementos de Principio.
+%!  empieza_con(+L, ?Principio) is nondet.
+%
+%   L empieza con los elementos de Principio.
 empieza_con(L, Principio) :-
     append(Principio, _, L).
 ```
 
-No usa recursión, y es una aplicación directa de la sección 7.6: "L comienza con
+No usa recursión, y es una aplicación directa de la [sección 7.6](index.md#76-una-relacion-varios-sentidos): "L comienza con
 Principio" equivale a "existe una lista que, concatenada a continuación de
 Principio, produce L". `append/3` responde esa consulta en sentido inverso.
 
@@ -92,7 +104,9 @@ Principio, produce L". `append/3` responde esa consulta en sentido inverso.
 
 <!-- ejemplo: capitulo-07/soluciones.pl predicado: dar_vuelta/2 consulta: dar_vuelta([ana, luis, eva], R). -->
 ```prolog
-% dar_vuelta(L, R): R es L en orden inverso, sin usar reverse/2.
+%!  dar_vuelta(+L, -R) is det.
+%
+%   R es L en orden inverso, sin usar reverse/2.
 dar_vuelta([], []).
 dar_vuelta([X|Resto], R) :-
     dar_vuelta(Resto, RestoAlReves),
@@ -102,16 +116,18 @@ dar_vuelta([X|Resto], R) :-
 Invierte el resto y concatena el primer elemento **al final**. Es correcta, y es
 la versión que se obtiene de manera más directa.
 
-Tiene una desventaja, que se analiza en el capítulo 14: por cada elemento,
+Tiene una desventaja, que se analiza en el [capítulo 14](../capitulo-14-rendimiento/index.md): por cada elemento,
 `append/3` recorre nuevamente toda la lista para agregarlo al final. Con listas
 largas, el costo es significativo. La versión eficiente usa un acumulador, y se
-presenta en el capítulo 8.
+presenta en el [capítulo 8](../capitulo-08-aritmetica/index.md).
 
 ## 8
 
 <!-- ejemplo: capitulo-07/soluciones.pl predicado: sacar/3 consulta: sacar(luis, [ana, luis, eva], R). -->
 ```prolog
-% sacar(X, L, R): R es L sin la primera aparición de X.
+%!  sacar(+X, +L, -R) is semidet.
+%
+%   R es L sin la primera aparición de X.
 sacar(X, [X|Resto], Resto).
 sacar(X, [Otro|Resto], [Otro|RestoR]) :-
     Otro \== X,
@@ -128,13 +144,15 @@ ya tienen valor. `\==` compara los términos tal como están escritos en ese
 momento, de modo que si la lista contiene una variable sin valor, la comparación
 se cumple —una variable y `luis` son términos distintos— y la búsqueda continúa
 como si fueran diferentes. Sobre `sacar(luis, [X, luis], R)` eso produce una
-respuesta de más, con `X` sin determinar. La sección 10.6 explica por qué.
+respuesta de más, con `X` sin determinar. La [sección 10.6](../capitulo-10-negacion-como-falla/index.md#106-con-variables-libres) explica por qué.
 
 ## 9
 
 <!-- ejemplo: capitulo-07/soluciones.pl predicado: es_sublista/2 consulta: es_sublista([luis, eva], [ana, luis, eva, sofia]). -->
 ```prolog
-% es_sublista(S, L): los elementos de S aparecen contiguos y en orden en L.
+%!  es_sublista(?S, +L) is nondet.
+%
+%   Los elementos de S aparecen contiguos y en orden en L.
 es_sublista(S, L) :-
     append(_, Atras, L),
     append(S, _, Atras).
@@ -157,7 +175,7 @@ instanciar. El resultado es correcto: la consulta pregunta qué listas tienen
 longitud 2, y la respuesta es cualquier lista de dos elementos, cualesquiera
 sean.
 
-Es la misma idea de la sección 7.6. `length/2` no es un procedimiento que
+Es la misma idea de la [sección 7.6](index.md#76-una-relacion-varios-sentidos). `length/2` no es un procedimiento que
 cuenta: es una relación entre una lista y un número, y se la puede consultar
 desde cualquiera de sus dos argumentos.
 
@@ -179,12 +197,16 @@ segundo argumento que se construye.
 
 <!-- ejemplo: capitulo-07/soluciones.pl predicado: todos_gatos/1 algun_gato/1 consulta: todos_gatos([gato, gato]). -->
 ```prolog
-% todos_gatos(L): todos los elementos de L son gato. Plantilla 11.
+%!  todos_gatos(+L) is semidet.
+%
+%   Todos los elementos de L son gato. Plantilla 11.
 todos_gatos([]).
 todos_gatos([gato|Resto]) :-
     todos_gatos(Resto).
 
-% algun_gato(L): alguno de los elementos de L es gato. Plantilla 10.
+%!  algun_gato(+L) is nondet.
+%
+%   Alguno de los elementos de L es gato. Plantilla 10.
 algun_gato([gato|_]).
 algun_gato([_|Resto]) :-
     algun_gato(Resto).
@@ -215,14 +237,18 @@ para `[]` y `algun_gato/1` no.
 
 El predicado construye la lista **en el cuerpo**, con `append/3`, y para hacerlo
 necesita el resultado de la llamada recursiva antes de armar el suyo. No es
-incorrecto en cuanto a las respuestas, pero contradice la plantilla 12 y deja de
-funcionar en cuanto se lo consulta en otro sentido: con la primera lista libre,
-`append/3` no tiene con qué trabajar.
+incorrecto en cuanto a las respuestas, pero contradice la plantilla 12 y no
+cumple la segunda línea de su encabezado: con la primera lista libre, la llamada
+recursiva recibe dos listas sin determinar y genera candidatos sin fin, de modo
+que `duplicar(L, [a, b])` no termina.
 
 <!-- ejemplo: capitulo-07/soluciones.pl predicado: duplicar/2 consulta: duplicar([a, b], R). -->
 ```prolog
-% duplicar(L, R): R tiene cada elemento de L repetido dos veces.
-% El resultado se escribe en la cabeza, no se arma en el cuerpo.
+%!  duplicar(+L, -R) is det.
+%!  duplicar(-L, +R) is semidet.
+%
+%   R tiene cada elemento de L repetido dos veces.
+%   El resultado se escribe en la cabeza, no se arma en el cuerpo.
 duplicar([], []).
 duplicar([X|Resto], [X, X|Otros]) :-
     duplicar(Resto, Otros).
@@ -234,7 +260,7 @@ R = [a, a, b, b].
 ```
 
 La cabeza `[X, X|Otros]` aporta los dos elementos de esta llamada y deja el
-resto sin determinar, que es exactamente lo que describe la sección 7.5.
+resto sin determinar, que es exactamente lo que describe la [sección 7.5](index.md#75-construir-una-lista-durante-el-recorrido-de-otra).
 
 ## 14
 
@@ -246,7 +272,7 @@ resto sin determinar, que es exactamente lo que describe la sección 7.5.
 | `pegar(A, B, [a, b]).` | tres respuestas: las tres particiones |
 
 Las cuatro terminan, porque en todas hay una lista completa por la cual
-recorrer: la primera o la tercera. La advertencia de la sección 7.6 se aplica al
+recorrer: la primera o la tercera. La advertencia de la [sección 7.6](index.md#76-una-relacion-varios-sentidos) se aplica al
 caso que no está en esta tabla, `pegar(A, B, C)` con las tres sin determinar,
 que produce particiones sin fin.
 
@@ -262,7 +288,7 @@ haya otra respuesta.
 segundo([_, X|_], X).
 ```
 
-Un solo hecho, sin cuerpo y sin recursión: es la plantilla 7 del capítulo 4
+Un solo hecho, sin cuerpo y sin recursión: es la plantilla 7 del [capítulo 4](../capitulo-04-terminos-y-unificacion/index.md)
 aplicada a una lista. El patrón `[_, X|_]` describe "una lista con por lo menos
 dos elementos, del cual interesa el segundo".
 

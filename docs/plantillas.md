@@ -248,6 +248,9 @@ Capítulo 8, secciones 8.5 y 8.6.
 conserva el primero que corresponde.
 
 ```prolog
+%!  p(+X, -Caso) is det.
+%
+%   Caso es el primero de los casos que corresponde a X.
 p(X, primer_caso) :-
     condicion(X),
     !.
@@ -285,6 +288,9 @@ vez y son muchos.
 Cuando se requiere una sola respuesta, se agrega un corte al final:
 
 ```prolog
+%!  una_solucion(-X) is semidet.
+%
+%   X es la primera solución. X debe llegar libre.
 una_solucion(X) :-
     solucion(X),
     !.
@@ -294,5 +300,7 @@ Ese corte establece que la primera respuesta es suficiente. Conviene tener
 presente que es un corte **rojo**: si el argumento de salida llega con valor, el
 generador lo verifica de manera directa y el corte se ejecuta cuando ya no hay
 nada que podar, de modo que el predicado acepta un valor que no es el primero.
+Por eso la descripción del encabezado aclara que `X` debe llegar libre: el `-X`
+solo no lo dice.
 
 Capítulo 9, sección 9.6.

@@ -1299,4 +1299,3 @@ notation; or
 By using colons, we make the Prolog module system unavailable, but this is only a minor limitation; a different character could easily be used. Some Prologs may require you to use something other than the colon.
 
 Tn Arity Prolog 4, a blank is required before each left parenthesis within a feature structure.
-

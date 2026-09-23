@@ -81,4 +81,3 @@ Figure E-1 gives a table of approximate equivalents between standard Prolog and 
 Go to book index
 
 Page 1 of 1 http://faculty.nps.edu/ncrowe/book/ae.html
-

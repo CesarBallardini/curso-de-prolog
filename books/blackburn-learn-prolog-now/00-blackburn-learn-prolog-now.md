@@ -10246,4 +10246,3 @@ check/2, 31 use
 module/1, 222 use
 
 module/2, 222 V var/1, 167 W write/1, 180 write/2, 223
-

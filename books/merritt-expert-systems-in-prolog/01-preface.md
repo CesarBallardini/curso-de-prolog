@@ -18,4 +18,3 @@ These virtues are certainly reason enough to base not only systems but textbooks
 Peter H. Schnupp Munich, January 1989
 
 *Building Expert Systems in Prolog*
-

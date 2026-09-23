@@ -114,4 +114,3 @@ reductionism
 **Go to book index**
 
 Page 3 of 3 http://faculty.nps.edu/ncrowe/book/chap1.html
-

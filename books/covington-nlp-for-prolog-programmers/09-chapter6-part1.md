@@ -1454,4 +1454,3 @@ numvars_list([],N,N).
 numvars_list([Term|Terms],N,NewN) :numvars_aux(Term,N,NextN), numvars_list (Terms,NextN,NewN) .
 
 Figure 6.7 Implementation of subsumes_chk for Prologs in which it is not built in.
-

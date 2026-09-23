@@ -31,26 +31,34 @@ madre(marta, ana).
 madre(marta, pedro).
 madre(eva, sofia).
 
-% es_padre(P): P es padre de alguien. Una regla de una sola condición.
+%!  es_padre(?P) is nondet.
+%
+%   P es padre de alguien. Una regla de una sola condición.
 es_padre(P) :-
     padre(P, _).
 
-% progenitor(P, H): P es el padre o la madre de H, y no un ascendiente
-% cualquiera: nombra una sola generación.
-% Dos cláusulas del mismo predicado son dos alternativas: se cumple una o se
-% cumple la otra.
+%!  progenitor(?P, ?H) is nondet.
+%
+%   P es el padre o la madre de H, y no un ascendiente cualquiera: nombra una
+%   sola generación.
+%   Dos cláusulas del mismo predicado son dos alternativas: se cumple una o se
+%   cumple la otra.
 progenitor(P, H) :-
     padre(P, H).
 progenitor(P, H) :-
     madre(P, H).
 
-% abuelo(A, N): A es el abuelo de N.
+%!  abuelo(?A, ?N) is nondet.
+%
+%   A es el abuelo de N.
 abuelo(A, N) :-
     varon(A),
     progenitor(A, P),
     progenitor(P, N).
 
-% abuela(A, N): A es la abuela de N.
+%!  abuela(?A, ?N) is nondet.
+%
+%   A es la abuela de N.
 abuela(A, N) :-
     mujer(A),
     progenitor(A, P),

@@ -880,4 +880,3 @@ Write a Prolog program that decides what to do for every possible combination of
 Go to book index
 
 Page 20 of 20 http://faculty.nps.edu/ncrowe/book/chap6.html
-

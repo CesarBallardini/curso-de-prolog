@@ -937,4 +937,3 @@ Ullman, J., 160, 192 Unbounded movements, 59-61, 105-108 Underlying forms, 272 U
 variable, 102-104, 195 Word-sense disambiguation, 9, 239-248, 256 Worst-case complexity, 193 V Y Vance, C., 254 Variables in feature structures, 116 Yale University, 253 Yasukawa, H., 165 in Prolog, 293, 303 VAX/VMS, 22n Vellino, A., 228n, 286 Z
 
 Zwicky, A., 195 Vendler, Z., 251 Verb phrase, 36-38, 57-59, 90-95
-
