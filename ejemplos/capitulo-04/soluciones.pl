@@ -36,7 +36,9 @@ operacion(A * B, A, B).
 
 % --- Ejercicio 9 -----------------------------------------------------------
 
-% misma_especie(F1, F2): dos fichas distintas de la misma especie.
+%!  misma_especie(?F1, ?F2) is nondet.
+%
+%   F1 y F2 son dos fichas distintas de la misma especie.
 misma_especie(F1, F2) :-
     registro(F1),
     registro(F2),
@@ -52,14 +54,18 @@ propietario_y_especie(ficha(mascota(E, _), _, P), P, E).
 
 % --- Ejercicio 14 ----------------------------------------------------------
 
-% ficha_de(P, F): F es un registro cuyo propietario es P.
+%!  ficha_de(?P, ?F) is nondet.
+%
+%   F es un registro cuyo propietario es P.
 ficha_de(P, F) :-
     registro(F),
     F = ficha(_, _, P).
 
 % --- Ejercicio 17 ----------------------------------------------------------
 
-% mismo_propietario(F1, F2): dos fichas distintas con el mismo propietario.
+%!  mismo_propietario(?F1, ?F2) is nondet.
+%
+%   F1 y F2 son dos fichas distintas con el mismo propietario.
 mismo_propietario(F1, F2) :-
     registro(F1),
     registro(F2),

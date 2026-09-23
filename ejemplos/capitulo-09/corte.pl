@@ -16,7 +16,10 @@ edad(luis, 12).
 edad(eva, 8).
 edad(sofia, 3).
 
-% categoria_sin_corte(P, C): las tres condiciones se superponen deliberadamente.
+%!  categoria_sin_corte(?P, ?C) is nondet.
+%
+%   C es una categoría de P. Las tres condiciones se superponen
+%   deliberadamente.
 categoria_sin_corte(P, bebe) :-
     edad(P, A),
     A < 4.
@@ -26,8 +29,10 @@ categoria_sin_corte(P, chico) :-
 categoria_sin_corte(P, adulto) :-
     edad(P, _).
 
-% categoria(P, C): la misma clasificación, con corte. El corte descarta las
-% cláusulas siguientes.
+%!  categoria(+P, -C) is semidet.
+%
+%   C es la categoría de P: la misma clasificación, con corte. El corte
+%   descarta las cláusulas siguientes.
 categoria(P, bebe) :-
     edad(P, A),
     A < 4,
@@ -39,7 +44,9 @@ categoria(P, chico) :-
 categoria(P, adulto) :-
     edad(P, _).
 
-% un_mayor_de_edad(P): P es la primera persona mayor de edad que se encuentra.
+%!  un_mayor_de_edad(-P) is semidet.
+%
+%   P es la primera persona mayor de edad que se encuentra.
 un_mayor_de_edad(P) :-
     edad(P, A),
     A >= 18,

@@ -1,6 +1,6 @@
 # Capítulo 2 — Hechos, consultas y variables
 
-El capítulo 1 fue un recorrido general. A partir de este capítulo los temas se desarrollan de manera sistemática y en orden.
+El [capítulo 1](../capitulo-01-la-primera-hora/index.md) fue un recorrido general. A partir de este capítulo los temas se desarrollan de manera sistemática y en orden.
 
 Este capítulo trata los elementos más simples de Prolog: **hechos** y
 **consultas**. No contiene ninguna regla. Con esos dos elementos ya se puede
@@ -18,12 +18,14 @@ Al terminar el capítulo, el lector puede:
 - formular una consulta sobre objetos concretos e interpretar `true.` o
   `false.`;
 - distinguir entre "no se puede probar" y "el predicado no existe";
-- usar variables para preguntar *quién* o *qué*, y obtener todas las respuestas.
+- usar variables para preguntar *quién* o *qué*, y obtener todas las respuestas;
+- leer el encabezado de un predicado: qué argumentos deben llegar ligados y
+  cuántas respuestas produce.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **0:35 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **0:45 h**.
     Resolver los 6 ejercicios marcados con ★: **1:25 h**.
-    Resolver los 16 ejercicios del final: **3:55 h**.
+    Resolver los 18 ejercicios del final: **4:15 h**.
 
 ## 2.1 Objetos y relaciones
 
@@ -125,7 +127,7 @@ ni valor asociado.
 
 Los **números** son objetos de otra clase. Se escriben tal como son —`68`,
 `3.5`— y no llevan comillas. A diferencia de un átomo, un número sí tiene un
-valor con el que se puede operar, y de eso se ocupa el capítulo 8; por ahora
+valor con el que se puede operar, y de eso se ocupa el [capítulo 8](../capitulo-08-aritmetica/index.md); por ahora
 alcanza con saber que un número puede ocupar la posición de un argumento, como
 en `edad(juan, 68)`.
 
@@ -133,7 +135,7 @@ Un nombre que no comienza con minúscula, o que contiene espacios u otros
 caracteres, se escribe **entre comillas simples**: `'Ana'`, `'mi amigo'`. Sigue
 siendo un átomo, y las comillas solo indican dónde comienza y dónde termina.
 Sin ellas, `Ana` no sería un átomo sino una variable, que es el tema de la
-sección 2.6.
+[sección 2.6](#26-variables).
 
 ### El nombre no tiene significado para Prolog
 
@@ -272,7 +274,7 @@ diferencia es fundamental.
 Este criterio se denomina **supuesto de mundo cerrado**: Prolog opera como si el
 programa contuviera toda la información relevante, y considera no cierto todo lo
 que no se puede deducir de él. El supuesto tiene consecuencias más profundas,
-que se tratan en el capítulo 10.
+que se tratan en el [capítulo 10](../capitulo-10-negacion-como-falla/index.md).
 
 ### Un segundo resultado negativo, de naturaleza distinta
 
@@ -310,7 +312,7 @@ casi siempre a un error de quien programa. Las causas posibles son:
    la inversa. Por eso el mensaje informa siempre `nombre/aridad` y no solo el
    nombre: la aridad es parte de la identificación del predicado.
 5. **El hecho se escribió en la casilla de consultas**, que es el caso de la
-   sección 2.3.
+   [sección 2.3](#23-como-se-carga-un-programa).
 6. **El predicado todavía no se escribió.**
 
 !!! note "Diferencias con otros textos"
@@ -405,6 +407,51 @@ Que = futbol ;
 Cuando una respuesta incluye más de una variable, Prolog las muestra una por
 línea, separadas por comas.
 
+### Variables libres y variables ligadas
+
+Una variable se encuentra siempre en uno de dos estados:
+
+- está **libre** mientras no tiene valor: es una posición sin determinar;
+- queda **ligada** —o **instanciada**— en cuanto recibe uno.
+
+No son dos clases de variables sino dos estados de la misma variable.
+
+Una consulta sin variables no liga nada, y por eso su respuesta no menciona
+ningún valor:
+
+```prolog
+?- gusta(juan, futbol).
+true.
+```
+
+Una variable ligada se comporta, desde ese momento, como el valor que recibió.
+Por eso una variable repetida no pregunta por dos objetos sino por uno solo: en
+cuanto la primera posición liga `Quien`, la segunda queda obligada al mismo
+valor.
+
+```prolog
+?- gusta(Quien, Quien).
+false.
+```
+
+La consulta pregunta por alguien cuyo gusto coincida con su propio nombre.
+Ningún hecho de `gusta/2` tiene el mismo objeto en las dos posiciones, de modo
+que no hay respuesta.
+
+La ligadura tampoco es permanente: dura lo que dura la demostración de una
+respuesta. Al solicitarse la siguiente, Prolog la deshace y la variable vuelve a
+estar libre antes de recibir el valor que corresponda:
+
+```prolog
+?- gusta(Quien, prolog).
+Quien = ana ;
+Quien = eva.
+```
+
+`Quien` atraviesa cuatro estados: libre al formularse la consulta, ligada a
+`ana`, libre otra vez al solicitarse la respuesta siguiente, y ligada a `eva`.
+El [capítulo 3](../capitulo-03-reglas-y-conjunciones/index.md) recorre ese ir y venir paso a paso.
+
 ### La variable anónima
 
 Cuando el valor de una posición no interesa, se escribe `_`, que se denomina
@@ -464,6 +511,104 @@ programa, que a alguien le guste cocinar.
     **En este capítulo se usa en**: `gusta(ana, Que)`, `gusta(Quien, prolog)`
     (2.6), `madre(Quien, pedro)` (ejercicio 4). Todas las plantillas están
     reunidas en [esta página](../plantillas.md).
+
+## 2.8 Cómo se documenta el uso de un predicado
+
+Las secciones anteriores consultaron `gusta/2` de tres maneras: `gusta(ana, Que)`
+conoce el primer argumento y pregunta por el segundo; `gusta(Quien, prolog)`, a
+la inversa; y `gusta(juan, futbol)` conoce los dos. Un predicado definido solo
+por hechos admite todas esas combinaciones, pero no todos los predicados lo
+hacen. El [capítulo 1](../capitulo-01-la-primera-hora/index.md) mostró uno que no: en `X is 2 + 3`, lo que está a la
+derecha de `is` debe estar ligado al momento de la llamada, y si no lo está,
+Prolog informa un error.
+
+Por eso, junto con el significado de cada argumento, se documenta en qué estado
+debe llegar cada uno cuando se consulta el predicado. SWI-Prolog usa para eso una
+notación estándar: un signo delante del nombre de cada argumento.
+
+| Signo | El argumento, al consultar el predicado | Se lo denomina |
+|---|---|---|
+| `+` | debe estar ligado | argumento de entrada |
+| `-` | normalmente está libre, y el predicado lo liga | argumento de salida |
+| `?` | puede estar libre o ligado | |
+
+El manual de SWI-Prolog documenta `is/2` así: `-Number is +Expr`. La expresión
+es de entrada, y el número, de salida. Un argumento de salida puede llegar
+ligado: en ese caso el predicado se comporta como si hubiera llegado libre, y
+después compara el resultado con ese valor. Por eso las tres consultas
+siguientes funcionan, y no así la cuarta:
+
+```prolog
+?- X is 2 + 3.
+X = 5.
+
+?- 5 is 2 + 3.
+true.
+
+?- X = 5, X is 2 + 3.
+X = 5.
+
+?- X is Y + 1.
+ERROR: Arguments are not sufficiently instantiated
+```
+
+La tercera muestra el mismo caso que la segunda, con una variable: `X = 5` liga
+`X` antes de llegar a `is`, de modo que el argumento de salida llega ligado. `is`
+calcula `5` y lo compara con el valor de `X`; como coinciden, la consulta tiene
+éxito. Con `X = 6` en lugar de `X = 5`, la respuesta sería `false.`.
+
+La documentación indica, además, cuántas respuestas produce el predicado.
+Para eso se usan cuatro palabras:
+
+| Palabra | Cantidad de respuestas |
+|---|---|
+| `det` | exactamente una |
+| `semidet` | una o ninguna |
+| `multi` | una o más |
+| `nondet` | cualquier cantidad, incluida ninguna |
+
+La cantidad de respuestas depende de qué argumentos lleguen ligados.
+`gusta(juan, futbol)`, con los dos ligados, tiene una respuesta o ninguna;
+`gusta(Quien, prolog)` puede tener varias. Por eso un predicado se documenta con
+una línea por cada forma de usarlo que interese.
+
+Toda regla del curso, desde las del [capítulo 1](../capitulo-01-la-primera-hora/index.md), lleva un **encabezado** con esa
+información, escrito en el formato de SWI-Prolog. El de `abuelo/2`, la primera
+regla del [capítulo 1](../capitulo-01-la-primera-hora/index.md), es el siguiente:
+
+```prolog
+%!  abuelo(?A, ?N) is nondet.
+%
+%   A es abuelo de N.
+abuelo(A, N) :-
+    padre(A, P),
+    padre(P, N).
+```
+
+- la primera línea comienza con `%!` y declara los modos y la cantidad de
+  respuestas. Puede haber varias líneas `%!` seguidas, una por cada forma de uso;
+- una línea `%` vacía la separa de la descripción;
+- la descripción dice qué significa la relación, con los mismos nombres de
+  argumentos que la primera línea.
+
+Todo el encabezado es un comentario: Prolog lo ignora, y está destinado a quien
+lee o usa el predicado.
+
+Los hechos conservan el comentario de una línea de la [sección 2.2](#22-hechos), como
+`% padre(P, H): P es el padre de H.`: un predicado definido solo por hechos se
+puede consultar con cualquier combinación de argumentos libres y ligados, de modo
+que todos sus argumentos son `?`.
+
+!!! note "Encabezado"
+    El encabezado describe cuántas respuestas existen, no la forma en que Prolog
+    termina de mostrarlas. A veces Prolog queda en espera de un `;` aunque no
+    quede ninguna respuesta, y después responde `false.`. El [capítulo 5](../capitulo-05-como-responde-prolog/index.md) explica
+    por qué. Un predicado `semidet` puede responder de ese modo.
+
+!!! note "Otros signos"
+    SWI-Prolog usa también `++`, `--`, `@`, `:` y `!`, y otras palabras para la
+    cantidad de respuestas. Este formato de documentación se denomina PlDoc. El
+    [capítulo 12](../capitulo-12-estilo-y-documentacion/index.md) lo presenta completo.
 
 ## Ejercicios
 
@@ -525,6 +670,14 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 16. **(2)** Con `regala/3` del ejercicio 7, escribir las tres consultas que
     preguntan: qué le regaló juan a ana; quién le regaló algo a luis; y qué
     regalos hubo, sin especificar quiénes participaron. Ejecutarlas.
+17. **(1)** Para cada consulta, indicar con los signos de la [sección 2.8](#28-como-se-documenta-el-uso-de-un-predicado) cómo
+    llega cada argumento de `gusta/2`, y cuántas respuestas puede tener con esa
+    forma de uso: `gusta(ana, Que).` · `gusta(Quien, prolog).` ·
+    `gusta(juan, futbol).` · `gusta(Quien, Que).`
+18. **(2)** Además del encabezado de la [sección 2.8](#28-como-se-documenta-el-uso-de-un-predicado), `abuelo/2` admite dos
+    líneas `%!` más específicas: una para `abuelo(juan, luis)`, con los dos
+    argumentos ligados, y otra para `abuelo(juan, Quien)`. Escribirlas y
+    explicar por qué declaran cantidades de respuestas distintas.
 
 ## Resumen
 
@@ -540,8 +693,12 @@ Términos y construcciones presentados en este capítulo:
 | **átomo** | un objeto identificado por su nombre, en minúscula: `ana`, `prolog` |
 | **variable** | comienza con mayúscula o `_`; una posición a la que Prolog asigna un valor |
 | **variable anónima** | `_`; una posición cuyo valor no interesa |
-| **instanciada** | se dice de una variable que ya recibió un valor |
+| **libre** | se dice de la variable que todavía no tiene valor |
+| **ligada** o **instanciada** | se dice de la variable que ya recibió un valor |
 | **mundo cerrado** | lo que no se puede probar se considera no cierto |
+| `+`, `-`, `?` | el argumento debe llegar ligado; es de salida; puede llegar libre o ligado |
+| `det`, `semidet`, `multi`, `nondet` | una respuesta; una o ninguna; una o más; cualquier cantidad |
+| `%!` | comienza el encabezado de una regla: sus modos y su cantidad de respuestas |
 | `consult/1` | carga un archivo de programa |
 | `%` | comienza un comentario, hasta el fin de la línea |
 | `:- encoding(utf8).` | primera línea de todo archivo con caracteres acentuados |
@@ -553,8 +710,9 @@ probar"; `ERROR: Unknown procedure` significa "la relación no está definida".
 
 | Tema | Se retoma en |
 |---|---|
-| Reglas, para deducir en lugar de enumerar | capítulo 3 |
-| Átomos, variables y unificación | capítulo 4 |
-| El orden en que Prolog busca las respuestas | capítulo 5 |
-| El supuesto de mundo cerrado, en detalle | capítulo 10 |
-| La lectura de un programa como fórmulas lógicas | capítulo 11 |
+| Reglas, para deducir en lugar de enumerar | [capítulo 3](../capitulo-03-reglas-y-conjunciones/index.md) |
+| Átomos, variables y unificación | [capítulo 4](../capitulo-04-terminos-y-unificacion/index.md) |
+| El orden en que Prolog busca las respuestas | [capítulo 5](../capitulo-05-como-responde-prolog/index.md) |
+| El supuesto de mundo cerrado, en detalle | [capítulo 10](../capitulo-10-negacion-como-falla/index.md) |
+| La lectura de un programa como fórmulas lógicas | [capítulo 11](../capitulo-11-prolog-y-la-logica/index.md) |
+| PlDoc completo: todos los signos, tipos y cantidades de respuestas | [capítulo 12](../capitulo-12-estilo-y-documentacion/index.md) |

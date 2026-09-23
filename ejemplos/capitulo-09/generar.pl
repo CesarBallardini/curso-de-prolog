@@ -16,25 +16,34 @@ edad(pedro, 45).
 edad(luis, 12).
 edad(eva, 8).
 
-% multiplo(De, Desde, N): N es un múltiplo de De, mayor o igual que Desde.
-% between/3 genera los candidatos y la condición con mod los verifica.
+%!  multiplo(+De, +Desde, ?N) is nondet.
+%
+%   N es un múltiplo de De, mayor o igual que Desde. between/3 genera los
+%   candidatos y la condición con mod los verifica.
 multiplo(De, Desde, N) :-
     between(Desde, 200, N),
     0 =:= N mod De.
 
-% primer_multiplo(De, Desde, N): N es el primero de esos múltiplos, y solo él.
+%!  primer_multiplo(+De, +Desde, -N) is semidet.
+%
+%   N es el primero de esos múltiplos, y solo él. N debe llegar libre: con N
+%   ya ligado, el corte no tiene nada que podar (sección 9.6).
 primer_multiplo(De, Desde, N) :-
     multiplo(De, Desde, N),
     !.
 
-% dos_que_suman(Total, A, B): dos personas distintas cuyas edades suman Total.
+%!  dos_que_suman(+Total, ?A, ?B) is nondet.
+%
+%   A y B son dos personas distintas cuyas edades suman Total.
 dos_que_suman(Total, A, B) :-
     edad(A, EdadA),
     edad(B, EdadB),
     A \== B,
     Total =:= EdadA + EdadB.
 
-% un_par_que_suma(Total, A, B): el primer par que se encuentra, y solo ese.
+%!  un_par_que_suma(+Total, -A, -B) is semidet.
+%
+%   A y B son el primer par que se encuentra, y solo ese.
 un_par_que_suma(Total, A, B) :-
     dos_que_suman(Total, A, B),
     !.

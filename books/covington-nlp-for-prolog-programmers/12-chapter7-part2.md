@@ -798,4 +798,3 @@ Aside from logic texts, books on semantics are of two kinds: some cover main wor
 but readable study of negation that treats many other phenomena along the way. Dow (1979) gives insightful analyses of a wide range of phenomena, many of which can easi be adapted into frameworks other than Dowty’s.
 
 For an introduction to model theory, see Bach (1989). The classic paper on ge eralized quantifiers is Barwise and Cooper (1981), but Peres’ account (1991) is short and more accessible to the beginner.
-

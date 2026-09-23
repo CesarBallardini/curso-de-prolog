@@ -264,4 +264,3 @@ remember it for future use.
 146
 
 *Chapter 12 - Rubik's Cube*
-

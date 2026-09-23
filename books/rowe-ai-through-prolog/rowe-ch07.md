@@ -1593,4 +1593,3 @@ know *why* the cause leads to the symptoms, the exact chains of cause and effect
 Go to book index
 
 Page 31 of 31 http://faculty.nps.edu/ncrowe/book/chap7.html
-

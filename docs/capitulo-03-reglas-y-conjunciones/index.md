@@ -1,6 +1,6 @@
 # Capítulo 3 — Reglas y conjunciones
 
-En el capítulo 2, todo el conocimiento del programa estaba escrito de manera
+En el [capítulo 2](../capitulo-02-hechos-consultas-y-variables/index.md), todo el conocimiento del programa estaba escrito de manera
 explícita: una consulta preguntaba por un hecho, y el hecho estaba en el
 programa o no estaba.
 
@@ -139,9 +139,9 @@ Se retoma la consulta `?- gusta(ana, Que), gusta(luis, Que).`
 
 El paso 3 es el fundamental. Cuando un objetivo falla, la ejecución no termina:
 Prolog retrocede al objetivo anterior e intenta la alternativa siguiente. Es el
-**backtracking** presentado en el capítulo 1, y se lo puede nombrar con los
+**backtracking** presentado en el [capítulo 1](../capitulo-01-la-primera-hora/index.md), y se lo puede nombrar con los
 cuatro eventos de la traza: el segundo objetivo salió por Fail, y el primero se
-reingresó por Redo. La sección 5.3 muestra cómo esos cuatro eventos forman un
+reingresó por Redo. La [sección 5.3](../capitulo-05-como-responde-prolog/index.md#53-el-mismo-recorrido-registrado-por-trace) muestra cómo esos cuatro eventos forman un
 diagrama.
 
 El retroceso también deshace las ligaduras: al volver al paso 1, `Que` deja de
@@ -161,7 +161,7 @@ Lo que cambia es la cantidad de búsqueda necesaria. A luis le gusta una sola
 cosa, de modo que comenzar por él deja menos alternativas por explorar. Con seis
 hechos la diferencia es imperceptible; en programas de mayor tamaño puede
 determinar que una consulta termine en un tiempo razonable o que no termine. El
-capítulo 14 trata este tema.
+[capítulo 14](../capitulo-14-rendimiento/index.md) trata este tema.
 
 ## 3.3 Reglas
 
@@ -170,7 +170,9 @@ regla más simple tiene una sola condición:
 
 <!-- ejemplo: capitulo-03/reglas.pl predicado: es_padre/1 consulta: es_padre(Quien). -->
 ```prolog
-% es_padre(P): P es padre de alguien. Una regla de una sola condición.
+%!  es_padre(?P) is nondet.
+%
+%   P es padre de alguien. Una regla de una sola condición.
 es_padre(P) :-
     padre(P, _).
 ```
@@ -217,7 +219,7 @@ duplicados ni verifica si una respuesta ya fue entregada.
 
 Este comportamiento es general: la cantidad de respuestas no es la cantidad de
 soluciones distintas, sino la cantidad de demostraciones. Es posible eliminar
-los duplicados, pero requiere herramientas que se presentan en el capítulo 15.
+los duplicados, pero requiere herramientas que se presentan en el [capítulo 15](../capitulo-15-todas-las-soluciones/index.md).
 
 ### Varias cláusulas expresan una disyunción
 
@@ -225,10 +227,12 @@ Un predicado puede tener más de una cláusula; el conjunto se lee como **"o"**:
 
 <!-- ejemplo: capitulo-03/reglas.pl predicado: progenitor/2 consulta: progenitor(Quien, sofia). -->
 ```prolog
-% progenitor(P, H): P es el padre o la madre de H, y no un ascendiente
-% cualquiera: nombra una sola generación.
-% Dos cláusulas del mismo predicado son dos alternativas: se cumple una o se
-% cumple la otra.
+%!  progenitor(?P, ?H) is nondet.
+%
+%   P es el padre o la madre de H, y no un ascendiente cualquiera: nombra una
+%   sola generación.
+%   Dos cláusulas del mismo predicado son dos alternativas: se cumple una o se
+%   cumple la otra.
 progenitor(P, H) :-
     padre(P, H).
 progenitor(P, H) :-
@@ -240,8 +244,8 @@ cláusulas en el orden en que están escritas: cuando se solicita otra respuesta
 con `;`, evalúa la segunda.
 
 Esta es la forma de expresar una disyunción en Prolog, y ya se usó en los
-capítulos anteriores: en el capítulo 1, `etapa/2` tenía tres cláusulas, una por
-caso; los cuatro hechos `padre/2` del capítulo 2 son cuatro cláusulas del mismo
+capítulos anteriores: en el [capítulo 1](../capitulo-01-la-primera-hora/index.md), `etapa/2` tenía tres cláusulas, una por
+caso; los cuatro hechos `padre/2` del [capítulo 2](../capitulo-02-hechos-consultas-y-variables/index.md) son cuatro cláusulas del mismo
 predicado.
 
 !!! abstract "Plantilla 4 — Definir por casos"
@@ -267,13 +271,17 @@ directa:
 
 <!-- ejemplo: capitulo-03/reglas.pl predicado: abuelo/2 abuela/2 consulta: abuelo(juan, Quien). -->
 ```prolog
-% abuelo(A, N): A es el abuelo de N.
+%!  abuelo(?A, ?N) is nondet.
+%
+%   A es el abuelo de N.
 abuelo(A, N) :-
     varon(A),
     progenitor(A, P),
     progenitor(P, N).
 
-% abuela(A, N): A es la abuela de N.
+%!  abuela(?A, ?N) is nondet.
+%
+%   A es la abuela de N.
 abuela(A, N) :-
     mujer(A),
     progenitor(A, P),
@@ -397,7 +405,9 @@ Se desea definir "A es hermana de B": A es mujer, y ambos tienen el mismo padre.
 
 <!-- ejemplo: capitulo-03/hermana.pl predicado: hermana/2 consulta: hermana(ana, Quien). -->
 ```prolog
-% hermana(A, B): A es hermana de B. La regla es incompleta: ver la sección 3.5.
+%!  hermana(?A, ?B) is nondet.
+%
+%   A es hermana de B. La regla es incompleta: ver la sección 3.5.
 hermana(A, B) :-
     mujer(A),
     padre(P, A),
@@ -431,7 +441,9 @@ La solución es escribir la condición de manera explícita:
 
 <!-- ejemplo: capitulo-03/hermana.pl predicado: hermana_de_verdad/2 consulta: hermana_de_verdad(ana, Quien). -->
 ```prolog
-% hermana_de_verdad(A, B): A es hermana de B, y no son la misma persona.
+%!  hermana_de_verdad(?A, ?B) is nondet.
+%
+%   A es hermana de B, y no son la misma persona.
 hermana_de_verdad(A, B) :-
     mujer(A),
     padre(P, A),
@@ -447,7 +459,7 @@ Quien = pedro.
 `A \== B` se lee "A y B no son el mismo término". Su ubicación al final es
 deliberada: en ese punto las dos variables ya tienen valor, y `\==` solo compara
 los términos tal como están en el momento de la llamada. El efecto de ubicarlo
-antes, cuando las variables todavía están libres, se trata en el capítulo 10.
+antes, cuando las variables todavía están libres, se trata en el [capítulo 10](../capitulo-10-negacion-como-falla/index.md).
 
 !!! abstract "Plantilla 6 — Exigir que dos valores sean distintos"
     **Cuándo**: una regla usa dos veces la misma relación, y ambos usos pueden
@@ -511,7 +523,7 @@ nombre y `:-` especifican el resultado esperado:
   debe ocurrir es tan importante como especificar lo que sí.
 - sin opciones, se espera que el objetivo se cumpla una vez y sin dejar
   alternativas pendientes. Si el predicado deja alguna —el caso de `true ;` del
-  capítulo 1—, se lo debe declarar con `[nondet]`; de lo contrario, la prueba
+  [capítulo 1](../capitulo-01-la-primera-hora/index.md)—, se lo debe declarar con `[nondet]`; de lo contrario, la prueba
   emite una advertencia.
 
 Para ejecutar las pruebas se cargan juntos el programa y el archivo de pruebas:
@@ -529,7 +541,7 @@ La salida tiene la siguiente forma:
 ```
 
 Todos los ejemplos de este curso tienen su archivo de pruebas, y todas las
-pruebas pasan antes de que el ejemplo se incorpore al texto. El capítulo 23
+pruebas pasan antes de que el ejemplo se incorpore al texto. El [capítulo 23](../capitulo-23-pruebas-y-depuracion/index.md)
 presenta las demás opciones de plunit; por ahora son suficientes `all`, `[fail]`
 y `[nondet]`.
 
@@ -544,28 +556,34 @@ va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia
 Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
 tiene de propio, y los capítulos siguientes los dan por hechos.
 
-1. ★ **(1)** Escribir `hijo(H, P)`: H es hijo de P. Usar `progenitor/2`.
+1. ★ **(1)** Escribir `hijo(H, P)`: H es hijo de P. Usar `progenitor/2`. Su
+   encabezado es `%! hijo(?H, ?P) is nondet.`
 2. **(1)** Con `reglas.pl`, ¿qué responde `abuelo(Quien, luis).`? ¿Y
    `abuela(Quien, luis).`?
 3. **(1)** Expresar en castellano la regla
    `tio(T, S) :- varon(T), hermano_de(T, P), progenitor(P, S).`
 4. **(2)** Escribir `hermano_de(A, B)`, la versión masculina de
-   `hermana_de_verdad/2`. Tener en cuenta el mismo defecto.
+   `hermana_de_verdad/2`. Tener en cuenta el mismo defecto. Escribir también su
+   encabezado: qué argumentos deben llegar ligados y cuántas respuestas
+   produce.
 5. **(2)** Escribir `abuelo_o_abuela(A, N)` de dos maneras: con dos cláusulas, y
-   con una sola que use `progenitor/2` dos veces. ¿Producen las mismas
-   respuestas?
+   con una sola que use `progenitor/2` dos veces. Las dos llevan el encabezado
+   `%! abuelo_o_abuela(?A, ?N) is nondet.` ¿Producen las mismas respuestas?
 6. ★ **(2)** `?- gusta(ana, Que), gusta(luis, Que).` produce una respuesta.
    ¿Cuántas produce `?- gusta(ana, Una), gusta(luis, Otra).`? Responder antes de
    ejecutarla.
-7. **(2)** Escribir `nieto(N, A)` a partir de `abuelo/2` o `abuela/2`. ¿Es
-   necesaria una regla nueva, o es suficiente consultar la relación en sentido
-   inverso?
+7. **(2)** Escribir `nieto(N, A)` a partir de `abuelo/2` o `abuela/2`, y su
+   encabezado: qué argumentos deben llegar ligados y cuántas respuestas
+   produce. ¿Es necesaria una regla nueva, o es suficiente consultar la
+   relación en sentido inverso?
 8. ★ **(2)** Reemplazar en `hermana/2` el predicado `padre/2` por `progenitor/2` y
    ejecutar `hermana(ana, Quien).` Se obtienen respuestas repetidas. Explicar su
    origen.
 9. ★ **(3)** Escribir `primo(A, B)`: un progenitor de A y un progenitor de B son
-   hermanos. Se requiere `hermano_de/2` del ejercicio 4, y se debe determinar
-   qué condiciones son necesarias para que nadie sea primo de sí mismo.
+   hermanos. Su encabezado es `%! primo(?A, ?B) is nondet.` Se puede partir de
+   `hermano_de/2` del ejercicio 4, aunque conviene revisar si alcanza tal como
+   está; y se debe determinar qué condiciones son necesarias para que nadie sea
+   primo de sí mismo.
 10. **(3)** Escribir las pruebas de `hijo/2` del ejercicio 1: una con `all`, una
     con `[fail]`, y una que verifique un caso particular.
 11. ★ **(2)** Seguir a mano la consulta `?- gusta(eva, Que), gusta(juan, Que).`
@@ -586,6 +604,9 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     relación consigo misma. Explicar la causa y corregirlo:
 
     ```prolog
+    %!  misma_madre(?A, ?B) is nondet.
+    %
+    %   A y B tienen la misma madre.
     misma_madre(A, B) :-
         madre(M, A),
         madre(M, B).
@@ -623,9 +644,9 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 
 | Tema | Se retoma en |
 |---|---|
-| Unificación: cómo se determina que dos términos coinciden | capítulo 4 |
-| El orden de búsqueda, representado como árbol de derivación | capítulo 5 |
-| Reglas que se invocan a sí mismas | capítulo 6 |
-| El costo de cada ordenamiento de los objetivos | capítulo 14 |
-| `\==`, y el efecto de comparar antes de que las variables tengan valor | capítulo 10 |
-| plunit en detalle, con sus demás opciones | capítulo 23 |
+| Unificación: cómo se determina que dos términos coinciden | [capítulo 4](../capitulo-04-terminos-y-unificacion/index.md) |
+| El orden de búsqueda, representado como árbol de derivación | [capítulo 5](../capitulo-05-como-responde-prolog/index.md) |
+| Reglas que se invocan a sí mismas | [capítulo 6](../capitulo-06-recursion/index.md) |
+| El costo de cada ordenamiento de los objetivos | [capítulo 14](../capitulo-14-rendimiento/index.md) |
+| `\==`, y el efecto de comparar antes de que las variables tengan valor | [capítulo 10](../capitulo-10-negacion-como-falla/index.md) |
+| plunit en detalle, con sus demás opciones | [capítulo 23](../capitulo-23-pruebas-y-depuracion/index.md) |

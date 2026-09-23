@@ -31,7 +31,10 @@ establece que la primera respuesta es suficiente.
 
 <!-- ejemplo: capitulo-09/soluciones.pl predicado: categoria_sin_ningun_corte/2 consulta: categoria_sin_ningun_corte(eva, C). -->
 ```prolog
-% categoria_sin_ningun_corte(P, C): las condiciones completas, sin corte.
+%!  categoria_sin_ningun_corte(?P, ?C) is nondet.
+%!  categoria_sin_ningun_corte(+P, -C) is semidet.
+%
+%   C es la categoría de P, con las condiciones completas, sin corte.
 categoria_sin_ningun_corte(P, bebe) :-
     edad(P, A),
     A < 4.
@@ -49,6 +52,11 @@ con las demás. Es más extensa que la versión del capítulo y repite los lími
 pero no depende del orden: las tres cláusulas se pueden reordenar sin que cambien
 las respuestas.
 
+El encabezado tiene dos líneas. La segunda es la que pedía el enunciado: con la
+persona dada, una sola respuesta. La primera agrega un uso que la versión con
+corte no admite: con `P` libre, el predicado enumera todas las personas con su
+categoría.
+
 ## 4
 
 La versión del ejercicio 3:
@@ -59,7 +67,7 @@ false.
 ```
 
 La versión del capítulo responde `true` a la misma consulta: es el corte rojo de
-la sección 9.5. En esta versión no hay ningún corte cuyo efecto dependa de la
+la [sección 9.5](index.md#95-corte-verde-y-corte-rojo). En esta versión no hay ningún corte cuyo efecto dependa de la
 unificación de la cabeza: la tercera cláusula exige `A >= 13`, sofía no cumple
 esa condición, y la consulta falla, como corresponde.
 
@@ -71,7 +79,9 @@ sentidos.
 
 <!-- ejemplo: capitulo-09/soluciones.pl predicado: primer_par/2 consulta: primer_par([3, 7, 4, 8], X). -->
 ```prolog
-% primer_par(L, X): X es el primer número par de L.
+%!  primer_par(+L, -X) is semidet.
+%
+%   X es el primer número par de L.
 primer_par([X|_], X) :-
     0 =:= X mod 2,
     !.
@@ -85,15 +95,17 @@ número par: sin él, al solicitar más respuestas se obtendrían todos los pare
 la lista.
 
 La condición `0 =\= X mod 2` de la segunda cláusula es necesaria por la misma
-razón que en el capítulo 7: sin ella, un número par se resolvería también por la
+razón que en el [capítulo 7](../capitulo-07-listas/index.md): sin ella, un número par se resolvería también por la
 cláusula que continúa la búsqueda.
 
 ## 6
 
 <!-- ejemplo: capitulo-09/soluciones.pl predicado: hay_algun_menor/1 consulta: hay_algun_menor([41, 12, 68]). -->
 ```prolog
-% hay_algun_menor(L): algún número de L es menor que 18. No requiere corte: es
-% suficiente que exista uno, y la consulta se cumple al encontrarlo.
+%!  hay_algun_menor(+L) is nondet.
+%
+%   Algún número de L es menor que 18. No requiere corte: es suficiente que
+%   exista uno, y la consulta se cumple al encontrarlo.
 hay_algun_menor(L) :-
     member(X, L),
     X < 18.
@@ -104,8 +116,11 @@ la condición, y para ello es suficiente encontrar el primero: en ese momento
 Prolog responde `true`.
 
 Un corte solo serviría para eliminar las alternativas pendientes, en caso de que
-se soliciten más respuestas. Su efecto se limita a la forma de la respuesta
-(`true.` en lugar de `true ;`); agregarlo es opcional.
+se soliciten más respuestas. Sin él, la consulta se cumple una vez por cada
+número menor que 18 —`hay_algun_menor([12, 8])` responde `true` dos veces—, y
+por eso el encabezado dice `nondet`; con un corte al final sería `semidet`. Las
+dos versiones responden igual a la pregunta de si existe alguno, y agregarlo es
+opcional.
 
 ## 7
 
@@ -125,7 +140,10 @@ encuentra, y cuál sea depende del orden de los hechos.
 
 <!-- ejemplo: capitulo-09/soluciones.pl predicado: primer_cuadrado_mayor/2 consulta: primer_cuadrado_mayor(50, C). -->
 ```prolog
-% primer_cuadrado_mayor(N, C): el primer número cuyo cuadrado supera a N.
+%!  primer_cuadrado_mayor(+N, -C) is semidet.
+%
+%   C es el primer número cuyo cuadrado supera a N. C debe llegar libre: el
+%   corte es rojo.
 primer_cuadrado_mayor(N, C) :-
     between(1, 10000, C),
     C * C > N,
@@ -138,6 +156,16 @@ el primer candidato que cumple la condición.
 
 Para 50 la respuesta es 8, porque 7 × 7 = 49, que no supera a 50.
 
+El encabezado se justifica argumento por argumento:
+
+- `N` es `+`, porque llega a la comparación `C * C > N`, que exige un valor;
+- `C` es `-` y no `?`. El corte es rojo, como el de `primer_multiplo/3`: con
+  `C` ya ligado, el predicado acepta un número que no es el primero
+  —`primer_cuadrado_mayor(50, 9)` responde `true`—, y por eso la descripción
+  aclara que `C` debe llegar libre;
+- es `semidet` y no `det` porque la búsqueda termina en 10000: si `N` es
+  10000 × 10000 o más, no hay respuesta. Con el corte, nunca hay más de una.
+
 ## 9
 
 El corte rojo está en las dos primeras cláusulas, y se manifiesta en una consulta
@@ -145,12 +173,15 @@ con el descuento instanciado: `descuento(8, 0)` responde `true`, porque la
 tercera cláusula, `descuento(_, 0)`, unifica con cualquier edad y no tiene
 condición.
 
-Es exactamente el caso de la sección 9.5: las cláusulas con `!` no llegan a
+Es exactamente el caso de la [sección 9.5](index.md#95-corte-verde-y-corte-rojo): las cláusulas con `!` no llegan a
 ejecutarse, porque sus cabezas no unifican con `0`.
 
 <!-- ejemplo: capitulo-09/soluciones.pl predicado: descuento/2 consulta: descuento(8, D). -->
 ```prolog
-% descuento(Edad, D): el corte rojo corregido, con las condiciones completas.
+%!  descuento(+Edad, -D) is det.
+%
+%   D es el descuento que corresponde a Edad: el corte rojo corregido, con las
+%   condiciones completas.
 descuento(Edad, 50) :-
     Edad < 12.
 descuento(Edad, 30) :-
@@ -161,15 +192,18 @@ descuento(Edad, 0) :-
 ```
 
 La corrección usa las condiciones completas y ningún corte. Con esta versión,
-`descuento(8, 0)` responde `false`, que es la respuesta correcta.
+`descuento(8, 0)` responde `false`, que es la respuesta correcta: el predicado
+cumple ahora su encabezado también cuando `D` llega ligado.
 
 ## 10
 
 <!-- ejemplo: capitulo-09/soluciones.pl predicado: sin_repetidos/2 consulta: sin_repetidos([a, b, a, c, b], R). -->
 ```prolog
-% sin_repetidos(L, R): R es L sin repetidos; conserva la última aparición de
-% cada elemento. El corte descarta las demás soluciones de member/2: es
-% suficiente que X aparezca una vez en Resto.
+%!  sin_repetidos(+L, -R) is det.
+%
+%   R es L sin repetidos; conserva la última aparición de cada elemento. El
+%   corte descarta las demás soluciones de member/2: es suficiente que X
+%   aparezca una vez en Resto.
 sin_repetidos([], []).
 sin_repetidos([X|Resto], [X|RestoR]) :-
     \+ member(X, Resto),
@@ -202,7 +236,7 @@ false.
 El resultado es `[a, c, b]` y no `[a, b, c]`. Ambos criterios son válidos; lo
 importante es identificar cuál de los dos implementa el programa. Para conservar
 la primera aparición se debe registrar qué elementos ya se incluyeron, lo que
-requiere un acumulador, como en el capítulo 8.
+requiere un acumulador, como en el [capítulo 8](../capitulo-08-aritmetica/index.md).
 
 ## 11
 
@@ -214,7 +248,7 @@ requiere un acumulador, como en el capítulo 8.
 | `primero(rojo).` | una |
 
 La tercera es la que enseña algo, y responde `true.` aunque `verde` no sea el
-primer color. La causa es la de la sección 9.5: al consultar `primero(verde)`,
+primer color. La causa es la de la [sección 9.5](index.md#95-corte-verde-y-corte-rojo): al consultar `primero(verde)`,
 la cabeza `primero(C)` unifica con `C = verde`, de modo que el objetivo del
 cuerpo ya no es "dame el primer color" sino `color(verde)`, que se cumple de
 manera directa. El `!` se ejecuta después, cuando ya no hay nada que podar.
@@ -247,7 +281,7 @@ respuesta termina en punto y no en `;`.
 ## 13
 
 El corte **no** afecta a las llamadas recursivas. Según la primera regla de la
-sección 9.3, descarta las cláusulas siguientes **para la invocación que entró en
+[sección 9.3](index.md#93-que-poda-exactamente), descarta las cláusulas siguientes **para la invocación que entró en
 esa cláusula**, y cada llamada recursiva es una invocación distinta, con sus
 propias alternativas.
 
@@ -269,8 +303,10 @@ también `X = 6`.
 
 <!-- ejemplo: capitulo-09/soluciones.pl predicado: clasificar/2 consulta: clasificar(5, C). -->
 ```prolog
-% clasificar(N, C): C es negativo, cero o positivo, según N. Plantilla 14.
-% Correcto con C libre; con C instanciado, el corte puede no ejecutarse.
+%!  clasificar(+N, -C) is det.
+%
+%   C es negativo, cero o positivo, según N. Plantilla 14. Correcto con C
+%   libre; con C instanciado, el corte puede no ejecutarse.
 clasificar(N, negativo) :-
     N < 0,
     !.
@@ -304,7 +340,7 @@ El programa afirma que −2 es positivo. Las dos primeras cláusulas se descarta
 por la cabeza —`positivo` no unifica con `negativo` ni con `cero`—, de modo que
 ningún `!` llega a ejecutarse, y la tercera cláusula unifica sin verificar nada.
 
-La conclusión es la de la sección 9.5, y conviene enunciarla como regla de la
+La conclusión es la de la [sección 9.5](index.md#95-corte-verde-y-corte-rojo), y conviene enunciarla como regla de la
 plantilla 14: la **última** cláusula es la peligrosa, porque no lleva condición
 y afirma su caso para todo lo que llegue hasta ella. Si el predicado debe
 admitir consultas con el resultado ya instanciado, hay que escribir las

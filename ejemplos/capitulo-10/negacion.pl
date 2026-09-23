@@ -22,29 +22,39 @@ padre(juan, pedro).
 padre(pedro, luis).
 padre(pedro, eva).
 
-% no_tiene_hijos(P): P no es padre de nadie.
-% Primero se genera una persona; después se evalúa la negación sobre ella.
+%!  no_tiene_hijos(?P) is nondet.
+%
+%   P no es padre de nadie. Primero se genera una persona; después se evalúa
+%   la negación sobre ella.
 no_tiene_hijos(P) :-
     persona(P),
     \+ padre(P, _).
 
-% mal_no_tiene_hijos(P): la misma regla con los objetivos en orden inverso. Es
-% incorrecta; la sección 10.4 explica la causa.
+%!  mal_no_tiene_hijos(?P) is nondet.
+%
+%   La misma regla con los objetivos en orden inverso. Es incorrecta; la
+%   sección 10.4 explica la causa.
 mal_no_tiene_hijos(P) :-
     \+ padre(P, _),
     persona(P).
 
-% distinto_de(P, Otro): P es una persona que no es Otro.
+%!  distinto_de(?P, +Otro) is nondet.
+%
+%   P es una persona que no es Otro.
 distinto_de(P, Otro) :-
     persona(P),
     P \= Otro.
 
-% hijo_unico(H): H tiene un padre, y ese padre no tiene otros hijos.
+%!  hijo_unico(?H) is nondet.
+%
+%   H tiene un padre, y ese padre no tiene otros hijos.
 hijo_unico(H) :-
     padre(P, H),
     \+ otro_hijo(P, H).
 
-% otro_hijo(P, H): P tiene algún hijo que no es H.
+%!  otro_hijo(?P, +H) is nondet.
+%
+%   P tiene algún hijo que no es H.
 otro_hijo(P, H) :-
     padre(P, Otro),
     Otro \== H.

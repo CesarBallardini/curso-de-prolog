@@ -6,7 +6,7 @@ de lógica.
 En los capítulos anteriores se describió a Prolog como un mecanismo de búsqueda
 de respuestas: prueba objetivos, recorre cláusulas, retrocede. Esa descripción
 es correcta, y corresponde a lo que ocurre durante la ejecución del programa.
-Existe una segunda lectura, presente desde el capítulo 1 aunque no se la haya
+Existe una segunda lectura, presente desde el [capítulo 1](../capitulo-01-la-primera-hora/index.md) aunque no se la haya
 nombrado: **un programa Prolog es un conjunto de afirmaciones lógicas**, y una
 consulta es una pregunta sobre lo que se deduce de ellas.
 
@@ -37,8 +37,10 @@ La siguiente es una regla del ejemplo de este capítulo:
 
 <!-- ejemplo: capitulo-11/logica.pl predicado: madre/2 consulta: madre(Quien, ana). -->
 ```prolog
-% madre(M, H): para toda M y todo H, si M es mujer y M es progenitora de H,
-% entonces M es madre de H.
+%!  madre(?M, ?H) is nondet.
+%
+%   Para toda M y todo H, si M es mujer y M es progenitora de H, entonces M es
+%   madre de H.
 madre(M, H) :-
     mujer(M),
     progenitor(M, H).
@@ -72,7 +74,7 @@ cubren la mayor parte de los casos:
 | $\land$ (conjunción) | la coma entre objetivos |
 | $\lor$ (disyunción) | varias cláusulas del mismo predicado |
 | $\rightarrow$ (implicación) | `:-`, **con los operandos en orden inverso** |
-| $\lnot$ (negación) | `\+`, con restricciones (sección 11.6) |
+| $\lnot$ (negación) | `\+`, con restricciones ([sección 11.6](#116-lo-que-excede-la-logica)) |
 
 Dos observaciones sobre la tabla.
 
@@ -88,8 +90,10 @@ cláusulas *es* la disyunción.
 
 <!-- ejemplo: capitulo-11/logica.pl predicado: ascendiente/2 consulta: ascendiente(Quien, luis). -->
 ```prolog
-% ascendiente(A, D): A es progenitor de D, o es progenitor de alguien que a su
-% vez es ascendiente de D. La disyunción se expresa con las dos cláusulas.
+%!  ascendiente(?A, ?D) is nondet.
+%
+%   A es progenitor de D, o es progenitor de alguien que a su vez es
+%   ascendiente de D. La disyunción se expresa con las dos cláusulas.
 ascendiente(A, D) :-
     progenitor(A, D).
 ascendiente(A, D) :-
@@ -116,9 +120,11 @@ existencialmente**, y el alcance del $\exists$ es el antecedente:
 
 <!-- ejemplo: capitulo-11/logica.pl predicado: tiene_hijos/1 consulta: tiene_hijos(Quien). -->
 ```prolog
-% tiene_hijos(P): para todo P, si existe algún H del que P es progenitor,
-% entonces P tiene hijos. H no aparece en la cabeza: es la variable
-% cuantificada existencialmente.
+%!  tiene_hijos(?P) is nondet.
+%
+%   Para todo P, si existe algún H del que P es progenitor, entonces P tiene
+%   hijos. H no aparece en la cabeza: es la variable cuantificada
+%   existencialmente.
 tiene_hijos(P) :-
     progenitor(P, _).
 ```
@@ -130,7 +136,7 @@ $$\forall P \; \bigl( \exists H \; \mathit{progenitor}(P, H)
 hijos." La variable anónima `_` corresponde a la variable cuantificada
 existencialmente, y por eso no es necesario darle nombre.
 
-La regla tiene una excepción, y es la del capítulo 10: **una variable que
+La regla tiene una excepción, y es la del [capítulo 10](../capitulo-10-negacion-como-falla/index.md): **una variable que
 aparece solo dentro de un `\+` está cuantificada universalmente**, no
 existencialmente. Negar "existe algún H" equivale a afirmar "para todo H, no":
 
@@ -138,7 +144,7 @@ $$\lnot \, \exists H \; \mathit{tiene}(P, H)
   \quad \equiv \quad
   \forall H \; \lnot \, \mathit{tiene}(P, H)$$
 
-Es la razón de fondo del problema de ubicación de `\+` de la sección 10.4: al
+Es la razón de fondo del problema de ubicación de `\+` de la [sección 10.4](../capitulo-10-negacion-como-falla/index.md#104-donde-ubicar): al
 escribir `\+ tiene(P, _)` no se pregunta si *algún* valor falla, sino si fallan
 *todos*.
 
@@ -191,7 +197,7 @@ corresponden a construcciones del lenguaje:
 Hechos, reglas y consultas —las tres construcciones que se usan desde el capítulo
 2— son los tres casos de una misma forma.
 
-Esto permite releer el árbol de derivación del capítulo 5. Cada uno de sus nodos
+Esto permite releer el árbol de derivación del [capítulo 5](../capitulo-05-como-responde-prolog/index.md). Cada uno de sus nodos
 es una **consulta**, es decir el tercer caso: una cláusula sin conclusión. Cada
 uno de sus arcos está etiquetado con una cláusula de los otros dos casos, un
 hecho o una regla. El árbol completo está construido con las tres
@@ -211,7 +217,7 @@ mayor, y el lenguaje resultante ya no sería Prolog.
 El costo de la restricción es que algunas afirmaciones no se pueden expresar.
 "Toda persona es mayor o menor de edad" no se puede escribir como una cláusula
 de Horn. Se puede escribir el predicado que lo determina —como se hizo en el
-capítulo 9—, pero no es equivalente: es un programa que decide, y no una
+[capítulo 9](../capitulo-09-backtracking-y-corte/index.md)—, pero no es equivalente: es un programa que decide, y no una
 afirmación que se pueda usar en cualquier sentido.
 
 !!! question "Actividad"
@@ -240,10 +246,10 @@ derivar una contradicción. Si la encuentra, la suposición no puede ser
 verdadera, y por lo tanto la consulta original sí lo es. El método se denomina
 **demostración por refutación**.
 
-La única regla de inferencia que usa es la del capítulo 5: tomar un objetivo,
+La única regla de inferencia que usa es la del [capítulo 5](../capitulo-05-como-responde-prolog/index.md): tomar un objetivo,
 encontrar una cláusula cuya cabeza unifique con él, y reemplazarlo por el cuerpo
 de esa cláusula. Esa regla se denomina **resolución**, y la unificación del
-capítulo 4 es la que determina cuándo se la puede aplicar.
+[capítulo 4](../capitulo-04-terminos-y-unificacion/index.md) es la que determina cuándo se la puede aplicar.
 
 En síntesis: **Prolog es resolución sobre cláusulas de Horn, con un recorrido
 del árbol de izquierda a derecha y de arriba hacia abajo.** Esa definición resume
@@ -252,7 +258,7 @@ anterior.
 
 Cuando el árbol alcanza un objetivo vacío —no queda nada por probar—, la
 contradicción está derivada y se produce la respuesta. Las hojas de éxito del
-capítulo 5 corresponden exactamente a esa situación.
+[capítulo 5](../capitulo-05-como-responde-prolog/index.md) corresponden exactamente a esa situación.
 
 ## 11.6 Lo que excede la lógica
 
@@ -262,25 +268,25 @@ resultado inesperado.
 
 **El orden.** Las fórmulas no tienen orden: $a \land b$ y $b \land a$ son equivalentes.
 En Prolog tienen el mismo significado pero distinto comportamiento, y en algunos
-casos la diferencia determina si el programa termina o no (capítulo 5).
+casos la diferencia determina si el programa termina o no ([capítulo 5](../capitulo-05-como-responde-prolog/index.md)).
 
 **El recorrido no alcanza todo lo que el método demuestra.** La resolución de la
-sección 11.5 encuentra toda consecuencia del programa. Pero Prolog no explora el
+[sección 11.5](#115-como-prueba-prolog) encuentra toda consecuencia del programa. Pero Prolog no explora el
 árbol de cualquier manera: lo recorre de izquierda a derecha y de arriba hacia
 abajo, y si en el camino hay una rama infinita, nunca llega a las ramas ubicadas
 a su derecha. La respuesta se sigue del programa, está en el árbol, y no se
-obtiene (sección 5.6). Es la razón de fondo por la cual existe el corte.
+obtiene ([sección 5.6](../capitulo-05-como-responde-prolog/index.md#56-ramas-infinitas)). Es la razón de fondo por la cual existe el corte.
 
 **El corte.** `!` sí tiene traducción a la lógica, y es la más simple posible:
 se lee como un objetivo que siempre se cumple, de modo que una cláusula con
 corte afirma lo mismo que afirmaría sin él. Lo que el corte altera no es la
 lectura sino el acuerdo entre la lectura y las respuestas: con un corte rojo, el
 programa deja de responder de acuerdo con lo que sus propias cláusulas afirman
-(capítulo 9). De ahí la recomendación de escribir primero cláusulas verdaderas y
+([capítulo 9](../capitulo-09-backtracking-y-corte/index.md)). De ahí la recomendación de escribir primero cláusulas verdaderas y
 agregar los cortes después.
 
 **`\+` no es $\lnot$.** La negación lógica establece que una afirmación es falsa; `\+`
-establece que no se la pudo probar (capítulo 10). Coinciden solo cuando el
+establece que no se la pudo probar ([capítulo 10](../capitulo-10-negacion-como-falla/index.md)). Coinciden solo cuando el
 programa contiene toda la información relevante.
 
 **Las respuestas repetidas.** La lógica establece que una afirmación es
@@ -288,7 +294,7 @@ verdadera; Prolog produce una respuesta por cada demostración, como se observó
 con `tiene_hijos/1`.
 
 **`is/2`.** "X es el resultado de 2+3" se asemeja a una igualdad, pero opera en
-un único sentido (capítulo 8). Corresponde a la relación aritmética únicamente
+un único sentido ([capítulo 8](../capitulo-08-aritmetica/index.md)). Corresponde a la relación aritmética únicamente
 cuando su lado derecho no contiene variables sin valor; fuera de ese caso, el
 programa abandona la lógica por completo.
 
@@ -349,6 +355,9 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 3. ★ **(2)** ¿Qué cuantificador corresponde a cada variable de la siguiente regla?
 
     ```prolog
+    %!  tiene_nieto(?A) is nondet.
+    %
+    %   A tiene algún nieto.
     tiene_nieto(A) :-
         progenitor(A, P),
         progenitor(P, _).
@@ -364,6 +373,9 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
    significado. Identificar la diferencia:
 
     ```prolog
+    %!  sin_mascota(?P) is nondet.
+    %
+    %   P es una persona sin mascota.
     sin_mascota(P) :-
         persona(P),
         \+ tiene(P, _).
@@ -391,22 +403,25 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     a. "Todo el que tiene un gato tiene una mascota."
     b. "Nadie es padre de sí mismo."
     c. "Toda persona es varón o mujer."
-11. ★ **(2)** De las cinco diferencias que enumera la sección 11.6, indicar cuál
+11. ★ **(2)** De las cinco diferencias que enumera la [sección 11.6](#116-lo-que-excede-la-logica), indicar cuál
     explica cada uno de estos comportamientos:
 
     a. `?- categoria(sofia, adulto).` responde `true.`
     b. `?- tiene_hijos(P).` informa dos veces a `juan`.
     c. `?- X is 3 + Y.` no responde `true.` ni `false.`
     d. Un programa correcto no produce una respuesta que sus cláusulas afirman.
-12. **(2)** La sección 11.4 afirma que un hecho es una cláusula de Horn sin
+12. **(2)** La [sección 11.4](#114-clausulas-de-horn) afirma que un hecho es una cláusula de Horn sin
     condiciones y una consulta es una cláusula de Horn sin conclusión. Escribir
     la fórmula que corresponde a la consulta `?- padre(juan, Quien).` y explicar
     en qué sentido Prolog la **refuta** en lugar de demostrarla.
 13. ★ **(3)** El programa siguiente tiene una lectura declarativa impecable y un
     comportamiento inútil. Escribir su lectura, explicar por qué es verdadera, y
-    decir qué elemento de la sección 11.6 lo explica:
+    decir qué elemento de la [sección 11.6](#116-lo-que-excede-la-logica) lo explica:
 
     ```prolog
+    %!  ascendiente(?A, ?D) is nondet.
+    %
+    %   A es ascendiente de D.
     ascendiente(A, D) :-
         ascendiente(A, X),
         progenitor(X, D).
@@ -434,9 +449,9 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 
 | Tema | Se retoma en |
 |---|---|
-| Reunir todas las respuestas de una consulta | capítulo 15 |
-| Predicados que reciben predicados como argumento | capítulo 16 |
-| Programas que se modifican durante la ejecución | capítulo 17 |
-| Gramáticas, que son cláusulas con otra notación | capítulo 19 |
-| Metaintérpretes: un intérprete de Prolog escrito en Prolog | capítulo 25 |
-| Restricciones, donde la lectura declarativa vuelve a ser exacta | capítulo 32 |
+| Reunir todas las respuestas de una consulta | [capítulo 15](../capitulo-15-todas-las-soluciones/index.md) |
+| Predicados que reciben predicados como argumento | [capítulo 16](../capitulo-16-orden-superior/index.md) |
+| Programas que se modifican durante la ejecución | [capítulo 17](../capitulo-17-base-de-datos-dinamica/index.md) |
+| Gramáticas, que son cláusulas con otra notación | [capítulo 19](../capitulo-19-gramaticas-dcg/index.md) |
+| Metaintérpretes: un intérprete de Prolog escrito en Prolog | [capítulo 25](../capitulo-25-introspeccion-y-metainterpretes/index.md) |
+| Restricciones, donde la lectura declarativa vuelve a ser exacta | [capítulo 32](../capitulo-32-programacion-con-restricciones/index.md) |

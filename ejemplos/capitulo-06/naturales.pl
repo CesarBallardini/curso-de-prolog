@@ -7,26 +7,35 @@
 % la suma y la comparación. El ejemplo aísla la recursión de cualquier otro
 % mecanismo.
 %
-%?- natural(s(s(0))).
-%?- suma(s(0), s(s(0)), Cuanto).
+%?- natural(s(s(cero))).
+%?- suma(s(cero), s(s(cero)), Cuanto).
 
-% natural(N): N es un número natural.
-natural(0).
+%!  natural(+N) is semidet.
+%!  natural(-N) is multi.
+%
+%   N es un número natural.
+natural(cero).
 natural(s(N)) :-
     natural(N).
 
-% suma(A, B, C): C es A más B.
-suma(0, B, B).
+%!  suma(?A, ?B, ?C) is nondet.
+%
+%   C es A más B.
+suma(cero, B, B).
 suma(s(A), B, s(C)) :-
     suma(A, B, C).
 
-% menor(A, B): A es menor que B.
-menor(0, s(_)).
+%!  menor(?A, ?B) is nondet.
+%
+%   A es menor que B.
+menor(cero, s(_)).
 menor(s(A), s(B)) :-
     menor(A, B).
 
-% valor(N, V): V es el entero predefinido que corresponde al natural N.
-valor(0, 0).
+%!  valor(+N, -V) is det.
+%
+%   V es el entero predefinido que corresponde al natural N.
+valor(cero, 0).
 valor(s(N), V) :-
     valor(N, Anterior),
     V is Anterior + 1.

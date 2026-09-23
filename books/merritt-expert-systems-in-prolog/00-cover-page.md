@@ -31,4 +31,3 @@ Amzi! is a registered trademark and Logic Server, Active Prolog Tutor, Adventure
 Last Updated: August 2000
 
 PDF version March 2001 edited, designed and compiled by Daniel L. Dudley (daniel.dudley@chello.no)
-

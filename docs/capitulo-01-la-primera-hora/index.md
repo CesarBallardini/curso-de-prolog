@@ -45,11 +45,19 @@ padre(juan, pedro).
 padre(pedro, luis).
 padre(pedro, eva).
 
-% abuelo(A, N): A es abuelo de N cuando es el padre de su padre.
+%!  abuelo(?A, ?N) is nondet.
+%
+%   A es abuelo de N cuando es el padre de su padre.
 abuelo(A, N) :-
     padre(A, P),
     padre(P, N).
 ```
+
+Las líneas que comienzan con `%` son comentarios: Prolog las ignora, y están
+destinadas a quien lee el programa. Las que preceden a `abuelo/2` forman su
+encabezado. Los signos `?`, `+` y `-` de los encabezados, y palabras como
+`nondet`, se explican en la [sección 2.8](../capitulo-02-hechos-consultas-y-variables/index.md#28-como-se-documenta-el-uso-de-un-predicado); por ahora basta con leer la
+descripción.
 
 Al abrirlo en SWISH se ven dos paneles: arriba a la izquierda, el programa;
 abajo a la derecha, la casilla donde se escriben las consultas. En esa casilla está cargada
@@ -72,7 +80,7 @@ false.
 más acotado y más preciso: *la consulta no se puede probar con el contenido del
 programa*. Si una relación no está escrita en el programa ni se deduce de él,
 Prolog responde `false.`. El
-capítulo 2 desarrolla esta distinción.
+[capítulo 2](../capitulo-02-hechos-consultas-y-variables/index.md) desarrolla esta distinción.
 
 !!! question "Actividad"
     Antes de ejecutarla, determinar qué responde `padre(ana, luis).` y por qué.
@@ -103,9 +111,9 @@ información para determinar cuál de las dos lecturas es la deseada; por eso la
 convención se fija una vez y se respeta en todo el programa.
 
 `padre/2` significa **padre** en sentido estricto, y no "padre o madre"; el
-capítulo 2 agrega `madre/2`.
+[capítulo 2](../capitulo-02-hechos-consultas-y-variables/index.md) agrega `madre/2`.
 La relación general —ser padre **o** madre— aparece en la
-sección 1.9 con el nombre `progenitor/2`.
+[sección 1.9](#19-recursion) con el nombre `progenitor/2`.
 
 Un predicado se identifica siempre junto con su **aridad**, que es la cantidad
 de argumentos que lleva, separada del nombre por una barra: en este caso,
@@ -130,7 +138,9 @@ Los hechos enuncian lo que ya sabemos que se cumple. Las **reglas** indican cóm
 
 <!-- ejemplo: capitulo-01/familia.pl predicado: abuelo/2 consulta: abuelo(juan, Quien). -->
 ```prolog
-% abuelo(A, N): A es abuelo de N cuando es el padre de su padre.
+%!  abuelo(?A, ?N) is nondet.
+%
+%   A es abuelo de N cuando es el padre de su padre.
 abuelo(A, N) :-
     padre(A, P),
     padre(P, N).
@@ -162,7 +172,7 @@ eva, y aplicó la regla.
 
 ## 1.4 Variables y más de una respuesta
 
-La sección 1.2 mostró que se puede preguntar *quién* cumple una relación,
+La [sección 1.2](#12-hechos) mostró que se puede preguntar *quién* cumple una relación,
 escribiendo una variable en la posición cuyo valor se desconoce. Conviene ahora
 detenerse en cómo se obtienen las respuestas:
 
@@ -202,7 +212,7 @@ true.
 Esta consulta pregunta si juan es padre de alguien, sin solicitar de quién. La
 respuesta aparece dos veces porque hay dos hechos que la satisfacen, `ana` y
 `pedro`: cada uno es una demostración distinta. Como no se solicitó el valor,
-las dos demostraciones se ven iguales. El capítulo 3 retoma este punto.
+las dos demostraciones se ven iguales. El [capítulo 3](../capitulo-03-reglas-y-conjunciones/index.md) retoma este punto.
 
 ### Una respuesta que queda en espera
 
@@ -220,7 +230,7 @@ encuentra ninguna solución más y responde `false.`.
 
 Por lo tanto, `true ;` no equivale a `true.`. El punto indica que no hay más
 respuestas; el punto y coma se usa cuando la consulta es cierta y todavía
-quedan alternativas sin explorar. Esta diferencia adquiere importancia en el capítulo 9.
+quedan alternativas sin explorar. Esta diferencia adquiere importancia en el [capítulo 9](../capitulo-09-backtracking-y-corte/index.md).
 
 !!! question "Actividad"
     ¿Por qué `abuelo(juan, eva).` responde `true.` y `abuelo(juan, luis).` deja
@@ -245,7 +255,9 @@ edad(luis, 12).
 edad(eva, 8).
 edad(sofia, 3).
 
-% etapa(P, E): E es la etapa de la vida en la que está P, según su edad.
+%!  etapa(?P, ?E) is nondet.
+%
+%   E es la etapa de la vida en la que está P, según su edad.
 etapa(P, bebe) :-
     edad(P, A),
     A < 4.
@@ -320,7 +332,9 @@ el resto sin especificar:
 
 <!-- ejemplo: capitulo-01/mascotas.pl predicado: propietario_de_gato/1 consulta: propietario_de_gato(Quien). -->
 ```prolog
-% propietario_de_gato(P): P tiene por lo menos un gato.
+%!  propietario_de_gato(?P) is nondet.
+%
+%   P tiene por lo menos un gato.
 propietario_de_gato(P) :-
     tiene(P, mascota(gato, _)).
 ```
@@ -354,7 +368,7 @@ responde que sí, e informa con qué valor. `=` no es una asignación: es en pri
 
 Esa operación —determinar si dos términos pueden coincidir, y con qué valores de
 sus variables— se denomina **unificación**. Es central en el lenguaje, y el
-capítulo 4 está dedicado por completo a ella.
+[capítulo 4](../capitulo-04-terminos-y-unificacion/index.md) está dedicado por completo a ella.
 
 ### El operador `=` no evalúa expresiones
 
@@ -380,13 +394,15 @@ false.
 
 `2+1` y `3` son términos distintos, aunque su valor aritmético sea el mismo. La
 evaluación aritmética se debe solicitar de manera explícita, y es el tema de la
-sección 1.10.
+[sección 1.10](#110-aritmetica).
 
 Los números se comparan con `<`, `=<`, `>` y `>=`:
 
 <!-- ejemplo: capitulo-01/comparar.pl predicado: mayor_que/2 consulta: mayor_que(luis, eva). -->
 ```prolog
-% mayor_que(A, B): A tiene más años que B.
+%!  mayor_que(?A, ?B) is nondet.
+%
+%   A tiene más años que B.
 mayor_que(A, B) :-
     edad(A, EdadA),
     edad(B, EdadB),
@@ -397,7 +413,9 @@ El operador `\+`, antepuesto a un objetivo, significa "este objetivo no se puede
 
 <!-- ejemplo: capitulo-01/comparar.pl predicado: distintos/2 consulta: distintos(ana, pedro). -->
 ```prolog
-% distintos(A, B): A y B no son la misma persona.
+%!  distintos(+A, +B) is semidet.
+%
+%   A y B no son la misma persona.
 distintos(A, B) :-
     \+ A = B.
 ```
@@ -411,7 +429,7 @@ false.
 ```
 
 `\+` tiene una restricción importante: no significa exactamente "es falso", sino
-"no se pudo probar", que es la misma distinción de la sección 1.1. El capítulo
+"no se pudo probar", que es la misma distinción de la [sección 1.1](#11-que-es-un-programa-prolog). El capítulo
 10 está dedicado a este tema.
 
 ## 1.8 Cómo busca Prolog
@@ -421,7 +439,9 @@ El predicado `trace` permite ver la ejecución paso a paso:
 
 <!-- ejemplo: capitulo-01/familia.pl predicado: abuelo/2 consulta: trace, abuelo(juan, eva). -->
 ```prolog
-% abuelo(A, N): A es abuelo de N cuando es el padre de su padre.
+%!  abuelo(?A, ?N) is nondet.
+%
+%   A es abuelo de N cuando es el padre de su padre.
 abuelo(A, N) :-
     padre(A, P),
     padre(P, N).
@@ -456,12 +476,12 @@ En la parte central de la traza, Prolog elige `ana`, intenta probar
 `padre(ana, eva)`, falla, **retrocede** y elige `pedro`. El mecanismo de
 retroceder y explorar la alternativa siguiente se denomina *backtracking* —en
 castellano, vuelta atrás o retroceso—, y es la base del modelo de ejecución de Prolog. El
-capítulo 5 lo representa como un árbol, y el capítulo 9 muestra cómo podar
+[capítulo 5](../capitulo-05-como-responde-prolog/index.md) lo representa como un árbol, y el [capítulo 9](../capitulo-09-backtracking-y-corte/index.md) muestra cómo podar
 ramas de ese árbol.
 
 Los cuatro eventos no son independientes: son las cuatro **puertas** de una
 misma caja, una por cada objetivo del programa. Ese diagrama —el *modelo de
-cajas de Byrd*— se presenta en la sección 5.3, junto al árbol de derivación. Por ahora
+cajas de Byrd*— se presenta en la [sección 5.3](../capitulo-05-como-responde-prolog/index.md#53-el-mismo-recorrido-registrado-por-trace), junto al árbol de derivación. Por ahora
 alcanza con leer los cuatro nombres sobre la traza.
 
 El número entre paréntesis de cada línea —el `(10)` y el `(11)`— indica a qué
@@ -497,9 +517,11 @@ pregunta** desde ese punto:
 
 <!-- ejemplo: capitulo-01/antepasados.pl predicado: antepasado/2 consulta: antepasado(tare, Quien). -->
 ```prolog
-% antepasado(A, D): A es antepasado de D.
-% Caso base: un progenitor es un antepasado. Caso recursivo: se desciende una
-% generación y se plantea la misma pregunta desde ese punto.
+%!  antepasado(?A, ?D) is nondet.
+%
+%   A es antepasado de D.
+%   Caso base: un progenitor es un antepasado. Caso recursivo: se desciende
+%   una generación y se plantea la misma pregunta desde ese punto.
 antepasado(A, D) :-
     progenitor(A, D).
 antepasado(A, D) :-
@@ -536,7 +558,7 @@ algo haya fallado, sino que se agotaron las alternativas pendientes.  Otra forma
 
 La recursión termina porque cada invocación desciende una generación, y el árbol
 es finito. Una recursión en la que el problema no se reduce en cada paso no
-termina; es el error más frecuente del capítulo 6, donde el tema se desarrolla
+termina; es el error más frecuente del [capítulo 6](../capitulo-06-recursion/index.md), donde el tema se desarrolla
 en detalle.
 
 !!! question "Actividad"
@@ -550,11 +572,15 @@ solicita con `is`:
 
 <!-- ejemplo: capitulo-01/aritmetica.pl predicado: doble/2 edad_en_meses/2 consulta: doble(21, X). -->
 ```prolog
-% doble(N, D): D es el doble de N.
+%!  doble(+N, -D) is det.
+%
+%   D es el doble de N.
 doble(N, D) :-
     D is N * 2.
 
-% edad_en_meses(P, M): M es la edad de P expresada en meses.
+%!  edad_en_meses(?P, -M) is nondet.
+%
+%   M es la edad de P expresada en meses.
 edad_en_meses(P, M) :-
     edad(P, A),
     M is A * 12.
@@ -579,13 +605,13 @@ expresión exacta en la que faltó un valor. El mensaje indica que se solicitó
 evaluar una expresión que contiene una variable sin valor. `doble/2` permite
 obtener el doble a partir del número, pero no el número a partir del doble.
 
-El capítulo 8 explica la causa, y cómo proceder cuando se necesitan ambos
+El [capítulo 8](../capitulo-08-aritmetica/index.md) explica la causa, y cómo proceder cuando se necesitan ambos
 sentidos.
 
 Además de `+`, `-`, `*` y `/`, se usan `mod` (el resto de la división entera) y
 `max`.
 
-Como se indicó en la sección 1.7, `=` no evalúa expresiones. `X = 2 + 1` liga
+Como se indicó en la [sección 1.7](#17-igualdad-y-comparacion), `=` no evalúa expresiones. `X = 2 + 1` liga
 `X` al término `2+1`; `X is 2 + 1` liga `X` al número `3`. Para obtener un
 resultado numérico se usa `is`.
 
@@ -596,15 +622,19 @@ programa también puede escribir texto durante su ejecución:
 
 <!-- ejemplo: capitulo-01/escribir.pl predicado: saludar/1 presentar/2 consulta: saludar(ana). -->
 ```prolog
-% saludar(A): escribe un saludo para A y pasa a la línea siguiente.
+%!  saludar(+A) is det.
+%
+%   Escribe un saludo para A y pasa a la línea siguiente.
 saludar(A) :-
     write('Hola, '),
     write(A),
     nl.
 
-% presentar(A, N): escribe cuántos hermanos tiene A.
-% format/2 compone la salida en una sola llamada: ~w inserta el valor siguiente
-% de la lista y ~n produce un salto de línea.
+%!  presentar(+A, +N) is det.
+%
+%   Escribe cuántos hermanos tiene A.
+%   format/2 compone la salida en una sola llamada: ~w inserta el valor
+%   siguiente de la lista y ~n produce un salto de línea.
 presentar(A, N) :-
     format("~w tiene ~w hermanos~n", [A, N]).
 ```
@@ -623,8 +653,8 @@ incluye valores es preferible `format/2`.  El primer argumento de `format/2` es 
 
 El ejemplo usa dos tipos de comillas, con significados distintos. `'Hola, '`,
 entre comillas simples, es un **átomo** —los nombres que se presentan en el
-capítulo 2—, escrito de ese modo porque contiene una coma y un espacio.
-`"~w tiene ~w hermanos~n"`, entre comillas dobles, es **texto** (*string*). El capítulo 18 trata esa diferencia;
+[capítulo 2](../capitulo-02-hechos-consultas-y-variables/index.md)—, escrito de ese modo porque contiene una coma y un espacio.
+`"~w tiene ~w hermanos~n"`, entre comillas dobles, es **texto** (*string*). El [capítulo 18](../capitulo-18-texto/index.md) trata esa diferencia;
 por ahora alcanza con la regla práctica: comillas simples para un nombre,
 comillas dobles para el texto que recibe `format/2`.
 
@@ -646,7 +676,9 @@ que `antepasado/2` recorría el árbol:
 
 <!-- ejemplo: capitulo-01/contar.pl predicado: cuenta/2 consulta: cuenta(1, 5). -->
 ```prolog
-% cuenta(Desde, Hasta): escribe los números de Desde a Hasta, uno por línea.
+%!  cuenta(+Desde, +Hasta) is det.
+%
+%   Escribe los números de Desde a Hasta, uno por línea.
 cuenta(Desde, Hasta) :-
     Desde =< Hasta,
     format("~w~n", [Desde]),
@@ -689,12 +721,16 @@ incluidas otras listas.
 % invitados(L): L es la lista de invitados a la fiesta, en orden de llegada.
 invitados([ana, luis, eva, sofia]).
 
-% esta_invitado(P): P está en la lista de invitados.
+%!  esta_invitado(?P) is nondet.
+%
+%   P está en la lista de invitados.
 esta_invitado(P) :-
     invitados(Lista),
     member(P, Lista).
 
-% cuantos_invitados(N): N es la cantidad de invitados.
+%!  cuantos_invitados(-N) is det.
+%
+%   N es la cantidad de invitados.
 cuantos_invitados(N) :-
     invitados(Lista),
     length(Lista, N).
@@ -716,7 +752,7 @@ Quien = eva ;
 Quien = sofia.
 ```
 
-Se repite lo observado en la sección 1.4: con un argumento concreto, la consulta
+Se repite lo observado en la [sección 1.4](#14-variables-y-mas-de-una-respuesta): con un argumento concreto, la consulta
 verifica la pertenencia; con una variable, enumera todos los elementos.
 
 Una lista también se puede descomponer en su primer elemento y la lista de los
@@ -724,11 +760,15 @@ restantes, con la notación `[Primero|Resto]`:
 
 <!-- ejemplo: capitulo-01/listas.pl predicado: primero_en_llegar/1 los_demas/1 consulta: los_demas(Resto). -->
 ```prolog
-% primero_en_llegar(P): P es el primer elemento de la lista.
+%!  primero_en_llegar(-P) is det.
+%
+%   P es el primer elemento de la lista.
 primero_en_llegar(P) :-
     invitados([P|_]).
 
-% los_demas(Resto): Resto es la lista sin su primer elemento.
+%!  los_demas(-Resto) is det.
+%
+%   Resto es la lista sin su primer elemento.
 los_demas(Resto) :-
     invitados([_|Resto]).
 ```
@@ -748,7 +788,7 @@ va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia
 Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
 tiene de propio, y los capítulos siguientes los dan por hechos.
 
-1. **(1)** Agregar al programa de la sección 1.1 el hecho de que `luis` es padre
+1. **(1)** Agregar al programa de la [sección 1.1](#11-que-es-un-programa-prolog) el hecho de que `luis` es padre
    de `clara`. ¿Qué responde ahora `abuelo(pedro, clara).`?
 2. **(1)** Escribir la consulta que pregunta de quiénes es padre `pedro`, sin
    nombrarlos.
@@ -757,27 +797,34 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
    distintas.
 4. **(1)** Con `edades.pl`, escribir una consulta que determine la etapa de
    `eva` y otra que determine quién tiene 41 años.
-5. ★ **(2)** Escribir `nieto(N, A)`: N es nieto de A. Verificarla con el programa
-   de la familia de la sección 1.1.
+5. ★ **(2)** Escribir `nieto(N, A)`: N es nieto de A. Su encabezado es
+   `%! nieto(?N, ?A) is nondet.` Verificarla con el programa de la familia de
+   la [sección 1.1](#11-que-es-un-programa-prolog).
 6. **(2)** En `mascotas.pl`, escribir `propietario_de_perro(P)`, análogo a
    `propietario_de_gato/1` pero para perros. Después, escribir
    `tiene_mascota(P)`, que se cumple para toda persona que tenga alguna mascota.
+   Los dos llevan el mismo encabezado que `propietario_de_gato/1`:
+   `%! propietario_de_perro(?P) is nondet.` y `%! tiene_mascota(?P) is nondet.`
 7. **(2)** En `comparar.pl`, escribir `menor_que(A, B)`, que se cumple cuando A
-   tiene menos años que B. ¿Se puede definir a partir de `mayor_que/2`?
+   tiene menos años que B, con el encabezado
+   `%! menor_que(?A, ?B) is nondet.` ¿Se puede definir a partir de
+   `mayor_que/2`?
 8. ★ **(2)** Escribir `triple(N, T)` en `aritmetica.pl`. Después, ejecutar
    `triple(X, 33).` y explicar el resultado.
 9. **(2)** Escribir `cuenta_al_reves(Desde, Hasta)`, que escribe los números
-   desde `Desde` en orden descendente hasta `Hasta`.
+   desde `Desde` en orden descendente hasta `Hasta`. Su encabezado es
+   `%! cuenta_al_reves(+Desde, +Hasta) is det.`
 10. **(2)** Con el árbol de Taré, escribir `hermano(A, B)`: A y B tienen el mismo
-    padre. Ejecutar `hermano(lot, Quien).` y examinar todas las respuestas.
+    padre. Su encabezado es `%! hermano(?A, ?B) is nondet.` Ejecutar
+    `hermano(lot, Quien).` y examinar todas las respuestas.
 11. ★ **(3)** La respuesta del ejercicio anterior incluye a `lot` como hermano de
-    sí mismo. Corregir la regla. (Sugerencia: sección 1.7.)
+    sí mismo. Corregir la regla. (Sugerencia: [sección 1.7](#17-igualdad-y-comparacion).)
 12. **(3)** Escribir `cuantos_invitados_mas(P, N)`, que determina cuántos
     invitados habría si se agregara `P`, sin modificar la lista original.
 13. ★ **(1)** Predecir, antes de ejecutarlas, cuál de estas dos consultas termina
     en punto y cuál queda en espera con `;`: `abuelo(juan, eva).` y
     `abuelo(juan, luis).` Verificarlo y explicar la diferencia. (Sugerencia:
-    sección 1.4; conviene mirar el orden de los hechos de `padre/2`.)
+    [sección 1.4](#14-variables-y-mas-de-una-respuesta); conviene mirar el orden de los hechos de `padre/2`.)
 14. ★ **(2)** Sobre `edades.pl`, en tres partes:
 
     a. Escribir `mayor_de(P, N)`, que se cumple cuando P tiene más de N años.
@@ -822,13 +869,13 @@ dónde se retoma cada uno:
 
 | Tema                                                             | Se retoma en                    |
 | ---------------------------------------------------------------- | ------------------------------- |
-| Hechos, consultas, el significado de `false.`                    | capítulo 2                      |
-| Reglas, conjunciones, el orden de evaluación                     | capítulo 3                      |
-| Términos compuestos, `=` y unificación                           | capítulo 4                      |
-| `trace`, backtracking, el modelo de cajas, árboles de derivación | capítulo 5                      |
-| Recursión, caso base, terminación                                | capítulo 6                      |
-| Listas, `[Primero|Resto]`, `member/2`, `length/2` | capítulo 7 |
-| `is/2`, el error de argumentos sin instanciar                    | capítulo 8                      |
-| Respuestas con alternativas pendientes, y cómo eliminarlas       | capítulo 9                      |
-| `\+` y el supuesto de mundo cerrado                              | capítulo 10                     |
-| `write/1`, `format/2` y el manejo de texto                       | capítulo 18                     |
+| Hechos, consultas, el significado de `false.`                    | [capítulo 2](../capitulo-02-hechos-consultas-y-variables/index.md)                      |
+| Reglas, conjunciones, el orden de evaluación                     | [capítulo 3](../capitulo-03-reglas-y-conjunciones/index.md)                      |
+| Términos compuestos, `=` y unificación                           | [capítulo 4](../capitulo-04-terminos-y-unificacion/index.md)                      |
+| `trace`, backtracking, el modelo de cajas, árboles de derivación | [capítulo 5](../capitulo-05-como-responde-prolog/index.md)                      |
+| Recursión, caso base, terminación                                | [capítulo 6](../capitulo-06-recursion/index.md)                      |
+| Listas, `[Primero|Resto]`, `member/2`, `length/2` | [capítulo 7](../capitulo-07-listas/index.md) |
+| `is/2`, el error de argumentos sin instanciar                    | [capítulo 8](../capitulo-08-aritmetica/index.md)                      |
+| Respuestas con alternativas pendientes, y cómo eliminarlas       | [capítulo 9](../capitulo-09-backtracking-y-corte/index.md)                      |
+| `\+` y el supuesto de mundo cerrado                              | [capítulo 10](../capitulo-10-negacion-como-falla/index.md)                     |
+| `write/1`, `format/2` y el manejo de texto                       | [capítulo 18](../capitulo-18-texto/index.md)                     |

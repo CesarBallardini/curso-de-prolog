@@ -131,4 +131,3 @@ Lindsay, P. and Norman, D., *Human Information Processing*. New York: Academic P
 Go to book index
 
 Page 3 of 3 http://faculty.nps.edu/ncrowe/book/af.html
-

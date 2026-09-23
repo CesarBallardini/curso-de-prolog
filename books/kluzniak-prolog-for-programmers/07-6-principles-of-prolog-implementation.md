@@ -766,4 +766,3 @@ At the time of this writing we know of two new compilers being developed. The re
 See also Section 2.5 for references on Prolog implementations with coroutining and parallelism.
 
 As a point of interest, we shall mention two papers describing implementations of Prolog done by embedding it in another programming language: Lisp (Komorowski I982) or POP-ll (Mellish and Hardy I983).
-

@@ -7,19 +7,25 @@
 
 % --- Ejercicio 2 -----------------------------------------------------------
 
-% triple(N, T): T es el triple de N.
+%!  triple(+N, -T) is det.
+%
+%   T es el triple de N.
 triple(N, T) :-
     T is N * 3.
 
 % --- Ejercicio 4 -----------------------------------------------------------
 
-% es_par(N): N es par.
+%!  es_par(+N) is semidet.
+%
+%   N es par.
 es_par(N) :-
     0 =:= N mod 2.
 
 % --- Ejercicio 5 -----------------------------------------------------------
 
-% mayor_de_los_dos(A, B, M): M es el mayor de los dos números.
+%!  mayor_de_los_dos(+A, +B, -M) is det.
+%
+%   M es el mayor de los dos números.
 mayor_de_los_dos(A, B, A) :-
     A >= B.
 mayor_de_los_dos(A, B, B) :-
@@ -27,7 +33,9 @@ mayor_de_los_dos(A, B, B) :-
 
 % --- Ejercicio 6 -----------------------------------------------------------
 
-% cuantos_mayores(L, N): N es la cantidad de números de L mayores que 18.
+%!  cuantos_mayores(+L, -N) is det.
+%
+%   N es la cantidad de números de L mayores que 18.
 cuantos_mayores([], 0).
 cuantos_mayores([X|Resto], N) :-
     X > 18,
@@ -39,13 +47,19 @@ cuantos_mayores([X|Resto], N) :-
 
 % --- Ejercicio 7 -----------------------------------------------------------
 
-% promedio(L, P): P es el promedio de los números de L.
-% Un único recorrido con dos acumuladores: la suma y la cantidad.
+%!  promedio(+L, -P) is semidet.
+%
+%   P es el promedio de los números de L.
+%   Un único recorrido con dos acumuladores: la suma y la cantidad.
 promedio(L, P) :-
     recorriendo(L, 0, 0, Suma, Cuantos),
     Cuantos > 0,
     P is Suma / Cuantos.
 
+%!  recorriendo(+L, +SumaHasta, +CuantosHasta, -Suma, -Cuantos) is det.
+%
+%   Suma y Cuantos son SumaHasta y CuantosHasta más la suma y la cantidad de
+%   los elementos de L.
 recorriendo([], Suma, Cuantos, Suma, Cuantos).
 recorriendo([X|Resto], SumaHasta, CuantosHasta, Suma, Cuantos) :-
     SumaAhora is SumaHasta + X,
@@ -54,11 +68,16 @@ recorriendo([X|Resto], SumaHasta, CuantosHasta, Suma, Cuantos) :-
 
 % --- Ejercicio 8 -----------------------------------------------------------
 
-% maximo(L, M): M es el mayor de L. La lista vacía no tiene máximo, por lo que
-% el predicado falla para ella.
+%!  maximo(+L, -M) is semidet.
+%
+%   M es el mayor de L. La lista vacía no tiene máximo, por lo que el predicado
+%   falla para ella.
 maximo([X|Resto], M) :-
     buscando_maximo(Resto, X, M).
 
+%!  buscando_maximo(+L, +Hasta, -M) is det.
+%
+%   M es el mayor entre Hasta y los elementos de L.
 buscando_maximo([], M, M).
 buscando_maximo([X|Resto], Hasta, M) :-
     X > Hasta,
@@ -69,7 +88,9 @@ buscando_maximo([X|Resto], Hasta, M) :-
 
 % --- Ejercicio 9 -----------------------------------------------------------
 
-% factorial(N, F): F es el factorial de N.
+%!  factorial(+N, -F) is semidet.
+%
+%   F es el factorial de N.
 factorial(0, 1).
 factorial(N, F) :-
     N > 0,
@@ -79,7 +100,9 @@ factorial(N, F) :-
 
 % --- Ejercicio 10 ----------------------------------------------------------
 
-% cuenta_atras(N, L): L es la lista de los enteros de N a 1, en ese orden.
+%!  cuenta_atras(+N, -L) is semidet.
+%
+%   L es la lista de los enteros de N a 1, en ese orden.
 cuenta_atras(0, []).
 cuenta_atras(N, [N|Resto]) :-
     N > 0,
@@ -88,9 +111,11 @@ cuenta_atras(N, [N|Resto]) :-
 
 % --- Ejercicio 12 ----------------------------------------------------------
 
-% hasta(N, X): X recorre los enteros de X a N. Con los números predefinidos, la
-% unificación ya no garantiza la terminación, y hay que reponer la guarda X < N
-% que en s(s(0)) daba la estructura del término.
+%!  hasta(+N, +X) is semidet.
+%
+%   X recorre los enteros de X a N. Con los números predefinidos, la
+%   unificación ya no garantiza la terminación, y hay que reponer la guarda
+%   X < N que en s(s(cero)) daba la estructura del término.
 hasta(N, N).
 hasta(N, X) :-
     X < N,
@@ -99,7 +124,9 @@ hasta(N, X) :-
 
 % --- Ejercicio 14 ----------------------------------------------------------
 
-% suma_hasta_sin(N, S): la suma de 1 a N, sin acumulador.
+%!  suma_hasta_sin(+N, -S) is semidet.
+%
+%   S es la suma de 1 a N, sin acumulador.
 suma_hasta_sin(0, 0).
 suma_hasta_sin(N, S) :-
     N > 0,
@@ -107,10 +134,15 @@ suma_hasta_sin(N, S) :-
     suma_hasta_sin(Anterior, SumaAnterior),
     S is SumaAnterior + N.
 
-% suma_hasta_con(N, S): la misma suma, con acumulador.
+%!  suma_hasta_con(+N, -S) is semidet.
+%
+%   La misma suma, con acumulador.
 suma_hasta_con(N, S) :-
     sumando_hasta(N, 0, S).
 
+%!  sumando_hasta(+N, +Hasta, -S) is semidet.
+%
+%   S es Hasta más la suma de 1 a N.
 sumando_hasta(0, Acumulado, Acumulado).
 sumando_hasta(N, Hasta, S) :-
     N > 0,

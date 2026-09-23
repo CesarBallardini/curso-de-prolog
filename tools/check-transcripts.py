@@ -204,8 +204,13 @@ def run_once(swipl: str, item: Transcript, context: list[Path]) -> tuple[str, st
     query = item.query.rstrip().rstrip('.')
     files = [str(PROBE)] + [str(path) for path in context]
     try:
+        # A small stack, so that the one endless generator the book shows,
+        # `natural(N)`, runs out of it in about a second instead of filling the
+        # default gigabyte, which took most of LIMIT on this machine and more
+        # than that on the CI runner. No query the book prints needs anything
+        # like 64 MB.
         done = subprocess.run(  # noqa: S603
-            [swipl, '-q', '-g', f'probe(({query}))', '-t', 'halt', *files],
+            [swipl, '-q', '--stack-limit=64m', '-g', f'probe(({query}))', '-t', 'halt', *files],
             capture_output=True,
             text=True,
             errors='replace',
@@ -214,8 +219,8 @@ def run_once(swipl: str, item: Transcript, context: list[Path]) -> tuple[str, st
     except subprocess.TimeoutExpired:
         # Counted as a failure, not as a skip. No query the book prints should
         # take this long: the one endless generator it shows, `natural(N)`, runs
-        # out of stack and is recognised by its error. Treating a timeout as a
-        # skip made the run flaky -- one slow query under load silently lowered
+        # out of the small stack above and is recognised by its error. Treating
+        # a timeout as a skip made the run flaky -- one slow query under load silently lowered
         # the count of checked transcripts, which is exactly how a real failure
         # would hide.
         return 'bad', f'did not finish in {LIMIT}s'

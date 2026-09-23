@@ -687,4 +687,3 @@ should have been used);
 e Functor or atom used only once in entire program (it’s probably misspelled).
 
 This is an open-ended project, and your lint checker is probably something you’ll keep adding to.
-

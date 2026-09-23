@@ -2031,4 +2031,3 @@ e
 **Go to paper index**
 
 Page 26 of 26 http://faculty.nps.edu/ncrowe/book/figures.html
-

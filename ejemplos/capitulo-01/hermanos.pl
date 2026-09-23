@@ -16,12 +16,18 @@ padre(haran, lot).
 padre(haran, milca).
 padre(haran, isca).
 
-% Ejercicio 10: la regla directa. Su defecto se corrige en el ejercicio 11.
+%!  hermano(?A, ?B) is nondet.
+%
+%   A y B tienen el mismo padre.
+%   Ejercicio 10: la regla directa. Su defecto se corrige en el ejercicio 11.
 hermano(A, B) :-
     padre(P, A),
     padre(P, B).
 
-% Ejercicio 11: se agrega la condición de que no sean la misma persona.
+%!  hermano_de_verdad(?A, ?B) is nondet.
+%
+%   A y B tienen el mismo padre y no son la misma persona.
+%   Ejercicio 11: se agrega la condición de que no sean la misma persona.
 hermano_de_verdad(A, B) :-
     padre(P, A),
     padre(P, B),

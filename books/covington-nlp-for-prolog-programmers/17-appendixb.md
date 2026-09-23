@@ -488,4 +488,3 @@ _ In Quintus Prolog and in the draft ISO standard, the directive
 :- ensure_loaded (‘filename’) .
 
 reconsults the specified file only if it has not already been reconsulted (thus saving time) and does not loop if two files ask for each other.
-

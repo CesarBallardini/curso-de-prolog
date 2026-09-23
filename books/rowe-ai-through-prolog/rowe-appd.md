@@ -128,4 +128,3 @@ Since the activities of Prolog interpreters can be complicated, good debugging f
 Go to book index
 
 Page 4 of 4 http://faculty.nps.edu/ncrowe/book/ad.html
-

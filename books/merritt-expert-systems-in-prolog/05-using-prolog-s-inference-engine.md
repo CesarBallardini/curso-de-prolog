@@ -615,4 +615,3 @@ Use the *Native* shell to build a different expert system. Note any difficulties
 implementing the system and features that would have made it easier.
 
 *Building Expert Systems in Prolog*
-

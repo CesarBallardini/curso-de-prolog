@@ -15,9 +15,15 @@ repos:
       - id: check-ast
       - id: check-case-conflict
       - id: check-json
+        # .vscode/settings.json is JSONC on purpose: VS Code allows comments
+        # there, and the file explains each setting with one.
+        exclude: ^\.vscode/
       - id: check-merge-conflict
       - id: check-toml
       - id: check-yaml
+        # mkdocs.yml needs the !!python/name tag for the mermaid fence, which
+        # a safe YAML load rejects. --unsafe only checks the syntax.
+        args: [--unsafe]
       - id: detect-private-key
       - id: end-of-file-fixer
       - id: trailing-whitespace

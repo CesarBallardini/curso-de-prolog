@@ -34,8 +34,10 @@ instanciar variables; el segundo solo compara.
 
 <!-- ejemplo: capitulo-10/soluciones.pl predicado: no_es_hijo_de/2 consulta: no_es_hijo_de(H, juan). -->
 ```prolog
-% no_es_hijo_de(H, P): H es una persona que no es hijo de P.
-% persona(H) se escribe primero para que \+ opere sobre un valor instanciado.
+%!  no_es_hijo_de(?H, +P) is nondet.
+%
+%   H es una persona que no es hijo de P. persona(H) se escribe primero para
+%   que \+ opere sobre un valor instanciado.
 no_es_hijo_de(H, P) :-
     persona(H),
     \+ padre(P, H).
@@ -47,17 +49,28 @@ predicado no produciría ninguna respuesta.
 
 juan figura entre las respuestas, y es correcto: no es hijo de sí mismo.
 
+El encabezado es `no_es_hijo_de(?H, +P) is nondet`. `H` es `?` porque
+`persona(H)` lo genera cuando llega libre, y lo verifica cuando llega ligado.
+`P` es `+` porque llega al `\+` sin que ningún objetivo anterior lo ligue: con
+`P` libre, la pregunta sería "¿es imposible probar que H es hijo de alguien?", y
+el predicado solo respondería juan, el único que no tiene padre registrado. Es
+`nondet` porque, con `H` libre, hay una respuesta por cada persona que cumple.
+
 ## 4
 
 <!-- ejemplo: capitulo-10/soluciones.pl predicado: tiene_hermano/1 sin_hermanos/1 consulta: sin_hermanos(Quien). -->
 ```prolog
-% tiene_hermano(P): P tiene algún hermano.
+%!  tiene_hermano(?P) is nondet.
+%
+%   P tiene algún hermano.
 tiene_hermano(P) :-
     padre(Padre, P),
     padre(Padre, Otro),
     Otro \== P.
 
-% sin_hermanos(P): P no tiene hermanos.
+%!  sin_hermanos(?P) is nondet.
+%
+%   P no tiene hermanos.
 sin_hermanos(P) :-
     persona(P),
     \+ tiene_hermano(P).
@@ -78,14 +91,16 @@ un nombre: un predicado auxiliar.
 
 Si los tres objetivos se escribieran directamente dentro de `\+`, se estaría
 negando la conjunción completa, con variables libres en su interior, lo que
-dificulta la lectura y favorece los errores de la sección 10.4. El predicado
+dificulta la lectura y favorece los errores de la [sección 10.4](index.md#104-donde-ubicar). El predicado
 auxiliar deja explícito qué condición se niega.
 
 ## 6
 
 <!-- ejemplo: capitulo-10/soluciones.pl predicado: nadie_tiene/1 consulta: nadie_tiene(tortuga). -->
 ```prolog
-% nadie_tiene(Cosa): nadie tiene Cosa. Es correcto con Cosa instanciada.
+%!  nadie_tiene(+Cosa) is semidet.
+%
+%   Nadie tiene Cosa. Es correcto con Cosa instanciada.
 nadie_tiene(Cosa) :-
     \+ tiene(_, Cosa).
 ```
@@ -96,18 +111,21 @@ correctas.
 
 Con `Cosa` libre no es útil: `nadie_tiene(X)` pregunta si es imposible probar
 que alguien tiene algo, y como ana tiene un gato, responde siempre `false`. No
-enumera los objetos que nadie tiene, porque `\+` no genera valores.
+enumera los objetos que nadie tiene, porque `\+` no genera valores. Por eso el
+encabezado es `nadie_tiene(+Cosa) is semidet`.
 
 ## 7
 
-El problema es el orden de los objetivos, igual que en la sección 10.4. Con `\+`
+El problema es el orden de los objetivos, igual que en la [sección 10.4](index.md#104-donde-ubicar). Con `\+`
 en primer lugar, `P` está libre, de modo que la pregunta es "¿es imposible probar
 que alguien está casado?". Como juan está casado, la respuesta es negativa, y
 `soltero/1` no produce ninguna respuesta.
 
 <!-- ejemplo: capitulo-10/soluciones.pl predicado: soltero/1 consulta: soltero(Quien). -->
 ```prolog
-% soltero(P): P no está casado. Con los objetivos en el orden correcto.
+%!  soltero(?P) is nondet.
+%
+%   P no está casado. Con los objetivos en el orden correcto.
 soltero(P) :-
     persona(P),
     \+ casado(P, _).
@@ -120,9 +138,10 @@ separado.
 
 <!-- ejemplo: capitulo-10/soluciones.pl predicado: solo_en_la_primera/3 consulta: solo_en_la_primera([ana, luis, eva], [luis], R). -->
 ```prolog
-% solo_en_la_primera(L1, L2, R): los elementos de L1 que no están en L2.
-% El corte descarta las demás soluciones de member/2: es suficiente que X
-% aparezca una vez en L2.
+%!  solo_en_la_primera(+L1, +L2, -R) is det.
+%
+%   R contiene los elementos de L1 que no están en L2. El corte descarta las
+%   demás soluciones de member/2: es suficiente que X aparezca una vez en L2.
 solo_en_la_primera([], _, []).
 solo_en_la_primera([X|Resto], L2, [X|RestoR]) :-
     \+ member(X, L2),
@@ -139,7 +158,7 @@ las dos últimas son complementarias —`\+ member(...)` y `member(...)`—, de 
 que no se superponen.
 
 El corte de la tercera cláusula es verde, como el de `sin_repetidos/2` del
-capítulo 9. `member(X, L2)` se cumple una vez por cada aparición de `X` en `L2`;
+[capítulo 9](../capitulo-09-backtracking-y-corte/index.md). `member(X, L2)` se cumple una vez por cada aparición de `X` en `L2`;
 sin el corte, un elemento repetido en `L2` produciría la misma respuesta más de
 una vez. Para descartar el elemento es suficiente la primera solución, y el
 corte elimina las demás.
@@ -161,7 +180,7 @@ a una, a medida que se producen.
 completo —con todas sus respuestas— y produce un resultado sobre el conjunto.
 
 El elemento que falta es la posibilidad de reunir todas las respuestas en una
-lista y operar sobre ella. Es el tema del capítulo 15, que presenta también
+lista y operar sobre ella. Es el tema del [capítulo 15](../capitulo-15-todas-las-soluciones/index.md), que presenta también
 `forall/2`, un predicado que expresa "para todos" de manera directa y sin los
 problemas de orden de este capítulo.
 
@@ -227,7 +246,7 @@ castellano son **`X \= ana.`** y **`2 + 1 =\= 3.`**
 
 `X \= ana` se lee "X no es ana" y responde `false.`, porque lo que pregunta es
 si los dos términos **no pueden** unificar, y sí pueden: basta con ligar `X` a
-`ana`. Es el tema de la sección 10.6.
+`ana`. Es el tema de la [sección 10.6](index.md#106-con-variables-libres).
 
 `2 + 1 =\= 3` se lee "dos más uno es distinto de tres" y responde `false.`
 porque es correcto: los dos **valen** lo mismo. La confusión viene de compararla
@@ -236,7 +255,7 @@ distintos con el mismo valor.
 
 ## 12
 
-La causa es la de la sección 10.4: cuando se evalúa `\+ tiene(P, _)`, la
+La causa es la de la [sección 10.4](index.md#104-donde-ubicar): cuando se evalúa `\+ tiene(P, _)`, la
 variable `P` todavía está libre, de modo que la pregunta no es "¿P no tiene
 mascota?" sino "¿es imposible que **alguien** tenga mascota?". Como ana tiene
 un gato, el objetivo negado se prueba, `\+` falla, y la regla completa falla
@@ -244,8 +263,10 @@ para todos.
 
 <!-- ejemplo: capitulo-10/soluciones.pl predicado: sin_mascota_correcto/1 consulta: sin_mascota_correcto(Quien). -->
 ```prolog
-% sin_mascota(P): P es una persona que no tiene ninguna mascota.
-% persona(P) se escribe primero, para que \+ opere sobre un valor concreto.
+%!  sin_mascota_correcto(?P) is nondet.
+%
+%   P es una persona que no tiene ninguna mascota. persona(P) se escribe
+%   primero, para que \+ opere sobre un valor concreto.
 sin_mascota_correcto(P) :-
     persona(P),
     \+ tiene(P, _).
@@ -262,15 +283,22 @@ Quien = eva.
 
 <!-- ejemplo: capitulo-10/soluciones.pl predicado: ninguno_es/2 esta_en_lista/2 ninguno_es_recorriendo/2 consulta: ninguno_es(sofia, [ana, luis]). -->
 ```prolog
-% ninguno_es(X, L): ningún elemento de L es X. Con \+ sobre la pertenencia.
+%!  ninguno_es(+X, +L) is semidet.
+%
+%   Ningún elemento de L es X. Con \+ sobre la pertenencia.
 ninguno_es(X, L) :-
     \+ esta_en_lista(X, L).
 
+%!  esta_en_lista(?X, ?L) is nondet.
+%
+%   X es un elemento de L.
 esta_en_lista(X, [X|_]).
 esta_en_lista(X, [_|Resto]) :-
     esta_en_lista(X, Resto).
 
-% ninguno_es_recorriendo(X, L): lo mismo, sin \+, con la plantilla 11.
+%!  ninguno_es_recorriendo(+X, +L) is semidet.
+%
+%   Ningún elemento de L es X: lo mismo, sin \+, con la plantilla 11.
 ninguno_es_recorriendo(_, []).
 ninguno_es_recorriendo(X, [Otro|Resto]) :-
     X \== Otro,
@@ -313,7 +341,7 @@ El segundo `\+` ve fallar al primero, y por lo tanto se cumple. El resultado es
 un objetivo que tiene éxito exactamente cuando el original lo tenía, pero que
 no deja ninguna ligadura.
 
-Es la manera más directa de comprobar lo que dice la sección 10.4: `\+` es una
+Es la manera más directa de comprobar lo que dice la [sección 10.4](index.md#104-donde-ubicar): `\+` es una
 prueba, y una prueba no produce valores. La doble negación se usa justamente
 para eso, cuando se quiere saber si un objetivo se cumple sin conservar lo que
 haya ligado.
@@ -324,6 +352,10 @@ El predicado se escribe invirtiendo las dos listas al invocar el del ejercicio
 8, y eso alcanza mientras las dos listas estén completas:
 
 ```prolog
+%!  solo_en_la_segunda(+L1, +L2, -R) is det.
+%
+%   R contiene los elementos de L2 que no están en L1. L1 no debe tener
+%   elementos sin valor.
 solo_en_la_segunda(L1, L2, R) :-
     solo_en_la_primera(L2, L1, R).
 ```
@@ -337,4 +369,5 @@ elemento "no pertenece" cuando en realidad podría pertenecer.
 Al invertir los argumentos se invierte también cuál de las dos listas queda bajo
 el `\+`, de modo que las dos versiones no son intercambiables en ese caso: cada
 una exige que esté completa una lista distinta. Conviene anotarlo en el
-comentario de cada predicado.
+encabezado de cada predicado, como en la descripción de arriba: el `+` indica
+que la lista debe llegar ligada, pero no que sus elementos deban tener valor.

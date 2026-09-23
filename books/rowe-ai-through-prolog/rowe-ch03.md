@@ -938,4 +938,3 @@ Computer: No. [So that's the reason.]
 Go to book index
 
 Page 17 of 17 http://faculty.nps.edu/ncrowe/book/chap3.html
-

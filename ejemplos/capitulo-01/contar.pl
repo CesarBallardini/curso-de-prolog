@@ -8,7 +8,9 @@
 %?- between(1, 5, N).
 %?- cuenta(1, 5).
 
-% cuenta(Desde, Hasta): escribe los números de Desde a Hasta, uno por línea.
+%!  cuenta(+Desde, +Hasta) is det.
+%
+%   Escribe los números de Desde a Hasta, uno por línea.
 cuenta(Desde, Hasta) :-
     Desde =< Hasta,
     format("~w~n", [Desde]),
@@ -17,7 +19,9 @@ cuenta(Desde, Hasta) :-
 cuenta(Desde, Hasta) :-
     Desde > Hasta.
 
-% suma_hasta(N, S): S es la suma de todos los números de 1 a N.
+%!  suma_hasta(+N, -S) is semidet.
+%
+%   S es la suma de todos los números de 1 a N.
 suma_hasta(0, 0).
 suma_hasta(N, S) :-
     N > 0,

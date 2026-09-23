@@ -1177,4 +1177,3 @@ Figure 3.14 An augmented transition network that parses wh-questions.
 Exercise 3.7.3.3
 
 List the steps that the network in Figure 3.14 goes through when parsing the sentence Who did the butler say thought the dog barked?
-

@@ -8206,4 +8206,3 @@ side_color(['F'-'G', 'R'-'R', 'U'-'W', 'B'-'Y', 'L'-'O', 'D'-'B']).
 298
 
 *Appendices - Full Source Code*
-

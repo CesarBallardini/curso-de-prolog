@@ -11570,4 +11570,3 @@ views, 14
 water jugs problem, 91, 95
 
 well-formed programs, 38 tail recursion, 114 terms, 38 Towers of Hanoi, 98 trail stack, 137, 157, 160–61, 174, 176
-

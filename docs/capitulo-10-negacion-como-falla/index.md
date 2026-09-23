@@ -1,6 +1,6 @@
 # Capítulo 10 — Negación como falla
 
-El capítulo 2 estableció que `false.` no significa "la afirmación es falsa" sino
+El [capítulo 2](../capitulo-02-hechos-consultas-y-variables/index.md) estableció que `false.` no significa "la afirmación es falsa" sino
 "la afirmación no se puede probar con el contenido del programa". Este capítulo
 desarrolla esa idea, la convierte en un operador —`\+`— y describe los tres
 casos en que ese operador produce resultados incorrectos.
@@ -62,7 +62,7 @@ exactitud su funcionamiento: no demuestra que una afirmación sea falsa, sino qu
 negación.
 
 Su definición interna es simple: se intenta probar el objetivo; si se cumple,
-`\+` falla; si falla, `\+` se cumple. El corte del capítulo 9 forma parte de esa
+`\+` falla; si falla, `\+` se cumple. El corte del [capítulo 9](../capitulo-09-backtracking-y-corte/index.md) forma parte de esa
 definición.
 
 ## 10.3 Por qué no es la negación de la lógica
@@ -86,11 +86,11 @@ Regla práctica: **`\+` es confiable en la medida en que el programa es
 completo**. Sobre la información que el programa contiene, opera correctamente.
 Sobre la información que no contiene, responde como si no existiera.
 
-Hay una segunda diferencia, más silenciosa. La hipótesis de la sección 10.1 dice
+Hay una segunda diferencia, más silenciosa. La hipótesis de la [sección 10.1](#101-el-supuesto-de-mundo-cerrado) dice
 "lo que el programa no puede deducir"; `\+` es más estricto: exige que la
 búsqueda **fracase en una cantidad finita de pasos**. Por eso el nombre completo
 del mecanismo es *negación como falla finita*. Si el objetivo negado corresponde
-a una búsqueda que no termina —como las ramas infinitas de la sección 5.6—, `\+`
+a una búsqueda que no termina —como las ramas infinitas de la [sección 5.6](../capitulo-05-como-responde-prolog/index.md#56-ramas-infinitas)—, `\+`
 no responde `true.` ni `false.`: no responde nunca. Es el tercer caso en que el
 operador no se comporta como la negación que aparenta, y a diferencia de los
 otros dos no produce una respuesta incorrecta sino ninguna respuesta.
@@ -105,8 +105,10 @@ correcta:
 
 <!-- ejemplo: capitulo-10/negacion.pl predicado: no_tiene_hijos/1 consulta: no_tiene_hijos(Quien). -->
 ```prolog
-% no_tiene_hijos(P): P no es padre de nadie.
-% Primero se genera una persona; después se evalúa la negación sobre ella.
+%!  no_tiene_hijos(?P) is nondet.
+%
+%   P no es padre de nadie. Primero se genera una persona; después se evalúa
+%   la negación sobre ella.
 no_tiene_hijos(P) :-
     persona(P),
     \+ padre(P, _).
@@ -124,8 +126,10 @@ no lo es:
 
 <!-- ejemplo: capitulo-10/negacion.pl predicado: mal_no_tiene_hijos/1 consulta: mal_no_tiene_hijos(Quien). -->
 ```prolog
-% mal_no_tiene_hijos(P): la misma regla con los objetivos en orden inverso. Es
-% incorrecta; la sección 10.4 explica la causa.
+%!  mal_no_tiene_hijos(?P) is nondet.
+%
+%   La misma regla con los objetivos en orden inverso. Es incorrecta; la
+%   sección 10.4 explica la causa.
 mal_no_tiene_hijos(P) :-
     \+ padre(P, _),
     persona(P).
@@ -170,8 +174,10 @@ true.
 
 Con `ana` instanciada desde el comienzo, `\+` tiene un valor que verificar. El
 predicado funciona en un sentido y no en el otro, igual que el corte rojo del
-capítulo 9, y por la misma razón de fondo: su comportamiento depende de qué
-argumentos llegan instanciados.
+[capítulo 9](../capitulo-09-backtracking-y-corte/index.md), y por la misma razón de fondo: su comportamiento depende de qué
+argumentos llegan instanciados. En la notación de la [sección 2.8](../capitulo-02-hechos-consultas-y-variables/index.md#28-como-se-documenta-el-uso-de-un-predicado),
+`no_tiene_hijos/1` admite `?P`, y la versión incorrecta, solo `+P`: un `\+` que
+necesita una variable ligada es lo que el encabezado registra con `+`.
 
 !!! warning "Regla de ubicación de `\+`"
     `\+` se escribe **después** de los objetivos que instancian sus variables.
@@ -194,11 +200,15 @@ uno por vez. Esta sección los reúne.
 
 <!-- ejemplo: capitulo-10/comparar.pl predicado: mismo_termino/2 mismo_valor/2 consulta: mismo_termino(2 + 1, 3). -->
 ```prolog
-% mismo_termino(A, B): A y B son el mismo término, en su estado actual.
+%!  mismo_termino(?A, ?B) is semidet.
+%
+%   A y B son el mismo término, en su estado actual.
 mismo_termino(A, B) :-
     A == B.
 
-% mismo_valor(A, B): las expresiones A y B tienen el mismo valor.
+%!  mismo_valor(+A, +B) is semidet.
+%
+%   Las expresiones A y B tienen el mismo valor.
 mismo_valor(A, B) :-
     A =:= B.
 ```
@@ -247,12 +257,14 @@ El segundo resultado requiere explicación. `X` está libre, por lo que **puede*
 unificar con `ana`; en consecuencia, "no unifican" es falso. La lectura "X es
 cualquier otro término" no corresponde a la pregunta que plantea `\=`.
 
-La solución es la misma de la sección 10.4: instanciar la variable antes de la
+La solución es la misma de la [sección 10.4](#104-donde-ubicar): instanciar la variable antes de la
 comparación.
 
 <!-- ejemplo: capitulo-10/negacion.pl predicado: distinto_de/2 consulta: distinto_de(Quien, ana). -->
 ```prolog
-% distinto_de(P, Otro): P es una persona que no es Otro.
+%!  distinto_de(?P, +Otro) is nondet.
+%
+%   P es una persona que no es Otro.
 distinto_de(P, Otro) :-
     persona(P),
     P \= Otro.
@@ -301,9 +313,12 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 2. **(1)** ¿Cuáles de las siguientes responden `true`? `ana == ana` ·
    `ana = ana` · `ana \== eva` · `X == ana` · `X = ana`
 3. **(2)** Escribir `no_es_hijo_de(H, P)`: H es una persona que no es hijo de P.
-   Prestar atención al orden de los objetivos.
+   Prestar atención al orden de los objetivos. Escribir también su encabezado:
+   qué argumentos pueden llegar libres, cuáles deben llegar ligados, y cuántas
+   respuestas produce.
 4. **(2)** Escribir `sin_hermanos(P)`: P no tiene ningún hermano. Se requiere un
-   predicado auxiliar, como en `hijo_unico/1` del ejemplo.
+   predicado auxiliar, como en `hijo_unico/1` del ejemplo. Su encabezado es
+   `sin_hermanos(?P) is nondet`.
 5. ★ **(2)** ¿Por qué `hijo_unico/1` del ejemplo requiere el predicado auxiliar
    `otro_hijo/2`? ¿No es suficiente escribir `\+` dentro de la regla?
 6. **(2)** Escribir `nadie_tiene(Cosa)` sobre una base de hechos `tiene/2`, y
@@ -312,6 +327,9 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
    causa y corregirlo:
 
     ```prolog
+    %!  soltero(?P) is nondet.
+    %
+    %   P no está casado.
     soltero(P) :-
         \+ casado(P, _),
         persona(P).
@@ -322,7 +340,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 9. **(3)** ¿Se puede escribir `no_tiene_hijos/1` sin usar `\+`? Intentarlo y, si
    no es posible con los elementos vistos, explicar qué elemento falta.
 10. ★ **(1)** Predecir qué responde cada consulta, con los seis operadores de la
-    sección 10.5. Cuando la respuesta no sea `true.` ni `false.`, indicar qué es:
+    [sección 10.5](#105-los-seis-operadores-de-igualdad-y-desigualdad). Cuando la respuesta no sea `true.` ni `false.`, indicar qué es:
     `ana = ana.` · `ana == ana.` · `X = ana.` · `X == ana.` ·
     `2 + 1 == 3.` · `2 + 1 =:= 3.` · `2 + 1 = 3.`
 11. ★ **(1)** El mismo ejercicio con las formas negadas:
@@ -333,9 +351,12 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     en castellano. Identificarlas.
 12. ★ **(2)** El predicado siguiente pretende hallar las personas que no tienen
     mascota, y produce respuestas incorrectas. Explicar la causa con la regla de
-    ubicación de la sección 10.4 y corregirlo:
+    ubicación de la [sección 10.4](#104-donde-ubicar) y corregirlo:
 
     ```prolog
+    %!  sin_mascota(?P) is nondet.
+    %
+    %   P es una persona que no tiene ninguna mascota.
     sin_mascota(P) :-
         \+ tiene(P, _),
         persona(P).
@@ -368,8 +389,8 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 
 | Tema | Se retoma en |
 |---|---|
-| Todo el capítulo, desde el punto de vista de la lógica | capítulo 11 |
-| `->` y `;`, construcciones relacionadas con `\+` | capítulo 13 |
-| `forall/2`, que expresa "para todos" sin los problemas de `\+` | capítulo 15 |
-| Verificación del tipo de un término antes de compararlo | capítulo 24 |
-| `dif/2`, equivalente a `\==` que se posterga hasta que las variables tengan valor | capítulo 32 |
+| Todo el capítulo, desde el punto de vista de la lógica | [capítulo 11](../capitulo-11-prolog-y-la-logica/index.md) |
+| `->` y `;`, construcciones relacionadas con `\+` | [capítulo 13](../capitulo-13-control/index.md) |
+| `forall/2`, que expresa "para todos" sin los problemas de `\+` | [capítulo 15](../capitulo-15-todas-las-soluciones/index.md) |
+| Verificación del tipo de un término antes de compararlo | [capítulo 24](../capitulo-24-inspeccion-de-terminos/index.md) |
+| `dif/2`, equivalente a `\==` que se posterga hasta que las variables tengan valor | [capítulo 32](../capitulo-32-programacion-con-restricciones/index.md) |

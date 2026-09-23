@@ -575,7 +575,8 @@ A.1 Algorithm A.1.1 & Prolog Clause Correspondence (Example 1.6)
 ****
 
 ** 
- **
+ 
+**
 
 In Paris or Online International programs taught by professors and professionals from all over the world Please click the advert BBA in Global Business MBA in International Management / International Marketing DBA in International Business / International Management MA in International Education MA in Cross-Cultural Communication MA in Foreign Languages
 
@@ -3054,7 +3055,8 @@ Figure 2.3: Tree Representation of [a,[b,[],[c,a],e]]
 ****
 
 ** 
- **
+ 
+**
 
 **In Paris or Online**
 
@@ -6339,7 +6341,8 @@ to/2), told. Yes after which people.pl will be as shown in Fig. 3.6. To understa
 ****
 
 ** 
- **
+ 
+**
 
 **In Paris or Online**
 
@@ -10469,7 +10472,8 @@ Another nursery rhyme with a similar recursive structure is the well-known song 
 ****
 
 ** 
- **
+ 
+**
 
 **In Paris or Online**
 
@@ -13287,7 +13291,8 @@ rhyme_prel_5(T,P), !. Exercise 4.3. Let us examine interactively, for example, h
 ****
 
 ** 
- **
+ 
+**
 
 **In Paris or Online**
 
@@ -14289,4 +14294,3 @@ write
 term/2, 46
 
 Download free ebooks at bookboon.com
-

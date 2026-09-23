@@ -15,7 +15,9 @@ universalmente, y el alcance del $\forall$ es la cláusula completa.
 
 <!-- ejemplo: capitulo-11/soluciones.pl predicado: animal/1 consulta: animal(Quien). -->
 ```prolog
-% animal(X): para todo X, si X es gato entonces X es animal.
+%!  animal(?X) is nondet.
+%
+%   Para todo X, si X es gato entonces X es animal.
 animal(X) :-
     gato(X).
 animal(X) :-
@@ -44,8 +46,10 @@ su vez es progenitor de alguien.
 
 <!-- ejemplo: capitulo-11/soluciones.pl predicado: puede_entrar/1 consulta: puede_entrar(Quien). -->
 ```prolog
-% puede_entrar(P): P es socio, o lo invita un socio. Las dos cláusulas expresan
-% la disyunción.
+%!  puede_entrar(?P) is nondet.
+%
+%   P es socio, o lo invita un socio. Las dos cláusulas expresan la
+%   disyunción.
 puede_entrar(P) :-
     socio(P).
 puede_entrar(P) :-
@@ -77,8 +81,10 @@ alternativas corresponde.
 
 <!-- ejemplo: capitulo-11/soluciones.pl predicado: paridad/2 consulta: paridad(7, Que). -->
 ```prolog
-% paridad(N, P): P indica si N es par o impar. No es una afirmación con una
-% disyunción en la conclusión: son dos reglas, cada una con su condición.
+%!  paridad(+N, -P) is det.
+%
+%   P indica si N es par o impar. No es una afirmación con una disyunción en
+%   la conclusión: son dos reglas, cada una con su condición.
 paridad(N, par) :-
     0 =:= N mod 2.
 paridad(N, impar) :-
@@ -117,14 +123,15 @@ aunque luis podría tener mascotas que no están registradas en el programa.
 
 <!-- ejemplo: capitulo-11/soluciones.pl predicado: sin_mascota/1 consulta: sin_mascota(Quien). -->
 ```prolog
-% sin_mascota(P): P es una persona para la que no se puede probar que tenga
-% mascota.
+%!  sin_mascota(?P) is nondet.
+%
+%   P es una persona para la que no se puede probar que tenga mascota.
 sin_mascota(P) :-
     persona(P),
     \+ tiene(P, _).
 ```
 
-Es el supuesto de mundo cerrado del capítulo 10, analizado desde la lógica: `\+`
+Es el supuesto de mundo cerrado del [capítulo 10](../capitulo-10-negacion-como-falla/index.md), analizado desde la lógica: `\+`
 no es $\lnot$, y por eso la fórmula del enunciado describe al programa solo bajo ese
 supuesto.
 
@@ -133,12 +140,12 @@ supuesto.
 El ejercicio admite cualquier predicado; la elección condiciona el resultado. Dos
 casos representativos:
 
-`abuelo/2` del capítulo 3 es el caso simple: su lectura declarativa es exacta.
+`abuelo/2` del [capítulo 3](../capitulo-03-reglas-y-conjunciones/index.md) es el caso simple: su lectura declarativa es exacta.
 El programa no tiene corte ni negación, y responde exactamente lo que la fórmula
 afirma, con la única salvedad de las respuestas repetidas cuando existe más de
 una demostración.
 
-`categoria/2` del capítulo 9 es el caso de mayor interés: su lectura declarativa
+`categoria/2` del [capítulo 9](../capitulo-09-backtracking-y-corte/index.md) es el caso de mayor interés: su lectura declarativa
 **no es válida**. La fórmula de la tercera cláusula establece que toda persona
 con edad registrada es adulta, y eso es lo que el programa responde a la consulta
 `categoria(sofia, adulto)`. El corte no aparece en ninguna fórmula, y por eso la
@@ -165,7 +172,7 @@ afirmación sobre un objeto determinado:
 
 > varon(juan)
 
-Es el caso límite de la sección 11.4: una cláusula de Horn sin condiciones.
+Es el caso límite de la [sección 11.4](index.md#114-clausulas-de-horn): una cláusula de Horn sin condiciones.
 
 ## 10
 
@@ -174,9 +181,10 @@ la conclusión a la izquierda:
 
 <!-- ejemplo: capitulo-11/soluciones.pl predicado: tiene_mascota/1 tiene_gato/1 consulta: tiene_mascota(Quien). -->
 ```prolog
-% tiene_mascota(P): todo el que tiene un gato tiene una mascota. La implicación
-% se escribe como una regla: la conclusión a la izquierda, la condición a la
-% derecha.
+%!  tiene_mascota(?P) is nondet.
+%
+%   Todo el que tiene un gato tiene una mascota. La implicación se escribe como
+%   una regla: la conclusión a la izquierda, la condición a la derecha.
 tiene_mascota(P) :-
     tiene_gato(P).
 
@@ -193,8 +201,10 @@ verifica, con `\+`:
 % padre(P, H): P es el padre de H.
 padre(luis, eva).
 
-% no_es_padre_de_si_mismo(P): nadie es padre de sí mismo. La negación del
-% enunciado se escribe con \+, y no como una cláusula de Horn.
+%!  no_es_padre_de_si_mismo(?P) is nondet.
+%
+%   Nadie es padre de sí mismo. La negación del enunciado se escribe con \+, y
+%   no como una cláusula de Horn.
 no_es_padre_de_si_mismo(P) :-
     persona(P),
     \+ padre(P, P).
@@ -202,10 +212,10 @@ no_es_padre_de_si_mismo(P) :-
 
 Conviene notar la diferencia: el enunciado original es una afirmación sobre el
 mundo; lo que se escribe es un predicado que la comprueba caso por caso, bajo la
-hipótesis del mundo cerrado del capítulo 10.
+hipótesis del mundo cerrado del [capítulo 10](../capitulo-10-negacion-como-falla/index.md).
 
 **c.** "Toda persona es varón o mujer" **no** se puede escribir, y es el ejemplo
-de la sección 11.4: tiene dos conclusiones. Se puede escribir un predicado que
+de la [sección 11.4](index.md#114-clausulas-de-horn): tiene dos conclusiones. Se puede escribir un predicado que
 decida el sexo de cada persona, pero eso no es lo mismo: la afirmación original
 dice que toda persona es una de las dos cosas sin decir cuál, y una cláusula de
 Horn no puede expresar esa indefinición.
@@ -214,7 +224,7 @@ Horn no puede expresar esa indefinición.
 
 | | Diferencia de 11.6 |
 |---|---|
-| a. `categoria(sofia, adulto)` responde `true.` | **El corte.** La lectura lógica de las cláusulas sigue existiendo; lo que se rompe es el acuerdo entre esa lectura y las respuestas, porque la tercera cláusula afirma algo falso y el corte no llega a ejecutarse (capítulo 9). |
+| a. `categoria(sofia, adulto)` responde `true.` | **El corte.** La lectura lógica de las cláusulas sigue existiendo; lo que se rompe es el acuerdo entre esa lectura y las respuestas, porque la tercera cláusula afirma algo falso y el corte no llega a ejecutarse ([capítulo 9](../capitulo-09-backtracking-y-corte/index.md)). |
 | b. `tiene_hijos(P)` informa dos veces a `juan` | **Las respuestas repetidas.** La lógica afirma que algo es cierto; Prolog informa una respuesta por cada demostración, y juan tiene dos hijos. |
 | c. `X is 3 + Y.` no responde `true.` ni `false.` | **Los errores.** Es el tercer desenlace, y no tiene contraparte lógica: no es una afirmación verdadera ni falsa. |
 | d. No se obtiene una respuesta que el programa afirma | **La incompletitud del recorrido.** El método de demostración la alcanza; el orden en que Prolog explora, no. |
@@ -231,7 +241,7 @@ supone que es **falsa** —que no existe ningún `Quien` que la cumpla— y agre
 esa suposición al programa. Si de esa suma se deduce una contradicción, la
 suposición era errónea, y por lo tanto la fórmula original es cierta.
 
-Eso es refutar. La ventaja práctica es la que describe la sección 11.5: el
+Eso es refutar. La ventaja práctica es la que describe la [sección 11.5](index.md#115-como-prueba-prolog): el
 método necesita una sola regla de inferencia, la resolución, y termina cuando
 llega a la cláusula vacía, que es la contradicción. Los valores de `Quien` que
 aparecen en el camino son la respuesta.
@@ -250,12 +260,12 @@ $$\forall A \, \forall D \; \bigl( \mathit{progenitor}(A, D) \rightarrow \mathit
 también si es progenitor de D." Las dos afirmaciones son verdaderas, y juntas
 describen exactamente la relación de ascendencia.
 
-El elemento de la sección 11.6 que lo explica es **la incompletitud del
+El elemento de la [sección 11.6](index.md#116-lo-que-excede-la-logica) que lo explica es **la incompletitud del
 recorrido**. La primera cláusula lleva a `ascendiente(A, X)`, que es el mismo
 objetivo con otro nombre de variable, de modo que la rama de la izquierda es
 infinita. La segunda cláusula —la que responde— está a su derecha, y el
 recorrido nunca llega. Las respuestas se siguen del programa y están en el
 árbol; lo que falla es el orden en que se lo explora.
 
-Es el mismo programa de la sección 5.6, leído ahora desde la lógica: ninguna de
+Es el mismo programa de la [sección 5.6](../capitulo-05-como-responde-prolog/index.md#56-ramas-infinitas), leído ahora desde la lógica: ninguna de
 sus dos cláusulas es falsa, y aun así no sirve.

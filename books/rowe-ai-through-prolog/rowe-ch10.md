@@ -1512,4 +1512,3 @@ member(X,[Y|L]) :- member(X,L).
 **Go to book index**
 
 Page 32 of 32 http://faculty.nps.edu/ncrowe/book/chap10.html
-

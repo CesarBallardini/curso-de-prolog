@@ -1367,4 +1367,3 @@ dry
 Figure 4.9 Conjunctions such as and take two constituents of the same kind and make
 
 them into a larger constituent.
-

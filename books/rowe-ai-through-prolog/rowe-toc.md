@@ -298,4 +298,3 @@ Appendix G: Answers to selected exercises
 ```
 
 http://faculty.nps.edu/ncrowe/book/tableconts.html
-

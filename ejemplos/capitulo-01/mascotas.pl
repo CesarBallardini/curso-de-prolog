@@ -15,6 +15,8 @@ tiene(luis, mascota(perro, rocco)).
 tiene(eva, mascota(gato, gaturro)).
 tiene(pedro, mascota(tortuga, manuelita)).
 
-% propietario_de_gato(P): P tiene por lo menos un gato.
+%!  propietario_de_gato(?P) is nondet.
+%
+%   P tiene por lo menos un gato.
 propietario_de_gato(P) :-
     tiene(P, mascota(gato, _)).

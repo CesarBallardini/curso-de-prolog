@@ -3044,4 +3044,3 @@ We shall need a few more de¿nitions to formulate Euler‘s fundamental theorem 
 The theorem states that a graph is an Euler graph if and only if it is connected and contains either no vertices of an odd degree. or exactly two such vertices. In the latter case. the two odd-degree vertices are terminal vertices of each Euler path. In the former case. each Euler path is a cycle. i.e. a path that returns to the starting point. In our example. d and e are the only vertices of odd degree.
 
 If the graph is known to be an Euler graph. an Euler path can be found in time proportional to the number of edges. Once removed. the edge can be attached to the path for good. You may ¿nd it amusing to modify the above program in this direction.
-

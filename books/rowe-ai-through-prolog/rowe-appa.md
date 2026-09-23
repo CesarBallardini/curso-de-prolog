@@ -138,4 +138,3 @@ As an example, suppose an appliance works properly. Then you can say that there 
 Go to book index
 
 Page 3 of 3 http://faculty.nps.edu/ncrowe/book/aa.html
-

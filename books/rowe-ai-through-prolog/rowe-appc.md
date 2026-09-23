@@ -72,4 +72,3 @@ Recursion (see Appendix B) is useful for manipulating all these data structures.
 Go to book index
 
 Page 2 of 2 http://faculty.nps.edu/ncrowe/book/ac.html
-

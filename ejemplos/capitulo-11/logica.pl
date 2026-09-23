@@ -28,26 +28,34 @@ progenitor(marta, pedro).
 progenitor(pedro, luis).
 progenitor(pedro, eva).
 
-% madre(M, H): para toda M y todo H, si M es mujer y M es progenitora de H,
-% entonces M es madre de H.
+%!  madre(?M, ?H) is nondet.
+%
+%   Para toda M y todo H, si M es mujer y M es progenitora de H, entonces M es
+%   madre de H.
 madre(M, H) :-
     mujer(M),
     progenitor(M, H).
 
-% padre(P, H): para todo P y todo H, si P es varón y P es progenitor de H,
-% entonces P es padre de H.
+%!  padre(?P, ?H) is nondet.
+%
+%   Para todo P y todo H, si P es varón y P es progenitor de H, entonces P es
+%   padre de H.
 padre(P, H) :-
     varon(P),
     progenitor(P, H).
 
-% tiene_hijos(P): para todo P, si existe algún H del que P es progenitor,
-% entonces P tiene hijos. H no aparece en la cabeza: es la variable
-% cuantificada existencialmente.
+%!  tiene_hijos(?P) is nondet.
+%
+%   Para todo P, si existe algún H del que P es progenitor, entonces P tiene
+%   hijos. H no aparece en la cabeza: es la variable cuantificada
+%   existencialmente.
 tiene_hijos(P) :-
     progenitor(P, _).
 
-% ascendiente(A, D): A es progenitor de D, o es progenitor de alguien que a su
-% vez es ascendiente de D. La disyunción se expresa con las dos cláusulas.
+%!  ascendiente(?A, ?D) is nondet.
+%
+%   A es progenitor de D, o es progenitor de alguien que a su vez es
+%   ascendiente de D. La disyunción se expresa con las dos cláusulas.
 ascendiente(A, D) :-
     progenitor(A, D).
 ascendiente(A, D) :-

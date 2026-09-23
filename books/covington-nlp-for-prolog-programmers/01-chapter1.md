@@ -437,4 +437,3 @@ in Literary and Linguistic Computing and especially in the proceedings of the ma
 available in Lisp and Pop-11 editions); and Gal et al. (1991).
 
 '
-

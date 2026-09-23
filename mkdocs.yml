@@ -32,6 +32,12 @@ strict: true
 validation:
   nav:
     omitted_files: warn
+  # Cross-references between chapters and sections are links with anchors.
+  # A heading that gets renamed would leave them pointing nowhere, and MkDocs
+  # only mentions a missing anchor at INFO level. Raised so the strict build
+  # fails instead.
+  links:
+    anchors: warn
 
 theme:
   name: material

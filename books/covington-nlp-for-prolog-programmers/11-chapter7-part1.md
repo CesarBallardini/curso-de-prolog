@@ -1007,4 +1007,3 @@ and others of similar form. You need not handle scope ambiguities.
 To go further and answer questions that contain which or how many, we will need a way to get a list of solutions to a Prolog query. Two approaches are possible. The built-in predicate setof/3 returns a list of all solutions to a query. More precisely,
 
 ?- setof(X,Goal,L).
-

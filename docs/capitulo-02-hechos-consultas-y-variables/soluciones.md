@@ -182,7 +182,7 @@ El tercero es el que enseña algo. "Ana y Luis son compañeros" no distingue un
 primer argumento de un segundo: la relación vale en los dos sentidos. Prolog no
 lo sabe, y con un solo hecho `companiero(ana, luis)` la consulta
 `companiero(luis, Quien).` responde `false.`, que es incorrecto. Escribir los
-dos hechos resuelve el problema para este caso; el capítulo 3 muestra la manera
+dos hechos resuelve el problema para este caso; el [capítulo 3](../capitulo-03-reglas-y-conjunciones/index.md) muestra la manera
 de expresarlo con una regla, sin repetir cada par.
 
 ## 14
@@ -192,16 +192,16 @@ Ninguno de los tres es un hecho, y cada uno por un motivo distinto:
 a. **"Ana es mayor que Luis"** afirma algo que se **deduce** de otros datos, las
    dos edades. Escribirlo como hecho sería registrar dos veces la misma
    información, y quedaría desactualizado. Corresponde a una regla, y es
-   exactamente el `mayor_que/2` del capítulo 1.
+   exactamente el `mayor_que/2` del [capítulo 1](../capitulo-01-la-primera-hora/index.md).
 b. **"Toda persona tiene madre"** habla de **todas** las personas a la vez. Un
    hecho afirma algo sobre objetos determinados, y no hay manera de nombrar
    "todas" escribiendo un hecho. Los enunciados de esta forma se escriben como
-   reglas, y el capítulo 11 explica por qué.
+   reglas, y el [capítulo 11](../capitulo-11-prolog-y-la-logica/index.md) explica por qué.
 c. **"Ana no tiene hijos"** es una **negación**. Un programa Prolog está formado
    por afirmaciones, y no hay forma de escribir la ausencia de una. Lo que se
    hace es no escribir ningún hecho que diga lo contrario, y dejar que Prolog
-   responda `false.` por no poder probarlo; la sección 2.5 ya mostró ese
-   mecanismo, y el capítulo 10 está dedicado a él.
+   responda `false.` por no poder probarlo; la [sección 2.5](index.md#25-lo-que-no-se-puede-probar) ya mostró ese
+   mecanismo, y el [capítulo 10](../capitulo-10-negacion-como-falla/index.md) está dedicado a él.
 
 ## 15
 
@@ -248,3 +248,38 @@ Que = planta.
 La tercera consulta muestra para qué sirve `_`: interesa el objeto regalado y no
 quiénes participaron. Cada `_` es una variable distinta, de modo que no exigen
 que quien regala y quien recibe sean la misma persona.
+
+## 17
+
+| Consulta | Forma de uso | Respuestas |
+|---|---|---|
+| `gusta(ana, Que).` | `gusta(+P, -C)` | cualquier cantidad: `nondet` |
+| `gusta(Quien, prolog).` | `gusta(-P, +C)` | cualquier cantidad: `nondet` |
+| `gusta(juan, futbol).` | `gusta(+P, +C)` | una o ninguna: `semidet` |
+| `gusta(Quien, Que).` | `gusta(-P, -C)` | cualquier cantidad: `nondet` |
+
+Con la base de `variables.pl`, `gusta(ana, Que)` tiene una sola respuesta, pero
+la forma de uso no la garantiza: bastaría un hecho `gusta(ana, futbol)` para que
+tuviera dos. La cantidad que se declara es la que admite la relación, no la que
+resulta de los hechos cargados en un momento dado.
+
+## 18
+
+```prolog
+%!  abuelo(+A, +N) is semidet.
+%!  abuelo(+A, -N) is nondet.
+%!  abuelo(?A, ?N) is nondet.
+%
+%   A es abuelo de N.
+```
+
+Con los dos argumentos ligados, la consulta pregunta si una afirmación
+determinada se deduce del programa: la respuesta es `true` o `false`, y no puede
+haber dos respuestas distintas. Con `N` libre, la consulta pregunta por los
+nietos de `A`, y una persona puede tener cualquier cantidad de nietos, incluso
+ninguno.
+
+Ejecutada en SWI-Prolog, `abuelo(juan, luis)` responde `true ;` y después
+`false.`: Prolog queda en espera aunque no haya otra respuesta. No contradice el
+encabezado, que describe cuántas respuestas existen y no la forma en que Prolog
+termina de mostrarlas; el [capítulo 5](../capitulo-05-como-responde-prolog/index.md) explica ese `;`.

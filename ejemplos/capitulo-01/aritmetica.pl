@@ -15,19 +15,27 @@ edad(ana, 41).
 edad(luis, 12).
 edad(eva, 8).
 
-% doble(N, D): D es el doble de N.
+%!  doble(+N, -D) is det.
+%
+%   D es el doble de N.
 doble(N, D) :-
     D is N * 2.
 
-% edad_en_meses(P, M): M es la edad de P expresada en meses.
+%!  edad_en_meses(?P, -M) is nondet.
+%
+%   M es la edad de P expresada en meses.
 edad_en_meses(P, M) :-
     edad(P, A),
     M is A * 12.
 
-% resto(N, R): R es el resto de dividir N por 2. Permite determinar si N es par.
+%!  resto(+N, -R) is det.
+%
+%   R es el resto de dividir N por 2. Permite determinar si N es par.
 resto(N, R) :-
     R is N mod 2.
 
-% el_mayor(A, B, M): M es el mayor de los dos números.
+%!  el_mayor(+A, +B, -M) is det.
+%
+%   M es el mayor de los dos números.
 el_mayor(A, B, M) :-
     M is max(A, B).

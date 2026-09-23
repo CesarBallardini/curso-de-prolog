@@ -37,7 +37,10 @@ la condición de chico, y toda persona cumple la de adulto.
 
 <!-- ejemplo: capitulo-09/corte.pl predicado: categoria_sin_corte/2 consulta: categoria_sin_corte(sofia, C). -->
 ```prolog
-% categoria_sin_corte(P, C): las tres condiciones se superponen deliberadamente.
+%!  categoria_sin_corte(?P, ?C) is nondet.
+%
+%   C es una categoría de P. Las tres condiciones se superponen
+%   deliberadamente.
 categoria_sin_corte(P, bebe) :-
     edad(P, A),
     A < 4.
@@ -62,7 +65,7 @@ es incorrecto: expresa algo distinto de lo que se pretendía. La intención era
 "evaluar las condiciones en orden y conservar la primera que se cumple", pero
 esa condición no está escrita en el programa.
 
-El árbol de derivación del capítulo 5 lo muestra de manera directa: tres ramas
+El árbol de derivación del [capítulo 5](../capitulo-05-como-responde-prolog/index.md) lo muestra de manera directa: tres ramas
 terminan en una hoja de éxito, y por eso hay tres respuestas.
 
 ## 9.2 El corte poda el árbol
@@ -73,8 +76,10 @@ indica a Prolog que descarte determinadas ramas del árbol.
 
 <!-- ejemplo: capitulo-09/corte.pl predicado: categoria/2 consulta: categoria(sofia, C). -->
 ```prolog
-% categoria(P, C): la misma clasificación, con corte. El corte descarta las
-% cláusulas siguientes.
+%!  categoria(+P, -C) is semidet.
+%
+%   C es la categoría de P: la misma clasificación, con corte. El corte
+%   descarta las cláusulas siguientes.
 categoria(P, bebe) :-
     edad(P, A),
     A < 4,
@@ -93,9 +98,12 @@ C = bebe.
 ```
 
 Se obtiene una sola respuesta, sin alternativas pendientes: la respuesta termina
-en punto. Las otras dos ramas fueron descartadas.
+en punto. Las otras dos ramas fueron descartadas. Es la diferencia que registran
+los encabezados de la [sección 2.8](../capitulo-02-hechos-consultas-y-variables/index.md#28-como-se-documenta-el-uso-de-un-predicado): `categoria_sin_corte/2` es `nondet`, y
+`categoria/2`, gracias al corte, es `semidet`, con una respuesta por persona, o
+ninguna si la persona no tiene edad registrada.
 
-En términos del modelo de cajas de la sección 5.3, el corte **inhabilita la
+En términos del modelo de cajas de la [sección 5.3](../capitulo-05-como-responde-prolog/index.md#53-el-mismo-recorrido-registrado-por-trace), el corte **inhabilita la
 puerta Redo**: los objetivos que quedaron a su izquierda ya no se pueden
 reingresar para pedirles otra solución, y la caja del predicado tampoco puede
 ofrecer una cláusula distinta. Por eso el efecto se nota recién cuando algo
@@ -164,6 +172,9 @@ corte solo tiene el significado pretendido si se la lee de arriba hacia abajo.
     conserva el primero que corresponde.
 
     ```prolog
+    %!  p(+X, -Caso) is det.
+    %
+    %   Caso es el primero de los casos que corresponde a X.
     p(X, primer_caso) :-
         condicion(X),
         !.
@@ -177,7 +188,7 @@ corte solo tiene el significado pretendido si se la lee de arriba hacia abajo.
     abajo. La última cláusula es la que hay que mirar con cuidado: como no tiene
     condición, afirma su caso para todo lo que llegue hasta ella, y si eso no es
     cierto por sí solo, el predicado responde mal en cuanto se lo consulta con
-    el segundo argumento ya instanciado. La sección 9.5 muestra exactamente ese
+    el segundo argumento ya instanciado. La [sección 9.5](#95-corte-verde-y-corte-rojo) muestra exactamente ese
     problema.
 
     **En este capítulo se usa en**: `categoria/2` (9.2).
@@ -227,7 +238,7 @@ predicado funcione en ambos sentidos, corresponde escribir las condiciones
 completas en lugar de depender del orden de las cláusulas.
 
 !!! warning "El corte y la lectura lógica"
-    Todos los programas hasta el capítulo 8 se podían leer como afirmaciones
+    Todos los programas hasta el [capítulo 8](../capitulo-08-aritmetica/index.md) se podían leer como afirmaciones
     lógicas, con independencia de cómo Prolog los ejecuta. Con el corte esa
     lectura sigue existiendo: `!` se lee como un objetivo que siempre se cumple,
     de modo que una cláusula con corte afirma exactamente lo mismo que afirmaría
@@ -243,7 +254,7 @@ completas en lugar de depender del orden de las cláusulas.
 ## 9.6 Generar y probar
 
 Existe una técnica de resolución de problemas que se expresa de manera natural
-en Prolog, y que se anticipó en el capítulo 8: cuando la respuesta no se puede
+en Prolog, y que se anticipó en el [capítulo 8](../capitulo-08-aritmetica/index.md): cuando la respuesta no se puede
 calcular de manera directa, **se generan candidatos y se verifica cada uno**.
 
 Se escribe en dos partes: un objetivo que produce las posibilidades, y otro que
@@ -251,8 +262,10 @@ determina si cada posibilidad cumple la condición.
 
 <!-- ejemplo: capitulo-09/generar.pl predicado: multiplo/3 consulta: multiplo(7, 20, N). -->
 ```prolog
-% multiplo(De, Desde, N): N es un múltiplo de De, mayor o igual que Desde.
-% between/3 genera los candidatos y la condición con mod los verifica.
+%!  multiplo(+De, +Desde, ?N) is nondet.
+%
+%   N es un múltiplo de De, mayor o igual que Desde. between/3 genera los
+%   candidatos y la condición con mod los verifica.
 multiplo(De, Desde, N) :-
     between(Desde, 200, N),
     0 =:= N mod De.
@@ -275,7 +288,10 @@ Cuando solo se requiere **la primera** respuesta, se agrega un corte:
 
 <!-- ejemplo: capitulo-09/generar.pl predicado: primer_multiplo/3 consulta: primer_multiplo(7, 20, N). -->
 ```prolog
-% primer_multiplo(De, Desde, N): N es el primero de esos múltiplos, y solo él.
+%!  primer_multiplo(+De, +Desde, -N) is semidet.
+%
+%   N es el primero de esos múltiplos, y solo él. N debe llegar libre: con N
+%   ya ligado, el corte no tiene nada que podar (sección 9.6).
 primer_multiplo(De, Desde, N) :-
     multiplo(De, Desde, N),
     !.
@@ -291,7 +307,7 @@ valor**. Con `N` libre, `multiplo/3` produce los candidatos en orden, el corte
 descarta los siguientes, y la primera respuesta sigue siendo la primera.
 
 Con `N` ya instanciado, en cambio, reaparece exactamente el problema de la
-sección 9.5:
+[sección 9.5](#95-corte-verde-y-corte-rojo):
 
 ```prolog
 ?- primer_multiplo(7, 20, 28).
@@ -305,9 +321,10 @@ el rango y es múltiplo de 7— y el `!` se ejecuta después, cuando ya no hay n
 que podar.
 
 Es decir que este corte es **rojo**, aunque a primera vista parezca inofensivo.
-Conviene anotarlo en el comentario del predicado: `primer_multiplo/3` responde
-correctamente cuando su tercer argumento llega libre, y no se lo debe usar para
-verificar un valor dado.
+Conviene anotarlo en el encabezado del predicado. El `-N` no alcanza, porque un
+argumento de salida puede llegar ligado ([sección 2.8](../capitulo-02-hechos-consultas-y-variables/index.md#28-como-se-documenta-el-uso-de-un-predicado)): por eso la descripción
+aclara que `N` debe llegar libre. `primer_multiplo/3` responde correctamente en
+ese caso, y no se lo debe usar para verificar un valor dado.
 
 !!! abstract "Plantilla 15 — Generar y probar"
     **Cuándo**: la respuesta no se puede calcular de manera directa, pero sí se
@@ -322,6 +339,9 @@ verificar un valor dado.
     Cuando se requiere una sola respuesta, se agrega un corte al final:
 
     ```prolog
+    %!  una_solucion(-X) is semidet.
+    %
+    %   X es la primera solución. X debe llegar libre.
     una_solucion(X) :-
         solucion(X),
         !.
@@ -330,8 +350,8 @@ verificar un valor dado.
     Ese corte es **rojo**, aunque su uso sea habitual: si `X` llega con valor,
     el generador lo verifica de manera directa y el corte se ejecuta cuando ya
     no queda nada que podar, de modo que el predicado acepta un candidato que
-    no es el primero. Corresponde documentar que el argumento de salida debe
-    llegar libre.
+    no es el primero. Por eso la descripción del encabezado aclara que el
+    argumento de salida debe llegar libre: el `-X` solo no lo dice.
 
     **En este capítulo se usa en**: `multiplo/3` y `primer_multiplo/3` (9.6),
     `dos_que_suman/3` (ejercicios). Las demás plantillas están en
@@ -340,7 +360,7 @@ verificar un valor dado.
 La técnica se aplica a problemas de mucha mayor escala que la búsqueda de
 múltiplos: ubicar reinas en un tablero, resolver un sudoku, asignar horarios.
 Cambian el generador y la condición; la estructura es siempre la misma. El
-capítulo 33 la retoma con problemas de mayor complejidad, y el capítulo 32
+[capítulo 33](../capitulo-33-busqueda-y-juegos/index.md) la retoma con problemas de mayor complejidad, y el [capítulo 32](../capitulo-32-programacion-con-restricciones/index.md)
 presenta una técnica que la hace mucho más eficiente.
 
 ## Ejercicios
@@ -355,20 +375,27 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 2. **(1)** ¿Qué efecto tiene el `!` de `un_mayor_de_edad/1`? Eliminarlo y
    comparar los resultados.
 3. **(2)** Escribir `categoria_sin_ningun_corte/2`: las mismas tres categorías,
-   con una sola respuesta por persona y sin usar `!`.
+   con una sola respuesta por persona y sin usar `!`. Con la persona dada, debe
+   cumplir `categoria_sin_ningun_corte(+P, -C) is semidet`.
 4. ★ **(2)** ¿Cuál de las dos versiones del ejercicio anterior responde de manera
    correcta `categoria(sofia, adulto)`? Verificarlo.
 5. ★ **(2)** Escribir `primer_par(L, X)`: X es el primer número par de la lista L.
+   Su encabezado es `primer_par(+L, -X) is semidet`.
 6. **(2)** Escribir `hay_algun_menor(L)`: se cumple si algún número de `L` es
    menor que 18. ¿Requiere corte?
 7. **(2)** Con `generar.pl`, ¿por qué `dos_que_suman(49, A, B)` produce dos
    respuestas en lugar de una? ¿Cómo se puede lograr que produzca una sola?
 8. **(3)** Escribir `primer_cuadrado_mayor(N, C)`: C es el primer número cuyo
-   cuadrado es mayor que `N`, con la búsqueda a partir de 1.
+   cuadrado es mayor que `N`, con la búsqueda a partir de 1. Escribir también
+   su encabezado: qué argumentos deben llegar ligados, cuáles pueden llegar
+   libres, y cuántas respuestas produce.
 9. ★ **(3)** El siguiente predicado tiene un corte rojo. Identificarlo, indicar qué
    consulta responde de manera incorrecta, y corregirlo:
 
     ```prolog
+    %!  descuento(+Edad, -D) is det.
+    %
+    %   D es el descuento que corresponde a Edad.
     descuento(Edad, 50) :-
         Edad < 12,
         !.
@@ -388,6 +415,9 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     color(verde).
     color(azul).
 
+    %!  primero(-C) is det.
+    %
+    %   C es el primer color.
     primero(C) :-
         color(C),
         !.
@@ -404,10 +434,13 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     |---|---|---|
     | | | |
 13. **(2)** El predicado siguiente usa un corte dentro de una recursión.
-    Determinar, con las reglas de la sección 9.3, si el corte afecta a las
+    Determinar, con las reglas de la [sección 9.3](#93-que-poda-exactamente), si el corte afecta a las
     llamadas recursivas, y verificarlo ejecutando `primer_par([1, 3, 4, 6], X).`
 
     ```prolog
+    %!  primer_par(+L, -X) is semidet.
+    %
+    %   X es el primer número par de L.
     primer_par([X|_], X) :-
         0 =:= X mod 2,
         !.
@@ -415,10 +448,11 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
         primer_par(Resto, X).
     ```
 14. ★ **(2)** Escribir `clasificar(N, C)` con la plantilla 14, que se cumpla con
-    `C = negativo`, `C = cero` o `C = positivo` según corresponda. Después
+    `C = negativo`, `C = cero` o `C = positivo` según corresponda, con el
+    encabezado `clasificar(+N, -C) is det`. Después
     ejecutar `clasificar(5, negativo).` y explicar el resultado a la luz de la
-    sección 9.5.
-15. **(3)** Escribir las pruebas de `primer_multiplo/3` de la sección 9.6 que
+    [sección 9.5](#95-corte-verde-y-corte-rojo).
+15. **(3)** Escribir las pruebas de `primer_multiplo/3` de la [sección 9.6](#96-generar-y-probar) que
     distingan un corte verde de uno rojo: una que verifique la respuesta, una
     que verifique que **no** hay una segunda respuesta, y una que muestre qué
     ocurre al consultar con el tercer argumento ya instanciado.
@@ -438,8 +472,8 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 
 | Tema | Se retoma en |
 |---|---|
-| `\+`, que se define internamente con un corte | capítulo 10 |
-| `->` y `;`, que expresan lo mismo con otra notación | capítulo 13 |
-| Cuándo el corte mejora el rendimiento y cuándo lo perjudica | capítulo 14 |
-| Generar y probar con restricciones, que descarta antes de generar | capítulo 32 |
-| Búsquedas de mayor escala: reinas, laberintos, juegos | capítulo 33 |
+| `\+`, que se define internamente con un corte | [capítulo 10](../capitulo-10-negacion-como-falla/index.md) |
+| `->` y `;`, que expresan lo mismo con otra notación | [capítulo 13](../capitulo-13-control/index.md) |
+| Cuándo el corte mejora el rendimiento y cuándo lo perjudica | [capítulo 14](../capitulo-14-rendimiento/index.md) |
+| Generar y probar con restricciones, que descarta antes de generar | [capítulo 32](../capitulo-32-programacion-con-restricciones/index.md) |
+| Búsquedas de mayor escala: reinas, laberintos, juegos | [capítulo 33](../capitulo-33-busqueda-y-juegos/index.md) |

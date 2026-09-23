@@ -605,4 +605,3 @@ This digital edition corrects numerous typographical errors and minor errors of 
 The programs from this book are distributed as a file named NLPPP-programs.zip on the same web site as the book itself. SWI Prolog is probably the best compiler to use with them nowadays. There is not, and never has been, an answer key or set of answers to exercises.
 
 I want to thank all my students and colleagues who gave me feedback over the years, and especially I want to thank Dustin Cline and Fred Maier for help preparing the digital edition.
-

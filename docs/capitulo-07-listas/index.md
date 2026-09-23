@@ -4,9 +4,9 @@ Una lista es una secuencia ordenada de elementos, cuya cantidad no se conoce de
 antemano: los invitados a una fiesta, las materias de un cuatrimestre, las
 letras de una palabra.
 
-El capítulo 6 mostró cómo recorrer una estructura que se reduce en cada llamada.
+El [capítulo 6](../capitulo-06-recursion/index.md) mostró cómo recorrer una estructura que se reduce en cada llamada.
 Una lista es exactamente una estructura de ese tipo, de modo que este capítulo
-es, en lo esencial, una aplicación del capítulo 6. Los elementos nuevos son la
+es, en lo esencial, una aplicación del [capítulo 6](../capitulo-06-recursion/index.md). Los elementos nuevos son la
 notación y un conjunto de predicados predefinidos de uso frecuente.
 
 ## Objetivos del capítulo
@@ -40,7 +40,7 @@ no tiene componentes.
 
 La propiedad fundamental, que explica todo el resto del capítulo, es que **una
 lista no es una clase de dato distinta**. Es un término compuesto como los del
-capítulo 4, con dos argumentos: un primer elemento, y una lista con los
+[capítulo 4](../capitulo-04-terminos-y-unificacion/index.md), con dos argumentos: un primer elemento, y una lista con los
 elementos restantes. Los corchetes son una notación que evita escribir los
 paréntesis anidados.
 
@@ -90,7 +90,7 @@ Resto = [eva, sofia].
     `[a, b, c] = [X|Y].` · `[a, b, c] = [X, Y|Z].` · `[a] = [X|Y].` ·
     `[] = [X|Y].` Ejecutarlas y explicar por qué la última es la única que
     responde `false.`. Conviene observar que `[X|Y]` es un patrón de término,
-    como los de la plantilla 7 del capítulo 4, y no una operación sobre listas.
+    como los de la plantilla 7 del [capítulo 4](../capitulo-04-terminos-y-unificacion/index.md), y no una operación sobre listas.
 
 ## 7.3 Recorrer una lista
 
@@ -100,8 +100,10 @@ el primero de la lista, o pertenece al resto.
 
 <!-- ejemplo: capitulo-07/recorrer.pl predicado: esta_en/2 consulta: esta_en(luis, [ana, luis, eva]). -->
 ```prolog
-% esta_en(X, L): X es uno de los elementos de L.
-% X es el primer elemento, o es un elemento del resto.
+%!  esta_en(?X, +L) is nondet.
+%
+%   X es uno de los elementos de L.
+%   X es el primer elemento, o es un elemento del resto.
 esta_en(X, [X|_]).
 esta_en(X, [_|Resto]) :-
     esta_en(X, Resto).
@@ -208,9 +210,11 @@ silueta, y es la imagen invertida de la anterior:
 
 <!-- ejemplo: capitulo-07/recorrer.pl predicado: todos_estan/2 consulta: todos_estan([ana, eva], [ana, luis, eva]). -->
 ```prolog
-% todos_estan(Buscados, L): todos los elementos de Buscados son elementos de L.
-% Todos los elementos cumplen una condición: el caso base es la lista vacía y
-% tiene éxito, y el recorrido fracasa en cuanto uno no cumple.
+%!  todos_estan(+Buscados, +L) is nondet.
+%
+%   Todos los elementos de Buscados son elementos de L.
+%   Todos los elementos cumplen una condición: el caso base es la lista vacía y
+%   tiene éxito, y el recorrido fracasa en cuanto uno no cumple.
 todos_estan([], _).
 todos_estan([X|Resto], L) :-
     esta_en(X, L),
@@ -252,11 +256,13 @@ false.
 ## 7.4 Contar durante el recorrido
 
 Es la misma plantilla, con un resultado numérico. Corresponde a
-`generaciones/3` del capítulo 6, con una lista en lugar de una familia:
+`generaciones/3` del [capítulo 6](../capitulo-06-recursion/index.md), con una lista en lugar de una familia:
 
 <!-- ejemplo: capitulo-07/recorrer.pl predicado: largo/2 consulta: largo([ana, luis, eva], Cuantos). -->
 ```prolog
-% largo(L, N): N es la cantidad de elementos de L.
+%!  largo(+L, -N) is det.
+%
+%   N es la cantidad de elementos de L.
 largo([], 0).
 largo([_|Resto], N) :-
     largo(Resto, Faltan),
@@ -267,7 +273,7 @@ La lista vacía tiene cero elementos: es el caso base. Una lista con primer
 elemento y resto tiene un elemento más que su resto.
 
 `is` se escribe **después** de la llamada recursiva, por la misma razón que en
-el capítulo 6: `Faltan` no tiene valor hasta que la llamada termina.
+el [capítulo 6](../capitulo-06-recursion/index.md): `Faltan` no tiene valor hasta que la llamada termina.
 
 ## 7.5 Construir una lista durante el recorrido de otra
 
@@ -276,7 +282,10 @@ una lista es el resultado: la concatenación de dos listas.
 
 <!-- ejemplo: capitulo-07/recorrer.pl predicado: pegar/3 consulta: pegar([ana, luis], [eva], Todos). -->
 ```prolog
-% pegar(A, B, C): C es la lista A seguida de la lista B.
+%!  pegar(+A, ?B, -C) is det.
+%!  pegar(?A, ?B, +C) is nondet.
+%
+%   C es la lista A seguida de la lista B.
 pegar([], B, B).
 pegar([X|RestoA], B, [X|RestoC]) :-
     pegar(RestoA, B, RestoC).
@@ -305,7 +314,7 @@ actual, y la llamada actual no tiene manera de mirarlo.
 Cuando un predicado necesita saber qué lleva hecho para decidir el paso
 siguiente, esta forma no alcanza, y hay que construir el resultado en el otro
 sentido: llevándolo en un argumento que viaje hacia adelante. Eso es un
-acumulador, y es el tema de las secciones 8.5 y 8.6.
+acumulador, y es el tema de las secciones [8.5](../capitulo-08-aritmetica/index.md#85-acumuladores) y [8.6](../capitulo-08-aritmetica/index.md#86-un-acumulador-que-no-es-un-numero).
 
 ```prolog
 ?- pegar([ana, luis], [eva], Todos).
@@ -334,7 +343,7 @@ Todos = [ana, luis, eva].
     de la plantilla. Cada elemento pasa al resultado sin modificarse, de modo
     que no se requiere ningún `relacionar/2` y en la cabeza se escribe dos veces
     la misma variable; y el caso base no entrega la lista vacía sino la segunda
-    lista. El capítulo 8 la retoma con acumuladores.
+    lista. El [capítulo 8](../capitulo-08-aritmetica/index.md) la retoma con acumuladores.
 
 ## 7.6 Una relación, varios sentidos
 
@@ -400,17 +409,23 @@ adelante, el curso usa los predefinidos, y no las versiones de este capítulo:
 
 <!-- ejemplo: capitulo-07/invitados.pl predicado: esta_invitado/1 cuantos/1 en_el_puesto/2 consulta: en_el_puesto(2, Quien). -->
 ```prolog
-% esta_invitado(P): P está en la lista.
+%!  esta_invitado(?P) is nondet.
+%
+%   P está en la lista.
 esta_invitado(P) :-
     invitados(Lista),
     member(P, Lista).
 
-% cuantos(N): N es la cantidad de invitados.
+%!  cuantos(-N) is det.
+%
+%   N es la cantidad de invitados.
 cuantos(N) :-
     invitados(Lista),
     length(Lista, N).
 
-% en_el_puesto(N, P): P es quien llegó en la posición N, contando desde 1.
+%!  en_el_puesto(?N, ?P) is nondet.
+%
+%   P es quien llegó en la posición N, contando desde 1.
 en_el_puesto(N, P) :-
     invitados(Lista),
     nth1(N, Lista, P).
@@ -439,15 +454,18 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 1. ★ **(1)** ¿Qué responde `[a, b, c] = [X|Y].`? ¿Y `[a] = [X, Y].`?
 2. **(1)** Escribir una lista con tres materias y una consulta que determine si
    una de ellas pertenece a la lista.
-3. **(2)** Escribir `primero_y_ultimo(L, P, U)` con los elementos del capítulo.
+3. **(2)** Escribir `primero_y_ultimo(L, P, U)`: `P` es el primer elemento de
+   `L` y `U`, el último. Usar los elementos del capítulo. Después escribir su
+   encabezado: qué argumentos deben llegar ligados y cuántas respuestas produce.
 4. **(2)** Escribir `sin_el_primero(L, R)`: R es L sin su primer elemento.
    ¿Requiere recursión?
 5. ★ **(2)** Escribir `cuantos_gatos(L, N)`, que cuenta las apariciones de `gato`
-   en una lista de animales. Es `largo/2` con una condición.
+   en una lista de animales, con el encabezado
+   `%! cuantos_gatos(+L, -N) is det.` Es `largo/2` con una condición.
 6. **(2)** Escribir `empieza_con(L, Principio)`, que se cumple cuando `L`
    comienza con los elementos de `Principio`. Usar `append/3`, sin recursión.
-7. ★ **(2)** Escribir `dar_vuelta(L, R)` sin usar `reverse/2`. Se requiere
-   `append/3`.
+7. ★ **(2)** Escribir `dar_vuelta(L, R)` sin usar `reverse/2`, con el
+   encabezado `%! dar_vuelta(+L, -R) is det.` Se requiere `append/3`.
 8. **(3)** Escribir `sacar(X, L, R)`: R es L sin la primera aparición de X.
 9. **(3)** Escribir `es_sublista(S, L)`: los elementos de `S` aparecen en `L`,
    contiguos y en el mismo orden. Se puede resolver con dos `append/3` y sin
@@ -476,9 +494,14 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     con la plantilla 10. Comparar qué responde cada uno sobre `[]`, y explicar
     por qué las dos respuestas son correctas.
 13. ★ **(2)** El predicado siguiente pretende duplicar cada elemento de una lista,
-    pero no funciona. Explicar la causa y corregirlo:
+    pero no cumple todo lo que declara su encabezado. Explicar la causa y
+    corregirlo:
 
     ```prolog
+    %!  duplicar(+L, -R) is det.
+    %!  duplicar(-L, +R) is semidet.
+    %
+    %   R tiene cada elemento de L repetido dos veces.
     duplicar([], []).
     duplicar([X|Resto], Nueva) :-
         duplicar(Resto, Otros),
@@ -518,9 +541,9 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 
 | Tema | Se retoma en |
 |---|---|
-| Acumuladores, otra forma de recorrer una lista | capítulo 8 |
-| Recorridos que se interrumpen al encontrar el elemento buscado | capítulo 9 |
-| Reunir en una lista todas las respuestas de una consulta | capítulo 15 |
-| Recorrer una lista sin escribir la recursión, con `maplist/2` | capítulo 16 |
-| El resto de `library(lists)`, y el ordenamiento | capítulo 20 |
-| Listas diferencia, que concatenan en un paso sin recorrer | capítulo 26 |
+| Acumuladores, otra forma de recorrer una lista | [capítulo 8](../capitulo-08-aritmetica/index.md) |
+| Recorridos que se interrumpen al encontrar el elemento buscado | [capítulo 9](../capitulo-09-backtracking-y-corte/index.md) |
+| Reunir en una lista todas las respuestas de una consulta | [capítulo 15](../capitulo-15-todas-las-soluciones/index.md) |
+| Recorrer una lista sin escribir la recursión, con `maplist/2` | [capítulo 16](../capitulo-16-orden-superior/index.md) |
+| El resto de `library(lists)`, y el ordenamiento | [capítulo 20](../capitulo-20-estructuras-de-datos-de-la-biblioteca/index.md) |
+| Listas diferencia, que concatenan en un paso sin recorrer | [capítulo 26](../capitulo-26-estructuras-incompletas-y-listas-diferencia/index.md) |
