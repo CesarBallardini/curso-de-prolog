@@ -22,9 +22,9 @@ Al terminar el capítulo, el lector puede:
   definidos.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **0:40 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **0:55 h**.
     Resolver los 7 ejercicios marcados con ★: **2:00 h**.
-    Resolver los 16 ejercicios del final: **5:20 h**.
+    Resolver los 17 ejercicios del final: **5:25 h**.
 
 ## 7.1 Una lista es un término
 
@@ -89,7 +89,7 @@ Resto = [eva, sofia].
     Antes de ejecutarlas, determinar qué responden estas cuatro consultas:
     `[a, b, c] = [X|Y].` · `[a, b, c] = [X, Y|Z].` · `[a] = [X|Y].` ·
     `[] = [X|Y].` Ejecutarlas y explicar por qué la última es la única que
-    responde `false.`. Conviene observar que `[X|Y]` es un patrón de término,
+    responde `false.` Conviene observar que `[X|Y]` es un patrón de término,
     como los de la plantilla 7 del [capítulo 4](../capitulo-04-terminos-y-unificacion/index.md), y no una operación sobre listas.
 
 ## 7.3 Recorrer una lista
@@ -100,10 +100,11 @@ el primero de la lista, o pertenece al resto.
 
 <!-- ejemplo: capitulo-07/recorrer.pl predicado: esta_en/2 consulta: esta_en(luis, [ana, luis, eva]). -->
 ```prolog
-%!  esta_en(?X, +L) is nondet.
+%!  esta_en(?X, ?L) is nondet.
 %
 %   X es uno de los elementos de L.
-%   X es el primer elemento, o es un elemento del resto.
+%   X es el primer elemento, o es un elemento del resto. Con L libre, enumera
+%   listas cada vez más largas que contienen a X, sin fin.
 esta_en(X, [X|_]).
 esta_en(X, [_|Resto]) :-
     esta_en(X, Resto).
@@ -113,11 +114,11 @@ La primera cláusula es un hecho, y no requiere cuerpo: se cumple cuando el
 elemento buscado y el primer elemento de la lista son el mismo. Esa condición la
 resuelve la unificación, porque `X` aparece en las dos posiciones.
 
-Vale la pena registrar esto como un recurso general: **una condición entre dos
+Conviene registrar esto como un recurso general: **una condición entre dos
 argumentos se puede expresar de dos maneras**. Repitiendo el mismo nombre de
 variable en la cabeza, y entonces la igualdad la impone la unificación sin
 escribir ningún objetivo; o como un objetivo en el cuerpo. Que dos cosas sean
-iguales se expresa de la primera manera; que sean distintas hay que escribirlo,
+iguales se expresa de la primera manera; que sean distintas es necesario escribirlo,
 porque no hay forma de exigirlo con la unificación.
 
 Además, la forma de este predicado no es arbitraria: **se copia de la forma del
@@ -169,6 +170,9 @@ satisfacer la consulta.
     **Cuándo**: se deben examinar los elementos de una lista, de a uno por vez.
 
     ```prolog
+    %!  p(+L) is det.
+    %
+    %   Procesa cada elemento de L.
     p([]) :-
         caso_de_la_lista_vacia.
     p([Primero|Resto]) :-
@@ -180,8 +184,10 @@ satisfacer la consulta.
     y continúa con el resto. En algunos predicados el caso base se escribe como
     hecho; en otros no es necesario escribirlo.
 
-    **En este capítulo se usa en**: `largo/2` (7.4), `pegar/3` (7.5). Las demás
-    plantillas están en [esta página](../plantillas.md).
+    **En este capítulo se usa en**: `largo/2` (7.4). `pegar/3` (7.5) recorre
+    su primera lista de la misma manera, pero construye una lista como
+    resultado: corresponde a la plantilla 12, que es la variante de esta con
+    resultado. Las demás plantillas están en [esta página](../plantillas.md).
 
 `esta_en/2` no responde a esa plantilla, y conviene distinguirlas, porque son
 las dos siluetas que más se repiten al recorrer una lista. La diferencia está en
@@ -192,13 +198,16 @@ el caso base y en qué se hace con cada elemento.
     condición, y no hace falta examinarlos todos.
 
     ```prolog
+    %!  p(+L) is nondet.
+    %
+    %   Algún elemento de L cumple la condición; una respuesta por cada uno.
     p([Primero|_]) :-
         cumple(Primero).
     p([_|Resto]) :-
         p(Resto).
     ```
 
-    Acá el caso base **no** es la lista vacía: la primera cláusula tiene éxito
+    En esta plantilla el caso base **no** es la lista vacía: la primera cláusula tiene éxito
     sin recursión en cuanto encuentra un elemento que cumple. Sobre la lista
     vacía no hay cláusula aplicable, y la búsqueda fracasa, que es lo correcto:
     ninguno cumplió.
@@ -231,6 +240,9 @@ false.
     **Cuándo**: la condición se debe verificar sobre **todos** los elementos.
 
     ```prolog
+    %!  p(+L) is semidet.
+    %
+    %   Todos los elementos de L cumplen la condición.
     p([]).
     p([Primero|Resto]) :-
         cumple(Primero),
@@ -260,9 +272,11 @@ Es la misma plantilla, con un resultado numérico. Corresponde a
 
 <!-- ejemplo: capitulo-07/recorrer.pl predicado: largo/2 consulta: largo([ana, luis, eva], Cuantos). -->
 ```prolog
-%!  largo(+L, -N) is det.
+%!  largo(?L, ?N) is nondet.
 %
-%   N es la cantidad de elementos de L.
+%   N es la cantidad de elementos de L. Con L libre, enumera listas de
+%   variables de largo creciente; con L libre y N ligado, da la lista de N
+%   variables y después no termina.
 largo([], 0).
 largo([_|Resto], N) :-
     largo(Resto, Faltan),
@@ -312,7 +326,7 @@ recursión no puede consultarlo**. Lo construido queda por encima de la llamada
 actual, y la llamada actual no tiene manera de mirarlo.
 
 Cuando un predicado necesita saber qué lleva hecho para decidir el paso
-siguiente, esta forma no alcanza, y hay que construir el resultado en el otro
+siguiente, esta forma no alcanza, y es necesario construir el resultado en el otro
 sentido: llevándolo en un argumento que viaje hacia adelante. Eso es un
 acumulador, y es el tema de las secciones [8.5](../capitulo-08-aritmetica/index.md#85-acumuladores) y [8.6](../capitulo-08-aritmetica/index.md#86-un-acumulador-que-no-es-un-numero).
 
@@ -325,6 +339,9 @@ Todos = [ana, luis, eva].
     **Cuándo**: el resultado es una lista que se obtiene al recorrer otra.
 
     ```prolog
+    %!  p(+L, -R) is det.
+    %
+    %   R es la lista que resulta de relacionar cada elemento de L con el suyo.
     p([], CasoBase).
     p([X|Resto], [Y|RestoNuevo]) :-
         relacionar(X, Y),
@@ -376,19 +393,60 @@ concatenada a continuación de la segunda, produce la primera. Para obtener el
 último elemento, se consulta por una partición cuya segunda parte tenga un solo
 elemento.
 
-Esta es la idea más importante del capítulo, y la razón por la que en Prolog
+Esta propiedad es la central del capítulo, y la razón por la que en Prolog
 conviene modelar un problema mediante relaciones antes que mediante secuencias
 de pasos.
 
+El último elemento también se obtiene con un recorrido propio. `ultimo/2`,
+definido en `recorrer.pl` junto a los predicados anteriores, lo hace:
+
+<!-- ejemplo: capitulo-07/recorrer.pl predicado: ultimo/2 consulta: ultimo([ana, luis, eva], U). -->
+```prolog
+%!  ultimo(?L, ?X) is nondet.
+%
+%   X es el último elemento de L. Con L libre, enumera listas cada vez más
+%   largas que terminan en X, sin fin.
+ultimo([X], X).
+ultimo([_|Resto], X) :-
+    ultimo(Resto, X).
+```
+
+La primera cláusula establece que el último elemento de una lista de un solo
+elemento es ese elemento; la segunda descarta el primer elemento y busca en el
+resto. Como en la plantilla 10, el caso base no es la lista vacía: sobre `[]`
+no hay cláusula aplicable, y el predicado fracasa.
+
+```prolog
+?- ultimo([ana, luis, eva], U).
+U = eva ;
+false.
+```
+
+La respuesta es una sola, pero la consulta deja una alternativa pendiente: las
+dos cláusulas aceptan la lista `[eva]`, y después de la primera respuesta la
+segunda queda por probar. La [sección 16.3](../capitulo-16-rendimiento/index.md#163-indexacion)
+explica por qué y cómo se evita.
+
+`ultimo/2` también es una relación. Con la lista libre, enumera listas cada vez
+más largas que terminan en el elemento dado:
+
+```prolog
+?- ultimo(L, eva).
+L = [eva] ;
+L = [_, eva] ;
+L = [_, _, eva] ;
+...
+```
+
 !!! warning "Usar una relación en varios sentidos tiene un límite"
     Que un predicado admita varios sentidos no significa que todos terminen. La
-    condición, para los dos predicados de este capítulo, es que haya una lista
+    condición, para los predicados de este capítulo, es que haya una lista
     **completa** por la cual recorrer:
 
     - `pegar/3` termina si la primera o la tercera lista está completa. Si las
       dos están sin determinar, produce particiones sin fin.
-    - `esta_en/2` termina si la lista está completa. Con la lista sin
-      determinar, produce listas cada vez más largas, sin fin.
+    - `esta_en/2` y `ultimo/2` terminan si la lista está completa. Con la
+      lista sin determinar, producen listas cada vez más largas, sin fin.
 
     Antes de consultar un predicado en un sentido nuevo, conviene preguntarse
     qué recorre y si eso que recorre es finito.
@@ -404,8 +462,20 @@ adelante, el curso usa los predefinidos, y no las versiones de este capítulo:
 | `length(L, N)` | N es la cantidad de elementos de L. Equivale a `largo/2` |
 | `append(A, B, C)` | C es A seguida de B. Equivale a `pegar/3` |
 | `reverse(L, R)` | R es L en orden inverso |
-| `last(L, X)` | X es el último elemento de L |
+| `last(L, X)` | X es el último elemento de L. Equivale a `ultimo/2` |
 | `nth1(N, L, X)` | X es el elemento en la posición N de L, contando desde 1 |
+
+Los ejemplos de esta sección están en `invitados.pl`. La lista de invitados se
+guarda en un hecho, en orden de llegada:
+
+<!-- ejemplo: capitulo-07/invitados.pl predicado: invitados/1 consulta: invitados(L). -->
+```prolog
+% invitados(L): L es la lista de invitados, en orden de llegada.
+invitados([ana, luis, eva, sofia]).
+```
+
+Cada regla obtiene la lista de ese hecho y le aplica uno de los predicados de la
+tabla. Las tres primeras usan `member/2`, `length/2` y `nth1/3`:
 
 <!-- ejemplo: capitulo-07/invitados.pl predicado: esta_invitado/1 cuantos/1 en_el_puesto/2 consulta: en_el_puesto(2, Quien). -->
 ```prolog
@@ -431,6 +501,20 @@ en_el_puesto(N, P) :-
     nth1(N, Lista, P).
 ```
 
+```prolog
+?- esta_invitado(Quien).
+Quien = ana ;
+Quien = luis ;
+Quien = eva ;
+Quien = sofia.
+
+?- cuantos(N).
+N = 4.
+
+?- en_el_puesto(2, Quien).
+Quien = luis.
+```
+
 `nth1/3` también admite la consulta inversa, igual que `append/3`: con la
 posición libre, determina en qué posición se encuentra un elemento.
 
@@ -438,6 +522,45 @@ posición libre, determina en qué posición se encuentra un elemento.
 ?- en_el_puesto(N, eva).
 N = 3 ;
 false.
+```
+
+Las otras tres reglas usan `last/2`, `reverse/2` y `append/3`. La última agrega
+un invitado al final: `append/3` concatena la lista con otra de un solo
+elemento.
+
+<!-- ejemplo: capitulo-07/invitados.pl predicado: ultimo_en_llegar/1 orden_de_salida/1 con_uno_mas/2 consulta: con_uno_mas(pedro, L). -->
+```prolog
+%!  ultimo_en_llegar(-P) is det.
+%
+%   P es el último de la lista.
+ultimo_en_llegar(P) :-
+    invitados(Lista),
+    last(Lista, P).
+
+%!  orden_de_salida(-L) is det.
+%
+%   L es la lista de invitados en orden inverso.
+orden_de_salida(L) :-
+    invitados(Lista),
+    reverse(Lista, L).
+
+%!  con_uno_mas(?P, -L) is det.
+%
+%   L es la lista de invitados con P agregado al final.
+con_uno_mas(P, L) :-
+    invitados(Lista),
+    append(Lista, [P], L).
+```
+
+```prolog
+?- ultimo_en_llegar(P).
+P = sofia.
+
+?- orden_de_salida(L).
+L = [sofia, eva, luis, ana].
+
+?- con_uno_mas(pedro, L).
+L = [ana, luis, eva, sofia, pedro].
 ```
 
 La existencia de estos predicados no vuelve innecesario el trabajo de las
@@ -521,6 +644,12 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 16. **(3)** Escribir las pruebas de `sacar/3` del ejercicio 8: una con `all`
     sobre una lista con el elemento repetido, una con `[fail]`, y una que
     verifique qué ocurre cuando el elemento no está en la lista.
+17. **(1)** Con el hecho `materias([logica, algebra, fisica, quimica]).`,
+    escribir `materia_en(N, M)`: `M` es la materia que ocupa la posición `N`,
+    contando desde 1. Usar `nth1/3`, como `en_el_puesto/2` de la
+    [sección 7.7](#77-predicados-predefinidos). Consultarlo en los dos sentidos:
+    qué materia ocupa la posición 3, y en qué posición está `fisica`. Después
+    determinar qué responde `nth1(N, [a, b, a], a).` y por qué.
 
 ## Resumen
 
@@ -543,7 +672,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 |---|---|
 | Acumuladores, otra forma de recorrer una lista | [capítulo 8](../capitulo-08-aritmetica/index.md) |
 | Recorridos que se interrumpen al encontrar el elemento buscado | [capítulo 9](../capitulo-09-backtracking-y-corte/index.md) |
-| Reunir en una lista todas las respuestas de una consulta | [capítulo 15](../capitulo-15-todas-las-soluciones/index.md) |
-| Recorrer una lista sin escribir la recursión, con `maplist/2` | [capítulo 16](../capitulo-16-orden-superior/index.md) |
-| El resto de `library(lists)`, y el ordenamiento | [capítulo 20](../capitulo-20-estructuras-de-datos-de-la-biblioteca/index.md) |
-| Listas diferencia, que concatenan en un paso sin recorrer | [capítulo 26](../capitulo-26-estructuras-incompletas-y-listas-diferencia/index.md) |
+| Reunir en una lista todas las respuestas de una consulta | [capítulo 17](../capitulo-17-todas-las-soluciones/index.md) |
+| Recorrer una lista sin escribir la recursión, con `maplist/2` | [capítulo 18](../capitulo-18-orden-superior/index.md) |
+| El resto de `library(lists)`, y el ordenamiento | [capítulo 22](../capitulo-22-estructuras-de-datos-de-la-biblioteca/index.md) |
+| Listas diferencia, que concatenan en un paso sin recorrer | [capítulo 34](../capitulo-34-estructuras-incompletas-y-listas-diferencia/index.md) |

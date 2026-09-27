@@ -61,10 +61,13 @@ jobs:
       #
       # It no longer comes from ppa:swi-prolog/stable: that PPA publishes only
       # 10 now, and removed its last 9.2.9 build for noble in February 2026.
+      #
+      # python3-dev is for chapter 29: the janus-swi package builds against the
+      # headers of this Python and of this swipl.
       - name: Install SWI-Prolog
         run: |
           sudo apt-get update
-          sudo apt-get install -y swi-prolog-nox
+          sudo apt-get install -y swi-prolog-nox python3-dev
           swipl --version
 
       # A jump to SWI-Prolog 10 would not break any of the steps below: it would
@@ -74,6 +77,12 @@ jobs:
       - name: Check that it is SWI-Prolog 9
         run: |
           swipl -q -t halt -g 'current_prolog_flag(version, V), ( V >= 90000, V < 100000 -> true ; format(user_error, "this book shows the answers of SWI-Prolog 9; this is ~w~n", [V]), halt(1) )'
+
+      # Chapter 15 teaches if_/3 from library(reif), a pack. It has no licence
+      # of its own, so it cannot be copied into the repository: it is installed
+      # here, as each reader installs it (section 15.9).
+      - name: Install the reif pack
+        run: swipl -g "pack_install(reif, [interactive(false)])" -t halt
 
       - name: Chromium for the PDFs
         run: uv run --frozen playwright install --with-deps chromium
@@ -91,6 +100,16 @@ jobs:
 
       - name: Lint the tooling
         run: make lint
+
+      # The Python side of chapters 29 to 31: Prolog from Python through Janus,
+      # and the Python clients of the services. janus-swi 1.5.3 passes its
+      # foreign functions with a pointer type that the 9.2.9 headers do not
+      # declare; GCC 15 makes that an error, older compilers a warning, and it
+      # works at run time. The flag turns that one error back into a warning.
+      - name: Python examples (chapters 29 to 31)
+        env:
+          CFLAGS: -Wno-error=incompatible-pointer-types
+        run: make appendix
 
       - name: Upload the site
         if: github.event_name != 'pull_request'

@@ -27,6 +27,7 @@ El notebook tiene 14 secciones: introducción, base de conocimiento, términos, 
 ### SWISH-1 — Cargar un programa con `consult/1`
 - **Fuente:** "Tutorial de prolog", §2 Base de Conocimiento. https://swish.swi-prolog.org/p/Tutorial%20de%20prolog.swinb
 - **Tema:** 0
+- **Capítulos:** 1, 13
 - **Dificultad:** 1
 - **Solución:** no corresponde.
 - **SWISH:** no (en SWISH no hay archivos locales: el programa se escribe en celdas); sí en `swipl`
@@ -36,6 +37,7 @@ El notebook tiene 14 secciones: introducción, base de conocimiento, términos, 
 ### SWISH-2 — Átomos, números y variables
 - **Fuente:** "Tutorial de prolog", §3 Términos. https://swish.swi-prolog.org/p/Tutorial%20de%20prolog.swinb
 - **Tema:** 1, 3
+- **Capítulos:** 4, 32
 - **Dificultad:** 1
 - **Solución:** verificada: todos los ejemplos (`luis`, `'pedro'`, `2`, `-5.0`, `2e10`, `X`, `_`, `_var`) son términos válidos. `2e10` se lee como el número de punto flotante `2.0e10`.
 - **SWISH:** sí
@@ -45,6 +47,7 @@ El notebook tiene 14 secciones: introducción, base de conocimiento, términos, 
 ### SWISH-3 — Estructuras: functor, aridad, argumentos
 - **Fuente:** "Tutorial de prolog", §3 Términos (Estructuras). https://swish.swi-prolog.org/p/Tutorial%20de%20prolog.swinb
 - **Tema:** 3
+- **Capítulos:** 4, 32
 - **Dificultad:** 1
 - **Solución:** propia: `padre(luis)` es `padre/1`, `edad(luis,30)` es `edad/2` y `color(X)` es `color/1` con un argumento variable. Se comprueba con `functor/3`.
 - **SWISH:** sí
@@ -54,6 +57,7 @@ El notebook tiene 14 secciones: introducción, base de conocimiento, términos, 
 ### SWISH-4 — Operadores aritméticos y de comparación
 - **Fuente:** "Tutorial de prolog", §4 Expresiones. https://swish.swi-prolog.org/p/Tutorial%20de%20prolog.swinb
 - **Tema:** 3, 7
+- **Capítulos:** 8, 10
 - **Dificultad:** 1
 - **Solución:** verificada: `X is 10+2` da 12; `10+2 =:= 5+7`, `10+2 =\= 5+8`, `11*3 > 3^2`, `99.0 >= 0`, `-15 =< 15`, `10+2 == 10+2` y `10+2 \== 5+7` dan true; `2**10 < 5*2` da false; `bananon @> bananin`, `parse @< tree`, `ser @>= humano` y `raton @=< teclado` dan true.
 - **SWISH:** sí
@@ -63,6 +67,7 @@ El notebook tiene 14 secciones: introducción, base de conocimiento, términos, 
 ### SWISH-5 — Predicados de listas de la biblioteca
 - **Fuente:** "Tutorial de prolog", §4 Expresiones (Operadores de listas). https://swish.swi-prolog.org/p/Tutorial%20de%20prolog.swinb
 - **Tema:** 6
+- **Capítulos:** 7, 22
 - **Dificultad:** 1
 - **Solución:** autoverificable; por ejemplo, `sort([4,a,3],X)` da `X = [3,4,a]` (verificado) y `append(X,Y,[h,o,l,a])` da 5 soluciones.
 - **SWISH:** sí
@@ -72,6 +77,7 @@ El notebook tiene 14 secciones: introducción, base de conocimiento, términos, 
 ### SWISH-6 — Cláusulas de Horn con disyunción: `come/2`
 - **Fuente:** "Tutorial de prolog", §5 Cláusulas. https://swish.swi-prolog.org/p/Tutorial%20de%20prolog.swinb
 - **Tema:** 2
+- **Capítulos:** 3
 - **Dificultad:** 1
 - **Solución:** propia: la regla equivale a dos cláusulas, `come(A,B) :- carnivoro(A), animal(B), masDebil(B,A).` y `come(A,B) :- herbivoro(A), plantaComestible(B).`
 - **SWISH:** sí
@@ -81,6 +87,7 @@ El notebook tiene 14 secciones: introducción, base de conocimiento, términos, 
 ### SWISH-7 — Hechos: propiedades contra relaciones
 - **Fuente:** "Tutorial de prolog", §6 Hechos y §8 Consultas. https://swish.swi-prolog.org/p/Tutorial%20de%20prolog.swinb
 - **Tema:** 1
+- **Capítulos:** 2
 - **Dificultad:** 1
 - **Solución:** no corresponde.
 - **SWISH:** sí
@@ -90,6 +97,7 @@ El notebook tiene 14 secciones: introducción, base de conocimiento, términos, 
 ### SWISH-8 — Reglas: `hijode/2` y `abuelode/2`
 - **Fuente:** "Tutorial de prolog", §7 Reglas. https://swish.swi-prolog.org/p/Tutorial%20de%20prolog.swinb
 - **Tema:** 2
+- **Capítulos:** 3
 - **Dificultad:** 1
 - **Solución:** en el notebook (`hijode(A,B) :- padrede(B,A).` y `abuelode(A,B) :- padrede(A,C), padrede(C,B).`); con sus datos, `abuelode(pablo,maria)` da true (verificado).
 - **SWISH:** sí
@@ -98,6 +106,7 @@ El notebook tiene 14 secciones: introducción, base de conocimiento, términos, 
 ### SWISH-9 — Conjunción: `hermano/2`
 - **Fuente:** "Tutorial de prolog", §7 Reglas (Conjunciones). https://swish.swi-prolog.org/p/Tutorial%20de%20prolog.swinb
 - **Tema:** 2, 8
+- **Capítulos:** 3, 10
 - **Dificultad:** 1
 - **Solución:** propia, verificada: `hermano(X,Y) :- padrede(Z,X), padrede(Z,Y), X \== Y.`
 - **SWISH:** sí
@@ -107,6 +116,7 @@ El notebook tiene 14 secciones: introducción, base de conocimiento, términos, 
 ### SWISH-10 — Disyunción: `familiarde/2`
 - **Fuente:** "Tutorial de prolog", §7 Reglas (Disyunciones). https://swish.swi-prolog.org/p/Tutorial%20de%20prolog.swinb
 - **Tema:** 2
+- **Capítulos:** 3
 - **Dificultad:** 1
 - **Solución:** verificada: tal como está, `familiarde(juan,X)` da `maria`, `pablo` y después **error** `existence_error(procedure, hermanode/2)`. Arreglo: definir `hermanode/2`, por ejemplo con la regla corregida de SWISH-9.
 - **SWISH:** sí
@@ -116,6 +126,7 @@ El notebook tiene 14 secciones: introducción, base de conocimiento, términos, 
 ### SWISH-11 — Antecesor: versión "iterativa" contra recursiva
 - **Fuente:** "Tutorial de prolog", §7 Reglas (Reglas recursivas). https://swish.swi-prolog.org/p/Tutorial%20de%20prolog.swinb
 - **Tema:** 5
+- **Capítulos:** 6
 - **Dificultad:** 1
 - **Solución:** en el notebook: `antecesor_de(X,Y) :- padrede(X,Y).` y `antecesor_de(X,Y) :- padrede(X,Z), antecesor_de(Z,Y).`
 - **SWISH:** sí
@@ -125,6 +136,7 @@ El notebook tiene 14 secciones: introducción, base de conocimiento, términos, 
 ### SWISH-12 — Factorial
 - **Fuente:** "Tutorial de prolog", §7 Reglas (Reglas recursivas). https://swish.swi-prolog.org/p/Tutorial%20de%20prolog.swinb
 - **Tema:** 5, 7
+- **Capítulos:** 8, 5
 - **Dificultad:** 1
 - **Solución:** propia, verificada: `factorial(0,1).` y `factorial(N,F) :- N > 0, N1 is N-1, factorial(N1,F1), F is N*F1.`
 - **SWISH:** sí
@@ -134,6 +146,7 @@ El notebook tiene 14 secciones: introducción, base de conocimiento, términos, 
 ### SWISH-13 — Resolución paso a paso: `hermano(juan,andres)`
 - **Fuente:** "Tutorial de prolog", §9 Resolución de consultas, Ejemplo 1. https://swish.swi-prolog.org/p/Tutorial%20de%20prolog.swinb
 - **Tema:** 4
+- **Capítulos:** 5
 - **Dificultad:** 1
 - **Solución:** en el notebook (desarrollo paso a paso); verificada: true.
 - **SWISH:** sí (`trace, hermano(juan,andres).`)
@@ -143,6 +156,7 @@ El notebook tiene 14 secciones: introducción, base de conocimiento, términos, 
 ### SWISH-14 — Traza de un programa abstracto `p/q/r`
 - **Fuente:** "Tutorial de prolog", §9, Ejemplo 2. https://swish.swi-prolog.org/p/Tutorial%20de%20prolog.swinb
 - **Tema:** 3, 4
+- **Capítulos:** 5, 4
 - **Dificultad:** 2
 - **Solución:** verificada: `p(a,X)` da `X = b ; X = n(n(b,a),b)`.
 - **SWISH:** sí
@@ -159,6 +173,7 @@ El notebook tiene 14 secciones: introducción, base de conocimiento, términos, 
 ### SWISH-15 — Traza de `come(X,Y)`
 - **Fuente:** "Tutorial de prolog", §9, Ejemplo 3. https://swish.swi-prolog.org/p/Tutorial%20de%20prolog.swinb
 - **Tema:** 4
+- **Capítulos:** 5
 - **Dificultad:** 1
 - **Solución:** verificada: `perro-conejo` y `conejo-lechuga`.
 - **SWISH:** sí
@@ -167,6 +182,7 @@ El notebook tiene 14 secciones: introducción, base de conocimiento, términos, 
 ### SWISH-16 — Último elemento de una lista
 - **Fuente:** "Tutorial de prolog", §10 Listas, Ejemplo 1. https://swish.swi-prolog.org/p/Tutorial%20de%20prolog.swinb
 - **Tema:** 6
+- **Capítulos:** 7
 - **Dificultad:** 1
 - **Solución:** en el notebook (`ultimo([R],R).` y `ultimo([_|L],R) :- ultimo(L,R).`); `ultimo([a,[b,c],2],U)` da `U = 2`.
 - **SWISH:** sí
@@ -176,6 +192,7 @@ El notebook tiene 14 secciones: introducción, base de conocimiento, términos, 
 ### SWISH-17 — K-ésimo elemento (desde 0)
 - **Fuente:** "Tutorial de prolog", §10 Listas, Ejemplo 2. https://swish.swi-prolog.org/p/Tutorial%20de%20prolog.swinb
 - **Tema:** 6, 7
+- **Capítulos:** 8, 7
 - **Dificultad:** 1
 - **Solución:** en el notebook; verificada: `elemento_k([a,[b,c],2],2,E)` da `E = 2`.
 - **SWISH:** sí
@@ -185,6 +202,7 @@ El notebook tiene 14 secciones: introducción, base de conocimiento, términos, 
 ### SWISH-18 — Palíndromo con `reverse/2`
 - **Fuente:** "Tutorial de prolog", §10 Listas, Ejemplo 3. https://swish.swi-prolog.org/p/Tutorial%20de%20prolog.swinb
 - **Tema:** 6
+- **Capítulos:** 7
 - **Dificultad:** 1
 - **Solución:** en el notebook: `es_palindromo(L) :- reverse(L,L).`
 - **SWISH:** sí
@@ -194,6 +212,7 @@ El notebook tiene 14 secciones: introducción, base de conocimiento, términos, 
 ### SWISH-19 — Máximo de una lista
 - **Fuente:** "Tutorial de prolog", §10 Listas, Ejemplo 4. https://swish.swi-prolog.org/p/Tutorial%20de%20prolog.swinb
 - **Tema:** 6, 7
+- **Capítulos:** 8, 7
 - **Dificultad:** 1
 - **Solución:** en el notebook; verificada: `max_list([0,5,80],M)` da `M = 80`.
 - **SWISH:** sí
@@ -203,6 +222,7 @@ El notebook tiene 14 secciones: introducción, base de conocimiento, términos, 
 ### SWISH-20 — Árbol binario y sus tres recorridos
 - **Fuente:** "Tutorial de prolog", §10 Listas, Ejemplo 5. https://swish.swi-prolog.org/p/Tutorial%20de%20prolog.swinb
 - **Tema:** 3, 5, 6
+- **Capítulos:** 7, 22
 - **Dificultad:** 2
 - **Solución:** en el notebook; verificada: con `mi_arbol_binario/1`, el preorden da `[6,4,2,5,9,7]`, el inorden `[2,4,5,6,7,9]` y el postorden `[2,5,4,7,9,6]`.
 - **SWISH:** sí (con la salvedad de la nota)
@@ -212,6 +232,7 @@ El notebook tiene 14 secciones: introducción, base de conocimiento, términos, 
 ### SWISH-21 — Ejercicio: árbol n-ario y su preorden
 - **Fuente:** "Tutorial de prolog", §10 Listas, "Ejercicio". https://swish.swi-prolog.org/p/Tutorial%20de%20prolog.swinb
 - **Tema:** 5, 6
+- **Capítulos:** 7
 - **Dificultad:** 2
 - **Solución:** en el notebook (árbol como lista `[Raiz|Hijos]`); verificada: `mi_arbol_n_ario(A), preorder(A,R)` da `R = [5,8,7,9,10,11,1]`.
 - **SWISH:** sí
@@ -234,6 +255,7 @@ sibling_of(X,Y) :- parent_of(Z,X), parent_of(Z,Y), \+ (X = Y).
 ### SWISH-22 — Consultas sobre la base familiar
 - **Fuente:** Brandon Bennett, "Prolog Intro Exercise Notebook", §1 tarea (a). https://swish.swi-prolog.org/p/BB_Prolog_Intro.swinb
 - **Tema:** 1, 2
+- **Capítulos:** 3, 2
 - **Dificultad:** 1
 - **Solución:** verificada: `grandfather_of(X,Y)` da `john-tom`, `john-sue`, `john-jill`, `sirus-mary` y `sirus-sam`.
 - **SWISH:** sí
@@ -243,6 +265,7 @@ sibling_of(X,Y) :- parent_of(Z,X), parent_of(Z,Y), \+ (X = Y).
 ### SWISH-23 — Ampliar la base de hechos
 - **Fuente:** Bennett, §1 tarea (b). https://swish.swi-prolog.org/p/BB_Prolog_Intro.swinb
 - **Tema:** 1
+- **Capítulos:** 2
 - **Dificultad:** 1
 - **Solución:** no corresponde.
 - **SWISH:** sí (para guardar cambios hay que iniciar sesión y hacer *Fork*, como explica el notebook)
@@ -252,6 +275,7 @@ sibling_of(X,Y) :- parent_of(Z,X), parent_of(Z,Y), \+ (X = Y).
 ### SWISH-24 — Definir `mother_of/2`
 - **Fuente:** Bennett, §1 tarea (c).1. https://swish.swi-prolog.org/p/BB_Prolog_Intro.swinb
 - **Tema:** 2
+- **Capítulos:** 3
 - **Dificultad:** 1
 - **Solución:** propia, verificada: `mother_of(X,Y) :- female(X), parent_of(X,Y).` Da `mary-tom` y `mary-sue`.
 - **SWISH:** sí
@@ -260,6 +284,7 @@ sibling_of(X,Y) :- parent_of(Z,X), parent_of(Z,Y), \+ (X = Y).
 ### SWISH-25 — Definir `brother_of/2`
 - **Fuente:** Bennett, §1 tarea (c).2. https://swish.swi-prolog.org/p/BB_Prolog_Intro.swinb
 - **Tema:** 2, 8
+- **Capítulos:** 3, 10
 - **Dificultad:** 1
 - **Solución:** propia, verificada: `brother_of(X,Y) :- male(X), sibling_of(X,Y).` Da `sam-mary`.
 - **SWISH:** sí
@@ -269,6 +294,7 @@ sibling_of(X,Y) :- parent_of(Z,X), parent_of(Z,Y), \+ (X = Y).
 ### SWISH-26 — Definir `uncle_of/2`
 - **Fuente:** Bennett, §1 tarea (c).3. https://swish.swi-prolog.org/p/BB_Prolog_Intro.swinb
 - **Tema:** 2
+- **Capítulos:** 3
 - **Dificultad:** 1
 - **Solución:** propia, verificada: `uncle_of(X,Y) :- brother_of(X,Z), parent_of(Z,Y).` Da `sam-tom` y `sam-sue`.
 - **SWISH:** sí
@@ -277,6 +303,7 @@ sibling_of(X,Y) :- parent_of(Z,X), parent_of(Z,Y), \+ (X = Y).
 ### SWISH-27 — Definir `cousin_of/2`
 - **Fuente:** Bennett, §1 tarea (c).4. https://swish.swi-prolog.org/p/BB_Prolog_Intro.swinb
 - **Tema:** 2
+- **Capítulos:** 3
 - **Dificultad:** 1
 - **Solución:** propia, verificada: `cousin_of(X,Y) :- parent_of(P,X), parent_of(Q,Y), sibling_of(P,Q).` Da `tom-jill`, `sue-jill`, `jill-tom` y `jill-sue`.
 - **SWISH:** sí
@@ -285,6 +312,7 @@ sibling_of(X,Y) :- parent_of(Z,X), parent_of(Z,Y), \+ (X = Y).
 ### SWISH-28 — Explorar predicados de listas
 - **Fuente:** Bennett, §2 "Matching and Manipulating Lists". https://swish.swi-prolog.org/p/BB_Prolog_Intro.swinb
 - **Tema:** 6
+- **Capítulos:** 7, 22
 - **Dificultad:** 1
 - **Solución:** no corresponde (exploración).
 - **SWISH:** sí
@@ -294,6 +322,7 @@ sibling_of(X,Y) :- parent_of(Z,X), parent_of(Z,Y), \+ (X = Y).
 ### SWISH-29 — `get_two/3` con `select/3`
 - **Fuente:** Bennett, §2 (ejercicio `get_two`). https://swish.swi-prolog.org/p/BB_Prolog_Intro.swinb
 - **Tema:** 6
+- **Capítulos:** 7
 - **Dificultad:** 1
 - **Solución:** propia, verificada: `get_two(L,X,Y) :- select(X,L,R), member(Y,R).` Con `[a,b,c,c]` da 12 pares (entre ellos `c-c`, dos veces); con `[a]` falla.
 - **SWISH:** sí
@@ -303,6 +332,7 @@ sibling_of(X,Y) :- parent_of(Z,X), parent_of(Z,Y), \+ (X = Y).
 ### SWISH-30 — `mixup/4` y `allmixes/3`
 - **Fuente:** Bennett, §2 (ejemplo `mixup`). https://swish.swi-prolog.org/p/BB_Prolog_Intro.swinb
 - **Tema:** 6, 9
+- **Capítulos:** 17, 7
 - **Dificultad:** 2
 - **Solución:** en el notebook (código completo).
 - **SWISH:** sí
@@ -312,6 +342,7 @@ sibling_of(X,Y) :- parent_of(Z,X), parent_of(Z,Y), \+ (X = Y).
 ### SWISH-31 — Cabeza y cola: `[H|T]`
 - **Fuente:** Bennett, §3 "Heads and Tails". https://swish.swi-prolog.org/p/BB_Prolog_Intro.swinb
 - **Tema:** 3, 6
+- **Capítulos:** 7, 4
 - **Dificultad:** 1
 - **Solución:** autoverificable.
 - **SWISH:** sí
@@ -321,6 +352,7 @@ sibling_of(X,Y) :- parent_of(Z,X), parent_of(Z,Y), \+ (X = Y).
 ### SWISH-32 — El corte: ¿el cianuro es seguro?
 - **Fuente:** Bennett, §4 "The Cut Operator". https://swish.swi-prolog.org/p/BB_Prolog_Intro.swinb
 - **Tema:** 4, 8
+- **Capítulos:** 9
 - **Dificultad:** 2
 - **Solución:** en el notebook (versión con corte); verificada: sin corte, `alert(cyanide,C)` da `red` y también `green`, por lo que `safe(cyanide)` da **true**. Con `alert(X,Code) :- poison(X), !, Code = red.` (y lo mismo para `yellow`), `safe(cyanide)` da false.
 - **SWISH:** sí
@@ -341,6 +373,7 @@ El notebook traduce a Prolog las consultas SQL del curso de bases de datos de St
 ### SWISH-33 — Selección y proyección
 - **Fuente:** Robert Laing, "An introduction to Prolog for SQL programers", "Basic selection". https://swish.swi-prolog.org/p/sql2prolog.swinb
 - **Tema:** 1, 7, 11
+- **Capítulos:** 8, 40
 - **Dificultad:** 1
 - **Solución:** en el notebook; verificada: `student(SID,SName,GPA,_SizeHS), GPA > 3.6.` da 6 filas.
 - **SWISH:** sí
@@ -350,6 +383,7 @@ El notebook traduce a Prolog las consultas SQL del curso de bases de datos de St
 ### SWISH-34 — Join y DISTINCT
 - **Fuente:** Laing, "Table joins". https://swish.swi-prolog.org/p/sql2prolog.swinb
 - **Tema:** 2, 11
+- **Capítulos:** 3, 40
 - **Dificultad:** 1
 - **Solución:** en el notebook; verificada: `student(_ID,SName,_,_), apply(_ID,_,Major,_)` da 19 filas, y con `distinct([SName,Major], (...))` quedan 13.
 - **SWISH:** sí
@@ -359,6 +393,7 @@ El notebook traduce a Prolog las consultas SQL del curso de bases de datos de St
 ### SWISH-35 — Join con condiciones
 - **Fuente:** Laing, "Table joins" (sizeHS < 1000, CS, Stanford). https://swish.swi-prolog.org/p/sql2prolog.swinb
 - **Tema:** 7, 11
+- **Capítulos:** 8, 40
 - **Dificultad:** 1
 - **Solución:** en el notebook; verificada: da `Helen 3.7 Y` e `Irene 3.9 N`.
 - **SWISH:** sí
@@ -367,6 +402,7 @@ El notebook traduce a Prolog las consultas SQL del curso de bases de datos de St
 ### SWISH-36 — Campus grandes con postulantes a CS
 - **Fuente:** Laing, "Table joins". https://swish.swi-prolog.org/p/sql2prolog.swinb
 - **Tema:** 11
+- **Capítulos:** 8, 40
 - **Dificultad:** 1
 - **Solución:** en el notebook; verificada: `Berkeley` y `Cornell`.
 - **SWISH:** sí
@@ -375,6 +411,7 @@ El notebook traduce a Prolog las consultas SQL del curso de bases de datos de St
 ### SWISH-37 — ORDER BY
 - **Fuente:** Laing, "order by". https://swish.swi-prolog.org/p/sql2prolog.swinb
 - **Tema:** 9, 11
+- **Capítulos:** 40, 17, 22
 - **Dificultad:** 2
 - **Solución:** en el notebook: `order_by([desc(GPA)], Goal)` y `order_by([desc(GPA), asc(Enrollment)], Goal)`.
 - **SWISH:** sí
@@ -384,6 +421,7 @@ El notebook traduce a Prolog las consultas SQL del curso de bases de datos de St
 ### SWISH-38 — LIKE con `sub_atom/5`
 - **Fuente:** Laing, "Searching for substrings". https://swish.swi-prolog.org/p/sql2prolog.swinb
 - **Tema:** 11
+- **Capítulos:** 11, 40
 - **Dificultad:** 1
 - **Solución:** en el notebook; verificada: `apply(SID,_,Major,_), sub_atom(Major,_,_,_,bio)` da 5 filas.
 - **SWISH:** sí
@@ -393,6 +431,7 @@ El notebook traduce a Prolog las consultas SQL del curso de bases de datos de St
 ### SWISH-39 — Columna calculada
 - **Fuente:** Laing, "Arithmetic Functions". https://swish.swi-prolog.org/p/sql2prolog.swinb
 - **Tema:** 7, 11
+- **Capítulos:** 8, 40
 - **Dificultad:** 1
 - **Solución:** en el notebook: `student(SID,SName,GPA,SizeHS), ScaledGPA is GPA*(SizeHS/1000).`
 - **SWISH:** sí
@@ -401,6 +440,7 @@ El notebook traduce a Prolog las consultas SQL del curso de bases de datos de St
 ### SWISH-40 — Self-join
 - **Fuente:** Laing, "Self joins". https://swish.swi-prolog.org/p/sql2prolog.swinb
 - **Tema:** 11
+- **Capítulos:** 8, 40
 - **Dificultad:** 1
 - **Solución:** en el notebook; verificada: 8 pares.
 - **SWISH:** sí
@@ -410,6 +450,7 @@ El notebook traduce a Prolog las consultas SQL del curso de bases de datos de St
 ### SWISH-41 — UNION, INTERSECT y EXCEPT
 - **Fuente:** Laing, "Union", "Intersection", "Except". https://swish.swi-prolog.org/p/sql2prolog.swinb
 - **Tema:** 2, 8, 11
+- **Capítulos:** 10, 40
 - **Dificultad:** 2
 - **Solución:** en el notebook; verificada: la unión con `;`; la intersección con `,` (con `distinct` da `[123,345]`); la diferencia con `\+`: `apply(SID,_,'CS',_), \+ apply(SID,_,'EE',_)`.
 - **SWISH:** sí
@@ -419,6 +460,7 @@ El notebook traduce a Prolog las consultas SQL del curso de bases de datos de St
 ### SWISH-42 — Subconsultas IN, EXISTS y NOT EXISTS
 - **Fuente:** Laing, "Subqueries in the where clause". https://swish.swi-prolog.org/p/sql2prolog.swinb
 - **Tema:** 8, 9, 11
+- **Capítulos:** 10, 40, 17
 - **Dificultad:** 2
 - **Solución:** en el notebook; verificada: el colegio más grande, `college(C,_,E1), \+ (college(_,_,E2), E2 > E1)`, da `Berkeley`.
 - **SWISH:** sí
@@ -428,6 +470,7 @@ El notebook traduce a Prolog las consultas SQL del curso de bases de datos de St
 ### SWISH-43 — Subconsulta en FROM
 - **Fuente:** Laing, "Subqueries in the from clause". https://swish.swi-prolog.org/p/sql2prolog.swinb
 - **Tema:** 7, 11
+- **Capítulos:** 8, 40
 - **Dificultad:** 1
 - **Solución:** en el notebook; verificada: 7 estudiantes con |scaledGPA − GPA| > 1.
 - **SWISH:** sí
@@ -437,6 +480,7 @@ El notebook traduce a Prolog las consultas SQL del curso de bases de datos de St
 ### SWISH-44 — Subconsulta en SELECT (máximo GPA por colegio)
 - **Fuente:** Laing, "Subqueries in the select clause". https://swish.swi-prolog.org/p/sql2prolog.swinb
 - **Tema:** 9, 11
+- **Capítulos:** 17, 40
 - **Dificultad:** 2
 - **Solución:** **la del notebook es incorrecta:** compara el GPA del postulante con el de **todos** los estudiantes, no con el de los postulantes a ese colegio. Con los datos originales el resultado coincide por casualidad (todos tienen un postulante con 3.9). Si se agrega `college('Rice','TX',4000)` y `apply(789,'Rice','CS','Y')`, Rice no aparece (verificado). Versión correcta, verificada: `college(C,_,_), aggregate_all(max(G), (apply(S,C,_,_), student(S,_,G,_)), Max).`
 - **SWISH:** sí
@@ -446,6 +490,7 @@ El notebook traduce a Prolog las consultas SQL del curso de bases de datos de St
 ### SWISH-45 — Inner, natural y three-way join
 - **Fuente:** Laing, "Inner Join", "Three-way Inner Join", "Natural Join With Additional Conditions". https://swish.swi-prolog.org/p/sql2prolog.swinb
 - **Tema:** 11
+- **Capítulos:** 3, 40
 - **Dificultad:** 1
 - **Solución:** en el notebook.
 - **SWISH:** sí
@@ -455,6 +500,7 @@ El notebook traduce a Prolog las consultas SQL del curso de bases de datos de St
 ### SWISH-46 — Outer joins y `null`
 - **Fuente:** Laing, "Left Outer Join", "Right Outer Join", "Full Outer Join". https://swish.swi-prolog.org/p/sql2prolog.swinb
 - **Tema:** 8, 10, 11
+- **Capítulos:** 10, 40, 20
 - **Dificultad:** 2
 - **Solución:** en el notebook: una regla por caso, con `\+` para las filas sin pareja, y `assertz/1` para agregar postulaciones de un SID inexistente.
 - **SWISH:** sí
@@ -464,6 +510,7 @@ El notebook traduce a Prolog las consultas SQL del curso de bases de datos de St
 ### SWISH-47 — Agregación: AVG, MIN y COUNT (DISTINCT)
 - **Fuente:** Laing, "Aggregation". https://swish.swi-prolog.org/p/sql2prolog.swinb
 - **Tema:** 9, 11
+- **Capítulos:** 17, 40
 - **Dificultad:** 2
 - **Solución:** en el notebook; verificada: el promedio de GPA da 3.5666...; cuántos estudiantes se postularon a Cornell, con `aggregate_all(count, SID, apply(SID,'Cornell',_,_), N)`, da 3, y sin discriminador da 6.
 - **SWISH:** sí
@@ -473,6 +520,7 @@ El notebook traduce a Prolog las consultas SQL del curso de bases de datos de St
 ### SWISH-48 — GROUP BY y HAVING
 - **Fuente:** Laing, "group by queries", "having". https://swish.swi-prolog.org/p/sql2prolog.swinb
 - **Tema:** 9, 11
+- **Capítulos:** 17, 40
 - **Dificultad:** 2
 - **Solución:** en el notebook; verificada: colegios con menos de 5 postulaciones: `Berkeley` (3) y `MIT` (4).
 - **SWISH:** sí
@@ -482,6 +530,7 @@ El notebook traduce a Prolog las consultas SQL del curso de bases de datos de St
 ### SWISH-49 — `null` y comparaciones
 - **Fuente:** Laing, "null". https://swish.swi-prolog.org/p/sql2prolog.swinb
 - **Tema:** 3, 7, 11
+- **Capítulos:** 10, 40
 - **Dificultad:** 2
 - **Solución:** en el notebook: filtrar con `number(GPA), GPA > 3.5`, o comparar con `@>` en el orden estándar.
 - **SWISH:** sí
@@ -491,6 +540,7 @@ El notebook traduce a Prolog las consultas SQL del curso de bases de datos de St
 ### SWISH-50 — Insertar y borrar filas
 - **Fuente:** Laing, "Data Modification" (insert, delete). https://swish.swi-prolog.org/p/sql2prolog.swinb
 - **Tema:** 9, 10, 11
+- **Capítulos:** 20, 40, 17
 - **Dificultad:** 2
 - **Solución:** en el notebook: `assertz/1` dentro de `forall/2` para `insert ... select`, y `retract/1` dentro de `forall/2` para `delete`.
 - **SWISH:** sí (los cambios duran solo una consulta)
@@ -504,6 +554,7 @@ Casi todos son programas de demostración, con consultas sugeridas en un comenta
 ### SWISH-51 — Primera base de conocimiento: `kb.pl`
 - **Fuente:** SWISH, ejemplo "Knowledge bases" (menú *Examples* → *First steps*). https://swish.swi-prolog.org/example/kb.pl
 - **Tema:** 1, 2, 8
+- **Capítulos:** 1, 10
 - **Dificultad:** 1
 - **Solución:** verificada: `jealous(X,Y)` da 6 pares, entre ellos `vincent-vincent` y `pumpkin-pumpkin`.
 - **SWISH:** sí
@@ -513,6 +564,7 @@ Casi todos son programas de demostración, con consultas sugeridas en un comenta
 ### SWISH-52 — Sublistas y *naive reverse*: `lists.pl`
 - **Fuente:** SWISH, ejemplo "Lists". https://swish.swi-prolog.org/example/lists.pl
 - **Tema:** 0, 6
+- **Capítulos:** 7, 16
 - **Dificultad:** 2
 - **Solución:** no corresponde (exploración).
 - **SWISH:** sí
@@ -522,6 +574,7 @@ Casi todos son programas de demostración, con consultas sugeridas en un comenta
 ### SWISH-53 — Base de películas: consultas
 - **Fuente:** SWISH, ejemplo "Movie database", comentario "EXERCISES, Part 1". https://swish.swi-prolog.org/example/movies.pl
 - **Tema:** 1, 2, 7
+- **Capítulos:** 2, 8, 40
 - **Dificultad:** 1
 - **Solución:** en el mismo archivo (bloque `<examples>`, que el autor sugiere borrar antes de dárselo a los estudiantes); verificada: `movie(american_beauty,Y)` da 1999; hay 3 películas del año 2000; la película con John Goodman y Jeff Bridges es `the_big_lebowski`.
 - **SWISH:** sí
@@ -531,6 +584,7 @@ Casi todos son programas de demostración, con consultas sugeridas en un comenta
 ### SWISH-54 — Base de películas: reglas
 - **Fuente:** SWISH, `movies.pl`, "EXERCISES, Part 2". https://swish.swi-prolog.org/example/movies.pl
 - **Tema:** 2, 7, 8
+- **Capítulos:** 3, 8, 10
 - **Dificultad:** 1
 - **Solución:** propia, verificada: `released_after(M,Y) :- movie(M,Y1), Y1 > Y.` (y lo mismo para `released_before/2`), `same_year(M1,M2) :- movie(M1,Y), movie(M2,Y), M1 \== M2.` y `co_star(A1,A2) :- performer(M,A1), performer(M,A2), A1 \== A2.`, con `performer(M,A) :- actor(M,A,_) ; actress(M,A,_).`
 - **SWISH:** sí
@@ -540,6 +594,7 @@ Casi todos son programas de demostración, con consultas sugeridas en un comenta
 ### SWISH-55 — `assert` y `retract`: `database.pl`
 - **Fuente:** SWISH, ejemplo "Assert and retract". https://swish.swi-prolog.org/example/database.pl
 - **Tema:** 9, 10
+- **Capítulos:** 20, 17
 - **Dificultad:** 1
 - **Solución:** no corresponde.
 - **SWISH:** sí
@@ -549,6 +604,7 @@ Casi todos son programas de demostración, con consultas sugeridas en un comenta
 ### SWISH-56 — Lectura y escritura: `io.pl`
 - **Fuente:** SWISH, ejemplo "Read and write". https://swish.swi-prolog.org/example/io.pl
 - **Tema:** 0, X
+- **Capítulos:** 28, 15
 - **Dificultad:** 1
 - **Solución:** no corresponde.
 - **SWISH:** sí (SWISH muestra un cuadro para `read/1`)
@@ -558,6 +614,7 @@ Casi todos son programas de demostración, con consultas sugeridas en un comenta
 ### SWISH-57 — Metaintérprete y sistema experto: `expert_system.pl`
 - **Fuente:** SWISH, ejemplo "Expert system". https://swish.swi-prolog.org/example/expert_system.pl
 - **Tema:** 4, X
+- **Capítulos:** 33
 - **Dificultad:** 3
 - **Solución:** no corresponde.
 - **SWISH:** sí
@@ -567,6 +624,7 @@ Casi todos son programas de demostración, con consultas sugeridas en un comenta
 ### SWISH-58 — Eliza: `eliza.pl`
 - **Fuente:** SWISH, ejemplo "Eliza" (R. A. O'Keefe, *The Craft of Prolog*). https://swish.swi-prolog.org/example/eliza.pl
 - **Tema:** 6, X
+- **Capítulos:** 7
 - **Dificultad:** 2
 - **Solución:** verificada: `eliza([i,am,very,hungry],R)` da `[why,are,you,very,hungry,?]` y `eliza([i,love,you],R)` da `[why,do,you,love,me,?]`.
 - **SWISH:** sí
@@ -576,6 +634,7 @@ Casi todos son programas de demostración, con consultas sugeridas en un comenta
 ### SWISH-59 — Gramática del inglés con árbol: `grammar.pl`
 - **Fuente:** SWISH, ejemplo "English grammar". https://swish.swi-prolog.org/example/grammar.pl
 - **Tema:** A
+- **Capítulos:** 21
 - **Dificultad:** 2
 - **Solución:** verificada: `phrase(s(T),[john,saw,a,man,with,a,telescope])` da **2** árboles, porque la oración es ambigua.
 - **SWISH:** sí (SWISH dibuja el árbol en SVG)
@@ -585,6 +644,7 @@ Casi todos son programas de demostración, con consultas sugeridas en un comenta
 ### SWISH-60 — Acertijo de Einstein (cebra): `houses_puzzle.pl`
 - **Fuente:** SWISH, ejemplo "Einstein's Riddle". https://swish.swi-prolog.org/example/houses_puzzle.pl
 - **Tema:** 4, 6
+- **Capítulos:** 7
 - **Dificultad:** 2
 - **Solución:** en el mismo archivo; verificada: `zebra_owner(O)` da `japanese` y `water_drinker(W)` da `norwegian`.
 - **SWISH:** sí (SWISH muestra la solución como tabla)
@@ -594,6 +654,7 @@ Casi todos son programas de demostración, con consultas sugeridas en un comenta
 ### SWISH-61 — N reinas con backtracking: `queens.pl`
 - **Fuente:** SWISH, ejemplo "N-Queens (traditional)" (R. A. O'Keefe). https://swish.swi-prolog.org/example/queens.pl
 - **Tema:** 4, X
+- **Capítulos:** 39, 32
 - **Dificultad:** 3
 - **Solución:** en el mismo archivo.
 - **SWISH:** sí (dibuja el tablero)
@@ -603,6 +664,7 @@ Casi todos son programas de demostración, con consultas sugeridas en un comenta
 ### SWISH-62 — N reinas y sudoku con CLP(FD)
 - **Fuente:** SWISH, ejemplos "N-Queens (clp(fd))" y "Sudoku (clp(fd))" (M. Triska). https://swish.swi-prolog.org/example/clpfd_queens.pl y https://swish.swi-prolog.org/example/clpfd_sudoku.pl
 - **Tema:** X
+- **Capítulos:** 23
 - **Dificultad:** 3
 - **Solución:** en los mismos archivos.
 - **SWISH:** sí
@@ -612,6 +674,7 @@ Casi todos son programas de demostración, con consultas sugeridas en un comenta
 ### SWISH-63 — Caballeros y bribones con CLP(B)
 - **Fuente:** SWISH, ejemplo "Knights and Knaves (clp(b))". https://swish.swi-prolog.org/example/knights_and_knaves.pl
 - **Tema:** X
+- **Capítulos:** 23, 12
 - **Dificultad:** 2
 - **Solución:** en el mismo archivo; verificada: ejemplo 1: `A = 1, B = 1`; ejemplo 2: `A = 0, B = 0`; ejemplo 3: `A = 1, B = 0`; ejemplo 4: `[0,1,0]`; ejemplo 5: `C = 0`.
 - **SWISH:** sí
@@ -621,6 +684,7 @@ Casi todos son programas de demostración, con consultas sugeridas en un comenta
 ### SWISH-64 — *Tabling*: Fibonacci y recursión por la izquierda
 - **Fuente:** SWISH, tutorial "Using tabling in SWI-Prolog" (menú *Prolog tutorials*). https://swish.swi-prolog.org/example/tabling.swinb
 - **Tema:** 5, X
+- **Capítulos:** 38, 16
 - **Dificultad:** 2
 - **Solución:** en el notebook.
 - **SWISH:** sí
@@ -630,6 +694,7 @@ Casi todos son programas de demostración, con consultas sugeridas en un comenta
 ### SWISH-65 — Cómo arma SWISH el programa de cada consulta
 - **Fuente:** SWISH, tutorial "How is the program assembled for a specific query?" (menú *SWISH tutorials*). https://swish.swi-prolog.org/example/notebook.swinb
 - **Tema:** 0
+- **Capítulos:** 13
 - **Dificultad:** 1
 - **Solución:** no corresponde.
 - **SWISH:** sí

@@ -429,8 +429,8 @@ false.
 ```
 
 `\+` tiene una restricción importante: no significa exactamente "es falso", sino
-"no se pudo probar", que es la misma distinción de la [sección 1.1](#11-que-es-un-programa-prolog). El capítulo
-10 está dedicado a este tema.
+"no se pudo probar", que es la misma distinción de la [sección 1.1](#11-que-es-un-programa-prolog). El
+[capítulo 10](../capitulo-10-negacion-como-falla/index.md) está dedicado a este tema.
 
 ## 1.8 Cómo busca Prolog
 
@@ -654,7 +654,7 @@ incluye valores es preferible `format/2`.  El primer argumento de `format/2` es 
 El ejemplo usa dos tipos de comillas, con significados distintos. `'Hola, '`,
 entre comillas simples, es un **átomo** —los nombres que se presentan en el
 [capítulo 2](../capitulo-02-hechos-consultas-y-variables/index.md)—, escrito de ese modo porque contiene una coma y un espacio.
-`"~w tiene ~w hermanos~n"`, entre comillas dobles, es **texto** (*string*). El [capítulo 18](../capitulo-18-texto/index.md) trata esa diferencia;
+`"~w tiene ~w hermanos~n"`, entre comillas dobles, es **texto** (*string*). El [capítulo 11](../capitulo-11-texto/index.md) trata esa diferencia;
 por ahora alcanza con la regla práctica: comillas simples para un nombre,
 comillas dobles para el texto que recibe `format/2`.
 
@@ -778,8 +778,8 @@ los_demas(Resto) :-
 Resto = [luis, eva, sofia].
 ```
 
-Esta notación es la base de casi todo el procesamiento de listas, y el capítulo
-7 la usa de manera sistemática.
+Esta notación es la base de casi todo el procesamiento de listas, y el
+[capítulo 7](../capitulo-07-listas/index.md) la usa de manera sistemática.
 
 ## Ejercicios
 
@@ -878,4 +878,4 @@ dónde se retoma cada uno:
 | `is/2`, el error de argumentos sin instanciar                    | [capítulo 8](../capitulo-08-aritmetica/index.md)                      |
 | Respuestas con alternativas pendientes, y cómo eliminarlas       | [capítulo 9](../capitulo-09-backtracking-y-corte/index.md)                      |
 | `\+` y el supuesto de mundo cerrado                              | [capítulo 10](../capitulo-10-negacion-como-falla/index.md)                     |
-| `write/1`, `format/2` y el manejo de texto                       | [capítulo 18](../capitulo-18-texto/index.md)                     |
+| `write/1`, `format/2` y el manejo de texto                       | [capítulo 11](../capitulo-11-texto/index.md)                     |

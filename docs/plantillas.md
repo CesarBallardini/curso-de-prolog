@@ -85,7 +85,7 @@ nueva(X) :-
 El orden es significativo: la condición se verifica sobre una variable que ya
 tiene valor.
 
-Capítulo 3, secciones 3.1 y 3.3.
+Capítulo 3, secciones [3.1](capitulo-03-reglas-y-conjunciones/index.md#31-conjunciones) y [3.3](capitulo-03-reglas-y-conjunciones/index.md#33-reglas).
 
 ## 6 — Exigir que dos valores sean distintos
 
@@ -144,6 +144,9 @@ Capítulo 6, sección 6.2.
 **Cuándo**: se deben examinar los elementos de una lista, de a uno por vez.
 
 ```prolog
+%!  p(+L) is det.
+%
+%   Procesa cada elemento de L.
 p([]) :-
     caso_de_la_lista_vacia.
 p([Primero|Resto]) :-
@@ -164,13 +167,16 @@ Capítulo 7, sección 7.3.
 no hace falta examinarlos todos.
 
 ```prolog
+%!  p(+L) is nondet.
+%
+%   Algún elemento de L cumple la condición; una respuesta por cada uno.
 p([Primero|_]) :-
     cumple(Primero).
 p([_|Resto]) :-
     p(Resto).
 ```
 
-Es distinta de la plantilla 9: acá el caso base **no** es la lista vacía. La
+Es distinta de la plantilla 9: en esta el caso base **no** es la lista vacía. La
 primera cláusula tiene éxito sin recursión, en cuanto encuentra un elemento que
 cumple; la segunda descarta el primer elemento y sigue buscando. Sobre la lista
 vacía no hay cláusula aplicable, y por eso la búsqueda fracasa cuando se agota
@@ -185,13 +191,16 @@ Capítulo 7, sección 7.3.
 **Cuándo**: la condición se debe verificar sobre **todos** los elementos.
 
 ```prolog
+%!  p(+L) is semidet.
+%
+%   Todos los elementos de L cumplen la condición.
 p([]).
 p([Primero|Resto]) :-
     cumple(Primero),
     p(Resto).
 ```
 
-Es la imagen inversa de la plantilla 10, y conviene compararlas: acá el caso
+Es la imagen inversa de la plantilla 10, y conviene compararlas: en esta el caso
 base es la lista vacía y tiene éxito —sobre una lista sin elementos, "todos
 cumplen" es cierto—, y el fracaso se produce en cuanto un elemento no cumple.
 
@@ -205,6 +214,9 @@ Capítulo 7, sección 7.3.
 **Cuándo**: el resultado es una lista que se obtiene al recorrer otra.
 
 ```prolog
+%!  p(+L, -R) is det.
+%
+%   R es la lista que resulta de relacionar cada elemento de L con el suyo.
 p([], CasoBase).
 p([X|Resto], [Y|RestoNuevo]) :-
     relacionar(X, Y),
@@ -226,9 +238,15 @@ Capítulo 7, sección 7.5.
 lugar de hacerlo al retorno de la llamada recursiva.
 
 ```prolog
+%!  p(+Entrada, -Resultado) is det.
+%
+%   Resultado se construye a partir de Entrada, elemento por elemento.
 p(Entrada, Resultado) :-
     paso_a_paso(Entrada, ValorInicial, Resultado).
 
+%!  paso_a_paso(+L, +Hasta, -Resultado) is det.
+%
+%   Resultado es Hasta combinado con los elementos de L.
 paso_a_paso([], Acumulado, Acumulado).
 paso_a_paso([X|Resto], Hasta, Resultado) :-
     combinar(Hasta, X, Ahora),
@@ -240,7 +258,7 @@ proveer el valor inicial. El caso base no realiza ningún cálculo; solo entrega
 el valor acumulado. El acumulador no es necesariamente un número: puede ser una
 lista que se construye de manera incremental.
 
-Capítulo 8, secciones 8.5 y 8.6.
+Capítulo 8, secciones [8.5](capitulo-08-aritmetica/index.md#85-acumuladores) y [8.6](capitulo-08-aritmetica/index.md#86-un-acumulador-que-no-es-un-numero).
 
 ## 14 — Casos que no se superponen
 
@@ -250,7 +268,8 @@ conserva el primero que corresponde.
 ```prolog
 %!  p(+X, -Caso) is det.
 %
-%   Caso es el primero de los casos que corresponde a X.
+%   Caso es el primero de los casos que corresponde a X. Caso debe llegar
+%   libre.
 p(X, primer_caso) :-
     condicion(X),
     !.

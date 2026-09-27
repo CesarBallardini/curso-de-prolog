@@ -42,8 +42,20 @@ DOCS = ROOT / 'docs'
 # The chapter comes from the directory name, with or without a slug after the
 # number: ejemplos/capitulo-07/ and docs/capitulo-07-listas/ are both chapter 7.
 CHAPTER_DIR = re.compile(r'^capitulo-(\d+)')
-# Part I is chapters 1 to 11: no higher-order and no database predicates there.
-LAST_OF_PART_1 = 11
+# Part I is chapters 1 to 12: no higher-order and no database predicates there.
+LAST_OF_PART_1 = 12
+
+
+def is_written(directory: Path) -> bool:
+    """Whether a chapter directory holds a written chapter, not a stub.
+
+    A stub is the page every chapter starts as: an `!!! warning "En preparación"`
+    block and nothing else. The checks that read a chapter's transcripts or its
+    time estimate skip those, so a stub never fails the build.
+    """
+    index = directory / 'index.md'
+    return index.exists() and 'En preparación' not in index.read_text(encoding='utf-8')
+
 
 QUERY = re.compile(r'^%\?-\s*(?P<query>.+?)\s*$', re.M)
 LOCAL_ONLY = re.compile(r'^%\s*solo-local:\s*(?P<reason>.+?)\s*$', re.M)
@@ -76,8 +88,13 @@ class Example:
 
     @property
     def chapter(self) -> int | None:
-        """Its chapter number, or None for anything not under a `capitulo-NN/`."""
-        found = CHAPTER_DIR.match(self.path.parent.name)
+        """Its chapter number, or None for anything not under a `capitulo-NN/`.
+
+        From chapter 24 on a program can be several modules in a subdirectory,
+        `capitulo-24/inscripciones/datos.pl`, so the chapter is the first
+        directory under `ejemplos/`, not the file's own.
+        """
+        found = CHAPTER_DIR.match(self.path.relative_to(EXAMPLES).parts[0])
         return int(found.group(1)) if found else None
 
     @property
@@ -121,15 +138,29 @@ def all_examples(wanted: list[str] | None = None) -> list[Example]:
     """Every example under `ejemplos/`, by chapter and name.
 
     `wanted` filters by example name or by chapter directory, to run just one.
-    Appendix A is left out: those are small Python projects driven by pytest, not
-    standalone `.pl` examples, and `make apendice` runs them.
+    A file that loads `library(janus)` is left out: it starts Python inside `swipl`,
+    which needs the environment `make appendix` sets up (chapter 29, whose pytest
+    suite runs those files too). The rest of chapter 29 is plain Prolog, and is here.
+    So is every `pack.pl` left out: it describes a pack (chapter 31) and is not an example, and
+    `pack_install/2` rejects any term in it that is not a description, the
+    `:- encoding(utf8).` every example starts with included.
     """
     if not EXAMPLES.is_dir():
         return []
-    found = [read(path) for path in sorted(EXAMPLES.rglob('*.pl')) if 'apendice-a' not in path.parts]
+    found = [read(path) for path in sorted(EXAMPLES.rglob('*.pl')) if path.name != 'pack.pl' and not loads_janus(path)]
     if wanted:
-        found = [e for e in found if e.name in wanted or e.path.parent.name in wanted]
+        found = [e for e in found if e.name in wanted or wanted_directory(e, wanted)]
     return found
+
+
+def loads_janus(path: Path) -> bool:
+    """Whether the file loads `library(janus)`, and so starts Python inside `swipl`."""
+    return 'library(janus)' in path.read_text(encoding='utf-8')
+
+
+def wanted_directory(example: Example, wanted: list[str]) -> bool:
+    """Whether a directory of the example's path under `ejemplos/` was asked for."""
+    return any(part in wanted for part in example.path.relative_to(EXAMPLES).parts[:-1])
 
 
 def declares_encoding(source: str) -> bool:
@@ -292,11 +323,11 @@ class Clause:
         """`padre/2` for a predicate, `oracion//0` for a grammar rule."""
         if self.name is None:
             return None
-        # A grammar rule hides the two difference-list arguments, and the student
-        # reads oracion//0, which is also how SWI-Prolog counts it.
+        # The head of a grammar rule is written without the two difference-list
+        # arguments, so its written arity is already the N of oracion//N, which is
+        # also how SWI-Prolog counts it.
         slash = '//' if self.is_grammar else '/'
-        arity = self.arity - 2 if self.is_grammar else self.arity
-        return f'{self.name}{slash}{arity}'
+        return f'{self.name}{slash}{self.arity}'
 
 
 def clauses(source: str) -> list[Clause]:

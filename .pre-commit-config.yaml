@@ -66,6 +66,9 @@ repos:
         entry: tools/check-encoding.sh
         language: script
         files: ^ejemplos/.*\.plt?$
+        # A pack's pack.pl (chapter 31) holds only description facts:
+        # pack_install/2 rejects any other term, the encoding directive included.
+        exclude: (^|/)pack\.pl$
 
       # Conventional Commits.
       - id: commitizen

@@ -1,0 +1,4 @@
+padre(juan, ana).
+padre(juan, pedro).
+edad(ana, 41).
+abuelo(X, Z) :- padre(X, Y), padre(Y, Z).

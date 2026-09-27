@@ -2,36 +2,72 @@
 
 :- begin_tests(soluciones).
 
-% Ejercicio 2
-test(los_animales, all(X == [felix, gaturro, rocco])) :-
-    animal(X).
+% Ejercicio 3
+test(ultima_letra_de_prolog, all(L == [g])) :-
+    ultima_letra(prolog, L).
+
+test(ultima_letra_como_prueba) :-
+    ultima_letra(ana, a).
+
+test(el_atomo_vacio_no_tiene_ultima_letra, [fail]) :-
+    ultima_letra('', _).
 
 % Ejercicio 4
-test(quienes_pueden_entrar, all(P == [ana, pedro, luis, eva])) :-
-    puede_entrar(P).
+test(mas_largo_el_segundo, all(M == [pedro])) :-
+    mas_largo(ana, pedro, M).
 
-test(un_desconocido_no_entra, [fail]) :-
-    puede_entrar(juan).
+test(mas_largo_con_empate_es_el_primero, all(M == [ana])) :-
+    mas_largo(ana, eva, M).
 
-% Ejercicio 5
-test(siete_es_impar, all(P == [impar])) :-
-    paridad(7, P).
-
-test(ocho_es_par, all(P == [par])) :-
-    paridad(8, P).
+% Ejercicio 6
+test(tabla_con_titulos,
+     [true(S == "Nombre    Edad\n--------------\njuan        68\n")]) :-
+    with_output_to(string(S), tabla_con_titulos([juan])).
 
 % Ejercicio 7
-test(los_que_no_tienen_mascota, all(P == [luis, eva])) :-
-    sin_mascota(P).
+test(neuquen_es_palindromo) :-
+    palindromo(neuquen).
 
-test(ana_tiene_mascota, [fail]) :-
-    sin_mascota(ana).
+test(prolog_no_es_palindromo, [fail]) :-
+    palindromo(prolog).
 
-% Ejercicio 10
-test(el_que_tiene_gato_tiene_mascota, all(P == [ana, eva])) :-
-    tiene_mascota(P).
+% Ejercicio 8
+test(sin_prefijo_pro, all(R == [log])) :-
+    sin_prefijo(prolog, pro, R).
 
-test(nadie_es_padre_de_si_mismo, all(P == [ana, luis, eva])) :-
-    no_es_padre_de_si_mismo(P).
+test(todas_las_particiones, all(P-R == [''-ana, a-na, an-a, ana-''])) :-
+    sin_prefijo(ana, P, R).
+
+% Ejercicio 9
+test(vocales_de_murcielago, all(N == [5])) :-
+    contar_vocales(murcielago, N).
+
+test(vocales_en_mayuscula, all(N == [2])) :-
+    contar_vocales('ANA', N).
+
+% Ejercicio 11
+test(campos_como_atomos, all(C == [[juan, '68', '1957']])) :-
+    campos("juan, 68, 1957", C).
+
+% Ejercicio 12
+test(campos_con_numeros, all(C == [[juan, 68, 1957]])) :-
+    campos_con_numeros("juan, 68, 1957", C).
+
+% Ejercicio 13
+test(mismo_texto_atomo_y_cadena) :-
+    mismo_texto('  Ana   PAZ', "ana paz").
+
+test(textos_distintos, [fail]) :-
+    mismo_texto(ana, "eva").
+
+% Ejercicio 15: las tres pruebas que pide el enunciado.
+test(iniciales_de_tres_palabras, all(I == ['JCP'])) :-
+    iniciales_de('juan carlos perez', I).
+
+test(iniciales_con_espacios_sobrantes, all(I == ['JCP'])) :-
+    iniciales_de('  juan   carlos perez ', I).
+
+test(iniciales_de_una_palabra, all(I == ['A'])) :-
+    iniciales_de(ana, I).
 
 :- end_tests(soluciones).

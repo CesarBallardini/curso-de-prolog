@@ -22,6 +22,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-1.1 — Estaciones "no demasiado lejos"
 - **Fuente:** Flach & Sokol, cap. 1 (introducción), Ejercicio 1.1. https://book.simply-logical.space/src/text/1_part_i/1.0.html
 - **Tema:** 2
+- **Capítulos:** 3
 - **Dificultad:** 1
 - **Solución:** no está en el Apéndice C. Propia, verificada sobre los hechos `connected/3` del libro:
   ```prolog
@@ -35,6 +36,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-1.2 — Árboles de prueba para `nearby`
 - **Fuente:** Flach & Sokol, sección 1.1, Ejercicio 1.2. https://book.simply-logical.space/src/text/1_part_i/1.1.html
 - **Tema:** 4
+- **Capítulos:** 5
 - **Dificultad:** 1
 - **Solución:** sí, Apéndice C.1: https://book.simply-logical.space/src/text/appendices/c_1.html (seis respuestas)
 - **SWISH:** no (se dibuja en papel; se puede comprobar la consulta en SWISH)
@@ -43,6 +45,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-1.3 — Otro árbol de prueba y el orden de los hechos
 - **Fuente:** Flach & Sokol, sección 1.2, Ejercicio 1.3. https://book.simply-logical.space/src/text/1_part_i/1.2.html
 - **Tema:** 4
+- **Capítulos:** 5
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí (para comprobar qué respuesta sale primero)
@@ -52,6 +55,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-1.4 — Listas, listas pares y listas impares
 - **Fuente:** Flach & Sokol, sección 1.3, Ejercicio 1.4. https://book.simply-logical.space/src/text/1_part_i/1.3.html
 - **Tema:** 5, 6
+- **Capítulos:** 7
 - **Dificultad:** 1
 - **Solución:** sí, Apéndice C.1 (verificada):
   ```prolog
@@ -67,6 +71,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-1.5 — Rutas con al menos dos estaciones intermedias
 - **Fuente:** Flach & Sokol, sección 1.3, Ejercicio 1.5. https://book.simply-logical.space/src/text/1_part_i/1.3.html
 - **Tema:** 1, 6
+- **Capítulos:** 7
 - **Dificultad:** 1
 - **Solución:** sí, Apéndice C.1 (verificada): `?- reachable(bond_street, piccadilly_circus, [S1,S2|Rest]).`
 - **SWISH:** sí
@@ -80,6 +85,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-2.1 — Traducir enunciados a cláusulas (proposicional)
 - **Fuente:** Flach & Sokol, sección 2.1, Ejercicio 2.1. https://book.simply-logical.space/src/text/1_part_i/2.1.html
 - **Tema:** X
+- **Capítulos:** 12
 - **Dificultad:** 1
 - **Solución:** sí, Apéndice C.2: https://book.simply-logical.space/src/text/appendices/c_2.html
 - **SWISH:** no (lógica clausal general, con disyunción en la cabeza)
@@ -89,6 +95,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-2.2 — Consecuencia lógica en un programa proposicional
 - **Fuente:** Flach & Sokol, sección 2.1, Ejercicio 2.2.
 - **Tema:** X
+- **Capítulos:** 12
 - **Dificultad:** 2
 - **Solución:** sí, Apéndice C.2
 - **SWISH:** no
@@ -97,6 +104,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-2.3 — Interpretaciones de Herbrand que no son modelos
 - **Fuente:** Flach & Sokol, sección 2.1, Ejercicio 2.3.
 - **Tema:** X
+- **Capítulos:** 12
 - **Dificultad:** 2
 - **Solución:** sí, Apéndice C.2
 - **SWISH:** no
@@ -105,6 +113,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-2.4 — Derivación por resolución
 - **Fuente:** Flach & Sokol, sección 2.1, Ejercicio 2.4.
 - **Tema:** 4, X
+- **Capítulos:** 12
 - **Dificultad:** 2
 - **Solución:** sí, Apéndice C.2
 - **SWISH:** no
@@ -113,6 +122,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-2.5 — Prueba por refutación
 - **Fuente:** Flach & Sokol, sección 2.1, Ejercicio 2.5.
 - **Tema:** 4
+- **Capítulos:** 12
 - **Dificultad:** 1
 - **Solución:** sí, Apéndice C.2
 - **SWISH:** no
@@ -121,6 +131,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-2.6 — Contar modelos sobre un universo de Herbrand
 - **Fuente:** Flach & Sokol, sección 2.2, Ejercicio 2.6. https://book.simply-logical.space/src/text/1_part_i/2.2.html
 - **Tema:** X
+- **Capítulos:** 12
 - **Dificultad:** 2
 - **Solución:** sí, Apéndice C.2
 - **SWISH:** no
@@ -129,6 +140,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-2.7 — Resolución con una cláusula nueva
 - **Fuente:** Flach & Sokol, sección 2.2, Ejercicio 2.7.
 - **Tema:** 4
+- **Capítulos:** 12
 - **Dificultad:** 1
 - **Solución:** sí, Apéndice C.2
 - **SWISH:** no
@@ -137,6 +149,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-2.8 — Árbol de prueba para una respuesta
 - **Fuente:** Flach & Sokol, sección 2.2, Ejercicio 2.8.
 - **Tema:** 4
+- **Capítulos:** 5, 12
 - **Dificultad:** 1
 - **Solución:** no
 - **SWISH:** sí (programa `swish:2.2.8` para comprobar la respuesta)
@@ -145,6 +158,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-2.9 — Traducir a lógica clausal con cuantificadores
 - **Fuente:** Flach & Sokol, sección 2.3, Ejercicio 2.9. https://book.simply-logical.space/src/text/1_part_i/2.3.html
 - **Tema:** X
+- **Capítulos:** 12
 - **Dificultad:** 2
 - **Solución:** sí, Apéndice C.2
 - **SWISH:** no
@@ -154,6 +168,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-2.10 — Universo de Herbrand de `listlength`
 - **Fuente:** Flach & Sokol, sección 2.3, Ejercicio 2.10.
 - **Tema:** 3, X
+- **Capítulos:** 12, 4
 - **Dificultad:** 2
 - **Solución:** sí, Apéndice C.2
 - **SWISH:** sí (el programa está en `swish:2.3.2`)
@@ -166,6 +181,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-2.11 — Unificar pares de términos
 - **Fuente:** Flach & Sokol, sección 2.3, Ejercicio 2.11.
 - **Tema:** 3
+- **Capítulos:** 4
 - **Dificultad:** 1
 - **Solución:** sí, Apéndice C.2
 - **SWISH:** sí (se puede comprobar con `=` y con `unify_with_occurs_check/2`)
@@ -179,6 +195,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-2.12 — Árboles de prueba de tres derivaciones
 - **Fuente:** Flach & Sokol, sección 2.4, Ejercicio 2.12. https://book.simply-logical.space/src/text/1_part_i/2.4.html
 - **Tema:** 4, X
+- **Capítulos:** 12
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** no
@@ -187,6 +204,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-2.13 — "Inocente hasta que se pruebe lo contrario"
 - **Fuente:** Flach & Sokol, sección 2.4, Ejercicio 2.13.
 - **Tema:** X
+- **Capítulos:** 12, 10
 - **Dificultad:** 2
 - **Solución:** sí, Apéndice C.2
 - **SWISH:** no
@@ -196,6 +214,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-2.14 — De fórmulas de primer orden a cláusulas
 - **Fuente:** Flach & Sokol, sección 2.5, Ejercicio 2.14. https://book.simply-logical.space/src/text/1_part_i/2.5.html
 - **Tema:** X
+- **Capítulos:** 12
 - **Dificultad:** 2
 - **Solución:** sí, Apéndice C.2
 - **SWISH:** no
@@ -208,6 +227,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-3.1 — Árboles de prueba de las ramas exitosas
 - **Fuente:** Flach & Sokol, sección 3.1, Ejercicio 3.1. https://book.simply-logical.space/src/text/1_part_i/3.1.html
 - **Tema:** 4
+- **Capítulos:** 5, 12
 - **Dificultad:** 1
 - **Solución:** no
 - **SWISH:** no
@@ -216,6 +236,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-3.2 — Un árbol SLD infinito
 - **Fuente:** Flach & Sokol, sección 3.1, Ejercicio 3.2.
 - **Tema:** 4, 5
+- **Capítulos:** 5, 7
 - **Dificultad:** 1
 - **Solución:** sí, Apéndice C.3: https://book.simply-logical.space/src/text/appendices/c_3.html
 - **SWISH:** sí (celda `swish:2.3.2_3`)
@@ -229,6 +250,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-3.3 — Podar con corte en un árbol SLD
 - **Fuente:** Flach & Sokol, sección 3.2, Ejercicio 3.3. https://book.simply-logical.space/src/text/1_part_i/3.2.html
 - **Tema:** 4, 8
+- **Capítulos:** 9, 5
 - **Dificultad:** 2
 - **Solución:** sí, Apéndice C.3
 - **SWISH:** sí (celda `swish:3.2.ex3.3_2`)
@@ -244,6 +266,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-3.4 — Un corte rojo en `max/3`
 - **Fuente:** Flach & Sokol, sección 3.3, Ejercicio 3.4. https://book.simply-logical.space/src/text/1_part_i/3.3.html
 - **Tema:** 8
+- **Capítulos:** 9
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -257,6 +280,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-3.5 — `bachelor` con negación por fallo
 - **Fuente:** Flach & Sokol, sección 3.3, Ejercicio 3.5.
 - **Tema:** 8
+- **Capítulos:** 10, 5
 - **Dificultad:** 1
 - **Solución:** sí, Apéndice C.3
 - **SWISH:** sí (`swish:3.3.3`)
@@ -269,6 +293,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-3.6 — Orden de los objetivos y negación
 - **Fuente:** Flach & Sokol, sección 3.3, Ejercicio 3.6.
 - **Tema:** 8
+- **Capítulos:** 10, 5
 - **Dificultad:** 2
 - **Solución:** sí, Apéndice C.3
 - **SWISH:** sí (`swish:3.3.3a`)
@@ -278,6 +303,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-3.7 — Objetivos que se prueban dos veces
 - **Fuente:** Flach & Sokol, sección 3.4, Ejercicio 3.7. https://book.simply-logical.space/src/text/1_part_i/3.4.html
 - **Tema:** 8
+- **Capítulos:** 9, 15
 - **Dificultad:** 1
 - **Solución:** sí, Apéndice C.3
 - **SWISH:** sí (con `trace` se ve que `q` y `r` se ejecutan dos veces)
@@ -291,6 +317,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-3.8 — Si-entonces-si-no con un predicado auxiliar
 - **Fuente:** Flach & Sokol, sección 3.4, Ejercicio 3.8.
 - **Tema:** 8
+- **Capítulos:** 9, 15
 - **Dificultad:** 1
 - **Solución:** sí, Apéndice C.3
 - **SWISH:** sí
@@ -300,6 +327,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-3.9 — Raíces de una ecuación cuadrática
 - **Fuente:** Flach & Sokol, sección 3.5, Ejercicio 3.9. https://book.simply-logical.space/src/text/1_part_i/3.5.html
 - **Tema:** 7
+- **Capítulos:** 8
 - **Dificultad:** 1
 - **Solución:** sí, Apéndice C.3, **pero tiene un error de precedencia**: escribe `/ 2*A`, que se lee `(… / 2) * A`. Versión corregida y verificada (con A=2, B=-6, C=4 da 2.0 y 1.0; la versión del libro da 8.0):
   ```prolog
@@ -313,6 +341,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-3.10 — Árbol de prueba de `naive_length`
 - **Fuente:** Flach & Sokol, sección 3.6, Ejercicio 3.10. https://book.simply-logical.space/src/text/1_part_i/3.6.html
 - **Tema:** 5, 7
+- **Capítulos:** 8, 5
 - **Dificultad:** 1
 - **Solución:** sí, Apéndice C.3
 - **SWISH:** sí (`swish:3.6.0`)
@@ -322,6 +351,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-3.11 — Árbol de prueba con acumulador
 - **Fuente:** Flach & Sokol, sección 3.6, Ejercicio 3.11.
 - **Tema:** 5, 7
+- **Capítulos:** 8, 16
 - **Dificultad:** 1
 - **Solución:** sí, Apéndice C.3
 - **SWISH:** sí (`swish:3.6.1`)
@@ -330,6 +360,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-3.12 — Árbol de prueba de `naive_reverse`
 - **Fuente:** Flach & Sokol, sección 3.6, Ejercicio 3.12.
 - **Tema:** 5, 6
+- **Capítulos:** 7, 16
 - **Dificultad:** 1
 - **Solución:** no
 - **SWISH:** sí (`swish:3.6.2`)
@@ -339,6 +370,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-3.13 — Del `reverse` ingenuo a listas diferencia
 - **Fuente:** Flach & Sokol, sección 3.6, Ejercicio 3.13.
 - **Tema:** 6, X
+- **Capítulos:** 34, 35
 - **Dificultad:** 3
 - **Solución:** sí, Apéndice C.3
 - **SWISH:** sí
@@ -348,6 +380,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-3.14 — `rel/3` con `=..`
 - **Fuente:** Flach & Sokol, sección 3.7, Ejercicio 3.14. https://book.simply-logical.space/src/text/1_part_i/3.7.html
 - **Tema:** 3, 9
+- **Capítulos:** 18, 32
 - **Dificultad:** 2
 - **Solución:** sí, Apéndice C.3 (verificada):
   ```prolog
@@ -361,6 +394,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-3.15 — Ordenar y quitar duplicados con `setof`
 - **Fuente:** Flach & Sokol, sección 3.7, Ejercicio 3.15.
 - **Tema:** 9
+- **Capítulos:** 17, 22
 - **Dificultad:** 1
 - **Solución:** sí, Apéndice C.3 (verificada): `sort(List, Sorted) :- setof(X, element(X, List), Sorted).`, con `element/2` equivalente a `member/2`.
 - **SWISH:** sí (conviene cambiar el nombre, porque `sort/2` es un predicado predefinido)
@@ -370,6 +404,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-3.16 — Árbol SLD de un metaprograma
 - **Fuente:** Flach & Sokol, sección 3.8, Ejercicio 3.16. https://book.simply-logical.space/src/text/1_part_i/3.8.html
 - **Tema:** X
+- **Capítulos:** 33, 5
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí (`swish:3.8.2`)
@@ -378,6 +413,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-3.17 — Árbol SLD del metaintérprete `prove/1`
 - **Fuente:** Flach & Sokol, sección 3.8, Ejercicio 3.17.
 - **Tema:** 4, X
+- **Capítulos:** 33, 5
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -386,6 +422,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-3.18 — Permutaciones con la metodología de la sección 3.9
 - **Fuente:** Flach & Sokol, sección 3.9, Ejercicio 3.18. https://book.simply-logical.space/src/text/1_part_i/3.9.html
 - **Tema:** 5, 6
+- **Capítulos:** 7
 - **Dificultad:** 2
 - **Solución:** sí, Apéndice C.3, con `insert_somewhere/3`. **Cuidado:** tal como la da el apéndice, con `insert_somewhere` antes de la llamada recursiva, `permutation([1,2,3], P)` devuelve una sola respuesta y después no termina (verificado). Con la llamada recursiva primero da las 6 permutaciones y termina:
   ```prolog
@@ -400,6 +437,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-3.19 — Quicksort con `partition/4`
 - **Fuente:** Flach & Sokol, sección 3.9, Ejercicio 3.19.
 - **Tema:** 6, 7
+- **Capítulos:** 8, 22
 - **Dificultad:** 2
 - **Solución:** sí, Apéndice C.3 (verificada)
 - **SWISH:** sí (`partition/4` está en `swish:3.9.1`)
@@ -412,6 +450,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-4.1 — Dibujar el árbol que representa un término
 - **Fuente:** Flach & Sokol, sección 4.1, Ejercicio 4.1. https://book.simply-logical.space/src/text/2_part_ii/4.1.html
 - **Tema:** 3
+- **Capítulos:** 4
 - **Dificultad:** 1
 - **Solución:** no (el Apéndice C.4 solo dice que estos ejercicios "no deberían presentar mayores dificultades")
 - **SWISH:** no (es un dibujo)
@@ -421,6 +460,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-4.2 — Construir un término árbol
 - **Fuente:** Flach & Sokol, sección 4.1, Ejercicio 4.2.
 - **Tema:** 3
+- **Capítulos:** 4
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -429,6 +469,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-4.3 — Orden en que se encuentran los caminos
 - **Fuente:** Flach & Sokol, sección 4.1, Ejercicio 4.3.
 - **Tema:** 4
+- **Capítulos:** 5
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -437,6 +478,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-4.4 — Árbol SLD de `path/1`
 - **Fuente:** Flach & Sokol, sección 4.2, Ejercicio 4.4. https://book.simply-logical.space/src/text/2_part_ii/4.2.html
 - **Tema:** 4
+- **Capítulos:** 5
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** no
@@ -445,6 +487,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-4.5 — Árbol SLD de la versión alternativa
 - **Fuente:** Flach & Sokol, sección 4.2, Ejercicio 4.5.
 - **Tema:** 4
+- **Capítulos:** 5
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** no
@@ -453,6 +496,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-4.6 — Árbol SLD de un grafo generado por un predicado
 - **Fuente:** Flach & Sokol, sección 4.2, Ejercicio 4.6.
 - **Tema:** 4
+- **Capítulos:** 5
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** no
@@ -461,6 +505,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-4.7 — Herencia múltiple
 - **Fuente:** Flach & Sokol, sección 4.3, Ejercicio 4.7. https://book.simply-logical.space/src/text/2_part_ii/4.3.html
 - **Tema:** X
+- **Capítulos:** 33
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -473,6 +518,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-5.1 — Reconstruir el camino en la búsqueda en profundidad
 - **Fuente:** Flach & Sokol, sección 5.2, Ejercicio 5.1. https://book.simply-logical.space/src/text/2_part_ii/5.2.html
 - **Tema:** 4, X
+- **Capítulos:** 39, 22
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -481,6 +527,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-5.2 — Escribir un árbol por niveles
 - **Fuente:** Flach & Sokol, sección 5.3, Ejercicio 5.2. https://book.simply-logical.space/src/text/2_part_ii/5.3.html
 - **Tema:** X
+- **Capítulos:** 39
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -489,6 +536,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-5.3 — `prove_bf` frente a Prolog con `brother/2`
 - **Fuente:** Flach & Sokol, sección 5.3, Ejercicio 5.3.
 - **Tema:** 4
+- **Capítulos:** 5, 33
 - **Dificultad:** 2
 - **Solución:** sí, Apéndice C.5: https://book.simply-logical.space/src/text/appendices/c_5.html
 - **SWISH:** sí
@@ -504,6 +552,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-5.4 — Metaintérprete que devuelve árboles de prueba
 - **Fuente:** Flach & Sokol, sección 5.3, Ejercicio 5.4.
 - **Tema:** X
+- **Capítulos:** 33
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -512,6 +561,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-5.5 — Modelos restantes (encadenamiento hacia adelante)
 - **Fuente:** Flach & Sokol, sección 5.4, Ejercicio 5.5. https://book.simply-logical.space/src/text/2_part_ii/5.4.html
 - **Tema:** X
+- **Capítulos:** 12
 - **Dificultad:** 2
 - **Solución:** sí, Apéndice C.5
 - **SWISH:** no
@@ -520,6 +570,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-5.6 — ¿`model/1` encuentra todos los modelos mínimos?
 - **Fuente:** Flach & Sokol, sección 5.4, Ejercicio 5.6.
 - **Tema:** X
+- **Capítulos:** 12
 - **Dificultad:** 3
 - **Solución:** sí, Apéndice C.5
 - **SWISH:** no
@@ -532,6 +583,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-6.1 — Mezclar hijos ordenados con la agenda
 - **Fuente:** Flach & Sokol, sección 6.1, Ejercicio 6.1. https://book.simply-logical.space/src/text/2_part_ii/6.1.html
 - **Tema:** 6, X
+- **Capítulos:** 8, 39
 - **Dificultad:** 2
 - **Solución:** sí, Apéndice C.6: https://book.simply-logical.space/src/text/appendices/c_6.html
 - **SWISH:** sí
@@ -541,6 +593,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-6.2 — Heurística sin predicados de segundo orden
 - **Fuente:** Flach & Sokol, sección 6.1, Ejercicio 6.2.
 - **Tema:** 5, 9
+- **Capítulos:** 8, 17
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -549,6 +602,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-6.3 — Algoritmo A para el problema de las fichas
 - **Fuente:** Flach & Sokol, sección 6.2, Ejercicio 6.3. https://book.simply-logical.space/src/text/2_part_ii/6.2.html
 - **Tema:** X
+- **Capítulos:** 39
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -557,6 +611,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-6.4 — Una heurística demasiado pesimista
 - **Fuente:** Flach & Sokol, sección 6.2, Ejercicio 6.4.
 - **Tema:** X
+- **Capítulos:** 39
 - **Dificultad:** 2
 - **Solución:** sí, Apéndice C.6
 - **SWISH:** no
@@ -565,6 +620,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-6.5 — Metaintérprete con búsqueda A
 - **Fuente:** Flach & Sokol, sección 6.2, Ejercicio 6.5.
 - **Tema:** X
+- **Capítulos:** 33, 39
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -573,6 +629,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-6.6 — Búsqueda en haz
 - **Fuente:** Flach & Sokol, sección 6.3, Ejercicio 6.6. https://book.simply-logical.space/src/text/2_part_ii/6.3.html
 - **Tema:** X
+- **Capítulos:** 39
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -585,6 +642,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-7.1 — Árbol sintáctico como árbol de prueba SLD
 - **Fuente:** Flach & Sokol, sección 7.1, Ejercicio 7.1. https://book.simply-logical.space/src/text/3_part_iii/7.1.html
 - **Tema:** A, 4
+- **Capítulos:** 21, 5
 - **Dificultad:** 2
 - **Solución:** sí, Apéndice C.7: https://book.simply-logical.space/src/text/appendices/c_7.html
 - **SWISH:** no
@@ -593,6 +651,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-7.2 — Espacio de búsqueda del análisis descendente
 - **Fuente:** Flach & Sokol, sección 7.1, Ejercicio 7.2.
 - **Tema:** A, 4
+- **Capítulos:** 21, 5
 - **Dificultad:** 2
 - **Solución:** sí, Apéndice C.7
 - **SWISH:** no
@@ -601,6 +660,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-7.3 — DCG para expresiones horarias
 - **Fuente:** Flach & Sokol, sección 7.2, Ejercicio 7.3. https://book.simply-logical.space/src/text/3_part_iii/7.2.html
 - **Tema:** A
+- **Capítulos:** 21
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí (SWISH soporta DCG y `phrase/2`)
@@ -609,6 +669,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-7.4 — Agregar interpretación a reglas DCG
 - **Fuente:** Flach & Sokol, sección 7.3, Ejercicio 7.4. https://book.simply-logical.space/src/text/3_part_iii/7.3.html
 - **Tema:** A
+- **Capítulos:** 21
 - **Dificultad:** 2
 - **Solución:** sí, Apéndice C.7
 - **SWISH:** sí
@@ -617,6 +678,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-7.5 — Bucle guiado por fallo con `repeat`
 - **Fuente:** Flach & Sokol, sección 7.3, Ejercicio 7.5.
 - **Tema:** 10, 8
+- **Capítulos:** 28, 20, 15
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** no del todo: SWISH no tiene entrada interactiva por consola, y un bucle con `repeat` y `read/1` conviene hacerlo en `swipl` local
@@ -635,6 +697,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-8.1 — Modelos de un programa con excepción
 - **Fuente:** Flach & Sokol, sección 8.1, Ejercicio 8.1. https://book.simply-logical.space/src/text/3_part_iii/8.1.html
 - **Tema:** X
+- **Capítulos:** 12
 - **Dificultad:** 2
 - **Solución:** sí, Apéndice C.8: https://book.simply-logical.space/src/text/appendices/c_8.html
 - **SWISH:** no
@@ -643,6 +706,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-8.2 — Modelos de P (mundo cerrado)
 - **Fuente:** Flach & Sokol, sección 8.2, Ejercicio 8.2. https://book.simply-logical.space/src/text/3_part_iii/8.2.html
 - **Tema:** X
+- **Capítulos:** 12, 10
 - **Dificultad:** 2
 - **Solución:** sí, Apéndice C.8
 - **SWISH:** no
@@ -651,6 +715,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-8.3 — Compleción de predicados
 - **Fuente:** Flach & Sokol, sección 8.2, Ejercicio 8.3.
 - **Tema:** X
+- **Capítulos:** 12, 10
 - **Dificultad:** 3
 - **Solución:** sí, Apéndice C.8
 - **SWISH:** no
@@ -659,6 +724,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-8.4 — Metaintérprete abductivo que no entra en bucle
 - **Fuente:** Flach & Sokol, sección 8.3, Ejercicio 8.4. https://book.simply-logical.space/src/text/3_part_iii/8.3.html
 - **Tema:** X
+- **Capítulos:** 33
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -667,6 +733,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-8.5 — Árboles SLD con reglas por defecto
 - **Fuente:** Flach & Sokol, sección 8.4, Ejercicio 8.5. https://book.simply-logical.space/src/text/3_part_iii/8.4.html
 - **Tema:** 4, 8
+- **Capítulos:** 10, 5
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí (para comprobar las respuestas)
@@ -675,6 +742,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-8.6 — Abducción sin las dos últimas cláusulas
 - **Fuente:** Flach & Sokol, sección 8.4, Ejercicio 8.6.
 - **Tema:** X
+- **Capítulos:** 33
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -687,6 +755,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-9.1 — `induce/3` con una lista de ejemplos
 - **Fuente:** Flach & Sokol, cap. 9 (introducción), Ejercicio 9.1. https://book.simply-logical.space/src/text/3_part_iii/9.0.html
 - **Tema:** X
+- **Capítulos:** 33
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -695,6 +764,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-9.2 — Cobertura extensional
 - **Fuente:** Flach & Sokol, sección 9.1, Ejercicio 9.2. https://book.simply-logical.space/src/text/3_part_iii/9.1.html
 - **Tema:** X
+- **Capítulos:** 33
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -703,6 +773,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-9.3 — θ-LGG de dos cláusulas
 - **Fuente:** Flach & Sokol, sección 9.1, Ejercicio 9.3.
 - **Tema:** X
+- **Capítulos:** 32
 - **Dificultad:** 3
 - **Solución:** sí, Apéndice C.9: https://book.simply-logical.space/src/text/appendices/c_9.html
 - **SWISH:** no
@@ -711,6 +782,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-9.4 — Aprender `reverse/3` con acumulador
 - **Fuente:** Flach & Sokol, sección 9.2, Ejercicio 9.4. https://book.simply-logical.space/src/text/3_part_iii/9.2.html
 - **Tema:** X
+- **Capítulos:** 33
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -719,6 +791,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-9.5 — Búsqueda en haz para la inducción descendente
 - **Fuente:** Flach & Sokol, sección 9.3, Ejercicio 9.5. https://book.simply-logical.space/src/text/3_part_iii/9.3.html
 - **Tema:** X
+- **Capítulos:** 39, 33
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí

@@ -114,8 +114,8 @@ cuenta_atras(N, [N|Resto]) :-
 %!  hasta(+N, +X) is semidet.
 %
 %   X recorre los enteros de X a N. Con los números predefinidos, la
-%   unificación ya no garantiza la terminación, y hay que reponer la guarda
-%   X < N que en s(s(cero)) daba la estructura del término.
+%   unificación ya no garantiza la terminación, y es necesario reponer la guarda
+%   X < N, que con la notación s(s(cero)) aportaba la estructura del término.
 hasta(N, N).
 hasta(N, X) :-
     X < N,

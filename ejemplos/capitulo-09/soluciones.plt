@@ -49,7 +49,7 @@ test(un_chico_no_tiene_cero, [fail]) :-
     descuento(8, 0).
 
 % Ejercicio 10
-test(sin_repetidos, all(R == [[a, c, b]])) :-
+test(sin_repetidos, all(R == [[a, b, c]])) :-
     sin_repetidos([a, b, a, c, b], R).
 
 test(sin_repetidos_sin_nada_que_sacar, all(R == [[a, b, c]])) :-

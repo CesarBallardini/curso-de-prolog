@@ -1,0 +1,4 @@
+#!/bin/sh
+# Gancho de git: ejecuta las pruebas de Inscripciones antes de cada commit.
+# Si alguna falla, swipl termina con código 1 y git cancela el commit.
+swipl -q -g "consult(['inscripciones.pl', 'inscripciones.plt'])" -g run_tests -t halt

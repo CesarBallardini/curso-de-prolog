@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """Recompute every chapter's time estimate and report the ones that drifted.
 
-    ./tools/check-time.py                  every chapter of part I
+    ./tools/check-time.py                  every written chapter
     ./tools/check-time.py capitulo-07      one chapter
     ./tools/check-time.py -v               print the figures of every chapter
 
@@ -144,9 +144,11 @@ def chapters(wanted: list[str]) -> list[Path]:
     chosen = []
     for directory in sorted(examples.DOCS.glob('capitulo-*')):
         number = examples.CHAPTER_DIR.match(directory.name)
-        if not number or int(number.group(1)) > examples.LAST_OF_PART_1:
+        if not number:
             continue
         if wanted and not any(name in directory.name for name in wanted):
+            continue
+        if not examples.is_written(directory):
             continue
         chosen.append(directory / 'index.md')
     return chosen

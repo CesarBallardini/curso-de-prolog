@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """Run every transcript of the book against SWI-Prolog and compare the answers.
 
-    ./tools/check-transcripts.py                  every chapter of part I
+    ./tools/check-transcripts.py                  every written chapter
     ./tools/check-transcripts.py capitulo-07      one chapter
     ./tools/check-transcripts.py -v               list the transcripts that pass too
 
@@ -95,7 +95,10 @@ def transcripts(page: Path) -> list[Transcript]:
     for number, text in enumerate(page.read_text(encoding='utf-8').splitlines(), start=1):
         marker = MARKER_LINE.match(text)
         if marker:
-            context = examples.EXAMPLES / marker.group('file')
+            # Chapter 29 also marks Python files; a query runs against Prolog
+            # only, so those markers leave the context as it was.
+            if marker.group('file').endswith('.pl'):
+                context = examples.EXAMPLES / marker.group('file')
             continue
         fence = FENCE.match(text)
         if fence and not inside:
@@ -208,9 +211,11 @@ def run_once(swipl: str, item: Transcript, context: list[Path]) -> tuple[str, st
         # `natural(N)`, runs out of it in about a second instead of filling the
         # default gigabyte, which took most of LIMIT on this machine and more
         # than that on the CI runner. No query the book prints needs anything
-        # like 64 MB.
+        # like 64 MB. The closing halt keeps the `main` of a command-line
+        # program, declared with `:- initialization(main, main)`, from running
+        # in place of the `-t` toplevel after the probe.
         done = subprocess.run(  # noqa: S603
-            [swipl, '-q', '--stack-limit=64m', '-g', f'probe(({query}))', '-t', 'halt', *files],
+            [swipl, '-q', '--stack-limit=64m', '-g', f'probe(({query})),halt', '-t', 'halt', *files],
             capture_output=True,
             text=True,
             errors='replace',
@@ -263,9 +268,11 @@ def pages(wanted: list[str]) -> list[Path]:
     chosen = []
     for directory in sorted(examples.DOCS.glob('capitulo-*')):
         number = examples.CHAPTER_DIR.match(directory.name)
-        if not number or int(number.group(1)) > examples.LAST_OF_PART_1:
+        if not number:
             continue
         if wanted and not any(name in directory.name for name in wanted):
+            continue
+        if not examples.is_written(directory):
             continue
         chosen.extend(sorted(directory.glob('*.md')))
     return chosen

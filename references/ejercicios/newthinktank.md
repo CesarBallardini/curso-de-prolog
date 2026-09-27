@@ -13,6 +13,7 @@
 
 - **Fuente:** newthinktank.com (cheat sheet, sección INTRODUCTION); video 05:40
 - **Tema:** 0
+- **Capítulos:** 1, 13
 - **Dificultad:** 1
 - **Solución:** sí (en la página)
 - **SWISH:** sí (salvo `halt/0` y `consult/1` de archivos locales)
@@ -23,6 +24,7 @@
 
 - **Fuente:** cheat sheet, INTRODUCTION; video 05:40–09:55
 - **Tema:** 1, 2
+- **Capítulos:** 1, 3
 - **Dificultad:** 1
 - **Solución:** sí
 - **SWISH:** sí
@@ -33,6 +35,7 @@
 
 - **Fuente:** cheat sheet, FACTS; video 09:55
 - **Tema:** 1, 4
+- **Capítulos:** 2, 5
 - **Dificultad:** 1
 - **Solución:** sí
 - **SWISH:** sí
@@ -43,6 +46,7 @@
 
 - **Fuente:** cheat sheet, RULES; video 12:00
 - **Tema:** 2
+- **Capítulos:** 3, 10
 - **Dificultad:** 2
 - **Solución:** sí (con la corrección de la nota)
 - **SWISH:** sí
@@ -53,6 +57,7 @@
 
 - **Fuente:** cheat sheet, VARIABLES; video 15:30
 - **Tema:** 2, 4
+- **Capítulos:** 3
 - **Dificultad:** 1–2
 - **Solución:** sí
 - **SWISH:** sí
@@ -63,6 +68,7 @@
 
 - **Fuente:** cheat sheet, VARIABLES y COMPLEX TERMS; video 15:30–28:38
 - **Tema:** 3
+- **Capítulos:** 2, 14
 - **Dificultad:** 1
 - **Solución:** sí
 - **SWISH:** sí
@@ -73,6 +79,7 @@
 
 - **Fuente:** cheat sheet, WHERE IS IF?; video 23:54
 - **Tema:** 8
+- **Capítulos:** 9, 15
 - **Dificultad:** 2
 - **Solución:** parcial (el original tiene un error)
 - **SWISH:** sí
@@ -83,6 +90,7 @@
 
 - **Fuente:** cheat sheet, COMPLEX TERMS / STRUCTURES; video 25:56
 - **Tema:** 3
+- **Capítulos:** 4
 - **Dificultad:** 1–2
 - **Solución:** sí
 - **SWISH:** sí
@@ -93,6 +101,7 @@
 
 - **Fuente:** cheat sheet, COMPLEX TERMS (`get_cust_bal`) y VARIABLES (`get_grandparent`); video 28:38
 - **Tema:** 0 (E/S)
+- **Capítulos:** 11
 - **Dificultad:** 1
 - **Solución:** sí
 - **SWISH:** sí
@@ -103,6 +112,7 @@
 
 - **Fuente:** cheat sheet, COMPARISON; video 31:13
 - **Tema:** 3, 7, 8
+- **Capítulos:** 4, 10, 8
 - **Dificultad:** 2
 - **Solución:** sí (en comentarios)
 - **SWISH:** sí
@@ -113,6 +123,7 @@
 
 - **Fuente:** cheat sheet, TRACE; video 33:36
 - **Tema:** 4
+- **Capítulos:** 5
 - **Dificultad:** 1
 - **Solución:** sí (traza en la página)
 - **SWISH:** sí (SWISH tiene un depurador gráfico: `trace, mammal(penguin).`)
@@ -123,6 +134,7 @@
 
 - **Fuente:** cheat sheet, RECURSION; video 36:16
 - **Tema:** 5
+- **Capítulos:** 6
 - **Dificultad:** 2
 - **Solución:** sí
 - **SWISH:** sí
@@ -133,6 +145,7 @@
 
 - **Fuente:** cheat sheet, MATH; video 39:10
 - **Tema:** 7
+- **Capítulos:** 8, 23
 - **Dificultad:** 1
 - **Solución:** sí
 - **SWISH:** sí
@@ -143,6 +156,7 @@
 
 - **Fuente:** cheat sheet, INPUT / OUTPUT; video 44:08–49:29
 - **Tema:** 0 (E/S), 8
+- **Capítulos:** 27, 28
 - **Dificultad:** 2
 - **Solución:** sí
 - **SWISH:** no (SWISH no permite leer ni escribir archivos; `read/1` funciona con un diálogo)
@@ -153,6 +167,7 @@
 
 - **Fuente:** cheat sheet, HOW TO LOOP; video 49:29
 - **Tema:** 5, 4
+- **Capítulos:** 6, 15
 - **Dificultad:** 2
 - **Solución:** sí
 - **SWISH:** sí
@@ -163,6 +178,7 @@
 
 - **Fuente:** cheat sheet, HOW TO LOOP (`guess_num`, `loop/1`); video 49:29
 - **Tema:** 5
+- **Capítulos:** 28, 26
 - **Dificultad:** 2
 - **Solución:** no (hay que corregir el original)
 - **SWISH:** parcial (`read/1` en SWISH abre un diálogo)
@@ -173,6 +189,7 @@
 
 - **Fuente:** cheat sheet, CHANGING THE DATABASE; video 53:31
 - **Tema:** 10
+- **Capítulos:** 20
 - **Dificultad:** 2
 - **Solución:** sí
 - **SWISH:** sí (el estado no persiste entre consultas)
@@ -183,6 +200,7 @@
 
 - **Fuente:** cheat sheet, LISTS; video 56:51
 - **Tema:** 6
+- **Capítulos:** 7
 - **Dificultad:** 1–2
 - **Solución:** sí
 - **SWISH:** sí
@@ -193,6 +211,7 @@
 
 - **Fuente:** cheat sheet, STRINGS; video 1:00:47
 - **Tema:** 6, X
+- **Capítulos:** 11, 7
 - **Dificultad:** 2
 - **Solución:** parcial (el original tiene un error)
 - **SWISH:** sí

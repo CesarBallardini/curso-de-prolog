@@ -123,8 +123,8 @@ Que `eva` sea madre de `sofia` implica, para una persona, que `eva` es mujer.
 Prolog no dispone de esa información: `madre/2` y `mujer/1` son dos relaciones
 independientes, sin otra conexión que la que se escriba en el programa.
 
-Esa conexión se puede escribir: es precisamente una regla, el tema del capítulo
-3.
+Esa conexión se puede escribir: es precisamente una regla, el tema del
+[capítulo 3](../capitulo-03-reglas-y-conjunciones/index.md).
 
 ## 12
 
@@ -196,7 +196,7 @@ a. **"Ana es mayor que Luis"** afirma algo que se **deduce** de otros datos, las
 b. **"Toda persona tiene madre"** habla de **todas** las personas a la vez. Un
    hecho afirma algo sobre objetos determinados, y no hay manera de nombrar
    "todas" escribiendo un hecho. Los enunciados de esta forma se escriben como
-   reglas, y el [capítulo 11](../capitulo-11-prolog-y-la-logica/index.md) explica por qué.
+   reglas, y el [capítulo 12](../capitulo-12-prolog-y-la-logica/index.md) explica por qué.
 c. **"Ana no tiene hijos"** es una **negación**. Un programa Prolog está formado
    por afirmaciones, y no hay forma de escribir la ausencia de una. Lo que se
    hace es no escribir ningún hecho que diga lo contrario, y dejar que Prolog

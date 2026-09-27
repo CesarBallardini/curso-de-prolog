@@ -17,10 +17,11 @@ cita, y no se los reproduce.
 
 ## Estado
 
-**La parte I (capítulos 1 a 11) está completa**: texto, ejercicios, soluciones,
-ejemplos con sus pruebas y PDF de cada capítulo. Se puede usar en el dictado.
+**Las partes I y II (capítulos 1 a 31) están completas**: texto, ejercicios,
+soluciones, ejemplos con sus pruebas y PDF de cada capítulo. Los capítulos 7 a
+31 están en revisión.
 
-Las partes II y III, el capítulo 34 y el apéndice A están en preparación: tienen
+La parte III (capítulos 32 a 39) y el capítulo 40 están en preparación: tienen
 la estructura de directorios y una página inicial por capítulo, sin contenido.
 El contenido se escribe por hitos, según `2026-09-18-plan-guide-prolog.md`.
 
@@ -132,7 +133,7 @@ orden:
 
 | | |
 |---|---|
-| `make part-1` | los capítulos 1 a 11 no usan ningún predicado de la parte II (`findall`, `maplist`, `assertz`…) |
+| `make part-1` | los capítulos 1 a 12 no usan ningún predicado de la parte II (`findall`, `maplist`, `assertz`…) |
 | `make test` | cada ejemplo se carga con su `.plt` y pasa sus pruebas plunit; un `Warning:` también es una falla |
 | `make swish` | cada ejemplo es aceptado por el sandbox de SWISH, o declara por qué no puede serlo |
 | `make transcripts` | cada consulta `?- …` del texto se ejecuta y se comparan la cantidad de respuestas y el terminador |

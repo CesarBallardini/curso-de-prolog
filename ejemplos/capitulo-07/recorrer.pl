@@ -8,17 +8,20 @@
 %?- esta_en(luis, [ana, luis, eva]).
 %?- pegar([ana, luis], [eva], Todos).
 
-%!  esta_en(?X, +L) is nondet.
+%!  esta_en(?X, ?L) is nondet.
 %
 %   X es uno de los elementos de L.
-%   X es el primer elemento, o es un elemento del resto.
+%   X es el primer elemento, o es un elemento del resto. Con L libre, enumera
+%   listas cada vez más largas que contienen a X, sin fin.
 esta_en(X, [X|_]).
 esta_en(X, [_|Resto]) :-
     esta_en(X, Resto).
 
-%!  largo(+L, -N) is det.
+%!  largo(?L, ?N) is nondet.
 %
-%   N es la cantidad de elementos de L.
+%   N es la cantidad de elementos de L. Con L libre, enumera listas de
+%   variables de largo creciente; con L libre y N ligado, da la lista de N
+%   variables y después no termina.
 largo([], 0).
 largo([_|Resto], N) :-
     largo(Resto, Faltan),
@@ -32,9 +35,10 @@ pegar([], B, B).
 pegar([X|RestoA], B, [X|RestoC]) :-
     pegar(RestoA, B, RestoC).
 
-%!  ultimo(+L, -X) is semidet.
+%!  ultimo(?L, ?X) is nondet.
 %
-%   X es el último elemento de L.
+%   X es el último elemento de L. Con L libre, enumera listas cada vez más
+%   largas que terminan en X, sin fin.
 ultimo([X], X).
 ultimo([_|Resto], X) :-
     ultimo(Resto, X).

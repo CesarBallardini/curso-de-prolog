@@ -26,8 +26,9 @@ multiplo(De, Desde, N) :-
 
 %!  primer_multiplo(+De, +Desde, -N) is semidet.
 %
-%   N es el primero de esos múltiplos, y solo él. N debe llegar libre: con N
-%   ya ligado, el corte no tiene nada que podar (sección 9.6).
+%   N es el primero de esos múltiplos, y solo él; falla si no hay ninguno
+%   entre Desde y 200. N debe llegar libre: con N ya ligado, el corte no
+%   tiene nada que podar.
 primer_multiplo(De, Desde, N) :-
     multiplo(De, Desde, N),
     !.

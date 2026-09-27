@@ -30,9 +30,10 @@ false.
 
 <!-- ejemplo: capitulo-07/soluciones.pl predicado: primero_y_ultimo/3 consulta: primero_y_ultimo([ana, luis, eva], P, U). -->
 ```prolog
-%!  primero_y_ultimo(+L, -P, -U) is semidet.
+%!  primero_y_ultimo(?L, ?P, ?U) is nondet.
 %
-%   P es el primero de L y U el último.
+%   P es el primero de L y U el último. Con L libre, enumera listas cada vez
+%   más largas que empiezan con P y terminan con U, sin fin.
 primero_y_ultimo([P|Resto], P, U) :-
     last([P|Resto], U).
 ```
@@ -41,11 +42,13 @@ El primer elemento se obtiene por la unificación de la cabeza; el último, con
 `last/2`. La cabeza exige `[P|Resto]` para que el predicado no se cumpla con la
 lista vacía, que no tiene primer ni último elemento.
 
-El encabezado es `primero_y_ultimo(+L, -P, -U) is semidet`. `L` debe llegar
-ligada: con `L` libre, `last/2` produce listas cada vez más largas, sin fin,
-como `esta_en/2` en la advertencia de la [sección 7.6](index.md#76-una-relacion-varios-sentidos). `P` y `U` son de salida.
-La cantidad de respuestas es una o ninguna: una lista tiene un solo primer
-elemento y un solo último, y la lista vacía no tiene ninguno de los dos.
+El encabezado es `primero_y_ultimo(?L, ?P, ?U) is nondet`. Con `L` ligada, `P`
+y `U` reciben el primero y el último, y la respuesta es una o ninguna: la lista
+vacía no tiene ninguno de los dos. Con `L` libre, la relación también tiene
+sentido, y el encabezado lo registra con `?`: `last/2` enumera listas cada vez
+más largas que empiezan con `P` y terminan con `U`, sin fin, como `esta_en/2` en
+la advertencia de la [sección 7.6](index.md#76-una-relacion-varios-sentidos). Por eso el conteo es `nondet`, y la descripción
+advierte que en ese modo la enumeración no termina.
 
 ## 4
 
@@ -105,8 +108,10 @@ Principio, produce L". `append/3` responde esa consulta en sentido inverso.
 <!-- ejemplo: capitulo-07/soluciones.pl predicado: dar_vuelta/2 consulta: dar_vuelta([ana, luis, eva], R). -->
 ```prolog
 %!  dar_vuelta(+L, -R) is det.
+%!  dar_vuelta(-L, +R) is semidet.
 %
-%   R es L en orden inverso, sin usar reverse/2.
+%   R es L en orden inverso, sin usar reverse/2. Con L libre, después de la
+%   respuesta no termina.
 dar_vuelta([], []).
 dar_vuelta([X|Resto], R) :-
     dar_vuelta(Resto, RestoAlReves),
@@ -116,7 +121,11 @@ dar_vuelta([X|Resto], R) :-
 Invierte el resto y concatena el primer elemento **al final**. Es correcta, y es
 la versión que se obtiene de manera más directa.
 
-Tiene una desventaja, que se analiza en el [capítulo 14](../capitulo-14-rendimiento/index.md): por cada elemento,
+La segunda línea del encabezado registra el otro modo: con `R` ligada y `L`
+libre hay una respuesta, `dar_vuelta(L, [a, b])` da `L = [b, a]`, pero al pedir
+otra el predicado no termina, como `duplicar/2` del ejercicio 13.
+
+Tiene una desventaja, que se analiza en el [capítulo 16](../capitulo-16-rendimiento/index.md): por cada elemento,
 `append/3` recorre nuevamente toda la lista para agregarlo al final. Con listas
 largas, el costo es significativo. La versión eficiente usa un acumulador, y se
 presenta en el [capítulo 8](../capitulo-08-aritmetica/index.md).
@@ -197,16 +206,18 @@ segundo argumento que se construye.
 
 <!-- ejemplo: capitulo-07/soluciones.pl predicado: todos_gatos/1 algun_gato/1 consulta: todos_gatos([gato, gato]). -->
 ```prolog
-%!  todos_gatos(+L) is semidet.
+%!  todos_gatos(?L) is nondet.
 %
-%   Todos los elementos de L son gato. Plantilla 11.
+%   Todos los elementos de L son gato. Plantilla 11. Con L libre, enumera
+%   listas de gatos de largo creciente, sin fin.
 todos_gatos([]).
 todos_gatos([gato|Resto]) :-
     todos_gatos(Resto).
 
-%!  algun_gato(+L) is nondet.
+%!  algun_gato(?L) is nondet.
 %
-%   Alguno de los elementos de L es gato. Plantilla 10.
+%   Alguno de los elementos de L es gato. Plantilla 10. Con L libre, enumera
+%   listas con gato en cada posición, sin fin.
 algun_gato([gato|_]).
 algun_gato([_|Resto]) :-
     algun_gato(Resto).
@@ -232,6 +243,12 @@ con cierta propiedad, y no hay ninguno.
 
 La diferencia está escrita en el programa: `todos_gatos/1` tiene una cláusula
 para `[]` y `algun_gato/1` no.
+
+Los dos encabezados llevan `?L` y `nondet`: con la lista libre, los dos
+predicados enumeran listas sin fin, `todos_gatos/1` las de gatos de largo
+creciente y `algun_gato/1` las que tienen `gato` en cada posición. Con la
+lista ligada, `todos_gatos/1` responde una vez o ninguna, y `algun_gato/1`
+una vez por cada gato.
 
 ## 13
 
@@ -276,8 +293,8 @@ recorrer: la primera o la tercera. La advertencia de la [sección 7.6](index.md#
 caso que no está en esta tabla, `pegar(A, B, C)` con las tres sin determinar,
 que produce particiones sin fin.
 
-La segunda consulta merece atención: responde `A = [a] ;` y recién al pedir otra
-respuesta contesta `false.`. Que quede una alternativa abierta no significa que
+La segunda consulta requiere una observación: responde `A = [a] ;` y recién al pedir otra
+respuesta contesta `false.` Que quede una alternativa abierta no significa que
 haya otra respuesta.
 
 ## 15
@@ -299,7 +316,7 @@ false.
 
 Responde `false.` porque `[ana]` no unifica con `[_, X|_]`: ese patrón exige dos
 elementos antes de la barra, y la lista tiene uno. No es un error ni una lista
-mal formada; simplemente no hay segundo elemento.
+mal formada: la lista no tiene segundo elemento.
 
 ## 16
 
@@ -316,7 +333,7 @@ test(sacar_de_la_vacia, [fail]) :-
     sacar(a, [], _).
 ```
 
-La primera prueba es la que conviene escribir con cuidado, porque es fácil
+La primera prueba es la que requiere más atención, porque se podría
 suponer que `sacar(a, [a, b, a], R)` tiene dos respuestas, una por cada `a`. No
 las tiene: la condición `Otro \== X` de la segunda cláusula impide que el
 recorrido saltee una aparición del elemento buscado, que es justamente lo que
@@ -324,3 +341,49 @@ hace que se elimine **la primera**.
 
 La tercera prueba documenta el caso límite: sobre la lista vacía no hay cláusula
 aplicable, y el predicado falla.
+
+## 17
+
+<!-- ejemplo: capitulo-07/soluciones.pl predicado: materias/1 materia_en/2 consulta: materia_en(3, M). -->
+```prolog
+% materias(L): L es la lista de materias, en orden.
+materias([logica, algebra, fisica, quimica]).
+
+%!  materia_en(?N, ?M) is nondet.
+%
+%   M es la materia que ocupa la posición N de la lista, contando desde 1.
+materia_en(N, M) :-
+    materias(Lista),
+    nth1(N, Lista, M).
+```
+
+La regla tiene la misma forma que `en_el_puesto/2`: obtiene la lista del hecho
+y deja que `nth1/3` relacione la posición con el elemento. Como `nth1/3` admite
+los dos sentidos, `materia_en/2` también los admite, sin ninguna cláusula
+adicional:
+
+```prolog
+?- materia_en(3, M).
+M = fisica.
+
+?- materia_en(N, fisica).
+N = 3 ;
+false.
+```
+
+Con la posición dada, la respuesta es una sola y no quedan alternativas. Con la
+materia dada, `nth1/3` recorre la lista comparando cada elemento con `fisica`;
+después de encontrarlo en la posición 3 queda por examinar el resto de la
+lista, y por eso la respuesta termina en `;` y `false.`
+
+```prolog
+?- nth1(N, [a, b, a], a).
+N = 1 ;
+N = 3.
+```
+
+`a` aparece dos veces, y la consulta inversa da una respuesta por cada
+aparición, en el orden de la lista. Es la misma situación de `esta_en/2` en la
+[sección 7.3](index.md#73-recorrer-una-lista): una respuesta por cada
+demostración. Por eso el encabezado declara `nondet` y no `semidet`: con la
+materia dada, una lista con repeticiones produce más de una posición.

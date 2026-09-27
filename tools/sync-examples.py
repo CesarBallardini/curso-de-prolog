@@ -89,7 +89,9 @@ def process(path, write):
             trouble.append(f'{marker.group("file")} ({piece}): {changed} lines differ\n      {shown}')
     if write and rewritten:
         out.append(text[end_of_previous:])
-        path.write_text(''.join(out), encoding='utf-8')
+        # An explicit LF: on Windows the default would turn every line feed
+        # of the page into a carriage return plus line feed.
+        path.write_text(''.join(out), encoding='utf-8', newline='\n')
 
     total = in_sync + rewritten + len(trouble)
     if total:

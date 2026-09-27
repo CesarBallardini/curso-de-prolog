@@ -30,10 +30,11 @@ no_tiene_hijos(P) :-
     persona(P),
     \+ padre(P, _).
 
-%!  mal_no_tiene_hijos(?P) is nondet.
+%!  mal_no_tiene_hijos(+P) is semidet.
 %
-%   La misma regla con los objetivos en orden inverso. Es incorrecta; la
-%   sección 10.4 explica la causa.
+%   La misma regla con los objetivos en orden inverso. Solo responde con P
+%   ligada; con P libre no produce ninguna respuesta. La sección 10.4
+%   explica la causa.
 mal_no_tiene_hijos(P) :-
     \+ padre(P, _),
     persona(P).

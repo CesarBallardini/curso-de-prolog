@@ -33,6 +33,7 @@ Advertencias generales sobre el documento:
 ### ES-US-1 — primero, resto y cons
 - **Fuente:** Alonso, *Ejercicios de programación declarativa con Prolog*, cap. 1, ejercicios 1.1 a 1.3. https://www.cs.us.es/~jalonso/publicaciones/2006-ej_prog_declarativa.pdf
 - **Tema:** 3, 6
+- **Capítulos:** 7, 4
 - **Dificultad:** 1
 - **Solución:** en el documento
 - **SWISH:** sí
@@ -42,6 +43,7 @@ Advertencias generales sobre el documento:
 ### ES-US-2 — pertenece (member)
 - **Fuente:** ídem, ejercicio 1.4.
 - **Tema:** 5, 6, 4
+- **Capítulos:** 7, 22
 - **Dificultad:** 1
 - **Solución:** en el documento
 - **SWISH:** sí
@@ -50,6 +52,7 @@ Advertencias generales sobre el documento:
 ### ES-US-3 — concatenación (append)
 - **Fuente:** ídem, ejercicio 1.5.
 - **Tema:** 5, 6, 4
+- **Capítulos:** 7, 22
 - **Dificultad:** 1
 - **Solución:** en el documento
 - **SWISH:** sí
@@ -59,6 +62,7 @@ Advertencias generales sobre el documento:
 ### ES-US-4 — Lista inversa y palíndromo
 - **Fuente:** ídem, ejercicios 1.6 y 1.7.
 - **Tema:** 5, 6
+- **Capítulos:** 7, 22
 - **Dificultad:** 1
 - **Solución:** en el documento (inversa con `conc` y con acumulador)
 - **SWISH:** sí
@@ -67,6 +71,7 @@ Advertencias generales sobre el documento:
 ### ES-US-5 — Último y penúltimo elemento
 - **Fuente:** ídem, ejercicios 1.8 y 1.9.
 - **Tema:** 5, 6
+- **Capítulos:** 7, 22
 - **Dificultad:** 1
 - **Solución:** en el documento; `último/2` verificado (`último(a,L)` genera `[a]`, `[_,a]`, `[_,_,a]`, …)
 - **SWISH:** sí
@@ -75,6 +80,7 @@ Advertencias generales sobre el documento:
 ### ES-US-6 — Seleccionar e insertar un elemento
 - **Fuente:** ídem, ejercicios 1.10 y 1.11.
 - **Tema:** 4, 5, 6
+- **Capítulos:** 7, 22
 - **Dificultad:** 1
 - **Solución:** en el documento
 - **SWISH:** sí
@@ -84,6 +90,7 @@ Advertencias generales sobre el documento:
 ### ES-US-7 — Sublista
 - **Fuente:** ídem, ejercicio 1.12.
 - **Tema:** 5, 6
+- **Capítulos:** 7
 - **Dificultad:** 2
 - **Solución:** en el documento; verificada una versión con `append/3` (`sublista([b,c],[a,b,c,d])` sí, `sublista([a,c],[a,b,c,d])` no)
 - **SWISH:** sí
@@ -92,6 +99,7 @@ Advertencias generales sobre el documento:
 ### ES-US-8 — Permutación
 - **Fuente:** ídem, ejercicio 1.13.
 - **Tema:** 4, 5, 6
+- **Capítulos:** 7, 22
 - **Dificultad:** 2
 - **Solución:** en el documento
 - **SWISH:** sí
@@ -101,6 +109,7 @@ Advertencias generales sobre el documento:
 ### ES-US-9 — Todos iguales y longitud par
 - **Fuente:** ídem, ejercicios 1.14 y 1.15.
 - **Tema:** 5, 6
+- **Capítulos:** 7
 - **Dificultad:** 1
 - **Solución:** en el documento
 - **SWISH:** sí
@@ -109,6 +118,7 @@ Advertencias generales sobre el documento:
 ### ES-US-10 — Rotación y subconjunto
 - **Fuente:** ídem, ejercicios 1.16 y 1.17.
 - **Tema:** 5, 6
+- **Capítulos:** 7
 - **Dificultad:** 1
 - **Solución:** en el documento
 - **SWISH:** sí
@@ -119,6 +129,7 @@ Advertencias generales sobre el documento:
 ### ES-US-11 — Máximo, factorial, Fibonacci, MCD
 - **Fuente:** ídem, cap. 2, ejercicios 2.1 a 2.4.
 - **Tema:** 5, 7
+- **Capítulos:** 8
 - **Dificultad:** 1
 - **Solución:** en el documento; factorial y MCD verificados (`factorial(3,6)`, `mcd(10,15,5)`)
 - **SWISH:** sí
@@ -128,6 +139,7 @@ Advertencias generales sobre el documento:
 ### ES-US-12 — Longitud y lista acotada
 - **Fuente:** ídem, ejercicios 2.5 y 2.6.
 - **Tema:** 5, 6, 7
+- **Capítulos:** 8
 - **Dificultad:** 1
 - **Solución:** en el documento
 - **SWISH:** sí
@@ -136,6 +148,7 @@ Advertencias generales sobre el documento:
 ### ES-US-13 — Máximo, suma y orden de una lista
 - **Fuente:** ídem, ejercicios 2.7 a 2.9.
 - **Tema:** 5, 6, 7
+- **Capítulos:** 8, 22
 - **Dificultad:** 1
 - **Solución:** en el documento
 - **SWISH:** sí
@@ -144,6 +157,7 @@ Advertencias generales sobre el documento:
 ### ES-US-14 — Suma parcial (subconjuntos de suma dada)
 - **Fuente:** ídem, ejercicio 2.10.
 - **Tema:** 4, 5, 6, 7
+- **Capítulos:** 8
 - **Dificultad:** 2
 - **Solución:** en el documento; verificada (`suma_parcial([1,2,5,3,2],5,L)` da `[1,2,2]`, `[2,3]`, `[5]`, `[3,2]`)
 - **SWISH:** sí
@@ -152,6 +166,7 @@ Advertencias generales sobre el documento:
 ### ES-US-15 — Construir listas numéricas: lista de N, rango, entre
 - **Fuente:** ídem, ejercicios 2.11 a 2.13.
 - **Tema:** 5, 6, 7
+- **Capítulos:** 8, 15
 - **Dificultad:** 1
 - **Solución:** en el documento
 - **SWISH:** sí
@@ -160,6 +175,7 @@ Advertencias generales sobre el documento:
 ### ES-US-16 — K-ésimo elemento y multiplicar ocurrencias
 - **Fuente:** ídem, ejercicios 2.14 y 2.15.
 - **Tema:** 5, 6, 7
+- **Capítulos:** 8, 22
 - **Dificultad:** 1
 - **Solución:** en el documento
 - **SWISH:** sí
@@ -170,6 +186,7 @@ Advertencias generales sobre el documento:
 ### ES-US-17 — Segmentos verticales y horizontales
 - **Fuente:** ídem, cap. 3, ejercicio 3.1.
 - **Tema:** 3
+- **Capítulos:** 4
 - **Dificultad:** 1
 - **Solución:** en el documento
 - **SWISH:** sí
@@ -179,6 +196,7 @@ Advertencias generales sobre el documento:
 ### ES-US-18 — Base de datos familiar con estructuras
 - **Fuente:** ídem, ejercicio 3.2.
 - **Tema:** 3, 7, 9
+- **Capítulos:** 4, 17
 - **Dificultad:** 2
 - **Solución:** en el documento
 - **SWISH:** sí
@@ -188,6 +206,7 @@ Advertencias generales sobre el documento:
 ### ES-US-19 — Autómata no determinista con movimientos nulos
 - **Fuente:** ídem, ejercicio 3.3.
 - **Tema:** 4, 5, 6
+- **Capítulos:** 7
 - **Dificultad:** 2
 - **Solución:** en el documento
 - **SWISH:** sí
@@ -197,6 +216,7 @@ Advertencias generales sobre el documento:
 ### ES-US-20 — El mono y el plátano
 - **Fuente:** ídem, ejercicio 3.4.
 - **Tema:** 3, 4, 5
+- **Capítulos:** 6, 39
 - **Dificultad:** 2
 - **Solución:** en el documento
 - **SWISH:** sí
@@ -206,6 +226,7 @@ Advertencias generales sobre el documento:
 ### ES-US-21 — Saltos del caballo de ajedrez
 - **Fuente:** ídem, ejercicio 3.5.
 - **Tema:** 4, 5, 6, 7
+- **Capítulos:** 8, 39
 - **Dificultad:** 2
 - **Solución:** en el documento
 - **SWISH:** sí
@@ -214,6 +235,7 @@ Advertencias generales sobre el documento:
 ### ES-US-22 — Máximo de un árbol binario
 - **Fuente:** ídem, ejercicio 3.6.
 - **Tema:** 3, 5, 7
+- **Capítulos:** 8
 - **Dificultad:** 1
 - **Solución:** en el documento
 - **SWISH:** sí
@@ -224,6 +246,7 @@ Advertencias generales sobre el documento:
 ### ES-US-23 — La función escalón con y sin corte
 - **Fuente:** ídem, cap. 4, ejercicio 4.1.
 - **Tema:** 4, 8
+- **Capítulos:** 9
 - **Dificultad:** 2
 - **Solución:** en el documento; verificado que `f(1,Y), 2 < Y` falla con la versión con cortes
 - **SWISH:** sí
@@ -233,6 +256,7 @@ Advertencias generales sobre el documento:
 ### ES-US-24 — Árboles de deducción de memberchk
 - **Fuente:** ídem, ejercicio 4.2.
 - **Tema:** 4, 8
+- **Capítulos:** 9, 5
 - **Dificultad:** 2
 - **Solución:** en el documento (figuras de los árboles)
 - **SWISH:** sí
@@ -242,6 +266,7 @@ Advertencias generales sobre el documento:
 ### ES-US-25 — Diferencia de conjuntos y agregar sin repetir
 - **Fuente:** ídem, ejercicios 4.3 y 4.4.
 - **Tema:** 6, 8
+- **Capítulos:** 10, 9
 - **Dificultad:** 1
 - **Solución:** en el documento (versión con negación y versión con corte)
 - **SWISH:** sí
@@ -250,6 +275,7 @@ Advertencias generales sobre el documento:
 ### ES-US-26 — Separar positivos y sumar pares
 - **Fuente:** ídem, ejercicios 4.5 y 4.6.
 - **Tema:** 6, 7, 8
+- **Capítulos:** 9, 15
 - **Dificultad:** 1
 - **Solución:** en el documento (con y sin corte)
 - **SWISH:** sí
@@ -258,6 +284,7 @@ Advertencias generales sobre el documento:
 ### ES-US-27 — Exponente de dos y lista a conjunto
 - **Fuente:** ídem, ejercicios 4.7 y 4.8.
 - **Tema:** 5, 6, 7, 8
+- **Capítulos:** 9, 22
 - **Dificultad:** 1
 - **Solución:** en el documento
 - **SWISH:** sí
@@ -267,6 +294,7 @@ Advertencias generales sobre el documento:
 ### ES-US-28 — Crecimientos de una sucesión
 - **Fuente:** ídem, ejercicio 4.9.
 - **Tema:** 6, 7, 8
+- **Capítulos:** 9, 15
 - **Dificultad:** 1
 - **Solución:** en el documento (con y sin corte)
 - **SWISH:** sí
@@ -275,6 +303,7 @@ Advertencias generales sobre el documento:
 ### ES-US-29 — Factorización en primos
 - **Fuente:** ídem, ejercicio 4.10.
 - **Tema:** 5, 7, 8
+- **Capítulos:** 8, 9
 - **Dificultad:** 2
 - **Solución:** en el documento
 - **SWISH:** sí
@@ -283,6 +312,7 @@ Advertencias generales sobre el documento:
 ### ES-US-30 — Menor múltiplo con suma de dígitos mayor que M
 - **Fuente:** ídem, ejercicio 4.11.
 - **Tema:** 5, 7, 8
+- **Capítulos:** 9, 15
 - **Dificultad:** 2
 - **Solución:** en el documento
 - **SWISH:** sí
@@ -292,6 +322,7 @@ Advertencias generales sobre el documento:
 ### ES-US-31 — Números libres de cuadrados
 - **Fuente:** ídem, ejercicios 4.12 y 4.13.
 - **Tema:** 6, 7, 8
+- **Capítulos:** 10, 9
 - **Dificultad:** 1
 - **Solución:** en el documento (con negación y con corte)
 - **SWISH:** sí
@@ -300,6 +331,7 @@ Advertencias generales sobre el documento:
 ### ES-US-32 — Máximo de una lista con elementos no numéricos
 - **Fuente:** ídem, ejercicio 4.14.
 - **Tema:** 6, 7, 8
+- **Capítulos:** 9, 32
 - **Dificultad:** 1
 - **Solución:** en el documento
 - **SWISH:** sí
@@ -309,6 +341,7 @@ Advertencias generales sobre el documento:
 ### ES-US-33 — Subsucesión común maximal
 - **Fuente:** ídem, ejercicio 4.15.
 - **Tema:** 5, 6, 7, X
+- **Capítulos:** 8, 38
 - **Dificultad:** 3
 - **Solución:** en el documento
 - **SWISH:** sí
@@ -318,6 +351,7 @@ Advertencias generales sobre el documento:
 ### ES-US-34 — Repetidos y eliminar ocurrencias
 - **Fuente:** ídem, ejercicios 4.16 a 4.18.
 - **Tema:** 6, 8
+- **Capítulos:** 10, 9
 - **Dificultad:** 1
 - **Solución:** en el documento
 - **SWISH:** sí
@@ -326,6 +360,7 @@ Advertencias generales sobre el documento:
 ### ES-US-35 — Subconjunto maximal y suma por posiciones
 - **Fuente:** ídem, ejercicios 4.19 y 4.20.
 - **Tema:** 6, 7, 8
+- **Capítulos:** 9, 8
 - **Dificultad:** 2
 - **Solución:** en el documento
 - **SWISH:** sí
@@ -334,6 +369,7 @@ Advertencias generales sobre el documento:
 ### ES-US-36 — Compresión, empaquetamiento y codificación por longitud
 - **Fuente:** ídem, ejercicios 4.21 a 4.26.
 - **Tema:** 5, 6, 8
+- **Capítulos:** 9, 7
 - **Dificultad:** 2
 - **Solución:** en el documento; `comprimida/2` verificada (`[a,b,b,a,a,a,c,c,b,b,b]` da `[a,b,a,c,b]`)
 - **SWISH:** sí
@@ -343,6 +379,7 @@ Advertencias generales sobre el documento:
 ### ES-US-37 — Cota superior
 - **Fuente:** ídem, ejercicio 4.27.
 - **Tema:** 6, 7, 8, 9
+- **Capítulos:** 8, 10, 17
 - **Dificultad:** 1
 - **Solución:** en el documento
 - **SWISH:** sí
@@ -352,6 +389,7 @@ Advertencias generales sobre el documento:
 ### ES-US-38 — Dientes de sierra
 - **Fuente:** ídem, ejercicios 4.28 y 4.29.
 - **Tema:** 5, 6, 7
+- **Capítulos:** 8
 - **Dificultad:** 3
 - **Solución:** en el documento
 - **SWISH:** sí
@@ -365,6 +403,7 @@ En este capítulo, "segundo orden" significa `findall/3`, `setof/3`, `bagof/3`,
 ### ES-US-39 — Factorial inverso
 - **Fuente:** ídem, cap. 5, ejercicio 5.1.
 - **Tema:** 5, 7, 8
+- **Capítulos:** 8, 9
 - **Dificultad:** 2
 - **Solución:** en el documento; verificada (`factorial_inverso(120,N)` da `N = 5`; con 80 falla)
 - **SWISH:** sí
@@ -374,6 +413,7 @@ En este capítulo, "segundo orden" significa `findall/3`, `setof/3`, `bagof/3`,
 ### ES-US-40 — Árbol de resolución y definición no recursiva
 - **Fuente:** ídem, ejercicio 5.2.
 - **Tema:** 4, 8, 9
+- **Capítulos:** 9, 17, 18
 - **Dificultad:** 2
 - **Solución:** en el documento
 - **SWISH:** sí
@@ -388,6 +428,7 @@ En este capítulo, "segundo orden" significa `findall/3`, `setof/3`, `bagof/3`,
 ### ES-US-41 — Nodos de una generación de árboles binarios
 - **Fuente:** ídem, ejercicio 5.3.
 - **Tema:** 3, 5, 6, 9
+- **Capítulos:** 7, 17
 - **Dificultad:** 2
 - **Solución:** en el documento
 - **SWISH:** sí
@@ -396,6 +437,7 @@ En este capítulo, "segundo orden" significa `findall/3`, `setof/3`, `bagof/3`,
 ### ES-US-42 — Elementos únicos y más frecuentes
 - **Fuente:** ídem, ejercicios 5.4 y 5.5.
 - **Tema:** 6, 9
+- **Capítulos:** 17, 10
 - **Dificultad:** 2
 - **Solución:** en el documento
 - **SWISH:** sí
@@ -404,6 +446,7 @@ En este capítulo, "segundo orden" significa `findall/3`, `setof/3`, `bagof/3`,
 ### ES-US-43 — Problema 3n+1 (Collatz)
 - **Fuente:** ídem, ejercicio 5.6.
 - **Tema:** 5, 6, 7, 9
+- **Capítulos:** 8, 17
 - **Dificultad:** 2
 - **Solución:** en el documento
 - **SWISH:** sí
@@ -413,6 +456,7 @@ En este capítulo, "segundo orden" significa `findall/3`, `setof/3`, `bagof/3`,
 ### ES-US-44 — Números perfectos, abundantes y deficientes
 - **Fuente:** ídem, ejercicios 5.7 a 5.12.
 - **Tema:** 6, 7, 9
+- **Capítulos:** 17, 8
 - **Dificultad:** 2
 - **Solución:** en el documento
 - **SWISH:** sí
@@ -422,6 +466,7 @@ En este capítulo, "segundo orden" significa `findall/3`, `setof/3`, `bagof/3`,
 ### ES-US-45 — Polígonos equiláteros con =..
 - **Fuente:** ídem, ejercicio 5.13.
 - **Tema:** 3, 6
+- **Capítulos:** 32, 7
 - **Dificultad:** 1
 - **Solución:** en el documento
 - **SWISH:** sí
@@ -431,6 +476,7 @@ En este capítulo, "segundo orden" significa `findall/3`, `setof/3`, `bagof/3`,
 ### ES-US-46 — Operación binaria aplicada a listas
 - **Fuente:** ídem, ejercicio 5.14.
 - **Tema:** 6, 7, 9
+- **Capítulos:** 18, 32
 - **Dificultad:** 2
 - **Solución:** en el documento
 - **SWISH:** sí
@@ -440,6 +486,7 @@ En este capítulo, "segundo orden" significa `findall/3`, `setof/3`, `bagof/3`,
 ### ES-US-47 — Números que aparecen en un término
 - **Fuente:** ídem, ejercicio 5.15.
 - **Tema:** 3, 5, 9
+- **Capítulos:** 32, 17
 - **Dificultad:** 2
 - **Solución:** en el documento; verificada una versión propia con `=..` y `setof/3`
 - **SWISH:** sí
@@ -449,6 +496,7 @@ En este capítulo, "segundo orden" significa `findall/3`, `setof/3`, `bagof/3`,
 ### ES-US-48 — Palabras: sin vocales, longitud y maximales
 - **Fuente:** ídem, ejercicios 5.16 a 5.19.
 - **Tema:** 6, 9
+- **Capítulos:** 11, 18
 - **Dificultad:** 1
 - **Solución:** en el documento
 - **SWISH:** sí
@@ -458,6 +506,7 @@ En este capítulo, "segundo orden" significa `findall/3`, `setof/3`, `bagof/3`,
 ### ES-US-49 — Clausura transitiva de una relación
 - **Fuente:** ídem, ejercicio 5.20.
 - **Tema:** 5, 9
+- **Capítulos:** 18
 - **Dificultad:** 2
 - **Solución:** en el documento; verificada una versión con `call/3` (con `p(a,b). p(b,c).` da `b` y `c` desde `a`)
 - **SWISH:** sí
@@ -471,6 +520,7 @@ En este capítulo, "segundo orden" significa `findall/3`, `setof/3`, `bagof/3`,
 ### ES-US-50 — Traducción de cifras y transformación por posición
 - **Fuente:** ídem, ejercicios 5.21 y 5.22.
 - **Tema:** 6, 7, 9
+- **Capítulos:** 18, 8
 - **Dificultad:** 1
 - **Solución:** en el documento
 - **SWISH:** sí
@@ -479,6 +529,7 @@ En este capítulo, "segundo orden" significa `findall/3`, `setof/3`, `bagof/3`,
 ### ES-US-51 — Aplanamiento de listas
 - **Fuente:** ídem, ejercicio 5.23.
 - **Tema:** 5, 6, 8
+- **Capítulos:** 9, 22
 - **Dificultad:** 2
 - **Solución:** en el documento; verificada (`[a,[b,[c]],[[d],e]]` da `[a,b,c,d,e]`)
 - **SWISH:** sí
@@ -490,6 +541,7 @@ En este capítulo, "segundo orden" significa `findall/3`, `setof/3`, `bagof/3`,
 ### ES-US-52 — Número de Hardy–Ramanujan
 - **Fuente:** ídem, cap. 6, ejercicios 6.1 a 6.4.
 - **Tema:** 4, 7, 8, 9
+- **Capítulos:** 17, 16
 - **Dificultad:** 2
 - **Solución:** en el documento; verificada una versión propia (`hardy(N)` da `N = 1729`)
 - **SWISH:** sí
@@ -499,6 +551,7 @@ En este capítulo, "segundo orden" significa `findall/3`, `setof/3`, `bagof/3`,
 ### ES-US-53 — Subconjuntos de suma dada
 - **Fuente:** ídem, ejercicio 6.5.
 - **Tema:** 4, 6, 7, 10
+- **Capítulos:** 8, 16, 20
 - **Dificultad:** 2
 - **Solución:** en el documento (cuatro versiones)
 - **SWISH:** sí
@@ -508,6 +561,7 @@ En este capítulo, "segundo orden" significa `findall/3`, `setof/3`, `bagof/3`,
 ### ES-US-54 — Coloreado de mapas
 - **Fuente:** ídem, ejercicio 6.6.
 - **Tema:** 4, 6, 9
+- **Capítulos:** 10, 23, 16
 - **Dificultad:** 2
 - **Solución:** en el documento
 - **SWISH:** sí
@@ -519,6 +573,7 @@ En este capítulo, "segundo orden" significa `findall/3`, `setof/3`, `bagof/3`,
 ### ES-US-55 — Grupos compatibles de asignaturas
 - **Fuente:** ídem, cap. 7, ejercicios 7.1 a 7.7.
 - **Tema:** 4, 6, 9
+- **Capítulos:** 17, 22
 - **Dificultad:** 3
 - **Solución:** en el documento
 - **SWISH:** sí
@@ -528,6 +583,7 @@ En este capítulo, "segundo orden" significa `findall/3`, `setof/3`, `bagof/3`,
 ### ES-US-56 — Simulación de una calculadora básica
 - **Fuente:** ídem, ejercicios 7.8 a 7.13.
 - **Tema:** 3, 6, 7, 8, 9
+- **Capítulos:** 17, 32
 - **Dificultad:** 3
 - **Solución:** en el documento
 - **SWISH:** sí
@@ -537,6 +593,7 @@ En este capítulo, "segundo orden" significa `findall/3`, `setof/3`, `bagof/3`,
 ### ES-US-57 — Problema de las subastas
 - **Fuente:** ídem, ejercicio 7.14.
 - **Tema:** 6, 7, 8, 9
+- **Capítulos:** 10, 17
 - **Dificultad:** 2
 - **Solución:** en el documento
 - **SWISH:** sí
@@ -574,6 +631,7 @@ en la línea 22. En SWISH cargan bien.
 ### ES-US-58 — Operadores definidos por el usuario: "el libro de ciencias de juan es rojo"
 - **Fuente:** Alonso, *Ejercicios de programación lógica con Prolog*, `src/ejercicios-tema-2.pl`, ejercicios 12 y 13. https://github.com/jaalonso/Ejercicios-Prolog/blob/main/src/ejercicios-tema-2.pl
 - **Tema:** 3
+- **Capítulos:** 18, 4
 - **Dificultad:** 2
 - **Solución:** en el archivo; verificada: con `op(400,yfx,de)`, `X es rojo` da `el_libro de ciencias de juan`; `X de Y es rojo` da `X = el_libro de ciencias, Y = juan`; `el_libro de X es rojo` falla. Con `op(500,yfx,a)`, `M a l a S` da `M = b a c, S = o` y `b a c a S` falla; con `xfy` pasa lo contrario (`S = l a o`).
 - **SWISH:** sí
@@ -588,6 +646,7 @@ en la línea 22. En SWISH cargan bien.
 ### ES-US-59 — MCD por restas (algoritmo de Euclides)
 - **Fuente:** ídem, `src/ejercicios-tema-2.pl`, ejercicio 8.
 - **Tema:** 5, 7
+- **Capítulos:** 8
 - **Dificultad:** 1
 - **Solución:** en el archivo
 - **SWISH:** sí
@@ -596,6 +655,7 @@ en la línea 22. En SWISH cargan bien.
 ### ES-US-60 — La banda de tres músicos (acertijo lógico)
 - **Fuente:** ídem, `src/ejercicios-tema-3.pl`, ejercicio 3.
 - **Tema:** 3, 4, 6
+- **Capítulos:** 7, 23
 - **Dificultad:** 2
 - **Solución:** en el archivo (`solución_músicos/1`)
 - **SWISH:** sí
@@ -605,6 +665,7 @@ en la línea 22. En SWISH cargan bien.
 ### ES-US-61 — Eficiencia de conc para obtener prefijos
 - **Fuente:** ídem, `src/ejercicios-tema-4.pl`, ejercicio 6.
 - **Tema:** 4, 6, 8
+- **Capítulos:** 9, 16
 - **Dificultad:** 2
 - **Solución:** en el archivo
 - **SWISH:** sí
@@ -613,6 +674,7 @@ en la línea 22. En SWISH cargan bien.
 ### ES-US-62 — Divisores, primos y el polinomio de Euler
 - **Fuente:** ídem, `src/ejercicios-tema-5.pl`, ejercicios 1 a 3.
 - **Tema:** 7, 8, 9
+- **Capítulos:** 8, 10, 17
 - **Dificultad:** 2
 - **Solución:** en el archivo
 - **SWISH:** sí
@@ -621,6 +683,7 @@ en la línea 22. En SWISH cargan bien.
 ### ES-US-63 — Números amigos
 - **Fuente:** ídem, `src/ejercicios-tema-5.pl`, ejercicios 4.1 y 4.2.
 - **Tema:** 7, 9
+- **Capítulos:** 8, 17
 - **Dificultad:** 2
 - **Solución:** en el archivo
 - **SWISH:** sí
@@ -629,6 +692,7 @@ en la línea 22. En SWISH cargan bien.
 ### ES-US-64 — para_todos, existe y filtrar con call
 - **Fuente:** ídem, `src/ejercicios-tema-5.pl`, ejercicios 6 a 8.
 - **Tema:** 9, 6
+- **Capítulos:** 18
 - **Dificultad:** 1
 - **Solución:** en el archivo
 - **SWISH:** sí
@@ -638,6 +702,7 @@ en la línea 22. En SWISH cargan bien.
 ### ES-US-65 — Rotaciones, capicúas e invertir palabras
 - **Fuente:** ídem, `src/ejercicios-tema-5.pl`, ejercicios 9 a 11.
 - **Tema:** 6, 7, 9
+- **Capítulos:** 17, 11
 - **Dificultad:** 1
 - **Solución:** en el archivo
 - **SWISH:** sí
@@ -647,6 +712,7 @@ en la línea 22. En SWISH cargan bien.
 ### ES-US-66 — Lista más larga y acumuladores
 - **Fuente:** ídem, `src/ejercicios-tema-6.pl`, ejercicios 1 y 3.
 - **Tema:** 5, 6, 7
+- **Capítulos:** 8, 16
 - **Dificultad:** 1
 - **Solución:** en el archivo
 - **SWISH:** sí
@@ -655,6 +721,7 @@ en la línea 22. En SWISH cargan bien.
 ### ES-US-67 — Torres de Hanói
 - **Fuente:** ídem, `src/ejercicios-tema-6.pl`, ejercicio 4.
 - **Tema:** 5, 6, 10
+- **Capítulos:** 8, 20
 - **Dificultad:** 2
 - **Solución:** en el archivo
 - **SWISH:** sí
@@ -663,6 +730,7 @@ en la línea 22. En SWISH cargan bien.
 ### ES-US-68 — Bandera tricolor
 - **Fuente:** ídem, `src/ejercicios-tema-6.pl`, ejercicio 5.
 - **Tema:** 6, 8, 9
+- **Capítulos:** 7, 9, 17
 - **Dificultad:** 1
 - **Solución:** en el archivo (tres versiones)
 - **SWISH:** sí
@@ -671,6 +739,7 @@ en la línea 22. En SWISH cargan bien.
 ### ES-US-69 — Sucesión de Langford
 - **Fuente:** ídem, `src/ejercicios-tema-6.pl`, ejercicio 6.
 - **Tema:** 4, 6, X
+- **Capítulos:** 7, 23
 - **Dificultad:** 3
 - **Solución:** en el archivo
 - **SWISH:** sí (puede tardar)
@@ -679,6 +748,7 @@ en la línea 22. En SWISH cargan bien.
 ### ES-US-70 — Grafos: conexo, ciclos, árbol y árbol de expansión
 - **Fuente:** ídem, `src/ejercicios-tema-7.pl`, ejercicios 1 a 4.
 - **Tema:** 5, 6, 8, 9
+- **Capítulos:** 22, 17
 - **Dificultad:** 2
 - **Solución:** en el archivo
 - **SWISH:** sí
@@ -688,6 +758,7 @@ en la línea 22. En SWISH cargan bien.
 ### ES-US-71 — Mundo de bloques y 8 reinas como búsqueda en espacio de estados
 - **Fuente:** ídem, `src/ejercicios-tema-8.pl`, ejercicios 1 y 2, con `src/b_profundidad_sin_ciclos.pl`, `src/b_profundidad_con_ciclos.pl` y `src/b_anchura.pl`.
 - **Tema:** 4, 5, 6, X
+- **Capítulos:** 39, 22
 - **Dificultad:** 3
 - **Solución:** en el archivo
 - **SWISH:** sí
@@ -696,6 +767,7 @@ en la línea 22. En SWISH cargan bien.
 ### ES-US-72 — Restricciones: CLP(R) y CLP(FD)
 - **Fuente:** ídem, `src/ejercicios-tema-9.pl`, ejercicios 1 a 5 y 10 a 17.
 - **Tema:** X
+- **Capítulos:** 23
 - **Dificultad:** 3
 - **Solución:** en el archivo
 - **SWISH:** sí

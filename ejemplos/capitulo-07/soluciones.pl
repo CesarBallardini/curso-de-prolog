@@ -7,9 +7,10 @@
 
 % --- Ejercicio 3 -----------------------------------------------------------
 
-%!  primero_y_ultimo(+L, -P, -U) is semidet.
+%!  primero_y_ultimo(?L, ?P, ?U) is nondet.
 %
-%   P es el primero de L y U el último.
+%   P es el primero de L y U el último. Con L libre, enumera listas cada vez
+%   más largas que empiezan con P y terminan con U, sin fin.
 primero_y_ultimo([P|Resto], P, U) :-
     last([P|Resto], U).
 
@@ -43,8 +44,10 @@ empieza_con(L, Principio) :-
 % --- Ejercicio 7 -----------------------------------------------------------
 
 %!  dar_vuelta(+L, -R) is det.
+%!  dar_vuelta(-L, +R) is semidet.
 %
-%   R es L en orden inverso, sin usar reverse/2.
+%   R es L en orden inverso, sin usar reverse/2. Con L libre, después de la
+%   respuesta no termina.
 dar_vuelta([], []).
 dar_vuelta([X|Resto], R) :-
     dar_vuelta(Resto, RestoAlReves),
@@ -71,16 +74,18 @@ es_sublista(S, L) :-
 
 % --- Ejercicio 12 ----------------------------------------------------------
 
-%!  todos_gatos(+L) is semidet.
+%!  todos_gatos(?L) is nondet.
 %
-%   Todos los elementos de L son gato. Plantilla 11.
+%   Todos los elementos de L son gato. Plantilla 11. Con L libre, enumera
+%   listas de gatos de largo creciente, sin fin.
 todos_gatos([]).
 todos_gatos([gato|Resto]) :-
     todos_gatos(Resto).
 
-%!  algun_gato(+L) is nondet.
+%!  algun_gato(?L) is nondet.
 %
-%   Alguno de los elementos de L es gato. Plantilla 10.
+%   Alguno de los elementos de L es gato. Plantilla 10. Con L libre, enumera
+%   listas con gato en cada posición, sin fin.
 algun_gato([gato|_]).
 algun_gato([_|Resto]) :-
     algun_gato(Resto).
@@ -100,3 +105,15 @@ duplicar([X|Resto], [X, X|Otros]) :-
 
 % segundo(L, X): X es el segundo elemento de L.
 segundo([_, X|_], X).
+
+% --- Ejercicio 17 ----------------------------------------------------------
+
+% materias(L): L es la lista de materias, en orden.
+materias([logica, algebra, fisica, quimica]).
+
+%!  materia_en(?N, ?M) is nondet.
+%
+%   M es la materia que ocupa la posición N de la lista, contando desde 1.
+materia_en(N, M) :-
+    materias(Lista),
+    nth1(N, Lista, M).

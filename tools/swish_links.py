@@ -1,4 +1,4 @@
-"""MkDocs hook: put the SWISH link under every block that declares an example.
+"""MkDocs hook: put the SWISH link under every block that declares a Prolog example.
 
 The author writes the marker and the fenced block; `sync-examples.py` fills the
 block from the file, and this adds the link while the site is built. The link is
@@ -30,6 +30,10 @@ def footer(relative, query):
     path = examples.EXAMPLES / relative
     if not path.exists():
         return ''  # sync-examples.py is the one that reports a missing file
+    if path.suffix != '.pl':
+        # Python or a Dockerfile: SWISH runs only Prolog. A .plt: the link would carry
+        # the tests without the program they test.
+        return ''
     example = examples.read(path)
     if example.local_only:
         return f'\n!!! info "{LOCAL_ONLY}"\n    {example.local_only}\n'

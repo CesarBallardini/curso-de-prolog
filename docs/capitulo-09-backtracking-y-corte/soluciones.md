@@ -5,6 +5,8 @@ pruebas.
 
 ## 1
 
+`categoria/2` y `categoria_sin_corte/2` son los de `corte.pl`:
+
 ```prolog
 ?- categoria(luis, C).
 C = chico.
@@ -142,8 +144,8 @@ encuentra, y cuál sea depende del orden de los hechos.
 ```prolog
 %!  primer_cuadrado_mayor(+N, -C) is semidet.
 %
-%   C es el primer número cuyo cuadrado supera a N. C debe llegar libre: el
-%   corte es rojo.
+%   C es el primer número cuyo cuadrado supera a N; falla si ninguno hasta
+%   10 000 lo supera. C debe llegar libre: el corte es rojo.
 primer_cuadrado_mayor(N, C) :-
     between(1, 10000, C),
     C * C > N,
@@ -197,46 +199,56 @@ cumple ahora su encabezado también cuando `D` llega ligado.
 
 ## 10
 
-<!-- ejemplo: capitulo-09/soluciones.pl predicado: sin_repetidos/2 consulta: sin_repetidos([a, b, a, c, b], R). -->
+<!-- ejemplo: capitulo-09/soluciones.pl predicado: sin_repetidos/2 sin_los_vistos/3 consulta: sin_repetidos([a, b, a, c, b], R). -->
 ```prolog
 %!  sin_repetidos(+L, -R) is det.
 %
-%   R es L sin repetidos; conserva la última aparición de cada elemento. El
-%   corte descarta las demás soluciones de member/2: es suficiente que X
-%   aparezca una vez en Resto.
-sin_repetidos([], []).
-sin_repetidos([X|Resto], [X|RestoR]) :-
-    \+ member(X, Resto),
-    sin_repetidos(Resto, RestoR).
-sin_repetidos([X|Resto], R) :-
-    member(X, Resto),
+%   R es L sin repetidos; conserva la primera aparición de cada elemento.
+%   El acumulador lleva los elementos ya incluidos.
+sin_repetidos(L, R) :-
+    sin_los_vistos(L, [], R).
+
+%!  sin_los_vistos(+L, +Vistos, -R) is det.
+%
+%   R es L sin los elementos de Vistos y sin repetidos; Vistos acumula los
+%   elementos ya incluidos en R. El corte descarta las demás soluciones de
+%   member/2: es suficiente que X aparezca una vez en Vistos.
+sin_los_vistos([], _, []).
+sin_los_vistos([X|Resto], Vistos, [X|RestoR]) :-
+    \+ member(X, Vistos),
+    sin_los_vistos(Resto, [X|Vistos], RestoR).
+sin_los_vistos([X|Resto], Vistos, R) :-
+    member(X, Vistos),
     !,
-    sin_repetidos(Resto, R).
+    sin_los_vistos(Resto, Vistos, R).
 ```
-
-La segunda cláusula conserva el elemento cuando **no** vuelve a aparecer en el
-resto de la lista; la tercera lo descarta cuando sí aparece. En consecuencia, se
-conserva la **última** aparición de cada elemento, y el enunciado pedía la
-primera.
-
-El corte de la tercera cláusula es verde. `member(X, Resto)` se cumple una vez
-por cada aparición de `X` en `Resto`; sin el corte, un elemento que aparece tres
-veces o más produciría la misma respuesta repetida, una por cada una de esas
-soluciones. Para descartar el elemento es suficiente la primera, y el corte
-elimina las demás. No modifica cuáles respuestas son ciertas: la condición
-`\+ member(X, Resto)` de la segunda cláusula sigue siendo completa, de modo que
-las dos cláusulas no se superponen.
 
 ```prolog
 ?- sin_repetidos([a, b, a, c, b], R).
-R = [a, c, b] ;
+R = [a, b, c] ;
 false.
 ```
 
-El resultado es `[a, c, b]` y no `[a, b, c]`. Ambos criterios son válidos; lo
-importante es identificar cuál de los dos implementa el programa. Para conservar
-la primera aparición se debe registrar qué elementos ya se incluyeron, lo que
-requiere un acumulador, como en el [capítulo 8](../capitulo-08-aritmetica/index.md).
+Para conservar la **primera** aparición de cada elemento, cada paso del recorrido
+debe saber qué elementos ya se incluyeron en el resultado. Esa información no
+está en el resto de la lista sino en lo ya recorrido, y la forma de disponer de
+ella es un acumulador, con la plantilla 13 del [capítulo 8](../capitulo-08-aritmetica/index.md): `Vistos`
+empieza vacío y crece con cada elemento que se conserva.
+
+La segunda cláusula conserva el elemento cuando **no** está entre los vistos, y
+lo agrega a ellos; la tercera lo descarta cuando sí está. Las dos condiciones
+son complementarias, de modo que las cláusulas no se superponen.
+
+El corte de la tercera cláusula es verde. `member(X, Vistos)` se cumple una vez
+por cada aparición de `X` en `Vistos`; como cada elemento entra en `Vistos` una
+sola vez, en esta definición no hay repeticiones que podar, pero el corte deja
+escrito que la primera solución es suficiente. No modifica cuáles respuestas
+son ciertas.
+
+Una variante sin acumulador, que compara cada elemento con el **resto** de la
+lista en lugar de con lo ya visto, es más corta pero conserva la **última**
+aparición: `[a, b, a, c, b]` daría `[a, c, b]`. Ambos criterios son válidos;
+lo que importa es que el programa implemente el que el enunciado pide.
 
 ## 11
 
@@ -247,14 +259,14 @@ requiere un acumulador, como en el [capítulo 8](../capitulo-08-aritmetica/index
 | `primero(verde).` | **una**, es decir, se cumple |
 | `primero(rojo).` | una |
 
-La tercera es la que enseña algo, y responde `true.` aunque `verde` no sea el
+La tercera es la significativa: responde `true.` aunque `verde` no sea el
 primer color. La causa es la de la [sección 9.5](index.md#95-corte-verde-y-corte-rojo): al consultar `primero(verde)`,
 la cabeza `primero(C)` unifica con `C = verde`, de modo que el objetivo del
 cuerpo ya no es "dame el primer color" sino `color(verde)`, que se cumple de
 manera directa. El `!` se ejecuta después, cuando ya no hay nada que podar.
 
 `primero/1` es entonces un corte rojo: funciona con el argumento libre y
-responde mal con el argumento instanciado.
+responde de manera incorrecta con el argumento instanciado.
 
 ## 12
 
@@ -294,7 +306,7 @@ Conviene seguir lo que ocurre: la llamada sobre `[1, 3, 4, 6]` no llega al corte
 —1 es impar—, y pasa a la segunda cláusula, que llama sobre `[3, 4, 6]`. Esa
 tampoco. La llamada sobre `[4, 6]` sí llega al `!`, y ahí descarta la segunda
 cláusula **de esa llamada**, que habría seguido buscando pares en `[6]`. Las
-llamadas externas no se ven afectadas: simplemente reciben la respuesta.
+llamadas externas no se ven afectadas: reciben la respuesta.
 
 El efecto útil es exactamente ese: sin el corte, el predicado respondería
 también `X = 6`.
@@ -315,7 +327,7 @@ clasificar(0, cero) :-
 clasificar(_, positivo).
 ```
 
-Con el segundo argumento libre, el predicado responde bien:
+Con el segundo argumento libre, el predicado responde de manera correcta:
 
 ```prolog
 ?- clasificar(5, C).
@@ -341,9 +353,9 @@ por la cabeza —`positivo` no unifica con `negativo` ni con `cero`—, de modo 
 ningún `!` llega a ejecutarse, y la tercera cláusula unifica sin verificar nada.
 
 La conclusión es la de la [sección 9.5](index.md#95-corte-verde-y-corte-rojo), y conviene enunciarla como regla de la
-plantilla 14: la **última** cláusula es la peligrosa, porque no lleva condición
+plantilla 14: la **última** cláusula es la que presenta el riesgo, porque no lleva condición
 y afirma su caso para todo lo que llegue hasta ella. Si el predicado debe
-admitir consultas con el resultado ya instanciado, hay que escribir las
+admitir consultas con el resultado ya instanciado, es necesario escribir las
 condiciones completas en lugar de confiar en el orden.
 
 ## 15

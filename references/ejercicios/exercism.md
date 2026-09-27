@@ -23,6 +23,7 @@
 ### EXM-hello-world — Hola, mundo
 - **Fuente:** Exercism Prolog, `hello-world`, d=1 (*easy*). https://exercism.org/tracks/prolog/exercises/hello-world
 - **Tema:** 1
+- **Capítulos:** 1
 - **Dificultad:** 1
 - **Solución:** sí (referencia en `.meta/`)
 - **SWISH:** sí
@@ -35,6 +36,7 @@
 ### EXM-resistor-color — Código de colores de resistencias
 - **Fuente:** Exercism Prolog, `resistor-color`, d=1 (*easy*). https://exercism.org/tracks/prolog/exercises/resistor-color
 - **Tema:** 1, 6
+- **Capítulos:** 2, 7
 - **Dificultad:** 1
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -44,6 +46,7 @@
 ### EXM-reverse-string — Invertir una cadena
 - **Fuente:** Exercism Prolog, `reverse-string`, d=1 (*easy*). https://exercism.org/tracks/prolog/exercises/reverse-string
 - **Tema:** 6
+- **Capítulos:** 7, 11
 - **Dificultad:** 1
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -53,6 +56,7 @@
 ### EXM-wedding-woes — Ubicar invitados en una mesa
 - **Fuente:** Exercism Prolog, `wedding-woes`, d=1 (*easy*). https://exercism.org/tracks/prolog/exercises/wedding-woes
 - **Tema:** 1, 2
+- **Capítulos:** 3
 - **Dificultad:** 1
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -62,6 +66,7 @@
 ### EXM-difference-of-squares — Diferencia de cuadrados
 - **Fuente:** Exercism Prolog, `difference-of-squares`, d=2 (*easy*). https://exercism.org/tracks/prolog/exercises/difference-of-squares
 - **Tema:** 5, 7
+- **Capítulos:** 8
 - **Dificultad:** 1
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -70,6 +75,7 @@
 ### EXM-gigasecond — Mil millones de segundos después
 - **Fuente:** Exercism Prolog, `gigasecond`, d=2 (*easy*). https://exercism.org/tracks/prolog/exercises/gigasecond
 - **Tema:** 7, X
+- **Capítulos:** 8, 22
 - **Dificultad:** 1
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -79,6 +85,7 @@
 ### EXM-leap — Año bisiesto
 - **Fuente:** Exercism Prolog, `leap`, d=2 (*easy*). https://exercism.org/tracks/prolog/exercises/leap
 - **Tema:** 2, 7
+- **Capítulos:** 8, 15
 - **Dificultad:** 1
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -88,6 +95,7 @@
 ### EXM-resistor-color-duo — Valor de dos bandas
 - **Fuente:** Exercism Prolog, `resistor-color-duo`, d=2 (*easy*). https://exercism.org/tracks/prolog/exercises/resistor-color-duo
 - **Tema:** 1, 6, 7
+- **Capítulos:** 8
 - **Dificultad:** 1
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -96,6 +104,7 @@
 ### EXM-rna-transcription — Transcripción de ADN a ARN
 - **Fuente:** Exercism Prolog, `rna-transcription`, d=2 (*easy*). https://exercism.org/tracks/prolog/exercises/rna-transcription
 - **Tema:** 1, 6
+- **Capítulos:** 7, 18
 - **Dificultad:** 1
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -105,6 +114,7 @@
 ### EXM-scrabble-score — Puntaje de Scrabble
 - **Fuente:** Exercism Prolog, `scrabble-score`, d=2 (*easy*). https://exercism.org/tracks/prolog/exercises/scrabble-score
 - **Tema:** 1, 6, 7
+- **Capítulos:** 8, 11
 - **Dificultad:** 1
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -113,6 +123,7 @@
 ### EXM-darts — Dardos
 - **Fuente:** Exercism Prolog, `darts`, d=3 (*easy*). https://exercism.org/tracks/prolog/exercises/darts
 - **Tema:** 7
+- **Capítulos:** 8, 15
 - **Dificultad:** 1
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -121,6 +132,7 @@
 ### EXM-grains — Granos en el tablero de ajedrez
 - **Fuente:** Exercism Prolog, `grains`, d=3 (*easy*). https://exercism.org/tracks/prolog/exercises/grains
 - **Tema:** 5, 7
+- **Capítulos:** 8
 - **Dificultad:** 1
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -130,6 +142,7 @@
 ### EXM-hamming — Distancia de Hamming
 - **Fuente:** Exercism Prolog, `hamming`, d=3 (*easy*). https://exercism.org/tracks/prolog/exercises/hamming
 - **Tema:** 5, 6
+- **Capítulos:** 8
 - **Dificultad:** 1
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -138,6 +151,7 @@
 ### EXM-high-scores — Tabla de puntajes
 - **Fuente:** Exercism Prolog, `high-scores`, d=3 (*easy*). https://exercism.org/tracks/prolog/exercises/high-scores
 - **Tema:** 6
+- **Capítulos:** 7, 22
 - **Dificultad:** 1
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -146,6 +160,7 @@
 ### EXM-pangram — Pangrama
 - **Fuente:** Exercism Prolog, `pangram`, d=3 (*easy*). https://exercism.org/tracks/prolog/exercises/pangram
 - **Tema:** 6, 9
+- **Capítulos:** 11, 17
 - **Dificultad:** 1
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -155,6 +170,7 @@
 ### EXM-space-age — Edad en otros planetas
 - **Fuente:** Exercism Prolog, `space-age`, d=3 (*easy*). https://exercism.org/tracks/prolog/exercises/space-age
 - **Tema:** 1, 7
+- **Capítulos:** 8
 - **Dificultad:** 1
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -164,6 +180,7 @@
 ### EXM-square-root — Raíz cuadrada entera
 - **Fuente:** Exercism Prolog, `square-root`, d=3 (*easy*). https://exercism.org/tracks/prolog/exercises/square-root
 - **Tema:** 5, 7
+- **Capítulos:** 8
 - **Dificultad:** 1
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -172,6 +189,7 @@
 ### EXM-triangle — Clasificar triángulos
 - **Fuente:** Exercism Prolog, `triangle`, d=3 (*easy*). https://exercism.org/tracks/prolog/exercises/triangle
 - **Tema:** 2, 7
+- **Capítulos:** 8, 15
 - **Dificultad:** 1
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -181,6 +199,7 @@
 ### EXM-two-fer — "Uno para vos, uno para mí"
 - **Fuente:** Exercism Prolog, `two-fer`, d=3 (*easy*). https://exercism.org/tracks/prolog/exercises/two-fer
 - **Tema:** 1
+- **Capítulos:** 2, 11
 - **Dificultad:** 1
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -194,6 +213,7 @@
 ### EXM-allergies — Alergias codificadas en bits
 - **Fuente:** Exercism Prolog, `allergies`, d=4 (*medium*). https://exercism.org/tracks/prolog/exercises/allergies
 - **Tema:** 7, 9
+- **Capítulos:** 8, 17
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -203,6 +223,7 @@
 ### EXM-anagram — Anagramas
 - **Fuente:** Exercism Prolog, `anagram`, d=4 (*medium*). https://exercism.org/tracks/prolog/exercises/anagram
 - **Tema:** 6, 9
+- **Capítulos:** 11, 22, 18
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -212,6 +233,7 @@
 ### EXM-armstrong-numbers — Números de Armstrong
 - **Fuente:** Exercism Prolog, `armstrong-numbers`, d=4 (*medium*). https://exercism.org/tracks/prolog/exercises/armstrong-numbers
 - **Tema:** 5, 7
+- **Capítulos:** 8
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -220,6 +242,7 @@
 ### EXM-bank-account — Cuenta bancaria mutable
 - **Fuente:** Exercism Prolog, `bank-account`, d=4 (*medium*). https://exercism.org/tracks/prolog/exercises/bank-account
 - **Tema:** 10, X
+- **Capítulos:** 20
 - **Dificultad:** 2
 - **Solución:** sí (referencia, con `setarg/3`)
 - **SWISH:** sí (`setarg/3` está permitido)
@@ -229,6 +252,7 @@
 ### EXM-binary — Binario a decimal
 - **Fuente:** Exercism Prolog, `binary`, d=4 (*medium*). https://exercism.org/tracks/prolog/exercises/binary
 - **Tema:** 5, 6, 7
+- **Capítulos:** 8, 11
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -238,6 +262,7 @@
 ### EXM-binary-search — Búsqueda binaria
 - **Fuente:** Exercism Prolog, `binary-search`, d=4 (*medium*). https://exercism.org/tracks/prolog/exercises/binary-search
 - **Tema:** 5, 6, 7
+- **Capítulos:** 8, 16
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -247,6 +272,7 @@
 ### EXM-collatz-conjecture — Pasos de Collatz
 - **Fuente:** Exercism Prolog, `collatz-conjecture`, d=4 (*medium*). https://exercism.org/tracks/prolog/exercises/collatz-conjecture
 - **Tema:** 5, 7
+- **Capítulos:** 8
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -256,6 +282,7 @@
 ### EXM-custom-set — Conjuntos propios
 - **Fuente:** Exercism Prolog, `custom-set`, d=4 (*medium*). https://exercism.org/tracks/prolog/exercises/custom-set
 - **Tema:** 6
+- **Capítulos:** 7, 22
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -265,6 +292,7 @@
 ### EXM-eliuds-eggs — Contar bits en 1
 - **Fuente:** Exercism Prolog, `eliuds-eggs`, d=4 (*medium*). https://exercism.org/tracks/prolog/exercises/eliuds-eggs
 - **Tema:** 5, 7
+- **Capítulos:** 8
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -273,6 +301,7 @@
 ### EXM-etl — Reestructurar datos (ETL)
 - **Fuente:** Exercism Prolog, `etl`, d=4 (*medium*). https://exercism.org/tracks/prolog/exercises/etl
 - **Tema:** 6, 9
+- **Capítulos:** 17, 22
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -282,6 +311,7 @@
 ### EXM-flatten-array — Aplanar listas anidadas
 - **Fuente:** Exercism Prolog, `flatten-array`, d=4 (*medium*). https://exercism.org/tracks/prolog/exercises/flatten-array
 - **Tema:** 5, 6, 8
+- **Capítulos:** 10, 32
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -291,6 +321,7 @@
 ### EXM-global-positioning-system — Parsear coordenadas GPS
 - **Fuente:** Exercism Prolog, `global-positioning-system`, d=4 (*medium*). https://exercism.org/tracks/prolog/exercises/global-positioning-system
 - **Tema:** A
+- **Capítulos:** 21
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí (`library(dcg/basics)` está disponible)
@@ -300,6 +331,7 @@
 ### EXM-grade-school — Nómina de una escuela
 - **Fuente:** Exercism Prolog, `grade-school`, d=4 (*medium*). https://exercism.org/tracks/prolog/exercises/grade-school
 - **Tema:** 6, 9
+- **Capítulos:** 22, 17
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -309,6 +341,7 @@
 ### EXM-isogram — Isograma
 - **Fuente:** Exercism Prolog, `isogram`, d=4 (*medium*). https://exercism.org/tracks/prolog/exercises/isogram
 - **Tema:** 6
+- **Capítulos:** 11, 10
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -317,6 +350,7 @@
 ### EXM-matrix — Filas y columnas de una matriz
 - **Fuente:** Exercism Prolog, `matrix`, d=4 (*medium*). https://exercism.org/tracks/prolog/exercises/matrix
 - **Tema:** 6
+- **Capítulos:** 11, 7
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -325,6 +359,7 @@
 ### EXM-minesweeper — Buscaminas (obsoleto)
 - **Fuente:** Exercism Prolog, `minesweeper`, d=4, **obsoleto** (reemplazado por `flower-field`). https://github.com/exercism/prolog/tree/main/exercises/practice/minesweeper
 - **Tema:** 6
+- **Capítulos:** 8
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -333,6 +368,7 @@
 ### EXM-nucleotide-count — Contar nucleótidos
 - **Fuente:** Exercism Prolog, `nucleotide-count`, d=4 (*medium*). https://exercism.org/tracks/prolog/exercises/nucleotide-count
 - **Tema:** 6, 9
+- **Capítulos:** 8, 17
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -342,6 +378,7 @@
 ### EXM-perfect-numbers — Números perfectos, abundantes y deficientes
 - **Fuente:** Exercism Prolog, `perfect-numbers`, d=4 (*medium*). https://exercism.org/tracks/prolog/exercises/perfect-numbers
 - **Tema:** 7, 9
+- **Capítulos:** 8, 17
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -350,6 +387,7 @@
 ### EXM-proverb — Refrán encadenado
 - **Fuente:** Exercism Prolog, `proverb`, d=4 (*medium*). https://exercism.org/tracks/prolog/exercises/proverb
 - **Tema:** 5, 6
+- **Capítulos:** 11, 7
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -359,6 +397,7 @@
 ### EXM-raindrops — Gotas de lluvia
 - **Fuente:** Exercism Prolog, `raindrops`, d=4 (*medium*). https://exercism.org/tracks/prolog/exercises/raindrops
 - **Tema:** 7, 8
+- **Capítulos:** 11, 15
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -368,6 +407,7 @@
 ### EXM-roman-numerals — De número a romano
 - **Fuente:** Exercism Prolog, `roman-numerals`, d=4 (*medium*). https://exercism.org/tracks/prolog/exercises/roman-numerals
 - **Tema:** 5, 7
+- **Capítulos:** 8, 11
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -377,6 +417,7 @@
 ### EXM-rotational-cipher — Cifrado César
 - **Fuente:** Exercism Prolog, `rotational-cipher`, d=4 (*medium*). https://exercism.org/tracks/prolog/exercises/rotational-cipher
 - **Tema:** 6, 7
+- **Capítulos:** 11, 18
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -385,6 +426,7 @@
 ### EXM-series — Subcadenas consecutivas
 - **Fuente:** Exercism Prolog, `series`, d=4 (*medium*). https://exercism.org/tracks/prolog/exercises/series
 - **Tema:** 6
+- **Capítulos:** 7, 17
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -394,6 +436,7 @@
 ### EXM-strain — `keep` y `discard`
 - **Fuente:** Exercism Prolog, `strain`, d=4 (*medium*). https://exercism.org/tracks/prolog/exercises/strain
 - **Tema:** 9
+- **Capítulos:** 18
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -403,6 +446,7 @@
 ### EXM-sublist — Relación de sublista
 - **Fuente:** Exercism Prolog, `sublist`, d=4 (*medium*). https://exercism.org/tracks/prolog/exercises/sublist
 - **Tema:** 6, 8
+- **Capítulos:** 9, 10
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -412,6 +456,7 @@
 ### EXM-sum-of-multiples — Suma de múltiplos
 - **Fuente:** Exercism Prolog, `sum-of-multiples`, d=4 (*medium*). https://exercism.org/tracks/prolog/exercises/sum-of-multiples
 - **Tema:** 7, 9
+- **Capítulos:** 17, 8
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -425,6 +470,7 @@
 ### EXM-acronym — Acrónimos
 - **Fuente:** Exercism Prolog, `acronym`, d=5 (*medium*). https://exercism.org/tracks/prolog/exercises/acronym
 - **Tema:** 6
+- **Capítulos:** 11
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -433,6 +479,7 @@
 ### EXM-binary-search-tree — Árbol binario de búsqueda
 - **Fuente:** Exercism Prolog, `binary-search-tree`, d=5 (*medium*). https://exercism.org/tracks/prolog/exercises/binary-search-tree
 - **Tema:** 3, 5
+- **Capítulos:** 8, 22
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -442,6 +489,7 @@
 ### EXM-bob — Las respuestas de Bob
 - **Fuente:** Exercism Prolog, `bob`, d=5 (*medium*). https://exercism.org/tracks/prolog/exercises/bob
 - **Tema:** 6, 8
+- **Capítulos:** 11, 15, 9
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -451,6 +499,7 @@
 ### EXM-bottle-song — "Ten Green Bottles"
 - **Fuente:** Exercism Prolog, `bottle-song`, d=5 (*medium*). https://exercism.org/tracks/prolog/exercises/bottle-song
 - **Tema:** 5, 6
+- **Capítulos:** 11, 6
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -459,6 +508,7 @@
 ### EXM-clock — Reloj sin fecha
 - **Fuente:** Exercism Prolog, `clock`, d=5 (*medium*). https://exercism.org/tracks/prolog/exercises/clock
 - **Tema:** 3, 7
+- **Capítulos:** 8, 11
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -468,6 +518,7 @@
 ### EXM-complex-numbers — Números complejos
 - **Fuente:** Exercism Prolog, `complex-numbers`, d=5 (*medium*). https://exercism.org/tracks/prolog/exercises/complex-numbers
 - **Tema:** 3, 7
+- **Capítulos:** 8
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -476,6 +527,7 @@
 ### EXM-dnd-character — Personaje de D&D
 - **Fuente:** Exercism Prolog, `dnd-character`, d=5 (*medium*). https://exercism.org/tracks/prolog/exercises/dnd-character
 - **Tema:** 7, X
+- **Capítulos:** 8, 22
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -485,6 +537,7 @@
 ### EXM-house — "La casa que construyó Jack"
 - **Fuente:** Exercism Prolog, `house`, d=5 (*medium*). https://exercism.org/tracks/prolog/exercises/house
 - **Tema:** 5, 6
+- **Capítulos:** 11
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -494,6 +547,7 @@
 ### EXM-isbn-verifier — Validar un ISBN-10
 - **Fuente:** Exercism Prolog, `isbn-verifier`, d=5 (*medium*). https://exercism.org/tracks/prolog/exercises/isbn-verifier
 - **Tema:** 6, 7
+- **Capítulos:** 11, 8
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -502,6 +556,7 @@
 ### EXM-kindergarten-garden — El jardín de infantes
 - **Fuente:** Exercism Prolog, `kindergarten-garden`, d=5 (*medium*). https://exercism.org/tracks/prolog/exercises/kindergarten-garden
 - **Tema:** 6
+- **Capítulos:** 11, 7
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -510,6 +565,7 @@
 ### EXM-largest-series-product — Mayor producto de una serie
 - **Fuente:** Exercism Prolog, `largest-series-product`, d=5 (*medium*). https://exercism.org/tracks/prolog/exercises/largest-series-product
 - **Tema:** 6, 7
+- **Capítulos:** 8, 11
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -518,6 +574,7 @@
 ### EXM-list-ops — Operaciones básicas sobre listas
 - **Fuente:** Exercism Prolog, `list-ops`, d=5 (*medium*). https://exercism.org/tracks/prolog/exercises/list-ops
 - **Tema:** 5, 6, 9
+- **Capítulos:** 7, 18
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -532,6 +589,7 @@
 ### EXM-luhn — Algoritmo de Luhn
 - **Fuente:** Exercism Prolog, `luhn`, d=5 (*medium*). https://exercism.org/tracks/prolog/exercises/luhn
 - **Tema:** 6, 7
+- **Capítulos:** 8, 11
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -540,6 +598,7 @@
 ### EXM-phone-number — Normalizar teléfonos
 - **Fuente:** Exercism Prolog, `phone-number`, d=5 (*medium*). https://exercism.org/tracks/prolog/exercises/phone-number
 - **Tema:** 6, 8
+- **Capítulos:** 11, 25
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -549,6 +608,7 @@
 ### EXM-prime-factors — Factores primos
 - **Fuente:** Exercism Prolog, `prime-factors`, d=5 (*medium*). https://exercism.org/tracks/prolog/exercises/prime-factors
 - **Tema:** 5, 7
+- **Capítulos:** 8
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -558,6 +618,7 @@
 ### EXM-protein-translation — Traducir ARN a proteínas
 - **Fuente:** Exercism Prolog, `protein-translation`, d=5 (*medium*). https://exercism.org/tracks/prolog/exercises/protein-translation
 - **Tema:** 1, 6
+- **Capítulos:** 11, 7
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -567,6 +628,7 @@
 ### EXM-queen-attack — Ataque de reinas
 - **Fuente:** Exercism Prolog, `queen-attack`, d=5 (*medium*). https://exercism.org/tracks/prolog/exercises/queen-attack
 - **Tema:** 3, 7
+- **Capítulos:** 8
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -575,6 +637,7 @@
 ### EXM-rational-numbers — Números racionales
 - **Fuente:** Exercism Prolog, `rational-numbers`, d=5 (*medium*). https://exercism.org/tracks/prolog/exercises/rational-numbers
 - **Tema:** 3, 7
+- **Capítulos:** 8
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -583,6 +646,7 @@
 ### EXM-robot-name — Nombres aleatorios de robots
 - **Fuente:** Exercism Prolog, `robot-name`, d=5 (*medium*). https://exercism.org/tracks/prolog/exercises/robot-name
 - **Tema:** 10, X
+- **Capítulos:** 20, 22
 - **Dificultad:** 2
 - **Solución:** sí (referencia, con `setarg/3` y `random_member/2`)
 - **SWISH:** sí
@@ -592,6 +656,7 @@
 ### EXM-robot-simulator — Simulador de robot
 - **Fuente:** Exercism Prolog, `robot-simulator`, d=5 (*medium*). https://exercism.org/tracks/prolog/exercises/robot-simulator
 - **Tema:** 3, 5, 6
+- **Capítulos:** 7, 11
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -601,6 +666,7 @@
 ### EXM-secret-handshake — Saludo secreto
 - **Fuente:** Exercism Prolog, `secret-handshake`, d=5 (*medium*). https://exercism.org/tracks/prolog/exercises/secret-handshake
 - **Tema:** 6, 7
+- **Capítulos:** 8
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -609,6 +675,7 @@
 ### EXM-sieve — Criba de Eratóstenes
 - **Fuente:** Exercism Prolog, `sieve`, d=5 (*medium*). https://exercism.org/tracks/prolog/exercises/sieve
 - **Tema:** 6, 7
+- **Capítulos:** 8
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -618,6 +685,7 @@
 ### EXM-simple-cipher — Cifrado de Vigenère
 - **Fuente:** Exercism Prolog, `simple-cipher`, d=5 (*medium*). https://exercism.org/tracks/prolog/exercises/simple-cipher
 - **Tema:** 6, 7
+- **Capítulos:** 11, 8
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -626,6 +694,7 @@
 ### EXM-state-of-tic-tac-toe — Estado de un tatetí
 - **Fuente:** Exercism Prolog, `state-of-tic-tac-toe`, d=5 (*medium*). https://exercism.org/tracks/prolog/exercises/state-of-tic-tac-toe
 - **Tema:** 4, 6
+- **Capítulos:** 11, 17
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -635,6 +704,7 @@
 ### EXM-twelve-days — "Los doce días de Navidad"
 - **Fuente:** Exercism Prolog, `twelve-days`, d=5 (*medium*). https://exercism.org/tracks/prolog/exercises/twelve-days
 - **Tema:** 5, 6
+- **Capítulos:** 11
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -643,6 +713,7 @@
 ### EXM-yacht — Yacht (juego de dados)
 - **Fuente:** Exercism Prolog, `yacht`, d=5 (*medium*). https://exercism.org/tracks/prolog/exercises/yacht
 - **Tema:** 6, 7
+- **Capítulos:** 8, 22
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -656,6 +727,7 @@
 ### EXM-all-your-base — Cambio de base
 - **Fuente:** Exercism Prolog, `all-your-base`, d=6 (*medium*). https://exercism.org/tracks/prolog/exercises/all-your-base
 - **Tema:** 5, 7
+- **Capítulos:** 8
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -664,6 +736,7 @@
 ### EXM-atbash-cipher — Cifrado Atbash
 - **Fuente:** Exercism Prolog, `atbash-cipher`, d=6 (*medium*). https://exercism.org/tracks/prolog/exercises/atbash-cipher
 - **Tema:** 6
+- **Capítulos:** 11
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -672,6 +745,7 @@
 ### EXM-game-of-life — Juego de la vida de Conway
 - **Fuente:** Exercism Prolog, `game-of-life`, d=6 (*medium*). https://exercism.org/tracks/prolog/exercises/game-of-life
 - **Tema:** 6, 7
+- **Capítulos:** 8, 18
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -680,6 +754,7 @@
 ### EXM-dominoes — Cadena de dominós
 - **Fuente:** Exercism Prolog, `dominoes`, d=6 (*medium*). https://exercism.org/tracks/prolog/exercises/dominoes
 - **Tema:** 4, 6
+- **Capítulos:** 7, 39
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -689,6 +764,7 @@
 ### EXM-floored — ¿Quién vive en qué piso?
 - **Fuente:** Exercism Prolog, `floored`, d=6 (*medium*). https://exercism.org/tracks/prolog/exercises/floored
 - **Tema:** 4
+- **Capítulos:** 7, 23
 - **Dificultad:** 2
 - **Solución:** sí (referencia, con CLP(FD))
 - **SWISH:** sí
@@ -698,6 +774,7 @@
 ### EXM-food-chain — "I Know an Old Lady Who Swallowed a Fly"
 - **Fuente:** Exercism Prolog, `food-chain`, d=6 (*medium*). https://exercism.org/tracks/prolog/exercises/food-chain
 - **Tema:** 5, 6
+- **Capítulos:** 11
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -706,6 +783,7 @@
 ### EXM-killer-sudoku-helper — Combinaciones de una jaula de Killer Sudoku
 - **Fuente:** Exercism Prolog, `killer-sudoku-helper`, d=6 (*medium*). https://exercism.org/tracks/prolog/exercises/killer-sudoku-helper
 - **Tema:** 4, 9
+- **Capítulos:** 17, 23
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -715,6 +793,7 @@
 ### EXM-magic-square — Cuadrado mágico
 - **Fuente:** Exercism Prolog, `magic-square`, d=6 (*medium*). https://exercism.org/tracks/prolog/exercises/magic-square
 - **Tema:** 6, 7
+- **Capítulos:** 8, 23
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -724,6 +803,7 @@
 ### EXM-matching-brackets — Paréntesis balanceados
 - **Fuente:** Exercism Prolog, `matching-brackets`, d=6 (*medium*). https://exercism.org/tracks/prolog/exercises/matching-brackets
 - **Tema:** 5, 6
+- **Capítulos:** 11, 21
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -733,6 +813,7 @@
 ### EXM-meetup — Fecha de una reunión
 - **Fuente:** Exercism Prolog, `meetup`, d=6 (*medium*). https://exercism.org/tracks/prolog/exercises/meetup
 - **Tema:** 7, X
+- **Capítulos:** 8, 22
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -742,6 +823,7 @@
 ### EXM-nth-prime — n-ésimo primo
 - **Fuente:** Exercism Prolog, `nth-prime`, d=6 (*medium*). https://exercism.org/tracks/prolog/exercises/nth-prime
 - **Tema:** 5, 7
+- **Capítulos:** 8, 16
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -750,6 +832,7 @@
 ### EXM-ocr-numbers — OCR de dígitos
 - **Fuente:** Exercism Prolog, `ocr-numbers`, d=6 (*medium*). https://exercism.org/tracks/prolog/exercises/ocr-numbers
 - **Tema:** 6
+- **Capítulos:** 11, 7
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -758,6 +841,7 @@
 ### EXM-palindrome-products — Productos palíndromos
 - **Fuente:** Exercism Prolog, `palindrome-products`, d=6 (*medium*). https://exercism.org/tracks/prolog/exercises/palindrome-products
 - **Tema:** 4, 7, 9
+- **Capítulos:** 17, 8
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -766,6 +850,7 @@
 ### EXM-parallel-letter-frequency — Frecuencia de letras en paralelo
 - **Fuente:** Exercism Prolog, `parallel-letter-frequency`, d=6 (*medium*). https://exercism.org/tracks/prolog/exercises/parallel-letter-frequency
 - **Tema:** X
+- **Capítulos:** 37
 - **Dificultad:** 2
 - **Solución:** sí (referencia, con `concurrent_maplist/3`)
 - **SWISH:** no (SWISH no permite crear hilos; hay que usar `swipl` local)
@@ -774,6 +859,7 @@
 ### EXM-pascals-triangle — Triángulo de Pascal
 - **Fuente:** Exercism Prolog, `pascals-triangle`, d=6 (*medium*). https://exercism.org/tracks/prolog/exercises/pascals-triangle
 - **Tema:** 5, 6
+- **Capítulos:** 8
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -783,6 +869,7 @@
 ### EXM-pythagorean-triplet — Ternas pitagóricas
 - **Fuente:** Exercism Prolog, `pythagorean-triplet`, d=6 (*medium*). https://exercism.org/tracks/prolog/exercises/pythagorean-triplet
 - **Tema:** 4, 7, 9
+- **Capítulos:** 17, 15
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -792,6 +879,7 @@
 ### EXM-resistor-color-trio — Valor de tres bandas
 - **Fuente:** Exercism Prolog, `resistor-color-trio`, d=6 (*medium*). https://exercism.org/tracks/prolog/exercises/resistor-color-trio
 - **Tema:** 6, 7
+- **Capítulos:** 8, 11
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -800,6 +888,7 @@
 ### EXM-saddle-points — Puntos de silla
 - **Fuente:** Exercism Prolog, `saddle-points`, d=6 (*medium*). https://exercism.org/tracks/prolog/exercises/saddle-points
 - **Tema:** 6, 9
+- **Capítulos:** 17
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -813,6 +902,7 @@
 ### EXM-affine-cipher — Cifrado afín
 - **Fuente:** Exercism Prolog, `affine-cipher`, d=7 (*medium*). https://exercism.org/tracks/prolog/exercises/affine-cipher
 - **Tema:** 6, 7
+- **Capítulos:** 11, 8
 - **Dificultad:** 3
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -821,6 +911,7 @@
 ### EXM-binary-puzzle — Puzzle binario
 - **Fuente:** Exercism Prolog, `binary-puzzle`, d=7 (*medium*). https://exercism.org/tracks/prolog/exercises/binary-puzzle
 - **Tema:** X
+- **Capítulos:** 23
 - **Dificultad:** 3
 - **Solución:** sí (referencia)
 - **SWISH:** sí (con `library(clpfd)`)
@@ -830,6 +921,7 @@
 ### EXM-cheryls-birthday — El cumpleaños de Cheryl
 - **Fuente:** Exercism Prolog, `cheryls-birthday`, d=7 (*medium*). https://exercism.org/tracks/prolog/exercises/cheryls-birthday
 - **Tema:** 4, 9
+- **Capítulos:** 17, 10
 - **Dificultad:** 3
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -839,6 +931,7 @@
 ### EXM-crypto-square — Cifrado del cuadrado
 - **Fuente:** Exercism Prolog, `crypto-square`, d=7 (*medium*). https://exercism.org/tracks/prolog/exercises/crypto-square
 - **Tema:** 6
+- **Capítulos:** 11, 7
 - **Dificultad:** 3
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -847,6 +940,7 @@
 ### EXM-diamond — Diamante de letras
 - **Fuente:** Exercism Prolog, `diamond`, d=7 (*medium*). https://exercism.org/tracks/prolog/exercises/diamond
 - **Tema:** 6
+- **Capítulos:** 11
 - **Dificultad:** 3
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -855,6 +949,7 @@
 ### EXM-flower-field — Campo de flores
 - **Fuente:** Exercism Prolog, `flower-field`, d=7 (*medium*). https://exercism.org/tracks/prolog/exercises/flower-field
 - **Tema:** 6
+- **Capítulos:** 11, 17
 - **Dificultad:** 3
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -863,6 +958,7 @@
 ### EXM-garden-party — Fiesta en el jardín
 - **Fuente:** Exercism Prolog, `garden-party`, d=7 (*medium*). https://exercism.org/tracks/prolog/exercises/garden-party
 - **Tema:** 4
+- **Capítulos:** 7, 23
 - **Dificultad:** 3
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -872,6 +968,7 @@
 ### EXM-knapsack — Problema de la mochila
 - **Fuente:** Exercism Prolog, `knapsack`, d=7 (*medium*). https://exercism.org/tracks/prolog/exercises/knapsack
 - **Tema:** 4, 7, 9
+- **Capítulos:** 17, 38
 - **Dificultad:** 3
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -881,6 +978,7 @@
 ### EXM-satellite — Reconstruir un árbol a partir de sus recorridos
 - **Fuente:** Exercism Prolog, `satellite`, d=7 (*medium*). https://exercism.org/tracks/prolog/exercises/satellite
 - **Tema:** 3, 6, A
+- **Capítulos:** 7, 21
 - **Dificultad:** 3
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -890,6 +988,7 @@
 ### EXM-word-count — Contar palabras
 - **Fuente:** Exercism Prolog, `word-count`, d=7 (*medium*). https://exercism.org/tracks/prolog/exercises/word-count
 - **Tema:** 6, 9
+- **Capítulos:** 11, 22
 - **Dificultad:** 3
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -898,6 +997,7 @@
 ### EXM-wordy — Problemas aritméticos en palabras
 - **Fuente:** Exercism Prolog, `wordy`, d=7 (*medium*). https://exercism.org/tracks/prolog/exercises/wordy
 - **Tema:** A, 7
+- **Capítulos:** 21
 - **Dificultad:** 3
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -911,6 +1011,7 @@
 ### EXM-book-store — Descuentos en una librería
 - **Fuente:** Exercism Prolog, `book-store`, d=8 (*hard*). https://exercism.org/tracks/prolog/exercises/book-store
 - **Tema:** 4, 7
+- **Capítulos:** 17, 39
 - **Dificultad:** 3
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -920,6 +1021,7 @@
 ### EXM-change — Cambio con la menor cantidad de monedas
 - **Fuente:** Exercism Prolog, `change`, d=8 (*hard*). https://exercism.org/tracks/prolog/exercises/change
 - **Tema:** 4, 7
+- **Capítulos:** 39, 38
 - **Dificultad:** 3
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -929,6 +1031,7 @@
 ### EXM-pig-latin — Pig Latin
 - **Fuente:** Exercism Prolog, `pig-latin`, d=8 (*hard*). https://exercism.org/tracks/prolog/exercises/pig-latin
 - **Tema:** 6, A
+- **Capítulos:** 11, 21
 - **Dificultad:** 3
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -938,6 +1041,7 @@
 ### EXM-run-length-encoding — Codificación por longitud de corrida
 - **Fuente:** Exercism Prolog, `run-length-encoding`, d=8 (*hard*). https://exercism.org/tracks/prolog/exercises/run-length-encoding
 - **Tema:** 6, A
+- **Capítulos:** 11, 21
 - **Dificultad:** 3
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -947,6 +1051,7 @@
 ### EXM-say — Números en palabras (inglés)
 - **Fuente:** Exercism Prolog, `say`, d=8 (*hard*). https://exercism.org/tracks/prolog/exercises/say
 - **Tema:** 5, 7
+- **Capítulos:** 8, 11
 - **Dificultad:** 3
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -956,6 +1061,7 @@
 ### EXM-sgf-parsing — Parsear el formato SGF
 - **Fuente:** Exercism Prolog, `sgf-parsing`, d=8 (*hard*). https://exercism.org/tracks/prolog/exercises/sgf-parsing
 - **Tema:** A
+- **Capítulos:** 21
 - **Dificultad:** 3
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -965,6 +1071,7 @@
 ### EXM-spiral-matrix — Matriz espiral
 - **Fuente:** Exercism Prolog, `spiral-matrix`, d=8 (*hard*). https://exercism.org/tracks/prolog/exercises/spiral-matrix
 - **Tema:** 6
+- **Capítulos:** 8
 - **Dificultad:** 3
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -973,6 +1080,7 @@
 ### EXM-two-bucket — Dos baldes
 - **Fuente:** Exercism Prolog, `two-bucket`, d=8 (*hard*). https://exercism.org/tracks/prolog/exercises/two-bucket
 - **Tema:** 4
+- **Capítulos:** 39, 22
 - **Dificultad:** 3
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -982,6 +1090,7 @@
 ### EXM-zebra-puzzle — El acertijo de la cebra
 - **Fuente:** Exercism Prolog, `zebra-puzzle`, d=8 (*hard*). https://exercism.org/tracks/prolog/exercises/zebra-puzzle
 - **Tema:** 4
+- **Capítulos:** 7, 23
 - **Dificultad:** 3
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -991,6 +1100,7 @@
 ### EXM-alphametics — Alfamética general
 - **Fuente:** Exercism Prolog, `alphametics`, d=9 (*hard*). https://exercism.org/tracks/prolog/exercises/alphametics
 - **Tema:** 4, X
+- **Capítulos:** 23, 11
 - **Dificultad:** 3
 - **Solución:** sí (referencia)
 - **SWISH:** sí (con `library(clpfd)`)

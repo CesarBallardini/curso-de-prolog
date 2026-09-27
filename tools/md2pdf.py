@@ -89,15 +89,24 @@ def site_links(body, source):
         relative = relative[: -len('index.md')] if relative.endswith('index.md') else relative[:-3] + '/'
         return SITE_URL + relative
 
+    def published_file(path, original):
+        """The site URL of a file other than a page, such as generated HTML."""
+        try:
+            return f'href="{SITE_URL}{path.resolve().relative_to(docs.resolve()).as_posix()}"'
+        except ValueError:  # outside docs/: the site does not publish it
+            return original
+
     def fix(match):
         href = match.group(1)
         path, _, fragment = href.partition('#')
         if path == '':
             page = source
-        elif path.endswith('.md') and '://' not in path:
+        elif '://' in path or path.startswith('mailto:'):
+            return match.group(0)
+        elif path.endswith('.md'):
             page = source.parent / path
         else:
-            return match.group(0)
+            return published_file(source.parent / path, match.group(0))
         try:
             url = page_url(page)
         except ValueError:  # outside docs/: not a page of the site

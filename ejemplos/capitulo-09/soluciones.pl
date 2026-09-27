@@ -54,8 +54,8 @@ hay_algun_menor(L) :-
 
 %!  primer_cuadrado_mayor(+N, -C) is semidet.
 %
-%   C es el primer número cuyo cuadrado supera a N. C debe llegar libre: el
-%   corte es rojo.
+%   C es el primer número cuyo cuadrado supera a N; falla si ninguno hasta
+%   10 000 lo supera. C debe llegar libre: el corte es rojo.
 primer_cuadrado_mayor(N, C) :-
     between(1, 10000, C),
     C * C > N,
@@ -79,17 +79,24 @@ descuento(Edad, 0) :-
 
 %!  sin_repetidos(+L, -R) is det.
 %
-%   R es L sin repetidos; conserva la última aparición de cada elemento. El
-%   corte descarta las demás soluciones de member/2: es suficiente que X
-%   aparezca una vez en Resto.
-sin_repetidos([], []).
-sin_repetidos([X|Resto], [X|RestoR]) :-
-    \+ member(X, Resto),
-    sin_repetidos(Resto, RestoR).
-sin_repetidos([X|Resto], R) :-
-    member(X, Resto),
+%   R es L sin repetidos; conserva la primera aparición de cada elemento.
+%   El acumulador lleva los elementos ya incluidos.
+sin_repetidos(L, R) :-
+    sin_los_vistos(L, [], R).
+
+%!  sin_los_vistos(+L, +Vistos, -R) is det.
+%
+%   R es L sin los elementos de Vistos y sin repetidos; Vistos acumula los
+%   elementos ya incluidos en R. El corte descarta las demás soluciones de
+%   member/2: es suficiente que X aparezca una vez en Vistos.
+sin_los_vistos([], _, []).
+sin_los_vistos([X|Resto], Vistos, [X|RestoR]) :-
+    \+ member(X, Vistos),
+    sin_los_vistos(Resto, [X|Vistos], RestoR).
+sin_los_vistos([X|Resto], Vistos, R) :-
+    member(X, Vistos),
     !,
-    sin_repetidos(Resto, R).
+    sin_los_vistos(Resto, Vistos, R).
 
 % --- Ejercicio 14 ----------------------------------------------------------
 

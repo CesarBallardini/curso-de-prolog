@@ -1,0 +1,9 @@
+[
+  {"codigo": "am1", "nombre": "analisis_1", "anio": 1},
+  {"codigo": "alg", "nombre": "algebra", "anio": 1},
+  {"codigo": "log", "nombre": "logica", "anio": 1},
+  {"codigo": "am2", "nombre": "analisis_2", "anio": 2},
+  {"codigo": "pp", "nombre": "paradigmas", "anio": 2},
+  {"codigo": "ssl", "nombre": "sintaxis", "anio": 2},
+  {"codigo": "bd", "nombre": "bases_de_datos", "anio": 3}
+]

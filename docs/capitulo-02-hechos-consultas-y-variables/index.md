@@ -608,7 +608,7 @@ que todos sus argumentos son `?`.
 !!! note "Otros signos"
     SWI-Prolog usa también `++`, `--`, `@`, `:` y `!`, y otras palabras para la
     cantidad de respuestas. Este formato de documentación se denomina PlDoc. El
-    [capítulo 12](../capitulo-12-estilo-y-documentacion/index.md) lo presenta completo.
+    [capítulo 14](../capitulo-14-estilo-y-documentacion/index.md) lo presenta completo.
 
 ## Ejercicios
 
@@ -714,5 +714,5 @@ probar"; `ERROR: Unknown procedure` significa "la relación no está definida".
 | Átomos, variables y unificación | [capítulo 4](../capitulo-04-terminos-y-unificacion/index.md) |
 | El orden en que Prolog busca las respuestas | [capítulo 5](../capitulo-05-como-responde-prolog/index.md) |
 | El supuesto de mundo cerrado, en detalle | [capítulo 10](../capitulo-10-negacion-como-falla/index.md) |
-| La lectura de un programa como fórmulas lógicas | [capítulo 11](../capitulo-11-prolog-y-la-logica/index.md) |
-| PlDoc completo: todos los signos, tipos y cantidades de respuestas | [capítulo 12](../capitulo-12-estilo-y-documentacion/index.md) |
+| La lectura de un programa como fórmulas lógicas | [capítulo 12](../capitulo-12-prolog-y-la-logica/index.md) |
+| PlDoc completo: todos los signos, tipos y cantidades de respuestas | [capítulo 14](../capitulo-14-estilo-y-documentacion/index.md) |

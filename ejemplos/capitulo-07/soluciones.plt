@@ -32,7 +32,7 @@ test(sacar_uno, all(R == [[ana, eva]])) :-
 test(sacar_solo_la_primera, all(R == [[ana, eva, luis]])) :-
     sacar(luis, [ana, luis, eva, luis], R).
 
-test(sacar_lo_que_no_esta, [fail]) :-
+test(sacar_a_quien_no_esta, [fail]) :-
     sacar(pedro, [ana, luis], _).
 
 test(es_sublista, [nondet]) :-
@@ -82,5 +82,22 @@ test(sacar_lo_que_no_esta, [fail]) :-
 
 test(sacar_de_la_vacia, [fail]) :-
     sacar(a, [], _).
+
+% Ejercicio 17: nth1/3 en los dos sentidos
+test(materia_en_la_posicion_3, all(M == [fisica])) :-
+    materia_en(3, M).
+
+test(posicion_de_fisica, all(N == [3])) :-
+    materia_en(N, fisica).
+
+test(materia_en_todas, all(N-M == [1-logica, 2-algebra, 3-fisica, 4-quimica])) :-
+    materia_en(N, M).
+
+test(no_hay_posicion_5, [fail]) :-
+    materia_en(5, _).
+
+% Una posición por cada aparición del elemento.
+test(posiciones_de_un_repetido, all(N == [1, 3])) :-
+    nth1(N, [a, b, a], a).
 
 :- end_tests(soluciones).
