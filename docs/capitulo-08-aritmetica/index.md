@@ -52,7 +52,7 @@ comprobación:
 true.
 ```
 
-De ahí se sigue una consulta que parece razonable y no lo es:
+De ahí se sigue el resultado de una consulta que se escribe con frecuencia:
 
 ```prolog
 ?- N is N + 1.
@@ -190,7 +190,7 @@ ERROR: Arguments are not sufficiently instantiated
 En el primer caso la expresión contiene algo que **no es un número y nunca lo
 va a ser**: hay un error en el programa o en los datos. Es el mismo error de la
 actividad de la [sección 8.2](#82-comparacion-de-numeros), con `luis =:= luis`. En el segundo, la expresión
-contiene una variable sin valor, que **podría tenerlo**: en general no hay que
+contiene una variable sin valor, que **podría tenerlo**: en general no se debe
 corregir la expresión sino el orden de los objetivos, de modo que la variable
 reciba su valor antes.
 
@@ -200,16 +200,16 @@ estaba definida como una **relación** entre tres números, mediante el recorrid
 de términos. `is/2` no define una relación: evalúa.
 
 Es el costo de usar los números predefinidos, que son mucho más eficientes y más
-prácticos que la notación `s(s(s(cero)))`. El [capítulo 32](../capitulo-32-programacion-con-restricciones/index.md) presenta una técnica que
+prácticos que la notación `s(s(s(cero)))`. El [capítulo 23](../capitulo-23-programacion-con-restricciones/index.md) presenta una técnica que
 recupera los dos sentidos sin renunciar a los números predefinidos.
 
 Ese costo tiene una segunda mitad, que conviene anticipar. Con la notación
 `s(s(cero))`, la unificación con la estructura decidía sola qué cláusula
-correspondía —`0` o `s(N)`— y garantizaba que cada llamada recursiva recibiera
+correspondía —`cero` o `s(N)`— y garantizaba que cada llamada recursiva recibiera
 un término más chico. Con los números predefinidos esa garantía desaparece: un
-número no tiene estructura que distinga el caso base del recursivo, y hay que
-reponer a mano, con una condición explícita como `N > 0`, lo que antes daba la
-unificación. Un predicado aritmético recursivo que no termina suele tener
+número no tiene estructura que distinga el caso base del recursivo, y es necesario
+reponer de manera explícita, con una condición como `N > 0`, lo que antes daba
+la unificación. Un predicado aritmético recursivo que no termina suele tener
 exactamente ese problema.
 
 Por eso, en un predicado que usa aritmética conviene marcar en el encabezado,
@@ -320,19 +320,52 @@ Este caso base es el elemento central de la plantilla, y el que presenta mayor
 dificultad inicial: no realiza ningún cálculo; solo establece que, cuando no
 quedan elementos por recorrer, el valor acumulado es el resultado.
 
+El mismo esquema cuenta los elementos de una lista. Es `largo/2` del
+[capítulo 7](../capitulo-07-listas/index.md), con un acumulador que empieza en `0` y se incrementa en `1` por
+cada elemento:
+
+<!-- ejemplo: capitulo-08/acumuladores.pl predicado: largo/2 contando/3 consulta: largo([ana, luis, eva], N). -->
+```prolog
+%!  largo(?L, ?N) is nondet.
+%
+%   N es la cantidad de elementos de L, también con acumulador. Con L libre y
+%   N ligado, da la lista de N variables y después no termina.
+largo(L, N) :-
+    contando(L, 0, N).
+
+%!  contando(+L, +Hasta, -N) is det.
+%
+%   N es Hasta más la cantidad de elementos de L.
+contando([], N, N).
+contando([_|Resto], Hasta, N) :-
+    Ahora is Hasta + 1,
+    contando(Resto, Ahora, N).
+```
+
+```prolog
+?- largo([ana, luis, eva], N).
+N = 3.
+```
+
 También es significativa la ubicación de `is`. En la versión sin acumulador está
 **después** de la llamada recursiva, porque requiere su resultado. En la versión
 con acumulador está **antes**, porque todos los valores que requiere ya están
-disponibles. Esta diferencia tiene consecuencias: el [capítulo 14](../capitulo-14-rendimiento/index.md) explica por qué
+disponibles. Esta diferencia tiene consecuencias: el [capítulo 16](../capitulo-16-rendimiento/index.md) explica por qué
 la segunda versión usa mucha menos memoria.
 
 !!! abstract "Plantilla 13 — Acumulador"
     **Cuándo**: la recursión debe construir un resultado a medida que avanza.
 
     ```prolog
+    %!  p(+Entrada, -Resultado) is det.
+    %
+    %   Resultado se construye a partir de Entrada, elemento por elemento.
     p(Entrada, Resultado) :-
         paso_a_paso(Entrada, ValorInicial, Resultado).
 
+    %!  paso_a_paso(+L, +Hasta, -Resultado) is det.
+    %
+    %   Resultado es Hasta combinado con los elementos de L.
     paso_a_paso([], Acumulado, Acumulado).
     paso_a_paso([X|Resto], Hasta, Resultado) :-
         combinar(Hasta, X, Ahora),
@@ -383,10 +416,10 @@ AlReves = [eva, luis, ana].
 La versión del [capítulo 7](../capitulo-07-listas/index.md) usaba `append/3` para agregar cada elemento al final.
 Aquella recorría toda la lista nuevamente por cada elemento; esta la recorre una
 sola vez. Con tres elementos la diferencia es imperceptible; con tres mil, es
-muy significativa.
+significativa.
 
 Es el primer caso del curso en el que dos programas correctos se diferencian por
-su costo, y no por sus respuestas. El [capítulo 14](../capitulo-14-rendimiento/index.md) trata ese tema.
+su costo, y no por sus respuestas. El [capítulo 16](../capitulo-16-rendimiento/index.md) trata ese tema.
 
 ## Ejercicios
 
@@ -445,7 +478,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 14. **(2)** Escribir `suma_hasta(N, S)`: `S` es la suma de los enteros de 1 a
     `N`, en dos versiones, una con acumulador y otra sin él. Después responder:
     ¿cuál de las dos puede responder `suma_hasta(N, 6).`, y por qué ninguna de
-    las dos lo hace bien?
+    las dos lo resuelve?
 15. **(3)** Escribir las pruebas de `maximo/2` del ejercicio 8: una que verifique
     el resultado sobre una lista de varios elementos, una sobre una lista de uno
     solo, y una que documente la decisión tomada para la lista vacía.
@@ -469,6 +502,6 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 |---|---|
 | Generar y probar, con el corte para evitar trabajo repetido | [capítulo 9](../capitulo-09-backtracking-y-corte/index.md) |
 | `==` y `\==`, similares a `=` y a `=:=` pero distintos de ambos | [capítulo 10](../capitulo-10-negacion-como-falla/index.md) |
-| Por qué el acumulador usa menos memoria | [capítulo 14](../capitulo-14-rendimiento/index.md) |
-| Sumar o contar sin escribir la recursión | capítulos [15](../capitulo-15-todas-las-soluciones/index.md) y [16](../capitulo-16-orden-superior/index.md) |
-| Aritmética que admite consultas en ambos sentidos | [capítulo 32](../capitulo-32-programacion-con-restricciones/index.md) |
+| Por qué el acumulador usa menos memoria | [capítulo 16](../capitulo-16-rendimiento/index.md) |
+| Sumar o contar sin escribir la recursión | capítulos [17](../capitulo-17-todas-las-soluciones/index.md) y [18](../capitulo-18-orden-superior/index.md) |
+| Aritmética que admite consultas en ambos sentidos | [capítulo 23](../capitulo-23-programacion-con-restricciones/index.md) |

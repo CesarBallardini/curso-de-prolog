@@ -39,6 +39,7 @@ dev = [
 apendice-a = [
     "janus-swi",
     "pytest",
+    "windows-curses>=2.4.2 ; sys_platform == 'win32'",
 ]
 
 [tool.commitizen]

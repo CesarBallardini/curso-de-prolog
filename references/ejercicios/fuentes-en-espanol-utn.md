@@ -18,6 +18,7 @@ cátedra; eso se indica en **Notas**.
 ### ES-UTN-1 — Candidatos para sectores de una empresa (puedeAndar)
 - **Fuente:** PdeP UTN FRBA, "Paradigma Lógico – Guías 2008", Práctica 1 (descripciones, unificación), ejercicio 1. https://pdep-utn.github.io/viejogooglesite/material/guas-de-ejercicios/guia-logico-2008-1.pdf
 - **Tema:** 1, 2, 4
+- **Capítulos:** 3, 5
 - **Dificultad:** 1
 - **Solución:** no
 - **SWISH:** sí
@@ -31,6 +32,7 @@ cátedra; eso se indica en **Notas**.
 ### ES-UTN-2 — Nómina de una empresa y quién da órdenes
 - **Fuente:** Guías 2008, Práctica 1, ejercicio 2. https://pdep-utn.github.io/viejogooglesite/material/guas-de-ejercicios/guia-logico-2008-1.pdf
 - **Tema:** 1, 2
+- **Capítulos:** 3
 - **Dificultad:** 1
 - **Solución:** no
 - **SWISH:** sí
@@ -40,6 +42,7 @@ cátedra; eso se indica en **Notas**.
 ### ES-UTN-3 — Rivales en un mundial
 - **Fuente:** Guías 2008, Práctica 1, ejercicio 3. https://pdep-utn.github.io/viejogooglesite/material/guas-de-ejercicios/guia-logico-2008-1.pdf
 - **Tema:** 1, 2
+- **Capítulos:** 3, 10
 - **Dificultad:** 1
 - **Solución:** verificada:
   ```prolog
@@ -53,6 +56,7 @@ cátedra; eso se indica en **Notas**.
 ### ES-UTN-4 — Agencia matrimonial: parejas compatibles y personas deseables
 - **Fuente:** Guías 2008, Práctica 1, ejercicio 4. https://pdep-utn.github.io/viejogooglesite/material/guas-de-ejercicios/guia-logico-2008-1.pdf
 - **Tema:** 1, 2, 9
+- **Capítulos:** 3, 10
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -62,6 +66,7 @@ cátedra; eso se indica en **Notas**.
 ### ES-UTN-5 — Unificación cláusula por cláusula (gustaDe)
 - **Fuente:** Guías 2008, Práctica 1, ejercicio 5. https://pdep-utn.github.io/viejogooglesite/material/guas-de-ejercicios/guia-logico-2008-1.pdf
 - **Tema:** 3, 4
+- **Capítulos:** 4, 5
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -76,6 +81,7 @@ cátedra; eso se indica en **Notas**.
 ### ES-UTN-6 — ¿Quién puede ir a la fiesta de la cátedra?
 - **Fuente:** Guías 2008, Práctica 1, ejercicio 6. https://pdep-utn.github.io/viejogooglesite/material/guas-de-ejercicios/guia-logico-2008-1.pdf
 - **Tema:** 2, 5
+- **Capítulos:** 6
 - **Dificultad:** 2
 - **Solución:** verificada:
   ```prolog
@@ -91,6 +97,7 @@ cátedra; eso se indica en **Notas**.
 ### ES-UTN-7 — Colores que atraen a cada persona y reuniones iluminadas
 - **Fuente:** Guías 2008, Práctica 1, ejercicio 7. https://pdep-utn.github.io/viejogooglesite/material/guas-de-ejercicios/guia-logico-2008-1.pdf
 - **Tema:** 1, 2
+- **Capítulos:** 3
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -100,6 +107,7 @@ cátedra; eso se indica en **Notas**.
 ### ES-UTN-8 — Precio de venta de bebidas
 - **Fuente:** Guías 2008, Práctica 2 (aritmética, negación), ejercicio 1. https://pdep-utn.github.io/viejogooglesite/material/guas-de-ejercicios/guia-logico-2008-2.pdf
 - **Tema:** 2, 7
+- **Capítulos:** 8
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -109,6 +117,7 @@ cátedra; eso se indica en **Notas**.
 ### ES-UTN-9 — Competencia de habilidades: puntajes por prueba y total
 - **Fuente:** Guías 2008, Práctica 2, ejercicio 2. https://pdep-utn.github.io/viejogooglesite/material/guas-de-ejercicios/guia-logico-2008-2.pdf
 - **Tema:** 2, 7, 8
+- **Capítulos:** 8
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -118,6 +127,7 @@ cátedra; eso se indica en **Notas**.
 ### ES-UTN-10 — ¿Quién mató a la tía Agatha?
 - **Fuente:** Guías 2008, Práctica 2, ejercicio 3. https://pdep-utn.github.io/viejogooglesite/material/guas-de-ejercicios/guia-logico-2008-2.pdf
 - **Tema:** 2, 8
+- **Capítulos:** 10
 - **Dificultad:** 2
 - **Solución:** verificada (una sola respuesta, `A = agatha`):
   ```prolog
@@ -135,6 +145,7 @@ cátedra; eso se indica en **Notas**.
 ### ES-UTN-11 — Competencia de saltos (nth1, sumlist)
 - **Fuente:** Guías 2008, Práctica 3 (listas y functores), ejercicio 1. https://pdep-utn.github.io/viejogooglesite/material/guas-de-ejercicios/guia-logico-2008-3-1.2.pdf
 - **Tema:** 6, 7
+- **Capítulos:** 8
 - **Dificultad:** 1
 - **Solución:** no
 - **SWISH:** sí
@@ -148,6 +159,7 @@ cátedra; eso se indica en **Notas**.
 ### ES-UTN-12 — Ingresos mensuales y familiares
 - **Fuente:** Guías 2008, Práctica 3, ejercicio 2. https://pdep-utn.github.io/viejogooglesite/material/guas-de-ejercicios/guia-logico-2008-3-1.2.pdf
 - **Tema:** 2, 7, 9
+- **Capítulos:** 17, 8
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -157,6 +169,7 @@ cátedra; eso se indica en **Notas**.
 ### ES-UTN-13 — Red de subtes: líneas, distancias y combinaciones
 - **Fuente:** Guías 2008, Práctica 3, ejercicio 3. https://pdep-utn.github.io/viejogooglesite/material/guas-de-ejercicios/guia-logico-2008-3-1.2.pdf
 - **Tema:** 6, 7
+- **Capítulos:** 8, 7
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -170,6 +183,7 @@ cátedra; eso se indica en **Notas**.
 ### ES-UTN-14 — Vuelos con escalas y tramos
 - **Fuente:** Guías 2008, Práctica 3, ejercicio 4. https://pdep-utn.github.io/viejogooglesite/material/guas-de-ejercicios/guia-logico-2008-3-1.2.pdf
 - **Tema:** 3, 6, 7, 9
+- **Capítulos:** 8, 17
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -179,6 +193,7 @@ cátedra; eso se indica en **Notas**.
 ### ES-UTN-15 — Servidores y eventos (functores como eventos)
 - **Fuente:** Guías 2008, Práctica 4 (functores, generación), ejercicio 1. https://pdep-utn.github.io/viejogooglesite/material/guas-de-ejercicios/guia-logico-2008-4-1-5.pdf
 - **Tema:** 3, 2
+- **Capítulos:** 4
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -188,6 +203,7 @@ cátedra; eso se indica en **Notas**.
 ### ES-UTN-16 — Parejas estables (matrimonio estable)
 - **Fuente:** Guías 2008, Práctica 4, ejercicio 2. https://pdep-utn.github.io/viejogooglesite/material/guas-de-ejercicios/guia-logico-2008-4-1-5.pdf
 - **Tema:** 6, 8, 9
+- **Capítulos:** 10, 17
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -197,6 +213,7 @@ cátedra; eso se indica en **Notas**.
 ### ES-UTN-17 — Búsqueda del tesoro: destinos, idiomas y niveles
 - **Fuente:** Guías 2008, Práctica 4, ejercicio 3. https://pdep-utn.github.io/viejogooglesite/material/guas-de-ejercicios/guia-logico-2008-4-1-5.pdf
 - **Tema:** 3, 7, 9
+- **Capítulos:** 17
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -206,6 +223,7 @@ cátedra; eso se indica en **Notas**.
 ### ES-UTN-18 — Tareas de un proyecto: anterior, riesgo, puedoHacer
 - **Fuente:** Guías 2008, Práctica 4, ejercicio 4. https://pdep-utn.github.io/viejogooglesite/material/guas-de-ejercicios/guia-logico-2008-4-1-5.pdf
 - **Tema:** 5, 9, 3
+- **Capítulos:** 17, 6
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -219,6 +237,7 @@ cátedra; eso se indica en **Notas**.
 ### ES-UTN-19 — Dominó: quién cede el turno
 - **Fuente:** Guías 2008, Práctica 4, ejercicio 5. https://pdep-utn.github.io/viejogooglesite/material/guas-de-ejercicios/guia-logico-2008-4-1-5.pdf
 - **Tema:** 3, 6, 8
+- **Capítulos:** 10
 - **Dificultad:** 2
 - **Solución:** verificada (da `juan` y `miguel`):
   ```prolog
@@ -235,6 +254,7 @@ cátedra; eso se indica en **Notas**.
 ### ES-UTN-20 — Liga de fútbol: rivales, goles, puntos y tabla
 - **Fuente:** Guías 2008, Práctica 4, ejercicio 6. https://pdep-utn.github.io/viejogooglesite/material/guas-de-ejercicios/guia-logico-2008-4-1-5.pdf
 - **Tema:** 3, 7, 8, 9
+- **Capítulos:** 17, 22
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -244,6 +264,7 @@ cátedra; eso se indica en **Notas**.
 ### ES-UTN-21 — TEG: continentes, jugadores y objetivos
 - **Fuente:** Guías 2008, Práctica 4, ejercicio 7. https://pdep-utn.github.io/viejogooglesite/material/guas-de-ejercicios/guia-logico-2008-4-1-5.pdf
 - **Tema:** 6, 7, 9
+- **Capítulos:** 17
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -253,6 +274,7 @@ cátedra; eso se indica en **Notas**.
 ### ES-UTN-22 — Grafo dirigido: ¿hay camino?
 - **Fuente:** Guías 2008, Práctica 5 (recursividad), ejercicio 1. https://pdep-utn.github.io/viejogooglesite/material/guas-de-ejercicios/guia-logico-2008-5.pdf
 - **Tema:** 5, 4
+- **Capítulos:** 6, 22
 - **Dificultad:** 1
 - **Solución:** no
 - **SWISH:** sí
@@ -262,6 +284,7 @@ cátedra; eso se indica en **Notas**.
 ### ES-UTN-23 — Fibonacci
 - **Fuente:** Guías 2008, Práctica 5, ejercicio 2. https://pdep-utn.github.io/viejogooglesite/material/guas-de-ejercicios/guia-logico-2008-5.pdf
 - **Tema:** 5, 7
+- **Capítulos:** 8
 - **Dificultad:** 1
 - **Solución:** verificada (`fib(10,F)` da `F = 55`):
   ```prolog
@@ -275,6 +298,7 @@ cátedra; eso se indica en **Notas**.
 ### ES-UTN-24 — Central telefónica: internos y derivaciones
 - **Fuente:** Guías 2008, Práctica 5, ejercicio 3. https://pdep-utn.github.io/viejogooglesite/material/guas-de-ejercicios/guia-logico-2008-5.pdf
 - **Tema:** 2, 6, 8
+- **Capítulos:** 10, 18
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -284,6 +308,7 @@ cátedra; eso se indica en **Notas**.
 ### ES-UTN-25 — Recursión con listas: suma, encolar, máximo, elementoEn
 - **Fuente:** Guías 2008, Práctica 5, ejercicio 4. https://pdep-utn.github.io/viejogooglesite/material/guas-de-ejercicios/guia-logico-2008-5.pdf
 - **Tema:** 5, 6, 7
+- **Capítulos:** 8, 7
 - **Dificultad:** 1
 - **Solución:** verificada:
   ```prolog
@@ -303,6 +328,7 @@ cátedra; eso se indica en **Notas**.
 ### ES-UTN-26 — Registro civil: edades, años felices y seguidillas
 - **Fuente:** Guías 2008, Práctica 6 (integración), ejercicio 1. https://pdep-utn.github.io/viejogooglesite/material/guas-de-ejercicios/guia-logico-2008-6.pdf
 - **Tema:** 7, 8, 9, 5
+- **Capítulos:** 8, 17
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -312,6 +338,7 @@ cátedra; eso se indica en **Notas**.
 ### ES-UTN-27 — Construya su cañería
 - **Fuente:** Guías 2008, Práctica 6, ejercicio 2. https://pdep-utn.github.io/viejogooglesite/material/guas-de-ejercicios/guia-logico-2008-6.pdf
 - **Tema:** 3, 5, 6, 7
+- **Capítulos:** 8
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -321,6 +348,7 @@ cátedra; eso se indica en **Notas**.
 ### ES-UTN-28 — Mensajes de texto con el teclado del teléfono
 - **Fuente:** PdeP, "Paradigma Lógico – Práctica extra", ejercicio 1. https://pdep-utn.github.io/viejogooglesite/material/guas-de-ejercicios/guia-logico-2008-x.pdf
 - **Tema:** 6, X
+- **Capítulos:** 11
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** no del todo (depende de la representación de strings)
@@ -330,6 +358,7 @@ cátedra; eso se indica en **Notas**.
 ### ES-UTN-29 — Cuadrados aritméticos 3×3
 - **Fuente:** PdeP, "Paradigma Lógico – Práctica extra", ejercicio 2. https://pdep-utn.github.io/viejogooglesite/material/guas-de-ejercicios/guia-logico-2008-x.pdf
 - **Tema:** 4, 5, 6, 7
+- **Capítulos:** 8, 23
 - **Dificultad:** 3
 - **Solución:** verificada (hay 16 cuadrados):
   ```prolog
@@ -361,6 +390,7 @@ repaso de Haskell).
 ### ES-UTN-30 — Primeros hechos: personajes, países, pokémon
 - **Fuente:** PdeP UTN, guía Mumuki "Hechos y reglas", ejercicios 00001, 00002 y 00008. https://github.com/pdep-utn/mumuki-guia-logico-hechos-y-reglas
 - **Tema:** 1
+- **Capítulos:** 2
 - **Dificultad:** 1
 - **Solución:** no (tests en `test.pl`)
 - **SWISH:** sí
@@ -370,6 +400,7 @@ repaso de Haskell).
 ### ES-UTN-31 — Universo cerrado: lo que no se dice es falso
 - **Fuente:** Guía Mumuki "Hechos y reglas", ejercicio 00004_Universo cerrado. https://github.com/pdep-utn/mumuki-guia-logico-hechos-y-reglas
 - **Tema:** 1, 8
+- **Capítulos:** 2, 10
 - **Dificultad:** 1
 - **Solución:** no
 - **SWISH:** sí
@@ -379,6 +410,7 @@ repaso de Haskell).
 ### ES-UTN-32 — Silogismo de Aristóteles y acontecimientos
 - **Fuente:** Guía Mumuki "Hechos y reglas", ejercicios 00009_Aristóteles y sus amigos y 00010_Acontecimiento. https://github.com/pdep-utn/mumuki-guia-logico-hechos-y-reglas
 - **Tema:** 1, 2
+- **Capítulos:** 3
 - **Dificultad:** 1
 - **Solución:** no
 - **SWISH:** sí
@@ -387,6 +419,7 @@ repaso de Haskell).
 ### ES-UTN-33 — El barrio de Flores (viveEn, leDicen)
 - **Fuente:** Guía Mumuki "Hechos y reglas", ejercicios 00011 y 00012. https://github.com/pdep-utn/mumuki-guia-logico-hechos-y-reglas
 - **Tema:** 1, 2
+- **Capítulos:** 3
 - **Dificultad:** 1
 - **Solución:** no
 - **SWISH:** sí
@@ -396,6 +429,7 @@ repaso de Haskell).
 ### ES-UTN-34 — Personajes surrealistas (reglas con varias cláusulas)
 - **Fuente:** Guía Mumuki "Hechos y reglas", ejercicio 00013_Clausulas. https://github.com/pdep-utn/mumuki-guia-logico-hechos-y-reglas
 - **Tema:** 2
+- **Capítulos:** 3
 - **Dificultad:** 1
 - **Solución:** no
 - **SWISH:** sí
@@ -404,6 +438,7 @@ repaso de Haskell).
 ### ES-UTN-35 — Familia Simpson: padre, tío, hermano, abuelo baboso
 - **Fuente:** PdeP UTN, guía Mumuki "Inversibilidad", ejercicios 00001, 00002 y 00004. https://github.com/pdep-utn/mumuki-guia-logico-inversibilidad
 - **Tema:** 1, 2, 7
+- **Capítulos:** 3, 8
 - **Dificultad:** 1
 - **Solución:** no
 - **SWISH:** sí
@@ -413,6 +448,7 @@ repaso de Haskell).
 ### ES-UTN-36 — Nafta del viaje y buenaNota inversible
 - **Fuente:** Guía Mumuki "Inversibilidad", ejercicios 00005_Algunas cuentas y 00013_Mas generadores. https://github.com/pdep-utn/mumuki-guia-logico-inversibilidad
 - **Tema:** 7, 4
+- **Capítulos:** 8, 15
 - **Dificultad:** 1
 - **Solución:** verificada para `buenaNota/1` (genera 4, 5, …, 10):
   ```prolog
@@ -425,6 +461,7 @@ repaso de Haskell).
 ### ES-UTN-37 — Aritmética: cuadrado, máximo, área, mitad, triple
 - **Fuente:** Guías Mumuki "Aritmética" (00008_Cuadrado, 00009_Máximo) y "Práctica aritmética y negación" (00020_area, 00030_mitad, 00040_triple). https://github.com/pdep-utn/mumuki-guia-logico-aritmetica y https://github.com/pdep-utn/mumuki-guia-logico-practica-aritmetica-y-negacion
 - **Tema:** 7
+- **Capítulos:** 8
 - **Dificultad:** 1
 - **Solución:** no
 - **SWISH:** sí
@@ -434,6 +471,7 @@ repaso de Haskell).
 ### ES-UTN-38 — Game of Thrones: tuplas, functores y polimorfismo
 - **Fuente:** PdeP UTN, guía Mumuki "Functores", ejercicios 00200 a 01000. https://github.com/pdep-utn/mumuki-guia-logico-functores
 - **Tema:** 3
+- **Capítulos:** 4
 - **Dificultad:** 1
 - **Solución:** no
 - **SWISH:** sí
@@ -447,6 +485,7 @@ repaso de Haskell).
 ### ES-UTN-39 — ¿Quién llega fácil? (existencia y variables libres)
 - **Fuente:** PdeP UTN, guía Mumuki "Cuantificación", ejercicios 00001 a 00010. https://github.com/pdep-utn/mumuki-guia-logico-cuantificacion
 - **Tema:** 1, 2, 8
+- **Capítulos:** 3, 10
 - **Dificultad:** 1
 - **Solución:** verificada para `loLleva/2` (única respuesta `fede-mariano` con los datos de la guía):
   ```prolog
@@ -460,6 +499,7 @@ repaso de Haskell).
 ### ES-UTN-40 — bienUbicado, dificilDeEstacionar, zonaDesierta (forall)
 - **Fuente:** Guía Mumuki "Cuantificación", ejercicios 00011, 00014, 00015, 00017, 00018 y 00019. https://github.com/pdep-utn/mumuki-guia-logico-cuantificacion
 - **Tema:** 9, 8
+- **Capítulos:** 17, 10
 - **Dificultad:** 2
 - **Solución:** verificada:
   ```prolog
@@ -475,6 +515,7 @@ repaso de Haskell).
 ### ES-UTN-41 — findall: orden de soluciones, cuantoFalta, herramientas
 - **Fuente:** PdeP UTN, guía Mumuki "Findall", ejercicios 00001 y 00004 a 00009. https://github.com/pdep-utn/mumuki-guia-logico-findall
 - **Tema:** 9, 6
+- **Capítulos:** 17
 - **Dificultad:** 2
 - **Solución:** verificada para `cuantoFalta/1` (da 3):
   ```prolog
@@ -487,6 +528,7 @@ repaso de Haskell).
 ### ES-UTN-42 — Juego en equipos: alHorno, equipoCipayo, abandono
 - **Fuente:** Guía Mumuki "Práctica aritmética y negación", ejercicios 00072, 00073 y 00074. https://github.com/pdep-utn/mumuki-guia-logico-practica-aritmetica-y-negacion
 - **Tema:** 8, 9
+- **Capítulos:** 17, 10
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -495,6 +537,7 @@ repaso de Haskell).
 ### ES-UTN-43 — Medicamentos, drogas y farmacias
 - **Fuente:** PdeP UTN, guía Mumuki "Práctica medicamentos", ejercicios 00001 a 00008. https://github.com/pdep-utn/mumuki-guia-logico-practica-medicamentos
 - **Tema:** 3, 5, 8, 9
+- **Capítulos:** 17
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -504,6 +547,7 @@ repaso de Haskell).
 ### ES-UTN-44 — Pulp Fiction: personajes peligrosos y encargos
 - **Fuente:** PdeP UTN, guía Mumuki "Práctica Pulp Fiction", ejercicios 00010 a 00080. https://github.com/pdep-utn/mumuki-guia-logico-practica-pulp-fiction-pdep-utn
 - **Tema:** 3, 6, 8, 9
+- **Capítulos:** 17, 10
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -513,6 +557,7 @@ repaso de Haskell).
 ### ES-UTN-45 — Comidas del bar y los gustos de Andrea
 - **Fuente:** PdeP UTN, guía Mumuki "Práctica paradigma lógico", ejercicios 00001 a 00003. https://github.com/pdep-utn/mumuki-guia-prolog-practica-paradigma-logico-pdep-utn
 - **Tema:** 2, 7, 8, 9
+- **Capítulos:** 10, 17
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -522,6 +567,7 @@ repaso de Haskell).
 ### ES-UTN-46 — Lecturas densas y lectores intensos
 - **Fuente:** Guía Mumuki "Práctica paradigma lógico", ejercicios 00004 y 00005. https://github.com/pdep-utn/mumuki-guia-prolog-practica-paradigma-logico-pdep-utn
 - **Tema:** 3, 7, 9
+- **Capítulos:** 17, 4
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -530,6 +576,7 @@ repaso de Haskell).
 ### ES-UTN-47 — Votaciones: votos totales y provincia decidida
 - **Fuente:** Guía Mumuki "Práctica paradigma lógico", ejercicios 00006 y 00007. https://github.com/pdep-utn/mumuki-guia-prolog-practica-paradigma-logico-pdep-utn
 - **Tema:** 7, 8, 9
+- **Capítulos:** 17, 10
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -539,6 +586,7 @@ repaso de Haskell).
 ### ES-UTN-48 — EscaPdeP: salas de escape (simulacro de parcial 2022)
 - **Fuente:** PdeP UTN, guía Mumuki "EscaPdeP – parcial de lógico simulacro 2022". https://github.com/pdep-utn/mumuki-guia-prolog-esca-pde-p-parcial-de-logico-simulacro-2022
 - **Tema:** 3, 6, 7, 8, 9
+- **Capítulos:** 17
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -548,6 +596,7 @@ repaso de Haskell).
 ### ES-UTN-49 — Boliches (simulacro de parcial 2022)
 - **Fuente:** PdeP UTN, guía Mumuki "PdePePePePe – parcial de lógico simulacro 2022". https://github.com/pdep-utn/mumuki-guia-prolog-pde-pe-pe-pe-pe-parcial-de-logico-simulacro-2022
 - **Tema:** 3, 6, 7, 8, 9
+- **Capítulos:** 17
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -556,6 +605,7 @@ repaso de Haskell).
 ### ES-UTN-50 — TP Lógico: elecciones, candidatos y promesas
 - **Fuente:** PdeP UTN, guía Mumuki "TP Lógico", ejercicios 00001 a 00007. https://github.com/pdep-utn/mumuki-guia-prolog-tp-logico
 - **Tema:** 1, 3, 6, 7, 9
+- **Capítulos:** 17, 4
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -573,6 +623,7 @@ trae tests PlUnit, se indica si pasan.
 ### ES-UTN-51 — Películas: primera base de conocimiento
 - **Fuente:** Prolog-Uqbar, "peliculas-prolog" (clase introductoria). https://github.com/Prolog-Uqbar/peliculas-prolog
 - **Tema:** 1, 2
+- **Capítulos:** 2, 3
 - **Dificultad:** 1
 - **Solución:** sí, `peliculas.pl` (carga en SWI 9.2.9)
 - **SWISH:** sí
@@ -582,6 +633,7 @@ trae tests PlUnit, se indica si pasan.
 ### ES-UTN-52 — ¿Es una bruja? (Monty Python)
 - **Fuente:** Prolog-Uqbar, "Ejemplo-es-una-bruja". https://github.com/Prolog-Uqbar/Ejemplo-es-una-bruja
 - **Tema:** 2, 4
+- **Capítulos:** 3, 5
 - **Dificultad:** 1
 - **Solución:** sí, `bruja.pl` (carga en SWI 9.2.9)
 - **SWISH:** sí
@@ -591,6 +643,7 @@ trae tests PlUnit, se indica si pasan.
 ### ES-UTN-53 — Universidades: reglas "y" / "o" e inversibilidad
 - **Fuente:** Prolog-Uqbar, "inversibilidadUniversidades". https://github.com/Prolog-Uqbar/inversibilidadUniversidades
 - **Tema:** 1, 2, 8
+- **Capítulos:** 10, 3
 - **Dificultad:** 1
 - **Solución:** sí, `universidad.pl` (carga en SWI 9.2.9)
 - **SWISH:** sí
@@ -600,6 +653,7 @@ trae tests PlUnit, se indica si pasan.
 ### ES-UTN-54 — Gustos por país: esTipico y esExclusivo (forall vs. not)
 - **Fuente:** Prolog-Uqbar, "Ejemplo-para-todo-Gustos". https://github.com/Prolog-Uqbar/Ejemplo-para-todo-Gustos
 - **Tema:** 8, 9
+- **Capítulos:** 17, 10, 12
 - **Dificultad:** 2
 - **Solución:** sí, `ejemploParaTodo.pl` (carga en SWI 9.2.9)
 - **SWISH:** sí
@@ -609,6 +663,7 @@ trae tests PlUnit, se indica si pasan.
 ### ES-UTN-55 — Harry Potter: hechizos olvidados y usados (not y forall)
 - **Fuente:** Prolog-Uqbar, "cuantificadoresHarryPotter". https://github.com/Prolog-Uqbar/cuantificadoresHarryPotter
 - **Tema:** 8, 9
+- **Capítulos:** 17, 10
 - **Dificultad:** 1
 - **Solución:** sí, `harrypotter.pl` (carga en SWI 9.2.9)
 - **SWISH:** sí
@@ -618,6 +673,7 @@ trae tests PlUnit, se indica si pasan.
 ### ES-UTN-56 — Aprobación con margen (Harry Potter)
 - **Fuente:** Prolog-Uqbar, "Ejemplo-nota-aprobacion". https://github.com/Prolog-Uqbar/Ejemplo-nota-aprobacion
 - **Tema:** 7, 4
+- **Capítulos:** 8
 - **Dificultad:** 1
 - **Solución:** sí, `aprobacion.pl` (carga en SWI 9.2.9)
 - **SWISH:** sí
@@ -627,6 +683,7 @@ trae tests PlUnit, se indica si pasan.
 ### ES-UTN-57 — Personalidades históricas (functores de fecha y acciones)
 - **Fuente:** Prolog-Uqbar, "functoresPersonalidades". https://github.com/Prolog-Uqbar/functoresPersonalidades
 - **Tema:** 3, 7, 9
+- **Capítulos:** 8, 4
 - **Dificultad:** 2
 - **Solución:** sí, `personalidades.pl` (carga en SWI 9.2.9)
 - **SWISH:** sí
@@ -635,6 +692,7 @@ trae tests PlUnit, se indica si pasan.
 ### ES-UTN-58 — Familia con functores heterogéneos
 - **Fuente:** Prolog-Uqbar, "Ejemplo-ListasFunctores-Familia". https://github.com/Prolog-Uqbar/Ejemplo-ListasFunctores-Familia
 - **Tema:** 3, 6
+- **Capítulos:** 4, 7
 - **Dificultad:** 1
 - **Solución:** sí, `familia.pl` (carga en SWI 9.2.9)
 - **SWISH:** sí
@@ -644,6 +702,7 @@ trae tests PlUnit, se indica si pasan.
 ### ES-UTN-59 — Autómata finito no determinístico
 - **Fuente:** Prolog-Uqbar, "automatas-nondet-prolog". https://github.com/Prolog-Uqbar/automatas-nondet-prolog
 - **Tema:** 4, 5, 6
+- **Capítulos:** 7, 5
 - **Dificultad:** 2
 - **Solución:** sí, `automatas.pl`; los 7 tests PlUnit de `test_automatas.pl` pasan en SWI 9.2.9
 - **SWISH:** sí
@@ -657,6 +716,7 @@ trae tests PlUnit, se indica si pasan.
 ### ES-UTN-60 — Mochileros en la montaña (listas y caminos)
 - **Fuente:** Prolog-Uqbar, "ListasEnLaMontania". https://github.com/Prolog-Uqbar/ListasEnLaMontania
 - **Tema:** 5, 6, 7, 9
+- **Capítulos:** 8, 17
 - **Dificultad:** 2
 - **Solución:** sí, `montanias.pl` (carga en SWI 9.2.9)
 - **SWISH:** sí
@@ -666,6 +726,7 @@ trae tests PlUnit, se indica si pasan.
 ### ES-UTN-61 — Escoba de 15
 - **Fuente:** Prolog-Uqbar, "integradorEscoba15". https://github.com/Prolog-Uqbar/integradorEscoba15
 - **Tema:** 3, 5, 6, 7, 9
+- **Capítulos:** 17, 8
 - **Dificultad:** 3
 - **Solución:** sí, `carta.pl` (carga en SWI 9.2.9)
 - **SWISH:** sí
@@ -675,6 +736,7 @@ trae tests PlUnit, se indica si pasan.
 ### ES-UTN-62 — Clave secreta (generar y testear)
 - **Fuente:** Prolog-Uqbar, "integradorClaves". https://github.com/Prolog-Uqbar/integradorClaves
 - **Tema:** 4, 7, 8, 9
+- **Capítulos:** 17, 15
 - **Dificultad:** 2
 - **Solución:** sí, `claves.pl` (carga en SWI 9.2.9)
 - **SWISH:** sí
@@ -684,6 +746,7 @@ trae tests PlUnit, se indica si pasan.
 ### ES-UTN-63 — 24: la clave de Cloe O'Brian
 - **Fuente:** Prolog-Uqbar, "combinatoriaClaves24". https://github.com/Prolog-Uqbar/combinatoriaClaves24
 - **Tema:** 4, 7, 9
+- **Capítulos:** 17, 8
 - **Dificultad:** 1
 - **Solución:** sí, `programa.pl` (carga en SWI 9.2.9)
 - **SWISH:** sí
@@ -692,6 +755,7 @@ trae tests PlUnit, se indica si pasan.
 ### ES-UTN-64 — Eclipse en Argentina
 - **Fuente:** Prolog-Uqbar, "integradorEclipse". https://github.com/Prolog-Uqbar/integradorEclipse
 - **Tema:** 7, 8, 9
+- **Capítulos:** 17
 - **Dificultad:** 2
 - **Solución:** sí, `eclipse.pl` (carga en SWI 9.2.9)
 - **SWISH:** sí
@@ -701,6 +765,7 @@ trae tests PlUnit, se indica si pasan.
 ### ES-UTN-65 — Entrando a boxes (repuestos de autos)
 - **Fuente:** Prolog-Uqbar, "integradorSimpleAutos". https://github.com/Prolog-Uqbar/integradorSimpleAutos
 - **Tema:** 7, 8, 9
+- **Capítulos:** 17, 10
 - **Dificultad:** 2
 - **Solución:** sí, `repuestos.pl` (carga en SWI 9.2.9)
 - **SWISH:** sí
@@ -709,6 +774,7 @@ trae tests PlUnit, se indica si pasan.
 ### ES-UTN-66 — Camboya: lugar más visitado y recaudación
 - **Fuente:** Prolog-Uqbar, "ParaTodo-Camboya". https://github.com/Prolog-Uqbar/ParaTodo-Camboya
 - **Tema:** 3, 7, 8, 9
+- **Capítulos:** 10, 8
 - **Dificultad:** 2
 - **Solución:** sí, `camboya.pl` (carga en SWI 9.2.9)
 - **SWISH:** sí
@@ -718,6 +784,7 @@ trae tests PlUnit, se indica si pasan.
 ### ES-UTN-67 — Super liga: grupos válidos y clubes populares
 - **Fuente:** Prolog-Uqbar, "Integrador-super-liga". https://github.com/Prolog-Uqbar/Integrador-super-liga
 - **Tema:** 2, 4, 8, 9
+- **Capítulos:** 10, 3
 - **Dificultad:** 2
 - **Solución:** sí, `solucion.pl` (carga en SWI 9.2.9)
 - **SWISH:** sí
@@ -730,6 +797,7 @@ trae tests PlUnit, se indica si pasan.
 ### ES-UTN-68 — Presidentes argentinos: calificación de gestiones
 - **Fuente:** Prolog-Uqbar, "Integrador-Presidentes" y su variante "ParaTodo-Presidentes". https://github.com/Prolog-Uqbar/Integrador-Presidentes y https://github.com/Prolog-Uqbar/ParaTodo-Presidentes
 - **Tema:** 3, 7, 8, 9
+- **Capítulos:** 17, 10
 - **Dificultad:** 2
 - **Solución:** sí, `presidentes.pl` en cada repositorio (cargan en SWI 9.2.9)
 - **SWISH:** sí
@@ -739,6 +807,7 @@ trae tests PlUnit, se indica si pasan.
 ### ES-UTN-69 — Lista de compras: ¿es caro un negocio?
 - **Fuente:** Prolog-Uqbar, "listasCompras". https://github.com/Prolog-Uqbar/listasCompras
 - **Tema:** 7, 8, 9
+- **Capítulos:** 17
 - **Dificultad:** 2
 - **Solución:** sí, `ejemploListas.pl` (carga en SWI 9.2.9)
 - **SWISH:** sí
@@ -748,6 +817,7 @@ trae tests PlUnit, se indica si pasan.
 ### ES-UTN-70 — El asadito
 - **Fuente:** Prolog-Uqbar, "integradorAsadito". https://github.com/Prolog-Uqbar/integradorAsadito
 - **Tema:** 3, 6, 8, 9
+- **Capítulos:** 17, 10
 - **Dificultad:** 2
 - **Solución:** sí, `solucion.pl` (carga con avisos de cláusulas no contiguas)
 - **SWISH:** sí
@@ -757,6 +827,7 @@ trae tests PlUnit, se indica si pasan.
 ### ES-UTN-71 — El mundo de la música: managers y ventas
 - **Fuente:** Prolog-Uqbar, "Integrador-Mundo-de-la-musica". https://github.com/Prolog-Uqbar/Integrador-Mundo-de-la-musica
 - **Tema:** 3, 7, 8, 9
+- **Capítulos:** 17, 4
 - **Dificultad:** 2
 - **Solución:** sí, `musica.pl` (carga en SWI 9.2.9)
 - **SWISH:** sí
@@ -766,6 +837,7 @@ trae tests PlUnit, se indica si pasan.
 ### ES-UTN-72 — Centro de estudiantes: elecciones y fraude
 - **Fuente:** Prolog-Uqbar, "integradorCentrosDeEstudiantes". https://github.com/Prolog-Uqbar/integradorCentrosDeEstudiantes
 - **Tema:** 3, 7, 8, 9
+- **Capítulos:** 17
 - **Dificultad:** 2
 - **Solución:** sí, `centroEstudiantes.pl` y `variante1.pl` (cargan en SWI 9.2.9)
 - **SWISH:** sí
@@ -775,6 +847,7 @@ trae tests PlUnit, se indica si pasan.
 ### ES-UTN-73 — ¡Llegó el previaje!
 - **Fuente:** Prolog-Uqbar, "integradorPreViaje". https://github.com/Prolog-Uqbar/integradorPreViaje
 - **Tema:** 3, 6, 7, 8, 9
+- **Capítulos:** 17, 4
 - **Dificultad:** 3
 - **Solución:** sí, `previaje.pl` (carga en SWI 9.2.9)
 - **SWISH:** sí
@@ -783,6 +856,7 @@ trae tests PlUnit, se indica si pasan.
 ### ES-UTN-74 — Trabajadores estresades
 - **Fuente:** Prolog-Uqbar, "Integrador-Trabajadores-estresados". https://github.com/Prolog-Uqbar/Integrador-Trabajadores-estresados
 - **Tema:** 3, 5, 8, 9
+- **Capítulos:** 17, 6
 - **Dificultad:** 2
 - **Solución:** sí, `trabajadores.pl` (carga en SWI 9.2.9)
 - **SWISH:** sí
@@ -792,6 +866,7 @@ trae tests PlUnit, se indica si pasan.
 ### ES-UTN-75 — Sueños y personajes
 - **Fuente:** Prolog-Uqbar, "Integrador-Suenios". https://github.com/Prolog-Uqbar/Integrador-Suenios
 - **Tema:** 3, 5, 7, 8, 9
+- **Capítulos:** 17, 6
 - **Dificultad:** 2
 - **Solución:** sí, `suenios.pl` y variantes sin functores (cargan en SWI 9.2.9)
 - **SWISH:** sí
@@ -801,6 +876,7 @@ trae tests PlUnit, se indica si pasan.
 ### ES-UTN-76 — Piratas del Caribe
 - **Fuente:** Prolog-Uqbar, "integradorPiratasCaribe". https://github.com/Prolog-Uqbar/integradorPiratasCaribe
 - **Tema:** 3, 5, 7, 8, 9
+- **Capítulos:** 17, 8
 - **Dificultad:** 3
 - **Solución:** sí, `piratas.pl` (carga en SWI 9.2.9)
 - **SWISH:** sí
@@ -810,6 +886,7 @@ trae tests PlUnit, se indica si pasan.
 ### ES-UTN-77 — Parque de atracciones
 - **Fuente:** Prolog-Uqbar, "Integrador-parqueAtracciones". https://github.com/Prolog-Uqbar/Integrador-parqueAtracciones
 - **Tema:** 3, 6, 8, 9
+- **Capítulos:** 17, 7
 - **Dificultad:** 2
 - **Solución:** sí, `parquesAtracciones.pl`, pero **no carga limpio**: error de sintaxis en la línea 120 ("Full stop in clause-body?") en SWI 9.2.9
 - **SWISH:** sí
@@ -818,6 +895,7 @@ trae tests PlUnit, se indica si pasan.
 ### ES-UTN-78 — Caminante del cielo (Star Wars)
 - **Fuente:** Prolog-Uqbar, "IntegradorCaminanteDelCielo". https://github.com/Prolog-Uqbar/IntegradorCaminanteDelCielo
 - **Tema:** 3, 5, 6, 8, 9
+- **Capítulos:** 17
 - **Dificultad:** 3
 - **Solución:** sí, `caminanteDelCielo.pl` (carga con avisos de cláusulas no contiguas)
 - **SWISH:** sí
@@ -827,6 +905,7 @@ trae tests PlUnit, se indica si pasan.
 ### ES-UTN-79 — Amistades y química (predicados dinámicos)
 - **Fuente:** Prolog-Uqbar, "predicados-dinamicos-prolog". https://github.com/Prolog-Uqbar/predicados-dinamicos-prolog
 - **Tema:** 10, 9
+- **Capítulos:** 20, 17
 - **Dificultad:** 2
 - **Solución:** sí, `amistad.pl`; los 3 tests PlUnit de `testAmistad.pl` pasan en SWI 9.2.9
 - **SWISH:** sí
@@ -836,6 +915,7 @@ trae tests PlUnit, se indica si pasan.
 ### ES-UTN-80 — Llegamos: contador con assert/retract
 - **Fuente:** Prolog-Uqbar, "Ejemplo-assert-Llegamos". https://github.com/Prolog-Uqbar/Ejemplo-assert-Llegamos
 - **Tema:** 10, 4
+- **Capítulos:** 20, 15
 - **Dificultad:** 3
 - **Solución:** sí, `insistencia.pl` (carga en SWI 9.2.9)
 - **SWISH:** sí
@@ -845,6 +925,7 @@ trae tests PlUnit, se indica si pasan.
 ### ES-UTN-81 — Predicados que no terminan y tabling
 - **Fuente:** Prolog-Uqbar, "performance-prolog". https://github.com/Prolog-Uqbar/performance-prolog
 - **Tema:** 4, 5, 8, X
+- **Capítulos:** 38, 9
 - **Dificultad:** 3
 - **Solución:** sí, `predicadosQueNoTerminan.pl`, `mayor.pl`, `divisiblesPor3.pl`; los 2 tests de tabling pasan en SWI 9.2.9
 - **SWISH:** sí
@@ -856,6 +937,7 @@ trae tests PlUnit, se indica si pasan.
 ### ES-UTN-82 — Sueldos (parcial de lógico 2025, temas 1 y 2)
 - **Fuente:** PdeP UTN FRBA, curso miércoles noche, "Sueldos – Tema 1 / Tema 2" (Google Docs). https://docs.google.com/document/d/1Y_7iQV_-4zegEvECU7HZrxQrujf5A-EM-yEcA6W9MRo/edit
 - **Tema:** 3, 6, 7, 8, 9
+- **Capítulos:** 17, 7
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -865,6 +947,7 @@ trae tests PlUnit, se indica si pasan.
 ### ES-UTN-83 — Cocinando con Chichito de Erquiaga (TP lógico 2025)
 - **Fuente:** PdeP UTN FRBA, curso miércoles noche, "TP Lógico 2025" (Google Docs). https://docs.google.com/document/d/10prIWrMAoWqXwJuDz9Ktdm4TnH9WFY56Y_YoAyq8flQ/edit
 - **Tema:** 1, 3, 6, 7, 8, 9
+- **Capítulos:** 17, 7
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí

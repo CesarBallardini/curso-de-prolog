@@ -6,9 +6,9 @@ incorrecta: el criterio es que produzca las mismas respuestas.
 
 ## 1
 
-`padre(luis, clara).` se agrega como un hecho más. Con ese hecho, `pedro` es
-abuelo de `clara`, porque `pedro` es padre de `luis` y `luis` es padre de
-`clara`:
+`padre(luis, clara).` se agrega a `familia.pl` como un hecho más. Con ese
+hecho, `pedro` es abuelo de `clara`, porque `pedro` es padre de `luis` y `luis`
+es padre de `clara`:
 
 ```prolog
 ?- abuelo(pedro, clara).
@@ -46,6 +46,8 @@ mayúscula. Como `pedro` tiene dos hijos, la segunda respuesta se solicita con
   respuesta consiste en valores para la variable, uno por cada solución.
 
 ## 4
+
+Con `edades.pl` cargado, la consulta responde:
 
 ```prolog
 ?- etapa(eva, Etapa).

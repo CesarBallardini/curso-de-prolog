@@ -1,0 +1,24 @@
+# Capítulo 31 - El servicio de Inscripciones como servicio de systemd, en
+# Linux.
+#
+#     sudo cp inscripciones.service /etc/systemd/system/
+#     sudo systemctl daemon-reload
+#     sudo systemctl enable --now inscripciones
+#
+# El programa está en /opt/inscripciones, y lo ejecuta un usuario sin
+# privilegios, inscripciones. systemd lo arranca al iniciar la máquina y lo
+# vuelve a arrancar si termina con un error.
+
+[Unit]
+Description=Inscripciones, el servicio web del curso de Prolog
+After=network.target
+
+[Service]
+Type=simple
+User=inscripciones
+WorkingDirectory=/opt/inscripciones/inscripciones
+ExecStart=/usr/bin/swipl servicio.pl --puerto=8080
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

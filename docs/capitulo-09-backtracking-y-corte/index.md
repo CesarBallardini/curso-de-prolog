@@ -111,8 +111,8 @@ falla más adelante y la ejecución intenta retroceder.
 
 ## 9.3 Qué poda exactamente
 
-Esta sección requiere especial atención, porque el corte no poda simplemente "lo
-que sigue". Cuando la ejecución pasa por un `!` dentro de una cláusula, se
+Esta sección requiere especial atención, porque el corte no poda únicamente lo
+que sigue. Cuando la ejecución pasa por un `!` dentro de una cláusula, se
 descartan dos conjuntos de alternativas:
 
 1. **las cláusulas siguientes** del mismo predicado, **para esta invocación**.
@@ -158,8 +158,8 @@ condición, y la última no tiene condición, porque cubre todos los casos
 restantes.
 
 No es la única forma de escribirlo. Las mismas tres categorías se pueden definir
-con las condiciones completas —`A >= 4, A < 13` para chico, como en el capítulo
-1—, y en ese caso no se requiere ningún corte. Esa versión es más extensa y
+con las condiciones completas —`A >= 4, A < 13` para chico, como en el
+[capítulo 1](../capitulo-01-la-primera-hora/index.md)—, y en ese caso no se requiere ningún corte. Esa versión es más extensa y
 repite información; la versión con corte es más breve y depende del orden de las
 cláusulas.
 
@@ -174,7 +174,8 @@ corte solo tiene el significado pretendido si se la lee de arriba hacia abajo.
     ```prolog
     %!  p(+X, -Caso) is det.
     %
-    %   Caso es el primero de los casos que corresponde a X.
+    %   Caso es el primero de los casos que corresponde a X. Caso debe llegar
+    %   libre.
     p(X, primer_caso) :-
         condicion(X),
         !.
@@ -185,10 +186,10 @@ corte solo tiene el significado pretendido si se la lee de arriba hacia abajo.
     ```
 
     Los casos deben ser **disjuntos y exhaustivos** leídos de arriba hacia
-    abajo. La última cláusula es la que hay que mirar con cuidado: como no tiene
+    abajo. La última cláusula es la que requiere más atención: como no tiene
     condición, afirma su caso para todo lo que llegue hasta ella, y si eso no es
-    cierto por sí solo, el predicado responde mal en cuanto se lo consulta con
-    el segundo argumento ya instanciado. La [sección 9.5](#95-corte-verde-y-corte-rojo) muestra exactamente ese
+    cierto por sí solo, el predicado responde de manera incorrecta en cuanto se
+    lo consulta con el segundo argumento ya instanciado. La [sección 9.5](#95-corte-verde-y-corte-rojo) muestra exactamente ese
     problema.
 
     **En este capítulo se usa en**: `categoria/2` (9.2).
@@ -225,12 +226,12 @@ Por lo tanto, el corte tiene efecto cuando el segundo argumento está libre, y n
 lo tiene cuando está instanciado. El programa responde de manera correcta una
 consulta e incorrecta la otra.
 
-Conviene además mirar el programa como un conjunto de afirmaciones, sin tener en
+Conviene además leer el programa como un conjunto de afirmaciones, sin tener en
 cuenta el orden. La tercera cláusula dice que toda persona con una edad
 registrada es adulta, y eso es falso: es una afirmación incorrecta, y está
 escrita en la cláusula que **no** lleva corte. Las dos primeras cláusulas no la
 contradicen; se limitan a llegar antes. Mientras el corte se ejecuta, la
-afirmación falsa queda tapada; cuando no se ejecuta, queda a la vista.
+afirmación falsa queda oculta; cuando no se ejecuta, queda expuesta.
 
 **Regla práctica**: todo predicado que contenga un corte se debe verificar con
 los argumentos instanciados, y no solo con variables. Si se requiere que el
@@ -290,8 +291,9 @@ Cuando solo se requiere **la primera** respuesta, se agrega un corte:
 ```prolog
 %!  primer_multiplo(+De, +Desde, -N) is semidet.
 %
-%   N es el primero de esos múltiplos, y solo él. N debe llegar libre: con N
-%   ya ligado, el corte no tiene nada que podar (sección 9.6).
+%   N es el primero de esos múltiplos, y solo él; falla si no hay ninguno
+%   entre Desde y 200. N debe llegar libre: con N ya ligado, el corte no
+%   tiene nada que podar.
 primer_multiplo(De, Desde, N) :-
     multiplo(De, Desde, N),
     !.
@@ -320,7 +322,7 @@ impedirlo, porque `multiplo(7, 20, 28)` se cumple de manera directa —28 está 
 el rango y es múltiplo de 7— y el `!` se ejecuta después, cuando ya no hay nada
 que podar.
 
-Es decir que este corte es **rojo**, aunque a primera vista parezca inofensivo.
+Es decir que este corte es **rojo**, aunque sea la forma más habitual de usar el corte.
 Conviene anotarlo en el encabezado del predicado. El `-N` no alcanza, porque un
 argumento de salida puede llegar ligado ([sección 2.8](../capitulo-02-hechos-consultas-y-variables/index.md#28-como-se-documenta-el-uso-de-un-predicado)): por eso la descripción
 aclara que `N` debe llegar libre. `primer_multiplo/3` responde correctamente en
@@ -360,7 +362,7 @@ ese caso, y no se lo debe usar para verificar un valor dado.
 La técnica se aplica a problemas de mucha mayor escala que la búsqueda de
 múltiplos: ubicar reinas en un tablero, resolver un sudoku, asignar horarios.
 Cambian el generador y la condición; la estructura es siempre la misma. El
-[capítulo 33](../capitulo-33-busqueda-y-juegos/index.md) la retoma con problemas de mayor complejidad, y el [capítulo 32](../capitulo-32-programacion-con-restricciones/index.md)
+[capítulo 39](../capitulo-39-busqueda-y-juegos/index.md) la retoma con problemas de mayor complejidad, y el [capítulo 23](../capitulo-23-programacion-con-restricciones/index.md)
 presenta una técnica que la hace mucho más eficiente.
 
 ## Ejercicios
@@ -425,7 +427,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 
     `color(C).` · `primero(C).` · `primero(verde).` · `primero(rojo).`
 
-    La tercera es la que conviene pensar con cuidado.
+    La tercera es la que requiere más atención.
 12. ★ **(2)** Seguir a mano `?- categoria(luis, C).` sobre `corte.pl`,
     completando una tabla con una fila por paso, e indicando en cuál de ellos se
     ejecuta el `!` y qué alternativas descarta:
@@ -473,7 +475,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | Tema | Se retoma en |
 |---|---|
 | `\+`, que se define internamente con un corte | [capítulo 10](../capitulo-10-negacion-como-falla/index.md) |
-| `->` y `;`, que expresan lo mismo con otra notación | [capítulo 13](../capitulo-13-control/index.md) |
-| Cuándo el corte mejora el rendimiento y cuándo lo perjudica | [capítulo 14](../capitulo-14-rendimiento/index.md) |
-| Generar y probar con restricciones, que descarta antes de generar | [capítulo 32](../capitulo-32-programacion-con-restricciones/index.md) |
-| Búsquedas de mayor escala: reinas, laberintos, juegos | [capítulo 33](../capitulo-33-busqueda-y-juegos/index.md) |
+| `->` y `;`, que expresan lo mismo con otra notación | [capítulo 15](../capitulo-15-control/index.md) |
+| Cuándo el corte mejora el rendimiento y cuándo lo perjudica | [capítulo 16](../capitulo-16-rendimiento/index.md) |
+| Generar y probar con restricciones, que descarta antes de generar | [capítulo 23](../capitulo-23-programacion-con-restricciones/index.md) |
+| Búsquedas de mayor escala: reinas, laberintos, juegos | [capítulo 39](../capitulo-39-busqueda-y-juegos/index.md) |

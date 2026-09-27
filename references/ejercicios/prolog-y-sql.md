@@ -42,6 +42,7 @@ Cada ejercicio se ejecuta sobre una base nueva: en SQL, una base en memoria reci
 
 - **Fuente:** L. Sterling y E. Shapiro, *The Art of Prolog*, 2.ª ed., MIT Press, 1994, cap. 2 «Database Programming», §2.4 «Logic Programs and the Relational Database Model». Copia local: `books/the-art-of-prolog/11-2-database-programming.md` (páginas 83–84 del PDF; el OCR es malo, conviene leer el libro impreso).
 - **Tema:** 11 (+ 2, 8)
+- **Capítulos:** 40, 10
 - **Dificultad:** 1
 - **Solución:** sí, en el texto (reglas `r_union_s`, `r_diff_s`, `r_x_s` y una proyección `r13`).
 - **SWISH:** sí; hay que inventar hechos `r/2` y `s/2`.
@@ -52,6 +53,7 @@ Cada ejercicio se ejecuta sobre una base nueva: en SQL, una base en memoria reci
 
 - **Fuente:** Sterling y Shapiro, *The Art of Prolog*, §2.4, final de la sección (p. 84 del PDF).
 - **Tema:** 11 (+ 2)
+- **Capítulos:** 40, 3
 - **Dificultad:** 1
 - **Solución:** sí, en el texto (`r_meet_s`).
 - **SWISH:** sí.
@@ -62,6 +64,7 @@ Cada ejercicio se ejecuta sobre una base nueva: en SQL, una base en memoria reci
 
 - **Fuente:** Sterling y Shapiro, *The Art of Prolog*, ejercicios de §2.1, apartados (i) y (ii) (p. 75 del PDF).
 - **Tema:** 11 (+ 1, 2)
+- **Capítulos:** 40, 3
 - **Dificultad:** 1
 - **Solución:** no.
 - **SWISH:** sí.
@@ -72,6 +75,7 @@ Cada ejercicio se ejecuta sobre una base nueva: en SQL, una base en memoria reci
 
 - **Fuente:** Sterling y Shapiro, *The Art of Prolog*, §2.2 y ejercicios de §2.2, apartados (i) y (ii) (pp. 78–80 del PDF).
 - **Tema:** 11 (+ 2)
+- **Capítulos:** 40, 3
 - **Dificultad:** 2
 - **Solución:** no.
 - **SWISH:** sí.
@@ -82,6 +86,7 @@ Cada ejercicio se ejecuta sobre una base nueva: en SQL, una base en memoria reci
 
 - **Fuente:** Sterling y Shapiro, *The Art of Prolog*, ejercicios de §2.2, apartado (iii) (p. 80 del PDF).
 - **Tema:** 11 (+ 2, 8)
+- **Capítulos:** 40, 17, 10
 - **Dificultad:** 2
 - **Solución:** no.
 - **SWISH:** sí.
@@ -92,6 +97,7 @@ Cada ejercicio se ejecuta sobre una base nueva: en SQL, una base en memoria reci
 
 - **Fuente:** Sterling y Shapiro, *The Art of Prolog*, ejercicios de §2.2, apartado (iv) (p. 80 del PDF).
 - **Tema:** 11 (+ 1, 2)
+- **Capítulos:** 40, 14
 - **Dificultad:** 2
 - **Solución:** no.
 - **SWISH:** sí.
@@ -102,6 +108,7 @@ Cada ejercicio se ejecuta sobre una base nueva: en SQL, una base en memoria reci
 
 - **Fuente:** Sterling y Shapiro, *The Art of Prolog*, §2.3 (Programas 2.6 y 2.7, `connected/2`) y ejercicios de §2.3, apartados (i) a (iii) (pp. 82–83 del PDF).
 - **Tema:** 11 (+ 5)
+- **Capítulos:** 40, 6
 - **Dificultad:** 2
 - **Solución:** parcial (el texto resuelve `connected`; los ejercicios no).
 - **SWISH:** sí.
@@ -112,6 +119,7 @@ Cada ejercicio se ejecuta sobre una base nueva: en SQL, una base en memoria reci
 
 - **Fuente:** W. F. Clocksin y C. S. Mellish, *Programming in Prolog*, 5.ª ed., Springer, 2003, §7.4 «Parts Inventory» (se apoya en el programa del cap. 3). Copia local: `books/programming-in-prolog/10-7-more-example-programs.md` (pp. 167–169 del PDF).
 - **Tema:** 11 (+ 5, 9)
+- **Capítulos:** 40, 17, 6
 - **Dificultad:** 3
 - **Solución:** sí, en el texto (`partlist/1`, `partsof/3`, `collect/2`).
 - **SWISH:** sí (conviene devolver el resultado en una lista en lugar de imprimirlo).
@@ -122,6 +130,7 @@ Cada ejercicio se ejecuta sobre una base nueva: en SQL, una base en memoria reci
 
 - **Fuente:** Clocksin y Mellish, *Programming in Prolog*, ej. 1.3 (inspirado en Kowalski, *Logic for Problem Solving*, 1979) y ej. 1.4. Copia local: `books/programming-in-prolog/04-1-tutorial-introduction.md`.
 - **Tema:** 11 (+ 1, 2)
+- **Capítulos:** 40, 3
 - **Dificultad:** 1
 - **Solución:** parcial (apéndice A del libro, respuestas seleccionadas).
 - **SWISH:** sí.
@@ -132,6 +141,7 @@ Cada ejercicio se ejecuta sobre una base nueva: en SQL, una base en memoria reci
 
 - **Fuente:** Clocksin y Mellish, *Programming in Prolog*, §6.1 «Entering New Clauses» y §7.8 «Using the Database» (7.8.1 `random`, 7.8.2 `gensym`). Copias locales: `09-6-built-in-predicates.md` y `10-7-more-example-programs.md`.
 - **Tema:** 11 (+ 10)
+- **Capítulos:** 40, 20
 - **Dificultad:** 2
 - **Solución:** sí, en el texto.
 - **SWISH:** sí (hay que declarar `:- dynamic`).
@@ -142,6 +152,7 @@ Cada ejercicio se ejecuta sobre una base nueva: en SQL, una base en memoria reci
 
 - **Fuente:** Clocksin y Mellish, *Programming in Prolog*, §7.8.3 «Findall» y ej. 7.8.
 - **Tema:** 11 (+ 9)
+- **Capítulos:** 40, 17
 - **Dificultad:** 2
 - **Solución:** no.
 - **SWISH:** sí.
@@ -154,6 +165,7 @@ Cada ejercicio se ejecuta sobre una base nueva: en SQL, una base en memoria reci
 
 - **Fuente:** cuaderno público de SWISH «An introduction to Prolog for SQL programmers», <https://swish.swi-prolog.org/p/sql2prolog.swinb>. Usa el esquema `college/student/apply` del curso de bases de datos de J. Widom (Stanford).
 - **Tema:** 11 (+ 1, 2, 9)
+- **Capítulos:** 40, 17, 11
 - **Dificultad:** 1
 - **Solución:** sí, cada consulta SQL aparece con su traducción Prolog.
 - **SWISH:** sí, es un cuaderno de SWISH listo para ejecutar.
@@ -164,6 +176,7 @@ Cada ejercicio se ejecuta sobre una base nueva: en SQL, una base en memoria reci
 
 - **Fuente:** el mismo cuaderno de SWISH que SQL-12, secciones de unión, intersección, diferencia, subconsultas y joins externos.
 - **Tema:** 11 (+ 2, 8, 9)
+- **Capítulos:** 40, 10, 17
 - **Dificultad:** 2
 - **Solución:** sí.
 - **SWISH:** sí.
@@ -174,6 +187,7 @@ Cada ejercicio se ejecuta sobre una base nueva: en SQL, una base en memoria reci
 
 - **Fuente:** el mismo cuaderno de SWISH que SQL-12, secciones de agregación, `GROUP BY`, `HAVING`, `INSERT` y `DELETE`.
 - **Tema:** 11 (+ 9, 10)
+- **Capítulos:** 40, 17, 20
 - **Dificultad:** 2
 - **Solución:** sí.
 - **SWISH:** sí.
@@ -184,6 +198,7 @@ Cada ejercicio se ejecuta sobre una base nueva: en SQL, una base en memoria reci
 
 - **Fuente:** D. S. Warren, *Programming in Tabled Prolog* (borrador en línea, XSB), sección «Prolog as a Database Query Language», <https://www3.cs.stonybrook.edu/~warren/xsbbook/node11.html>. (El servidor rechaza la descarga automática con 403; se abre normalmente desde un navegador.)
 - **Tema:** 11 (+ 1, 2, 5)
+- **Capítulos:** 40, 3
 - **Dificultad:** 1
 - **Solución:** sí, en el texto.
 - **SWISH:** sí (los ejemplos no dependen de XSB).
@@ -196,6 +211,7 @@ Cada ejercicio se ejecuta sobre una base nueva: en SQL, una base en memoria reci
 
 - **Fuente:** J. Widom, curso *Databases* (Stanford, luego Stanford Online/edX), «Relational Algebra Exercises». Enunciados recopilados en <https://github.com/andylamp/stanford_dbclass/blob/master/04%20-%20relational%20algebra/ra-ex.md>; soluciones de estudiantes en <https://github.com/alorchhota/db-stanford>.
 - **Tema:** 11 (+ 2, 8)
+- **Capítulos:** 40, 10
 - **Dificultad:** 2
 - **Solución:** sí (de terceros, en los repositorios citados).
 - **SWISH:** sí, pasando `Person`, `Eats`, `Serves` y `Frequents` a hechos.
@@ -206,6 +222,7 @@ Cada ejercicio se ejecuta sobre una base nueva: en SQL, una base en memoria reci
 
 - **Fuente:** la misma hoja que SQL-16.
 - **Tema:** 11 (+ 8, 9)
+- **Capítulos:** 40, 17, 10
 - **Dificultad:** 3
 - **Solución:** sí (de terceros).
 - **SWISH:** sí.
@@ -216,6 +233,7 @@ Cada ejercicio se ejecuta sobre una base nueva: en SQL, una base en memoria reci
 
 - **Fuente:** J. Widom, curso *Databases*, «SQL Movie-Rating Query Exercises» (conjunto básico y extras). Soluciones de terceros con el script de datos `rating.sql` en <https://github.com/alorchhota/db-stanford>.
 - **Tema:** 11 (+ 8, 9)
+- **Capítulos:** 40, 17
 - **Dificultad:** 2
 - **Solución:** sí (de terceros).
 - **SWISH:** sí, convirtiendo `Movie`, `Reviewer` y `Rating` en hechos.
@@ -226,6 +244,7 @@ Cada ejercicio se ejecuta sobre una base nueva: en SQL, una base en memoria reci
 
 - **Fuente:** C. J. Date, *An Introduction to Database Systems*, 8.ª ed., Addison-Wesley, 2003 (base S/P/SP usada en todo el libro). Descripción del esquema: <https://en.wikipedia.org/wiki/Suppliers_and_Parts_database>. Hoja de práctica de álgebra relacional y SQL sobre la variante S/P/J/SPJ (proveedores, piezas, proyectos), con los datos de Date impresos: HKUST, IELM 230, <https://ieda.ust.hk/dfaculty/ajay/courses/ielm230/old_asgt/11s_asgt/PracticeDate.pdf>.
 - **Tema:** 11 (+ 2, 8, 9)
+- **Capítulos:** 40, 17, 10
 - **Dificultad:** 2
 - **Solución:** no (la hoja aclara que no trae respuestas modelo).
 - **SWISH:** sí; las cuatro tablas de la hoja se pasan a hechos en pocos minutos.
@@ -238,6 +257,7 @@ Cada ejercicio se ejecuta sobre una base nueva: en SQL, una base en memoria reci
 
 - **Fuente:** documentación de SQLite, «The WITH Clause», secciones de consultas recursivas, <https://www.sqlite.org/lang_with.html>.
 - **Tema:** 11 (+ 5)
+- **Capítulos:** 40, 6
 - **Dificultad:** 2
 - **Solución:** sí, en la documentación.
 - **SWISH:** la versión Prolog sí (la documentación sólo da SQL).
@@ -248,6 +268,7 @@ Cada ejercicio se ejecuta sobre una base nueva: en SQL, una base en memoria reci
 
 - **Fuente:** documentación de SQLite, «The WITH Clause», ejemplos de grafo no dirigido y de grafo acíclico de versiones, <https://www.sqlite.org/lang_with.html>.
 - **Tema:** 11 (+ 5)
+- **Capítulos:** 40, 38
 - **Dificultad:** 2
 - **Solución:** sí.
 - **SWISH:** la versión Prolog sí, con `:- table`.
@@ -258,6 +279,7 @@ Cada ejercicio se ejecuta sobre una base nueva: en SQL, una base en memoria reci
 
 - **Fuente:** manual de SWI-Prolog, sección 7 «Tabled execution (SLG resolution)», <https://www.swi-prolog.org/pldoc/man?section=tabling>, incluida la subsección de *answer subsumption* (tablas con `min`/`max`).
 - **Tema:** 11 (+ 5)
+- **Capítulos:** 40, 38
 - **Dificultad:** 3
 - **Solución:** sí, con ejemplos (`fib/2`, `connection/2`).
 - **SWISH:** sí; SWISH admite `:- table`.
@@ -268,6 +290,7 @@ Cada ejercicio se ejecuta sobre una base nueva: en SQL, una base en memoria reci
 
 - **Fuente:** manual de SWI-Prolog, sección 4.14 «Database», <https://www.swi-prolog.org/pldoc/man?section=db>.
 - **Tema:** 11 (+ 10)
+- **Capítulos:** 40, 20
 - **Dificultad:** 2
 - **Solución:** no son ejercicios, es referencia con ejemplos.
 - **SWISH:** sí.
@@ -278,6 +301,7 @@ Cada ejercicio se ejecuta sobre una base nueva: en SQL, una base en memoria reci
 
 - **Fuente:** manual de SWI-Prolog, `library(persistency)`, <https://www.swi-prolog.org/pldoc/man?section=persistency>.
 - **Tema:** 11 (+ 10)
+- **Capítulos:** 40, 20, 27
 - **Dificultad:** 3
 - **Solución:** no (referencia con ejemplo de uso).
 - **SWISH:** no (necesita escribir archivos); sí con `swipl` local.
@@ -288,6 +312,7 @@ Cada ejercicio se ejecuta sobre una base nueva: en SQL, una base en memoria reci
 
 - **Fuente:** manual de SWI-Prolog, `library(solution_sequences)`, <https://www.swi-prolog.org/pldoc/man?section=solutionsequences>.
 - **Tema:** 11 (+ 9)
+- **Capítulos:** 40, 17
 - **Dificultad:** 1
 - **Solución:** referencia con ejemplos.
 - **SWISH:** sí.
@@ -298,6 +323,7 @@ Cada ejercicio se ejecuta sobre una base nueva: en SQL, una base en memoria reci
 
 - **Fuente:** manual de SWI-Prolog, paquete ODBC, sección «Running SQL queries», <https://www.swi-prolog.org/pldoc/man?section=odbc-query>, y `library(cql/cql)` (Constraint Query Language), <https://www.swi-prolog.org/pldoc/man?section=cql>.
 - **Tema:** 11
+- **Capítulos:** 40
 - **Dificultad:** 3
 - **Solución:** referencia con ejemplos.
 - **SWISH:** no (requiere un controlador ODBC local).
@@ -310,6 +336,7 @@ Cada ejercicio se ejecuta sobre una base nueva: en SQL, una base en memoria reci
 
 - **Fuente:** J. D. Ullman, apuntes del curso CS345 (Stanford), en particular «Introduction to Datalog, Stratified Negation», <http://infolab.stanford.edu/~ullman/cs345-notes.html>.
 - **Tema:** 11 (+ 2, 5, 8)
+- **Capítulos:** 40, 10, 12
 - **Dificultad:** 3
 - **Solución:** parcial (ejemplos resueltos en las transparencias).
 - **SWISH:** sí, los ejemplos son Prolog válido.
@@ -320,6 +347,7 @@ Cada ejercicio se ejecuta sobre una base nueva: en SQL, una base en memoria reci
 
 - **Fuente:** S. Ceri, G. Gottlob y L. Tanca, «What You Always Wanted to Know About Datalog (And Never Dared to Ask)», *IEEE Transactions on Knowledge and Data Engineering* 1(1):146–166, 1989. DOI 10.1109/69.43410. Copia en <https://www2.cs.sfu.ca/CourseCentral/721/jim/DatalogPaper.pdf>.
 - **Tema:** 11 (+ 5)
+- **Capítulos:** 40, 38
 - **Dificultad:** 3
 - **Solución:** los ejemplos del artículo están resueltos.
 - **SWISH:** sí para los ejemplos.
@@ -330,6 +358,7 @@ Cada ejercicio se ejecuta sobre una base nueva: en SQL, una base en memoria reci
 
 - **Fuente:** S. Abiteboul, R. Hull y V. Vianu, *Foundations of Databases*, Addison-Wesley, 1995, parte D «Datalog and Recursion» (caps. 12 a 15, con ejercicios al final de cada capítulo). Versión en línea de los autores: <http://webdam.inria.fr/Alice/>.
 - **Tema:** 11 (+ 5, 8)
+- **Capítulos:** 40, 12
 - **Dificultad:** 3
 - **Solución:** no.
 - **SWISH:** sí para los ejercicios con programas Datalog.
@@ -340,6 +369,7 @@ Cada ejercicio se ejecuta sobre una base nueva: en SQL, una base en memoria reci
 
 - **Fuente:** tutorial de Soufflé, <https://souffle-lang.github.io/tutorial>.
 - **Tema:** 11 (+ 5, 8, 9)
+- **Capítulos:** 40, 6, 17
 - **Dificultad:** 2
 - **Solución:** sí, en el tutorial.
 - **SWISH:** sí, traduciendo `.decl`/`.input` a hechos.
@@ -350,6 +380,7 @@ Cada ejercicio se ejecuta sobre una base nueva: en SQL, una base en memoria reci
 
 - **Fuente:** A. R. Shovon, «Recursive queries in SQL and Datalog», <https://arshovon.com/blog/recursive-queries/>, y «Introduction to Datalog as logic programming», <https://arshovon.com/blog/datalog-introduction/>.
 - **Tema:** 11 (+ 5)
+- **Capítulos:** 40, 6
 - **Dificultad:** 2
 - **Solución:** sí.
 - **SWISH:** sí.
@@ -360,6 +391,7 @@ Cada ejercicio se ejecuta sobre una base nueva: en SQL, una base en memoria reci
 
 - **Fuente:** J. Enlund, *Learn Datalog Today*, tutorial interactivo con base de películas (Datomic). Código y contenido: <https://github.com/jonase/learndatalogtoday>.
 - **Tema:** 11 (+ 2, 9)
+- **Capítulos:** 40, 17
 - **Dificultad:** 1
 - **Solución:** sí, en el tutorial.
 - **SWISH:** sí, reescribiendo las tripletas (entidad, atributo, valor) como hechos.
@@ -370,6 +402,7 @@ Cada ejercicio se ejecuta sobre una base nueva: en SQL, una base en memoria reci
 
 - **Fuente:** E. Skvortsov y colaboradores, Logica, <https://github.com/EvgSkv/logica> (tutorial en el directorio `tutorial/`); presentación en el blog de Google Open Source, <https://opensource.googleblog.com/2021/04/logica-organizing-your-data-queries.html>.
 - **Tema:** 11 (+ 2, 9)
+- **Capítulos:** 40
 - **Dificultad:** 2
 - **Solución:** sí, en el tutorial.
 - **SWISH:** no (Logica corre sobre SQLite, DuckDB, PostgreSQL o BigQuery).
@@ -405,6 +438,7 @@ Tres convenciones que hay que explicar antes de empezar:
 ### PAR-1 — Selección: alumnos de una carrera
 
 - **Tema:** 11 (+ 1)
+- **Capítulos:** 40, 2
 - **Dificultad:** 1
 - **Esquema:** académico (`alumnos`, `materias`, `correlativas`, `inscripciones`)
 - **Enunciado:** Listar legajo y nombre de los alumnos de la carrera `sistemas`.
@@ -428,6 +462,7 @@ SELECT legajo, nombre FROM alumnos WHERE carrera = 'sistemas';
 ### PAR-2 — Selección con varias condiciones
 
 - **Tema:** 11 (+ 1)
+- **Capítulos:** 40, 8
 - **Dificultad:** 1
 - **Esquema:** académico (`alumnos`, `materias`, `correlativas`, `inscripciones`)
 - **Enunciado:** Nombre, carrera y año de ingreso de los alumnos que ingresaron en 2024 o después y que no son de la carrera `civil`.
@@ -452,6 +487,7 @@ WHERE ingreso >= 2024 AND carrera <> 'civil';
 ### PAR-3 — Proyección con repeticiones
 
 - **Tema:** 11 (+ 1)
+- **Capítulos:** 40, 2
 - **Dificultad:** 1
 - **Esquema:** académico (`alumnos`, `materias`, `correlativas`, `inscripciones`)
 - **Enunciado:** Listar la carrera de cada alumno (sin eliminar repetidos).
@@ -475,6 +511,7 @@ SELECT carrera FROM alumnos;
 ### PAR-4 — DISTINCT contra setof
 
 - **Tema:** 11 (+ 9)
+- **Capítulos:** 40, 17
 - **Dificultad:** 2
 - **Esquema:** académico (`alumnos`, `materias`, `correlativas`, `inscripciones`)
 - **Enunciado:** Listar las carreras sin repetir, en orden alfabético.
@@ -499,6 +536,7 @@ ORDER BY carrera;
 ### PAR-5 — ORDER BY con dos criterios
 
 - **Tema:** 11 (+ 9)
+- **Capítulos:** 40, 17, 22
 - **Dificultad:** 2
 - **Esquema:** académico (`alumnos`, `materias`, `correlativas`, `inscripciones`)
 - **Enunciado:** Listar año de ingreso y nombre de todos los alumnos, ordenados por año y, dentro del mismo año, por nombre.
@@ -523,6 +561,7 @@ ORDER BY ingreso, nombre;
 ### PAR-6 — Join de dos tablas (y el primer NULL)
 
 - **Tema:** 11 (+ 1, 2)
+- **Capítulos:** 40, 3
 - **Dificultad:** 1
 - **Esquema:** académico (`alumnos`, `materias`, `correlativas`, `inscripciones`)
 - **Enunciado:** Nombre y nota de cada alumno inscripto en `am1`.
@@ -548,6 +587,7 @@ WHERE i.materia = 'am1';
 ### PAR-7 — Join de tres tablas con condición sobre la nota
 
 - **Tema:** 11 (+ 2)
+- **Capítulos:** 40, 3
 - **Dificultad:** 2
 - **Esquema:** académico (`alumnos`, `materias`, `correlativas`, `inscripciones`)
 - **Enunciado:** Nombre del alumno, nombre de la materia y nota de todas las materias aprobadas (nota 6 o más).
@@ -576,6 +616,7 @@ WHERE i.nota >= 6;
 ### PAR-8 — Self-join: pares de alumnos de la misma carrera
 
 - **Tema:** 11 (+ 2)
+- **Capítulos:** 40, 3
 - **Dificultad:** 2
 - **Esquema:** académico (`alumnos`, `materias`, `correlativas`, `inscripciones`)
 - **Enunciado:** Listar los pares de alumnos (nombre, nombre, carrera) que estudian la misma carrera, cada par una sola vez.
@@ -601,6 +642,7 @@ FROM alumnos a1 JOIN alumnos a2
 ### PAR-9 — UNION: inscriptos en una materia o en otra
 
 - **Tema:** 11 (+ 2, 9)
+- **Capítulos:** 40, 17
 - **Dificultad:** 2
 - **Esquema:** académico (`alumnos`, `materias`, `correlativas`, `inscripciones`)
 - **Enunciado:** Legajos de los alumnos inscriptos en `am1` o en `log`, sin repetir y ordenados.
@@ -630,6 +672,7 @@ en_am1_o_log(L) :- inscripcion(L, log, _).
 ### PAR-10 — UNION ALL: la misma regla sin setof
 
 - **Tema:** 11 (+ 2)
+- **Capítulos:** 40, 3
 - **Dificultad:** 1
 - **Esquema:** académico (`alumnos`, `materias`, `correlativas`, `inscripciones`)
 - **Enunciado:** Igual que PAR-9, pero conservando las repeticiones: un legajo por cada inscripción a `am1` o a `log`.
@@ -655,6 +698,7 @@ SELECT legajo FROM inscripciones WHERE materia = 'log';
 ### PAR-11 — INTERSECT: inscriptos en las dos materias
 
 - **Tema:** 11 (+ 1)
+- **Capítulos:** 40, 3
 - **Dificultad:** 1
 - **Esquema:** académico (`alumnos`, `materias`, `correlativas`, `inscripciones`)
 - **Enunciado:** Legajos de los alumnos inscriptos en `am1` y también en `alg`.
@@ -680,6 +724,7 @@ SELECT legajo FROM inscripciones WHERE materia = 'alg';
 ### PAR-12 — EXCEPT: inscriptos en una materia pero no en otra
 
 - **Tema:** 11 (+ 8)
+- **Capítulos:** 40, 10
 - **Dificultad:** 1
 - **Esquema:** académico (`alumnos`, `materias`, `correlativas`, `inscripciones`)
 - **Enunciado:** Legajos de los alumnos inscriptos en `am1` que no están inscriptos en `alg`.
@@ -705,6 +750,7 @@ SELECT legajo FROM inscripciones WHERE materia = 'alg';
 ### PAR-13 — NOT EXISTS: alumnos sin inscripciones
 
 - **Tema:** 11 (+ 8)
+- **Capítulos:** 40, 10
 - **Dificultad:** 1
 - **Esquema:** académico (`alumnos`, `materias`, `correlativas`, `inscripciones`)
 - **Enunciado:** Legajo y nombre de los alumnos que no están inscriptos en ninguna materia.
@@ -730,6 +776,7 @@ WHERE NOT EXISTS (SELECT * FROM inscripciones i
 ### PAR-14 — Negación antes de tiempo (difieren)
 
 - **Tema:** 11 (+ 8)
+- **Capítulos:** 40, 10
 - **Dificultad:** 2
 - **Esquema:** académico (`alumnos`, `materias`, `correlativas`, `inscripciones`)
 - **Enunciado:** Un alumno intentó resolver PAR-13 poniendo la negación primero. Ejecutar su consulta, comparar con la de SQL y explicar la diferencia.
@@ -755,6 +802,7 @@ WHERE NOT EXISTS (SELECT * FROM inscripciones i
 ### PAR-15 — Vista contra regla
 
 - **Tema:** 11 (+ 2)
+- **Capítulos:** 40, 3
 - **Dificultad:** 1
 - **Esquema:** académico (`alumnos`, `materias`, `correlativas`, `inscripciones`)
 - **Enunciado:** Definir la vista/regla `aprobadas` (inscripciones con nota 6 o más) y usarla para listar las materias aprobadas por el alumno 101.
@@ -785,6 +833,7 @@ aprobada(L, M, N) :-
 ### PAR-16 — División: aprobaron todas las materias de primer año
 
 - **Tema:** 11 (+ 8)
+- **Capítulos:** 40, 17, 10
 - **Dificultad:** 3
 - **Esquema:** académico (`alumnos`, `materias`, `correlativas`, `inscripciones`)
 - **Enunciado:** Legajo y nombre de los alumnos que aprobaron **todas** las materias de primer año.
@@ -827,6 +876,7 @@ Resultado: (101, ana). Verificado: SQL y Prolog coinciden.
 ### PAR-17 — COUNT(*) contra aggregate_all(count)
 
 - **Tema:** 11 (+ 9)
+- **Capítulos:** 40, 17
 - **Dificultad:** 1
 - **Esquema:** académico
 - **Enunciado:** ¿Cuántos alumnos tiene la carrera `sistemas`?
@@ -850,6 +900,7 @@ SELECT COUNT(*) FROM alumnos WHERE carrera = 'sistemas';
 ### PAR-18 — GROUP BY contra bagof
 
 - **Tema:** 11 (+ 9)
+- **Capítulos:** 40, 17
 - **Dificultad:** 2
 - **Esquema:** académico
 - **Enunciado:** Cantidad de alumnos por carrera.
@@ -874,6 +925,7 @@ GROUP BY carrera;
 ### PAR-19 — Conteo por grupo incluyendo los grupos vacíos
 
 - **Tema:** 11 (+ 9)
+- **Capítulos:** 40, 17
 - **Dificultad:** 2
 - **Esquema:** académico
 - **Enunciado:** Para cada materia, la cantidad de inscriptos, **incluidas** las materias sin inscriptos.
@@ -899,6 +951,7 @@ GROUP BY m.codigo;
 ### PAR-20 — AVG ignora los NULL; en Prolog hay que filtrarlos
 
 - **Tema:** 11 (+ 9)
+- **Capítulos:** 40, 17
 - **Dificultad:** 2
 - **Esquema:** académico
 - **Enunciado:** Promedio de notas de cada alumno, contando sólo las materias que ya tienen nota.
@@ -925,6 +978,7 @@ GROUP BY legajo;
 ### PAR-21 — MAX en subconsulta: quién sacó la nota más alta
 
 - **Tema:** 11 (+ 9)
+- **Capítulos:** 40, 17
 - **Dificultad:** 2
 - **Esquema:** académico
 - **Enunciado:** Nombre y nota del alumno (o los alumnos) con la nota más alta en `log`.
@@ -953,6 +1007,7 @@ WHERE i.materia = 'log'
 ### PAR-22 — HAVING: alumnos con tres o más materias aprobadas
 
 - **Tema:** 11 (+ 2, 9)
+- **Capítulos:** 40, 17
 - **Dificultad:** 2
 - **Esquema:** académico
 - **Enunciado:** Nombre de los alumnos con al menos tres materias aprobadas y cuántas aprobaron.
@@ -983,6 +1038,7 @@ HAVING COUNT(*) >= 3;
 ### PAR-23 — Self-join: cada empleado con su jefe
 
 - **Tema:** 11 (+ 2)
+- **Capítulos:** 40, 3
 - **Dificultad:** 1
 - **Esquema:** empresa (`empleados`, `departamentos`)
 - **Enunciado:** Nombre de cada empleado y nombre de su jefe directo.
@@ -1007,6 +1063,7 @@ FROM empleados e JOIN empleados j ON e.jefe = j.id;
 ### PAR-24 — LEFT JOIN: todos los empleados, tengan o no jefe
 
 - **Tema:** 11 (+ 2, 8)
+- **Capítulos:** 40, 10, 15
 - **Dificultad:** 2
 - **Esquema:** empresa (`empleados`, `departamentos`)
 - **Enunciado:** Igual que PAR-23, pero incluyendo a quien no tiene jefe, con `NULL` en la segunda columna.
@@ -1036,6 +1093,7 @@ jefe_o_null(E, null) :-
 ### PAR-25 — Join con selección sobre la otra tabla
 
 - **Tema:** 11 (+ 2)
+- **Capítulos:** 40, 3
 - **Dificultad:** 1
 - **Esquema:** empresa (`empleados`, `departamentos`)
 - **Enunciado:** Nombre de los empleados que trabajan en Rosario y el nombre de su departamento.
@@ -1061,6 +1119,7 @@ WHERE d.ciudad = 'rosario';
 ### PAR-26 — Departamentos sin empleados
 
 - **Tema:** 11 (+ 8)
+- **Capítulos:** 40, 10
 - **Dificultad:** 1
 - **Esquema:** empresa (`empleados`, `departamentos`)
 - **Enunciado:** Códigos de los departamentos que no tienen ningún empleado.
@@ -1086,6 +1145,7 @@ WHERE NOT EXISTS (SELECT * FROM empleados e
 ### PAR-27 — SUM con GROUP BY y HAVING
 
 - **Tema:** 11 (+ 9)
+- **Capítulos:** 40, 17
 - **Dificultad:** 2
 - **Esquema:** empresa (`empleados`, `departamentos`)
 - **Enunciado:** Departamentos cuya masa salarial (suma de salarios) supera 1 000 000, con esa suma.
@@ -1112,6 +1172,7 @@ HAVING SUM(salario) > 1000000;
 ### PAR-28 — El mejor pago de cada departamento
 
 - **Tema:** 11 (+ 8)
+- **Capítulos:** 40, 10
 - **Dificultad:** 3
 - **Esquema:** empresa (`empleados`, `departamentos`)
 - **Enunciado:** Para cada departamento con empleados, el nombre y el salario de quien más gana.
@@ -1138,6 +1199,7 @@ WHERE e.salario = (SELECT MAX(salario) FROM empleados e2
 ### PAR-29 — ORDER BY DESC y LIMIT
 
 - **Tema:** 11 (+ 9)
+- **Capítulos:** 40, 17, 22
 - **Dificultad:** 2
 - **Esquema:** empresa (`empleados`, `departamentos`)
 - **Enunciado:** Nombre y salario de los tres empleados mejor pagos, de mayor a menor.
@@ -1165,6 +1227,7 @@ LIMIT 3;
 ### PAR-30 — NOT IN con un NULL en la subconsulta (difieren)
 
 - **Tema:** 11 (+ 8)
+- **Capítulos:** 40, 10
 - **Dificultad:** 3
 - **Esquema:** empresa (`empleados`, `departamentos`)
 - **Enunciado:** Listar los empleados que no son jefes de nadie. Comparar la solución SQL con `NOT IN` y la solución Prolog, y explicar por qué SQL no devuelve ninguna fila.
@@ -1189,6 +1252,7 @@ WHERE id NOT IN (SELECT jefe FROM empleados);
 ### PAR-31 — NOT EXISTS: la versión correcta
 
 - **Tema:** 11 (+ 8)
+- **Capítulos:** 40, 10
 - **Dificultad:** 2
 - **Esquema:** empresa (`empleados`, `departamentos`)
 - **Enunciado:** Resolver PAR-30 con `NOT EXISTS` y comprobar que coincide con Prolog.
@@ -1214,6 +1278,7 @@ WHERE NOT EXISTS (SELECT * FROM empleados s
 ### PAR-32 — Comparar con NULL: `<>` contra `\==` (difieren)
 
 - **Tema:** 11 (+ 8)
+- **Capítulos:** 40, 10
 - **Dificultad:** 2
 - **Esquema:** empresa (`empleados`, `departamentos`)
 - **Enunciado:** Listar los empleados cuyo jefe no es el empleado 1. Comparar ambas soluciones: ¿qué pasa con marta?
@@ -1247,6 +1312,7 @@ Resultado: (pablo) · (sofia) · (tomas) · (valeria) · (nicolas). Verificado: 
 ### PAR-33 — Subordinados directos e indirectos
 
 - **Tema:** 11 (+ 5)
+- **Capítulos:** 40, 6
 - **Dificultad:** 2
 - **Esquema:** empresa
 - **Enunciado:** Identificador y nombre de todas las personas que dependen, directa o indirectamente, de lucia (id 3).
@@ -1280,6 +1346,7 @@ subordinado(S, J) :-
 ### PAR-34 — Nivel jerárquico: recursión con un contador
 
 - **Tema:** 11 (+ 5)
+- **Capítulos:** 40, 8
 - **Dificultad:** 2
 - **Esquema:** empresa
 - **Enunciado:** Para cada empleado, su nivel en la jerarquía: 0 para quien no tiene jefe, 1 para quienes dependen de ella, y así sucesivamente.
@@ -1313,6 +1380,7 @@ nivel(Id, K) :-
 ### PAR-35 — Correlativas transitivas (conjunto)
 
 - **Tema:** 11 (+ 5, 9)
+- **Capítulos:** 40, 6, 17
 - **Dificultad:** 2
 - **Esquema:** académico
 - **Enunciado:** Todas las materias que hay que aprobar, directa o indirectamente, antes de cursar `bd`, sin repetir y en orden alfabético.
@@ -1363,6 +1431,7 @@ Resultado: (pp) · (ssl) · (log) · (alg) · (log). Verificado: SQL y Prolog co
 ### PAR-36 — Vuelos con una escala (join de una tabla consigo misma)
 
 - **Tema:** 11 (+ 2)
+- **Capítulos:** 40, 8
 - **Dificultad:** 1
 - **Esquema:** vuelos
 - **Enunciado:** Desde `ros`, todos los destinos alcanzables con exactamente una escala: ciudad de escala, destino final y precio total.
@@ -1388,6 +1457,7 @@ WHERE v1.origen = 'ros';
 ### PAR-37 — Ciudades alcanzables en un grafo con ciclos (tabling)
 
 - **Tema:** 11 (+ 5)
+- **Capítulos:** 40, 38
 - **Dificultad:** 3
 - **Esquema:** vuelos
 - **Enunciado:** Todas las ciudades a las que se puede llegar desde `ros` con cualquier cantidad de escalas. Atención: hay un ciclo `aep → cor → aep`.
@@ -1420,6 +1490,7 @@ alcanza(X, Y) :- alcanza(X, Z), vuelo(Z, Y, _, _).
 ### PAR-38 — Precio mínimo a cada destino (tabling con min)
 
 - **Tema:** 11 (+ 5, 9)
+- **Capítulos:** 40, 38
 - **Dificultad:** 3
 - **Esquema:** vuelos
 - **Enunciado:** Para cada ciudad alcanzable desde `ros`, el precio total más barato para llegar.
@@ -1458,6 +1529,7 @@ En todos los ejercicios de este bloque el resultado que se compara es el conteni
 ### PAR-39 — INSERT contra assertz
 
 - **Tema:** 11 (+ 10)
+- **Capítulos:** 40, 20
 - **Dificultad:** 1
 - **Esquema:** académico
 - **Enunciado:** Inscribir a gabriela (legajo 107) en `log`, todavía sin nota, y listar sus inscripciones.
@@ -1484,6 +1556,7 @@ SELECT materia, nota FROM inscripciones WHERE legajo = 107;
 ### PAR-40 — UPDATE de una fila: retract + assertz
 
 - **Tema:** 11 (+ 10)
+- **Capítulos:** 40, 20
 - **Dificultad:** 1
 - **Esquema:** académico
 - **Enunciado:** Registrar la nota 8 de ana (legajo 101) en `pp` y listar todas sus inscripciones.
@@ -1512,6 +1585,7 @@ SELECT materia, nota FROM inscripciones WHERE legajo = 101;
 ### PAR-41 — UPDATE masivo: aumento del 10 % a un departamento
 
 - **Tema:** 11 (+ 10)
+- **Capítulos:** 40, 20, 17
 - **Dificultad:** 2
 - **Esquema:** empresa
 - **Enunciado:** Aumentar un 10 % el salario de todos los empleados de `it` y listar los nuevos salarios.
@@ -1540,6 +1614,7 @@ SELECT id, salario FROM empleados WHERE depto = 'it';
 ### PAR-42 — DELETE con condición simple: retractall
 
 - **Tema:** 11 (+ 10)
+- **Capítulos:** 40, 20, 17
 - **Dificultad:** 1
 - **Esquema:** académico
 - **Enunciado:** Borrar todas las inscripciones sin nota e informar cuántas inscripciones quedan y cuántas siguen sin nota.
@@ -1567,6 +1642,7 @@ SELECT COUNT(*), COUNT(*) - COUNT(nota) FROM inscripciones;
 ### PAR-43 — DELETE con condición aritmética
 
 - **Tema:** 11 (+ 10)
+- **Capítulos:** 40, 20
 - **Dificultad:** 2
 - **Esquema:** vuelos
 - **Enunciado:** Borrar los vuelos de la aerolínea `fb` que cuestan más de 70 y listar los vuelos de `fb` que quedan.
@@ -1593,6 +1669,7 @@ SELECT origen, destino, precio FROM vuelos WHERE aerolinea = 'fb';
 ### PAR-44 — Clave primaria: SQL la controla, Prolog no
 
 - **Tema:** 11 (+ 10)
+- **Capítulos:** 40, 20, 10
 - **Dificultad:** 2
 - **Esquema:** académico
 - **Enunciado:** Intentar dar de alta a zoe con el legajo 101, que ya existe. En SQL, observar el error; en Prolog, escribir `alta_alumno/4` que sólo agregue el alumno si el legajo está libre. En los dos casos, listar después los alumnos con legajo 101.
@@ -1633,6 +1710,7 @@ Resultado: Prolog: (ana) · (zoe). Verificado contra el valor esperado.
 ### PAR-45 — Clave foránea: integridad referencial a mano
 
 - **Tema:** 11 (+ 8, 10)
+- **Capítulos:** 40, 20, 10
 - **Dificultad:** 2
 - **Esquema:** académico
 - **Enunciado:** Intentar inscribir en `am1` a un legajo inexistente (999) y a gabriela (107). Escribir `alta_inscripcion/2`, que sólo inscribe si el alumno y la materia existen y la inscripción no está repetida. Listar después las inscripciones de 999 y 107.
@@ -1675,6 +1753,7 @@ Preguntas conceptuales con evidencia ejecutable. En cada caso conviene pedir pri
 ### PAR-46 — Contar lo que no existe: 0 contra grupo vacío
 
 - **Tema:** 11 (+ 9)
+- **Capítulos:** 40, 17
 - **Dificultad:** 2
 - **Esquema:** académico
 - **Enunciado:** ¿Cuántos alumnos hay en la carrera `quimica` (que no existe)? Responder con un conteo simple y con un conteo agrupado por carrera. ¿Coinciden SQL y Prolog en los dos casos?
@@ -1713,6 +1792,7 @@ Resultado: (ninguna fila). Verificado: SQL y Prolog coinciden.
 ### PAR-47 — SUM y MAX de nada: NULL contra 0 y contra falla (difieren)
 
 - **Tema:** 11 (+ 9)
+- **Capítulos:** 40, 17
 - **Dificultad:** 2
 - **Esquema:** empresa
 - **Enunciado:** Calcular la suma y el máximo de los salarios del departamento `legal`, que no tiene empleados. Comparar las respuestas.
@@ -1748,6 +1828,7 @@ Resultado: SQL: (NULL). Prolog: (ninguna solución). Verificado: **difieren**, c
 ### PAR-48 — Terminación: la misma recursión sin tabling
 
 - **Tema:** 11 (+ 5)
+- **Capítulos:** 40, 38, 5
 - **Dificultad:** 3
 - **Esquema:** vuelos
 - **Enunciado:** Escribir la alcanzabilidad de PAR-37 **sin** `:- table`, con recursión a derecha, y preguntar por todas las ciudades alcanzables desde `ros`. ¿Termina? ¿Y el CTE de PAR-37 si se cambia `UNION` por `UNION ALL`?
@@ -1789,6 +1870,7 @@ Resultado: SQL: (1000). Verificado contra el valor esperado.
 ### PAR-49 — Negar lo desconocido: lógica de tres valores contra mundo cerrado (difieren)
 
 - **Tema:** 11 (+ 8)
+- **Capítulos:** 40, 10
 - **Dificultad:** 3
 - **Esquema:** académico
 - **Enunciado:** Listar las inscripciones que **no** están aprobadas. En SQL, con `WHERE NOT (nota >= 6)`; en Prolog, con `\+ aprobada(...)`. Explicar por qué las inscripciones sin nota aparecen en un lenguaje y no en el otro.
@@ -1813,6 +1895,7 @@ WHERE NOT (nota >= 6);
 ### PAR-50 — Bolsas contra conjuntos
 
 - **Tema:** 11 (+ 9)
+- **Capítulos:** 40, 17, 22
 - **Dificultad:** 1
 - **Esquema:** académico
 - **Enunciado:** Contar las carreras de la tabla de alumnos de dos maneras: con repeticiones y sin repeticiones.

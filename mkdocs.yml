@@ -76,9 +76,11 @@ plugins:
       lang: es
 
 # Puts the "Abrir en SWISH" link under every block that declares an example,
-# with the whole source inside the link. See tools/swish_links.py
+# with the whole source inside the link. See tools/swish_links.py. The second
+# drops the links of docs/pdf.md to PDFs `make pdf` has not built.
 hooks:
   - tools/swish_links.py
+  - tools/pdf_links.py
 
 extra_css:
   - estilos/swish.css
@@ -134,6 +136,7 @@ copyright: >-
 nav:
   - Presentación: index.md
   - Plantillas: plantillas.md
+  - Patrones: patrones.md
   - Parte I — Introducción:
       - Capítulo 1 — La primera hora:
           - capitulo-01-la-primera-hora/index.md
@@ -165,82 +168,98 @@ nav:
       - Capítulo 10 — Negación como falla:
           - capitulo-10-negacion-como-falla/index.md
           - Soluciones: capitulo-10-negacion-como-falla/soluciones.md
-      - Capítulo 11 — Prolog y la lógica:
-          - capitulo-11-prolog-y-la-logica/index.md
-          - Soluciones: capitulo-11-prolog-y-la-logica/soluciones.md
+      - Capítulo 11 — Texto:
+          - capitulo-11-texto/index.md
+          - Soluciones: capitulo-11-texto/soluciones.md
+      - Capítulo 12 — Prolog y la lógica:
+          - capitulo-12-prolog-y-la-logica/index.md
+          - Soluciones: capitulo-12-prolog-y-la-logica/soluciones.md
   - Parte II — Prolog para programadores:
-      - Capítulo 12 — Estilo y documentación:
-          - capitulo-12-estilo-y-documentacion/index.md
-          - Soluciones: capitulo-12-estilo-y-documentacion/soluciones.md
-      - Capítulo 13 — Control:
-          - capitulo-13-control/index.md
-          - Soluciones: capitulo-13-control/soluciones.md
-      - Capítulo 14 — Rendimiento:
-          - capitulo-14-rendimiento/index.md
-          - Soluciones: capitulo-14-rendimiento/soluciones.md
-      - Capítulo 15 — Todas las soluciones:
-          - capitulo-15-todas-las-soluciones/index.md
-          - Soluciones: capitulo-15-todas-las-soluciones/soluciones.md
-      - Capítulo 16 — Orden superior:
-          - capitulo-16-orden-superior/index.md
-          - Soluciones: capitulo-16-orden-superior/soluciones.md
-      - Capítulo 17 — Base de datos dinámica:
-          - capitulo-17-base-de-datos-dinamica/index.md
-          - Soluciones: capitulo-17-base-de-datos-dinamica/soluciones.md
-      - Capítulo 18 — Texto:
-          - capitulo-18-texto/index.md
-          - Soluciones: capitulo-18-texto/soluciones.md
-      - Capítulo 19 — Gramáticas (DCG):
-          - capitulo-19-gramaticas-dcg/index.md
-          - Soluciones: capitulo-19-gramaticas-dcg/soluciones.md
-      - Capítulo 20 — Estructuras de datos de la biblioteca:
-          - capitulo-20-estructuras-de-datos-de-la-biblioteca/index.md
-          - Soluciones: capitulo-20-estructuras-de-datos-de-la-biblioteca/soluciones.md
-      - Capítulo 21 — Módulos y organización:
-          - capitulo-21-modulos-y-organizacion/index.md
-          - Soluciones: capitulo-21-modulos-y-organizacion/soluciones.md
-      - Capítulo 22 — Errores y excepciones:
-          - capitulo-22-errores-y-excepciones/index.md
-          - Soluciones: capitulo-22-errores-y-excepciones/soluciones.md
-      - Capítulo 23 — Pruebas y depuración:
-          - capitulo-23-pruebas-y-depuracion/index.md
-          - Soluciones: capitulo-23-pruebas-y-depuracion/soluciones.md
+      - Capítulo 13 — El entorno de trabajo:
+          - capitulo-13-el-entorno-de-trabajo/index.md
+          - Soluciones: capitulo-13-el-entorno-de-trabajo/soluciones.md
+      - Capítulo 14 — Estilo y documentación:
+          - capitulo-14-estilo-y-documentacion/index.md
+          - Soluciones: capitulo-14-estilo-y-documentacion/soluciones.md
+      - Capítulo 15 — Control:
+          - capitulo-15-control/index.md
+          - Soluciones: capitulo-15-control/soluciones.md
+      - Capítulo 16 — Rendimiento:
+          - capitulo-16-rendimiento/index.md
+          - Soluciones: capitulo-16-rendimiento/soluciones.md
+      - Capítulo 17 — Todas las soluciones:
+          - capitulo-17-todas-las-soluciones/index.md
+          - Soluciones: capitulo-17-todas-las-soluciones/soluciones.md
+      - Capítulo 18 — Orden superior:
+          - capitulo-18-orden-superior/index.md
+          - Soluciones: capitulo-18-orden-superior/soluciones.md
+      - Capítulo 19 — Operadores y reglas como datos:
+          - capitulo-19-operadores-y-reglas-como-datos/index.md
+          - Soluciones: capitulo-19-operadores-y-reglas-como-datos/soluciones.md
+      - Capítulo 20 — Base de datos dinámica:
+          - capitulo-20-base-de-datos-dinamica/index.md
+          - Soluciones: capitulo-20-base-de-datos-dinamica/soluciones.md
+      - Capítulo 21 — Gramáticas (DCG):
+          - capitulo-21-gramaticas-dcg/index.md
+          - Soluciones: capitulo-21-gramaticas-dcg/soluciones.md
+      - Capítulo 22 — Estructuras de datos de la biblioteca:
+          - capitulo-22-estructuras-de-datos-de-la-biblioteca/index.md
+          - Soluciones: capitulo-22-estructuras-de-datos-de-la-biblioteca/soluciones.md
+      - Capítulo 23 — Programación con restricciones:
+          - capitulo-23-programacion-con-restricciones/index.md
+          - Soluciones: capitulo-23-programacion-con-restricciones/soluciones.md
+      - Capítulo 24 — Módulos y organización:
+          - capitulo-24-modulos-y-organizacion/index.md
+          - Soluciones: capitulo-24-modulos-y-organizacion/soluciones.md
+      - Capítulo 25 — Errores y excepciones:
+          - capitulo-25-errores-y-excepciones/index.md
+          - Soluciones: capitulo-25-errores-y-excepciones/soluciones.md
+      - Capítulo 26 — Pruebas y depuración:
+          - capitulo-26-pruebas-y-depuracion/index.md
+          - Soluciones: capitulo-26-pruebas-y-depuracion/soluciones.md
+      - Capítulo 27 — Archivos, streams y formatos:
+          - capitulo-27-archivos-streams-y-formatos/index.md
+          - Soluciones: capitulo-27-archivos-streams-y-formatos/soluciones.md
+      - Capítulo 28 — Programas de línea de comandos:
+          - capitulo-28-programas-de-linea-de-comandos/index.md
+          - Soluciones: capitulo-28-programas-de-linea-de-comandos/soluciones.md
+      - Capítulo 29 — Prolog desde Python:
+          - capitulo-29-prolog-desde-python/index.md
+          - Soluciones: capitulo-29-prolog-desde-python/soluciones.md
+      - Capítulo 30 — Servicios web (REST):
+          - capitulo-30-servicios-web-rest/index.md
+          - Soluciones: capitulo-30-servicios-web-rest/soluciones.md
+      - Capítulo 31 — Ejecutables y distribución:
+          - capitulo-31-ejecutables-y-distribucion/index.md
+          - Soluciones: capitulo-31-ejecutables-y-distribucion/soluciones.md
+          - Buscaminas completo: capitulo-31-ejecutables-y-distribucion/buscaminas.md
   - Parte III — Lo avanzado:
-      - Capítulo 24 — Inspección de términos:
-          - capitulo-24-inspeccion-de-terminos/index.md
-          - Soluciones: capitulo-24-inspeccion-de-terminos/soluciones.md
-      - Capítulo 25 — Introspección y metaintérpretes:
-          - capitulo-25-introspeccion-y-metainterpretes/index.md
-          - Soluciones: capitulo-25-introspeccion-y-metainterpretes/soluciones.md
-      - Capítulo 26 — Estructuras incompletas y listas diferencia:
-          - capitulo-26-estructuras-incompletas-y-listas-diferencia/index.md
-          - Soluciones: capitulo-26-estructuras-incompletas-y-listas-diferencia/soluciones.md
-      - Capítulo 27 — Transformación de programas y compilación:
-          - capitulo-27-transformacion-de-programas-y-compilacion/index.md
-          - Soluciones: capitulo-27-transformacion-de-programas-y-compilacion/soluciones.md
-      - Capítulo 28 — Archivos y streams:
-          - capitulo-28-archivos-y-streams/index.md
-          - Soluciones: capitulo-28-archivos-y-streams/soluciones.md
-      - Capítulo 29 — Interfaces de usuario:
-          - capitulo-29-interfaces-de-usuario/index.md
-          - Soluciones: capitulo-29-interfaces-de-usuario/soluciones.md
-      - Capítulo 30 — Concurrencia y paralelismo:
-          - capitulo-30-concurrencia-y-paralelismo/index.md
-          - Soluciones: capitulo-30-concurrencia-y-paralelismo/soluciones.md
-      - Capítulo 31 — Tabulación:
-          - capitulo-31-tabulacion/index.md
-          - Soluciones: capitulo-31-tabulacion/soluciones.md
-      - Capítulo 32 — Programación con restricciones:
-          - capitulo-32-programacion-con-restricciones/index.md
-          - Soluciones: capitulo-32-programacion-con-restricciones/soluciones.md
-      - Capítulo 33 — Búsqueda y juegos:
-          - capitulo-33-busqueda-y-juegos/index.md
-          - Soluciones: capitulo-33-busqueda-y-juegos/soluciones.md
-  - Capítulo 34 — Prolog y SQL:
-      - capitulo-34-prolog-y-sql/index.md
-      - Soluciones: capitulo-34-prolog-y-sql/soluciones.md
-  - Apéndice A — Prolog desde Python:
-      - apendice-a-prolog-desde-python/index.md
-      - Soluciones: apendice-a-prolog-desde-python/soluciones.md
+      - Capítulo 32 — Inspección de términos:
+          - capitulo-32-inspeccion-de-terminos/index.md
+          - Soluciones: capitulo-32-inspeccion-de-terminos/soluciones.md
+      - Capítulo 33 — Introspección y metaintérpretes:
+          - capitulo-33-introspeccion-y-metainterpretes/index.md
+          - Soluciones: capitulo-33-introspeccion-y-metainterpretes/soluciones.md
+      - Capítulo 34 — Estructuras incompletas y listas diferencia:
+          - capitulo-34-estructuras-incompletas-y-listas-diferencia/index.md
+          - Soluciones: capitulo-34-estructuras-incompletas-y-listas-diferencia/soluciones.md
+      - Capítulo 35 — Transformación de programas y compilación:
+          - capitulo-35-transformacion-de-programas-y-compilacion/index.md
+          - Soluciones: capitulo-35-transformacion-de-programas-y-compilacion/soluciones.md
+      - Capítulo 36 — Interfaces de usuario:
+          - capitulo-36-interfaces-de-usuario/index.md
+          - Soluciones: capitulo-36-interfaces-de-usuario/soluciones.md
+      - Capítulo 37 — Concurrencia y paralelismo:
+          - capitulo-37-concurrencia-y-paralelismo/index.md
+          - Soluciones: capitulo-37-concurrencia-y-paralelismo/soluciones.md
+      - Capítulo 38 — Tabulación:
+          - capitulo-38-tabulacion/index.md
+          - Soluciones: capitulo-38-tabulacion/soluciones.md
+      - Capítulo 39 — Búsqueda y juegos:
+          - capitulo-39-busqueda-y-juegos/index.md
+          - Soluciones: capitulo-39-busqueda-y-juegos/soluciones.md
+  - Capítulo 40 — Prolog y SQL:
+      - capitulo-40-prolog-y-sql/index.md
+      - Soluciones: capitulo-40-prolog-y-sql/soluciones.md
   - Apéndice B — Los capítulos en PDF: pdf.md
   - Licencia: licencia.md

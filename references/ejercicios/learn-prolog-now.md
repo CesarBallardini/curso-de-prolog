@@ -21,6 +21,7 @@
 ### LPN-1.1 — ¿Átomo, variable o ninguno?
 - **Fuente:** Blackburn, Bos, Striegnitz, §1.3 Exercises, Ejercicio 1.1. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse3
 - **Tema:** 1, 3
+- **Capítulos:** 2, 32
 - **Dificultad:** 1
 - **Solución:** propia, verificada: átomos: `vINCENT`, `variable23`, `big_kahuna_burger`, `'big kahuna burger'`, `'Jules'`, `'_Jules'`. Variables: `Footmassage`, `Variable2000`, `_Jules`. Ninguna de las dos: `big kahuna burger` sin comillas (son tres átomos seguidos, no un término).
 - **SWISH:** sí
@@ -30,6 +31,7 @@
 ### LPN-1.2 — Clasificar términos y dar functor/aridad
 - **Fuente:** §1.3, Ejercicio 1.2. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse3
 - **Tema:** 1, 3
+- **Capítulos:** 4, 32
 - **Dificultad:** 1
 - **Solución:** propia: `loves(Vincent,mia)` es un compuesto `loves/2`; `'loves(Vincent,mia)'` es un átomo; `Butch(boxer)` no es un término (el functor no puede ser una variable); `boxer(Butch)` es `boxer/1`; `and(big(burger),kahuna(burger))` y `and(big(X),kahuna(X))` son `and/2`; `_and(big(X),kahuna(X))` no es un término; `(Butch kills Vincent)` y `kills(Butch Vincent)` tampoco (no hay operadores definidos); `kills(Butch,Vincent` no lo es porque le falta el paréntesis.
 - **SWISH:** sí
@@ -39,6 +41,7 @@
 ### LPN-1.3 — Contar hechos, reglas, cláusulas y predicados
 - **Fuente:** §1.3, Ejercicio 1.3. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse3
 - **Tema:** 2
+- **Capítulos:** 3
 - **Dificultad:** 1
 - **Solución:** propia: 3 hechos, 4 reglas, 7 cláusulas, 5 predicados (`woman/1`, `man/1`, `person/1`, `loves/2`, `father/2`). Cabezas: `person(X)`, `loves(X,Y)`, `father(Y,Z)` (dos veces). Metas: `man(X)`, `woman(X)`, `father(X,Y)`, `man(Y)`, `son(Z,Y)`, `daughter(Z,Y)`.
 - **SWISH:** sí
@@ -55,6 +58,7 @@
 ### LPN-1.4 — Traducir oraciones a Prolog
 - **Fuente:** §1.3, Ejercicio 1.4. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse3
 - **Tema:** 1, 2
+- **Capítulos:** 3, 12
 - **Dificultad:** 1
 - **Solución:** propia: `killer(butch).`, `married(mia,marsellus).`, `dead(zed).`, `kills(marsellus,X) :- gives_footmassage(X,mia).`, `loves(mia,X) :- good_dancer(X).`, `eats(jules,X) :- nutritious(X) ; tasty(X).`
 - **SWISH:** sí
@@ -64,6 +68,7 @@
 ### LPN-1.5 — Predecir respuestas en la base de Harry Potter
 - **Fuente:** §1.3, Ejercicio 1.5. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse3
 - **Tema:** 2, 4
+- **Capítulos:** 3, 5
 - **Dificultad:** 1
 - **Solución:** verificada: `wizard(ron)` da true; `wizard(hermione)` da false; `wizard(harry)` da true; `wizard(Y)` da `Y = ron ; Y = harry`. Las consultas con `witch/1` dan un **error** de procedimiento desconocido en SWI-Prolog, no `no`.
 - **SWISH:** sí
@@ -80,6 +85,7 @@
 ### LPN-PS1.1 — Cargar una base y usar `listing`
 - **Fuente:** §1.4 Practical Session. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse4
 - **Tema:** 0
+- **Capítulos:** 1, 13
 - **Dificultad:** 1
 - **Solución:** no corresponde (práctica de entorno).
 - **SWISH:** parcial (en SWISH el programa se escribe en el panel izquierdo y no se hace `consult`; `listing/1` sí funciona).
@@ -89,6 +95,7 @@
 ### LPN-PS1.2 — Jugar con las bases del capítulo y crear una propia
 - **Fuente:** §1.4 Practical Session. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse4
 - **Tema:** 1, 2
+- **Capítulos:** 1, 2
 - **Dificultad:** 1
 - **Solución:** no corresponde.
 - **SWISH:** sí
@@ -100,6 +107,7 @@
 ### LPN-2.1 — ¿Unifican estos pares?
 - **Fuente:** §2.3 Exercises, Ejercicio 2.1. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse7
 - **Tema:** 3
+- **Capítulos:** 4
 - **Dificultad:** 1
 - **Solución:** autoverificable con `=/2` en el intérprete (ver LPN-PS2.1). Los dos casos engañosos son `food(X) = X`, que en SWI-Prolog tiene éxito y crea un término cíclico porque no hay *occurs check*, y `meal(food(bread),X) = meal(X,drink(beer))`, que falla.
 - **SWISH:** sí
@@ -108,6 +116,7 @@
 ### LPN-2.2 — Consultas sobre `magic/1` y árbol de búsqueda
 - **Fuente:** §2.3, Ejercicio 2.2. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse7
 - **Tema:** 4
+- **Capítulos:** 5
 - **Dificultad:** 2
 - **Solución:** verificada: en SWI-Prolog, `magic(house_elf)` y `magic(wizard)` dan **error** (no false), porque la segunda cláusula llama a `wizard/1`, que no existe; `wizard(harry)` también da error. `magic(Hermione)` da `dobby` y después se corta con el mismo error al probar la segunda cláusula. Si se agrega `:- dynamic wizard/1.`, las respuestas son las del libro: `dobby`, `hermione`, `'McGonagall'`, `rita_skeeter`.
 - **SWISH:** sí
@@ -124,6 +133,7 @@
 ### LPN-2.3 — Oraciones generadas por una mini gramática
 - **Fuente:** §2.3, Ejercicio 2.3. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse7
 - **Tema:** 4
+- **Capítulos:** 5, 17
 - **Dificultad:** 1
 - **Solución:** la consulta es `?- sentence(W1,W2,W3,W4,W5).`; genera 2⁵ = 32 oraciones, en el orden del backtracking (el último argumento varía más rápido).
 - **SWISH:** sí
@@ -141,6 +151,7 @@
 ### LPN-2.4 — Crucigrama con seis palabras italianas
 - **Fuente:** §2.3, Ejercicio 2.4. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse7
 - **Tema:** 3, 4
+- **Capítulos:** 4, 5
 - **Dificultad:** 2
 - **Solución:** propia, verificada:
   ```prolog
@@ -161,6 +172,7 @@
 ### LPN-PS2.1 — Verificar unificaciones y el *occurs check*
 - **Fuente:** §2.4 Practical Session. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse8
 - **Tema:** 3
+- **Capítulos:** 4, 12
 - **Dificultad:** 1
 - **Solución:** autoverificable. En SWI-Prolog, `?- g(X,Y) = Y.` tiene éxito con un término cíclico (`Y = g(X, Y)`), y `?- X = f(X), Y = f(Y), X = Y.` también tiene éxito. `unify_with_occurs_check/2` falla en ambos casos.
 - **SWISH:** sí
@@ -170,6 +182,7 @@
 ### LPN-PS2.2 — Predecir `\=/2` antes de ejecutarlo
 - **Fuente:** §2.4 Practical Session. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse8
 - **Tema:** 3
+- **Capítulos:** 4, 10
 - **Dificultad:** 1
 - **Solución:** verificada: `a \= a` falla, `'a' \= a` falla, `A \= a` falla, `f(a) \= a` tiene éxito, `f(a) \= A` falla, `f(A) \= f(a)` falla, `g(a,B,c) \= g(A,b,C)` falla, `g(a,b,c) \= g(A,C)` tiene éxito, `f(X) \= X` falla (sin *occurs check* unifican).
 - **SWISH:** sí
@@ -179,6 +192,7 @@
 ### LPN-PS2.3 — Seguir la búsqueda con `trace`
 - **Fuente:** §2.4 Practical Session. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse8
 - **Tema:** 0, 4
+- **Capítulos:** 5, 13
 - **Dificultad:** 1
 - **Solución:** no corresponde; la salida esperada (Call/Exit/Fail/Redo) está en la página.
 - **SWISH:** sí (SWISH tiene un depurador gráfico; se activa con `trace, k(X).`)
@@ -194,6 +208,7 @@
 ### LPN-3.1 — ¿Es problemática esta versión de `descend/2`?
 - **Fuente:** §3.3 Exercises, Ejercicio 3.1. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse11
 - **Tema:** 4, 5
+- **Capítulos:** 6, 5
 - **Dificultad:** 2
 - **Solución:** propia, verificada: sí es problemática. La regla es recursiva por la izquierda (`descend(X,Y) :- descend(X,Z), descend(Z,Y).`), así que puede dar algunas respuestas correctas, pero cuando no hay solución o al pedir más respuestas entra en recursión infinita. `descend(emily,anne)` agota la pila en SWI-Prolog, y también `findall(Y, descend(anne,Y), L)`.
 - **SWISH:** sí (SWISH corta la consulta por límite de recursos)
@@ -203,6 +218,7 @@
 ### LPN-3.2 — Muñecas rusas: `directlyIn/2` e `in/2`
 - **Fuente:** §3.3, Ejercicio 3.2. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse11
 - **Tema:** 5
+- **Capítulos:** 6
 - **Dificultad:** 1
 - **Solución:** propia, verificada (siguiendo el dibujo):
   ```prolog
@@ -217,6 +233,7 @@
 ### LPN-3.3 — Viajes en tren: `travelFromTo/2`
 - **Fuente:** §3.3, Ejercicio 3.3. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse11
 - **Tema:** 5
+- **Capítulos:** 6
 - **Dificultad:** 1
 - **Solución:** propia, verificada: `travelFromTo(X,Y) :- directTrain(X,Y).` y `travelFromTo(X,Y) :- directTrain(X,Z), travelFromTo(Z,Y).`; `travelFromTo(nancy,saarbruecken)` da true.
 - **SWISH:** sí
@@ -232,6 +249,7 @@
 ### LPN-3.4 — `greater_than/2` sobre numerales de Peano
 - **Fuente:** §3.3, Ejercicio 3.4. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse11
 - **Tema:** 3, 5
+- **Capítulos:** 6
 - **Dificultad:** 1
 - **Solución:** propia, verificada: `greater_than(succ(_),0).` y `greater_than(succ(X),succ(Y)) :- greater_than(X,Y).`
 - **SWISH:** sí
@@ -241,6 +259,7 @@
 ### LPN-3.5 — Espejar un árbol binario: `swap/2`
 - **Fuente:** §3.3, Ejercicio 3.5. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse11
 - **Tema:** 3, 5
+- **Capítulos:** 6, 4
 - **Dificultad:** 1
 - **Solución:** propia, verificada: `swap(leaf(X),leaf(X)).` y `swap(tree(A,B),tree(B1,A1)) :- swap(A,A1), swap(B,B1).`
 - **SWISH:** sí
@@ -253,6 +272,7 @@
 ### LPN-PS3.1 — Trazar las cuatro variantes de `descend`
 - **Fuente:** §3.4 Practical Session. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse12
 - **Tema:** 0, 4, 5
+- **Capítulos:** 6, 5
 - **Dificultad:** 2
 - **Solución:** no corresponde (práctica de observación).
 - **SWISH:** sí
@@ -262,6 +282,7 @@
 ### LPN-PS3.2 — `numeral/1` con las cláusulas invertidas
 - **Fuente:** §3.4 Practical Session. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse12
 - **Tema:** 4, 5
+- **Capítulos:** 6, 5
 - **Dificultad:** 2
 - **Solución:** verificada: con la cláusula recursiva primero, `numeral(succ(succ(succ(0))))` sigue teniendo éxito, pero `numeral(X)` no produce ninguna respuesta y recurre sin fin, hasta agotar la pila.
 - **SWISH:** sí
@@ -270,6 +291,7 @@
 ### LPN-PS3.3 — Laberinto de una sola mano: `path/2`
 - **Fuente:** §3.4 Practical Session. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse12
 - **Tema:** 5
+- **Capítulos:** 6
 - **Dificultad:** 1
 - **Solución:** propia, verificada: `path(X,Y) :- connected(X,Y).` y `path(X,Y) :- connected(X,Z), path(Z,Y).` Resultados: de 5 se llega a 10 (true); desde 1 solo se llega a 2; desde 13 se llega a 9, 10, 14, 17 y 18.
 - **SWISH:** sí
@@ -279,6 +301,7 @@
 ### LPN-PS3.4 — ¿Se puede viajar? `travel/2`
 - **Fuente:** §3.4 Practical Session. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse12
 - **Tema:** 5
+- **Capítulos:** 6
 - **Dificultad:** 1
 - **Solución:** propia, verificada: `step(X,Y) :- byCar(X,Y) ; byTrain(X,Y) ; byPlane(X,Y).`, `travel(X,Y) :- step(X,Y).` y `travel(X,Y) :- step(X,Z), travel(Z,Y).`; `travel(valmont,raglan)` da true.
 - **SWISH:** sí
@@ -287,6 +310,7 @@
 ### LPN-PS3.5 — Devolver la ruta: `travel/3`
 - **Fuente:** §3.4 Practical Session. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse12
 - **Tema:** 3, 5
+- **Capítulos:** 6, 4
 - **Dificultad:** 2
 - **Solución:** propia, verificada: `travel(X,Y,go(X,Y)) :- step(X,Y).` y `travel(X,Y,go(X,Z,R)) :- step(X,Z), travel(Z,Y,R).` Con el orden de hechos del libro, la **primera** respuesta a `travel(valmont,losAngeles,X)` pasa por saarbruecken. La ruta por metz que muestra el libro sale por backtracking.
 - **SWISH:** sí
@@ -296,6 +320,7 @@
 ### LPN-PS3.6 — Ruta con medio de transporte
 - **Fuente:** §3.4 Practical Session. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse12
 - **Tema:** 3, 5
+- **Capítulos:** 6
 - **Dificultad:** 2
 - **Solución:** propia, verificada: con `mstep(X,Y,car) :- byCar(X,Y).` (y lo mismo para `train` y `plane`), `travel(X,Y,go(X,Y,M)) :- mstep(X,Y,M).` y `travel(X,Y,go(X,Z,M,R)) :- mstep(X,Z,M), travel(Z,Y,R).`
 - **SWISH:** sí
@@ -306,6 +331,7 @@
 ### LPN-4.1 — Unificación de listas
 - **Fuente:** §4.4 Exercises, Ejercicio 4.1. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse16
 - **Tema:** 3, 6
+- **Capítulos:** 7
 - **Dificultad:** 1
 - **Solución:** verificada: tienen éxito `[a|[b,c,d]]`, `[a,b|[c,d]]`, `[a,b,c|[d]]`, `[a,b,c,d|[]]` y `[] = _`. Fallan `[a,[b,c,d]]`, `[a,b,[c,d]]`, `[a,b,c,[d]]`, `[a,b,c,d,[]]`, `[] = [_]` y `[] = [_|[]]` (porque `[_|[]]` es `[_]`, una lista de un elemento).
 - **SWISH:** sí
@@ -315,6 +341,7 @@
 ### LPN-4.2 — ¿Listas bien formadas?
 - **Fuente:** §4.4, Ejercicio 4.2. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse16
 - **Tema:** 6
+- **Capítulos:** 7
 - **Dificultad:** 1
 - **Solución:** propia: son listas `[1|[2,3,4]]` (4 elementos), `[1,2,3|[]]` (3), `[1|[2|[3|[4]]]]` (4), `[1,2,3,4|[]]` (4), `[[]|[]]` (1) y `[[1,2],[3,4]|[5,6,7]]` (5). `[1|2,3,4]` es un error de sintaxis y `[[1,2]|4]` es un término válido pero **no** es una lista propia (su cola es `4`).
 - **SWISH:** sí
@@ -324,6 +351,7 @@
 ### LPN-4.3 — `second/2`
 - **Fuente:** §4.4, Ejercicio 4.3. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse16
 - **Tema:** 6
+- **Capítulos:** 7
 - **Dificultad:** 1
 - **Solución:** propia, verificada: `second(X,[_,X|_]).`
 - **SWISH:** sí
@@ -333,6 +361,7 @@
 ### LPN-4.4 — `swap12/2`
 - **Fuente:** §4.4, Ejercicio 4.4. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse16
 - **Tema:** 6
+- **Capítulos:** 7
 - **Dificultad:** 1
 - **Solución:** propia, verificada: `swap12([A,B|T],[B,A|T]).`
 - **SWISH:** sí
@@ -341,6 +370,7 @@
 ### LPN-4.5 — Traducir listas alemán ↔ inglés: `listtran/2`
 - **Fuente:** §4.4, Ejercicio 4.5. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse16
 - **Tema:** 6
+- **Capítulos:** 7
 - **Dificultad:** 1
 - **Solución:** propia, verificada: `listtran([],[]).` y `listtran([G|Gs],[E|Es]) :- tran(G,E), listtran(Gs,Es).`; `listtran(X,[one,seven,six,two])` da `[eins,sieben,sechs,zwei]`.
 - **SWISH:** sí
@@ -350,6 +380,7 @@
 ### LPN-4.6 — Duplicar cada elemento: `twice/2`
 - **Fuente:** §4.4, Ejercicio 4.6. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse16
 - **Tema:** 6
+- **Capítulos:** 7
 - **Dificultad:** 1
 - **Solución:** propia, verificada: `twice([],[]).` y `twice([X|Xs],[X,X|Ys]) :- twice(Xs,Ys).`
 - **SWISH:** sí
@@ -359,6 +390,7 @@
 ### LPN-4.7 — Árboles de búsqueda de `member/2`
 - **Fuente:** §4.4, Ejercicio 4.7. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse16
 - **Tema:** 4, 6
+- **Capítulos:** 7, 5
 - **Dificultad:** 2
 - **Solución:** no (se verifica con `trace`).
 - **SWISH:** sí
@@ -367,6 +399,7 @@
 ### LPN-PS4.1 — Trazas de `a2b/2` y `member/2`
 - **Fuente:** §4.5 Practical Session. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse17
 - **Tema:** 0, 6
+- **Capítulos:** 7, 5
 - **Dificultad:** 1
 - **Solución:** no corresponde.
 - **SWISH:** sí
@@ -376,6 +409,7 @@
 ### LPN-PS4.2 — Intercalar dos listas: `combine1/3`
 - **Fuente:** §4.5 Practical Session. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse17
 - **Tema:** 6
+- **Capítulos:** 7
 - **Dificultad:** 1
 - **Solución:** propia, verificada: `combine1([],[],[]).` y `combine1([X|Xs],[Y|Ys],[X,Y|Zs]) :- combine1(Xs,Ys,Zs).`
 - **SWISH:** sí
@@ -384,6 +418,7 @@
 ### LPN-PS4.3 — Emparejar en sublistas: `combine2/3`
 - **Fuente:** §4.5 Practical Session. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse17
 - **Tema:** 6
+- **Capítulos:** 7
 - **Dificultad:** 1
 - **Solución:** propia, verificada: igual que `combine1`, pero con `[[X,Y]|Zs]` en la cabeza.
 - **SWISH:** sí
@@ -392,6 +427,7 @@
 ### LPN-PS4.4 — Emparejar en términos: `combine3/3`
 - **Fuente:** §4.5 Practical Session. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse17
 - **Tema:** 3, 6
+- **Capítulos:** 7
 - **Dificultad:** 1
 - **Solución:** propia, verificada: igual que `combine1`, pero con `[j(X,Y)|Zs]` en la cabeza.
 - **SWISH:** sí
@@ -403,6 +439,7 @@
 ### LPN-5.1 — `=` contra `is`
 - **Fuente:** §5.5 Exercises, Ejercicio 5.1. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse22
 - **Tema:** 3, 7
+- **Capítulos:** 8, 4
 - **Dificultad:** 1
 - **Solución:** verificada en SWI-Prolog 9.2.9: `X = 3*4` da `X = 3*4` (no evalúa); `X is 3*4` da `X = 12`; `4 is X` y `3 is X+2` dan **error de instanciación**; `3 is 1+2`, `3 is +(1,2)` y `is(X,+(1,2))` tienen éxito; `1+2 is 1+2` falla (el lado izquierdo no se evalúa); `3+2 = +(3,2)`, `*(7,5) = 7*5` y las tres variantes de `7*(3+2)` unifican; `7*3+2 = *(7,+(3,2))` falla por precedencia.
 - **SWISH:** sí
@@ -412,6 +449,7 @@
 ### LPN-5.2 — `increment/2` y `sum/3`
 - **Fuente:** §5.5, Ejercicio 5.2. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse22
 - **Tema:** 7
+- **Capítulos:** 8, 23
 - **Dificultad:** 1
 - **Solución:** propia, verificada: `increment(X,Y) :- Y =:= X+1.` y `sum(X,Y,Z) :- Z =:= X+Y.` Si además se quiere que calcule el resultado, se usa `Y is X+1`.
 - **SWISH:** sí
@@ -421,6 +459,7 @@
 ### LPN-5.3 — Sumar 1 a cada elemento: `addone/2`
 - **Fuente:** §5.5, Ejercicio 5.3. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse22
 - **Tema:** 6, 7
+- **Capítulos:** 8, 18
 - **Dificultad:** 1
 - **Solución:** propia, verificada: `addone([],[]).` y `addone([X|Xs],[Y|Ys]) :- Y is X+1, addone(Xs,Ys).`
 - **SWISH:** sí
@@ -430,6 +469,7 @@
 ### LPN-PS5.1 — Mínimo con acumulador: `accMin/3`
 - **Fuente:** §5.6 Practical Session. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse23
 - **Tema:** 6, 7
+- **Capítulos:** 8
 - **Dificultad:** 1
 - **Solución:** propia, verificada: `accMin([H|T],A,M) :- H < A, accMin(T,H,M).`, `accMin([H|T],A,M) :- H >= A, accMin(T,A,M).` y `accMin([],A,A).`
 - **SWISH:** sí
@@ -439,6 +479,7 @@
 ### LPN-PS5.2 — Producto por escalar: `scalarMult/3`
 - **Fuente:** §5.6 Practical Session. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse23
 - **Tema:** 6, 7
+- **Capítulos:** 8, 18
 - **Dificultad:** 1
 - **Solución:** propia, verificada: `scalarMult(_,[],[]).` y `scalarMult(K,[X|Xs],[Y|Ys]) :- Y is K*X, scalarMult(K,Xs,Ys).`
 - **SWISH:** sí
@@ -447,6 +488,7 @@
 ### LPN-PS5.3 — Producto escalar: `dot/3`
 - **Fuente:** §5.6 Practical Session. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse23
 - **Tema:** 6, 7
+- **Capítulos:** 8, 16
 - **Dificultad:** 1
 - **Solución:** propia, verificada: `dot([],[],0).` y `dot([X|Xs],[Y|Ys],R) :- dot(Xs,Ys,R0), R is R0 + X*Y.` Con `dot([2,5,6],[3,4,1],R)` da `R = 32`.
 - **SWISH:** sí
@@ -458,6 +500,7 @@
 ### LPN-6.1 — Listas duplicadas: `doubled/1`
 - **Fuente:** §6.3 Exercises, Ejercicio 6.1. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse26
 - **Tema:** 6
+- **Capítulos:** 7
 - **Dificultad:** 1
 - **Solución:** propia, verificada: `doubled(L) :- append(X,X,L).`
 - **SWISH:** sí
@@ -467,6 +510,7 @@
 ### LPN-6.2 — Palíndromos
 - **Fuente:** §6.3, Ejercicio 6.2. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse26
 - **Tema:** 6
+- **Capítulos:** 7
 - **Dificultad:** 1
 - **Solución:** propia, verificada: `palindrome(L) :- reverse(L,L).`
 - **SWISH:** sí
@@ -476,6 +520,7 @@
 ### LPN-6.3 — Sacar el primero y el último: `toptail/2`
 - **Fuente:** §6.3, Ejercicio 6.3. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse26
 - **Tema:** 6
+- **Capítulos:** 7
 - **Dificultad:** 1
 - **Solución:** propia, verificada: `toptail([_|T],Out) :- append(Out,[_],T).` Falla con listas de menos de dos elementos.
 - **SWISH:** sí
@@ -484,6 +529,7 @@
 ### LPN-6.4 — Último elemento, de dos maneras
 - **Fuente:** §6.3, Ejercicio 6.4. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse26
 - **Tema:** 5, 6
+- **Capítulos:** 7
 - **Dificultad:** 1
 - **Solución:** propia, verificada: con `rev/2`: `last(L,X) :- rev(L,[X|_]).`; recursiva: `last([X],X).` y `last([_|T],X) :- last(T,X).`
 - **SWISH:** sí
@@ -493,6 +539,7 @@
 ### LPN-6.5 — Intercambiar primero y último: `swapfl/2`
 - **Fuente:** §6.3, Ejercicio 6.5. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse26
 - **Tema:** 6
+- **Capítulos:** 7
 - **Dificultad:** 2
 - **Solución:** propia, verificada (con `append/3`): `swapfl([F|T1],[L|T2]) :- append(M,[L],T1), append(M,[F],T2).`
 - **SWISH:** sí
@@ -501,6 +548,7 @@
 ### LPN-6.6 — Acertijo de las tres casas (zebra)
 - **Fuente:** §6.3, Ejercicio 6.6. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse26
 - **Tema:** 4, 6
+- **Capítulos:** 7, 23
 - **Dificultad:** 2
 - **Solución:** propia, verificada: con la calle `[_,_,_]` y casas `h(Color,Nacionalidad,Mascota)`, cada pista se escribe con `member/2` o con "A está inmediatamente antes que B", `append(_,[A,B|_],Calle)`. El resultado es `zebra(japanese)`. La respuesta sale dos veces por backtracking, porque hay dos disposiciones de calle compatibles.
 - **SWISH:** sí
@@ -510,6 +558,7 @@
 ### LPN-PS6.1 — Trazas de `append`, `prefix`, `suffix`, `sublist` y `rev`
 - **Fuente:** §6.4 Practical Session. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse27
 - **Tema:** 0, 6
+- **Capítulos:** 7, 16
 - **Dificultad:** 2
 - **Solución:** no corresponde.
 - **SWISH:** sí
@@ -519,6 +568,7 @@
 ### LPN-PS6.2 — `member/2` en una línea con `append/3`
 - **Fuente:** §6.4 Practical Session. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse27
 - **Tema:** 6
+- **Capítulos:** 7, 16
 - **Dificultad:** 1
 - **Solución:** propia, verificada: `member2(X,L) :- append(_,[X|_],L).`
 - **SWISH:** sí
@@ -528,6 +578,7 @@
 ### LPN-PS6.3 — Eliminar repetidos: `set/2`
 - **Fuente:** §6.4 Practical Session. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse27
 - **Tema:** 6
+- **Capítulos:** 9, 10, 22
 - **Dificultad:** 2
 - **Solución:** propia, verificada (con acumulador y `member/2`):
   ```prolog
@@ -544,6 +595,7 @@
 ### LPN-PS6.4 — Aplanar una lista sin `append/3`
 - **Fuente:** §6.4 Practical Session. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse27
 - **Tema:** 5, 6
+- **Capítulos:** 9, 32
 - **Dificultad:** 3
 - **Solución:** propia, verificada (con acumulador):
   ```prolog
@@ -562,6 +614,7 @@
 ### LPN-7.1 — Traducir una DCG a cláusulas comunes
 - **Fuente:** §7.3 Exercises, Ejercicio 7.1. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse30
 - **Tema:** A
+- **Capítulos:** 21
 - **Dificultad:** 2
 - **Solución:** verificada con `listing/1`: cada regla `a --> b, c.` se traduce como `a(S0,S) :- b(S0,S1), c(S1,S).`, y cada terminal `foo --> [choo].` como `foo([choo|S],S).` Las tres primeras respuestas a `s(X,[])` son `[choo,i,am,a,train,toot]`, la misma con `toot,toot` y la misma con `toot,toot,toot`.
 - **SWISH:** sí
@@ -571,6 +624,7 @@
 ### LPN-7.2 — DCG para aⁿbⁿ sin la cadena vacía
 - **Fuente:** §7.3, Ejercicio 7.2. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse30
 - **Tema:** A
+- **Capítulos:** 21
 - **Dificultad:** 1
 - **Solución:** propia, verificada: `s --> [a],[b].` y `s --> [a],s,[b].`
 - **SWISH:** sí
@@ -580,6 +634,7 @@
 ### LPN-7.3 — DCG para aⁿb²ⁿ
 - **Fuente:** §7.3, Ejercicio 7.3. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse30
 - **Tema:** A
+- **Capítulos:** 21
 - **Dificultad:** 1
 - **Solución:** propia, verificada: `s --> [].` y `s --> [a],s,[b,b].`
 - **SWISH:** sí
@@ -588,6 +643,7 @@
 ### LPN-PS7.1 — Reconocedores con `append` contra listas de diferencia
 - **Fuente:** §7.4 Practical Session. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse31
 - **Tema:** 0, A
+- **Capítulos:** 21, 34
 - **Dificultad:** 2
 - **Solución:** no corresponde. En SWI-Prolog, `det --> [the].` se lista como `det([the|A], A).`, sin el predicado `'C'/3`.
 - **SWISH:** sí
@@ -596,6 +652,7 @@
 ### LPN-PS7.2 — DCG para un número par de `a`
 - **Fuente:** §7.4 Practical Session. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse31
 - **Tema:** A
+- **Capítulos:** 21
 - **Dificultad:** 1
 - **Solución:** propia, verificada: `even --> [].` y `even --> [a,a],even.`
 - **SWISH:** sí
@@ -604,6 +661,7 @@
 ### LPN-PS7.3 — DCG para aⁿb²ᵐc²ᵐdⁿ
 - **Fuente:** §7.4 Practical Session. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse31
 - **Tema:** A
+- **Capítulos:** 21
 - **Dificultad:** 2
 - **Solución:** propia, verificada: `s --> [a],s,[d].`, `s --> m.`, `m --> [].` y `m --> [b,b],m,[c,c].`
 - **SWISH:** sí
@@ -613,6 +671,7 @@
 ### LPN-PS7.4 — DCG para lógica proposicional
 - **Fuente:** §7.4 Practical Session. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse31
 - **Tema:** A
+- **Capítulos:** 21, 12
 - **Dificultad:** 2
 - **Solución:** propia, verificada: `prop --> [p].` (y lo mismo para `q` y `r`), `prop --> [not],prop.` y `prop --> ['('],prop,[and],prop,[')'].` (y lo mismo para `or` e `implies`). Reconoce `[not,'(',p,implies,q,')']`.
 - **SWISH:** sí
@@ -624,6 +683,7 @@
 ### LPN-8.1 — Concordancia de número con un argumento extra
 - **Fuente:** §8.4 Exercises, Ejercicio 8.1. https://www.let.rug.nl/bos/lpn/lpnpage.php?pagetype=html&pageid=lpn-htmlse35 (el mirror de lpn.swi-prolog.org está roto)
 - **Tema:** A
+- **Capítulos:** 21
 - **Dificultad:** 2
 - **Solución:** propia, verificada: `s --> np(N), vp(N).`, `np(N) --> det, n(N).`, `vp(N) --> v(N), np(_).`, `vp(N) --> v(N).`, `n(sg) --> [man].`, `n(pl) --> [men].`, `v(sg) --> [eats].`, `v(pl) --> [eat].` (y lo mismo para *know*). Acepta "the men eat" y "the man eats"; rechaza "the men eats" y "the man eat".
 - **SWISH:** sí
@@ -632,6 +692,7 @@
 ### LPN-8.2 — Traducir una regla DCG con tres argumentos extra
 - **Fuente:** §8.4, Ejercicio 8.2. https://www.let.rug.nl/bos/lpn/lpnpage.php?pagetype=html&pageid=lpn-htmlse35
 - **Tema:** A
+- **Capítulos:** 21
 - **Dificultad:** 1
 - **Solución:** verificada con `listing(kanga//3)`: `kanga(V,R,Q,A,B) :- roo(V,R,A,C), jumps(Q,Q,C,D), marsupial(V,R,Q), B = D.` (a mano: `kanga(V,R,Q,S0,S) :- roo(V,R,S0,S1), jumps(Q,Q,S1,S), marsupial(V,R,Q).`)
 - **SWISH:** sí
@@ -641,6 +702,7 @@
 ### LPN-PS8.1 — Trazas de DCG con argumentos y metas extra
 - **Fuente:** §8.5 Practical Session. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse36
 - **Tema:** A
+- **Capítulos:** 21
 - **Dificultad:** 2
 - **Solución:** no corresponde.
 - **SWISH:** sí
@@ -649,6 +711,7 @@
 ### LPN-PS8.2 — Mini proyecto: una DCG del inglés completa
 - **Fuente:** §8.5 Practical Session. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse36
 - **Tema:** A
+- **Capítulos:** 21
 - **Dificultad:** 3
 - **Solución:** no (se puede comparar con el ejemplo `grammar.pl` de SWISH).
 - **SWISH:** sí
@@ -660,6 +723,7 @@
 ### LPN-9.1 — Comparación de términos contra comparación aritmética
 - **Fuente:** §9.5 Exercises, Ejercicio 9.1. https://www.let.rug.nl/bos/lpn/lpnpage.php?pagetype=html&pageid=lpn-htmlse41 (el mirror de lpn.swi-prolog.org está roto)
 - **Tema:** 3, 7
+- **Capítulos:** 10, 8
 - **Dificultad:** 1
 - **Solución:** verificada: tienen éxito `12 is 2*6`, `14 =\= 2*6`, `14 \== 2*7`, `14 =:= 2*7`, `[1,2,3|[d,e]] == [1,2,3,d,e]`, `2+3 =:= 3+2`, `7-2 =\= 9-2`, `p == 'p'` y `vincent=VAR, VAR==vincent`. Fallan `14 = 2*7`, `14 == 2*7`, `2+3 == 3+2` y `vincent == VAR`. `p =\= 'p'` da **error de tipo** (`p` no es evaluable).
 - **SWISH:** sí
@@ -669,6 +733,7 @@
 ### LPN-9.2 — Listas en notación con punto
 - **Fuente:** §9.5, Ejercicio 9.2. https://www.let.rug.nl/bos/lpn/lpnpage.php?pagetype=html&pageid=lpn-htmlse41
 - **Tema:** 3, 6
+- **Capítulos:** 4, 7
 - **Dificultad:** 2
 - **Solución:** en Prolog tradicional (o en SWI-Prolog arrancado con `swipl --traditional`) las tres primeras consultas unifican: `X = [[a],[b],[c]]` en la tercera. La cuarta falla, porque `.(.(c,[]),[])` es `[[c]]`, no `[c]`. En SWI-Prolog 9 sin esa opción, `.(a,...)` **no** es una lista (el punto se usa para los *dicts*): hay que reescribir con `'[|]'(a,'[|]'(b,[]))`.
 - **SWISH:** sí, pero hay que reescribir con `'[|]'`
@@ -678,6 +743,7 @@
 ### LPN-9.3 — Clasificar un término: `termtype/2`
 - **Fuente:** §9.5, Ejercicio 9.3. https://www.let.rug.nl/bos/lpn/lpnpage.php?pagetype=html&pageid=lpn-htmlse41
 - **Tema:** 3
+- **Capítulos:** 32, 9
 - **Dificultad:** 2
 - **Solución:** propia, verificada:
   ```prolog
@@ -697,6 +763,7 @@
 ### LPN-9.4 — ¿Es un término cerrado? `groundterm/1`
 - **Fuente:** §9.5, Ejercicio 9.4. https://www.let.rug.nl/bos/lpn/lpnpage.php?pagetype=html&pageid=lpn-htmlse41
 - **Tema:** 3, 5
+- **Capítulos:** 32
 - **Dificultad:** 2
 - **Solución:** propia, verificada: `groundterm(T) :- nonvar(T), T =.. [_|Args], all_ground(Args).`, `all_ground([]).` y `all_ground([A|As]) :- groundterm(A), all_ground(As).`
 - **SWISH:** sí
@@ -706,6 +773,7 @@
 ### LPN-9.5 — Operadores definidos por el usuario
 - **Fuente:** §9.5, Ejercicio 9.5. https://www.let.rug.nl/bos/lpn/lpnpage.php?pagetype=html&pageid=lpn-htmlse41
 - **Tema:** 3
+- **Capítulos:** 18, 4
 - **Dificultad:** 2
 - **Solución:** verificada con `write_canonical/1`: `X is_a witch` es `is_a(X,witch)`; `harry and ron and hermione are friends` es `are(and(harry,and(ron,hermione)),friends)`; `harry is_a wizard and likes quidditch` es un **error de sintaxis** (`operator_clash`), porque `likes` (300) no puede ser argumento de `and` (200); `dumbledore is_a famous wizard` es `is_a(dumbledore,famous(wizard))`.
 - **SWISH:** sí
@@ -720,6 +788,7 @@
 ### LPN-PS9.1 — Explorar `display/1` y `write/1`
 - **Fuente:** §9.6 Practical Session. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse42
 - **Tema:** 3
+- **Capítulos:** 4, 11
 - **Dificultad:** 1
 - **Solución:** no corresponde. En SWI-Prolog 9, `display(2+3+4)` imprime `+(+(2,3),4)` y `display([a,b,c])` imprime `'[|]'(a,'[|]'(b,'[|]'(c,[])))`.
 - **SWISH:** sí
@@ -729,6 +798,7 @@
 ### LPN-PS9.2 — Imprimir árboles de análisis con sangría: `pptree/1`
 - **Fuente:** §9.6 Practical Session. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse42
 - **Tema:** 3, 5
+- **Capítulos:** 32, 11
 - **Dificultad:** 2
 - **Solución:** propia, verificada:
   ```prolog
@@ -746,6 +816,7 @@
 ### LPN-PS9.3 — Operadores para lógica proposicional
 - **Fuente:** §9.6 Practical Session. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse42
 - **Tema:** 3, A
+- **Capítulos:** 18, 12
 - **Dificultad:** 2
 - **Solución:** propia, verificada: `:- op(200, fy, not).`, `:- op(300, xfy, and).`, `:- op(400, xfy, or).` y `:- op(500, xfy, implies).` Con eso, `write_canonical(not p implies q)` da `implies(not(p),q)`.
 - **SWISH:** sí
@@ -757,6 +828,7 @@
 ### LPN-10.1 — Respuestas con corte
 - **Fuente:** §10.4 Exercises, Ejercicio 10.1. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse46
 - **Tema:** 4, 8
+- **Capítulos:** 9
 - **Dificultad:** 2
 - **Solución:** verificada: `p(X)` da `X = 1 ; X = 2`. `p(X),p(Y)` da los pares `1-1, 1-2, 2-1, 2-2`. `p(X),!,p(Y)` da `1-1, 1-2`.
 - **SWISH:** sí
@@ -771,6 +843,7 @@
 ### LPN-10.2 — Clasificar números y agregar cortes verdes
 - **Fuente:** §10.4, Ejercicio 10.2. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse46
 - **Tema:** 8
+- **Capítulos:** 9
 - **Dificultad:** 1
 - **Solución:** propia, verificada: `class(N,positive) :- N > 0, !.`, `class(0,zero) :- !.` y `class(N,negative) :- N < 0.`
 - **SWISH:** sí
@@ -785,6 +858,7 @@
 ### LPN-10.3 — Separar positivos y negativos: `split/3`
 - **Fuente:** §10.4, Ejercicio 10.3. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse46
 - **Tema:** 6, 8
+- **Capítulos:** 9, 8
 - **Dificultad:** 1
 - **Solución:** propia, verificada: sin corte: `split([],[],[]).`, `split([X|Xs],[X|P],N) :- X >= 0, split(Xs,P,N).` y `split([X|Xs],P,[X|N]) :- X < 0, split(Xs,P,N).` Con corte: se pone `!` después de `X >= 0` y se quita la prueba `X < 0` de la tercera cláusula.
 - **SWISH:** sí
@@ -798,6 +872,7 @@
 ### LPN-10.4 — Ruta de trenes en ambos sentidos: `route/3`
 - **Fuente:** §10.4, Ejercicio 10.4. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse46
 - **Tema:** 5, 6, 8
+- **Capítulos:** 10, 22
 - **Dificultad:** 2
 - **Solución:** propia, verificada:
   ```prolog
@@ -814,6 +889,7 @@
 ### LPN-10.5 — Nadie es celoso de sí mismo
 - **Fuente:** §10.4, Ejercicio 10.5. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse46
 - **Tema:** 8
+- **Capítulos:** 10
 - **Dificultad:** 1
 - **Solución:** propia, verificada: `jealous(X,Y) :- loves(X,Z), loves(Y,Z), X \== Y.` (también sirve `\+ X = Y` al final).
 - **SWISH:** sí
@@ -823,6 +899,7 @@
 ### LPN-PS10.1 — Trazar `max/3` y las preferencias de Vincent
 - **Fuente:** §10.5 Practical Session. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse47
 - **Tema:** 0, 8
+- **Capítulos:** 9, 10
 - **Dificultad:** 2
 - **Solución:** no corresponde.
 - **SWISH:** sí
@@ -832,6 +909,7 @@
 ### LPN-PS10.2 — "No unificable" de tres maneras: `nu/2`
 - **Fuente:** §10.5 Practical Session. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse47
 - **Tema:** 3, 8
+- **Capítulos:** 10, 9
 - **Dificultad:** 2
 - **Solución:** propia, verificada: (1) `nu(X,Y) :- \+ X = Y.` (2) `nu(X,Y) :- X = Y, !, fail.` y `nu(_,_).` (3) `nu(X,X) :- !, fail.` y `nu(_,_).`
 - **SWISH:** sí
@@ -841,6 +919,7 @@
 ### LPN-PS10.3 — Filtrar sin ligar variables: `unifiable/3`
 - **Fuente:** §10.5 Practical Session. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse47
 - **Tema:** 6, 8
+- **Capítulos:** 10, 9
 - **Dificultad:** 3
 - **Solución:** propia, verificada:
   ```prolog
@@ -858,6 +937,7 @@
 ### LPN-11.1 — `assert`, `retract` y `retractall`
 - **Fuente:** §11.3 Exercises, Ejercicio 11.1. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse50
 - **Tema:** 10
+- **Capítulos:** 20
 - **Dificultad:** 1
 - **Solución:** verificada con `listing/1`: después del primer comando la base queda `q(foo,blug). q(a,b). q(1,2).`; después del segundo, `q(foo,blug). q(a,b). p(X) :- h(X).`; después del tercero, solo `p(X) :- h(X).`
 - **SWISH:** sí (dentro de una misma consulta)
@@ -872,6 +952,7 @@
 ### LPN-11.2 — `findall`, `bagof` y `setof`
 - **Fuente:** §11.3, Ejercicio 11.2. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse50
 - **Tema:** 9
+- **Capítulos:** 17
 - **Dificultad:** 2
 - **Solución:** verificada: `findall(X,q(blob,X),L)` da `[blug,blag,blig]`; `findall(X,q(X,blug),L)` da `[blob,dang]`; `findall(X,q(X,Y),L)` da `[blob,blob,blob,blaf,dang,dang,flab]`; `bagof(X,q(X,Y),L)` da una respuesta por cada `Y` (por ejemplo `Y = blag, L = [blob,blaf]`); `setof(X,Y^q(X,Y),L)` da `[blaf,blob,dang,flab]`.
 - **SWISH:** sí
@@ -881,6 +962,7 @@
 ### LPN-11.3 — Suma 1..n con memorización: `sigma/2`
 - **Fuente:** §11.3, Ejercicio 11.3. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse50
 - **Tema:** 7, 10
+- **Capítulos:** 20, 38
 - **Dificultad:** 2
 - **Solución:** propia, verificada:
   ```prolog
@@ -898,6 +980,7 @@
 ### LPN-PS11.1 — Subconjuntos por backtracking: `subset/2`
 - **Fuente:** §11.4 Practical Session. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse51
 - **Tema:** 4, 6
+- **Capítulos:** 7, 5
 - **Dificultad:** 2
 - **Solución:** propia, verificada: `subset2([],[]).`, `subset2([X|S],[X|L]) :- subset2(S,L).` y `subset2(S,[_|L]) :- subset2(S,L).`
 - **SWISH:** sí
@@ -907,6 +990,7 @@
 ### LPN-PS11.2 — Conjunto potencia: `powerset/2`
 - **Fuente:** §11.4 Practical Session. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse51
 - **Tema:** 9
+- **Capítulos:** 17
 - **Dificultad:** 1
 - **Solución:** propia, verificada: `powerset(Set,P) :- findall(S, subset2(S,Set), P).` Con `[a,b,c]` da los 8 subconjuntos.
 - **SWISH:** sí
@@ -917,6 +1001,7 @@
 ### LPN-12.1 — Escribir un archivo con formato
 - **Fuente:** §12.4 Exercises, Ejercicio 12.1. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse55
 - **Tema:** X
+- **Capítulos:** 27
 - **Dificultad:** 1
 - **Solución:** propia, verificada: `open('hogwart.houses',write,S), tab(S,7), write(S,gryffindor), nl(S), write(S,hufflepuff), tab(S,5), write(S,ravenclaw), nl(S), tab(S,7), write(S,slytherin), nl(S), close(S).`
 - **SWISH:** no (SWISH no permite escribir archivos en disco)
@@ -925,6 +1010,7 @@
 ### LPN-12.2 — Contar frecuencias de palabras de un archivo
 - **Fuente:** §12.4, Ejercicio 12.2. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse55
 - **Tema:** 10, X
+- **Capítulos:** 27, 20, 11
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** no (lee archivos locales)
@@ -934,6 +1020,7 @@
 ### LPN-PS12.1 — Banco de pruebas para una DCG (pasos 1 a 7)
 - **Fuente:** §12.5 Practical Session. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse56
 - **Tema:** A, X
+- **Capítulos:** 27, 24, 21
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** no (módulos y archivos)

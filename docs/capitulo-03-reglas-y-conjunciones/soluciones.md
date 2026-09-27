@@ -164,7 +164,7 @@ Con `padre/2`, como en la [sección 3.5](index.md#35-una-regla-que-produce-respu
 respuesta no se repetía.
 
 Es posible eliminar los duplicados, pero requiere herramientas que se presentan
-en el [capítulo 15](../capitulo-15-todas-las-soluciones/index.md).
+en el [capítulo 17](../capitulo-17-todas-las-soluciones/index.md).
 
 ## 9
 
@@ -235,6 +235,8 @@ La consulta no produce ninguna respuesta, y la tabla explica por qué:
 | `gusta(juan, prolog)` | `Que` ya vale `prolog`; busca ese hecho | falla |
 | `gusta(eva, Que)` | retrocede; `Que` **deja de valer** `prolog`; busca otra solución | no hay más |
 | — | no quedan alternativas | la consulta falla |
+
+Con `conjunciones.pl` cargado:
 
 ```prolog
 ?- gusta(eva, Que), gusta(juan, Que).

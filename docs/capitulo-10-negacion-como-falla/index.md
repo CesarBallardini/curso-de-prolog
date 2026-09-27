@@ -2,11 +2,13 @@
 
 El [capítulo 2](../capitulo-02-hechos-consultas-y-variables/index.md) estableció que `false.` no significa "la afirmación es falsa" sino
 "la afirmación no se puede probar con el contenido del programa". Este capítulo
-desarrolla esa idea, la convierte en un operador —`\+`— y describe los tres
-casos en que ese operador produce resultados incorrectos.
+desarrolla esa idea, la convierte en un operador —`\+`—, describe los tres
+casos en que ese operador produce resultados incorrectos y muestra cómo se lo
+usa para obtener respuestas, como el máximo de un conjunto de valores.
 
-Es el último capítulo sobre el modelo de ejecución de Prolog. El capítulo
-siguiente analiza todo lo anterior desde el punto de vista de la lógica.
+Es el último capítulo sobre el modelo de ejecución de Prolog. El
+[capítulo 12](../capitulo-12-prolog-y-la-logica/index.md) analiza todo lo
+anterior desde el punto de vista de la lógica.
 
 ## Objetivos del capítulo
 
@@ -17,12 +19,16 @@ Al terminar el capítulo, el lector puede:
 - ubicar `\+` en la posición correcta de una regla, y reconocer el efecto de una
   ubicación incorrecta;
 - elegir entre `=`, `\=`, `==`, `\==`, `=:=` y `=\=` según la pregunta que plantea
-  cada uno.
+  cada uno;
+- obtener una respuesta por negación: el máximo como el valor para el que no
+  existe otro mayor;
+- escribir una negación sin `\+`, con corte y falla o sin negación, y comparar
+  la extensión y el comportamiento de cada versión.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **0:30 h**.
-    Resolver los 7 ejercicios marcados con ★: **1:45 h**.
-    Resolver los 15 ejercicios del final: **4:50 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:10 h**.
+    Resolver los 9 ejercicios marcados con ★: **2:35 h**.
+    Resolver los 17 ejercicios del final: **5:40 h**.
 
 ## 10.1 El supuesto de mundo cerrado
 
@@ -86,7 +92,7 @@ Regla práctica: **`\+` es confiable en la medida en que el programa es
 completo**. Sobre la información que el programa contiene, opera correctamente.
 Sobre la información que no contiene, responde como si no existiera.
 
-Hay una segunda diferencia, más silenciosa. La hipótesis de la [sección 10.1](#101-el-supuesto-de-mundo-cerrado) dice
+Hay una segunda diferencia, menos visible. La hipótesis de la [sección 10.1](#101-el-supuesto-de-mundo-cerrado) dice
 "lo que el programa no puede deducir"; `\+` es más estricto: exige que la
 búsqueda **fracase en una cantidad finita de pasos**. Por eso el nombre completo
 del mecanismo es *negación como falla finita*. Si el objetivo negado corresponde
@@ -126,10 +132,11 @@ no lo es:
 
 <!-- ejemplo: capitulo-10/negacion.pl predicado: mal_no_tiene_hijos/1 consulta: mal_no_tiene_hijos(Quien). -->
 ```prolog
-%!  mal_no_tiene_hijos(?P) is nondet.
+%!  mal_no_tiene_hijos(+P) is semidet.
 %
-%   La misma regla con los objetivos en orden inverso. Es incorrecta; la
-%   sección 10.4 explica la causa.
+%   La misma regla con los objetivos en orden inverso. Solo responde con P
+%   ligada; con P libre no produce ninguna respuesta. La sección 10.4
+%   explica la causa.
 mal_no_tiene_hijos(P) :-
     \+ padre(P, _),
     persona(P).
@@ -302,6 +309,270 @@ manera explícita que no se espera ninguna instanciación.
     en una línea la conclusión: `\=` y `\+` consultan el estado **actual** de
     los términos, no todos los valores que podrían tomar.
 
+## 10.7 Obtener una respuesta por negación
+
+En las secciones anteriores `\+` descarta: de todas las personas, deja las que
+no tienen hijos. También sirve para obtener una respuesta que se define por
+comparación con todas las demás. El caso típico es el máximo: una persona tiene
+la mayor edad **porque no existe otra edad mayor que la suya**.
+
+<!-- ejemplo: capitulo-10/por_negacion.pl predicado: mayor_edad/1 consulta: mayor_edad(Quien). -->
+```prolog
+%!  mayor_edad(?P) is nondet.
+%
+%   P tiene la mayor edad de la base: ninguna otra edad es mayor que la suya.
+%   Si dos personas empatan, las dos son respuestas.
+mayor_edad(P) :-
+    edad(P, E),
+    \+ ( edad(_, Otra),
+         Otra > E ).
+```
+
+```prolog
+?- mayor_edad(Quien).
+Quien = juan ;
+false.
+```
+
+La regla tiene dos pasos. `edad(P, E)` propone un candidato junto con su edad, y
+`\+ ( ... )` verifica que ninguna edad de la base sea mayor que `E`. Prolog prueba
+los candidatos en el orden de los hechos: para juan, de 68 años, no hay otra
+edad mayor y el `\+` se cumple; para cada una de las demás personas, la edad de
+juan es mayor y el `\+` falla.
+
+La forma general es **«X es el que cumple la condición porque no existe otro que
+la cumpla mejor»**. No requiere ordenar ni recorrer una lista con un acumulador
+que conserve el mayor visto hasta el momento, como en la [sección 8.5](../capitulo-08-aritmetica/index.md#85-acumuladores). Si dos
+personas tienen la misma edad máxima, las dos son respuestas: la condición es
+que no exista una edad **mayor**, no que no exista otra igual.
+
+**La conjunción negada.** `\+ ( edad(_, Otra), Otra > E )` niega una conjunción
+de dos objetivos: «no existe una edad `Otra` tal que `Otra > E`». Los paréntesis
+agrupan la conjunción, y el espacio entre `\+` y el paréntesis es necesario. Sin
+él, Prolog lee `\+(A, B)` como una llamada a un predicado `\+` de dos
+argumentos, que no existe:
+
+```prolog
+?- \+(edad(_, Otra), Otra > 50).
+ERROR: Unknown procedure: (\+)/2
+ERROR:     However, there are definitions for:
+ERROR:         (\+)/1
+false.
+```
+
+**Las variables del interior.** `Otra` aparece solamente dentro del `\+`. Como
+se verá en la [sección 12.3](../capitulo-12-prolog-y-la-logica/index.md#123-las-variables-y-los-cuantificadores), una variable en esa posición está cuantificada
+universalmente: la regla afirma que, **para toda** edad `Otra` de la base, `Otra`
+no es mayor que `E`. Es la lectura de la [sección 10.4](#104-donde-ubicar) usada a favor: allí una
+variable libre dentro del `\+` era un error, porque se esperaba que tuviera
+valor; aquí es la intención. `E`, en cambio, llega con valor desde el objetivo
+anterior.
+
+**El orden de los objetivos.** `\+` no genera valores: el candidato sale del
+objetivo que está **antes** del `\+`. Con el orden inverso, `E` llega libre a la
+comparación `Otra > E`, que no se puede evaluar:
+
+```prolog
+?- \+ (edad(_, Otra), Otra > E), edad(P, E).
+ERROR: Arguments are not sufficiently instantiated
+```
+
+A diferencia de `mal_no_tiene_hijos/1`, el resultado no es un `false.` sin
+explicación sino el error de la [sección 8.3](../capitulo-08-aritmetica/index.md#83-argumentos-sin-instanciar), porque `>` exige que sus dos
+lados tengan valor. Si esa regla se escribe en un archivo, SWI-Prolog además
+advierte al cargarlo `Singleton variable in \+: E`: detecta una variable que no
+tiene ninguna aparición antes del `\+`. En `mal_no_tiene_hijos/1` la advertencia
+no aparece, porque `P` figura en la cabeza de la regla.
+
+**Más de una condición.** El candidato puede requerir varios objetivos, y la
+conjunción negada también. El hijo menor de una persona es el hijo para el cual
+no existe otro hijo de la misma persona con menos edad:
+
+<!-- ejemplo: capitulo-10/por_negacion.pl predicado: hijo_menor/2 consulta: hijo_menor(pedro, Quien). -->
+```prolog
+%!  hijo_menor(?P, ?H) is nondet.
+%
+%   H es el hijo de menor edad de P: ningún otro hijo de P es menor que H.
+hijo_menor(P, H) :-
+    padre(P, H),
+    edad(H, E),
+    \+ ( padre(P, Otro),
+         edad(Otro, E2),
+         E2 < E ).
+```
+
+```prolog
+?- hijo_menor(pedro, Quien).
+Quien = eva.
+```
+
+`P` llega con valor al `\+` y restringe la búsqueda a los hijos de pedro; `Otro`
+y `E2` aparecen solamente dentro del `\+` y recorren todos los hijos de pedro y
+sus edades.
+
+**Probar sin ligar.** Como `\+` descarta las ligaduras que produce su objetivo,
+`\+ \+ Objetivo` se cumple exactamente cuando `Objetivo` se cumple, pero no deja
+ninguna variable con valor. Es la forma de preguntar si algo se puede probar sin
+conservar la respuesta; el ejercicio 14 lo examina con una consulta concreta.
+
+!!! warning "Regla para obtener una respuesta por negación"
+    Primero, los objetivos que generan el candidato y dan valor a sus
+    variables. Después, `\+ ( ... )` con la conjunción que describe un
+    candidato mejor. Las variables que solo aparecen dentro del paréntesis
+    recorren todos los valores posibles.
+
+!!! question "Actividad"
+    Sobre `por_negacion.pl`, ejecutar `mayor_edad(Quien).` y
+    `hijo_menor(P, H).` Después agregar el hecho `edad(marta, 68).`, sin
+    agregar a marta en `persona/1`, y predecir antes de ejecutar cuántas
+    respuestas da `mayor_edad(Quien).` Por último, reemplazar `Otra > E` por
+    `Otra >= E` y explicar por qué la regla deja de tener respuestas.
+
+## 10.8 Prescindir de `\+`
+
+La [sección 10.2](#102-no-se-puede-probar) indicó que el corte forma parte de la definición de `\+`. Esta
+sección escribe sin `\+` tres predicados de las secciones anteriores, de dos
+maneras, y compara la extensión y el comportamiento de cada versión. Todas
+están en `sin_negacion.pl`.
+
+**Con corte y falla.** `fail` es un objetivo predefinido que falla siempre. Con
+él y el corte, la negación se escribe a mano:
+
+<!-- ejemplo: capitulo-10/sin_negacion.pl predicado: mayor_edad_con_corte/1 ninguna_mayor/1 consulta: mayor_edad_con_corte(Quien). -->
+```prolog
+%!  mayor_edad_con_corte(?P) is nondet.
+%
+%   P tiene la mayor edad de la base, sin \+: la negación está escrita a mano
+%   en ninguna_mayor/1.
+mayor_edad_con_corte(P) :-
+    edad(P, E),
+    ninguna_mayor(E).
+
+%!  ninguna_mayor(+E) is semidet.
+%
+%   Ninguna edad de la base es mayor que E. Si se encuentra una, el corte
+%   descarta la segunda cláusula y fail hace fallar al predicado.
+ninguna_mayor(E) :-
+    edad(_, Otra),
+    Otra > E,
+    !,
+    fail.
+ninguna_mayor(_).
+```
+
+```prolog
+?- mayor_edad_con_corte(Quien).
+Quien = juan ;
+false.
+```
+
+`ninguna_mayor(E)` intenta primero probar lo que se quiere negar: que existe
+una edad mayor que `E`. Si lo consigue, el corte descarta la segunda cláusula y
+`fail` hace fallar al predicado; si no lo consigue, la segunda cláusula se
+cumple. Es lo que hace `\+`, y por eso el comportamiento es el mismo: las mismas
+respuestas, los empates, y la misma exigencia de que `E` llegue con valor. El
+corte es rojo, en el sentido de la [sección 9.5](../capitulo-09-backtracking-y-corte/index.md#95-corte-verde-y-corte-rojo): sin él, la segunda cláusula
+se cumpliría siempre. Lo que cambia es la extensión: cada negación requiere un
+predicado auxiliar de dos cláusulas, con nombre propio.
+
+**Sin negación.** La otra manera evita la negación por completo: en lugar de
+preguntar si existe una edad mayor, recorre todas las edades y conserva la
+mayor, con un acumulador como los de la [sección 8.5](../capitulo-08-aritmetica/index.md#85-acumuladores). Los elementos de la parte I
+no permiten recorrer los hechos `edad/2` como una lista, de modo que las
+personas se escriben otra vez, en un hecho que contiene la lista:
+
+```prolog
+% personas(L): L es la lista de todas las personas. Repite persona/1.
+personas([juan, ana, pedro, luis, eva]).
+```
+
+<!-- ejemplo: capitulo-10/sin_negacion.pl predicado: mayor_edad_sin_negacion/1 mayor_desde/4 consulta: mayor_edad_sin_negacion(Quien). -->
+```prolog
+%!  mayor_edad_sin_negacion(?P) is semidet.
+%
+%   P tiene la mayor edad de la base, sin negación: recorre la lista de las
+%   personas y conserva la mayor edad vista. Con empate, responde solo la
+%   primera.
+mayor_edad_sin_negacion(P) :-
+    personas([Primera|Resto]),
+    edad(Primera, E),
+    mayor_desde(Resto, Primera, E, P).
+
+%!  mayor_desde(+L, +Hasta, +E, -P) is det.
+%
+%   P es la persona de mayor edad entre Hasta, de edad E, y las de L.
+mayor_desde([], P, _, P).
+mayor_desde([Q|Resto], _, E, P) :-
+    edad(Q, EQ),
+    EQ > E,
+    mayor_desde(Resto, Q, EQ, P).
+mayor_desde([Q|Resto], Hasta, E, P) :-
+    edad(Q, EQ),
+    EQ =< E,
+    mayor_desde(Resto, Hasta, E, P).
+```
+
+```prolog
+?- mayor_edad_sin_negacion(Quien).
+Quien = juan.
+```
+
+La respuesta coincide, pero la versión difiere en tres aspectos. Es más
+extensa. Con dos personas de la misma edad máxima responde solo la primera de la
+lista, porque `mayor_desde/4` conserva el candidato anterior cuando `EQ =< E`.
+Y depende de que `personas/1` esté completa: una persona agregada con
+`persona/1` y `edad/2`, pero no en la lista, queda fuera del resultado. La
+hipótesis del mundo cerrado de la [sección 10.1](#101-el-supuesto-de-mundo-cerrado) sigue presente, ahora escrita en
+un hecho que se debe mantener a mano.
+
+**La representación de los datos.** Con otra representación, la versión sin
+negación puede ser la más breve. Si los hijos de cada padre están en una lista,
+un hijo único es el único elemento de la lista de hijos de su padre:
+
+```prolog
+% hijos(P, L): L es la lista de los hijos de P. Repite padre/2.
+hijos(juan, [ana, pedro]).
+hijos(pedro, [luis, eva]).
+```
+
+<!-- ejemplo: capitulo-10/sin_negacion.pl predicado: hijo_unico_sin_negacion/1 consulta: hijo_unico_sin_negacion(Quien). -->
+```prolog
+%!  hijo_unico_sin_negacion(?H) is nondet.
+%
+%   H es el único elemento de la lista de hijos de su padre.
+hijo_unico_sin_negacion(H) :-
+    hijos(_, [H]).
+```
+
+La regla ocupa dos líneas y no requiere auxiliares, pero `hijos/2` repite la
+información de `padre/2`, y los dos se deben mantener de acuerdo.
+
+La tabla resume la extensión de cada versión. Se cuentan las líneas de código,
+sin comentarios ni líneas en blanco, incluidos los predicados auxiliares y los
+hechos que repiten datos; no se cuentan `persona/1`, `padre/2` ni `edad/2`, que
+son comunes a todas las versiones.
+
+| Predicado | Con `\+` | Con corte y falla | Sin negación |
+|---|---|---|---|
+| `hijo_unico/1` | 6 líneas, 2 predicados | 9 líneas, 2 predicados | 4 líneas: la regla y `hijos/2` |
+| `mayor_edad/1` | 4 líneas, 1 predicado | 9 líneas, 2 predicados | 14 líneas: 2 predicados y `personas/1` |
+| `hijo_menor/2` | 6 líneas, 1 predicado | 11 líneas, 2 predicados | 15 líneas: 2 predicados y `hijos/2` |
+
+Cuando la información está en hechos, `\+` es la forma más breve: expresa «no
+existe» en un solo objetivo. La versión con corte y falla es su definición
+escrita a mano, con el mismo comportamiento y más líneas. La versión sin
+negación cambia la pregunta —recorrer en lugar de negar— y necesita los datos
+en una lista, que en la parte I se escribe a mano; el [capítulo 17](../capitulo-17-todas-las-soluciones/index.md) presenta
+`findall/3`, que construye esa lista a partir de los hechos. Cuando los datos
+ya son una lista, como en los ejercicios 8, 13 y 17, la versión sin negación no
+repite nada, y suele ser la más directa.
+
+!!! question "Actividad"
+    Agregar a `sin_negacion.pl` los hechos `persona(marta).` y
+    `edad(marta, 70).` Antes de ejecutar, predecir qué responden
+    `mayor_edad_con_corte(Quien).` y `mayor_edad_sin_negacion(Quien).`
+    Comprobar la predicción, y corregir la versión que no responde marta.
+
 ## Ejercicios
 
 Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
@@ -337,8 +608,10 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 
 8. **(3)** Escribir `solo_en_la_primera(L1, L2, R)`: `R` contiene los elementos
    de `L1` que no pertenecen a `L2`.
-9. **(3)** ¿Se puede escribir `no_tiene_hijos/1` sin usar `\+`? Intentarlo y, si
-   no es posible con los elementos vistos, explicar qué elemento falta.
+9. **(3)** Escribir `no_tiene_hijos/1` sin usar `\+`, de las dos maneras de la
+   [sección 10.8](#108-prescindir-de), y comparar su extensión con la de la sección 10.4.
+   ¿Qué no se puede hacer con los elementos de la parte I? Indicar qué
+   elemento falta.
 10. ★ **(1)** Predecir qué responde cada consulta, con los seis operadores de la
     [sección 10.5](#105-los-seis-operadores-de-igualdad-y-desigualdad). Cuando la respuesta no sea `true.` ni `false.`, indicar qué es:
     `ana = ana.` · `ana == ana.` · `X = ana.` · `X == ana.` ·
@@ -372,6 +645,26 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     pero con las listas invertidas, y después explicar por qué no alcanza con
     consultar `solo_en_la_primera(L2, L1, R)` cuando alguna de las dos listas
     tiene elementos sin instanciar.
+16. ★ **(2)** Con la base siguiente, escribir `mejor_de(M, A)`: A tiene la nota
+    más alta de la materia M. Usar la forma de la [sección 10.7](#107-obtener-una-respuesta-por-negacion), sin ordenar ni
+    recorrer listas. ¿Qué responde `mejor_de(logica, A).`, y por qué?
+
+    ```prolog
+    % nota(A, M, N): el alumno A obtuvo la nota N en la materia M.
+    nota(ana, logica, 9).
+    nota(luis, logica, 7).
+    nota(eva, logica, 9).
+    nota(ana, algebra, 6).
+    nota(luis, algebra, 8).
+    nota(eva, algebra, 5).
+    ```
+
+17. ★ **(3)** Una lista sin elementos repetidos registra a los invitados en el
+    orden en que llegaron. Escribir `llego_despues(X, Y, L)`: en la lista `L`,
+    `Y` aparece después de `X`. Con ese predicado, escribir `ultimo(X, L)`: `X`
+    es el último en llegar porque nadie llegó después que él. No usar
+    `append/3`. Escribir también los encabezados de los dos predicados, y
+    explicar por qué el enunciado exige que la lista no tenga repetidos.
 
 ## Resumen
 
@@ -381,6 +674,9 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | **negación como falla** | no demuestra que una afirmación sea falsa: no logra demostrar que sea cierta |
 | **mundo cerrado** | lo que el programa no puede deducir se considera no cierto |
 | ubicación de `\+` | después de los objetivos que instancian sus variables |
+| corte y falla | `p(X) :- q(X), !, fail.` y `p(_).`: la definición de `\+` escrita a mano |
+| sin negación | recorrer una lista en lugar de negar; requiere los datos en una lista |
+| respuesta por negación | `edad(P, E), \+ ( edad(_, Otra), Otra > E )`: el candidato se genera antes; el `\+` niega que exista uno mejor |
 | `=` `\=` | pueden unificar, o no pueden unificar |
 | `==` `\==` | son el mismo término, o no lo son |
 | `=:=` `=\=` | tienen el mismo valor numérico, o distinto |
@@ -389,8 +685,9 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 
 | Tema | Se retoma en |
 |---|---|
-| Todo el capítulo, desde el punto de vista de la lógica | [capítulo 11](../capitulo-11-prolog-y-la-logica/index.md) |
-| `->` y `;`, construcciones relacionadas con `\+` | [capítulo 13](../capitulo-13-control/index.md) |
-| `forall/2`, que expresa "para todos" sin los problemas de `\+` | [capítulo 15](../capitulo-15-todas-las-soluciones/index.md) |
-| Verificación del tipo de un término antes de compararlo | [capítulo 24](../capitulo-24-inspeccion-de-terminos/index.md) |
-| `dif/2`, equivalente a `\==` que se posterga hasta que las variables tengan valor | [capítulo 32](../capitulo-32-programacion-con-restricciones/index.md) |
+| Todo el capítulo, desde el punto de vista de la lógica | [capítulo 12](../capitulo-12-prolog-y-la-logica/index.md) |
+| `->` y `;`, construcciones relacionadas con `\+` | [capítulo 15](../capitulo-15-control/index.md) |
+| `forall/2`, que expresa "para todos" sin los problemas de `\+` | [capítulo 17](../capitulo-17-todas-las-soluciones/index.md) |
+| Verificación del tipo de un término antes de compararlo | [capítulo 32](../capitulo-32-inspeccion-de-terminos/index.md) |
+| Otras formas de obtener el máximo: `aggregate_all(max, …)` y ordenar con `sort/4` | [capítulo 17](../capitulo-17-todas-las-soluciones/index.md) y [capítulo 22](../capitulo-22-estructuras-de-datos-de-la-biblioteca/index.md) |
+| `dif/2`, equivalente a `\==` que se posterga hasta que las variables tengan valor | [capítulo 23](../capitulo-23-programacion-con-restricciones/index.md) |

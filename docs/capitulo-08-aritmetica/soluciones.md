@@ -217,7 +217,7 @@ false.
 El límite no está dado por la magnitud del número sino por la profundidad de la
 recursión: cada llamada deja una multiplicación pendiente hasta el retorno, y
 esa operación pendiente ocupa memoria. Con un acumulador, ese límite se extiende
-de manera considerable; el [capítulo 14](../capitulo-14-rendimiento/index.md) trata el tema.
+de manera considerable; el [capítulo 16](../capitulo-16-rendimiento/index.md) trata el tema.
 
 ## 10
 
@@ -271,8 +271,8 @@ variable libre la unificación siempre se cumple; con un número, se cumple o no
 según el valor; y el resultado de esa unificación es la respuesta del objetivo.
 
 Los dos errores pertenecen a las dos clases de la [sección 8.3](index.md#83-argumentos-sin-instanciar): `dos` no es un
-número y nunca lo será —hay que corregir el programa—; `Y` no tiene valor pero
-podría tenerlo —hay que corregir el orden de los objetivos—.
+número y nunca lo será —se debe corregir el programa—; `Y` no tiene valor pero
+podría tenerlo —se debe corregir el orden de los objetivos—.
 
 La última no usa `is/2` y por eso no evalúa nada: construye el término.
 
@@ -285,15 +285,16 @@ impide que siga avanzando **más allá** de `N`: después de alcanzar `N` con la
 primera cláusula, el backtracking entra en la segunda y cuenta `N+1`, `N+2`, sin
 fin.
 
-Se corrige reponiendo a mano la condición que antes daba la estructura:
+Se corrige reponiendo de manera explícita la condición que antes daba la
+estructura:
 
 <!-- ejemplo: capitulo-08/soluciones.pl predicado: hasta/2 consulta: hasta(3, 1). -->
 ```prolog
 %!  hasta(+N, +X) is semidet.
 %
 %   X recorre los enteros de X a N. Con los números predefinidos, la
-%   unificación ya no garantiza la terminación, y hay que reponer la guarda
-%   X < N que en s(s(cero)) daba la estructura del término.
+%   unificación ya no garantiza la terminación, y es necesario reponer la guarda
+%   X < N, que con la notación s(s(cero)) aportaba la estructura del término.
 hasta(N, N).
 hasta(N, X) :-
     X < N,
@@ -318,12 +319,12 @@ Las tres primeras funcionan porque el recorrido se hace sobre la lista, que est�
 completa; el segundo argumento solo participa de la unificación final, de modo
 que da lo mismo que llegue con valor o sin él.
 
-La cuarta falla porque el recorrido no tiene por dónde avanzar: `recorriendo/5`
+La cuarta produce el error porque el recorrido no tiene por dónde avanzar: `recorriendo/5`
 intenta `SumaAhora is SumaHasta + X` con `X` sin valor.
 
 La quinta responde `false.` y no da error, por la condición `Cuantos > 0`: es la
 decisión de diseño que evita dividir por cero, y hace que el promedio de la
-lista vacía simplemente no exista.
+lista vacía no exista.
 
 Las cinco respuestas determinan el encabezado:
 
@@ -373,10 +374,10 @@ dos casos: las dos empiezan comparando `N` con `0` o evaluando `N > 0`, y `N` no
 tiene valor. El error aparece antes de llegar a cualquier suma.
 
 La pregunta del ejercicio sugiere que alguna de las dos podría hacerlo, y
-conviene ver por qué no. Ninguna de las dos versiones **enumera** valores de
+la razón por la que ninguna lo hace es la siguiente. Ninguna de las dos versiones **enumera** valores de
 `N`: las dos lo reciben. Para responder en ese sentido habría que agregar un
 objetivo que genere candidatos antes de la comparación, que es la plantilla 15
-del [capítulo 9](../capitulo-09-backtracking-y-corte/index.md), o usar la técnica del [capítulo 32](../capitulo-32-programacion-con-restricciones/index.md).
+del [capítulo 9](../capitulo-09-backtracking-y-corte/index.md), o usar la técnica del [capítulo 23](../capitulo-23-programacion-con-restricciones/index.md).
 
 ## 15
 
@@ -391,7 +392,7 @@ test(la_lista_vacia_no_tiene_maximo, [fail]) :-
     maximo([], _).
 ```
 
-La tercera prueba es la que vale la pena escribir, porque **documenta una
+La tercera prueba es la más importante, porque **documenta una
 decisión**. `maximo/2` podría haberse definido de otra manera —dando error, o
 devolviendo un valor convenido—, y la prueba deja registrado que la decisión
 tomada fue que falle. Quien lea el programa más adelante no tiene que deducirla

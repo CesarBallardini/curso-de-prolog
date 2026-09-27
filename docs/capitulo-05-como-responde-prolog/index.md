@@ -46,7 +46,7 @@ decisión tomada e intenta la alternativa siguiente.
 Que el orden sea fijo tiene una consecuencia directa: **el orden de búsqueda
 queda determinado por quien escribe el programa**. Dos programas con el mismo
 significado lógico pueden comportarse de manera muy distinta según el orden de
-sus cláusulas y objetivos. Más detalles de esto se darán en las secciones [5.4](#54-el-orden-de-las-clausulas-determina-el-orden-de-las-respuestas) y [5.5](#55-el-orden-de-los-objetivos-determina-el-trabajo), y el [capítulo 14](../capitulo-14-rendimiento/index.md) lo retoma desde el punto de vista del rendimiento.
+sus cláusulas y objetivos. Más detalles de esto se darán en las secciones [5.4](#54-el-orden-de-las-clausulas-determina-el-orden-de-las-respuestas) y [5.5](#55-el-orden-de-los-objetivos-determina-el-trabajo), y el [capítulo 16](../capitulo-16-rendimiento/index.md) lo retoma desde el punto de vista del rendimiento.
 
 - **el orden de los objetivos decide cómo es el árbol.** Cambiarlo produce un
   árbol distinto, con otra cantidad de nodos, y por eso cambia el trabajo;
@@ -135,7 +135,7 @@ en que Prolog lo recorre:
 !!! note "Cada uso de una cláusula emplea variables nuevas"
     Las variables `A`, `N` y `P` de R4 no son las mismas en dos usos distintos
     de esa cláusula: cada vez que Prolog emplea una cláusula, toma una copia con
-    variables nuevas. Acá R4 se usa una sola vez y la distinción no se nota,
+    variables nuevas. En este árbol R4 se usa una sola vez y la distinción no se nota,
     por otro lado, en el [capítulo 6](../capitulo-06-recursion/index.md) donde una misma cláusula se usa
     muchas veces, cada uso va a tener sus propias variables. Allá también se explica a los
     identificadores como `_8106` de la sección siguiente: son los nombres que
@@ -276,7 +276,7 @@ Los tres diagramas explican los pasos de diferente manera:
 | las **cajas** | por dónde entra y sale la ejecución de **un** objetivo |
 
 El modelo de cajas se retoma en el [capítulo 9](../capitulo-09-backtracking-y-corte/index.md), donde se muestra que el corte
-inhabilita la puerta Redo de algunas cajas, y en el [capítulo 23](../capitulo-23-pruebas-y-depuracion/index.md), junto con las
+inhabilita la puerta Redo de algunas cajas, y en el [capítulo 26](../capitulo-26-pruebas-y-depuracion/index.md), junto con las
 demás herramientas para examinar un programa en ejecución.
 
 ## 5.4 El orden de las cláusulas determina el orden de las respuestas
@@ -548,7 +548,7 @@ De este análisis se derivan dos criterios de escritura:
     simultáneamente, un conjunto de aserciones lógicas (interpretación logica)
     y un procedimiento que se ejecuta (interpretación procedimental);
     el orden no modifica lo primero, pero determina lo segundo. El
-    [capítulo 11](../capitulo-11-prolog-y-la-logica/index.md) analiza esta dualidad desde el punto de vista de la lógica.
+    [capítulo 12](../capitulo-12-prolog-y-la-logica/index.md) analiza esta dualidad desde el punto de vista de la lógica.
 
 ## Ejercicios
 
@@ -662,6 +662,6 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 |---|---|
 | Recursión que termina, y cómo garantizar la terminación | [capítulo 6](../capitulo-06-recursion/index.md) |
 | Poda deliberada de ramas del árbol, con el corte | [capítulo 9](../capitulo-09-backtracking-y-corte/index.md) |
-| Los programas como afirmaciones lógicas, con independencia de su ejecución | [capítulo 11](../capitulo-11-prolog-y-la-logica/index.md) |
-| Elección del orden de los objetivos para mejorar el rendimiento | [capítulo 14](../capitulo-14-rendimiento/index.md) |
-| `trace` con todos sus comandos, y el resto del depurador | [capítulo 23](../capitulo-23-pruebas-y-depuracion/index.md) |
+| Los programas como afirmaciones lógicas, con independencia de su ejecución | [capítulo 12](../capitulo-12-prolog-y-la-logica/index.md) |
+| Elección del orden de los objetivos para mejorar el rendimiento | [capítulo 16](../capitulo-16-rendimiento/index.md) |
+| `trace` con todos sus comandos, y el resto del depurador | [capítulo 26](../capitulo-26-pruebas-y-depuracion/index.md) |

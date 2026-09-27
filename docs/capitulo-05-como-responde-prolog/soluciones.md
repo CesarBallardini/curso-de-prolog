@@ -304,7 +304,7 @@ Lo que el ejercicio quiere mostrar es que esa conveniencia **no se puede decidir
 mirando la regla**. Depende de cuántos hechos unifican con cada objetivo, es
 decir de los datos, y puede invertirse si el programa cambia: con una familia en
 la que `luis` tuviera varios padres registrados y `juan` un solo hijo, la mejor
-sería la primera. El [capítulo 14](../capitulo-14-rendimiento/index.md) retoma el tema.
+sería la primera. El [capítulo 16](../capitulo-16-rendimiento/index.md) retoma el tema.
 
 ## 13
 

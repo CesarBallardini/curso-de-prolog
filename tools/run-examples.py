@@ -28,13 +28,18 @@ import sys
 import examples
 
 LIMIT = 120  # seconds per example
-PASSED = re.compile(r'(?:All )?(\d+) tests passed')
+# plunit says '% 3 tests passed', '% test passed' when there is only one, and
+# 'All 12 (+7 sub-tests) tests passed' when a test uses the forall option.
+PASSED = re.compile(r'(?:All )?(?:(\d+) (?:\(\+\d+ sub-tests\) )?tests|test) passed')
 TROUBLE = re.compile(r'^(ERROR|Warning):', re.M)
 
 
 def goal(example):
+    # The closing halt matters for command-line programs: a file with
+    # `:- initialization(main, main)` replaces the `-t` toplevel with its main,
+    # which would run after the tests with no arguments.
     files = ','.join(f"'{path.as_posix()}'" for path in (example.path, example.tests))
-    return f'consult([{files}]),run_tests'
+    return f'consult([{files}]),run_tests,halt'
 
 
 def run(swipl, example):
@@ -52,7 +57,8 @@ def run(swipl, example):
     if done.returncode != 0 or TROUBLE.search(output):
         return False, '\n'.join([line for line in output.splitlines() if line.strip()][:12])
     how_many = PASSED.search(output)
-    return True, '%s tests, all green' % (how_many.group(1) if how_many else '?')
+    count = (how_many.group(1) or '1') if how_many else '?'
+    return True, f'{count} tests, all green'
 
 
 def main():

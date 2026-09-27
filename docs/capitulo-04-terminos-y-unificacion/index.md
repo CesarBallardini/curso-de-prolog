@@ -505,4 +505,4 @@ término al que se ligó.
 | Las listas, que son términos compuestos con notación propia | [capítulo 7](../capitulo-07-listas/index.md) |
 | `is` y la diferencia entre el término `2+3` y el número `5` | [capítulo 8](../capitulo-08-aritmetica/index.md) |
 | `==` y `\==`, similares a `=` pero con otro significado | [capítulo 10](../capitulo-10-negacion-como-falla/index.md) |
-| Inspección de un término cuya forma no se conoce de antemano | [capítulo 24](../capitulo-24-inspeccion-de-terminos/index.md) |
+| Inspección de un término cuya forma no se conoce de antemano | [capítulo 32](../capitulo-32-inspeccion-de-terminos/index.md) |

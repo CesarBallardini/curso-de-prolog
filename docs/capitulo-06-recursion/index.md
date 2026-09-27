@@ -3,7 +3,7 @@
 La recursión es el único mecanismo de repetición de Prolog. No existe otra
 construcción con ese propósito, por lo que conviene estudiarla en detalle: los
 temas posteriores —las listas del [capítulo 7](../capitulo-07-listas/index.md), la aritmética del [capítulo 8](../capitulo-08-aritmetica/index.md), los
-árboles del [capítulo 33](../capitulo-33-busqueda-y-juegos/index.md)— son aplicaciones de la recursión a distintas estructuras.
+árboles del [capítulo 39](../capitulo-39-busqueda-y-juegos/index.md)— son aplicaciones de la recursión a distintas estructuras.
 
 ## Objetivos del capítulo
 
@@ -52,8 +52,8 @@ antepasado(A, D) :-
   progenitor de D, ya es su antepasado;
 - la segunda desciende una generación —`progenitor(A, Hijo)`— y vuelve a plantear la misma pregunta desde ahí.
 
-El programa completo está en `antepasados.pl`, con el árbol de Taré del capítulo
-1. Sobre él:
+El programa completo está en `antepasados.pl`, con el árbol de Taré del
+[capítulo 1](../capitulo-01-la-primera-hora/index.md). Sobre él:
 
 ```prolog
 ?- antepasado(tare, isaac).
@@ -70,7 +70,7 @@ sí, responde la primer cláusula.
 Toda recursión plantea las mismas preguntas: **¿qué se reduce en cada llamada?**, y
 **¿dónde se detiene?**
 
-Acá la respuesta se ve en el árbol genealógico. Cada llamada recursiva empieza
+En este caso la respuesta se ve en el árbol genealógico. Cada llamada recursiva empieza
 una generación más abajo que la anterior, y la familia tiene una cantidad finita
 de generaciones: al llegar a alguien que no tiene hijos, `progenitor(A, Hijo)`
 falla y esa rama se agota. No hay manera de descender para siempre.
@@ -204,8 +204,8 @@ natural(s(N)) :-
     natural(N).
 ```
 
-`s(N)` se lee "el sucesor de N", y es un término compuesto como los del capítulo
-4: nombre `s`, un argumento. De este modo, `s(cero)` representa el uno, `s(s(cero))`
+`s(N)` se lee "el sucesor de N", y es un término compuesto como los del
+[capítulo 4](../capitulo-04-terminos-y-unificacion/index.md): nombre `s`, un argumento. De este modo, `s(cero)` representa el uno, `s(s(cero))`
 el dos y `s(s(s(cero)))` el tres. `cero` es un átomo, elegido a propósito en lugar
 del número `0`: así queda a la vista que ninguno de estos términos es un número
 para Prolog —no se pueden operar con `is`—, aunque es posible definir relaciones
@@ -282,8 +282,8 @@ La misma definición que suma, consultada en otro sentido, resta. No existe una
 regla para sumar y otra para restar: existe una relación entre tres números, y
 la consulta determina cuáles son los datos y cuál es la incógnita.
 
-`is` no tiene esta propiedad, y por eso conviene observarla antes del capítulo
-8: `X is 1 + 2` evalúa en un único sentido, mientras que `suma/3` define una
+`is` no tiene esta propiedad, y por eso conviene observarla antes del
+[capítulo 8](../capitulo-08-aritmetica/index.md): `X is 1 + 2` evalúa en un único sentido, mientras que `suma/3` define una
 relación.
 
 ## 6.5 Por qué termina
@@ -532,4 +532,4 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | `is`, y por qué es menos general que la relación `suma/3` | [capítulo 8](../capitulo-08-aritmetica/index.md) |
 | Acumuladores, otra forma de escribir una recursión que produce un resultado | [capítulo 8](../capitulo-08-aritmetica/index.md) |
 | Recursión con poda mediante el corte | [capítulo 9](../capitulo-09-backtracking-y-corte/index.md) |
-| Recursión sobre estructuras que no son cadenas, como los árboles | [capítulo 33](../capitulo-33-busqueda-y-juegos/index.md) |
+| Recursión sobre estructuras que no son cadenas, como los árboles | [capítulo 39](../capitulo-39-busqueda-y-juegos/index.md) |

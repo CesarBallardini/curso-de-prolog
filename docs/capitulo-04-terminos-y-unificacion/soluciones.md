@@ -75,6 +75,8 @@ contrario, no. La comparación la realiza la propia unificación.
 
 ## 7
 
+`al_reves/2` es el de `operadores.pl`:
+
 ```prolog
 ?- al_reves(1 + 2 + 3, X).
 X = 3+(1+2).
@@ -195,7 +197,7 @@ propietario_y_especie(ficha(mascota(E, _), _, P), P, E).
 
 Un solo hecho, sin cuerpo. La plantilla 7 no se limita a un componente: se
 escriben variables en todas las posiciones de interés, a la profundidad que
-haga falta, y `_` en las demás. Acá `E` está dos niveles adentro.
+haga falta, y `_` en las demás. En este caso `E` está dos niveles adentro.
 
 ## 14
 
@@ -271,8 +273,8 @@ la que evita que una ficha se empareje consigo misma.
 
 No alcanza con escribir la misma variable dos veces en la cabeza porque el
 predicado recibe **dos fichas**, no una: repetir una variable dentro de un mismo
-término exige que dos posiciones de ese término coincidan, y acá hay que
-comparar una posición de un término con una posición de otro. Para eso se
+término exige que dos posiciones de ese término coincidan, y en este caso se
+debe comparar una posición de un término con una posición de otro. Para eso se
 necesita un objetivo en el cuerpo.
 
 Sobre los tres registros del capítulo no hay ningún par que cumpla la relación,

@@ -1,0 +1,23 @@
+# Capítulo 31 - Solución del ejercicio 8: el Buscaminas como servicio de
+# systemd, en Linux, en el puerto 8081.
+#
+#     sudo cp buscaminas.service /etc/systemd/system/
+#     sudo systemctl daemon-reload
+#     sudo systemctl enable --now buscaminas
+#
+# El programa está en /opt/buscaminas, y lo ejecuta un usuario sin
+# privilegios, buscaminas.
+
+[Unit]
+Description=Buscaminas, el juego del curso de Prolog como servicio web
+After=network.target
+
+[Service]
+Type=simple
+User=buscaminas
+WorkingDirectory=/opt/buscaminas
+ExecStart=/usr/bin/swipl buscaminas.pl --servicio --puerto=8081
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

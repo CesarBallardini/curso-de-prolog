@@ -139,12 +139,12 @@ pueda recorrer.
 
 Se requiere reunir todas las respuestas de `padre(P, H)` en una única estructura
 y contarlas, lo que no es posible con los elementos disponibles hasta aquí. Es
-el tema del [capítulo 15](../capitulo-15-todas-las-soluciones/index.md).
+el tema del [capítulo 17](../capitulo-17-todas-las-soluciones/index.md).
 
 Lo que sí es posible es ejecutar la consulta `padre(juan, H).` y contar de
 manera manual las respuestas que se obtienen con `;`. La diferencia entre ese
 procedimiento y un programa que las cuente es precisamente lo que resuelve el
-[capítulo 15](../capitulo-15-todas-las-soluciones/index.md).
+[capítulo 17](../capitulo-17-todas-las-soluciones/index.md).
 
 ## 9
 

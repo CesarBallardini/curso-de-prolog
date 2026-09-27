@@ -33,9 +33,10 @@ sumando([X|Resto], Hasta, Total) :-
     Ahora is Hasta + X,
     sumando(Resto, Ahora, Total).
 
-%!  largo(+L, -N) is det.
+%!  largo(?L, ?N) is nondet.
 %
-%   N es la cantidad de elementos de L, también con acumulador.
+%   N es la cantidad de elementos de L, también con acumulador. Con L libre y
+%   N ligado, da la lista de N variables y después no termina.
 largo(L, N) :-
     contando(L, 0, N).
 

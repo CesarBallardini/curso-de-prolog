@@ -38,7 +38,7 @@ test(maximo, all(M == [9])) :-
 test(maximo_al_final, all(M == [9])) :-
     maximo([3, 4, 9], M).
 
-test(la_lista_vacia_no_tiene_maximo, [fail]) :-
+test(maximo_de_la_vacia_falla, [fail]) :-
     maximo([], _).
 
 test(factorial_de_cinco, all(F == [120])) :-
