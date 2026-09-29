@@ -26,7 +26,12 @@
             alumnos_de/3
           ]).
 
+% Una instalación sin library(odbc), como la de algunos paquetes de Linux,
+% carga igual el módulo: las sentencias SQL se escriben sin conexión, y
+% las pruebas que se conectan quedan bloqueadas.
+:- if(exists_source(library(odbc))).
 :- use_module(library(odbc)).
+:- endif.
 :- use_module(base).
 
 %!  cadena_conexion(+Archivo, -Cadena) is det.
