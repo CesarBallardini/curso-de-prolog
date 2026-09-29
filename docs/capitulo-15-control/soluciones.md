@@ -400,7 +400,9 @@ Con `edad(X)` y `X` libre, el menú responde `juan tiene 68 años`: `edad(P, A)`
 liga `P` con la primera persona de la base, y la orden, que debía preguntar por
 alguien en particular, responde por cualquiera. Es la situación de la
 [sección 10.4](../capitulo-10-negacion-como-falla/index.md#104-donde-ubicar), con un objetivo que genera en lugar de verificar. La corrección
-agrega una cláusula antes de la que responde, que reconoce la orden incompleta:
+agrega una cláusula antes de la que responde, que reconoce la orden incompleta
+con `var/1`, que se cumple cuando su argumento es una variable libre (el
+[capítulo 32](../capitulo-32-inspeccion-de-terminos/index.md) presenta estas pruebas de tipo):
 
 ```prolog
 ejecutar(edad(P)) :-
@@ -458,3 +460,153 @@ Una comparación aritmética que considera los dos casos necesita una
 **restricción**: `A #< 4` afirma que `A` es menor que 4 sin exigir su valor, y
 la reificación `#<==>` la convierte en verdadera o falsa. Son las herramientas
 del [capítulo 23](../capitulo-23-programacion-con-restricciones/index.md).
+
+## 16
+
+<!-- ejemplo: capitulo-15/soluciones.pl predicado: tomada_en_dos/3 consulta: tomada_en_dos(101, M, A). -->
+```prolog
+%!  tomada_en_dos(?Legajo:integer, ?Materia:atom, ?Anio:integer) is nondet.
+%
+%   La misma relación que tomada/3, con una cláusula por alternativa. El
+%   objetivo que seguía a la disyunción se repite en las dos.
+tomada_en_dos(Legajo, Materia, Anio) :-
+    cursa(Legajo, Materia),
+    materia(Materia, _, Anio).
+tomada_en_dos(Legajo, Materia, Anio) :-
+    aprobada(Legajo, Materia, _),
+    materia(Materia, _, Anio).
+```
+
+Cada alternativa de la disyunción pasa a ser el comienzo del cuerpo de una
+cláusula, y el objetivo que la seguía, `materia(Materia, _, Anio)`, se repite en
+las dos. Es el costo que menciona la
+[sección 15.1](index.md#151-en-el-cuerpo): con un solo objetivo compartido la
+repetición es menor, y las dos cláusulas se leen sin paréntesis; con un
+cuerpo compartido más largo, la disyunción evita copiarlo.
+
+```prolog
+?- tomada_en_dos(101, M, A).
+M = pp,
+A = 2 ;
+M = am1,
+A = 1 ;
+M = alg,
+A = 1 ;
+M = log,
+A = 1 ;
+M = am2,
+A = 2 ;
+false.
+```
+
+Las pruebas enumeran las respuestas completas de las dos versiones, con todos
+los argumentos libres, y la misma lista en el mismo orden. `all` compara la
+lista de respuestas tal como se producen, de modo que las dos pruebas verifican
+a la vez las respuestas y su orden:
+
+```prolog
+test(tomada_con_disyuncion,
+     all(L-M-A == [101-pp-2, 103-am2-2, 105-am1-1,
+                   101-am1-1, 101-alg-1, 101-log-1, 101-am2-2, 102-log-1,
+                   103-am1-1, 104-log-1, 104-alg-1, 104-pp-2, 106-am1-1])) :-
+    tomada(L, M, A).
+
+test(tomada_con_dos_clausulas,
+     all(L-M-A == [101-pp-2, 103-am2-2, 105-am1-1,
+                   101-am1-1, 101-alg-1, 101-log-1, 101-am2-2, 102-log-1,
+                   103-am1-1, 104-log-1, 104-alg-1, 104-pp-2, 106-am1-1])) :-
+    tomada_en_dos(L, M, A).
+```
+
+Las tres primeras respuestas son las de `cursa/2`, en el orden de los hechos de
+`inscripcion/3`, y las diez siguientes, las de `aprobada/3`.
+
+El orden se conserva porque la disyunción es el primer objetivo del cuerpo: al
+volver atrás, Prolog agota las respuestas de `cursa/2` antes de pasar a las de
+`aprobada/3`, igual que agota la primera cláusula antes de pasar a la segunda.
+
+Con `materia(Materia, _, Anio)` antes de la disyunción, el orden cambia. La
+versión con `;` recorre las materias, y para cada una da primero quien la cursa
+y después quienes la aprobaron: para `am1`, elena (105) y después ana, carla y
+facundo (101, 103, 106). La versión con dos cláusulas recorre todas las
+materias en la primera cláusula, con los alumnos que las cursan, y recién
+después vuelve a recorrerlas en la segunda, con los que las aprobaron: sus
+tres primeras respuestas son elena en `am1`, carla en `am2` y ana en `pp`. Las
+dos versiones siguen dando el mismo conjunto de respuestas, pero ya no en el
+mismo orden, y las dos pruebas ya no podrían compartir la misma lista.
+
+## 17
+
+El bucle no tiene condición de salida. `read/2` da los dos términos, y al
+llegar al final del stream da `end_of_file`, y lo sigue dando cada vez que se
+lo llama. Después de cada término, `fail` obliga a volver atrás; la única
+alternativa pendiente es la de `repeat`, que siempre tiene otra respuesta. El
+predicado escribe `a`, `b` y después `end_of_file` indefinidamente, sin
+cumplirse ni fallar nunca.
+
+El límite de inferencias lo confirma sin esperar: la consulta escribe `a`, `b`
+y 63 líneas `end_of_file` antes de agotar las 200 inferencias.
+`call_with_inference_limit/3` es el de las pruebas de rendimiento de la
+[sección 26.8](../capitulo-26-pruebas-y-depuracion/index.md#268-el-proyecto-la-bateria-completa).
+
+<!-- ejemplo: capitulo-15/soluciones.pl predicado: eco/1 eco_hasta_el_final/1 escribir_termino/1 consulta: open_string("a. b.", In), eco_hasta_el_final(In). -->
+```prolog
+%!  eco(+In) is det.
+%
+%   Escribe, uno por línea, los términos que lee del stream In. El bucle no
+%   tiene condición de salida: al final del stream, read/2 da end_of_file
+%   cada vez, y el ciclo no termina nunca.
+eco(In) :-
+    repeat,
+    read(In, Termino),
+    format("~w~n", [Termino]),
+    fail.
+
+%!  eco_hasta_el_final(+In) is det.
+%
+%   Escribe, uno por línea, los términos que lee del stream In, hasta llegar
+%   al final del stream.
+eco_hasta_el_final(In) :-
+    repeat,
+    read(In, Termino),
+    escribir_termino(Termino),
+    Termino == end_of_file,
+    !.
+
+%!  escribir_termino(+Termino) is det.
+%
+%   Escribe Termino en una línea, salvo la marca de fin del stream.
+escribir_termino(Termino) :-
+    (   Termino == end_of_file
+    ->  true
+    ;   format("~w~n", [Termino])
+    ).
+```
+
+```prolog
+?- open_string("a. b.", In), call_with_inference_limit(eco(In), 200, R).
+a
+b
+end_of_file
+end_of_file
+...
+In = <stream>(...),
+R = inference_limit_exceeded.
+```
+
+La corrección es la forma del [Patrón 7](../patrones.md#7-bucle-por-falla) para un ciclo: leer, ejecutar,
+comprobar la condición de salida y cortar. `escribir_termino/1` no escribe la
+marca de fin del stream, y la condición `Termino == end_of_file` hace fallar
+el ciclo, y volver a `repeat`, mientras quedan términos por leer. Al llegar al
+final, la condición se cumple y el corte descarta la alternativa de `repeat`:
+
+```prolog
+?- open_string("a. b.", In), eco_hasta_el_final(In).
+a
+b
+In = <stream>(...).
+```
+
+Con el mismo límite de 200 inferencias, la versión corregida termina y
+`call_with_inference_limit/3` liga `R` con `!`: el objetivo se cumplió sin
+dejar alternativas.

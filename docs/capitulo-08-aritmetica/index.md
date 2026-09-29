@@ -23,9 +23,9 @@ Al terminar el capítulo, el lector puede:
   recursión sin acumulador.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **0:35 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **0:40 h**.
     Resolver los 6 ejercicios marcados con ★: **1:10 h**.
-    Resolver los 15 ejercicios del final: **4:50 h**.
+    Resolver los 16 ejercicios del final: **4:55 h**.
 
 ## 8.1 Evaluación de expresiones
 
@@ -482,6 +482,16 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 15. **(3)** Escribir las pruebas de `maximo/2` del ejercicio 8: una que verifique
     el resultado sobre una lista de varios elementos, una sobre una lista de uno
     solo, y una que documente la decisión tomada para la lista vacía.
+16. **(1)** Predecir qué responde cada consulta, e indicar en cada caso qué
+    interviene: la evaluación de una expresión, la unificación de dos términos,
+    o la sintaxis con que se lee la consulta. Verificarlas después:
+    `X is 5 - 3 - 1.` · `X is 3 + 2 * 4 - 1.` · `X is (3 + 2) * 4 - 1.` ·
+    `X is -(5, 3).` · `X is -(5, 3, 1).` · `12 <= 12.` ·
+    `(X > 3) = (4 > 3).` · `X = 3, X * X * X is C.`
+    Para las cuatro primeras conviene recordar la
+    [sección 4.6](../capitulo-04-terminos-y-unificacion/index.md#46-los-operadores-tambien-son-terminos):
+    una expresión es un término, y la forma de ese término decide el orden de
+    las operaciones.
 
 ## Resumen
 

@@ -637,8 +637,9 @@ ERROR:   [17] throw(error(type_error(...,11),_190))
 error, no un ajuste incorrecto que aparece más tarde. `load_settings/1` lee
 los ajustes de un archivo, con un término `setting(Modulo:Nombre, Valor)` por
 ajuste, y `save_settings/1` los escribe. `list_settings/0` muestra todos, con
-su valor y su descripción. Como los ajustes se declaran en un módulo, desde
-otro se nombran con el módulo: el proyecto declara `nota_minima` en `datos`,
+su valor y su descripción. `restore_setting/1` devuelve un ajuste a su valor
+por omisión; las pruebas que cambian un ajuste lo llaman en su `cleanup`.
+Como los ajustes se declaran en un módulo, desde otro se nombran con el módulo: el proyecto declara `nota_minima` en `datos`,
 y su archivo de ajustes dice `setting(datos:nota_minima, 7)`.
 
 ## 27.10 Hechos que se guardan solos: `library(persistency)`
@@ -893,11 +894,13 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | `read_line_to_string/2`, `read_file_to_string/3` | una línea, o el archivo completo |
 | `portray_clause/2`, `writeq/2`, `format/3` | escribir para volver a leer, y para una persona |
 | `file_search_path/2`, `absolute_file_name/3` | alias de rutas |
+| `directory_file_path/3`, `file_directory_name/2`, `file_name_extension/3` | unir y separar directorio, nombre y extensión |
+| `tmp_file/2`, `delete_file/1` | un archivo temporal para una prueba, y su borrado |
 | `phrase_from_file/3` | una gramática sobre un archivo |
 | `csv_read_file/3`, `csv_write_file/3` | CSV como términos |
 | `json_read_dict/3`, `atom_json_dict/3`, `:<` | JSON como dicts |
 | `yaml_read/2`, `yaml_write/2` | YAML, con la misma representación |
-| `setting/4`, `set_setting/2`, `load_settings/1` | ajustes con tipo y valor por omisión |
+| `setting/4`, `set_setting/2`, `load_settings/1`, `restore_setting/1` | ajustes con tipo y valor por omisión; volver al valor por omisión |
 | `persistent/1`, `db_attach/2` | hechos que se guardan solos |
 | **Patrones 36, 37** | leer, procesar, escribir; convertir en el borde |
 

@@ -17,6 +17,8 @@
 % solo-local: SWISH no admite módulos propios ni permite abrir puertos.
 %
 %?- iniciar_servicio(Puerto, local), detener_servicio(Puerto).
+%
+% with_mutex/2: lo presenta el capítulo 37, con los hilos.
 
 :- module(servicio,
           [ iniciar_servicio/2,
@@ -26,6 +28,8 @@
 :- use_module(library(http/http_server)).
 :- use_module(library(http/http_json)).
 :- use_module(partida).
+
+:- meta_predicate responder(0).
 
 :- dynamic partida_guardada/2, ultima_partida/1.
 

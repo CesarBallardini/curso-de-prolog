@@ -51,6 +51,53 @@ citar, enlazar o reutilizar cualquier contenido en el libro del curso, que es MI
 | 19 | Prolog Techniques | Attila Csenki | **Descargado** | <https://web.archive.org/web/20180324182504id_/http://library.ku.ac.ke/wp-content/downloads/2011/08/Bookboon/IT,Programming%20and%20Web/prolog-techniques-applications-of-prolog.pdf> | Edición gratuita de Bookboon/Ventus, «© 2009 Attila Csenki & Ventus Publishing ApS», ISBN 978-87-7681-476-2. **Sin declaración de licencia; retirado del catálogo de Bookboon.** Revisar antes de citar o reutilizar | `csenki-prolog-techniques.pdf` (186 pp., 1,8 MB). Procedencia: instantánea de 2018 en el Wayback Machine del **mismo espejo que lista freecomputerbooks** (Kenyatta University), que hoy devuelve 404. Se recurrió al archivo porque la fuente original ya no lo sirve: la ficha en Bookboon (<https://bookboon.com/en/prolog-techniques-applications-of-prolog-ebook>) devuelve 404, su página de autor declara «Number of Titles: 0» y el catálogo actual exige suscripción. El otro enlace que freecomputerbooks da como «espejo» (`gprolog.org/manual/gprolog.pdf`) es el manual de GNU Prolog, no este libro |
 | 20 | Applications of Prolog | Attila Csenki | **Descargado** | <https://www.barcodebookshop.com/books/pvyw82ctws.pdf> | Edición gratuita de Bookboon («Download free eBooks at bookboon.com»), «© 2014 Attila Csenki & bookboon.com», servida por un tercero; el espejo principal listado (Kenyatta University) devuelve 404. PDF con restricciones de permisos embebidas | `csenki-applications-of-prolog.pdf` (203 pp., 3,1 MB) |
 
+## Material aportado por el autor del curso
+
+Estos archivos no salen del rastreo de freecomputerbooks: los agregó el autor del curso
+(2026-09-27). Son libros y artículos con derechos reservados, en su mayoría sin edición abierta.
+Como todo lo de este directorio, **no se versionan ni se redistribuyen** (`.gitignore` excluye
+`books/**/*.pdf`, `*.djvu` y `*.epub`): se usan solo para leer, y el curso los cita y reescribe
+sus ideas, sin copiar texto ni programas. Los nombres originales de la mayoría tenían el formato
+de libgen (`libgen.li`, o el de sus copias de artículos de revistas), que no es una fuente
+autorizada; se los renombró el 2026-09-27 con la convención de este directorio
+(`autor-titulo-corto`, y `autor-año-titulo-corto` para los artículos).
+
+### Libros
+
+| Título | Autor | Archivo local | Conversión a Markdown | Notas |
+|---|---|---|---|---|
+| Programming in Prolog: Using the ISO Standard, 5.ª ed. (Springer, 2003) | W. F. Clocksin, C. S. Mellish | `clocksin-mellish-programming-in-prolog.pdf` | `books/programming-in-prolog/` (una página por capítulo) | © Springer |
+| Clause and Effect: Prolog Programming for the Working Programmer (Springer, 1997) | W. F. Clocksin | `clocksin-clause-and-effect.pdf` (148 pp., capa de texto OCR, código en Helvetica) | `books/clocksin-clause-and-effect/` (un solo archivo: el PDF no tiene marcadores) | © Springer; vías legales: SpringerLink (DOI 10.1007/978-3-642-58274-5) y el préstamo del Internet Archive. Revisado para las partes II y III |
+| Programming in Tabled Prolog (borrador, 1999) | David S. Warren | `warren-programming-in-tabled-prolog.epub` | `books/warren-programming-in-tabled-prolog/` (una página por capítulo; convertido con pandoc; las figuras eran GIF y quedan solo sus leyendas; 202 bloques de código) | Tabulación en XSB: fuente para el capítulo 39 |
+| The Implementation of Prolog (Princeton University Press, 1993) | P. Boizumault (trad. A. M. Djamboulian, J. Fattouh) | `boizumault-implementation-of-prolog.pdf` (313 pp.) | — | La máquina abstracta y la compilación: fuente para el capítulo 35 |
+| Prolog and its Applications: A Japanese Perspective (Springer, 1991) | F. Mizoguchi (ed.) | `mizoguchi-prolog-and-its-applications.djvu` | — | Aplicaciones de Prolog |
+| The Craft of Prolog (MIT Press, 1990): **solo las páginas preliminares** (14 pp.: tapas, página legal, índice, prólogo de la serie, prefacio y comienzo de la introducción) | R. A. O'Keefe | `okeefe-craft-of-prolog-front-matter.pdf` (escaneo sin capa de texto, 3,5 MB) | — | © MIT Press; escaneo publicado por la biblioteca del Istituto per la Matematica Applicata del CNR (Génova), `http://geca.area.ge.cnr.it/files/15802.pdf` (descargado el 2026-09-28; el servidor no responde por HTTPS). El índice sirve para ubicar temas; el libro completo no está disponible en forma abierta |
+| Prolog Programming and Applications (Macmillan Computer Science Series, Macmillan Education UK, 1985; doi 10.1007/978-1-349-07962-9) | W. D. Burnham, A. R. Hall | `burnham-hall-prolog-programming-and-applications.pdf` (126 pp., con capa de texto y marcadores) | `books/burnham-hall-prolog-programming-and-applications/` (un archivo por capítulo, 2026-09-28) | © Macmillan / Springer; vía legal: SpringerLink (el DOI). Descargado por el autor el 2026-09-28 con nombre de libgen, renombrado ese día. Capítulos: 1–7 el lenguaje, depuración; 8 «Case Studies»; apéndices sobre Prolog-1 y Quintus Prolog |
+
+### Artículos y reseñas
+
+| Referencia | Archivo local | Notas |
+|---|---|---|
+| P. Brna, H. Pain, B. du Boulay, «Teaching, Learning and Using Prolog: Understanding Prolog», *Instructional Science* 19 (4-5), 1990, pp. 247–256 | `brna-1990-understanding-prolog.pdf` (10 pp.) | Número especial sobre la enseñanza de Prolog |
+| M. W. van Someren, «Understanding students' errors with Prolog unification», *Instructional Science* 19 (4-5), 1990 | `vansomeren-1990-students-errors-prolog-unification.pdf` (17 pp.) | Mismo número especial: errores de los estudiantes con la unificación (capítulo 4) |
+| M. W. van Someren, «What's wrong? Understanding beginners' problems with Prolog», *Instructional Science* 19 (4-5), 1990 | `vansomeren-1990-beginners-problems-with-prolog.pdf` (27 pp.) | Mismo número especial: los problemas de los principiantes (parte I) |
+| P. Brna, M. Brayshaw, A. Bundy, M. Elsom-Cook, P. Fung, T. Dodd, «An overview of Prolog debugging tools», *Instructional Science* 20 (2-3), 1991 | `brna-1991-prolog-debugging-tools.pdf` (23 pp.) | Herramientas de depuración (capítulos 26 y 33) |
+| P. Brna, A. Bundy, T. Dodd, M. Eisenstadt, C. K. Looi, H. Pain, D. Robertson, B. Smith, M. van Someren, «Prolog programming techniques», *Instructional Science* 20 (2-3), 1991 | `brna-1991-prolog-programming-techniques.pdf` (24 pp.; convertido en `books/brna-1991-prolog-programming-techniques/`) | Técnicas de programación con nombre: antecedente de los patrones de la parte II |
+| A. Bowles, D. Robertson, W. Vasconcelos, M. Vargas-Vera et al., «Applying Prolog programming techniques», *International Journal of Human-Computer Studies* 41 (3), 1994 | `bowles-1994-applying-prolog-programming-techniques.pdf` (22 pp., escaneo sin capa de texto) | Continuación del anterior |
+| M. A. Covington et al., «Coding guidelines for Prolog», *Theory and Practice of Logic Programming*, 2012 (doi 10.1017/S1471068411000391) | `covington-2012-coding-guidelines-for-prolog.pdf` (39 pp.) | Las pautas de estilo que cita el capítulo 14. Antes `plcoding.pdf` |
+| A. Serebrenik, T. Schrijvers, B. Demoen, «Improving Prolog programs: Refactoring for Prolog», *Theory and Practice of Logic Programming* 8 (2), 2008 | `serebrenik-2008-refactoring-for-prolog.pdf` (16 pp.) | Refactorización (capítulos 14 y 35) |
+| G. A. Narboni, «From Prolog III to Prolog IV: The Logic of Constraint Programming Revisited», *Constraints* 4 (4), 1999 | `narboni-1999-from-prolog-iii-to-prolog-iv.pdf` (23 pp.) | Programación con restricciones (capítulo 23) |
+| D. Cabrol, «Applications of Prolog to represent physical and chemical objects — a tutorial introduction», *Computer Physics Communications* 61 (1-2), 1990 | `cabrol-1990-prolog-physical-and-chemical-objects.pdf` (24 pp.) | Aplicación |
+| M. Okada et al., «Prolog-Based System for Nursing Staff Scheduling Implemented on a Personal Computer», *Computers and Biomedical Research* 21 (1), 1988 | `okada-1988-prolog-nursing-staff-scheduling.pdf` (11 pp.) | Aplicación: asignación de turnos |
+| Reseña de P. Smith, *Expert Systems Development in Prolog and Turbo-Prolog* (Sigma Press), *European Journal of Operational Research* 41 (2), 1989 | `review-1989-smith-expert-systems-prolog-turbo-prolog-ejor.pdf` (2 pp.) | Reseña |
+| R. Lai, reseña del mismo libro, *The Knowledge Engineering Review* 4 (1), 1989 | `review-1989-smith-expert-systems-prolog-turbo-prolog-ker.pdf` (4 pp.) | Reseña |
+| Reseña de C. Marcus, *Prolog Programming: Applications for Database Systems, Expert Systems and Natural Language Systems*, *International Journal of Adaptive Control and Signal Processing* 2 (1), 1988 | `review-1988-marcus-prolog-programming.pdf` (2 pp.) | Reseña |
+| M. Spivey, reseña de T. Dodd, *Prolog: A Logical Approach*; C. J. Hogger, *Essentials of Logic Programming*; y R. A. O'Keefe, *The Craft of Prolog*, *Science of Computer Programming* 17 (1-3), 1991, p. 254 | `review-1991-spivey-okeefe-dodd-hogger-scp.pdf` (3 pp.) | Reseña; renombrado el 2026-09-28 desde el nombre de libgen |
+
+**Duplicados eliminados (2026-09-27):** una segunda copia, idéntica byte a byte (mismo MD5), del
+artículo de Okada et al.; y la copia de JSTOR (11 pp., con portada) del artículo de Brna, Pain y
+du Boulay, del que se conserva la versión de la editorial.
+
 ## Resumen
 
 - **16 libros con archivo local, 43 PDF, 110,5 MB en total**: 15 PDF sueltos en este directorio

@@ -29,7 +29,7 @@ Al terminar el capítulo, el lector puede:
 !!! info "Tiempo estimado"
     Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **0:41 h**.
     Resolver los 6 ejercicios marcados con ★: **1:53 h**.
-    Resolver los 14 ejercicios del final: **4:27 h**.
+    Resolver los 15 ejercicios del final: **4:45 h**.
 
 ## 14.1 Nombres
 
@@ -312,7 +312,7 @@ tercer argumento no influye en qué cláusula se elige.
 
 En la versión del [capítulo 13](../capitulo-13-el-entorno-de-trabajo/index.md), el tercer argumento de `inscripcion/3` es un
 número o el átomo `null`. Es la traducción directa de la tabla SQL del
-[capítulo 40](../capitulo-40-prolog-y-sql/index.md), y obliga a toda regla que trabaje con notas a preguntar qué
+[capítulo 42](../capitulo-42-prolog-y-sql/index.md), y obliga a toda regla que trabaje con notas a preguntar qué
 tipo de valor recibió. La regla de aprobación que usa ese capítulo lo muestra:
 
 ```prolog
@@ -536,6 +536,21 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     herramientas de la parte I no se puede escribir sin repetir los datos
     ([sección 10.8](../capitulo-10-negacion-como-falla/index.md#108-prescindir-de)): escribir el encabezado que debería tener, las pruebas que lo
     verificarían, y explicar qué elemento del [capítulo 17](../capitulo-17-todas-las-soluciones/index.md) lo resuelve.
+15. **(2)** El predicado siguiente no tiene un nombre que diga qué relación
+    define, ni encabezado:
+
+    ```prolog
+    p(A, [A|B], C, [C|B]).
+    p(A, [D|B], C, [D|E]) :-
+        p(A, B, C, E).
+    ```
+
+    Describir la relación que define, primero leyendo solo el código y después
+    sabiendo que se usa en el modo `p(+, +, +, -)`: los tres primeros
+    argumentos ligados y el cuarto libre. Comprobar la segunda descripción con
+    la consulta `p(b, [a, b, c, b], z, L)`. Después, nombrar el predicado y sus
+    variables según la [sección 14.1](#141-nombres), escribir su encabezado completo y
+    compararlo con `select/4` de la biblioteca.
 
 ## Resumen
 

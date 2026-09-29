@@ -1,7 +1,7 @@
 :- encoding(utf8).
 
-% Capítulo 22 - Soluciones de los ejercicios 1 a 9. Las de los ejercicios 10 y
-% 11 están en soluciones_bloques.pl, las de 12 y 13 en
+% Capítulo 22 - Soluciones de los ejercicios 1 a 9 y 16. Las de los ejercicios
+% 10 y 11 están en soluciones_bloques.pl, las de 12 y 13 en
 % soluciones_buscaminas.pl, y las de 14 y 15 en soluciones_proyecto.pl.
 %
 %?- por_longitud([[a, b, c], [d], [e, f]], L).
@@ -131,3 +131,46 @@ formatear_nombre(Nombre, Opciones, Texto) :-
 %   en el orden en que salieron.
 sorteo(Cantidad, Hasta, Numeros) :-
     randseq(Cantidad, Hasta, Numeros).
+
+% --- Ejercicio 16 ---------------------------------------------------------
+
+%!  insertar_mal(+Clave, +Arbol0, -Arbol) is det.
+%
+%   Arbol es Arbol0 con Clave agregada. Versión incorrecta, la del
+%   enunciado: las cláusulas recursivas devuelven el árbol del subárbol, sin
+%   el nodo que lo contiene, y la última no liga Arbol.
+insertar_mal(Clave, vacio, n(vacio, Clave, vacio)).
+insertar_mal(Clave, n(Izq, Clave0, _), Arbol) :-
+    Clave @< Clave0,
+    insertar_mal(Clave, Izq, Arbol).
+insertar_mal(Clave, n(_, Clave0, Der), Arbol) :-
+    Clave @> Clave0,
+    insertar_mal(Clave, Der, Arbol).
+insertar_mal(Clave, n(_, Clave, _), _).
+
+%!  insertar(+Clave, +Arbol0, -Arbol) is det.
+%
+%   Arbol es el árbol de búsqueda Arbol0 con Clave agregada; si Clave ya
+%   está, Arbol es igual a Arbol0. El árbol es vacio o n(Izq, Clave, Der).
+insertar(Clave, Arbol0, Arbol) :-
+    insertar_en(Arbol0, Clave, Arbol).
+
+%!  insertar_en(+Arbol0, +Clave, -Arbol) is det.
+%
+%   El recorrido de insertar/3, con el árbol como primer argumento para que
+%   la indexación distinga vacio de n/3.
+insertar_en(vacio, Clave, n(vacio, Clave, vacio)).
+insertar_en(n(Izq, Clave0, Der), Clave, Arbol) :-
+    compare(Orden, Clave, Clave0),
+    insertar_segun(Orden, Clave, n(Izq, Clave0, Der), Arbol).
+
+%!  insertar_segun(+Orden, +Clave, +Nodo, -Arbol) is det.
+%
+%   Arbol es Nodo con Clave agregada, según el Orden de Clave respecto de la
+%   clave de Nodo: un nodo nuevo con el subárbol que cambió, o el mismo Nodo
+%   si la clave ya está.
+insertar_segun(<, Clave, n(Izq, Clave0, Der), n(Izq1, Clave0, Der)) :-
+    insertar_en(Izq, Clave, Izq1).
+insertar_segun(=, _, Nodo, Nodo).
+insertar_segun(>, Clave, n(Izq, Clave0, Der), n(Izq, Clave0, Der1)) :-
+    insertar_en(Der, Clave, Der1).

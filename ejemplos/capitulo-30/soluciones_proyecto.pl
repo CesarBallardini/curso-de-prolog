@@ -21,7 +21,8 @@
 %
 %   GET /ranking?limite=N: las N primeras filas del ranking; sin el
 %   parámetro, todas. Un límite que no es un entero entre 1 y 1000 responde
-%   400.
+%   400. Sin el parámetro, Limite queda libre: var/1, que el capítulo 32
+%   presenta, lo distingue.
 ranking_limitado(Pedido) :-
     http_parameters(Pedido,
                     [limite(Limite, [between(1, 1000), optional(true)])]),

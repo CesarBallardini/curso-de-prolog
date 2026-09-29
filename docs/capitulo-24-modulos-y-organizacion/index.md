@@ -423,7 +423,8 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | herencia de `user` | todo módulo ve los predicados de `user` |
 | `:- initialization(Objetivo)` | un objetivo al terminar de cargar el archivo |
 | `reexport/1,2` | un módulo que ofrece la interfaz de otros |
-| `file_search_path/2` | alias de directorios, como `library` |
+| `file_search_path/2`, `prolog_load_context/2` | alias de directorios, como `library`; el directorio del archivo que se carga (solución 10) |
+| `current_output/1` | el stream de la salida actual, en las pruebas de la solución 6 |
 | packs | `pack_install/1`, `pack_list/1`, `pack_info/1`, `pack_remove/1` |
 | **Patrones 28, 29** | interfaz del módulo; núcleo puro, bordes impuros |
 

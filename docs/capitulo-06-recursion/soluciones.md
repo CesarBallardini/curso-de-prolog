@@ -7,10 +7,13 @@ pruebas.
 
 <!-- ejemplo: capitulo-06/soluciones.pl predicado: dos/1 tres/1 cuatro/1 consulta: cuatro(N). -->
 ```prolog
+% dos(N): N es el natural dos.
 dos(s(s(cero))).
 
+% tres(N): N es el natural tres.
 tres(s(s(s(cero)))).
 
+% cuatro(N): N es el natural cuatro.
 cuatro(s(s(s(s(cero))))).
 ```
 

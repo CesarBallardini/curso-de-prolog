@@ -1,3 +1,18 @@
+<!-- toc-by-line -->
+**Contents by line** (added 2026-09-28: this conversion has no chapter headings; each number is the
+line of this file, table included, where the chapter begins; open the file at that line).
+
+- Chapter 1 — Accumulator Technique: line 689
+- Chapter 2 — Difference Lists: line 2536
+- Chapter 3 — Program Manipulations: line 5461
+- Chapter 4 — Exploratory Code Development: line 8744
+- Appendix A — Solutions of Selected Exercises: line 10871
+- Appendix B — Software: line 13917
+- Appendix C — Glossary: line 13959
+- References: line 14094
+- Index: line 14188
+
+---
 <!-- page 1 -->
 Prolog Techniques
 

@@ -4,16 +4,29 @@ Las [plantillas](plantillas.md) de la parte I son las formas de los predicados:
 recorrer una lista, acumular, generar y probar. Los patrones de la parte II son
 las formas del trabajo profesional: cómo se escribe un predicado que otros van a
 llamar, cómo se reúnen respuestas, cómo se aísla el estado, cómo se prueba y se
-entrega un programa.
+entrega un programa. Los de la parte III, desde el 43, son las técnicas de
+un programador avanzado: los términos y los programas como datos, las
+estructuras incompletas, la transformación de programas, las interfaces, la
+concurrencia, la tabulación y la búsqueda.
+
+La idea de enseñar Prolog a través de técnicas con nombre tiene un antecedente
+en P. Brna, A. Bundy, T. Dodd, M. Eisenstadt, C. K. Looi, H. Pain, D.
+Robertson, B. Smith y M. van Someren, «Prolog programming techniques»,
+*Instructional Science* 20 (2-3), 1991, pp. 111–133. El artículo reúne técnicas
+como el bucle por falla, la construcción de estructuras en la cabeza de la
+cláusula y el par de acumuladores, y propone que el estudiante aprenda a
+reconocer tanto sus aplicaciones correctas como las defectuosas, y cuándo usar
+cada técnica y cuándo no. Esos dos aspectos corresponden a los campos «Versión
+ingenua» y «Cuándo no usarlo» de cada recuadro de esta página.
 
 Cada patrón se presenta en el capítulo donde se lo necesita, con el ejemplo que
 lo motiva. Aquí figura el texto completo de cada recuadro, copiado del capítulo,
 para consultarlos y compararlos; la página se amplía a medida que avanza la
-parte II.
+parte III.
 
 ## Criterios de calidad
 
-Todo el código de la parte II se revisa con estos siete criterios. El
+Todo el código de las partes II y III se revisa con estos siete criterios. El
 [capítulo 14](capitulo-14-estilo-y-documentacion/index.md) los presenta en detalle; cada capítulo posterior indica, en un
 recuadro, cuáles ejercita su código y cómo se comprueba cada uno.
 
@@ -160,7 +173,8 @@ llegue una orden de salida.
 **Versión ingenua.** Reunir las respuestas en una lista y recorrerla con
 una recursión, solo para escribirlas.
 
-**Patrón.** `( Generador, Efecto, fail ; true )` para recorrer respuestas;
+**Patrón.** Un bucle por falla (*failure-driven loop*):
+`( Generador, Efecto, fail ; true )` para recorrer respuestas;
 `repeat, Leer, Ejecutar, Condicion_de_salida, !` para un ciclo.
 
 **Cuándo no usarlo.** Cuando lo que se necesita es un **resultado**: un
@@ -185,7 +199,9 @@ sin alternativas pendientes.
 
 **Cuándo no usarlo.** Cuando la recursión es naturalmente corta —la
 profundidad de un árbol genealógico, los casos de una definición— y la
-versión directa es más clara.
+versión directa es más clara. Tampoco cuando el resultado es una lista que
+se construye en la cabeza de la cláusula (plantilla 12): esa recursión ya
+corre en espacio constante, y un acumulador daría la lista invertida.
 
 Capítulo 16, [sección 16.2](capitulo-16-rendimiento/index.md#162-la-pila-y-la-recursion).
 
@@ -309,7 +325,9 @@ vez.
 
 **Patrón.** `foldl(Paso, Lista, Inicial, Final)`, con `Paso(X, Antes,
 Despues)`. Si hacen falta varios valores, el acumulado es un término que
-los reúne, como el par `Cantidad-Suma` de la [sección 18.8](capitulo-18-orden-superior/index.md#188-el-proyecto-informes-genericos).
+los reúne, como el par `Cantidad-Suma` de la [sección 18.8](capitulo-18-orden-superior/index.md#188-el-proyecto-informes-genericos). Si el
+recorrido también produce una lista, con un elemento por cada elemento de
+la entrada, `foldl/6` ([sección 18.7](capitulo-18-orden-superior/index.md#187-cuando-no-usar-el-orden-superior)).
 
 **Cuándo no usarlo.** Cuando la biblioteca ya tiene el predicado:
 `sum_list/2`, `max_list/2`, `length/2`. Y cuando los valores vienen de las
@@ -351,7 +369,7 @@ cambian.
 
 **Cuándo no usarlo.** Cuando el resultado depende de datos que cambian
 durante la ejecución y no hay un punto claro donde invalidar lo guardado; y
-cuando `:- table` resuelve lo mismo ([capítulo 38](capitulo-38-tabulacion/index.md)).
+cuando `:- table` resuelve lo mismo ([capítulo 39](capitulo-39-tabulacion/index.md)).
 
 Capítulo 20, [sección 20.5](capitulo-20-base-de-datos-dinamica/index.md#205-memorizacion).
 
@@ -502,7 +520,7 @@ visitados que no se vuelven a encolar. A lo ancho, el primer plan es uno
 de los más cortos.
 
 **Cuándo no usarlo.** Cuando el espacio de estados es enorme y hace falta
-una heurística que guíe la búsqueda, como en el [capítulo 39](capitulo-39-busqueda-y-juegos/index.md); o
+una heurística que guíe la búsqueda, como en el [capítulo 40](capitulo-40-busqueda-y-planificacion/index.md); o
 cuando el problema se modela mejor con restricciones
 ([capítulo 23](capitulo-23-programacion-con-restricciones/index.md)).
 
@@ -856,3 +874,761 @@ que el fuente: la batería del proyecto incluye lo que se entrega.
 fuente, en la máquina de quien lo escribe: `swipl programa.pl` alcanza.
 
 Capítulo 31, [sección 31.3](capitulo-31-ejecutables-y-distribucion/index.md#313-linux).
+
+## 43 — Recorrido genérico de un término
+
+**Problema.** Varias operaciones —buscar, reemplazar, contar, simplificar—
+se aplican a términos de forma desconocida, y cada una necesita recorrerlos
+enteros.
+
+**Versión ingenua.** Una recursión propia en cada operación, con `=..` y
+`member/2`, que compara cada nodo por unificación: repite el recorrido en
+todas, y liga las variables del término que examina.
+
+**Patrón.** Un solo predicado de recorrido que recibe el trabajo por nodo
+como argumento: las variables se dejan como están, los argumentos se
+recorren con `mapargs/3`, y en cada nodo se llama al predicado recibido,
+que compara con `==`. `library(terms)` ofrece `mapsubterms/3` y
+`foldsubterms/4` para los casos frecuentes.
+
+**Cuándo no usarlo.** Cuando la forma del término se conoce: una cláusula
+por caso, como en el intérprete de reglas del
+[capítulo 19](capitulo-19-operadores-y-reglas-como-datos/index.md), es más clara y aprovecha la indexación.
+
+Capítulo 32, [sección 32.4](capitulo-32-inspeccion-de-terminos/index.md#324-recorrer-cualquier-termino).
+
+## 44 — Representación limpia
+
+**Problema.** Una estructura recursiva —un árbol, una expresión, una lista
+anidada— tiene nodos de varias clases, y los predicados que la recorren
+deben distinguirlas.
+
+**Versión ingenua.** Distinguir las clases con pruebas de tipo: una hoja es
+lo que no es una lista, una incógnita es lo que es un átomo. La respuesta
+depende del momento en que se liga el argumento, y un valor con la forma de
+otra clase no se puede representar.
+
+**Patrón.** Un functor por clase de nodo —`h(X)`, `n(Hijos)`— y predicados
+que eligen el caso por unificación en la cabeza. Los datos que llegan en
+otra forma se convierten una vez, en el borde, sobre términos que
+`must_be(ground, …)` garantiza cerrados.
+
+**Cuándo no usarlo.** Cuando los términos son cerrados por contrato y
+tienen una sintaxis que escriben personas, como las expresiones
+aritméticas: sobre un término cerrado las pruebas de tipo son seguras, y
+una representación propia obligaría a convertir en cada entrada y salida.
+
+Capítulo 32, [sección 32.6](capitulo-32-inspeccion-de-terminos/index.md#326-representaciones-limpias).
+
+## 45 — Intérprete que absorbe
+
+**Problema.** Observar o cambiar la ejecución de un programa —registrar
+cada paso, construir la prueba, limitar la búsqueda— sin reescribir el
+motor de Prolog.
+
+**Versión ingenua.** Representar todo lo que hace Prolog: sustituciones
+explícitas, una unificación propia, una pila de alternativas. El
+intérprete crece a cientos de líneas y es mucho más lento; o, en el otro
+extremo, un intérprete que reconoce los objetivos por lo que no son y
+produce un error con el primer predefinido.
+
+**Patrón.** Delegar a Prolog lo que no se necesita observar —la
+unificación y el retroceso, a través de `clause/2`— y reificar solo lo que
+se va a observar o cambiar: la conjunción, el uso de cada cláusula. Los
+cuerpos se convierten una vez, al leer la cláusula, a una representación
+limpia, con los predefinidos admitidos enumerados.
+
+**Cuándo no usarlo.** Cuando lo que se quiere cambiar es justamente lo
+absorbido: una unificación con verificación de ocurrencias, otro orden de
+las cláusulas, el corte. Entonces hay que reificarlo, y pagar su costo.
+
+Capítulo 33, [sección 33.2](capitulo-33-introspeccion-y-metainterpretes/index.md#332-el-interprete-vainilla).
+
+## 46 — Extender el intérprete, no el programa
+
+**Problema.** Obtener de un programa algo más que sus respuestas: la
+prueba, una traza, un límite, una explicación, el diagnóstico de un
+error.
+
+**Versión ingenua.** Agregar a cada predicado del programa un argumento
+para la prueba, o una escritura en cada cláusula: el cambio se repite en
+todo el programa, se mezcla con su lógica, y hay que deshacerlo después.
+
+**Patrón.** Escribir la extensión una sola vez, en el intérprete: un
+argumento más en sus cláusulas —el árbol, la profundidad, la pila de
+objetivos, el oráculo— y una cláusula por cada construcción nueva. El
+programa objeto no cambia, y cualquier programa obtiene la extensión.
+
+**Cuándo no usarlo.** Cuando el costo del intérprete importa, como en la
+ejecución normal de un programa en producción: la extensión se compila en
+el programa, como hace el [capítulo 35](capitulo-35-transformacion-de-programas-y-compilacion/index.md), o se usan las herramientas del
+sistema, como el depurador y `call_with_depth_limit/3`.
+
+Capítulo 33, [sección 33.6](capitulo-33-introspeccion-y-metainterpretes/index.md#336-un-depurador-en-prolog).
+
+## 47 — Lista diferencia para agregar al final
+
+**Problema.** Construir una lista agregando elementos al final, o
+concatenando resultados parciales, como al aplanar un árbol o al generar
+una salida por partes.
+
+**Versión ingenua.** Construir cada parte como lista cerrada y unirlas con
+`append/3`, que recorre la primera para llegar a su final: con n partes el
+costo puede llegar a n².
+
+**Patrón.** Pasar cada parte como un par `L-F`, con F la variable del
+final, o como dos argumentos separados. Concatenar es unificar el final de
+una con el comienzo de la siguiente, y el resultado se cierra con `[]` una
+sola vez, en el predicado de entrada. Cuando la construcción recorre una
+estructura, se escribe como gramática, que hace la misma traducción
+([sección 34.5](capitulo-34-estructuras-incompletas-y-listas-diferencia/index.md#345-las-gramaticas-como-listas-diferencia)).
+
+**Cuándo no usarlo.** Cuando la lista se necesita dos veces o se examina
+su final: una lista diferencia se usa una vez, y una prueba de vacía sin
+verificación de ocurrencias crea términos cíclicos. En la interfaz de un
+predicado, una lista cerrada es más clara; la lista diferencia queda en
+los predicados auxiliares.
+
+Capítulo 34, [sección 34.2](capitulo-34-estructuras-incompletas-y-listas-diferencia/index.md#342-de-append3-a-la-lista-diferencia).
+
+## 48 — Diccionario incompleto
+
+**Problema.** Asociar valores a claves cuando algunas se usan antes de
+conocer su valor: una etiqueta a la que se salta antes de definirla, un
+nombre al que se le asigna un número al final.
+
+**Versión ingenua.** Dos pasadas: la primera reúne las claves y calcula
+los valores, la segunda reemplaza cada clave por su valor; o una tabla
+cerrada que se reconstruye en cada agregado.
+
+**Patrón.** Una lista o un árbol con el final abierto, y un único
+predicado de búsqueda que encuentra la clave o la agrega con el valor
+libre. Cada uso de una clave comparte la variable de su valor; cuando el
+valor se conoce, se liga una vez, y todos los usos lo ven.
+
+**Cuándo no usarlo.** Cuando los valores cambian: una variable se liga
+una sola vez, y una tabla que se actualiza necesita `library(assoc)` o
+el estado del [capítulo 20](capitulo-20-base-de-datos-dinamica/index.md). Tampoco con claves que no están instanciadas:
+la búsqueda unificaría una clave libre con la primera entrada.
+
+Capítulo 34, [sección 34.4](capitulo-34-estructuras-incompletas-y-listas-diferencia/index.md#344-diccionarios-incompletos).
+
+## 49 — Expandir al cargar
+
+**Problema.** Un trabajo cuyo resultado se conoce al escribir el programa
+se repite en cada ejecución: una llamada a un predicado de acceso, datos
+escritos en una forma cómoda de leer pero distinta de la que conviene
+consultar.
+
+**Versión ingenua.** Hacer ese trabajo en cada llamada; o escribir a mano
+la forma expandida en todos los lugares donde se usa.
+
+**Patrón.** Escribir la forma cómoda y un gancho, `term_expansion/2`
+para los términos del programa o `goal_expansion/2` para los objetivos
+de los cuerpos, que la reemplaza al cargar. El gancho se define antes que
+lo que expande, y el predicado original se conserva para las llamadas
+construidas durante la ejecución.
+
+**Cuándo no usarlo.** Cuando la ganancia no se midió; cuando el gancho
+de `user` alcanzaría términos ajenos, porque se aplica a todo lo que se
+carga después; y cuando lo que se expande cambia durante la ejecución.
+Una `goal_expansion/2` cuyo resultado vuelve a coincidir con ella misma,
+con otro argumento, no termina.
+
+Capítulo 35, [sección 35.1](capitulo-35-transformacion-de-programas-y-compilacion/index.md#351-term_expansion2-y-goal_expansion2-en-swi-prolog).
+
+## 50 — Especializar el intérprete
+
+**Problema.** Un intérprete —[Patrón 45](patrones.md#45-interprete-que-absorbe),
+[Patrón 46](patrones.md#46-extender-el-interprete-no-el-programa)— paga en cada consulta el recorrido
+de una estructura que no cambia: los cuerpos de las cláusulas, las
+condiciones de las reglas.
+
+**Versión ingenua.** Interpretar siempre; o escribir a mano un compilador
+aparte, que hay que mantener de acuerdo con el intérprete.
+
+**Patrón.** Evaluar parcialmente el intérprete respecto del programa: un
+evaluador parcial despliega las llamadas del intérprete cuyo argumento de
+control se conoce y deja como residuo las que dependen de los datos. El
+resultado son cláusulas comunes que hacen lo que el intérprete haría. Un
+predicado de control decide qué se despliega y dónde se detiene la
+evaluación; con `term_expansion/2`, la especialización ocurre al cargar.
+
+**Cuándo no usarlo.** Cuando el programa interpretado cambia durante la
+ejecución: una regla agregada con `assertz/1` a un predicado dinámico la
+ve el intérprete y no la versión especializada. Cuando lo que se
+despliega tiene cortes o efectos laterales. Y cuando el costo del
+intérprete no se midió o no pesa.
+
+Capítulo 35, [sección 35.4](capitulo-35-transformacion-de-programas-y-compilacion/index.md#354-evaluacion-parcial).
+
+## 51 — Modelo de pantalla
+
+**Problema.** Una interfaz de pantalla completa escribe en la terminal y
+lee del teclado. Si calcula y dibuja en el mismo paso, lo que muestra
+solo se verifica mirándolo, y la lógica de las teclas no se puede probar.
+
+**Versión ingenua.** Un bucle que consulta el estado, escribe cada parte
+de la pantalla con `format/2` a medida que la calcula, lee una tecla y
+decide en el mismo predicado qué hacer con ella.
+
+**Patrón.** Tres predicados. El modelo, `pantalla(+Estado, -Lineas)`,
+puro: da las líneas que se ven. La transición, `paso(+Tecla, +Estado0,
+-Estado)`, pura: da el estado después de una tecla. Y un único bucle
+impuro que dibuja las líneas y lee las teclas de una fuente que recibe
+como argumento. Las pruebas comparan líneas, aplican listas de teclas con
+`foldl/4` y hacen correr el bucle con teclas escritas en una cadena.
+
+**Cuándo no usarlo.** En una interfaz de una pregunta y una respuesta,
+como la de la [sección 28.5](capitulo-28-programas-de-linea-de-comandos/index.md#285-leer-del-teclado): no hay pantalla que modelar. Y
+cuando la pantalla es enorme y cambia poco: redibujarla entera en cada
+tecla es lento, y conviene comparar el modelo nuevo con el anterior y
+escribir solo las líneas distintas.
+
+Capítulo 36, [sección 36.2](capitulo-36-interfaces-de-usuario/index.md#362-pantalla-completa-en-la-terminal).
+
+## 52 — Estado compartido detrás de un mutex
+
+**Problema.** Varios hilos leen un dato de la base de datos, deciden
+según lo leído y lo cambian: un cupo, un contador, un saldo. Cada
+operación es atómica, pero la secuencia no, y dos hilos pueden decidir
+con el mismo valor.
+
+**Versión ingenua.** La secuencia de un solo hilo, `retract/1` y
+`assertz/1`, sin protección: correcta en las pruebas de a una llamada, y
+con varios hilos pierde actualizaciones, excede el cupo o falla en un
+`retract/1` cuya cláusula ya quitó otro hilo.
+
+**Patrón.** Toda secuencia que lee y cambia el dato pasa por un
+predicado que la ejecuta con `with_mutex/2`, siempre con el mismo nombre
+de mutex; si los que solo leen no deben ver un cambio a medias, la
+secuencia va además dentro de `transaction/1`. Cuando la decisión es
+costosa y los conflictos son raros, `transaction/3` con una restricción
+que verifica lo leído, repetida hasta que confirma. Las pruebas corren
+muchos hilos y comparan cantidades: el invariante, no el orden.
+
+**Cuándo no usarlo.** Cuando el dato puede ser de cada hilo
+(`thread_local/1`) o viajar en mensajes (una cola). Cuando solo se
+agregan hechos independientes: `assertz/1` ya es atómico. Y no dentro
+del mutex la entrada y salida lenta, como leer de la red: todos los
+hilos esperarían a ese cliente.
+
+Capítulo 37, [sección 37.3](capitulo-37-concurrencia-y-paralelismo/index.md#373-estado-compartido).
+
+## 53 — Tabular la relación recursiva
+
+**Problema.** Una relación recursiva no termina —recursión a la
+izquierda, un grafo con ciclos, una negación a través de la recursión— o
+resuelve los mismos subproblemas muchas veces.
+
+**Versión ingenua.** Reordenar las cláusulas y los objetivos hasta que
+la consulta de las pruebas termine, llevar una lista de nodos visitados,
+o guardar los resultados con `assertz/1` ([Patrón 17](patrones.md#17-memorizacion-con-assertz)): cada una
+cambia la definición, deja estado que mantener o pierde respuestas, y
+ninguna hace terminar una recursión a la izquierda.
+
+**Patrón.** Dejar las cláusulas como la definición del problema y
+declarar `:- table p/N`. Si solo interesa la mejor respuesta, declarar
+el modo del argumento (`min`, `max`, `lattice(P/3)`); si la recursión
+pasa por una negación, escribirla con `tnot/1`; si las respuestas
+dependen de un predicado dinámico, declarar los dos `incremental`. Las
+pruebas comparan las respuestas ordenadas, porque la tabla no tiene un
+orden fijo.
+
+**Cuándo no usarlo.** Cuando la relación tiene infinitas respuestas
+distintas —un recorrido guardado como lista sobre un grafo con ciclos, un
+contador que crece—: la tabla no se completa nunca. Cuando el predicado
+tiene efectos, que se ejecutarían una vez por tabla y no por llamada.
+Cuando hace falta la primera respuesta pronto: una tabla entrega sus
+respuestas al completarse. Y en un predicado barato y sin repeticiones,
+donde la tabla solo agrega costo ([sección 39.6](capitulo-39-tabulacion/index.md#396-lo-que-cuesta)).
+
+Capítulo 39, [sección 39.2](capitulo-39-tabulacion/index.md#392-memorizacion-sin-estado-escrito-a-mano).
+
+## 54 — La frontera decide la estrategia
+
+**Problema.** Es necesario buscar un plan en un espacio de estados, y
+probar más de un orden de búsqueda sin reescribir la búsqueda.
+
+**Versión ingenua.** Una búsqueda recursiva por cada estrategia —la de
+Prolog en profundidad, otra para la anchura, otra más para el costo—,
+con el problema mezclado en cada una; o una sola búsqueda con la agenda
+guardada en la base de datos dinámica.
+
+**Patrón.** El problema como término, descrito por `inicial/2`,
+`meta/2` y `sucesor/5`. Un solo bucle que saca un nodo, comprueba la
+meta y agrega los hijos; la estrategia es la estructura de datos de la
+frontera, que el bucle recibe como argumento: una pila, una cola o un
+montículo con la prioridad que corresponda. Los hijos comparten el
+camino de su padre.
+
+**Cuándo no usarlo.** Cuando la búsqueda en profundidad de Prolog basta
+—un espacio sin ciclos o con la longitud acotada—: la recursión es más
+corta y no guarda nada. Cuando el problema se modela mejor con
+restricciones ([capítulo 23](capitulo-23-programacion-con-restricciones/index.md)). Y cuando la frontera no
+cabe en memoria: la profundización iterativa guarda un solo camino.
+
+Capítulo 40, [sección 40.2](capitulo-40-busqueda-y-planificacion/index.md#402-una-sola-busqueda-varias-estrategias).
+
+## 55 — Poda alfa-beta
+
+**Problema.** Es necesario elegir una jugada con minimax en un juego
+cuyo árbol crece exponencialmente con la profundidad, y la búsqueda
+completa hasta la profundidad deseada es demasiado lenta.
+
+**Versión ingenua.** Minimax que busca todas las jugadas de cada
+posición hasta el límite y recién entonces compara sus valores: visita
+posiciones cuyo valor no puede cambiar la jugada elegida.
+
+**Patrón.** Cada posición se busca con dos cotas: alfa, lo que max ya
+tiene asegurado, y beta, lo que min ya tiene asegurado. Las jugadas de
+una posición se recorren de a una; una jugada que alcanza la cota del
+rival corta la búsqueda de las demás, y una que mejora la cota propia la
+estrecha para las siguientes. El valor devuelto es exacto dentro del
+intervalo y una cota fuera de él; en la raíz, con `-inf` e `inf`, es el
+valor minimax, con la misma jugada.
+
+**Cuándo no usarlo.** Cuando el árbol es pequeño y se busca entero una
+sola vez: minimax es más simple. Cuando se necesita el valor exacto de
+todas las jugadas y no solo de la mejor, para mostrarlas o para
+ordenarlas: la poda da cotas. Y cuando las posiciones se repiten mucho
+y el juego se busca hasta el final: una tabla de transposición
+([sección 41.6](capitulo-41-juegos/index.md#416-tablas-de-transposicion-con-tabulacion)) ahorra
+más, y las cotas dificultan reutilizar lo guardado.
+
+Capítulo 41, [sección 41.3](capitulo-41-juegos/index.md#413-la-poda-alfa-beta).
+
+## 56 — Medida que decrece
+
+**Problema.** Un programa aplica reglas de reescritura una tras otra
+hasta que ninguna se aplica, y hay que asegurar que esa cadena termina,
+aunque las reglas sean datos que otro archivo puede ampliar.
+
+**Versión ingenua.** Aceptar cualquier reescritura que se aplique. Con
+una regla y su inversa, como `W * W ~> W ^ 2` y `W ^ 2 ~> W * W`, el
+término vuelve a su forma anterior y la cadena no termina (el
+ejercicio 3 lo muestra).
+
+**Patrón.** Una medida que asigna un número natural a cada término, y
+cada paso se acepta solo si la reduce: `colectar/3` compara las
+apariciones de la incógnita antes y después, y descarta la reescritura
+que no las baja. Como no hay una cadena infinita de naturales
+decrecientes, la cadena de reescrituras termina, cualquiera que sea el
+conjunto de reglas. Cuando un método no puede bajar la primera medida
+usa una segunda, sin aumentar la primera: la atracción de la
+[sección 43.4](capitulo-43-proyecto-resolver-ecuaciones/index.md#434-version-3-la-atraccion) baja la distancia entre las
+apariciones.
+
+**Cuándo no usarlo.** Cuando el paso necesario aumenta toda medida
+sencilla, como distribuir un producto: entonces conviene un cálculo
+recursivo sobre la estructura del término, como la forma normal de la
+[sección 43.5](capitulo-43-proyecto-resolver-ecuaciones/index.md#435-version-4-la-forma-normal-de-un-polinomio). Y
+cuando el proceso es numérico, como el método de Newton de la
+[sección 43.6](capitulo-43-proyecto-resolver-ecuaciones/index.md#436-version-5-el-metodo-de-newton-y-la-comprobacion):
+ahí no hay un natural que baje, y lo que asegura el final es una cota
+de pasos y una tolerancia.
+
+Capítulo 43, [sección 43.3](capitulo-43-proyecto-resolver-ecuaciones/index.md#433-version-2-reglas-de-reescritura-y-coleccion).
+
+## 57 — Impedimento y efecto
+
+**Problema.** Una orden cambia el estado de un programa, pero solo
+cuando las reglas lo permiten; si no, hay que decir por qué, sin haber
+cambiado nada.
+
+**Versión ingenua.** Cada orden comprueba sus condiciones dentro del
+mismo predicado que la ejecuta, con cortes que imprimen el aviso y
+cambios del estado intercalados. Las reglas no se pueden consultar sin
+ejecutar la orden, una condición que falla después del primer cambio
+deja el estado a medio modificar, y agregar una regla obliga a tocar
+cada orden a la que se aplica.
+
+**Patrón.** Las reglas son una relación sin efectos,
+`impedimento(Orden, Motivo)`, con una cláusula por regla; una cláusula
+puede abarcar una familia de órdenes a través de un hecho auxiliar,
+como `requiere_luz/1`. `realizar/2` la consulta primero y, si no hay
+impedimento, aplica un solo efecto, `efecto/2`. El orden de las
+cláusulas decide qué aviso se da cuando hay varios. Como la relación
+no cambia nada, también sirve para otras preguntas: `entender/2`, en la
+[sección 44.5](capitulo-44-proyecto-aventura-de-texto/index.md#445-version-4-ordenes-y-respuestas-en-castellano), elige
+la lectura de una orden que ningún impedimento bloquea.
+
+**Cuándo no usarlo.** Cuando lo que impide la orden solo se conoce al
+intentarla, como abrir un archivo: ahí decide el sistema, y la
+respuesta es un error; lo que sí se comprueba antes es la validez de
+los datos ([Patrón 31](patrones.md#31-validar-al-entrar)), como hace
+`cargar/1` en la
+[sección 44.4](capitulo-44-proyecto-aventura-de-texto/index.md#444-version-3-guardar-y-cargar-una-partida). Y cuando una
+orden tiene una sola condición y un solo aviso: un `->` en el propio
+predicado alcanza.
+
+Capítulo 44, [sección 44.3](capitulo-44-proyecto-aventura-de-texto/index.md#443-version-2-el-estado-detras-de-una-interfaz).
+
+## 58 — Etiquetas como variables lógicas
+
+**Problema.** Un generador produce saltos a posiciones que todavía no
+existen: el destino de un salto hacia adelante se conoce recién cuando
+se genera el código que lo sigue.
+
+**Versión ingenua.** Nombrar las etiquetas con un contador que la
+generación lleva de una cláusula a otra, y ensamblar en dos pasadas:
+la primera anota en una tabla la dirección de cada etiqueta, y la
+segunda reemplaza cada nombre por la dirección que la tabla le da.
+
+**Patrón.** Cada etiqueta es una variable nueva, creada por la cláusula
+que genera el `si` o el `mientras`, y los saltos la llevan como
+argumento. El ensamblador, en una sola pasada, unifica la variable de
+cada marca con la dirección actual, y así quedan resueltos todos los
+saltos a esa etiqueta, los anteriores y los posteriores; una marca
+repetida en otra dirección hace fallar el ensamblado. Las reglas que
+reescriben el código simbólico antes de ensamblarlo comparan las
+etiquetas con `==`, que no liga nada: una cabeza que repite una
+variable las unificaría y juntaría dos etiquetas distintas, como
+muestra la página
+[Optimización](capitulo-45-proyecto-compilador/optimizacion.md#optimizacion).
+
+**Cuándo no usarlo.** Cuando el código simbólico se reparte en partes
+que no forman un solo término, como un archivo con una instrucción por
+cláusula o piezas compiladas por separado: una variable vale solo
+dentro de su término, y ahí hacen falta nombres. Y cuando una
+transformación necesita unificar libremente instrucciones enteras:
+conviene aplicarla después de ensamblar, cuando las etiquetas ya son
+números y unificarlas es compararlas.
+
+Capítulo 45, [sección 45.4](capitulo-45-proyecto-compilador/index.md#454-la-generacion-de-codigo-y-el-ensamblador).
+
+## 59 — Intérprete con conducta como parámetro
+
+**Problema.** Una misma estructura —un circuito, un programa, una red—
+tiene que responder varias preguntas: qué valores da, qué fórmula
+calcula, qué pasa si una pieza falla. Cada pregunta da otro significado
+a las piezas, pero la forma de combinarlas es siempre la misma.
+
+**Versión ingenua.** Escribir la estructura como reglas, como la
+versión 1 de la
+[sección 48.1](capitulo-48-proyecto-circuitos-logicos/index.md#481-compuertas-como-tablas-circuitos-como-reglas), que
+le dan un solo significado; o escribir un recorrido de la descripción
+por cada pregunta, que repite la asociación de cables con variables y
+el descenso por la jerarquía, y que hay que corregir en todas las
+copias.
+
+**Patrón.** La estructura se describe una vez, como datos
+(`circuito/3` y `componente/5`), y un solo intérprete, `simular/4`, la
+recorre y recibe como argumento la **conducta** de cada pieza. Cada
+significado es una conducta: `normal/4` da los valores, `simbolica/4`
+las fórmulas, la de la
+[sección 48.4](capitulo-48-proyecto-circuitos-logicos/index.md#484-verificar-con-libraryclpb) una restricción
+booleana; el ejercicio 5 agrega una falla y el ejercicio 11, la
+profundidad del circuito. Es la misma idea que el ciclo `iterar/4` del
+[capítulo 46](capitulo-46-proyecto-metodos-numericos/index.md#462-la-ecuacion-como-termino-y-el-ciclo-de-iteracion),
+que recibe el paso de cada método, y que el
+[Patrón 43](patrones.md#43-recorrido-generico-de-un-termino), que
+recibe el trabajo por nodo: aquí el recorrido sigue una descripción
+con nombres y jerarquía, no la forma de un término.
+
+**Cuándo no usarlo.** Cuando la estructura tiene un solo significado:
+las reglas de la versión 1 son más directas. Y cuando la pregunta es
+sobre la estructura misma y no sobre lo que calcula, como contar las
+compuertas o enumerarlas con `compuerta_en/3`: una consulta sobre los
+datos basta, sin intérprete.
+
+Capítulo 48, [sección 48.3](capitulo-48-proyecto-circuitos-logicos/index.md#483-que-calcula-un-circuito).
+
+## 60 — Estado como resultado, no como falla
+
+**Problema.** Un paso de un intérprete o de una simulación puede
+fallar, y el estado que produce lleva algo que no debe perderse aunque
+falle: contadores, medidas, un registro de lo que ocurrió.
+
+**Versión ingenua.** Escribir el paso como un predicado `semidet` que
+falla cuando falla la meta. La falla de Prolog deshace todo lo que el
+paso calculó, y quien lo llama se queda con el estado de antes: las
+cabezas intentadas en una llamada que no encuentra ninguna cláusula
+desaparecen de las medidas, y la columna `intentos` cuenta de menos.
+
+**Patrón.** El paso es `det` y devuelve el estado dentro de un término
+que dice qué pasó: `sigue(Estado)` o `falla(Estado)`, y la vuelta atrás
+`sigue(Estado)` o `fin(Estado)`. Quien lo llama elige el camino por el
+functor, con la indexación por el primer argumento, y la falla de la
+meta queda como un dato, con el estado al día. Es el mismo principio
+que el [Patrón 44](patrones.md#44-representacion-limpia) aplicado al
+resultado: un functor por cada clase.
+
+**Cuándo no usarlo.** Cuando el estado de un intento fallido no
+importa, la falla de Prolog es más directa y más barata: `usar/5`, que
+prueba una sola cabeza, sigue siendo `semidet`. Y cuando el paso tiene
+varias soluciones que Prolog debe enumerar, el resultado ya no es
+uno solo.
+
+Capítulo 61, [sección 61.4](capitulo-61-proyecto-maquina-prolog/index.md#614-celdas-almacen-y-rastro).
+
+## 61 — Superioridad como parámetro
+
+**Problema.** Un intérprete de reglas con excepciones tiene que decidir
+qué regla prevalece cuando dos concluyen cosas contrarias, y hay más de
+un criterio razonable: ninguno, la regla más específica, una prioridad
+declarada, la anticipación de los rivales. Cada base, y a veces cada
+consulta, necesita otro, y conviene comparar lo que decide cada uno.
+
+**Versión ingenua.** Fijar el criterio dentro del intérprete, o
+escribir las excepciones dentro de las reglas con `\+`, como en la
+[sección 65.1](capitulo-65-proyecto-razonamiento-rebatible/index.md#651-el-problema-excepciones-con-negacion-como-falla): cambiar de criterio obliga a reescribir el intérprete
+o la base, y comparar dos criterios sobre la misma base obliga a
+mantener dos copias.
+
+**Patrón.** El criterio es un argumento del intérprete, una lista de
+fuentes de superioridad, y un solo predicado, `supera/3`, lo consulta.
+La base no cambia: la misma consulta con `[]`, `[especificidad]` o
+`[declarada, especificidad]` muestra qué decide cada criterio, y un
+criterio nuevo, como la anticipación de la
+[sección 65.7](capitulo-65-proyecto-razonamiento-rebatible/index.md#657-version-6-la-anticipacion-de-los-rivales), es un elemento más de la lista. Es un caso del
+[Patrón 59](patrones.md#59-interprete-con-conducta-como-parametro): allí el argumento es la conducta de cada pieza; aquí, la
+política que resuelve los conflictos entre las piezas.
+
+**Cuándo no usarlo.** Cuando las reglas no compiten nunca, o cuando un
+solo criterio vale para todo el sistema y no hace falta compararlo con
+otros: una prioridad fija, como el orden de las reglas de un sistema de
+producción, es más simple. Y cuando la superioridad depende de los
+datos, no del razonamiento: entonces es parte de la base, con hechos
+`superior/2`, y el parámetro solo dice si se los usa.
+
+Capítulo 65, [sección 65.3](capitulo-65-proyecto-razonamiento-rebatible/index.md#653-version-2-la-regla-mas-especifica).
+
+## 62 — Especializar podando por el ejemplo
+
+**Problema.** Es necesario buscar, en un grafo de especialización,
+una cláusula que cubra un ejemplo positivo y ningún negativo, y el
+grafo crece exponencialmente con la cantidad de refinamientos.
+
+**Versión ingenua.** Generar todos los refinamientos de cada cláusula
+y examinar cada uno hasta el límite de profundidad, aunque ya no
+cubra el ejemplo que se quiere explicar: se recorren ramas enteras
+en las que ninguna cláusula puede ser la buscada.
+
+**Patrón.** Un refinamiento es una especialización: cubre a lo sumo lo
+que cubría la cláusula de la que sale. Se elige un ejemplo positivo,
+la semilla, y se descarta todo refinamiento que no lo cubre, antes de
+examinar sus propios refinamientos. La prueba de cobertura de la
+semilla es barata, un solo ejemplo, y corta ramas completas del grafo.
+
+**Cuándo no usarlo.** Cuando la cobertura no es monótona respecto del
+refinamiento: con negación en el cuerpo, o con literales que se
+evalúan con efectos, agregar un literal puede hacer cubrir un ejemplo
+que antes no se cubría. Y cuando se busca la cláusula que cubre más
+ejemplos sin una semilla fija: entonces la cota es la cantidad de
+positivos que todavía se cubren, no uno solo.
+
+Capítulo 67, [sección 67.5](capitulo-67-proyecto-aprender-reglas-ejemplos/index.md#675-version-4-induccion-descendente).
+
+## 63 — Bordes en lugar del conjunto
+
+**Problema.** Es necesario mantener el conjunto de las hipótesis
+consistentes con los ejemplos vistos, y el conjunto crece
+exponencialmente con la cantidad de atributos del lenguaje.
+
+**Versión ingenua.** Enumerar el lenguaje entero y probar cada
+concepto contra todos los ejemplos, como `version/2` en la versión 1:
+con seis atributos extra son 589 825 conceptos y 7 099 970
+inferencias.
+
+**Patrón.** Las hipótesis están ordenadas por generalidad, y el
+conjunto queda descrito por sus elementos mínimos y máximos. Se
+guardan solo esos dos bordes, `ev(S, G)`, y cada ejemplo los actualiza
+con una generalización o una especialización mínima, podando cada
+borde con el otro, como hace `actualizar/3`. El conjunto no se
+construye nunca: `traza/1` mide que los conceptos entre los bordes son
+exactamente los consistentes, y el costo crece 136 inferencias por
+atributo.
+
+**Cuándo no usarlo.** Cuando el lenguaje no garantiza una cadena de
+generalizaciones mínimas entre dos conceptos comparables: entonces lo
+que está entre los bordes puede no ser el conjunto buscado. Cuando los
+ejemplos tienen ruido: un solo ejemplo mal clasificado vacía los
+bordes. Y cuando el lenguaje es chico y se necesita el conjunto
+mismo, para contarlo o recorrerlo: con 145 conceptos la enumeración
+cuesta 1 991 inferencias, y los bordes no dan el conjunto sin
+reconstruirlo, como hace `conceptos_entre/2` en la versión 4.
+
+Capítulo 68, [sección 68.3](capitulo-68-proyecto-espacios-versiones-generalizacion-explicacion/index.md#683-version-3-eliminacion-de-candidatos).
+
+## 64 — Historia en el estado del ciclo
+
+**Problema.** Un ciclo que se detiene al alcanzar una tolerancia puede
+no alcanzarla nunca, y es necesario distinguir un proceso que todavía
+no convergió de uno que repite estados y no convergerá.
+
+**Versión ingenua.** Confiar en el límite de pasos, como `entrenar/5`
+en la versión 2: después de 1000 épocas `iterar/5` falla, sin la curva
+y sin decir si con más épocas se habría terminado. O escribir otro
+ciclo, con una lista de estados vistos, que repite el de la
+[sección 46.2](capitulo-46-proyecto-metodos-numericos/index.md#462-la-ecuacion-como-termino-y-el-ciclo-de-iteracion).
+
+**Patrón.** El ciclo no cambia; cambia el paso. `iterar/5` pasa de un
+paso al siguiente un término cualquiera, y `paso_con_memoria/6` lo usa
+para llevar el par `Pesos-Vistos`: agrega los pesos anteriores a los
+vistos y da cambio 0 cuando los nuevos ya estaban. Si el paso es una
+función del estado, un estado repetido demuestra el ciclo, y
+`entrenar_o_ciclo/4` lo informa como `ciclo(Largo, Curva)`.
+
+**Cuándo no usarlo.** Cuando los estados no pertenecen a un conjunto
+finito, como los pesos de punto flotante: la repetición exacta no está
+garantizada, y el ciclo termina por el límite de pasos como antes.
+Cuando el paso no es una función del estado, porque depende de un
+orden aleatorio o de un contador: un estado repetido no prueba nada.
+Y cuando el ciclo es largo: `memberchk/2` recorre la historia en cada
+paso, y una historia de n estados cuesta del orden de n² comparaciones.
+
+Capítulo 69, [sección 69.4](capitulo-69-proyecto-perceptron/index.md#694-version-3-separables-o-en-ciclo).
+
+## 65 — Descripción del mundo como parámetro
+
+**Problema.** Un planificador tiene que servir para más de un mundo
+—los cubos, el robot de STRIPS, el mundo con pinza del
+[capítulo 40](capitulo-40-busqueda-y-planificacion/index.md)—, y algunos de esos mundos ya están descritos
+en otro formato.
+
+**Versión ingenua.** Escribir las acciones del mundo dentro del
+planificador, como cláusulas de la regresión, o copiar el planificador
+para cada mundo; y, para un mundo que ya existe, reescribir su
+descripción a mano en el formato nuevo, con dos copias que hay que
+mantener iguales.
+
+**Patrón.** El planificador recibe el nombre del módulo del mundo como
+primer argumento de `planificar/5` y solo llama a un conjunto fijo de
+predicados descriptivos: `agrega/2`, `borra/2`, `puede/2`,
+`imposible/1`, `siempre/1`, `prueba/1` y `dado/2`, siempre como
+`Mundo:agrega(H, A)`. Otro mundo es otro módulo con los mismos siete
+predicados: `robot.pl` los define en parte con reglas, y el mismo
+código planifica en los dos. Una descripción existente se reutiliza con
+una traducción pequeña: `pinza.pl` carga los operadores STRIPS del
+[capítulo 40](capitulo-40-busqueda-y-planificacion/index.md) en un módulo propio y define `agrega/2`, `borra/2`,
+`puede/2` y `dado/2` con una o dos líneas cada uno, sin copiar el
+mundo. Se diferencia del
+[Patrón 54](patrones.md#54-la-frontera-decide-la-estrategia), en el
+que el problema es fijo y la estrategia de búsqueda es el parámetro, y
+del [Patrón 59](patrones.md#59-interprete-con-conducta-como-parametro),
+en el que la estructura es fija y el parámetro da el significado de sus
+piezas: aquí el algoritmo y su significado son fijos, y lo que varía
+son los datos sobre los que razona, una descripción de varias
+relaciones y no una sola función de sucesores.
+
+**Cuándo no usarlo.** Cuando hay un solo mundo y no se espera otro: la
+llamada calificada y la interfaz fija agregan una indirección sin
+beneficio. Cuando la traducción deja de ser pequeña: la versión 4 mide
+que los operadores sin variables del
+[capítulo 40](capitulo-40-busqueda-y-planificacion/index.md) cuestan más del doble
+de inferencias que `cubos.pl`, y sin la cota agotan la pila; un mundo
+que el planificador recorre mal se describe de nuevo, con variables.
+Y cuando el mundo necesita algo que la interfaz no expresa, como
+acciones con costo o efectos que dependen del estado: entonces cambia
+la interfaz, y con ella todos los mundos.
+
+Capítulo 70, [sección 70.6](capitulo-70-proyecto-planificacion-regresion/index.md#706-version-4-el-mundo-del-capitulo-40).
+
+## 66 — Resultado recordado, sin copiar
+
+**Problema.** Una búsqueda que construye un resultado, como un árbol
+solución, encuentra el mismo subproblema muchas veces, y resolverlo
+cada vez multiplica el trabajo y el tamaño del resultado.
+
+**Versión ingenua.** Resolver cada aparición por separado, como la
+versión 2: la torre de 10 discos expande 1 023 nodos, uno por cada
+aparición de `torre(K, De, A)`, aunque solo hay 27 subproblemas
+distintos, y el árbol tiene una copia de cada subárbol repetido.
+
+**Patrón.** Un assoc asocia cada subproblema resuelto con su
+resultado, y viaja en el estado de la búsqueda junto con la cuenta de
+expansiones, como `m(Memoria, K)` en `recordado/5`. Antes de expandir
+un nodo se lo busca con `get_assoc/3`; si ya está, se usa **el mismo
+término**, sin copiarlo. El resultado es una estructura compartida: el
+árbol de la torre de 20 discos describe 1 048 575 movimientos, se
+construye con 57 expansiones y ocupa en la memoria un nodo por
+subproblema distinto. Se diferencia del
+[Patrón 53](patrones.md#53-tabular-la-relacion-recursiva) en dos
+cosas: la tabla de `:- table` es global al predicado y entrega cada
+respuesta como una copia, de modo que los subárboles repetidos dejan de
+ser el mismo término; el assoc es local a una búsqueda, conserva la
+compartición y permite contar lo que se expande.
+
+**Cuándo no usarlo.** Cuando el resultado de un nodo depende del camino
+por el que se llegó a él, como en el mapa, donde un nodo no puede usar
+a sus ancestros: el resultado recordado por un camino es incorrecto por
+otro, y el [ejercicio 10](capitulo-71-proyecto-grafos-o/index.md#ejercicios) lo muestra. Cuando los
+subproblemas no se repiten, como en un árbol de búsqueda sin nodos
+comunes: el assoc solo agrega costo. Y cuando lo que se hace con el
+resultado lo recorre entero: `costo/2` visita el millón de hojas del
+árbol compartido, y el [ejercicio 7](capitulo-71-proyecto-grafos-o/index.md#ejercicios) pide recordar
+también ese cálculo.
+
+Capítulo 71, [sección 71.7](capitulo-71-proyecto-grafos-o/index.md#717-version-5-subproblemas-compartidos).
+
+## 67 — Resultado con garantía
+
+**Problema.** Una búsqueda exacta, como A\* con una heurística
+admisible, da el óptimo, pero su costo puede crecer de un caso al
+siguiente sin aviso, y es necesario responder siempre dentro de un
+presupuesto.
+
+**Versión ingenua.** Ejecutar la búsqueda exacta sin límite, como
+`optimo/4`, que en `taller(14)` cuesta casi diez millones de
+inferencias; o cortarla con un límite y, si se alcanza, fallar o
+devolver una solución heurística sin decir cuánto puede alejarse del
+óptimo.
+
+**Patrón.** Empezar por lo barato: una solución rápida, el mejor
+calendario por lista, y una **cota inferior** probada, la estimación
+admisible en el estado inicial que calcula `cota_inferior/2`. Si
+coinciden, la solución es óptima sin buscar. Si no, la búsqueda exacta
+corre dentro de `call_with_inference_limit/3`; si termina, su
+resultado es óptimo, y si pasa del límite, `planificar/4` devuelve la
+solución rápida junto con `entre(Cota, D)`. La respuesta dice qué se
+sabe: en `taller(13)`, con un millón de inferencias, un calendario de
+28 que no puede mejorarse en más de una unidad; con tres millones,
+el de 27, `optima(a_estrella)`. La garantía es un término que el
+llamador examina, no un mensaje.
+
+**Cuándo no usarlo.** Cuando no hay una cota inferior barata y
+probada: una estimación que no es admisible convierte la garantía en
+una afirmación falsa. Cuando la cota es tan débil que el intervalo no
+informa nada. Y cuando el costo de la búsqueda exacta está acotado de
+antemano, como en los proyectos chicos: el límite y la cota agregan
+trabajo a una respuesta que igual llega.
+
+Capítulo 72, [sección 72.7](capitulo-72-proyecto-planificacion-tareas/index.md#727-version-5-el-planificador).
+
+## 68 — Transformación como par de términos
+
+**Problema.** Es necesario aplicar muchas veces una transformación que
+reordena las partes de un término de tamaño fijo, como un giro del
+cubo, y también componer transformaciones, invertirlas y saber qué
+partes cambian.
+
+**Versión ingenua.** Escribir cada transformación como un
+procedimiento que lee el término argumento por argumento y construye
+otro; su inversa es otro procedimiento, y una secuencia se aplica paso
+a paso cada vez: `dos_esquinas`, de 18 giros, aplicada como lista
+cuesta 58 002 inferencias en mil aplicaciones.
+
+**Patrón.** La transformación es un par `Antes-Despues` de dos
+términos que comparten sus variables, en otro orden, como los hechos
+`giro(Cara, Antes, Despues)` de la versión 1. Aplicarla es **una
+unificación**: `Antes` con el término, y `Despues` es el resultado.
+Componer es aplicarla a un término de variables libres: `compilar/2`
+aplica una secuencia a un `c/54` sin ligar y obtiene otro par con la
+forma de un giro, que se aplica con `usar/3` en 3 002 inferencias las
+mismas mil veces. El mismo hecho, leído en sentido inverso, da la
+inversa, como `mover/3` para `-Cara`. Y el par dice qué hace sin
+aplicarlo: `efecto/2` compara las variables con `==/2`.
+
+**Cuándo no usarlo.** Cuando la transformación depende de los valores
+y no solo de las posiciones, como una que cambia un color según otro:
+un par de términos solo reordena, copia o descarta partes. Cuando no es
+una permutación: si `Despues` repite una variable o no contiene
+alguna, leer el par en sentido inverso no da la inversa, sino una
+restricción de igualdad o una parte libre. Y cuando el par no es un
+hecho sino un término que viaja en una variable: la primera
+aplicación liga sus variables, y cada uso siguiente necesita antes
+una copia con `copy_term/2`; por eso `term_expansion/2` guarda cada
+macro compilada como un hecho.
+
+Capítulo 74, [sección 74.5](capitulo-74-proyecto-cubo-rubik/index.md#745-version-4-los-macrooperadores).

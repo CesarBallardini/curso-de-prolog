@@ -1,4 +1,4 @@
-# William F. Clocksin, Christopher S. Mellish-Programming in Prolog-Springer (2003)
+# clocksin-mellish-programming-in-prolog (Clocksin & Mellish, *Programming in Prolog*, 5.ª ed., Springer, 2003)
 
 - [Cover](00-cover.md) — pages 1–3
 - [Copyright](01-copyright.md) — pages 4–4

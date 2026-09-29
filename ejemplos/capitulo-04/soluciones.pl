@@ -12,7 +12,10 @@ registro(ficha(mascota(gato, felix), fecha(2021, 5, 3), ana)).
 registro(ficha(mascota(perro, rocco), fecha(2019, 11, 20), luis)).
 registro(ficha(mascota(gato, gaturro), fecha(2023, 2, 14), eva)).
 
+% especie(F, E): E es la especie de la mascota de la ficha F.
 especie(ficha(mascota(E, _), _, _), E).
+
+% nombre_de(F, N): N es el nombre de la mascota de la ficha F.
 nombre_de(ficha(mascota(_, N), _, _), N).
 
 % --- Ejercicio 5 -----------------------------------------------------------

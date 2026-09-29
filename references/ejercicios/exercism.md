@@ -754,7 +754,7 @@
 ### EXM-dominoes — Cadena de dominós
 - **Fuente:** Exercism Prolog, `dominoes`, d=6 (*medium*). https://exercism.org/tracks/prolog/exercises/dominoes
 - **Tema:** 4, 6
-- **Capítulos:** 7, 39
+- **Capítulos:** 7, 40
 - **Dificultad:** 2
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -968,7 +968,7 @@
 ### EXM-knapsack — Problema de la mochila
 - **Fuente:** Exercism Prolog, `knapsack`, d=7 (*medium*). https://exercism.org/tracks/prolog/exercises/knapsack
 - **Tema:** 4, 7, 9
-- **Capítulos:** 17, 38
+- **Capítulos:** 17, 39
 - **Dificultad:** 3
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -1011,7 +1011,7 @@
 ### EXM-book-store — Descuentos en una librería
 - **Fuente:** Exercism Prolog, `book-store`, d=8 (*hard*). https://exercism.org/tracks/prolog/exercises/book-store
 - **Tema:** 4, 7
-- **Capítulos:** 17, 39
+- **Capítulos:** 17, 40
 - **Dificultad:** 3
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -1021,7 +1021,7 @@
 ### EXM-change — Cambio con la menor cantidad de monedas
 - **Fuente:** Exercism Prolog, `change`, d=8 (*hard*). https://exercism.org/tracks/prolog/exercises/change
 - **Tema:** 4, 7
-- **Capítulos:** 39, 38
+- **Capítulos:** 40, 39
 - **Dificultad:** 3
 - **Solución:** sí (referencia)
 - **SWISH:** sí
@@ -1080,7 +1080,7 @@
 ### EXM-two-bucket — Dos baldes
 - **Fuente:** Exercism Prolog, `two-bucket`, d=8 (*hard*). https://exercism.org/tracks/prolog/exercises/two-bucket
 - **Tema:** 4
-- **Capítulos:** 39, 22
+- **Capítulos:** 40, 22
 - **Dificultad:** 3
 - **Solución:** sí (referencia)
 - **SWISH:** sí

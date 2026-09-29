@@ -202,7 +202,7 @@ N = 99.
 
 Quedan guardadas las sumas de 2 a 100: la de 1 es el caso base y no se guarda.
 Con `:- table suma_hasta/2.` y sin `suma_guardada/2`, la tabulación del
-[capítulo 38](../capitulo-38-tabulacion/index.md) haría lo mismo.
+[capítulo 39](../capitulo-39-tabulacion/index.md) haría lo mismo.
 
 ## 7
 
@@ -401,7 +401,7 @@ lista de las recorridas para no pasar dos veces por la misma. Las celdas
 visitadas son seguras por definición, y por eso el camino también lo es.
 `once/1` se queda con el primer camino, que no es necesariamente el más corto;
 el [capítulo 22](../capitulo-22-estructuras-de-datos-de-la-biblioteca/index.md) presenta la búsqueda a lo ancho, que sí lo encuentra, y el
-[capítulo 39](../capitulo-39-busqueda-y-juegos/index.md) vuelve sobre este problema.
+[capítulo 40](../capitulo-40-busqueda-y-planificacion/index.md) vuelve sobre este problema.
 
 ## 12
 

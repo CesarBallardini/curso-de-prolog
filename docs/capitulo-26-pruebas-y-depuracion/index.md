@@ -462,6 +462,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 |---|---|
 | opciones de plunit | `true`, `all`, `set`, `fail`, `error`, `throws`, `nondet`, `setup`, `cleanup`, `forall`, `condition`, `blocked`, `fixme`, `timeout` |
 | `run_tests/0,1` | todas las unidades, una, o una prueba |
+| `call_with_inference_limit/3` | una prueba de rendimiento con una cota de inferencias, que no depende de la máquina |
 | `coverage/1`, `show_coverage/1` | qué cláusulas ejecutaron las pruebas |
 | `trace/0` | el depurador en la terminal: puertos Call, Exit, Redo, Fail |
 | `spy/1`, `nospy/1` | puntos espía: detenerse solo en un predicado |

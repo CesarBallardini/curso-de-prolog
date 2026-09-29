@@ -529,7 +529,7 @@ con alcance público y le hace un pedido.
 El Buscaminas se armó por partes a lo largo del curso: la cuenta de minas
 vecinas en el [capítulo 17](../capitulo-17-todas-las-soluciones/index.md), el recorrido que descubre una región en el
 [capítulo 18](../capitulo-18-orden-superior/index.md), el tablero como tabla de búsqueda en el [capítulo 22](../capitulo-22-estructuras-de-datos-de-la-biblioteca/index.md),
-el resolvedor con restricciones en el [capítulo 23](../capitulo-23-programacion-con-restricciones/index.md), los módulos en el
+la deducción con restricciones en el [capítulo 23](../capitulo-23-programacion-con-restricciones/index.md), los módulos en el
 [capítulo 24](../capitulo-24-modulos-y-organizacion/index.md), el juego en la terminal en el [capítulo 28](../capitulo-28-programas-de-linea-de-comandos/index.md) y el servicio en el
 [capítulo 30](../capitulo-30-servicios-web-rest/index.md). `ejemplos/capitulo-31/buscaminas/` reúne esas piezas en un
 programa completo, con un módulo por responsabilidad:
@@ -548,7 +548,7 @@ programa completo, con un módulo por responsabilidad:
 El código completo, con sus pruebas, está en
 [la página del Buscaminas completo](buscaminas.md). El núcleo —`vecinos`,
 `tablero`, `descubrir`, `resolver`, `partida`— no escribe ni lee: la terminal
-y el servicio son dos bordes sobre el mismo núcleo, y el resolvedor del
+y el servicio son dos bordes sobre el mismo núcleo, y la deducción con restricciones del
 [capítulo 23](../capitulo-23-programacion-con-restricciones/index.md) da, en los dos, la sugerencia de una celda segura. El programa
 juega en la terminal, y termina con el código 0 si la partida se gana y con
 1 si se pierde:
@@ -587,7 +587,7 @@ arrancan el servicio y le hacen un pedido.
 !!! question "Actividad"
     Jugar una partida de 9 × 9 con 10 minas, pidiendo la sugerencia con `?`
     cada vez que no haya una jugada evidente. ¿En qué situaciones el
-    resolvedor no encuentra ninguna celda segura? ¿Significa eso que no la
+    módulo `resolver` no encuentra ninguna celda segura? ¿Significa eso que no la
     hay?
 
 ## 31.10 Cierre de la parte II
@@ -688,4 +688,4 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | La compilación de programas y la expansión de términos | [capítulo 35](../capitulo-35-transformacion-de-programas-y-compilacion/index.md) |
 | Una interfaz web sobre el servicio del Buscaminas | [capítulo 36](../capitulo-36-interfaces-de-usuario/index.md) |
 | Los hilos que atienden los pedidos de un servicio | [capítulo 37](../capitulo-37-concurrencia-y-paralelismo/index.md) |
-| El Buscaminas como problema de búsqueda | [capítulo 39](../capitulo-39-busqueda-y-juegos/index.md) |
+| El Buscaminas como problema de búsqueda | [capítulo 40](../capitulo-40-busqueda-y-planificacion/index.md) |

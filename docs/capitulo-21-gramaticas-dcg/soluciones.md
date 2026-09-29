@@ -414,7 +414,9 @@ operaciones(Hasta, V) -->
 operaciones(V, V) -->
     [].
 
-% operacion(Op)//: la palabra de una operación.
+%!  operacion(?Op)// is nondet.
+%
+%   Los códigos de la palabra que nombra la operación Op.
 operacion(suma)     --> "mas".
 operacion(resta)    --> "menos".
 operacion(producto) --> "por".

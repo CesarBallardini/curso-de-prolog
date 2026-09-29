@@ -1,0 +1,75 @@
+## Contents
+- <a href="#node1.html" id="node1.html_tex2html107">Contents</a>
+- <a href="#node2.html" id="node1.html_tex2html108">Background and Motivation</a>
+- <a href="#node3.html" id="node1.html_tex2html109">Introduction to Prolog</a>
+  - <a href="#node4.html" id="node1.html_tex2html110">Prolog as a Procedural Programming Language</a>
+    - <a href="#node5.html" id="node1.html_tex2html111">Assign-once Variables</a>
+    - <a href="#node6.html" id="node1.html_tex2html112">Nondeterminism</a>
+    - <a href="#node8.html" id="node1.html_tex2html113">Executing Programs in XSB</a>
+    - <a href="#node9.html" id="node1.html_tex2html114">The Scheduling of Machine Execution in Prolog</a>
+  - <a href="#node10.html" id="node1.html_tex2html115">Grammars in Prolog</a>
+  - <a href="#node11.html" id="node1.html_tex2html116">Prolog as a Database Query Langauge</a>
+  - <a href="#node12.html" id="node1.html_tex2html117">Deductive Databases</a>
+  - <a href="#node13.html" id="node1.html_tex2html118">Summary</a>
+- <a href="#node14.html" id="node1.html_tex2html119">Tabling and Datalog Programming</a>
+  - <a href="#node16.html" id="node1.html_tex2html120">More on Transitive Closure</a>
+  - <a href="#node17.html" id="node1.html_tex2html121">Other Datalog Examples</a>
+  - <a href="#node18.html" id="node1.html_tex2html122">Some Simple Graph Problems</a>
+  - <a href="#node19.html" id="node1.html_tex2html123">Genome Examples</a>
+  - <a href="#node20.html" id="node1.html_tex2html124">Inferring When to Table</a>
+  - <a href="#node22.html" id="node1.html_tex2html125">Datalog Optimization in XSB</a>
+- <a href="#node23.html" id="node1.html_tex2html126">Grammars</a>
+  - <a href="#node24.html" id="node1.html_tex2html127">An Expression Grammar</a>
+  - <a href="#node25.html" id="node1.html_tex2html128">Representing the Input String as Facts</a>
+  - <a href="#node26.html" id="node1.html_tex2html129">Mixing Tabled and Prolog Evaluation</a>
+  - <a href="#node27.html" id="node1.html_tex2html130">So What Kind of Parser is it?</a>
+  - <a href="#node28.html" id="node1.html_tex2html131">Building Parse Trees</a>
+  - <a href="#node29.html" id="node1.html_tex2html132">Computing First Sets of Grammars</a>
+  - <a href="#node30.html" id="node1.html_tex2html133">Linear Parsing of LL(k) and LR(k) Grammars</a>
+  - <a href="#node31.html" id="node1.html_tex2html134">Parsing of Context Sensitive Grammars</a>
+- <a href="#node32.html" id="node1.html_tex2html135">Automata Theory in XSB</a>
+  - <a href="#node33.html" id="node1.html_tex2html136">Finite State Machines</a>
+    - <a href="#node34.html" id="node1.html_tex2html137">Intersection of FSM's</a>
+    - <a href="#node35.html" id="node1.html_tex2html138">Epsilon-free FSM's</a>
+    - <a href="#node36.html" id="node1.html_tex2html139">Deterministic FSM's</a>
+    - <a href="#node37.html" id="node1.html_tex2html140">Complements of FSM's</a>
+    - <a href="#node38.html" id="node1.html_tex2html141">Minimization of FSM's</a>
+    - <a href="#node39.html" id="node1.html_tex2html142">Regular Expressions</a>
+  - <a href="#node40.html" id="node1.html_tex2html143">Push-Down Automata</a>
+- <a href="#node41.html" id="node1.html_tex2html144">Dynamic Programming in XSB</a>
+  - <a href="#node42.html" id="node1.html_tex2html145">The Knap-Sack Problem</a>
+  - <a href="#node43.html" id="node1.html_tex2html146">Sequence Comparisons</a>
+  - <a href="#node44.html" id="node1.html_tex2html147">??</a>
+- <a href="#node45.html" id="node1.html_tex2html148">HiLog Programming</a>
+  - <a href="#node46.html" id="node1.html_tex2html149">Generic Programs</a>
+  - <a href="#node47.html" id="node1.html_tex2html150">Object Centered Programming in XSB with HiLog</a>
+- <a href="#node48.html" id="node1.html_tex2html151">Debugging Tabled Programs</a>
+- <a href="#node49.html" id="node1.html_tex2html152">Aggregation</a>
+  - <a href="#node50.html" id="node1.html_tex2html153">Min, Max, Sum, Count, Avg</a>
+  - <a href="#node51.html" id="node1.html_tex2html154">BagReduce and BagPO</a>
+  - <a href="#node52.html" id="node1.html_tex2html155">Recursive Aggregation</a>
+    - <a href="#node53.html" id="node1.html_tex2html156">Shortest Path</a>
+    - <a href="#node54.html" id="node1.html_tex2html157">Reasoning with Uncertainty: Annotated Logic</a>
+    - <a href="#node55.html" id="node1.html_tex2html158">Longest Path</a>
+  - <a href="#node56.html" id="node1.html_tex2html159">Scheduling Issues</a>
+  - <a href="#node57.html" id="node1.html_tex2html160">Stratified Aggregation</a>
+- <a href="#node58.html" id="node1.html_tex2html161">Negation in XSB</a>
+  - <a href="#node59.html" id="node1.html_tex2html162">Stratified Negation</a>
+  - <a href="#node60.html" id="node1.html_tex2html163">Approximate Reasoning</a>
+  - <a href="#node61.html" id="node1.html_tex2html164">General Negation</a>
+- <a href="#node62.html" id="node1.html_tex2html165">Meta-Programming</a>
+  - <a href="#node63.html" id="node1.html_tex2html166">Meta-Interpreters in XSB</a>
+    - <a href="#node64.html" id="node1.html_tex2html167">A Metainterpreter for Disjunctive Logic Programs</a>
+    - <a href="#node65.html" id="node1.html_tex2html168">A Metainterpreter for Explicit Negation</a>
+  - <a href="#node66.html" id="node1.html_tex2html169">Abstract Interpretation</a>
+    - <a href="#node67.html" id="node1.html_tex2html170">AI of a Simple Nested Procedural Language</a>
+- <a href="#node68.html" id="node1.html_tex2html171">XSB Modules</a>
+- <a href="#node69.html" id="node1.html_tex2html172">Handling Large Fact Files</a>
+  - <a href="#node70.html" id="node1.html_tex2html173">Compiling Fact Files</a>
+  - <a href="#node71.html" id="node1.html_tex2html174">Dynamically Loaded Fact Files</a>
+  - <a href="#node72.html" id="node1.html_tex2html175">Indexing Static Program Clauses</a>
+- <a href="#node74.html" id="node1.html_tex2html176">Table Builtins</a>
+- <a href="#node75.html" id="node1.html_tex2html177">XSB System Facilities</a>
+- <a href="#node76.html" id="node1.html_tex2html178">Bibliography</a>
+
+------------------------------------------------------------------------

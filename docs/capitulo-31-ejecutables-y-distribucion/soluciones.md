@@ -417,6 +417,8 @@ jugar(Filas, Columnas, Minas, Opciones, Codigo) :-
     ).
 ```
 
+Como el servicio del [capítulo 30](../capitulo-30-servicios-web-rest/index.md), el programa espera con `thread_get_message/1` mientras los hilos del servidor atienden los pedidos; el [capítulo 37](../capitulo-37-concurrencia-y-paralelismo/index.md) presenta los hilos y sus colas de mensajes.
+
 La opción se declara con el tipo
 `oneof([principiante, intermedio, experto])`: `argv_options/3` rechaza
 cualquier otro valor con su propio mensaje, y el programa no necesita

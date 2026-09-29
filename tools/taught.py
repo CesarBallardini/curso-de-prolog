@@ -22,6 +22,7 @@ import examples
 
 # `findall/3`, `phrase//1`, and a range such as `maplist/2..5` or `foldl/4..6`.
 INDICATOR = re.compile(r'`([a-z]\w*)(?://|/)(\d+)(?:\.\.\d+)?`')
+ARITY_RANGE = re.compile(r'`(?P<name>[a-z]\w*)(?P<slashes>//|/)(?P<low>\d+)(?:\.\.(?P<high>\d+))?`')
 SECTION = re.compile(r'^## \d+\.\d+ ')
 RESUMEN = re.compile(r'^## Resumen\s*$')
 NEXT_H2 = re.compile(r'^## ')
@@ -37,9 +38,8 @@ def chapter_pages():
             yield int(match.group(1)), index
 
 
-def declared(index: Path) -> set[str]:
-    """The predicate names the Resumen table and the section headings of a page name."""
-    names = set()
+def declaring_lines(index: Path):
+    """The lines of a page that declare what it teaches: its Resumen table and section headings."""
     in_resumen = False
     for line in index.read_text(encoding='utf-8').split('\n'):
         if RESUMEN.match(line):
@@ -47,8 +47,31 @@ def declared(index: Path) -> set[str]:
         elif NEXT_H2.match(line):
             in_resumen = False
         if in_resumen or SECTION.match(line):
-            names |= {m.group(1) for m in INDICATOR.finditer(line)}
-    return names
+            yield line
+
+
+def declared(index: Path) -> set[str]:
+    """The predicate names the Resumen table and the section headings of a page name."""
+    return {m.group(1) for line in declaring_lines(index) for m in INDICATOR.finditer(line)}
+
+
+def arities() -> dict[str, set[int]]:
+    """{name: the arities the book declares for it}, over every written chapter.
+
+    `maplist/2..5` gives 2 to 5; a non-terminal `phrase//1` gives 1 and, called as a
+    predicate, 3. A call with another number of arguments is not that predicate: the option
+    `functor(alumno)` of `csv_read_file/3` is not `functor/3`.
+    """
+    out: dict[str, set[int]] = {}
+    for _, index in chapter_pages():
+        for line in declaring_lines(index):
+            for m in ARITY_RANGE.finditer(line):
+                low = int(m.group('low'))
+                span = set(range(low, int(m.group('high') or low) + 1))
+                if m.group('slashes') == '//':
+                    span |= {n + 2 for n in span}
+                out.setdefault(m.group('name'), set()).update(span)
+    return out
 
 
 def used_in_part_1() -> set[str]:

@@ -31,4 +31,28 @@ test(aplanar_izq_cuesta_mas, true(Izq > 100 * Der)) :-
 diez(L) :-
     numlist(1, 10, L).
 
+% Ejercicio 15: las dos versiones cuentan lo mismo y no dejan alternativas.
+% El comportamiento de la pila se observa con árboles de un millón de nodos,
+% fuera de las pruebas.
+test(hojas_una, true(N == 1)) :-
+    hojas(hoja, N).
+
+test(hojas_iguales, true(N1-N2 == 3-3)) :-
+    A = nodo(nodo(hoja, hoja), hoja),
+    hojas(A, N1),
+    hojas_acc(A, N2).
+
+test(hojas_peine_derecho, true(N1-N2 == 11-11)) :-
+    peine_derecho(10, A),
+    hojas(A, N1),
+    hojas_acc(A, N2).
+
+test(hojas_peine_izquierdo, true(N1-N2 == 11-11)) :-
+    peine_izquierdo(10, A),
+    hojas(A, N1),
+    hojas_acc(A, N2).
+
+test(peine_derecho_forma, true(A == nodo(hoja, nodo(hoja, hoja)))) :-
+    peine_derecho(2, A).
+
 :- end_tests(soluciones).

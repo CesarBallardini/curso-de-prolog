@@ -28,8 +28,8 @@ Al terminar el capítulo, el lector puede:
 
 !!! info "Tiempo estimado"
     Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **0:35 h**.
-    Resolver los 6 ejercicios marcados con ★: **1:40 h**.
-    Resolver los 13 ejercicios del final: **4:10 h**.
+    Resolver los 7 ejercicios marcados con ★: **2:00 h**.
+    Resolver los 17 ejercicios del final: **5:40 h**.
 
 ## 12.1 Las dos lecturas
 
@@ -260,6 +260,48 @@ Cuando el árbol alcanza un objetivo vacío —no queda nada por probar—, la
 contradicción está derivada y se produce la respuesta. Las hojas de éxito del
 [capítulo 5](../capitulo-05-como-responde-prolog/index.md) corresponden exactamente a esa situación.
 
+### La refutación en forma clausal
+
+En la asignatura de lógica la resolución se aplica a cláusulas escritas como
+disyunciones. Como $b \land c \rightarrow a$ equivale a $\lnot b \lor \lnot c \lor a$, una
+regla se escribe con su cabeza sin negar y cada objetivo del cuerpo negado; un
+hecho queda como un único átomo sin negar, y la negación de una consulta, como
+una disyunción de átomos negados. Las variables siguen cuantificadas
+universalmente: la negación de «existe un `Quien` del que juan es abuelo» es
+«para todo `Quien`, juan no es su abuelo». El programa de la
+[sección 5.2](../capitulo-05-como-responde-prolog/index.md#52-el-arbol-de-derivacion)
+y la consulta `?- abuelo(juan, Quien).` quedan así:
+
+| | |
+|---|---|
+| R1 | $\mathit{padre}(\mathit{juan}, \mathit{ana})$ |
+| R2 | $\mathit{padre}(\mathit{juan}, \mathit{pedro})$ |
+| R3 | $\mathit{padre}(\mathit{pedro}, \mathit{luis})$ |
+| R4 | $\lnot \mathit{padre}(A, P) \lor \lnot \mathit{padre}(P, N) \lor \mathit{abuelo}(A, N)$ |
+| consulta negada | $\lnot \mathit{abuelo}(\mathit{juan}, \mathit{Quien})$ |
+
+Un paso de resolución toma dos cláusulas que contienen un mismo átomo, negado en
+una y sin negar en la otra, unifica esas dos apariciones y produce el
+**resolvente**: la disyunción de todo lo demás, con la sustitución aplicada. La
+rama de éxito del árbol es una cadena de tres pasos:
+
+| Paso | Se resuelve | Sustitución | Resolvente |
+|---|---|---|---|
+| 1 | la consulta negada con R4 | θ₁ = { A/juan, N/Quien } | $\lnot \mathit{padre}(\mathit{juan}, P) \lor \lnot \mathit{padre}(P, \mathit{Quien})$ |
+| 2 | el resolvente 1 con R2 | θ₃ = { P/pedro } | $\lnot \mathit{padre}(\mathit{pedro}, \mathit{Quien})$ |
+| 3 | el resolvente 2 con R3 | θ₄ = { Quien/luis } | $\square$, la cláusula vacía |
+
+La cláusula vacía es la contradicción: no contiene ningún átomo, y ninguna
+situación la hace verdadera. La suposición «juan no es abuelo de nadie» queda
+refutada, y la sustitución acumulada sobre `Quien` es la respuesta. Los
+subíndices son los del árbol: θ₂ = { P/ana } corresponde a resolver el
+resolvente 1 con R1 en lugar de R2, que produce
+$\lnot \mathit{padre}(\mathit{ana}, \mathit{Quien})$, y ese resolvente no se puede
+resolver con ninguna cláusula. La tabla es el árbol de la
+[sección 5.2](../capitulo-05-como-responde-prolog/index.md#52-el-arbol-de-derivacion)
+leído como resoluciones: cada nodo es un resolvente, cada arco un paso, y la
+consulta vacía de la hoja de éxito es la cláusula vacía.
+
 ## 12.6 Lo que excede la lógica
 
 Las dos lecturas coinciden en la mayoría de los casos. Esta sección enumera las
@@ -429,6 +471,57 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
         progenitor(A, D).
     ```
 
+14. ★ **(2)** Reescribir en forma clausal el árbol del
+    [ejercicio 1 del capítulo 5](../capitulo-05-como-responde-prolog/index.md#ejercicios),
+    el de `?- abuelo(Quien, luis).` sobre `busqueda.pl`, como en
+    [La refutación en forma clausal](#la-refutacion-en-forma-clausal): la
+    consulta negada, cada paso de resolución con su sustitución y su
+    resolvente, y los resolventes en los que termina cada una de las tres
+    ramas.
+15. **(2)** La resolución no exige que una de las dos cláusulas sea una consulta.
+    Resolver la regla `madre/2` de `logica.pl` con el hecho `mujer(marta).`,
+    escribir el resolvente como una cláusula de Prolog, y explicar por qué es
+    una consecuencia del programa aunque ninguna consulta la produzca durante la
+    ejecución.
+16. **(2)** Explicar por qué ninguna de estas dos cláusulas es una cláusula de
+    Horn. Para la segunda, conviene escribir en forma clausal lo que afirma su
+    cuerpo.
+
+    ```prolog
+    odia(X, Y), odia(Y, X) :- enemigo(X, Y).
+    p(X) :- (q(X) :- r(X)).
+    ```
+
+    Después, cargar cada una en un archivo, junto con los hechos
+    `enemigo(juan, pedro).` y `r(ana).`, consultar `p(ana).`, y explicar qué
+    informa SWI-Prolog en cada caso.
+17. **(3)** El programa siguiente no tiene variables, de modo que cada átomo es
+    una afirmación completa:
+
+    ```prolog
+    templado.
+    llueve.
+    picnic :- templado, \+ llueve.
+    remar :- picnic.
+    ```
+
+    A esas cláusulas se agrega la afirmación «no se rema cuando llueve», que en
+    forma clausal es $\lnot \mathit{remar} \lor \lnot \mathit{llueve}$.
+
+    a. Escribir en forma clausal las dos primeras cláusulas y la cuarta, y
+       demostrar en papel, por refutación, que no se rema: agregar la negación
+       de esa conclusión y derivar la cláusula vacía, indicando cada
+       resolvente.
+    b. Explicar por qué $\lnot \mathit{remar} \lor \lnot \mathit{llueve}$ no es un hecho ni una
+       regla de Prolog, y a cuál de los tres casos de la
+       [sección 12.4](#124-clausulas-de-horn) corresponde su forma.
+    c. Sin ejecutarla, explicar por qué `?- \+ remar.` tiene éxito sobre las
+       cuatro cláusulas del programa, y por qué la razón de ese éxito es otra
+       que la de la demostración del punto a. El
+       [capítulo 10](../capitulo-10-negacion-como-falla/index.md) describe
+       `\+`, y el [capítulo 38](../capitulo-38-semantica-de-los-programas-logicos/index.md)
+       trata la forma clausal de fórmulas cualesquiera.
+
 ## Resumen
 
 | | |
@@ -444,6 +537,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | hecho, regla, consulta | los tres casos de la misma forma |
 | **resolución** | reemplazar un objetivo por el cuerpo de una cláusula cuya cabeza unifica con él |
 | **refutación** | probar una afirmación suponiendo su negación y derivando una contradicción |
+| **resolvente** | la disyunción que queda al resolver dos cláusulas; la cláusula vacía, $\square$, es la contradicción |
 
 ## Temas que se retoman
 

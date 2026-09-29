@@ -387,3 +387,54 @@ aparición, en el orden de la lista. Es la misma situación de `esta_en/2` en la
 [sección 7.3](index.md#73-recorrer-una-lista): una respuesta por cada
 demostración. Por eso el encabezado declara `nondet` y no `semidet`: con la
 materia dada, una lista con repeticiones produce más de una posición.
+
+## 18
+
+```prolog
+?- [[a, b], c] = [X|Y].
+X = [a, b],
+Y = [c].
+
+?- [[a, b], c] = [[X|Y]|Z].
+X = a,
+Y = [b],
+Z = [c].
+
+?- [fecha(2021, 5, 3), ana] = [fecha(A, M, D)|R].
+A = 2021,
+M = 5,
+D = 3,
+R = [ana].
+
+?- [mascota(gato, felix)] = [mascota(E, N), Otro].
+false.
+
+?- [a, b|c] = [X|Y].
+X = a,
+Y = [b|c].
+
+?- [a, b|c] = [a, b, c].
+false.
+```
+
+En la primera, el primer elemento es la lista `[a, b]` completa: la barra separa
+el primer elemento del resto sin examinar qué clase de término es ese elemento.
+La segunda aplica el patrón `[X|Y]` **dentro** del primer elemento, y por eso
+`X` y `Y` descomponen `[a, b]`, mientras `Z` recibe el resto de la lista
+exterior. La tercera combina las reglas del
+[capítulo 4](../capitulo-04-terminos-y-unificacion/index.md): el primer elemento
+unifica como cualquier término compuesto, argumento por argumento. La cuarta
+falla por la longitud, igual que `[a] = [X, Y]` del ejercicio 1: la lista de la
+izquierda tiene un elemento y el patrón de la derecha exige dos.
+
+Las dos últimas muestran que la unificación no verifica que un término sea una
+lista. `[a, b|c]` es el término `'[|]'(a, '[|]'(b, c))`: dos términos
+compuestos anidados, con el nombre y la aridad de toda lista no vacía, y la
+consulta los unifica con `[X|Y]` como a cualquier otro par de términos. Pero la
+definición de la [sección 7.1](index.md#71-una-lista-es-un-termino) exige que el
+segundo argumento sea **una lista**, y al final de la cadena el segundo
+argumento es `c`, un átomo, en lugar de `[]`. Por eso `[a, b|c]` no es una lista
+y no unifica con `[a, b, c]`, cuyo final es `[]`: las dos coinciden en `a` y en
+`b`, y la unificación falla al comparar `c` con `[c]`. Un predicado que recorre
+listas con las plantillas del capítulo falla sobre ese término, porque al llegar
+a `c` no lo alcanza ni el caso base `[]` ni el caso recursivo `[X|Resto]`.

@@ -464,6 +464,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | precedencia | de 1 a 1200; el operador de mayor precedencia es el principal del término |
 | tipo | `xfx`, `xfy`, `yfx`, `fx`, `fy`, `xf`, `yf`: la posición, y con `y` el lado que admite la misma precedencia |
 | `write_canonical/1` | escribe un término sin operadores, para ver su estructura |
+| `term_string/2` | lee un término de una cadena con los operadores vigentes, o lo escribe en ella (en las soluciones) |
 | reglas como datos | términos con operadores propios, que un intérprete lee y prueba |
 | `prueba/3` | una cláusula por cada forma de condición; el tercer argumento es el árbol de la prueba |
 | `no` en el intérprete | una condición se cumple cuando no se puede probar, con `\+` |
@@ -477,4 +478,4 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | `meta_predicate` y los módulos, para un intérprete que recibe la base de reglas | [capítulo 24](../capitulo-24-modulos-y-organizacion/index.md) |
 | Un diálogo que pregunta las observaciones que faltan | [capítulo 28](../capitulo-28-programas-de-linea-de-comandos/index.md) |
 | El intérprete de Prolog en Prolog, con `clause/2` | [capítulo 33](../capitulo-33-introspeccion-y-metainterpretes/index.md) |
-| La búsqueda en un espacio de estados, con el árbol como camino | [capítulo 39](../capitulo-39-busqueda-y-juegos/index.md) |
+| La búsqueda en un espacio de estados, con el árbol como camino | [capítulo 40](../capitulo-40-busqueda-y-planificacion/index.md) |

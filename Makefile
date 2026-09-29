@@ -27,7 +27,7 @@ PDFS      := $(PDFS_CAP) $(PDFS_SOL)
 # is. When it does not come from the environment, ask swipl itself.
 SWI_HOME_DIR ?= $(shell swipl --dump-runtime-variables 2>/dev/null | sed -n 's/^PLBASE="\(.*\)";/\1/p')
 
-.PHONY: help install browser test swish part-1 transcripts math time sync sql appendix \
+.PHONY: help install browser test swish part-1 transcripts math time sync sql appendix windows \
         docs docs-serve pdf pldoc clean-pldoc lint format check clean clean-pdf
 
 help: ## List the available targets
@@ -81,13 +81,13 @@ time: ## Recompute every chapter time estimate and report the ones that drifted
 sync: ## Copy into the text the code blocks that declare they come from ejemplos/
 	$(UV) tools/sync-examples.py --write
 
-sql: ## Run the SQL/Prolog pairs of chapter 35 and compare the results
+sql: ## Run the SQL/Prolog pairs of chapter 42 and compare the results
 	$(UV) references/ejercicios/sql-prolog/verificar.py
 
 # Each recipe line is its own shell, so the guard and the command have to be one
 # line: an `exit 0` on the line above would only leave that shell, and pytest
 # would run anyway against a directory that is not there.
-appendix: ## Run the pytest suites of chapters 29 (Janus), 30 and 31 (the Python clients)
+appendix: ## Run the pytest suites of chapters 29 (Janus), 30, 31 (the Python clients) and 36 (web pages, Playwright)
 	@if [ -d ejemplos/capitulo-29 ]; then \
 	  SWI_HOME_DIR="$(SWI_HOME_DIR)" $(UV) --group apendice-a pytest ejemplos/capitulo-29; \
 	else \
@@ -101,6 +101,15 @@ appendix: ## Run the pytest suites of chapters 29 (Janus), 30 and 31 (the Python
 	@if [ -d ejemplos/capitulo-31 ]; then \
 	  SWI_HOME_DIR="$(SWI_HOME_DIR)" $(UV) --group apendice-a pytest ejemplos/capitulo-31; \
 	fi
+	@# Chapter 36 opens its web pages in headless Chromium, through Playwright.
+	@if [ -d ejemplos/capitulo-36 ]; then \
+	  SWI_HOME_DIR="$(SWI_HOME_DIR)" $(UV) --group apendice-a pytest ejemplos/capitulo-36; \
+	fi
+
+# swipl-win has no output a shell can read, and CI has no XPCE: this target is
+# local only, and `make check` does not call it.
+windows: ## Run the XPCE window tests under swipl-win (local only; CI has no XPCE)
+	$(UV) tools/run-windows.py $(e)
 
 ## --- The book --------------------------------------------------------------
 

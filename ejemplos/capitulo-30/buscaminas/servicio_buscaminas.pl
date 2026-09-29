@@ -21,11 +21,15 @@
 % solo-local: SWISH no admite módulos propios ni permite abrir puertos.
 %
 %?- iniciar_buscaminas(Puerto), detener_buscaminas(Puerto).
+%
+% thread_get_message/1 y with_mutex/2: los presenta el capítulo 37, con los hilos.
 
 :- use_module(library(http/http_server)).
 :- use_module(library(http/http_json)).
 :- use_module(library(error)).
 :- use_module(buscaminas).
+
+:- meta_predicate responder(0).
 
 :- dynamic partida/2, ultima_partida/1.
 

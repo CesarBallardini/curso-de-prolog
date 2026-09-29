@@ -164,6 +164,7 @@ menu(In) :-
 %
 %   Ejecuta una orden del menú. Una orden con una variable libre es una orden
 %   incompleta: se informa, en lugar de responder por cualquier persona.
+%   var/1, que el capítulo 32 presenta, reconoce la variable libre.
 ejecutar(edad(P)) :-
     var(P),
     !,
@@ -365,4 +366,60 @@ inscripcion_posible_por_anio(Legajo, Materia, Resultado) :-
         materia(Materia, _, 3)
     ->  Resultado = rechazada(anio_no_permitido)
     ;   inscripcion_posible(Legajo, Materia, Resultado)
+    ).
+
+% --- Ejercicio 16 ----------------------------------------------------------
+
+%!  tomada(?Legajo:integer, ?Materia:atom, ?Anio:integer) is nondet.
+%
+%   El alumno Legajo cursa Materia o ya la aprobó, y Materia es del año Anio.
+%   La disyunción está en el cuerpo.
+tomada(Legajo, Materia, Anio) :-
+    (   cursa(Legajo, Materia)
+    ;   aprobada(Legajo, Materia, _)
+    ),
+    materia(Materia, _, Anio).
+
+%!  tomada_en_dos(?Legajo:integer, ?Materia:atom, ?Anio:integer) is nondet.
+%
+%   La misma relación que tomada/3, con una cláusula por alternativa. El
+%   objetivo que seguía a la disyunción se repite en las dos.
+tomada_en_dos(Legajo, Materia, Anio) :-
+    cursa(Legajo, Materia),
+    materia(Materia, _, Anio).
+tomada_en_dos(Legajo, Materia, Anio) :-
+    aprobada(Legajo, Materia, _),
+    materia(Materia, _, Anio).
+
+% --- Ejercicio 17 ----------------------------------------------------------
+
+%!  eco(+In) is det.
+%
+%   Escribe, uno por línea, los términos que lee del stream In. El bucle no
+%   tiene condición de salida: al final del stream, read/2 da end_of_file
+%   cada vez, y el ciclo no termina nunca.
+eco(In) :-
+    repeat,
+    read(In, Termino),
+    format("~w~n", [Termino]),
+    fail.
+
+%!  eco_hasta_el_final(+In) is det.
+%
+%   Escribe, uno por línea, los términos que lee del stream In, hasta llegar
+%   al final del stream.
+eco_hasta_el_final(In) :-
+    repeat,
+    read(In, Termino),
+    escribir_termino(Termino),
+    Termino == end_of_file,
+    !.
+
+%!  escribir_termino(+Termino) is det.
+%
+%   Escribe Termino en una línea, salvo la marca de fin del stream.
+escribir_termino(Termino) :-
+    (   Termino == end_of_file
+    ->  true
+    ;   format("~w~n", [Termino])
     ).

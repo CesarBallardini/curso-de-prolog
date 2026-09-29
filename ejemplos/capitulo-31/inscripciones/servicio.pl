@@ -12,6 +12,8 @@
 % solo-local: SWISH no permite abrir puertos ni iniciar un servidor.
 %
 %?- iniciar_api(Puerto), detener_api(Puerto).
+%
+% thread_get_message/1: lo presenta el capítulo 37, con los hilos.
 
 :- use_module(library(main)).
 :- ensure_loaded(inscripciones).

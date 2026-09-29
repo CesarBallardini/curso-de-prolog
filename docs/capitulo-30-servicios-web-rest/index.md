@@ -47,6 +47,8 @@ pedido y responde:
 :- use_module(library(http/http_json)).
 :- use_module(library(error)).
 
+:- meta_predicate responder(0).
+
 :- dynamic edad/2.
 ```
 
@@ -248,7 +250,9 @@ codigo_de_error(syntax_error(_), 400).
 codigo_de_error(existence_error(_, _), 404).
 ```
 
-Un error que no está en la tabla sigue su camino, y el servidor responde 500,
+`responder/1` ejecuta su argumento como una meta, y la declaración
+`:- meta_predicate responder(0)` del comienzo de `servidor.pl` lo dice, como
+en la [sección 24.4](../capitulo-24-modulos-y-organizacion/index.md#244-meta_predicate-y-los-modulos). Un error que no está en la tabla sigue su camino, y el servidor responde 500,
 el código de un error del programa. Los errores que el propio servidor
 detecta —una ruta que no existe, un parámetro que falta— los responde en
 HTML, salvo que el pedido diga, con el encabezado `Accept:

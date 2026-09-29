@@ -20,6 +20,9 @@ from markdown.extensions.toc import slugify
 ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / 'docs'
 CATALOGUE = DOCS / 'patrones.md'
+# Numbers kept for a chapter not written yet, so that later chapters can be numbered in reading
+# order meanwhile. The numbering check allows exactly these gaps; drop an entry once its box exists.
+RESERVED: dict[int, str] = {}
 
 BOX = re.compile(r'^!!! example "Patr[oó]n (\d+) — (.+)"\s*$')
 SECTION = re.compile(r'^## (\d+\.\d+) (.+?)\s*$')
@@ -80,8 +83,10 @@ def build():
         raise SystemExit('docs/patrones.md: the first entry `## 1 — …` was not found')
     entries = sorted(boxes(), key=lambda b: b[0])
     numbers = [b[0] for b in entries]
-    if numbers != list(range(1, len(numbers) + 1)):
-        raise SystemExit(f'pattern numbers are not 1..n: {numbers}')
+    if clash := sorted(set(numbers) & set(RESERVED)):
+        raise SystemExit(f'patterns {clash} now exist: remove them from RESERVED in {Path(__file__).name}')
+    if sorted(numbers + list(RESERVED)) != list(range(1, len(numbers) + len(RESERVED) + 1)):
+        raise SystemExit(f'pattern numbers are not 1..n (reserved: {sorted(RESERVED)}): {numbers}')
     body = '\n'.join(entry(*b) for b in entries)
     return current, head.rstrip('\n') + '\n\n' + body
 

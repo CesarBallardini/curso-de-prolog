@@ -106,7 +106,8 @@ $ echo $?
 ```
 
 Un solo `halt/1`, al final: las dos ramas eligen el código, y `main/1`
-termina en un solo lugar.
+termina en un solo lugar. `writeln(X)` escribe `X` seguido de un salto de
+línea.
 
 ## 4
 
@@ -338,6 +339,8 @@ En Windows, `APPDATA` es una ruta con `\`; `prolog_to_os_filename/2` la
 convierte a la forma de Prolog, con `/`, para que `directory_file_path/3` no
 mezcle los dos separadores. La comparación con `current_prolog_flag/2` está en
 un solo predicado, como aconseja la [sección 28.8](index.md#288-windows-y-linux).
+La prueba del ejercicio verifica con `file_base_name/2`, que da el último
+componente de una ruta, que el directorio termina con el nombre del programa.
 
 ## 12
 
@@ -453,6 +456,12 @@ aplicar(marcar(Celda), juego(T, D, M0), juego(T, D, M), sigue) :-
     ).
 ```
 
+Marcar una celda ya marcada la desmarca: `ord_del_element/3`, de
+`library(ordsets)`, quita un elemento de un conjunto ordenado, así como
+`ord_add_element/3` lo agrega (la
+[sección 22.6](../capitulo-22-estructuras-de-datos-de-la-biblioteca/index.md#226-libraryordsets-y-librarynb_set)
+presenta la biblioteca).
+
 Las jugadas se leen con una gramática, y la partida es un bucle que lee,
 aplica y sigue hasta que termina:
 
@@ -469,7 +478,7 @@ jugada(Jugada) -->
     blanks,
     integer(C),
     blanks,
-    { Jugada =..
+    { Jugada =.. [Orden, F-C] }.
 
 %!  orden(-Orden)// is semidet.
 %

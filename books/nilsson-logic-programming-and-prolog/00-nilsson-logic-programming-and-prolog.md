@@ -1,3 +1,27 @@
+<!-- toc-by-line -->
+**Contents by line** (added 2026-09-28: this conversion has no chapter headings; each number is the
+line of this file, table included, where the chapter begins; open the file at that line).
+
+- Chapter 1 — Preliminaries: line 517
+- Chapter 2 — Definite Logic Programs: line 1221
+- Chapter 3 — SLD-Resolution: line 1774
+- Chapter 4 — Negation in Logic Programming: line 3035
+- Chapter 5 — Towards Prolog: Cut and Arithmetic: line 4568
+- Chapter 6 — Logic and Databases: line 5107
+- Chapter 7 — Programming with Recursive Data Structures: line 6042
+- Chapter 8 — Amalgamating Object- and Meta-language: line 6780
+- Chapter 9 — Logic and Expert Systems: line 7391
+- Chapter 10 — Logic and Grammars: line 8187
+- Chapter 11 — Searching in a State-space: line 9175
+- Chapter 12 — Logic Programming and Concurrency: line 9620
+- Chapter 13 — Logic Programs with Equality: line 10110
+- Chapter 14 — Constraint Logic Programming: line 10558
+- Chapter 15 — Query-answering in Deductive Databases: line 11412
+- Appendix A — Bibliographical Notes: line 12138
+- Appendix B — Basic Set Theory: line 12328
+- Appendix C — Answers to Selected Exercises: line 12378
+
+---
 <!-- page 1 -->
 **LOGIC, PROGRAMMING AND**
 

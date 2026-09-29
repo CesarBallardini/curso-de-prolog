@@ -136,7 +136,9 @@ Fuera de las reglas, en cambio, SWI-Prolog lee las comillas dobles como una
 espera una lista. Hay dos formas de pasar el texto: las comillas invertidas,
 que SWI-Prolog lee como una lista de códigos (`` `hola` ``), o convertir la
 cadena con `string_codes/2`. Los programas que reciben texto de afuera usan la
-segunda.
+segunda. `string_codes(Cadena, Codigos)` relaciona una cadena con la lista de
+sus códigos y funciona en los dos sentidos: con la cadena instanciada construye
+la lista, y con la lista instanciada construye la cadena.
 
 ## 21.4 Argumentos adicionales
 
@@ -437,7 +439,10 @@ A = '42x'.
 
 `siguiente//1` consume un código y lo devuelve: su traducción es
 `siguiente(A, [A|B], [A|B])`. `palabra_o_numero//1` decide qué hay adelante,
-y el resto queda intacto para la regla que siga. El pushback se usa poco; casi
+y el resto queda intacto para la regla que siga. La decisión la toma
+`code_type(C, digit)`, que se cumple cuando el código `C` es un dígito; el
+segundo argumento nombra una clase de caracteres, como `digit`, `alpha`,
+`upper`, `lower` o `space`. El pushback se usa poco; casi
 siempre alcanza con ordenar bien las reglas, y una gramática que lo usa en
 muchos lugares es difícil de leer.
 
@@ -620,6 +625,8 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | `nt//N` | un no terminal de N argumentos: el predicado `nt/(N+2)` |
 | `phrase/2`, `phrase/3` | usar una gramática sobre una lista, completa o con resto |
 | `[a, b]`, `"texto"` | terminales: elementos de la lista, o códigos del texto |
+| `string_codes/2` | convierte una cadena en su lista de códigos, o una lista de códigos en cadena |
+| `code_type/2` | la clase de un código: `digit`, `alpha`, `upper`, `lower`, `space`, … |
 | `{ Objetivo }` | un objetivo común dentro de una regla |
 | `dcg/basics` | `integer//1`, `blanks//0`, `csym//1`, `string//1`, `eos//0`, … |
 | `sequence//3`, `sequence//5` | elementos con separadores, y con delimitadores |

@@ -419,7 +419,9 @@ aunque el objeto se pueda convertir, como el `Counter` de
 argumentos con nombre se escriben `Nombre=Valor`:
 `py_call(textwrap:wrap(Texto, width=9), Lineas)`. Una excepción de Python
 llega a Prolog como el error `python_error(Clase, Objeto)`: la raíz de −1 es
-`error(python_error('ValueError', _), _)`.
+`error(python_error('ValueError', _), _)`. `raiz/2` es solo un ejemplo del
+cruce: Prolog tiene su propia raíz cuadrada, la función aritmética `sqrt/1`,
+que `is/2` evalúa: `R is sqrt(16)` liga `R` a `4.0`.
 
 Cuando Prolog se ejecuta dentro de Python, `py_call/2` usa ese mismo Python.
 Cuando se ejecuta `swipl` solo, `library(janus)` tiene que encontrar la
@@ -662,6 +664,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | `janus.PrologError`, `.term` | un error de Prolog en Python |
 | pytest, `test_plunit.py` | las dos baterías, con un comando |
 | `py_call/2,3`, `py_object(true)` | Python desde Prolog |
+| `sqrt/1` | la raíz cuadrada, función aritmética de `is/2`; `math:sqrt` es la de Python |
 | **[Patrón 39](../patrones.md#39-frontera-pythonprolog)** | frontera Python–Prolog |
 
 ## Temas que se retoman
@@ -670,4 +673,4 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 |---|---|
 | El mismo núcleo, como servicio web con JSON | [capítulo 30](../capitulo-30-servicios-web-rest/index.md) |
 | El cliente del Buscaminas, contra el servicio | [capítulo 30](../capitulo-30-servicios-web-rest/index.md) |
-| Una base de datos SQL junto a Prolog | [capítulo 40](../capitulo-40-prolog-y-sql/index.md) |
+| Una base de datos SQL junto a Prolog | [capítulo 42](../capitulo-42-prolog-y-sql/index.md) |

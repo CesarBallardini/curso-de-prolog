@@ -29,7 +29,7 @@ Al terminar el capítulo, el lector puede:
 !!! info "Tiempo estimado"
     Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:08 h**.
     Resolver los 7 ejercicios marcados con ★: **2:11 h**.
-    Resolver los 15 ejercicios del final: **4:45 h**.
+    Resolver los 17 ejercicios del final: **5:10 h**.
 
 ## 15.1 `;` en el cuerpo
 
@@ -281,6 +281,19 @@ El [capítulo 10](../capitulo-10-negacion-como-falla/index.md) presentó `\+` y 
 `fail`. Con el condicional, esa definición es más breve: `\+ G` es
 `( G -> fail ; true )`.
 
+`\+` no es el único predicado predefinido que da nombre a una técnica que antes
+se escribía a mano con corte, `fail` y alternativas. `\+ G` es el corte y falla
+de la [sección 10.8](../capitulo-10-negacion-como-falla/index.md#108-prescindir-de); `once/1`, el corte después de la primera respuesta;
+`ignore/1`, el paso opcional que se cumple de todos modos; y `forall/2`, que
+presenta el [capítulo 17](../capitulo-17-todas-las-soluciones/index.md), el bucle por falla de la [sección 15.7](#157-bucles-por-falla) aplicado a
+comprobar una condición en cada respuesta. El artículo de Brna y otros que
+cita la introducción de los [patrones](../patrones.md) describe este proceso
+como una ampliación del lenguaje: una técnica procedural queda oculta dentro de
+una construcción declarativa, y quien lee `\+ G` ya no necesita ver el corte ni
+la falla. Al programar se usa el predicado, cuyo nombre dice la intención; la
+combinación que reemplaza conviene conocerla igual, y el ejercicio 2 la
+escribe.
+
 Lo que el condicional agrega es la posibilidad de usar `\+` como **condición**
 de una rama. La validación de una inscripción, en la [sección 15.10](#1510-el-proyecto-las-validaciones-de-una-inscripcion), elige
 su primera rama cuando `\+ alumno(Legajo, _, _, _)` se cumple, es decir, cuando
@@ -415,7 +428,8 @@ In = <stream>(...).
     **Versión ingenua.** Reunir las respuestas en una lista y recorrerla con
     una recursión, solo para escribirlas.
 
-    **Patrón.** `( Generador, Efecto, fail ; true )` para recorrer respuestas;
+    **Patrón.** Un bucle por falla (*failure-driven loop*):
+    `( Generador, Efecto, fail ; true )` para recorrer respuestas;
     `repeat, Leer, Ejecutar, Condicion_de_salida, !` para un ciclo.
 
     **Cuándo no usarlo.** Cuando lo que se necesita es un **resultado**: un
@@ -661,6 +675,44 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 15. **(3)** Escribir `categoria_pura/2` con `if_/3` y una condición reificada
     sobre números, y explicar por qué `library(reif)` no alcanza para las
     comparaciones aritméticas y qué capítulo las resuelve.
+16. **(1)** El predicado siguiente, sobre los datos de *Inscripciones* de este
+    capítulo, tiene una disyunción en el cuerpo:
+
+    ```prolog
+    %!  tomada(?Legajo:integer, ?Materia:atom, ?Anio:integer) is nondet.
+    %
+    %   El alumno Legajo cursa Materia o ya la aprobó, y Materia es del año Anio.
+    tomada(Legajo, Materia, Anio) :-
+        (   cursa(Legajo, Materia)
+        ;   aprobada(Legajo, Materia, _)
+        ),
+        materia(Materia, _, Anio).
+    ```
+
+    Reescribirlo sin `;`, como dos cláusulas de un predicado `tomada_en_dos/3`,
+    como indica la [sección 15.1](#151-en-el-cuerpo), e indicar qué objetivo
+    queda repetido. Escribir una prueba que verifique que las dos versiones dan
+    las mismas respuestas en el mismo orden. Después, determinar si el orden se
+    conservaría con `materia(Materia, _, Anio)` escrito antes de la disyunción.
+17. **(2)** El predicado siguiente es un bucle por falla que pretende escribir
+    los términos que lee de un stream:
+
+    ```prolog
+    %!  eco(+In) is det.
+    %
+    %   Escribe, uno por línea, los términos que lee del stream In.
+    eco(In) :-
+        repeat,
+        read(In, Termino),
+        format("~w~n", [Termino]),
+        fail.
+    ```
+
+    Predecir qué ocurre con `open_string("a. b.", In), eco(In)`. Comprobarlo
+    con `call_with_inference_limit(Objetivo, 200, R)`, que ejecuta `Objetivo`
+    con un máximo de 200 inferencias y, si las agota, lo detiene y liga `R` con
+    `inference_limit_exceeded` (la [sección 26.8](../capitulo-26-pruebas-y-depuracion/index.md#268-el-proyecto-la-bateria-completa) lo usa en las pruebas).
+    Corregir `eco/1` según el [Patrón 7](../patrones.md#7-bucle-por-falla).
 
 ## Resumen
 

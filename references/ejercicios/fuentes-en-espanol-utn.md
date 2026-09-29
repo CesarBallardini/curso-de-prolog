@@ -925,7 +925,7 @@ trae tests PlUnit, se indica si pasan.
 ### ES-UTN-81 — Predicados que no terminan y tabling
 - **Fuente:** Prolog-Uqbar, "performance-prolog". https://github.com/Prolog-Uqbar/performance-prolog
 - **Tema:** 4, 5, 8, X
-- **Capítulos:** 38, 9
+- **Capítulos:** 39, 9
 - **Dificultad:** 3
 - **Solución:** sí, `predicadosQueNoTerminan.pl`, `mayor.pl`, `divisiblesPor3.pl`; los 2 tests de tabling pasan en SWI 9.2.9
 - **SWISH:** sí

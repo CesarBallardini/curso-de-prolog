@@ -274,6 +274,9 @@ a no admitir a ninguno de ellos como argumento:
 T = (a, (b->c);d).
 ```
 
+`term_string(T, Texto)`, con `Texto` instanciado, lee la cadena como un
+término con los operadores vigentes en ese momento y liga `T` a ese término;
+con `T` instanciado y `Texto` libre, escribe el término en una cadena.
 La consulta restaura la declaración en el mismo objetivo, porque un operador
 redefinido alcanza a todo lo que se lee después, incluidas las consultas
 siguientes. Las pruebas hacen lo mismo con `setup` y `cleanup`:

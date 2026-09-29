@@ -201,7 +201,8 @@ ejecución: verifica que `parse_time/3` lee la respuesta como ISO 8601.
 %
 %   GET /ranking?limite=N: las N primeras filas del ranking; sin el
 %   parámetro, todas. Un límite que no es un entero entre 1 y 1000 responde
-%   400.
+%   400. Sin el parámetro, Limite queda libre: var/1, que el capítulo 32
+%   presenta, lo distingue.
 ranking_limitado(Pedido) :-
     http_parameters(Pedido,
                     [limite(Limite, [between(1, 1000), optional(true)])]),
@@ -413,7 +414,8 @@ jugada(Texto, Accion, F, C, Id, Juego, Estado) :-
 ```
 
 `with_mutex/2` hace que dos pedidos a la vez no modifiquen las partidas al
-mismo tiempo: el servidor atiende cada pedido en un hilo propio.
+mismo tiempo: el servidor atiende cada pedido en un hilo propio. El
+[capítulo 37](../capitulo-37-concurrencia-y-paralelismo/index.md) presenta los hilos, `with_mutex/2` y lo que pasa sin él.
 
 Del lado de Python, el paquete del [capítulo 29](../capitulo-29-prolog-desde-python/index.md) recibe un adaptador más, que
 implementa el mismo puerto con pedidos HTTP:

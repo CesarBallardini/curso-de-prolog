@@ -81,7 +81,8 @@ fecha_texto(date(Anio, Mes, Dia), Texto) :-
 %!  fecha_iso(?Fecha, ?Texto:string) is det.
 %
 %   Texto es Fecha en el formato de ISO 8601, "2026-09-25". Con Texto dado,
-%   lo lee y da la Fecha.
+%   lo lee y da la Fecha: nonvar/1, que el capítulo 32 presenta, elige el
+%   sentido.
 fecha_iso(date(Anio, Mes, Dia), Texto) :-
     (   nonvar(Texto)
     ->  parse_time(Texto, iso_8601, Segundos),

@@ -85,4 +85,35 @@ test(elena_no_puede_cursar_bases_de_datos,
 test(sin_cambios_para_los_demas, true(R == rechazada(falta(am1)))) :-
     inscripcion_posible_por_anio(102, am2, R).
 
+% Ejercicio 16: las dos versiones dan las mismas respuestas, en el mismo orden.
+test(tomada_por_ana, all(M-A == [pp-2, am1-1, alg-1, log-1, am2-2])) :-
+    tomada_en_dos(101, M, A).
+
+test(tomada_con_disyuncion,
+     all(L-M-A == [101-pp-2, 103-am2-2, 105-am1-1,
+                   101-am1-1, 101-alg-1, 101-log-1, 101-am2-2, 102-log-1,
+                   103-am1-1, 104-log-1, 104-alg-1, 104-pp-2, 106-am1-1])) :-
+    tomada(L, M, A).
+
+test(tomada_con_dos_clausulas,
+     all(L-M-A == [101-pp-2, 103-am2-2, 105-am1-1,
+                   101-am1-1, 101-alg-1, 101-log-1, 101-am2-2, 102-log-1,
+                   103-am1-1, 104-log-1, 104-alg-1, 104-pp-2, 106-am1-1])) :-
+    tomada_en_dos(L, M, A).
+
+% Ejercicio 17: eco/1 no termina por sí mismo; el límite de inferencias lo
+% detiene. La versión corregida termina al final del stream, sin alternativas.
+test(eco_no_termina, true(R == inference_limit_exceeded)) :-
+    open_string("a. b.", In),
+    with_output_to(string(_),
+                   call_with_inference_limit(eco(In), 200, R)).
+
+test(eco_hasta_el_final, true(S == "a\nb\n")) :-
+    open_string("a. b.", In),
+    with_output_to(string(S), eco_hasta_el_final(In)).
+
+test(eco_vacio, true(S == "")) :-
+    open_string("", In),
+    with_output_to(string(S), eco_hasta_el_final(In)).
+
 :- end_tests(soluciones).

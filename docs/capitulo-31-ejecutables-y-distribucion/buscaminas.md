@@ -5,7 +5,7 @@ pruebas, tal como está en `ejemplos/capitulo-31/buscaminas/`. Reúne lo que
 los capítulos anteriores construyeron por partes: la cuenta de minas vecinas
 del [capítulo 17](../capitulo-17-todas-las-soluciones/index.md), el recorrido que descubre una región del
 [capítulo 18](../capitulo-18-orden-superior/index.md), el tablero como tabla de búsqueda del [capítulo 22](../capitulo-22-estructuras-de-datos-de-la-biblioteca/index.md),
-el resolvedor con restricciones del [capítulo 23](../capitulo-23-programacion-con-restricciones/index.md), el juego en la terminal del
+la deducción con restricciones del [capítulo 23](../capitulo-23-programacion-con-restricciones/index.md), el juego en la terminal del
 [capítulo 28](../capitulo-28-programas-de-linea-de-comandos/index.md) y el servicio del [capítulo 30](../capitulo-30-servicios-web-rest/index.md). La
 [sección 31.9](index.md#319-buscaminas-completo) explica cómo se armó.
 
@@ -739,6 +739,8 @@ test(fin_de_la_entrada, error(existence_error(jugada, fin_de_la_entrada))) :-
 :- use_module(library(http/http_server)).
 :- use_module(library(http/http_json)).
 :- use_module(partida).
+
+:- meta_predicate responder(0).
 
 :- dynamic partida_guardada/2, ultima_partida/1.
 

@@ -144,7 +144,8 @@ L = [eva, luis].
 Cada grado es una clave del assoc, y su valor un conjunto ordenado:
 `ord_add_element/3` agrega el nombre en su lugar y no lo repite, y por eso ana,
 dada de alta dos veces en el grado 1, aparece una sola vez. `escuela/2` pliega
-la lista de altas con `foldl/4`, a partir de `empty_assoc/1`.
+la lista de altas con `foldl/4`, a partir del assoc sin claves que construye
+`empty_assoc/1`.
 
 ## 6
 
@@ -411,7 +412,8 @@ La prueba `mismo_tablero` verifica que el tablero leído del texto es idéntico,
 con `==`, al que construye `tablero/4` con las mismas minas: la tabla de
 búsqueda tiene los mismos pares, y `list_to_assoc/2` construye el mismo árbol a
 partir de las mismas claves. `desde_texto` hace la ida y vuelta con
-`mostrar/1`.
+`mostrar/1`. La cantidad de columnas es la longitud de la primera línea, que
+`string_length/2` da en caracteres.
 
 ## 14
 
@@ -473,3 +475,111 @@ alumnos_de_materia(Indice, Materia, Legajos) :-
 Con el índice de `indice_por_materia(I)`, `alumnos_en_comun(I, am1, log, L)` da
 `L = [101, 102, 106]`. Cada valor del índice es un conjunto ordenado, y
 `ord_intersection/3` los recorre una sola vez, a la par.
+
+## 16
+
+En `soluciones.pl`, la versión del enunciado se llama `insertar_mal/3`:
+
+<!-- ejemplo: capitulo-22/soluciones.pl predicado: insertar_mal/3 consulta: insertar_mal(5, n(vacio, 7, vacio), A). -->
+```prolog
+%!  insertar_mal(+Clave, +Arbol0, -Arbol) is det.
+%
+%   Arbol es Arbol0 con Clave agregada. Versión incorrecta, la del
+%   enunciado: las cláusulas recursivas devuelven el árbol del subárbol, sin
+%   el nodo que lo contiene, y la última no liga Arbol.
+insertar_mal(Clave, vacio, n(vacio, Clave, vacio)).
+insertar_mal(Clave, n(Izq, Clave0, _), Arbol) :-
+    Clave @< Clave0,
+    insertar_mal(Clave, Izq, Arbol).
+insertar_mal(Clave, n(_, Clave0, Der), Arbol) :-
+    Clave @> Clave0,
+    insertar_mal(Clave, Der, Arbol).
+insertar_mal(Clave, n(_, Clave, _), _).
+```
+
+```prolog
+?- insertar_mal(5, n(vacio, 7, vacio), A).
+A = n(vacio, 5, vacio) ;
+false.
+
+?- insertar_mal(7, n(vacio, 7, vacio), A).
+true.
+```
+
+La primera respuesta perdió la raíz 7: el árbol resultante tiene solo la clave
+nueva. La segunda deja `A` libre. Cada cláusula pone en el tercer argumento
+algo distinto de lo que promete el encabezado:
+
+- la primera, un nodo nuevo con la clave: es la única correcta;
+- la segunda y la tercera, el resultado de insertar en un subárbol, **sin el
+  nodo que lo contiene**: la raíz, el otro subárbol y todo lo que queda por
+  encima del lugar de inserción se pierden;
+- la cuarta, una variable anónima: no construye ningún árbol, y el árbol de
+  la clave que ya estaba no se devuelve.
+
+La causa común es suponer que insertar modifica el árbol que se recibe. Un
+árbol es un término, y un término no cambia: el árbol con la clave agregada es
+un término nuevo, y cada cláusula tiene que construirlo entero. La corrección
+reconstruye el nodo de cada nivel con el subárbol que cambió y conserva el
+otro:
+
+<!-- ejemplo: capitulo-22/soluciones.pl predicado: insertar/3 insertar_en/3 insertar_segun/4 consulta: foldl(insertar, [7, 3, 9, 1, 5], vacio, A). -->
+```prolog
+%!  insertar(+Clave, +Arbol0, -Arbol) is det.
+%
+%   Arbol es el árbol de búsqueda Arbol0 con Clave agregada; si Clave ya
+%   está, Arbol es igual a Arbol0. El árbol es vacio o n(Izq, Clave, Der).
+insertar(Clave, Arbol0, Arbol) :-
+    insertar_en(Arbol0, Clave, Arbol).
+
+%!  insertar_en(+Arbol0, +Clave, -Arbol) is det.
+%
+%   El recorrido de insertar/3, con el árbol como primer argumento para que
+%   la indexación distinga vacio de n/3.
+insertar_en(vacio, Clave, n(vacio, Clave, vacio)).
+insertar_en(n(Izq, Clave0, Der), Clave, Arbol) :-
+    compare(Orden, Clave, Clave0),
+    insertar_segun(Orden, Clave, n(Izq, Clave0, Der), Arbol).
+
+%!  insertar_segun(+Orden, +Clave, +Nodo, -Arbol) is det.
+%
+%   Arbol es Nodo con Clave agregada, según el Orden de Clave respecto de la
+%   clave de Nodo: un nodo nuevo con el subárbol que cambió, o el mismo Nodo
+%   si la clave ya está.
+insertar_segun(<, Clave, n(Izq, Clave0, Der), n(Izq1, Clave0, Der)) :-
+    insertar_en(Izq, Clave, Izq1).
+insertar_segun(=, _, Nodo, Nodo).
+insertar_segun(>, Clave, n(Izq, Clave0, Der), n(Izq, Clave0, Der1)) :-
+    insertar_en(Der, Clave, Der1).
+```
+
+```prolog
+?- insertar(5, n(vacio, 7, vacio), A).
+A = n(n(vacio, 5, vacio), 7, vacio).
+
+?- insertar(7, n(vacio, 7, vacio), A).
+A = n(vacio, 7, vacio).
+
+?- foldl(insertar, [7, 3, 9, 1, 5], vacio, A).
+A = n(n(n(vacio, 1, vacio), 3, n(vacio, 5, vacio)), 7, n(vacio, 9, vacio)).
+```
+
+`compare/3` da el orden de la clave respecto de la del nodo una sola vez, y
+`insertar_segun/4` elige la cláusula por ese orden: las tres son mutuamente
+excluyentes y la indexación por el primer argumento no deja alternativas.
+`insertar_en/3` lleva el árbol como primer argumento, por la misma razón que
+`cada_uno_/2` en el [capítulo 18](../capitulo-18-orden-superior/index.md): con la clave primero, las dos cláusulas
+tendrían una variable en ese lugar y la búsqueda de la clave 5 quedaría con
+una alternativa pendiente.
+
+Una inserción construye un nodo nuevo por cada nodo del camino de la raíz al
+lugar de la clave, más la hoja nueva: si ese lugar está a profundidad d, d + 1
+nodos. Al insertar 4 en el árbol de la última consulta se construyen cuatro
+nodos, copias de 7, 3 y 5 y la hoja de 4; el subárbol de 9 y el de 1 no se
+copian: el árbol nuevo los comparte con el anterior, y la prueba
+`insertar_comparte` lo verifica con `same_term/2`, que se cumple solo si los
+dos argumentos son el mismo término en memoria. Insertar una clave que ya
+está copia el camino hasta ella y da un árbol igual, con `==`, al anterior
+(prueba `reinsertar_da_el_mismo_arbol`). Es lo que la
+[sección 22.5](index.md#225-libraryassoc-y-libraryrbtrees) dice de `put_assoc/4`: el assoc nuevo comparte con el
+anterior todo lo que no cambió, y el anterior sigue disponible sin cambios.

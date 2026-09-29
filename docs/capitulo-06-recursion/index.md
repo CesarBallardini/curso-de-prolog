@@ -3,7 +3,7 @@
 La recursión es el único mecanismo de repetición de Prolog. No existe otra
 construcción con ese propósito, por lo que conviene estudiarla en detalle: los
 temas posteriores —las listas del [capítulo 7](../capitulo-07-listas/index.md), la aritmética del [capítulo 8](../capitulo-08-aritmetica/index.md), los
-árboles del [capítulo 39](../capitulo-39-busqueda-y-juegos/index.md)— son aplicaciones de la recursión a distintas estructuras.
+árboles del [capítulo 40](../capitulo-40-busqueda-y-planificacion/index.md)— son aplicaciones de la recursión a distintas estructuras.
 
 ## Objetivos del capítulo
 
@@ -532,4 +532,4 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | `is`, y por qué es menos general que la relación `suma/3` | [capítulo 8](../capitulo-08-aritmetica/index.md) |
 | Acumuladores, otra forma de escribir una recursión que produce un resultado | [capítulo 8](../capitulo-08-aritmetica/index.md) |
 | Recursión con poda mediante el corte | [capítulo 9](../capitulo-09-backtracking-y-corte/index.md) |
-| Recursión sobre estructuras que no son cadenas, como los árboles | [capítulo 39](../capitulo-39-busqueda-y-juegos/index.md) |
+| Recursión sobre estructuras que no son cadenas, como los árboles | [capítulo 40](../capitulo-40-busqueda-y-planificacion/index.md) |

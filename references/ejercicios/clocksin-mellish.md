@@ -1,6 +1,6 @@
 # Ejercicios: Clocksin & Mellish, *Programming in Prolog* (5.ª ed.)
 
-- **Fuente:** W. F. Clocksin y C. S. Mellish, *Programming in Prolog: Using the ISO Standard*, 5.ª ed., Springer, 2003. Las páginas son páginas del PDF (`books/William F. Clocksin, Christopher S. Mellish-Programming in Prolog-Springer (2003).pdf`, marcas `<!-- page N -->` en `books/programming-in-prolog/`); la numeración impresa es 14 páginas menor (p. ej. PDF 37 = p. 23 impresa).
+- **Fuente:** W. F. Clocksin y C. S. Mellish, *Programming in Prolog: Using the ISO Standard*, 5.ª ed., Springer, 2003. Las páginas son páginas del PDF (`books/libres/clocksin-mellish-programming-in-prolog.pdf`, marcas `<!-- page N -->` en `books/programming-in-prolog/`); la numeración impresa es 14 páginas menor (p. ej. PDF 37 = p. 23 impresa).
 - **Alcance:** todos los ejercicios numerados del libro (1.1–9.4), las preguntas "resolvé vos" que aparecen dentro del texto, el ejercicio que el Apéndice B deja al lector, los 26 proyectos del capítulo 11 y los ejemplos resueltos que sirven como ejercicio (marcados "adaptado del ejemplo"). Las entradas se numeran en orden de aparición dentro de cada capítulo; la correspondencia con la numeración del libro figura en **Fuente**.
 - **Enunciados:** redactados en castellano con palabras propias y condensados; no son traducciones. Consultar la página indicada para el original. El código de los enunciados corrige los errores de OCR del texto convertido (`O`/`0`, `l`/`1`, `tikes`→`likes`, etc.).
 - **Soluciones:** "en el libro" remite al Apéndice A o al ejemplo resuelto en el texto; las soluciones escritas aquí se verificaron con SWI-Prolog 9.2.9.
@@ -1211,7 +1211,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-7.28 — Profundidad frente a amplitud
 - **Fuente:** Clocksin & Mellish, cap. 7 §7.9, p. 185–187 (adaptado del ejemplo, con dos propuestas del texto)
 - **Tema:** 9
-- **Capítulos:** 39, 17
+- **Capítulos:** 40, 17
 - **Dificultad:** 3
 - **Solución:** en el libro (p. 185–187); verificado: la versión en amplitud da `[darlington,penrith,workington]` primero.
 - **SWISH:** sí
@@ -1221,7 +1221,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-7.29 — Búsqueda "el mejor primero" con distancias
 - **Fuente:** Clocksin & Mellish, cap. 7 §7.9, p. 187–188 (adaptado del ejemplo, con propuesta del texto)
 - **Tema:** 7, 9
-- **Capítulos:** 39, 17
+- **Capítulos:** 40, 17
 - **Dificultad:** 3
 - **Solución:** en el libro (p. 187–188). La variante que informa la longitud (propuesta del texto) devuelve `r(Km, Ruta)` en la cláusula final de `proceed`; verificado: `91-[darlington,penrith,workington]`, `108-…`, `131-…`, `160-…`.
 - **SWISH:** sí
@@ -1746,7 +1746,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-11.7 — Poda alfa-beta
 - **Fuente:** Clocksin & Mellish, cap. 11 §11.1 proyecto 7, p. 275
 - **Tema:** X
-- **Capítulos:** 39
+- **Capítulos:** 41
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1756,7 +1756,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-11.8 — Las N reinas
 - **Fuente:** Clocksin & Mellish, cap. 11 §11.1 proyecto 8, p. 275
 - **Tema:** 4, 7
-- **Capítulos:** 8, 23, 39
+- **Capítulos:** 8, 23, 40
 - **Dificultad:** 2
 - **Solución:** Verificado: para 4 hay 2 soluciones, `[2,4,1,3]` y `[3,1,4,2]`; para 8, 92.
   ```prolog
@@ -1810,7 +1810,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-11.11 — Planificar un viaje con horarios
 - **Fuente:** Clocksin & Mellish, cap. 11 §11.2 proyecto 1, p. 276
 - **Tema:** 7, 9
-- **Capítulos:** 39, 8
+- **Capítulos:** 40, 8
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1850,7 +1850,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-11.15 — Juegos de tablero complejos
 - **Fuente:** Clocksin & Mellish, cap. 11 §11.2 proyecto 5, p. 276
 - **Tema:** X
-- **Capítulos:** 39
+- **Capítulos:** 41
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1880,7 +1880,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-11.18 — Generador de planes
 - **Fuente:** Clocksin & Mellish, cap. 11 §11.2 proyecto 8, p. 277
 - **Tema:** X
-- **Capítulos:** 39, 22
+- **Capítulos:** 40, 22
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1960,7 +1960,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-11.26 — Preguntas en lenguaje natural sobre archivos
 - **Fuente:** Clocksin & Mellish, cap. 11 §11.2 proyecto 16, p. 279
 - **Tema:** A, X
-- **Capítulos:** 21, 40
+- **Capítulos:** 21, 42
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** no (consulta el sistema de archivos)

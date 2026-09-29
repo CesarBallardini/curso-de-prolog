@@ -60,4 +60,21 @@ test(iguala_liga) :-
     iguala(X, a),
     X == a.
 
+% Ejercicio 15: una respuesta por aparición, en los dos modos del
+% encabezado, y las mismas respuestas que select/4.
+test(reemplazo, all(L == [[a, z, c, b], [a, b, c, z]])) :-
+    reemplazo(b, [a, b, c, b], z, L).
+
+test(reemplazo_inverso, all(L == [[a, b, c]])) :-
+    reemplazo(b, L, z, [a, z, c]).
+
+test(reemplazo_sin_aparicion, [fail]) :-
+    reemplazo(q, [a, b], z, _).
+
+test(reemplazo_con_dos_apariciones, all(L == [[x, a, b], [b, a, x]])) :-
+    reemplazo(b, [b, a, b], x, L).
+
+test(select_con_dos_apariciones, all(L == [[x, a, b], [b, a, x]])) :-
+    select(b, [b, a, b], x, L).
+
 :- end_tests(soluciones).

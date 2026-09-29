@@ -27,7 +27,7 @@ Al terminar el capítulo, el lector puede:
   la manera que corresponde a cada propósito.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:22 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:29 h**.
     Resolver los 6 ejercicios marcados con ★: **1:12 h**.
     Resolver los 15 ejercicios del final: **4:04 h**.
 
@@ -426,6 +426,64 @@ El `false.` final corresponde a la tercera cláusula de `contar/3`, que queda
 pendiente después de la segunda y falla al comprobar `X \== Y` con el último
 carácter. La respuesta es una sola, como declara el encabezado.
 
+Las cadenas tienen sus propias versiones de los dos predicados, que responden
+con cadenas aunque reciban átomos. `string_concat/3` relaciona dos cadenas con
+su concatenación, en los dos sentidos, como `atom_concat/3`: con los dos
+primeros argumentos ligados, concatena; con el tercero ligado y los dos
+primeros libres, enumera todas las maneras de partirlo en dos. `sub_string/5`
+es la relación general entre una cadena y sus fragmentos, con los mismos
+argumentos y los mismos modos que `sub_atom/5`:
+
+```prolog
+?- string_concat("pro", "log", S).
+S = "prolog".
+
+?- string_concat(X, Y, "ab").
+X = "",
+Y = "ab" ;
+X = "a",
+Y = "b" ;
+X = "ab",
+Y = "".
+
+?- sub_string(prolog, 0, 3, _, S).
+S = "pro".
+```
+
+Con el primero y el tercero ligados, `string_concat/3` quita un comienzo
+conocido; con el fragmento ligado, `sub_string/5` da cada posición en que
+aparece:
+
+<!-- ejemplo: capitulo-11/palabras.pl predicado: sin_prefijo/3 aparece_en/3 consulta: aparece_en("banana", "na", P). -->
+```prolog
+%!  sin_prefijo(?Prefijo, +Texto, ?Resto) is nondet.
+%!  sin_prefijo(+Prefijo, +Texto, -Resto) is semidet.
+%
+%   Texto es la cadena Prefijo seguida de la cadena Resto.
+sin_prefijo(Prefijo, Texto, Resto) :-
+    string_concat(Prefijo, Resto, Texto).
+
+%!  aparece_en(+Texto, +Buscado, -Posicion) is nondet.
+%
+%   Buscado aparece en Texto después de sus primeros Posicion caracteres.
+%   Una respuesta por aparición.
+aparece_en(Texto, Buscado, Posicion) :-
+    sub_string(Texto, Posicion, _, _, Buscado).
+```
+
+```prolog
+?- sin_prefijo("ERROR: ", "ERROR: falta el archivo", R).
+R = "falta el archivo".
+
+?- aparece_en("banana", "na", P).
+P = 2 ;
+P = 4.
+```
+
+`aparece_en/3` responde una vez por aparición. Por eso
+`sub_string(Texto, _, _, _, Buscado)`, usado como prueba de que `Texto`
+contiene a `Buscado`, puede tener éxito más de una vez.
+
 ## 11.5 Dividir y unir
 
 `split_string/4` divide un texto en partes. El segundo argumento son los
@@ -708,6 +766,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | `atom_number/2`, `number_codes/2`, `term_to_atom/2` | conversiones entre texto, números y términos |
 | `format/2`, `format/3` | salida compuesta: `~w ~a ~q ~d ~f ~e ~s ~n`, columnas con `~t ~\| ~+`; `atom(A)` deja el resultado en un átomo |
 | `atom_length/2`, `atom_concat/3`, `sub_atom/5` | largo, concatenación y búsqueda de fragmentos |
+| `string_concat/3`, `sub_string/5` | concatenación y búsqueda de fragmentos de cadenas |
 | `split_string/4`, `atomic_list_concat/2,3` | dividir un texto en partes y unir partes en un texto |
 | `upcase_atom/2`, `downcase_atom/2`, `normalize_space/2` | normalizar antes de comparar |
 | `compare/3`, `@<` | orden de los textos por códigos de caracteres |

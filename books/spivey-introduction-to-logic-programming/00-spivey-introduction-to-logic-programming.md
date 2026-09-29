@@ -1,3 +1,32 @@
+<!-- toc-by-line -->
+**Contents by line** (added 2026-09-28: this conversion has no chapter headings; each number is the
+line of this file, table included, where the chapter begins; here the title ends that line).
+
+- Chapter 1 — Introduction: line 480
+- Chapter 2 — Programming with relations: line 878
+- Chapter 3 — Recursive structures: line 1129
+- Chapter 4 — The meaning of logic programs: line 1676
+- Chapter 5 — Inference rules: line 2177
+- Chapter 6 — Unification and resolution: line 2424
+- Chapter 7 — SLD–resolution and answer substitutions: line 2919
+- Chapter 8 — Negation as failure: line 3421
+- Chapter 9 — Searching problems: line 3590
+- Chapter 10 — Parsing: line 3845
+- Chapter 11 — Evaluating and simplifying expressions: line 4153
+- Chapter 12 — Hardware simulation: line 4398
+- Chapter 13 — Program transformation: line 4620
+- Chapter 14 — About picoProlog: line 4992
+- Chapter 15 — Implementing depth-first search: line 5221
+- Chapter 16 — Representing terms and substitutions: line 5788
+- Chapter 17 — Implementation notes: line 6105
+- Chapter 18 — Interpreter optimizations: line 6489
+- Chapter 19 — In conclusion: line 6656
+- Appendix A — Answers to the exercises: line 6744
+- Appendix B — Using an ordinary Prolog system: line 7596
+- Appendix C — PicoProlog source code: line 7649
+- Appendix D — Cross-reference listing: line 10490
+
+---
 <!-- page 1 -->
 **An introduction to logic programming**
 

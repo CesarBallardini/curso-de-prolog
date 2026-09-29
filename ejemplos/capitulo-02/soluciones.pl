@@ -9,18 +9,21 @@
 %?- regala(Quien, Que, ana).
 
 % --- La base del capítulo -------------------------------------------------
+% varon(P): P es varón.
 varon(juan).
 varon(pedro).
 varon(luis).
 % Ejercicio 10: para que sofia tenga padre es necesario indicar quién es.
 varon(diego).
 
+% mujer(P): P es mujer.
 mujer(marta).
 mujer(ana).
 mujer(eva).
 % Ejercicio 1: "Sofía es mujer".
 mujer(sofia).
 
+% padre(P, H): P es el padre de H.
 padre(juan, ana).
 padre(juan, pedro).
 padre(pedro, luis).

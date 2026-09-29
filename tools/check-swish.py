@@ -53,6 +53,7 @@ def check(swipl, example):
     try:
         done = subprocess.run(  # noqa: S603
             [swipl, '-g', goal(example), '-t', 'halt', str(DRIVER)],
+            stdin=subprocess.DEVNULL,  # a program that reads user_input must not wait on make's stdin
             capture_output=True,
             text=True,
             errors='replace',

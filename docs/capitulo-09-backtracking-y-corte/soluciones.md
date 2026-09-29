@@ -380,3 +380,89 @@ esa misma prueba fallaría, porque la lista tendría todos los múltiplos.
 La segunda documenta el defecto en lugar de ocultarlo. Una prueba no está
 solamente para comprobar que un predicado funciona: también sirve para dejar
 escrito hasta dónde funciona.
+
+## 16
+
+Sin corte, la consulta produce **diez** respuestas: la muestra, las ocho
+combinaciones de la segunda cláusula y el saldo. Las combinaciones salen en el
+orden del backtracking: el último objetivo, `tela(M)`, es el que cambia primero,
+y `talle(T)`, el que cambia último.
+
+Las tres versiones con corte difieren de `prenda/3` solamente en la posición
+del `!`:
+
+<!-- ejemplo: capitulo-09/soluciones.pl predicado: prenda_corte_talle/3 prenda_corte_color/3 prenda_corte_final/3 consulta: prenda_corte_final(T, C, M). -->
+```prolog
+%!  prenda_corte_talle(-T, -C, -M) is multi.
+%
+%   prenda/3 con un corte después de talle/1. T, C y M deben llegar libres.
+prenda_corte_talle(unico, blanco, lino).
+prenda_corte_talle(T, C, M) :-
+    talle(T),
+    !,
+    color(C),
+    tela(M).
+prenda_corte_talle(unico, negro, cuero).
+
+%!  prenda_corte_color(-T, -C, -M) is multi.
+%
+%   prenda/3 con un corte después de color/1. T, C y M deben llegar libres.
+prenda_corte_color(unico, blanco, lino).
+prenda_corte_color(T, C, M) :-
+    talle(T),
+    color(C),
+    !,
+    tela(M).
+prenda_corte_color(unico, negro, cuero).
+
+%!  prenda_corte_final(-T, -C, -M) is multi.
+%
+%   prenda/3 con un corte al final del cuerpo. T, C y M deben llegar libres.
+prenda_corte_final(unico, blanco, lino).
+prenda_corte_final(T, C, M) :-
+    talle(T),
+    color(C),
+    tela(M),
+    !.
+prenda_corte_final(unico, negro, cuero).
+```
+
+| Versión | Respuestas | Cuáles |
+|---|---|---|
+| sin corte | 10 | la muestra; las 8 combinaciones; el saldo |
+| `!` después de `talle(T)` | 5 | la muestra; las 4 combinaciones de talle `chico` |
+| `!` después de `color(C)` | 3 | la muestra; `chico`, `rojo` con las 2 telas |
+| `!` al final del cuerpo | 2 | la muestra; `chico`, `rojo`, `algodon` |
+
+En los cuatro casos la muestra aparece primero: la primera cláusula se prueba
+antes de llegar a ningún corte, y el `!` de la segunda cláusula no puede podar
+una respuesta que ya se produjo.
+
+Los tres resultados con corte se explican con las dos reglas de la
+[sección 9.3](index.md#93-que-poda-exactamente). Al pasar por el `!`, quedan fijas
+las elecciones de los objetivos que están **a su izquierda** y se descarta la
+tercera cláusula. Los objetivos que están **a su derecha** conservan sus
+alternativas:
+
+- con el corte después de `talle(T)`, `T` queda fija en `chico`, pero `color(C)`
+  y `tela(M)` siguen a la derecha del corte y producen sus 2 × 2 combinaciones;
+- con el corte después de `color(C)`, quedan fijos `chico` y `rojo`, y solo
+  `tela(M)` produce alternativas: dos;
+- con el corte al final, las tres elecciones quedan fijas, y la cláusula produce
+  una sola respuesta.
+
+```prolog
+?- prenda_corte_final(T, C, M).
+T = unico,
+C = blanco,
+M = lino ;
+T = chico,
+C = rojo,
+M = algodon.
+```
+
+La tercera cláusula solo se alcanza en la versión sin corte. En las otras tres,
+la ejecución siempre pasa por el `!`, porque `talle/1`, `color/1` y `tela/1`
+tienen al menos un hecho, y el corte descarta el saldo. Si ningún talle
+existiera, el cuerpo fallaría antes del `!` y el saldo volvería a aparecer: el
+corte solo poda cuando la ejecución lo atraviesa.

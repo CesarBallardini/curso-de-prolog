@@ -397,3 +397,73 @@ decisión**. `maximo/2` podría haberse definido de otra manera —dando error, 
 devolviendo un valor convenido—, y la prueba deja registrado que la decisión
 tomada fue que falle. Quien lea el programa más adelante no tiene que deducirla
 del código: está escrita y se verifica sola.
+
+## 16
+
+```prolog
+?- X is 5 - 3 - 1.
+X = 1.
+
+?- X is 3 + 2 * 4 - 1.
+X = 10.
+
+?- X is (3 + 2) * 4 - 1.
+X = 19.
+
+?- X is -(5, 3).
+X = 2.
+
+?- X is -(5, 3, 1).
+ERROR: Arithmetic: `(-)/3' is not a function
+
+?- (X > 3) = (4 > 3).
+X = 4.
+
+?- X = 3, X * X * X is C.
+ERROR: Arguments are not sufficiently instantiated
+```
+
+La consulta `12 <= 12.` no llega a ejecutarse. Prolog informa un error al
+leerla:
+
+```text
+ERROR: Syntax error: Operator expected
+```
+
+Las cuatro primeras son **evaluaciones**, y su resultado depende de la forma del
+término que se evalúa. Como en la actividad de la
+[sección 4.6](../capitulo-04-terminos-y-unificacion/index.md#46-los-operadores-tambien-son-terminos),
+`5 - 3 - 1` es el término `(5 - 3) - 1`: el operando izquierdo es a su vez una
+resta, y por eso el resultado es 1 y no 3. En `3 + 2 * 4 - 1`, el `*` agrupa sus
+operandos antes que `+` y `-`, de modo que el término es `(3 + (2 * 4)) - 1` y
+vale 10; los paréntesis de la tercera cambian la forma del término, y con ella el
+resultado. `-(5, 3)` es el mismo término que `5 - 3`, escrito con el nombre
+delante de los argumentos, y por eso vale 2.
+
+La quinta también es una evaluación, pero falla: el término `-(5, 3, 1)` está
+bien escrito, porque cualquier nombre admite tres argumentos, pero no existe una
+función aritmética `-` de tres argumentos. Es la primera clase de error de la
+[sección 8.3](index.md#83-argumentos-sin-instanciar), la misma de `3 + ana`: la
+expresión contiene algo que nunca va a poder evaluarse.
+
+`12 <= 12.` es un error de **sintaxis**: `<=` no es un operador, y Prolog no puede
+leer la consulta como un término. No se evalúa ni se unifica nada. El operador
+de comparación es `=<`, y `12 =< 12.` responde `true.`
+
+`(X > 3) = (4 > 3)` es una **unificación**: `=` no compara valores, y `>` no se
+ejecuta; los dos lados son términos compuestos de nombre `>` y dos argumentos,
+que unifican cuando `X` queda ligada a `4`. El resultado sería el mismo con
+`(X > 3) = (1 > 3)`, que no es una comparación verdadera: la unificación no
+examina si lo es.
+
+La última combina una unificación y una evaluación, con los lados de `is/2`
+invertidos. `X = 3` liga `X`, pero `is/2` evalúa el término de su **derecha**, que
+es `C`, una variable libre: es la segunda clase de error de la
+[sección 8.3](index.md#83-argumentos-sin-instanciar). La expresión va a la
+derecha y la variable que recibe el resultado, a la izquierda:
+
+```prolog
+?- X = 3, C is X * X * X.
+X = 3,
+C = 27.
+```

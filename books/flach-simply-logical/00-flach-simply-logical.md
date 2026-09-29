@@ -1,3 +1,22 @@
+<!-- toc-by-line -->
+**Contents by line** (added 2026-09-28: this conversion has no chapter headings; each number is the
+line of this file, table included, of the chapter's first numbered section, where its text begins).
+
+- Chapter 1 — A brief introduction to clausal logic: line 324
+- Chapter 2 — Clausal logic and resolution: theoretical backgrounds: line 782
+- Chapter 3 — Logic Programming and Prolog: line 1821
+- Chapter 4 — Representing structured knowledge: line 3447
+- Chapter 5 — Searching graphs: line 4201
+- Chapter 6 — Informed search: line 4867
+- Chapter 7 — Reasoning with natural language: line 5367
+- Chapter 8 — Reasoning with incomplete information: line 6117
+-   § 8.3 — Abduction and diagnostic reasoning (heading lost in the conversion): line 6624
+- Chapter 9 — Inductive reasoning: line 7237
+- Appendix A — A catalogue of useful predicates: line 8189
+- Appendix B — Two programs for logical conversion: line 8573
+- Appendix C — Answers to selected exercises: line 9020
+
+---
 <!-- page 1 -->
 Simply Logical Intelligent Reasoning by Example
 
