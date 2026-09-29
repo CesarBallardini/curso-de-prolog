@@ -26,7 +26,7 @@ ROOT = Path(__file__).resolve().parent.parent
 BANK = ROOT / 'references' / 'ejercicios'
 DOCS = ROOT / 'docs'
 LAST_OF_PART_1 = 12
-PARTS = [(1, 12, 'Parte I'), (13, 30, 'Parte II'), (31, 38, 'Parte III'), (39, 39, 'Prolog y SQL')]
+PARTS = [(1, 12, 'Parte I'), (13, 31, 'Parte II'), (32, 42, 'Parte III'), (43, 87, 'Parte IV')]
 
 ENTRY = re.compile(r'^### (.+?) — (.+)$')  # the ID may be a group: "AoP-17.2-1 a AoP-17.2-5"
 HEADING = re.compile(r'^# Capítulo (\d+) — (.+)$', re.M)

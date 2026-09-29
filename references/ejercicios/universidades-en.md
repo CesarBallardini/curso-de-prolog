@@ -13,13 +13,13 @@ Guías de ejercicios de Prolog de cursos universitarios, en inglés y con URL p�
 - **Fuentes buscadas y descartadas:** Edinburgh (*ARPROLOG*, *Prolog Exercise Sheets* 1 a 4 en `inf.ed.ac.uk/teaching/courses/ar/ARPROLOG/exercises/`) devuelve **HTTP 410 Gone** (verificado en septiembre de 2026). Para Imperial, Saarland, KU Leuven y TU Wien no se encontraron guías de Prolog en inglés con URL pública vigente. *Learn Prolog Now!* (Blackburn, Bos y Striegnitz, que se originó en Saarland) y *P-99* no están acá porque son libros o colecciones y no guías de un curso.
 - **Enunciados:** parafraseados y condensados en castellano. El texto completo está en la URL de cada fuente.
 - **Soluciones verificadas:** las que se incluyen (propias o de CSE 428) se probaron con SWI-Prolog 9.2.9.
-- **Total:** 180 entradas (Cambridge 73, RWTH 30, Porto 52, CSUS 13, CSE 428 12). Algunos ejercicios de preguntas encadenadas se agrupan en una sola entrada.
+- **Total:** 182 entradas (Cambridge 73, RWTH 30, Porto 52, CSUS 15, CSE 428 12). Algunos ejercicios de preguntas encadenadas se agrupan en una sola entrada.
 
 **Cantidad por tema** (un ejercicio puede tener más de un tema):
 
 | Tema | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | A | X |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Ejercicios | 1 | 8 | 15 | 23 | 54 | 46 | 70 | 47 | 18 | 8 | 2 | 9 | 2 | 37 |
+| Ejercicios | 1 | 8 | 15 | 24 | 54 | 46 | 70 | 48 | 18 | 8 | 2 | 9 | 2 | 37 |
 
 ---
 
@@ -427,7 +427,7 @@ Fuente común: Ian Lewis, *Prolog Supervision Work*, Department of Computer Scie
 ### UNI-CAM-11.1–11.3 — Preparar la base de datos de alumnos
 - **Fuente:** Cambridge, Supervisión 2, sección 11 "Databases", 11.1, 11.2 y 11.3 (*Bookwork*).
 - **Tema:** 1, 11
-- **Capítulos:** 2, 40
+- **Capítulos:** 2, 42
 - **Dificultad:** 1
 - **Solución:** no corresponde
 - **SWISH:** sí
@@ -442,7 +442,7 @@ Fuente común: Ian Lewis, *Prolog Supervision Work*, Department of Computer Scie
 ### UNI-CAM-11.4 — Nombre y college (*join* interno)
 - **Fuente:** Cambridge, Supervisión 2, 11.4 (*Bookwork*).
 - **Tema:** 2, 11
-- **Capítulos:** 3, 40
+- **Capítulos:** 3, 42
 - **Dificultad:** 1
 - **Solución:** propia, verificada: `q(N, C) :- tName(Id, N), tCollege(Id, C).`
 - **SWISH:** sí
@@ -451,7 +451,7 @@ Fuente común: Ian Lewis, *Prolog Supervision Work*, Department of Computer Scie
 ### UNI-CAM-11.5 — *Join* con parámetro
 - **Fuente:** Cambridge, Supervisión 2, 11.5 (*Bookwork*).
 - **Tema:** 2, 11
-- **Capítulos:** 3, 40
+- **Capítulos:** 3, 42
 - **Dificultad:** 1
 - **Solución:** propia, verificada: `q(Id, N, C) :- tName(Id, N), tCollege(Id, C).`, que se consulta con `Id` instanciado.
 - **SWISH:** sí
@@ -461,7 +461,7 @@ Fuente común: Ian Lewis, *Prolog Supervision Work*, Department of Computer Scie
 ### UNI-CAM-11.6 — *Left outer join*
 - **Fuente:** Cambridge, Supervisión 2, 11.6 (*Shallow*).
 - **Tema:** 8, 11
-- **Capítulos:** 10, 40, 15
+- **Capítulos:** 10, 42, 15
 - **Dificultad:** 2
 - **Solución:** propia, verificada:
   ```prolog
@@ -473,7 +473,7 @@ Fuente común: Ian Lewis, *Prolog Supervision Work*, Department of Computer Scie
 ### UNI-CAM-11.7 — *Full outer join*
 - **Fuente:** Cambridge, Supervisión 2, 11.7 (*Shallow*).
 - **Tema:** 8, 11
-- **Capítulos:** 10, 40
+- **Capítulos:** 10, 42
 - **Dificultad:** 2
 - **Solución:** propia, verificada: la regla de 11.6 más `q('', C) :- tCollege(Id, C), \+ tName(Id, _).`
 - **SWISH:** sí
@@ -482,7 +482,7 @@ Fuente común: Ian Lewis, *Prolog Supervision Work*, Department of Computer Scie
 ### UNI-CAM-11.8 — Mínimo con un único resultado
 - **Fuente:** Cambridge, Supervisión 2, 11.8 (*Deeper*).
 - **Tema:** 7, 8, 11
-- **Capítulos:** 10, 9, 40
+- **Capítulos:** 10, 9, 42
 - **Dificultad:** 2
 - **Solución:** propia, verificada: `q(Id, Min) :- tGrade(Id, _, G), \+ (tGrade(Id, _, G2), G2 < G), !, Min = G.`
 - **SWISH:** sí
@@ -491,7 +491,7 @@ Fuente común: Ian Lewis, *Prolog Supervision Work*, Department of Computer Scie
 ### UNI-CAM-11.9 — Contar notas de primera clase
 - **Fuente:** Cambridge, Supervisión 2, 11.9 (*Deeper*).
 - **Tema:** 5, 11
-- **Capítulos:** 17, 40
+- **Capítulos:** 17, 42
 - **Dificultad:** 2
 - **Solución:** propia, verificada con agregación (tema 9): `q(N) :- aggregate_all(count, tGrade(_, _, 1), N).` La guía pide hacerlo sin `findall` ni agregados, es decir, con un acumulador.
 - **SWISH:** sí
@@ -500,7 +500,7 @@ Fuente común: Ian Lewis, *Prolog Supervision Work*, Department of Computer Scie
 ### UNI-CAM-11.10 — Contar por grupo (`GROUP BY`)
 - **Fuente:** Cambridge, Supervisión 2, 11.10 (*Deeper*, marcado como *Hard*).
 - **Tema:** 5, 9, 11
-- **Capítulos:** 17, 40
+- **Capítulos:** 17, 42
 - **Dificultad:** 3
 - **Solución:** propia, verificada con agregación: `q(Id, N) :- setof(I, P^tGrade(I, P, 1), Ids), member(Id, Ids), aggregate_all(count, tGrade(Id, _, 1), N).` La guía sugiere en cambio acumular manualmente una lista de CRSID ya vistos.
 - **SWISH:** sí
@@ -509,7 +509,7 @@ Fuente común: Ian Lewis, *Prolog Supervision Work*, Department of Computer Scie
 ### UNI-CAM-12.1 — Profundización iterativa
 - **Fuente:** Cambridge, Supervisión 2, sección 12 "Countdown", 12.1 (*Bookwork*).
 - **Tema:** 4
-- **Capítulos:** 39, 5
+- **Capítulos:** 40, 5
 - **Dificultad:** 1
 - **Solución:** no
 - **SWISH:** no corresponde
@@ -527,7 +527,7 @@ Fuente común: Ian Lewis, *Prolog Supervision Work*, Department of Computer Scie
 ### UNI-CAM-12.3 — Countdown con resta y división entera
 - **Fuente:** Cambridge, Supervisión 2, 12.3 (*Shallow*).
 - **Tema:** 4, 7
-- **Capítulos:** 8, 39
+- **Capítulos:** 8, 40
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -536,7 +536,7 @@ Fuente común: Ian Lewis, *Prolog Supervision Work*, Department of Computer Scie
 ### UNI-CAM-13.1 — Patrones de búsqueda en grafos
 - **Fuente:** Cambridge, Supervisión 2, sección 13 "Graph search", 13.1 (*Bookwork*).
 - **Tema:** 4, 5
-- **Capítulos:** 7, 39
+- **Capítulos:** 7, 40
 - **Dificultad:** 1
 - **Solución:** no
 - **SWISH:** no corresponde
@@ -545,7 +545,7 @@ Fuente común: Ian Lewis, *Prolog Supervision Work*, Department of Computer Scie
 ### UNI-CAM-13.2 — Redundancia en la representación de estados
 - **Fuente:** Cambridge, Supervisión 2, 13.2 (*Bookwork*).
 - **Tema:** 4
-- **Capítulos:** 39
+- **Capítulos:** 40
 - **Dificultad:** 1
 - **Solución:** no
 - **SWISH:** no corresponde
@@ -554,7 +554,7 @@ Fuente común: Ian Lewis, *Prolog Supervision Work*, Department of Computer Scie
 ### UNI-CAM-13.3 — Misioneros y caníbales
 - **Fuente:** Cambridge, Supervisión 2, 13.3 (*Shallow*).
 - **Tema:** 4, 6
-- **Capítulos:** 39, 22
+- **Capítulos:** 40, 22
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -563,7 +563,7 @@ Fuente común: Ian Lewis, *Prolog Supervision Work*, Department of Computer Scie
 ### UNI-CAM-13.4 — Torres de Hanoi como búsqueda
 - **Fuente:** Cambridge, Supervisión 2, 13.4 (*Deeper*).
 - **Tema:** 4, 6
-- **Capítulos:** 39, 22
+- **Capítulos:** 40, 22
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -572,7 +572,7 @@ Fuente común: Ian Lewis, *Prolog Supervision Work*, Department of Computer Scie
 ### UNI-CAM-13.5 — El paraguas
 - **Fuente:** Cambridge, Supervisión 2, 13.5 (*Deeper*).
 - **Tema:** 4, 7
-- **Capítulos:** 39
+- **Capítulos:** 40
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1102,7 +1102,7 @@ Fuente común: Inês Dutra, DCC-FCUP, Universidade do Porto, 2016/17. Lista N en
 ### UNI-POR-2.8 — Camino más corto: primero el mejor y en anchura
 - **Fuente:** Porto, lista #2, ej. 8.
 - **Tema:** 4, X
-- **Capítulos:** 39, 22
+- **Capítulos:** 40, 22
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1292,7 +1292,7 @@ Fuente común: Inês Dutra, DCC-FCUP, Universidade do Porto, 2016/17. Lista N en
 ### UNI-POR-4.1 — Camino de costo mínimo
 - **Fuente:** Porto, lista #4, ej. 1. https://www.dcc.fc.up.pt/~ines/aulas/1617/PL/problems4.pdf
 - **Tema:** 4, 7, 9
-- **Capítulos:** 17, 39
+- **Capítulos:** 17, 40
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -1359,7 +1359,7 @@ Fuente común: Inês Dutra, DCC-FCUP, Universidade do Porto, 2016/17. Lista N en
 ### UNI-POR-4.8 — Búsqueda desde varios estados iniciales
 - **Fuente:** Porto, lista #4, ej. 8.
 - **Tema:** 4
-- **Capítulos:** 39
+- **Capítulos:** 40
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** no corresponde
@@ -1463,7 +1463,7 @@ Fuente común: Inês Dutra, DCC-FCUP, Universidade do Porto, 2016/17. Lista N en
 ### UNI-POR-5.11 — Búsqueda en profundidad limitada
 - **Fuente:** Porto, lista #5, ej. 11.
 - **Tema:** 4, 5
-- **Capítulos:** 39
+- **Capítulos:** 40
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -1472,7 +1472,7 @@ Fuente común: Inês Dutra, DCC-FCUP, Universidade do Porto, 2016/17. Lista N en
 ### UNI-POR-5.12 — Movimientos del 8-puzzle
 - **Fuente:** Porto, lista #5, ej. 12.
 - **Tema:** 4, 6
-- **Capítulos:** 39, 23
+- **Capítulos:** 40, 23
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -1506,7 +1506,7 @@ Fuente común: Inês Dutra, DCC-FCUP, Universidade do Porto, 2016/17. Lista N en
 ### UNI-POR-5.15 — Reglas con variables que no aparecen en el cuerpo
 - **Fuente:** Porto, lista #5, ej. 15.
 - **Tema:** 11
-- **Capítulos:** 40
+- **Capítulos:** 42
 - **Dificultad:** 2
 - **Solución:** no (`Y` queda sin restricción: la "vista" no es segura, porque su resultado no está acotado por los datos)
 - **SWISH:** no corresponde
@@ -1526,7 +1526,7 @@ Fuente común: Inês Dutra, DCC-FCUP, Universidade do Porto, 2016/17. Lista N en
 
 ## California State University, Sacramento: *Logic Programming Courseware* (`UNI-CSUS`)
 
-Fuente común: Vishma Shah, *Logic Programming: A Courseware*, CSUS, 2015. https://athena.ecs.csus.edu/~mei/logicp/exercises.html. Hay tres bloques: *Prolog Exercises* (P), *Unification & Trees of Resolution* (U) y *Conjunction & Backtracking* (C). El enlace a las soluciones pide contraseña.
+Fuente común: Vishma Shah, *Logic Programming: A Courseware*, CSUS, 2015. https://athena.ecs.csus.edu/~mei/logicp/exercises.html. Hay tres bloques: *Prolog Exercises* (P), *Unification & Trees of Resolution* (U) y *Conjunction & Backtracking* (C). El enlace a las soluciones pide contraseña. Las entradas E vienen de los ejercicios que cierran los PDF de *Programming Examples* (https://athena.ecs.csus.edu/~mei/logicp/programming-examples.html), con el número del ejemplo.
 
 ### UNI-CSUS-P1 — Leer hechos, reglas y consultas en castellano
 - **Fuente:** CSUS, Prolog Exercises (1).
@@ -1597,14 +1597,24 @@ Fuente común: Vishma Shah, *Logic Programming: A Courseware*, CSUS, 2015. https
 - **Notas:** Es el mismo problema que POP-06.
 
 ### UNI-CSUS-U1 — ¿Unifican? (1)
-- **Fuente:** CSUS, Unification & Trees of Resolution (1)–(4) y (7).
-- **Tema:** 3, 6
-- **Capítulos:** 4, 7
+- **Fuente:** CSUS, Unification & Trees of Resolution (1)–(3).
+- **Tema:** 3
+- **Capítulos:** 4
 - **Dificultad:** 1
 - **Solución:** no
 - **SWISH:** sí
-- **Enunciado:** Decidir si unifican y por qué: `likes(jax,X)` con `likes(X,jin)`; `food(X,Y,Z)` con `food(M,M,M)`; `food(b,c,d(a))` con `food(X,X,X)`; `[H|T]` con una lista; `[X|Y]` con una lista de términos compuestos.
-- **Notas:** Cinco ítems cortos agrupados en una sola entrada.
+- **Enunciado:** Decidir si unifican y por qué: `likes(jax,X)` con `likes(X,jin)`; `food(X,Y,Z)` con `food(M,M,M)`; `food(b,c,d(a))` con `food(X,X,X)`.
+- **Notas:** Tres ítems cortos agrupados en una sola entrada. Los ítems (4) y (7), sobre listas, están en UNI-CSUS-U4. El segundo ítem, con datos del curso, es el ítem g del ejercicio 12 del capítulo 4.
+
+### UNI-CSUS-U4 — ¿Unifican? (2): listas
+- **Fuente:** CSUS, Unification & Trees of Resolution (4) y (7).
+- **Tema:** 3, 6
+- **Capítulos:** 7
+- **Dificultad:** 1
+- **Solución:** propia, verificada: `[H|T]` con la lista de seis elementos da `H = a` y `T` con los cinco restantes, entre ellos las listas `[d,a]` y `[1,2]` como elementos; en el segundo ítem, `X` queda ligada al término compuesto completo que encabeza la lista.
+- **SWISH:** sí
+- **Enunciado:** Decidir qué valores toman las variables al unificar `[H|T]` con una lista cuyos elementos incluyen otras listas, y `[X|Y]` con una lista de dos términos compuestos anidados.
+- **Notas:** Separada de UNI-CSUS-U1. El ejercicio 18 del capítulo 7 retoma la idea con datos del curso y agrega `[a, b|c]`, que unifica con `[X|Y]` sin ser una lista.
 
 ### UNI-CSUS-U5 — Árboles de deducción por resolución (1)
 - **Fuente:** CSUS, Unification & Trees of Resolution (5).
@@ -1651,6 +1661,16 @@ Fuente común: Vishma Shah, *Logic Programming: A Courseware*, CSUS, 2015. https
 - **SWISH:** sí
 - **Enunciado:** Seguir la búsqueda de `?- happy(X).` para `happy(X) :- friend(X,Y), likes(Y,X).` con cuatro hechos.
 
+
+### UNI-CSUS-E3 — Consultas de aritmética y comparación
+- **Fuente:** CSUS, Programming Examples, Example 3 (*Arithmetic*), ejercicio final.
+- **Tema:** 7
+- **Capítulos:** 8
+- **Dificultad:** 1
+- **Solución:** propia, verificada: `12<=12` es un error de sintaxis (el operador es `=<`); `(2+1)*10 = 30` falla y `(2+1)*10 =:= 30` se cumple; `*(2,3) = 2*3` se cumple; `(X>3)=(4>3)` da `X = 4`; `X = 3, X*X*X is C` da un error de instanciación, y con los lados invertidos, `C = 27`; `is(Y,^(2,2))` da `Y = 4`.
+- **SWISH:** sí
+- **Enunciado:** Predecir la respuesta de veintidós consultas cortas: comparaciones con `<`, `>`, `=<` y `<=`, igualdad y desigualdad numérica con `=:=` y `=\=`, unificación con `=` frente a comparación con `=:=`, y `is/2` con la expresión a la derecha, a la izquierda y en notación prefija.
+- **Notas:** El ejemplo que precede al ejercicio muestra además `5-3-1`, `-(5,3,1)` y la precedencia de `*` sobre `+`. El ejercicio 16 del capítulo 8 reúne esas consultas y varias de las del ejercicio, y pide distinguir evaluación, unificación y sintaxis.
 ---
 
 ## CSE 428: *Solutions to exercises on Logic Programming and Prolog* (`UNI-428`)
@@ -1760,7 +1780,7 @@ Fuente común: Catuscia Palamidessi, CSE 428 (Penn State, primavera 1999). https
 ### UNI-428-12 — Caminos acíclicos en un grafo
 - **Fuente:** CSE 428, último ejercicio.
 - **Tema:** 4, 5, 6, 8
-- **Capítulos:** 10, 39
+- **Capítulos:** 10, 40
 - **Dificultad:** 2
 - **Solución:** sí, en la página (verificada: `path(a, d, P)` da `[a,b,d]`, `[a,c,d]` y `[a,b,c,d]`)
 - **SWISH:** sí

@@ -64,10 +64,15 @@ jobs:
       #
       # python3-dev is for chapter 29: the janus-swi package builds against the
       # headers of this Python and of this swipl.
+      #
+      # swi-prolog-odbc and libsqliteodbc are for chapter 42: library(odbc) is
+      # packaged apart from swi-prolog-nox, and libsqliteodbc is the SQLite
+      # driver, registered with unixODBC as SQLite3. Without them the chapter's
+      # ODBC tests are blocked instead of run.
       - name: Install SWI-Prolog
         run: |
           sudo apt-get update
-          sudo apt-get install -y swi-prolog-nox python3-dev
+          sudo apt-get install -y swi-prolog-nox swi-prolog-odbc libsqliteodbc python3-dev
           swipl --version
 
       # A jump to SWI-Prolog 10 would not break any of the steps below: it would

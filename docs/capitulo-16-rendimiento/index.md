@@ -30,11 +30,13 @@ Al terminar el capítulo, el lector puede:
 !!! info "Tiempo estimado"
     Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **0:50 h**.
     Resolver los 6 ejercicios marcados con ★: **1:36 h**.
-    Resolver los 14 ejercicios del final: **4:27 h**.
+    Resolver los 15 ejercicios del final: **5:00 h**.
 
 ## 16.1 Medir
 
-`time/1` ejecuta un objetivo y escribe cuánto trabajo hizo:
+`time/1` ejecuta un objetivo y escribe cuánto trabajo hizo. Los datos de la
+medición los da `numlist(1, 1000, L)`, que liga `L` con la lista de los enteros
+del 1 al 1000: una entrada del tamaño que se quiere medir, en una sola llamada.
 
 ```prolog
 ?- numlist(1, 1000, L), time(dar_vuelta(L, _)).
@@ -156,7 +158,9 @@ multiplicación se hacía al volver.
 
     **Cuándo no usarlo.** Cuando la recursión es naturalmente corta —la
     profundidad de un árbol genealógico, los casos de una definición— y la
-    versión directa es más clara.
+    versión directa es más clara. Tampoco cuando el resultado es una lista que
+    se construye en la cabeza de la cláusula (plantilla 12): esa recursión ya
+    corre en espacio constante, y un acumulador daría la lista invertida.
 
 !!! question "Actividad"
     Arrancar `swipl --stack-limit=64m`, cargar `pila.pl` y consultar
@@ -447,10 +451,19 @@ El profiler requiere una instalación local; SWISH no lo ofrece.
 
 Los predicados de orden superior del [capítulo 18](../capitulo-18-orden-superior/index.md) —`maplist/3` y los demás— reciben
 un predicado como argumento y lo llaman para cada elemento, con un costo por
-llamada. `:- use_module(library(apply_macros)).` los reescribe en tiempo de
-carga como recursiones comunes, sin ese costo. Conviene recién cuando una
-medición muestra que ese costo pesa; el [capítulo 18](../capitulo-18-orden-superior/index.md) vuelve sobre esta
-biblioteca.
+llamada. `library(apply_macros)` los reescribe en tiempo de carga como
+recursiones comunes, sin ese costo, pero solo cuando la bandera
+`optimise_apply` vale `true` o cuando `swipl` se ejecuta con la opción `-O`:
+
+```prolog
+:- set_prolog_flag(optimise_apply, true).
+:- use_module(library(apply_macros)).
+```
+
+Con la bandera en su valor por omisión y sin `-O`, cargar la biblioteca no
+cambia nada. Conviene recién cuando una medición muestra que ese costo pesa; el
+[capítulo 18](../capitulo-18-orden-superior/index.md) vuelve sobre esta biblioteca, y la [sección 35.5](../capitulo-35-transformacion-de-programas-y-compilacion/index.md#355-macros-de-la-biblioteca) muestra
+cómo se expande.
 
 ## 16.10 El proyecto: una consulta por nombre
 
@@ -544,12 +557,22 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 14. **(3)** Revisar `requisitos_faltantes/3` de la [solución 11 del capítulo 15](../capitulo-15-control/soluciones.md#11)
     con las herramientas de este capítulo: ¿deja alternativas pendientes? ¿Crece
     la pila con la cantidad de requisitos?
+15. **(3)** Un árbol binario se representa con la constante `hoja` y con
+    términos `nodo(Izq, Der)`. Escribir `hojas(A, N)`, que cuenta las hojas de
+    `A` con una llamada recursiva por subárbol y la suma después, y
+    `hojas_acc(A, N)`, que pasa un acumulador por los dos subárboles: la cuenta
+    que sale del izquierdo entra en el derecho. Con `swipl --stack-limit=64m` y
+    un árbol de un millón de nodos inclinado a la derecha
+    —`nodo(hoja, nodo(hoja, …))`—, determinar cuál de las dos versiones
+    responde. Explicar por qué `hojas_acc/2` agota la pila con el árbol
+    inclinado a la izquierda.
 
 ## Resumen
 
 | | |
 |---|---|
 | `time/1` | inferencias, tiempo y *Lips* de un objetivo |
+| `numlist/3` | la lista de los enteros entre dos valores: datos del tamaño que se quiere medir |
 | `statistics/2` | `inferences`, `cputime`, `stack`: la diferencia entre dos lecturas mide un objetivo |
 | inferencia | aproximadamente una llamada; no depende de la máquina |
 | optimización de la última llamada | la última llamada reutiliza el espacio de la actual, si no quedan alternativas |
@@ -570,4 +593,4 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | `assertz/1`, con el que se generaron los datos | [capítulo 20](../capitulo-20-base-de-datos-dinamica/index.md) |
 | Pruebas de rendimiento en la batería del proyecto | [capítulo 26](../capitulo-26-pruebas-y-depuracion/index.md) |
 | Listas diferencia: agregar al final en un paso | [capítulo 34](../capitulo-34-estructuras-incompletas-y-listas-diferencia/index.md) |
-| Tabulación: recordar resultados en lugar de recalcularlos | [capítulo 38](../capitulo-38-tabulacion/index.md) |
+| Tabulación: recordar resultados en lugar de recalcularlos | [capítulo 39](../capitulo-39-tabulacion/index.md) |

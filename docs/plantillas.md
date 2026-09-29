@@ -8,6 +8,24 @@ Esta página las reúne. Cada plantilla se presenta por primera vez en el capít
 donde se la necesita, con un ejemplo concreto; aquí figuran sin el ejemplo, para
 consultarlas y compararlas. La página se amplía a medida que avanza el curso.
 
+Cada plantilla es un **esquema**: un programa en el que las partes que cambian
+de un uso a otro —el nombre del predicado, la condición, el caso base— se
+reemplazan por nombres genéricos como `p`, `procesar` o `CasoBase`. El ejemplo
+del capítulo que la presenta es un caso particular del esquema, y un predicado
+nuevo se obtiene al dar a cada nombre genérico el valor que el problema
+requiere. La distinción entre el programa concreto que ilustra una técnica y el
+esquema que lo generaliza proviene de P. Brna y otros, «Prolog programming
+techniques» (1991), el artículo que la introducción de los
+[patrones](patrones.md) cita como antecedente.
+
+Un predicado rara vez sigue una sola plantilla: por lo general combina varias.
+`sin_los_vistos/3`, del [capítulo 15](capitulo-15-control/index.md#154-once1-e-ignore1), recorre una lista (plantilla 9),
+construye el resultado a medida que la recorre (plantilla 12), lleva en un
+acumulador los elementos ya vistos (plantilla 13) y, para cada elemento, elige
+entre dos casos que no se superponen (plantilla 14, escrita con el condicional).
+Reconocer las plantillas que componen un predicado facilita tanto escribirlo
+como leerlo.
+
 !!! tip "Modo de uso"
     Ante un ejercicio, conviene determinar primero qué datos se conocen y qué
     resultado se necesita. La respuesta corresponde, en la mayoría de los casos,
@@ -224,7 +242,7 @@ p([X|Resto], [Y|RestoNuevo]) :-
 ```
 
 La lista resultante se escribe en la **cabeza**; no se construye en el cuerpo.
-Cada llamada aporta el primer elemento del resultado, y la recursión completa el
+Es la técnica llamada *construcción en la cabeza*. Cada llamada aporta el primer elemento del resultado, y la recursión completa el
 resto. Las dos partes que cambian de un predicado a otro son el caso base —qué
 resultado corresponde a la lista vacía— y la relación entre cada elemento y el
 que ocupa su lugar en el resultado. En `pegar/3`, el caso más simple, cada

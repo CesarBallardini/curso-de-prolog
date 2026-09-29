@@ -453,7 +453,7 @@ un lenguaje de comandos, módulos, errores, archivos, un servicio web— y cada
 uno tiene la versión completa del proyecto en ese punto, de modo que se puede
 leer sin haber seguido los anteriores.
 
-Los datos son los mismos que el [capítulo 40](../capitulo-40-prolog-y-sql/index.md) traduce desde una base de datos
+Los datos son los mismos que el [capítulo 42](../capitulo-42-prolog-y-sql/index.md) traduce desde una base de datos
 relacional: alumnos, materias, correlatividades e inscripciones. En este
 capítulo el proyecto consiste solo en esos hechos, sin ninguna regla:
 
@@ -648,4 +648,4 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | La representación de la nota `null` | [capítulo 14](../capitulo-14-estilo-y-documentacion/index.md) |
 | Módulos, y por qué las pruebas no ven el programa al cargarse por separado | [capítulo 24](../capitulo-24-modulos-y-organizacion/index.md) |
 | plunit en detalle, el depurador y `gtrace/0` | [capítulo 26](../capitulo-26-pruebas-y-depuracion/index.md) |
-| Los datos de Inscripciones como tablas de una base de datos | [capítulo 40](../capitulo-40-prolog-y-sql/index.md) |
+| Los datos de Inscripciones como tablas de una base de datos | [capítulo 42](../capitulo-42-prolog-y-sql/index.md) |

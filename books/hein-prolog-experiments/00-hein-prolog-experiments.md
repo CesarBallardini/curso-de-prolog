@@ -1,3 +1,19 @@
+<!-- toc-by-line -->
+**Contents by line** (added 2026-09-28: this conversion has no chapter headings; each number is the
+line of this file, table included, of the chapter's first numbered section, where its text begins).
+
+- Chapter 1 — Introduction to Prolog: line 152
+- Chapter 2 — Beginning Experiments: line 379
+- Chapter 3 — Recursive Techniques: line 1078
+- Chapter 4 — Logic: line 1467
+- Chapter 5 — List Structures: line 2040
+- Chapter 6 — List Applications: line 2515
+- Chapter 7 — Languages and Expressions: line 3195
+- Chapter 8 — Computability: line 3457
+- Chapter 9 — Problems and Projects: line 4364
+- Answers to Selected Experiments: line 5660
+
+---
 <!-- page 1 -->
 Prolog Experiments in Discrete Mathematics, Logic, and Computability
 

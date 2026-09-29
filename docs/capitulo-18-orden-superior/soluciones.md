@@ -416,3 +416,87 @@ vecina antes de pasar a la segunda: es un recorrido en profundidad. El
 conjunto de celdas es el mismo, y la prueba `mismas_celdas` lo verifica
 ordenando las dos listas. La diferencia de orden importa en el
 [capítulo 22](../capitulo-22-estructuras-de-datos-de-la-biblioteca/index.md), donde el recorrido a lo ancho encuentra el camino más corto.
+
+## 11
+
+<!-- ejemplo: capitulo-18/soluciones.pl predicado: promedios_parciales/2 promedio_parcial/4 consulta: promedios_parciales([8, 6, 10], P). -->
+```prolog
+%!  promedios_parciales(+Notas:list(number), -Promedios:list(number)) is det.
+%
+%   El elemento i-ésimo de Promedios es el promedio de las i primeras Notas.
+%   Un solo recorrido: el valor acumulado es el par Cantidad-Suma.
+promedios_parciales(Notas, Promedios) :-
+    foldl(promedio_parcial, Notas, Promedios, 0-0, _).
+
+%!  promedio_parcial(+Nota:number, -Promedio:number, +Hasta:pair,
+%!                   -Total:pair) is det.
+%
+%   Total es el par Cantidad-Suma de Hasta con Nota agregada, y Promedio es
+%   el promedio de las notas que Total reúne.
+promedio_parcial(Nota, Promedio, Cantidad0-Suma0, Cantidad-Suma) :-
+    Cantidad is Cantidad0 + 1,
+    Suma is Suma0 + Nota,
+    Promedio is Suma / Cantidad.
+```
+
+```prolog
+?- promedios_parciales([8, 6, 10], P).
+P = [8, 7, 8].
+
+?- promedios_parciales([7, 8], P).
+P = [7, 7.5].
+```
+
+Es un mapeo completo con estado: cada nota da un promedio, y el promedio de
+una nota depende de las anteriores. `foldl/6` recibe la lista de notas y la
+lista de promedios, libre, que construye elemento a elemento; el paso recibe
+una nota, su promedio, el valor acumulado antes y el de después.
+
+El valor acumulado es el par `Cantidad-Suma` de las notas vistas, como en
+`promedio/2` de la [sección 18.8](index.md#188-el-proyecto-informes-genericos). El último promedio no alcanza: el promedio de
+las primeras i + 1 notas no se obtiene del promedio de las i primeras y de la
+nota nueva sin saber cuántas notas reunía ese promedio, es decir, sin la
+cantidad. Con la cantidad, la suma se recupera, y el par es la forma directa
+de llevar las dos. La lista vacía da la lista vacía: no hay ningún promedio
+que calcular, y el acumulado final `0-0` no se usa.
+
+## 12
+
+<!-- ejemplo: capitulo-18/soluciones.pl predicado: producto_interno/3 sumar_producto/4 consulta: producto_interno([1, 2, 3], [4, 5, 6], P). -->
+```prolog
+%!  producto_interno(+V1:list(number), +V2:list(number),
+%!                   -P:number) is semidet.
+%
+%   P es el producto interno de los vectores V1 y V2. Falla si los dos
+%   vectores tienen distinto largo.
+producto_interno(V1, V2, P) :-
+    foldl(sumar_producto, V1, V2, 0, P).
+
+%!  sumar_producto(+X:number, +Y:number, +Hasta:number,
+%!                 -Total:number) is det.
+%
+%   Total es Hasta más el producto de X por Y.
+sumar_producto(X, Y, Hasta, Total) :-
+    Total is Hasta + X * Y.
+```
+
+```prolog
+?- producto_interno([1, 2, 3], [4, 5, 6], P).
+P = 32.
+
+?- producto_interno([1, 2, 3], [4, 5], P).
+false.
+```
+
+`foldl/5` recorre las dos listas a la vez, como `maplist/3`, y el paso suma
+al acumulado el producto de los dos elementos: 1 · 4 + 2 · 5 + 3 · 6 = 32. El
+valor inicial es 0, el neutro de la suma, y por eso dos vectores vacíos dan 0.
+
+Con listas de distinto largo, `foldl/5` falla: una de las dos listas termina
+antes que la otra, y ninguna cláusula de su recorrido relaciona una lista
+vacía con una que no lo es. La respuesta es correcta en el sentido de que el
+producto interno solo está definido para dos vectores de la misma dimensión:
+no hay ningún `P` que lo sea. Una implementación que recorriera la más corta
+y respondiera 14 daría un valor sin significado. Si el programa necesita
+distinguir el error de datos de un producto que no existe, comprueba los
+largos antes y lanza una excepción.

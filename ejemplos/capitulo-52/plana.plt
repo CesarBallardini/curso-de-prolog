@@ -1,0 +1,46 @@
+:- encoding(utf8).
+
+:- begin_tests(plana).
+
+test(maquina_i, [true(Fs == [0, 1, 0, 1, 0, 1, 0, 1, 0, 1])]) :-
+    figuras(i, b, 10, Fs).
+
+test(maquina_i_bis, [true(Fs == [0, 1, 0, 1, 0, 1, 0, 1, 0, 1])]) :-
+    figuras(i_bis, b, 10, Fs).
+
+test(maquina_ii, [true(Fs == [0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1])]) :-
+    figuras(ii, b, 15, Fs).
+
+test(cero_figuras, [true(Fs == [])]) :-
+    figuras(ii, b, 0, Fs).
+
+test(sin_fila, [fail]) :-
+    figuras(ii, o, 1, _).
+
+test(paso_ii, [true(Q-Ss == o-[schwa, schwa, 0, blanco, 0])]) :-
+    cinta_vacia(C0),
+    paso(ii, b, C0, Q, C, Fs),
+    Fs == [0, 0],
+    contenido(C, Ss).
+
+test(leer_cabezal, [true(S == 0)]) :-
+    cinta_vacia(C0),
+    paso(ii, b, C0, _, C, _),
+    leer(C, S).
+
+test(cumple_libre, [true(X == x)]) :-
+    cumple(simbolo(X), x).
+
+test(cumple_blanco, [fail]) :-
+    cumple(simbolo(_), blanco).
+
+test(cumple_no, [fail]) :-
+    cumple(no(x), x).
+
+test(cumple_siempre) :-
+    cumple(siempre, blanco).
+
+test(contenido, [true(Ss == [1, blanco, x])]) :-
+    contenido(c([blanco, 1, blanco], x, [blanco, blanco]), Ss).
+
+:- end_tests(plana).

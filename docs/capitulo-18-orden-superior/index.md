@@ -27,9 +27,9 @@ Al terminar el capítulo, el lector puede:
   superior.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:24 h**.
-    Resolver los 5 ejercicios marcados con ★: **1:35 h**.
-    Resolver los 10 ejercicios del final: **3:10 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:28 h**.
+    Resolver los 6 ejercicios marcados con ★: **1:53 h**.
+    Resolver los 12 ejercicios del final: **3:34 h**.
 
 ## 18.1 Un predicado como argumento
 
@@ -236,7 +236,9 @@ la lista vacía, como el máximo de `aggregate_all/3` en la
 
     **Patrón.** `foldl(Paso, Lista, Inicial, Final)`, con `Paso(X, Antes,
     Despues)`. Si hacen falta varios valores, el acumulado es un término que
-    los reúne, como el par `Cantidad-Suma` de la [sección 18.8](#188-el-proyecto-informes-genericos).
+    los reúne, como el par `Cantidad-Suma` de la [sección 18.8](#188-el-proyecto-informes-genericos). Si el
+    recorrido también produce una lista, con un elemento por cada elemento de
+    la entrada, `foldl/6` ([sección 18.7](#187-cuando-no-usar-el-orden-superior)).
 
     **Cuándo no usarlo.** Cuando la biblioteca ya tiene el predicado:
     `sum_list/2`, `max_list/2`, `length/2`. Y cuando los valores vienen de las
@@ -487,7 +489,9 @@ comunes. Mientras todo el programa está en un solo archivo, la declaración no
 cambia el comportamiento: documenta, y la usan las herramientas de
 SWI-Prolog. Pasa a ser necesaria cuando el predicado está en un módulo y recibe
 una clausura definida en otro, el caso del
-[capítulo 24](../capitulo-24-modulos-y-organizacion/index.md).
+[capítulo 24](../capitulo-24-modulos-y-organizacion/index.md). La declaración queda registrada, y
+`predicate_property/2`, que el [capítulo 33](../capitulo-33-introspeccion-y-metainterpretes/index.md) presenta con los demás predicados que
+examinan el programa, la informa:
 
 ```prolog
 ?- predicate_property(cada_uno(_, _), meta_predicate(M)).
@@ -527,13 +531,48 @@ claro:
   sobre la misma lista recorren la lista tres veces; una recursión, o un
   `foldl/4` con un acumulado compuesto, la recorre una vez.
 
+Cuando el orden superior conviene, la forma del recorrido indica el predicado.
+La forma depende de dos preguntas: cuántos elementos tiene el resultado, y si
+el resultado de un elemento depende de los anteriores. Elegir la forma de un
+recorrido según la operación —mapeo, selección o agregación— y según la
+estructura que se recorre es una idea que ya proponen P. Brna y otros,
+«Prolog programming techniques», *Instructional Science* 20 (2-3), 1991,
+pp. 111–133; la tabla la desarrolla con los predicados de la biblioteca.
+
+| Forma del recorrido | Ejemplo | Predicado |
+|---|---|---|
+| mapeo completo: un resultado por elemento | las edades de una lista de personas | `maplist/3` |
+| mapeo parcial: un resultado para algunos elementos | los mayores de edad; las edades conocidas | `include/3`, `exclude/3`, `convlist/3` |
+| salidas disjuntas: cada elemento va a una de dos o tres listas | mayores y menores; menores, iguales y mayores que un valor | `partition/4`, `partition/5` |
+| mapeo completo con estado: el resultado de un elemento depende de los anteriores | numerar los elementos | `foldl/6` |
+| mapeo secuencial con estado: un resultado por cada racha de elementos iguales consecutivos | `[a, a, b, a]` da `[a-2, b-1, a-1]` | `clumped/2`, que presenta el [capítulo 22](../capitulo-22-estructuras-de-datos-de-la-biblioteca/index.md), o una recursión escrita a mano |
+| mapeo disperso con estado: un resultado por valor, que reúne apariciones no consecutivas | la frecuencia de cada elemento | `msort/2` y después `clumped/2`, o `aggregate_all/3` |
+| reducción a un valor | la suma, el máximo | `foldl/4` |
+
+`foldl/5` y `foldl/6` recorren dos y tres listas a la vez, como `maplist/3` y
+`maplist/4`: el paso recibe un elemento de cada lista, el valor anterior y el
+nuevo. Con la última lista libre, `foldl/6` la construye: es un `maplist/3`
+que además lleva un estado de un elemento al siguiente. `partition/5` recibe
+una relación que responde el orden de cada elemento, `<`, `=` o `>`, como
+`compare/3` en el [capítulo 11](../capitulo-11-texto/index.md):
+
+```prolog
+?- foldl([X, I-X, I0, I]>>(I is I0 + 1), [a, b, c], L, 0, _).
+L = [1-a, 2-b, 3-c].
+
+?- partition([X, O]>>compare(O, X, 5), [7, 5, 2, 9, 5], Menores, Iguales, Mayores).
+Menores = [2],
+Iguales = [5, 5],
+Mayores = [7, 9].
+```
+
 !!! success "Criterios de calidad"
     | Criterio | En este capítulo |
     |---|---|
     | C1 | el modo `:` en cada argumento que se llama (`cumplen/2`, `informe/3`), y la declaración `meta_predicate` que da cuántos argumentos agrega `call/N` |
     | C2 | la lista vacía decidida en cada plegado: `suma_de_edades([], 0)`, `mayor([], _)` falla y lo declara, y `informe/3` con una lista vacía da `[]` (prueba `informe_vacio`) |
     | C4 | los recorridos propios con la lista primero: la prueba `segunda_version` verifica que `cada_uno/2` no deja alternativas; `informe/3` es `det` con clausuras `nondet`, gracias a `once/1` |
-    | C7 | 112 pruebas en los cinco archivos del capítulo; las 32 de los informes del [capítulo 17](../capitulo-17-todas-las-soluciones/index.md) pasan sin cambios sobre la versión reescrita |
+    | C7 | 119 pruebas en los cinco archivos del capítulo; las 32 de los informes del [capítulo 17](../capitulo-17-todas-las-soluciones/index.md) pasan sin cambios sobre la versión reescrita |
 
 ## 18.8 El proyecto: informes genéricos
 
@@ -699,6 +738,15 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     la región con una lista de celdas pendientes: primero la celda, después sus
     vecinas, después las vecinas de estas. Comparar el orden y el conjunto de
     celdas con los de `descubrir/3`.
+11. ★ **(2)** Escribir `promedios_parciales(Notas, Promedios)` con `foldl/6`:
+    el elemento i-ésimo de `Promedios` es el promedio de las i primeras notas
+    de `Notas`, y la lista se recorre una sola vez.
+    `promedios_parciales([8, 6, 10], P)` responde `P = [8, 7, 8]`. ¿Qué lleva
+    el valor acumulado, y por qué no alcanza con llevar el último promedio?
+12. **(1)** Escribir `producto_interno(V1, V2, P)` con `foldl/5`: `P` es el
+    producto interno de dos vectores representados como listas de números, y
+    para `[1, 2, 3]` y `[4, 5, 6]` vale 32. ¿Qué responde con dos listas de
+    distinto largo, y es correcta esa respuesta?
 
 ## Resumen
 
@@ -709,7 +757,9 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | `maplist/2..5` | la misma relación sobre cada elemento de una o varias listas |
 | `foldl/4..6` | un valor construido en un recorrido; el paso recibe elemento, anterior, nuevo |
 | `include/3`, `exclude/3`, `partition/4` | filtran con una condición |
+| `partition/5` | separa en menores, iguales y mayores, según el orden que responde una relación |
 | `convlist/3` | como `maplist/3`, omitiendo los elementos para los que falla |
+| forma del recorrido | mapeo completo, parcial, con salidas disjuntas, con estado (completo, secuencial o disperso), reducción: la tabla de la [sección 18.7](#187-cuando-no-usar-el-orden-superior) |
 | `{Libres}/[Parametros]>>Objetivo` | una lambda de `yall`; las variables compartidas, entre llaves |
 | `:- meta_predicate` | qué argumentos se llaman, y con cuántos argumentos agregados |
 | cuándo no usarlo | una lambda larga, un recorrido que se detiene, varios recorridos sobre la misma lista |
@@ -721,6 +771,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 |---|---|
 | Operadores propios y reglas como datos, con un intérprete que las prueba | [capítulo 19](../capitulo-19-operadores-y-reglas-como-datos/index.md) |
 | `dcg/high_order`: gramáticas que reciben gramáticas | [capítulo 21](../capitulo-21-gramaticas-dcg/index.md) |
+| `clumped/2`: rachas y frecuencias | [capítulo 22](../capitulo-22-estructuras-de-datos-de-la-biblioteca/index.md) |
 | El tablero del Buscaminas como `assoc` | [capítulo 22](../capitulo-22-estructuras-de-datos-de-la-biblioteca/index.md) |
 | `meta_predicate` y los módulos | [capítulo 24](../capitulo-24-modulos-y-organizacion/index.md) |
 | La búsqueda en un espacio de estados con visitados | [capítulo 22](../capitulo-22-estructuras-de-datos-de-la-biblioteca/index.md) |

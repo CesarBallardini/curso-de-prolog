@@ -29,7 +29,7 @@ Al terminar el capítulo, el lector puede:
 - usar `dif/2` en lugar de `\==` cuando las variables todavía no tienen valor.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:10 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:20 h**.
     Resolver los 7 ejercicios marcados con ★: **2:11 h**.
     Resolver los 16 ejercicios del final: **5:15 h**.
 
@@ -86,7 +86,8 @@ resuelve cuando se conoce.
 
 La biblioteca se carga con `:- use_module(library(clpfd)).`. Sus restricciones
 son `#=`, `#\=`, `#<`, `#>`, `#=<` y `#>=`, y sus expresiones admiten `+`, `-`,
-`*`, `//`, `mod`, `abs`, `min` y `max`. En un programa que usa enteros, `#=`
+`*`, `//`, `mod`, `abs`, `min` y `max`; `abs(E)` es el valor absoluto de `E`,
+una función que también evalúa `is/2`. En un programa que usa enteros, `#=`
 puede reemplazar a `is/2` siempre: con los datos ligados, calcula lo mismo; con
 datos sin ligar, no produce un error.
 
@@ -391,8 +392,9 @@ milisegundos; el ejercicio 10 mide lo que tarda sin esa opción.
 
 `reinas_gyp/2`, en el mismo archivo, resuelve las reinas con la
 [plantilla 15](../plantillas.md#15-generar-y-probar): genera cada permutación de las filas con `permutation/2` y
-comprueba si alguna reina ataca a otra. Las dos versiones encuentran las mismas
-soluciones. Con las herramientas del [capítulo 16](../capitulo-16-rendimiento/index.md), contar las 724
+comprueba si alguna reina ataca a otra. `permutation(L, P)`, de `library(lists)`,
+liga `P` a una permutación de `L` y, al reintentar, produce las demás. Las dos
+versiones encuentran las mismas soluciones. Con las herramientas del [capítulo 16](../capitulo-16-rendimiento/index.md), contar las 724
 soluciones de 10 reinas:
 
 ```text
@@ -449,8 +451,86 @@ restricción que usan `sacar_puro/3` y `tfilter/3` en la
 Para restricciones sobre valores booleanos, `library(clpb)` resuelve problemas
 de satisfacibilidad: `sat(X + Y)` exige que al menos una de dos variables sea
 verdadera, y `taut/2` dice si una fórmula es siempre verdadera o siempre falsa.
-Conecta con la lógica proposicional del [capítulo 12](../capitulo-12-prolog-y-la-logica/index.md), y el curso no la
-desarrolla.
+Conecta con la lógica proposicional del [capítulo 12](../capitulo-12-prolog-y-la-logica/index.md). Este capítulo no la
+desarrolla más allá de un ejemplo, que se puede omitir; el
+[capítulo 48](../capitulo-48-proyecto-circuitos-logicos/index.md) la retoma para verificar circuitos
+([sección 48.4](../capitulo-48-proyecto-circuitos-logicos/index.md#484-verificar-con-libraryclpb)). El ejemplo es un circuito de cuatro
+compuertas NAND. Una compuerta es una relación entre sus entradas y su salida,
+y se escribe como su tabla de verdad; el circuito es la conjunción de sus
+compuertas, con una variable por cable:
+
+<!-- ejemplo: capitulo-23/circuito.pl predicado: nand/3 circuito/3 consulta: circuito(X, Y, 1). -->
+```prolog
+% nand(A, B, S): S es la salida de una compuerta NAND con entradas A y B.
+nand(0, 0, 1).
+nand(0, 1, 1).
+nand(1, 0, 1).
+nand(1, 1, 0).
+
+%!  circuito(?X, ?Y, ?Z) is nondet.
+%
+%   Z es la salida del circuito para las entradas X e Y: la primera
+%   compuerta combina las entradas, la segunda y la tercera combinan cada
+%   entrada con la salida de la primera, y la cuarta da Z.
+circuito(X, Y, Z) :-
+    nand(X, Y, A),
+    nand(X, A, B),
+    nand(Y, A, C),
+    nand(B, C, Z).
+```
+
+```prolog
+?- circuito(X, Y, 1).
+X = 0,
+Y = 1 ;
+X = 1,
+Y = 0 ;
+false.
+```
+
+La consulta fija la salida y obtiene las entradas: el circuito da 1 cuando las
+dos entradas son distintas, que es la disyunción exclusiva. Enumerar las
+entradas lo comprueba con dos entradas, pero con n entradas son 2ⁿ casos.
+`library(clpb)` razona sobre las fórmulas: `circuito_b/3` escribe cada
+compuerta como una restricción `sat/1`, con `~` para la negación, `*` para la
+conjunción y `=:=` para la equivalencia, y `es_xor/1` pregunta con `taut/2`
+si la salida equivale a `X # Y`, la disyunción exclusiva:
+
+<!-- ejemplo: capitulo-23/circuito.pl predicado: circuito_b/3 es_xor/1 consulta: es_xor(T). -->
+```prolog
+%!  circuito_b(?X, ?Y, ?Z) is det.
+%
+%   El mismo circuito como restricciones de library(clpb): ~ es la
+%   negación, * la conjunción y =:= la equivalencia.
+circuito_b(X, Y, Z) :-
+    sat(A =:= ~(X * Y)),
+    sat(B =:= ~(X * A)),
+    sat(C =:= ~(Y * A)),
+    sat(Z =:= ~(B * C)).
+
+%!  es_xor(-T) is det.
+%
+%   T es 1 si la salida del circuito es equivalente, para toda entrada, a la
+%   disyunción exclusiva (#) de las entradas, y 0 si no lo es para ninguna.
+es_xor(T) :-
+    circuito_b(X, Y, Z),
+    taut(Z =:= X # Y, T).
+```
+
+```prolog
+?- circuito_b(X, Y, Z).
+sat(X=:=Y#Z).
+
+?- es_xor(T).
+T = 1.
+```
+
+La primera respuesta es la restricción que queda sobre las variables de la
+consulta cuando se eliminan los cables internos: X equivale a `Y # Z`, que es
+lo mismo que Z equivale a `X # Y`. `taut/2` responde `T = 1` porque la
+equivalencia es una tautología bajo las restricciones del circuito; con una
+fórmula que no puede cumplirse respondería `T = 0`, y falla cuando depende de
+los valores de las variables.
 
 !!! success "Criterios de calidad"
     | Criterio | En este capítulo |
@@ -667,7 +747,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 
 | | |
 |---|---|
-| `#=`, `#\=`, `#<`, … | restricciones aritméticas sobre enteros, en todos los sentidos |
+| `#=`, `#\=`, `#<`, …, `abs/1` | restricciones aritméticas sobre enteros, en todos los sentidos; `abs/1`, el valor absoluto, también en `is/2` |
 | `in/2`, `ins/2`, `fd_dom/2` | dominios de las variables |
 | `label/1`, `labeling/2` | etiquetar al final; `ff`, `min`, `max` |
 | `all_different/1` | valores distintos |
@@ -675,7 +755,8 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | `global_cardinality/2` | cuántas veces aparece cada valor |
 | `B #<==> C` | reificación: la verdad de C en la variable B |
 | `dif/2` | desigualdad que se posterga, para cualquier término |
-| generar y probar | se descubre el fracaso tarde; restringir lo descubre antes |
+| `sat/1`, `taut/2` | `library(clpb)`: restricciones booleanas; si una fórmula es tautología |
+| generar y probar, `permutation/2` | se descubre el fracaso tarde; restringir lo descubre antes |
 | **Patrones 26, 27** | contar con reificación; modelar, restringir, etiquetar |
 
 ## Temas que se retoman
@@ -683,5 +764,5 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | Tema | Se retoma en |
 |---|---|
 | El calendario de exámenes como módulo del proyecto | [capítulo 24](../capitulo-24-modulos-y-organizacion/index.md) |
-| El Buscaminas completo, con el resolvedor | [capítulo 31](../capitulo-31-ejecutables-y-distribucion/index.md) |
-| Búsqueda y juegos: las reinas con una lista de visitados | [capítulo 39](../capitulo-39-busqueda-y-juegos/index.md) |
+| El Buscaminas completo, con la deducción de celdas seguras | [capítulo 31](../capitulo-31-ejecutables-y-distribucion/index.md) |
+| Búsqueda: las reinas con una lista de visitados | [capítulo 40](../capitulo-40-busqueda-y-planificacion/index.md) |

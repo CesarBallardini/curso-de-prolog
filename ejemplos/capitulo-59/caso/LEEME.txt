@@ -1,0 +1,17 @@
+Copia de Inscripciones para el caso de estudio del capítulo 59.
+
+Los once archivos .pl de este directorio son una copia, sin cambios, de
+ejemplos/capitulo-31/inscripciones/ tal como estaba antes de que el curso
+agregara a api.pl la declaración
+
+    :- meta_predicate responder(0).
+
+El capítulo 59 analiza esta copia: sin esa declaración, su análisis
+encuentra que legajo/2 y resultado_json/3 no se alcanzan desde ningún punto
+de entrada, y el ejercicio 7 infiere la declaración que falta. La copia se
+conserva para que ese hallazgo y las cifras del capítulo (225 cláusulas,
+98 predicados, 120 llamadas entre ellos) sigan valiendo.
+
+Los archivos no se modifican: las posiciones que muestra el capítulo, como
+api.pl:155, son líneas de estos archivos. Cada .plt solo verifica que la
+copia se carga; las pruebas del programa están en el capítulo 31.

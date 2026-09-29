@@ -192,6 +192,8 @@ def without_header(source: str) -> str:
 # for.
 
 OPENING, CLOSING = '([{', ')]}'
+# The symbol characters of standard Prolog: a run of them is one operator (`=..`, `:-`).
+SYMBOL_CHARS = set('+-*/\\^<>=~:.?@#&$')
 QUOTES = '\'"`'
 CHAR_CODE = '0' + "'"
 
@@ -245,9 +247,14 @@ def _end_of_clause(source: str, start: int) -> int | None:
         if skipped != i:
             i = skipped + 1
             continue
-        # The full stop ends the clause only when a blank or a comment follows:
-        # that keeps it apart from the one in 3.14 and from an operator.
-        if source[i] == '.' and (i + 1 >= n or source[i + 1] in ' \t\r\n%'):
+        # The full stop ends the clause only when a blank or a comment follows,
+        # which keeps it apart from the one in 3.14, and when it stands alone:
+        # after another symbol character it belongs to an operator, as in `=..`.
+        if (
+            source[i] == '.'
+            and (i + 1 >= n or source[i + 1] in ' \t\r\n%')
+            and (i == 0 or source[i - 1] not in SYMBOL_CHARS)
+        ):
             return i
         i += 1
     return None

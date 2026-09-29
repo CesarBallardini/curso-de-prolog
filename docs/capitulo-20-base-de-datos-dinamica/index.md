@@ -338,7 +338,7 @@ nunca queda vieja.
 
 SWI-Prolog ofrece la misma técnica sin escribir el estado a mano: con la
 directiva `:- table fib/2.`, la **tabulación** guarda las respuestas
-automáticamente. El [capítulo 38](../capitulo-38-tabulacion/index.md) la presenta.
+automáticamente. El [capítulo 39](../capitulo-39-tabulacion/index.md) la presenta.
 
 !!! example "Patrón 17 — Memorización con `assertz`"
     **Problema.** Un cálculo costoso se repite con los mismos argumentos.
@@ -353,7 +353,7 @@ automáticamente. El [capítulo 38](../capitulo-38-tabulacion/index.md) la prese
 
     **Cuándo no usarlo.** Cuando el resultado depende de datos que cambian
     durante la ejecución y no hay un punto claro donde invalidar lo guardado; y
-    cuando `:- table` resuelve lo mismo ([capítulo 38](../capitulo-38-tabulacion/index.md)).
+    cuando `:- table` resuelve lo mismo ([capítulo 39](../capitulo-39-tabulacion/index.md)).
 
 ## 20.6 Un sistema experto con encadenamiento hacia adelante
 
@@ -819,7 +819,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | `retract/1`, `retractall/1` | quitan una cláusula que unifica (con retroceso), o todas |
 | vista lógica de actualización | una llamada ve las cláusulas que había cuando empezó |
 | `flag/3` | un contador numérico o atómico, leído y reemplazado en un paso |
-| `b_setval/2`, `nb_setval/2` | variables globales: la primera se deshace al retroceder, la segunda no |
+| `b_setval/2`, `nb_setval/2`, `b_getval/2`, `nb_getval/2` | variables globales: la primera se deshace al retroceder, la segunda no; las otras dos leen su valor |
 | memorización | guardar lo calculado y buscar antes de calcular |
 | encadenamiento hacia adelante | aplicar reglas y agregar conclusiones hasta el punto fijo |
 | pruebas con estado | `setup` guarda, `cleanup` restaura, con los predicados del programa |
@@ -833,5 +833,6 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | Los módulos y la calificación `user:` | [capítulo 24](../capitulo-24-modulos-y-organizacion/index.md) |
 | Guardar la base en archivos; `library(persistency)` | [capítulo 27](../capitulo-27-archivos-streams-y-formatos/index.md) |
 | La base de datos y los hilos | [capítulo 37](../capitulo-37-concurrencia-y-paralelismo/index.md) |
-| La tabulación, que memoriza sin estado escrito a mano | [capítulo 38](../capitulo-38-tabulacion/index.md) |
-| El camino de vuelta del Wumpus como búsqueda | [capítulo 39](../capitulo-39-busqueda-y-juegos/index.md) |
+| La tabulación, que memoriza sin estado escrito a mano | [capítulo 39](../capitulo-39-tabulacion/index.md) |
+| El camino de vuelta del Wumpus como búsqueda | [capítulo 40](../capitulo-40-busqueda-y-planificacion/index.md) |
+| El juego del Wumpus completo y un agente que prueba seguras las celdas con los mundos consistentes con lo percibido | [capítulo 77](../capitulo-77-proyecto-mundo-wumpus/index.md) |

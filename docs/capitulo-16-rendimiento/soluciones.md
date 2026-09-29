@@ -258,3 +258,115 @@ crece: la llamada recursiva es el último objetivo de la segunda cláusula,
 después del condicional, y no quedan alternativas. Con la cantidad de
 requisitos de una materia, unos pocos, no haría diferencia; con una lista larga,
 la haría.
+
+## 15
+
+Las dos versiones y los dos árboles de prueba, generados con un condicional
+para que no quede una alternativa al llegar a cero:
+
+<!-- ejemplo: capitulo-16/soluciones.pl predicado: hojas/2 hojas_acc/2 contando_hojas/3 peine_derecho/2 peine_izquierdo/2 consulta: hojas_acc(nodo(nodo(hoja, hoja), hoja), N). -->
+```prolog
+%!  hojas(+A, -N:integer) is det.
+%
+%   N es la cantidad de hojas del árbol binario A, formado por la constante
+%   hoja y por términos nodo(Izq, Der). Una llamada por subárbol y la suma
+%   después: ninguna de las dos llamadas es el último objetivo.
+hojas(hoja, 1).
+hojas(nodo(Izq, Der), N) :-
+    hojas(Izq, NIzq),
+    hojas(Der, NDer),
+    N is NIzq + NDer.
+
+%!  hojas_acc(+A, -N:integer) is det.
+%
+%   La misma relación, con un acumulador que pasa por los dos subárboles.
+hojas_acc(A, N) :-
+    contando_hojas(A, 0, N).
+
+%!  contando_hojas(+A, +Hasta:integer, -N:integer) is det.
+%
+%   N es Hasta más la cantidad de hojas de A. La cuenta que sale del subárbol
+%   izquierdo entra en el derecho, y la llamada sobre el derecho es el último
+%   objetivo; la llamada sobre el izquierdo no lo es.
+contando_hojas(hoja, Hasta, N) :-
+    N is Hasta + 1.
+contando_hojas(nodo(Izq, Der), Hasta, N) :-
+    contando_hojas(Izq, Hasta, Medio),
+    contando_hojas(Der, Medio, N).
+
+%!  peine_derecho(+Nodos:integer, -A) is det.
+%
+%   A es el árbol de Nodos nodos que se inclina a la derecha:
+%   nodo(hoja, nodo(hoja, ...)). Tiene Nodos + 1 hojas.
+peine_derecho(Nodos, A) :-
+    (   Nodos =:= 0
+    ->  A = hoja
+    ;   A = nodo(hoja, Resto),
+        Faltan is Nodos - 1,
+        peine_derecho(Faltan, Resto)
+    ).
+
+%!  peine_izquierdo(+Nodos:integer, -A) is det.
+%
+%   A es el árbol de Nodos nodos que se inclina a la izquierda:
+%   nodo(nodo(..., hoja), hoja).
+peine_izquierdo(Nodos, A) :-
+    (   Nodos =:= 0
+    ->  A = hoja
+    ;   A = nodo(Resto, hoja),
+        Faltan is Nodos - 1,
+        peine_izquierdo(Faltan, Resto)
+    ).
+```
+
+```prolog
+?- hojas(nodo(nodo(hoja, hoja), hoja), N).
+N = 3.
+
+?- hojas_acc(nodo(nodo(hoja, hoja), hoja), N).
+N = 3.
+```
+
+Con `swipl --stack-limit=64m` y el árbol inclinado a la derecha, `hojas/2` se
+detiene:
+
+```prolog
+?- peine_derecho(1000000, A), hojas(A, N).
+```
+
+```text
+ERROR: Stack limit (64.0Mb) exceeded
+ERROR:   Stack sizes: local: 24.9Mb, global: 26.4Mb, trail: 0Kb
+ERROR:   Stack depth: 232,698, last-call: 0%, Choice points: 4
+ERROR:   Possible non-terminating recursion:
+...
+```
+
+`hojas_acc/2` responde `N = 1000001` con el mismo árbol. En `hojas/2` ninguna
+de las dos llamadas recursivas es el último objetivo: después de las dos queda
+la suma, y cada nodo queda en la pila hasta que terminan sus dos subárboles. En
+`contando_hojas/3` la llamada sobre el subárbol derecho sí es el último
+objetivo, y el primer argumento distingue `hoja` de `nodo(_, _)` sin dejar
+alternativas: con el árbol inclinado a la derecha, la recursión avanza siempre
+por esa llamada y corre en espacio constante; la llamada sobre el izquierdo
+llega enseguida a una hoja.
+
+Con el árbol inclinado a la izquierda la recursión avanza por la otra llamada,
+la que no es la última, porque después falta recorrer el subárbol derecho:
+
+```prolog
+?- peine_izquierdo(1000000, A), hojas_acc(A, N).
+```
+
+```text
+ERROR: Stack limit (64.0Mb) exceeded
+ERROR:   Stack sizes: local: 25.6Mb, global: 24.7Mb, trail: 0Kb
+ERROR:   Stack depth: 239,354, last-call: 0%, Choice points: 4
+ERROR:   Possible non-terminating recursion:
+...
+```
+
+En una recursión doble el acumulador solo convierte en última llamada a una de
+las dos. La pila crece con la profundidad por el otro lado, y la profundidad
+depende de la forma del árbol: con un árbol equilibrado de un millón de hojas es
+de unos veinte niveles, y cualquiera de las dos versiones responde.

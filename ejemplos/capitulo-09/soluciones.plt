@@ -73,4 +73,30 @@ test(clasificar_positivo, all(C == [positivo])) :-
 test(clasificar_acepta_una_respuesta_falsa) :-
     clasificar(5, negativo) -> true ; true.
 
+% Ejercicio 16: el lugar del corte decide cuántas respuestas quedan.
+test(prenda_sin_corte, all(P == [unico-blanco-lino,
+                                 chico-rojo-algodon, chico-rojo-lana,
+                                 chico-azul-algodon, chico-azul-lana,
+                                 grande-rojo-algodon, grande-rojo-lana,
+                                 grande-azul-algodon, grande-azul-lana,
+                                 unico-negro-cuero])) :-
+    prenda(T, C, M),
+    P = T-C-M.
+
+test(prenda_corte_talle, all(P == [unico-blanco-lino,
+                                   chico-rojo-algodon, chico-rojo-lana,
+                                   chico-azul-algodon, chico-azul-lana])) :-
+    prenda_corte_talle(T, C, M),
+    P = T-C-M.
+
+test(prenda_corte_color, all(P == [unico-blanco-lino,
+                                   chico-rojo-algodon, chico-rojo-lana])) :-
+    prenda_corte_color(T, C, M),
+    P = T-C-M.
+
+test(prenda_corte_final, all(P == [unico-blanco-lino,
+                                   chico-rojo-algodon])) :-
+    prenda_corte_final(T, C, M),
+    P = T-C-M.
+
 :- end_tests(soluciones).

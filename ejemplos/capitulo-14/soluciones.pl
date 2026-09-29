@@ -4,6 +4,7 @@
 %
 %?- signo(-3, S).
 %?- aprobadas_de(101, Materia).
+%?- reemplazo(b, [a, b, c, b], z, L).
 
 % --- Ejercicio 3 -----------------------------------------------------------
 
@@ -111,3 +112,14 @@ vencido(Id) :-
 %   A y B unifican. Liga variables de los dos: sus argumentos son ?, no @.
 iguala(A, B) :-
     A = B.
+
+% --- Ejercicio 15 ----------------------------------------------------------
+
+%!  reemplazo(?Viejo, +Lista:list, ?Nuevo, -Resultado:list) is nondet.
+%!  reemplazo(?Viejo, -Lista:list, ?Nuevo, +Resultado:list) is nondet.
+%
+%   Resultado es Lista con una aparición de Viejo reemplazada por Nuevo. Si
+%   Viejo aparece varias veces, hay una respuesta por cada aparición.
+reemplazo(Viejo, [Viejo|Resto], Nuevo, [Nuevo|Resto]).
+reemplazo(Viejo, [Otro|Resto], Nuevo, [Otro|Resto2]) :-
+    reemplazo(Viejo, Resto, Nuevo, Resto2).

@@ -315,6 +315,9 @@ Responder s o n.
 R = si.
 ```
 
+`string_lower(Texto, Minusculas)` pasa una cadena a minúsculas; por eso
+`si_no/2` enumera solo las formas en minúsculas.
+
 Los predicados reciben el stream de entrada como argumento, en lugar de leer
 siempre de `user_input`. En el programa es `user_input`; en las pruebas, un
 stream sobre una cadena, creado con `open_string/2`, que contiene las
@@ -373,8 +376,10 @@ Salida = "",
 Estado = exit(3).
 ```
 
-`path(swipl)` busca el programa en los directorios del `PATH`, en Windows y en
-Linux. Los argumentos van en una lista, cada uno por separado, y no pasan por
+`read_string(Out, _, Salida)` lee lo que queda en el stream `Out`, hasta el
+final, como una cadena; el segundo argumento, libre, queda ligado a su
+longitud. `path(swipl)` busca el programa en los directorios del `PATH`, en
+Windows y en Linux. Los argumentos van en una lista, cada uno por separado, y no pasan por
 el intérprete de comandos del sistema: un nombre con espacios o con comillas
 llega intacto. `shell/2` ejecuta, en cambio, una línea completa con el
 intérprete de comandos —`cmd.exe` en Windows, `sh` en Linux—, y la misma línea
@@ -384,7 +389,8 @@ interactivos.
 Ejecutar un programa en otro proceso es también la forma de probarlo
 completo, con sus argumentos, su salida y su código de salida. `contar.plt`
 tiene un predicado auxiliar que ejecuta `swipl contar.pl` con los argumentos
-de cada prueba:
+de cada prueba. La ruta de `contar.pl` la da `source_file/2`, que relaciona un
+predicado cargado con el archivo que lo define:
 
 ```prolog
 test(sin_archivos, true(E == exit(1))) :-
@@ -455,7 +461,9 @@ Dias = 208.
 F = date(2026, 3, 2).
 ```
 
-El día 61 de enero no existe, y `date_time_stamp/2` lo acepta igual: lo
+`round(X)` es la función aritmética que da el entero más cercano a `X`:
+`dia_absoluto/2` la usa porque la división `/` da un número de punto
+flotante. El día 61 de enero no existe, y `date_time_stamp/2` lo acepta igual: lo
 convierte en el 2 de marzo, contando los días de febrero de ese año. Los años
 bisiestos y los cambios de mes y de año quedan a cargo de la biblioteca. Para
 que los nombres no dependan del sistema, `fecha.pl` los toma de tablas
@@ -665,7 +673,7 @@ correr(Palabras, Opciones, Codigo) :-
 ```
 
 Con `--estado=ARCHIVO`, el programa carga el estado guardado antes de
-ejecutar la orden, y lo guarda al terminar, con los predicados del
+ejecutar la orden, si `exists_file/1` confirma que el archivo existe, y lo guarda al terminar, con los predicados del
 [capítulo 27](../capitulo-27-archivos-streams-y-formatos/index.md#2711-el-proyecto-el-borde-con-los-archivos). Así, una inscripción hecha en una ejecución se ve en la
 siguiente:
 
@@ -737,8 +745,11 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | `print_message/2`, `prolog:message//1` | mensajes con nivel, en `user_error` |
 | `ansi_format/3` | colores en la terminal |
 | `user_input`, `read_line_to_string/2`, `prompt/2`, `get_single_char/1` | leer del teclado |
-| `process_create/3`, `process_wait/2` | ejecutar otro programa y leer su salida |
-| `get_time/1`, `stamp_date_time/3`, `date_time_stamp/2`, `format_time/3` | fecha y hora |
+| `string_lower/2`, `writeln/1` | una cadena en minúsculas; escribir un término y un salto de línea |
+| `process_create/3`, `process_wait/2`, `read_string/3` | ejecutar otro programa y leer su salida |
+| `exists_file/1`, `file_base_name/2`, `source_file/2` | si existe un archivo; el último componente de una ruta; el archivo que define un predicado |
+| `get_time/1`, `stamp_date_time/3`, `date_time_stamp/2`, `format_time/3`, `round/1` | fecha y hora; `round/1`, el entero más cercano, en `is/2` |
+| `ord_del_element/3` | quitar un elemento de un conjunto ordenado (solución 14) |
 | `current_prolog_flag(windows, true)` | distinguir el sistema, en un solo lugar |
 | **[Patrón 38](../patrones.md#38-programa-de-linea-de-comandos)** | programa de línea de comandos |
 

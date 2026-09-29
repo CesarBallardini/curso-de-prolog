@@ -143,7 +143,9 @@ salida de errores, que SWI-Prolog tiene abierta siempre, y no en la salida
 estándar, donde el programa escribe sus respuestas; `comprobar_datos/0` escribe
 así sus advertencias. La prueba `sin_advertencias` verifica que con los datos
 del proyecto no se escribe nada, y `con_vacantes_negativas` captura lo escrito
-en la salida de errores con una materia de vacantes negativas. El
+en la salida de errores con una materia de vacantes negativas: dentro de
+`with_output_to/2`, `current_output/1` liga su argumento al stream de la salida
+actual, que es la capturada, y la prueba le da el alias `user_error`. El
 [capítulo 25](../capitulo-25-errores-y-excepciones/index.md#257-mensajes-para-el-usuario)
 cambia estas advertencias por `print_message/2`, que separa el término del
 mensaje de su texto, y el [capítulo 27](../capitulo-27-archivos-streams-y-formatos/index.md#271-streams)
@@ -231,7 +233,8 @@ modifiquen. Que solo `datos` lo haga es una convención del programa —el
 `file_search_path/2` es un predicado de `user` al que cada biblioteca agrega
 cláusulas: por eso se declara `multifile`. El directorio se calcula a partir
 del de este archivo, con `prolog_load_context/2`, para que el alias funcione
-desde cualquier lugar.
+desde cualquier lugar: mientras se carga un archivo,
+`prolog_load_context(directory, D)` liga `D` al directorio de ese archivo.
 
 ## 11
 

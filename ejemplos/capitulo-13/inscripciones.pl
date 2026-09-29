@@ -3,7 +3,7 @@
 % Capítulo 13 - El proyecto Inscripciones: el primer archivo.
 %
 % Los datos de un sistema de inscripción a las materias de una carrera: los
-% mismos hechos que el capítulo 40 traduce desde SQL. Todavía no hay reglas:
+% mismos hechos que el capítulo 42 traduce desde SQL. Todavía no hay reglas:
 % este archivo es el punto de partida del proyecto de la parte II.
 %
 %?- inscripcion(101, Materia, Nota).

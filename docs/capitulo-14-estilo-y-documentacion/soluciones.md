@@ -305,3 +305,67 @@ Sin repetir los datos, la parte I no puede reunir las respuestas de
 `materia(M, _, 1)` en una lista: solo puede recorrerlas de a una. El
 [capítulo 17](../capitulo-17-todas-las-soluciones/index.md) presenta `findall/3`, que reúne todas las respuestas de un objetivo y
 con el que el predicado ocupa una línea.
+
+## 15
+
+Leído solo como código, el predicado relaciona cuatro términos: el segundo y el
+cuarto son listas que coinciden en todas las posiciones menos en una, donde el
+segundo tiene el primer argumento y el cuarto tiene el tercero. La lectura es
+simétrica: nada indica cuál de las dos listas es el dato y cuál el resultado.
+
+El modo `p(+, +, +, -)` rompe esa simetría: la segunda lista es el resultado.
+Con él, el predicado reemplaza una aparición del primer argumento en la primera
+lista por el tercero; si el primero aparece varias veces, da una respuesta por
+cada aparición, de izquierda a derecha, y si no aparece, falla. La consulta lo
+confirma, con el predicado ya nombrado:
+
+<!-- ejemplo: capitulo-14/soluciones.pl predicado: reemplazo/4 consulta: reemplazo(b, [a, b, c, b], z, L). -->
+```prolog
+%!  reemplazo(?Viejo, +Lista:list, ?Nuevo, -Resultado:list) is nondet.
+%!  reemplazo(?Viejo, -Lista:list, ?Nuevo, +Resultado:list) is nondet.
+%
+%   Resultado es Lista con una aparición de Viejo reemplazada por Nuevo. Si
+%   Viejo aparece varias veces, hay una respuesta por cada aparición.
+reemplazo(Viejo, [Viejo|Resto], Nuevo, [Nuevo|Resto]).
+reemplazo(Viejo, [Otro|Resto], Nuevo, [Otro|Resto2]) :-
+    reemplazo(Viejo, Resto, Nuevo, Resto2).
+```
+
+```prolog
+?- reemplazo(b, [a, b, c, b], z, L).
+L = [a, z, c, b] ;
+L = [a, b, c, z] ;
+false.
+```
+
+El nombre sigue la [sección 14.1](index.md#141-nombres): `reemplazo/4` nombra la relación y no una
+acción, porque el predicado también se usa en el otro sentido, que el
+encabezado declara en una segunda línea de modo:
+
+```prolog
+?- reemplazo(b, L, z, [a, z, c]).
+L = [a, b, c] ;
+false.
+```
+
+Ninguno de los dos modos declara `?` en las listas: con las dos libres, el
+predicado genera respuestas sin fin, con el reemplazo cada vez una posición más
+adelante y el resto de las listas sin determinar. `Viejo` y `Nuevo`
+pueden llegar libres, porque la unificación con los elementos de la lista los
+liga.
+
+`select/4` de la biblioteca define la misma relación, con los argumentos en el
+mismo orden, y da las mismas respuestas en el mismo orden:
+
+```prolog
+?- select(b, [a, b, c, b], z, L).
+L = [a, z, c, b] ;
+L = [a, b, c, z] ;
+false.
+```
+
+La única diferencia está en la definición: `select/4` pasa la lista a un
+auxiliar como primer argumento, la disposición del [Patrón 9](../patrones.md#9-el-argumento-que-indexa-primero). La primera
+lectura del ejercicio muestra por qué el encabezado importa: el código solo
+dice qué términos se relacionan, y los modos dicen cuáles se dan y cuáles se
+obtienen.

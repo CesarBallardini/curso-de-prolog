@@ -125,4 +125,27 @@ test(mismas_celdas, true(S1 == S2)) :-
     msort(D1, S1),
     msort(D2, S2).
 
+% Ejercicio 11
+test(promedios_parciales, true(P == [8, 7, 8])) :-
+    promedios_parciales([8, 6, 10], P).
+
+test(promedios_parciales_vacia, true(P == [])) :-
+    promedios_parciales([], P).
+
+test(promedios_parciales_fraccion, true(P =:= 7.5)) :-
+    promedios_parciales([7, 8], [_, P]).
+
+% Ejercicio 12
+test(producto_interno, true(P == 32)) :-
+    producto_interno([1, 2, 3], [4, 5, 6], P).
+
+test(producto_interno_vacio, true(P == 0)) :-
+    producto_interno([], [], P).
+
+test(producto_interno_largos_distintos, [fail]) :-
+    producto_interno([1, 2, 3], [4, 5], _).
+
+test(producto_interno_largos_distintos_2, [fail]) :-
+    producto_interno([1, 2], [4, 5, 6], _).
+
 :- end_tests(soluciones).

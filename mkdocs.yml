@@ -6,8 +6,8 @@
 
 site_name: Curso de Prolog
 site_description: >-
-  Curso de SWI-Prolog en castellano, autoguiado, para estudiantes de segundo año
-  que nunca vieron Prolog. Todos los ejemplos se abren y se corren en SWISH.
+  Curso de SWI-Prolog en castellano, autoguiado, para estudiantes
+  que nunca vieron Prolog. La mayoría de los ejemplos se abren y se corren en SWISH.
 site_author: César Ballardini
 # The user site CesarBallardini.github.io carries the custom domain
 # katra.ballardini.com.ar, so this project site is served from that domain
@@ -137,6 +137,7 @@ nav:
   - Presentación: index.md
   - Plantillas: plantillas.md
   - Patrones: patrones.md
+  - Lecturas complementarias: lecturas.md
   - Parte I — Introducción:
       - Capítulo 1 — La primera hora:
           - capitulo-01-la-primera-hora/index.md
@@ -243,23 +244,221 @@ nav:
       - Capítulo 34 — Estructuras incompletas y listas diferencia:
           - capitulo-34-estructuras-incompletas-y-listas-diferencia/index.md
           - Soluciones: capitulo-34-estructuras-incompletas-y-listas-diferencia/soluciones.md
+          - Tabla de símbolos: capitulo-34-estructuras-incompletas-y-listas-diferencia/ensamblador.md
       - Capítulo 35 — Transformación de programas y compilación:
           - capitulo-35-transformacion-de-programas-y-compilacion/index.md
           - Soluciones: capitulo-35-transformacion-de-programas-y-compilacion/soluciones.md
+          - Reglas compiladas: capitulo-35-transformacion-de-programas-y-compilacion/experto.md
       - Capítulo 36 — Interfaces de usuario:
           - capitulo-36-interfaces-de-usuario/index.md
           - Soluciones: capitulo-36-interfaces-de-usuario/soluciones.md
+          - Páginas web: capitulo-36-interfaces-de-usuario/web.md
       - Capítulo 37 — Concurrencia y paralelismo:
           - capitulo-37-concurrencia-y-paralelismo/index.md
           - Soluciones: capitulo-37-concurrencia-y-paralelismo/soluciones.md
-      - Capítulo 38 — Tabulación:
-          - capitulo-38-tabulacion/index.md
-          - Soluciones: capitulo-38-tabulacion/soluciones.md
-      - Capítulo 39 — Búsqueda y juegos:
-          - capitulo-39-busqueda-y-juegos/index.md
-          - Soluciones: capitulo-39-busqueda-y-juegos/soluciones.md
-  - Capítulo 40 — Prolog y SQL:
-      - capitulo-40-prolog-y-sql/index.md
-      - Soluciones: capitulo-40-prolog-y-sql/soluciones.md
+          - Paralelismo y motores: capitulo-37-concurrencia-y-paralelismo/paralelismo.md
+          - El servidor HTTP: capitulo-37-concurrencia-y-paralelismo/servidor.md
+      - Capítulo 38 — Semántica de los programas lógicos:
+          - capitulo-38-semantica-de-los-programas-logicos/index.md
+          - Soluciones: capitulo-38-semantica-de-los-programas-logicos/soluciones.md
+          - Resolución SLD y SLDNF: capitulo-38-semantica-de-los-programas-logicos/resolucion.md
+          - Estratificación y semántica bien fundada: capitulo-38-semantica-de-los-programas-logicos/negacion.md
+      - Capítulo 39 — Tabulación:
+          - capitulo-39-tabulacion/index.md
+          - Soluciones: capitulo-39-tabulacion/soluciones.md
+          - Subsunción de respuestas: capitulo-39-tabulacion/subsuncion.md
+          - Tablas incrementales, hilos y costo: capitulo-39-tabulacion/incremental.md
+      - Capítulo 40 — Búsqueda y planificación:
+          - capitulo-40-busqueda-y-planificacion/index.md
+          - Soluciones: capitulo-40-busqueda-y-planificacion/soluciones.md
+          - Ciclos y visitados: capitulo-40-busqueda-y-planificacion/visitados.md
+          - Heurísticas: capitulo-40-busqueda-y-planificacion/heuristicas.md
+          - Planificación: capitulo-40-busqueda-y-planificacion/planificacion.md
+          - La vuelta del Wumpus y el Buscaminas: capitulo-40-busqueda-y-planificacion/aplicaciones.md
+      - Capítulo 41 — Juegos:
+          - capitulo-41-juegos/index.md
+          - Soluciones: capitulo-41-juegos/soluciones.md
+          - Funciones de evaluación y orden: capitulo-41-juegos/evaluacion.md
+          - Profundización progresiva: capitulo-41-juegos/profundizacion.md
+          - Tablas de transposición: capitulo-41-juegos/transposicion.md
+          - El ta-te-ti en la terminal: capitulo-41-juegos/terminal.md
+      - Capítulo 42 — Prolog y SQL:
+          - capitulo-42-prolog-y-sql/index.md
+          - Soluciones: capitulo-42-prolog-y-sql/soluciones.md
+          - Consultas recursivas: capitulo-42-prolog-y-sql/recursion.md
+          - Claves, restricciones y actualizaciones: capitulo-42-prolog-y-sql/restricciones.md
+          - La base en SQLite: capitulo-42-prolog-y-sql/odbc.md
+  - Parte IV — Proyectos:
+      - "Capítulo 43 — Proyecto: resolver ecuaciones":
+          - capitulo-43-proyecto-resolver-ecuaciones/index.md
+          - Soluciones: capitulo-43-proyecto-resolver-ecuaciones/soluciones.md
+          - La forma normal de un polinomio: capitulo-43-proyecto-resolver-ecuaciones/forma-normal.md
+          - El método de Newton y la comprobación: capitulo-43-proyecto-resolver-ecuaciones/newton.md
+      - "Capítulo 44 — Proyecto: una aventura de texto":
+          - capitulo-44-proyecto-aventura-de-texto/index.md
+          - Soluciones: capitulo-44-proyecto-aventura-de-texto/soluciones.md
+          - Órdenes y respuestas en castellano: capitulo-44-proyecto-aventura-de-texto/lenguaje.md
+      - "Capítulo 45 — Proyecto: un compilador":
+          - capitulo-45-proyecto-compilador/index.md
+          - Soluciones: capitulo-45-proyecto-compilador/soluciones.md
+          - Optimización: capitulo-45-proyecto-compilador/optimizacion.md
+          - El intérprete especializado: capitulo-45-proyecto-compilador/especializacion.md
+      - "Capítulo 46 — Proyecto: métodos numéricos":
+          - capitulo-46-proyecto-metodos-numericos/index.md
+          - Soluciones: capitulo-46-proyecto-metodos-numericos/soluciones.md
+      - "Capítulo 47 — Proyecto: aritmética racional y matrices":
+          - capitulo-47-proyecto-aritmetica-racional-matrices/index.md
+          - Soluciones: capitulo-47-proyecto-aritmetica-racional-matrices/soluciones.md
+      - "Capítulo 48 — Proyecto: circuitos lógicos":
+          - capitulo-48-proyecto-circuitos-logicos/index.md
+          - Soluciones: capitulo-48-proyecto-circuitos-logicos/soluciones.md
+          - Verificar con library(clpb): capitulo-48-proyecto-circuitos-logicos/verificacion.md
+          - Circuitos secuenciales: capitulo-48-proyecto-circuitos-logicos/secuenciales.md
+      - "Capítulo 49 — Proyecto: diagnóstico por abducción":
+          - capitulo-49-proyecto-diagnostico-abduccion/index.md
+          - Soluciones: capitulo-49-proyecto-diagnostico-abduccion/soluciones.md
+      - "Capítulo 50 — Proyecto: la FFT simbólica":
+          - capitulo-50-proyecto-fft-simbolica/index.md
+          - Soluciones: capitulo-50-proyecto-fft-simbolica/soluciones.md
+      - "Capítulo 51 — Proyecto: autómatas y expresiones regulares":
+          - capitulo-51-proyecto-automatas-expresiones-regulares/index.md
+          - Soluciones: capitulo-51-proyecto-automatas-expresiones-regulares/soluciones.md
+          - Expresiones regulares y un analizador léxico: capitulo-51-proyecto-automatas-expresiones-regulares/expresiones.md
+          - Transductores: capitulo-51-proyecto-automatas-expresiones-regulares/transductores.md
+          - Autómatas de pila y máquinas de Turing: capitulo-51-proyecto-automatas-expresiones-regulares/pila-y-turing.md
+      - "Capítulo 52 — Proyecto: un intérprete perezoso de reescritura de términos":
+          - capitulo-52-proyecto-interprete-perezoso-reescritura-terminos/index.md
+          - Soluciones: capitulo-52-proyecto-interprete-perezoso-reescritura-terminos/soluciones.md
+          - Números de descripción: capitulo-52-proyecto-interprete-perezoso-reescritura-terminos/numeros.md
+      - "Capítulo 53 — Proyecto: morfología del castellano":
+          - capitulo-53-proyecto-morfologia-castellano/index.md
+          - Soluciones: capitulo-53-proyecto-morfologia-castellano/soluciones.md
+          - Dos niveles con transductores: capitulo-53-proyecto-morfologia-castellano/dos-niveles.md
+      - "Capítulo 54 — Proyecto: traducción castellano–inglés":
+          - capitulo-54-proyecto-traduccion-castellanoingles/index.md
+          - Soluciones: capitulo-54-proyecto-traduccion-castellanoingles/soluciones.md
+      - "Capítulo 55 — Proyecto: diálogos por plantillas":
+          - capitulo-55-proyecto-dialogos-plantillas/index.md
+          - Soluciones: capitulo-55-proyecto-dialogos-plantillas/soluciones.md
+          - Una agenda en castellano: capitulo-55-proyecto-dialogos-plantillas/agenda.md
+          - ANALOGY: capitulo-55-proyecto-dialogos-plantillas/analogia.md
+          - Guiones: capitulo-55-proyecto-dialogos-plantillas/guiones.md
+      - "Capítulo 56 — Proyecto: órdenes en castellano":
+          - capitulo-56-proyecto-ordenes-castellano/index.md
+          - Soluciones: capitulo-56-proyecto-ordenes-castellano/soluciones.md
+          - El plan sobre una carpeta real: capitulo-56-proyecto-ordenes-castellano/ejecucion.md
+      - "Capítulo 57 — Proyecto: un intérprete funcional":
+          - capitulo-57-proyecto-interprete-funcional/index.md
+          - Soluciones: capitulo-57-proyecto-interprete-funcional/soluciones.md
+      - "Capítulo 58 — Proyecto: interpretación abstracta":
+          - capitulo-58-proyecto-interpretacion-abstracta/index.md
+          - Soluciones: capitulo-58-proyecto-interpretacion-abstracta/soluciones.md
+      - "Capítulo 59 — Proyecto: análisis de programas":
+          - capitulo-59-proyecto-analisis-programas/index.md
+          - Soluciones: capitulo-59-proyecto-analisis-programas/soluciones.md
+          - Un intérprete que cuenta: capitulo-59-proyecto-analisis-programas/perfil.md
+          - Comparación con prolog_xref: capitulo-59-proyecto-analisis-programas/xref.md
+      - "Capítulo 60 — Proyecto: un intérprete dirigido por patrones":
+          - capitulo-60-proyecto-interprete-dirigido-patrones/index.md
+          - Soluciones: capitulo-60-proyecto-interprete-dirigido-patrones/soluciones.md
+          - Un demostrador por resolución: capitulo-60-proyecto-interprete-dirigido-patrones/resolucion.md
+          - La terminación: capitulo-60-proyecto-interprete-dirigido-patrones/terminacion.md
+      - "Capítulo 61 — Proyecto: una máquina de Prolog":
+          - capitulo-61-proyecto-maquina-prolog/index.md
+          - Soluciones: capitulo-61-proyecto-maquina-prolog/soluciones.md
+          - Una pila de alternativas: capitulo-61-proyecto-maquina-prolog/alternativas.md
+          - Los programas de otros capítulos: capitulo-61-proyecto-maquina-prolog/archivos.md
+      - "Capítulo 62 — Proyecto: un demostrador de teoremas":
+          - capitulo-62-proyecto-demostrador-teoremas/index.md
+          - Soluciones: capitulo-62-proyecto-demostrador-teoremas/soluciones.md
+          - La lógica de predicados: capitulo-62-proyecto-demostrador-teoremas/primer-orden.md
+          - Tres maneras de decidir: capitulo-62-proyecto-demostrador-teoremas/comparacion.md
+      - "Capítulo 63 — Proyecto: un sistema de producción":
+          - capitulo-63-proyecto-sistema-produccion/index.md
+          - Soluciones: capitulo-63-proyecto-sistema-produccion/soluciones.md
+          - Un configurador: capitulo-63-proyecto-sistema-produccion/configurador.md
+      - "Capítulo 64 — Proyecto: el algoritmo Rete":
+          - capitulo-64-proyecto-algoritmo-rete/index.md
+          - Soluciones: capitulo-64-proyecto-algoritmo-rete/soluciones.md
+          - La medición y las pruebas alfa: capitulo-64-proyecto-algoritmo-rete/medicion.md
+      - "Capítulo 65 — Proyecto: razonamiento rebatible":
+          - capitulo-65-proyecto-razonamiento-rebatible/index.md
+          - Soluciones: capitulo-65-proyecto-razonamiento-rebatible/soluciones.md
+          - Por qué sí y por qué no: capitulo-65-proyecto-razonamiento-rebatible/explicaciones.md
+          - La anticipación de los rivales: capitulo-65-proyecto-razonamiento-rebatible/anticipacion.md
+          - Tres lecturas de una regla con excepciones: capitulo-65-proyecto-razonamiento-rebatible/comparacion.md
+      - "Capítulo 66 — Proyecto: evidencia y árboles de decisión":
+          - capitulo-66-proyecto-evidencia-arboles-decision/index.md
+          - Soluciones: capitulo-66-proyecto-evidencia-arboles-decision/soluciones.md
+          - El árbol de preguntas y su compilación: capitulo-66-proyecto-evidencia-arboles-decision/arbol.md
+      - "Capítulo 67 — Proyecto: aprender reglas de ejemplos":
+          - capitulo-67-proyecto-aprender-reglas-ejemplos/index.md
+          - Soluciones: capitulo-67-proyecto-aprender-reglas-ejemplos/soluciones.md
+          - La mejor cláusula y la recursión: capitulo-67-proyecto-aprender-reglas-ejemplos/recursion.md
+      - "Capítulo 68 — Proyecto: espacios de versiones y generalización por explicación":
+          - capitulo-68-proyecto-espacios-versiones-generalizacion-explicacion/index.md
+          - Soluciones: capitulo-68-proyecto-espacios-versiones-generalizacion-explicacion/soluciones.md
+          - Explicar un ejemplo y generalizar la explicación: capitulo-68-proyecto-espacios-versiones-generalizacion-explicacion/explicacion.md
+      - "Capítulo 69 — Proyecto: un perceptrón":
+          - capitulo-69-proyecto-perceptron/index.md
+          - Soluciones: capitulo-69-proyecto-perceptron/soluciones.md
+      - "Capítulo 70 — Proyecto: planificación por regresión":
+          - capitulo-70-proyecto-planificacion-regresion/index.md
+          - Soluciones: capitulo-70-proyecto-planificacion-regresion/soluciones.md
+          - "El mundo del capítulo 40": capitulo-70-proyecto-planificacion-regresion/comparacion.md
+      - "Capítulo 71 — Proyecto: grafos Y/O":
+          - capitulo-71-proyecto-grafos-o/index.md
+          - Soluciones: capitulo-71-proyecto-grafos-o/soluciones.md
+      - "Capítulo 72 — Proyecto: planificación de tareas":
+          - capitulo-72-proyecto-planificacion-tareas/index.md
+          - Soluciones: capitulo-72-proyecto-planificacion-tareas/soluciones.md
+          - El camino crítico: capitulo-72-proyecto-planificacion-tareas/camino.md
+      - "Capítulo 73 — Proyecto: horarios para Inscripciones":
+          - capitulo-73-proyecto-horarios-inscripciones/index.md
+          - Soluciones: capitulo-73-proyecto-horarios-inscripciones/soluciones.md
+      - "Capítulo 74 — Proyecto: el cubo de Rubik":
+          - capitulo-74-proyecto-cubo-rubik/index.md
+          - Soluciones: capitulo-74-proyecto-cubo-rubik/soluciones.md
+          - El cubo como espacio de estados: capitulo-74-proyecto-cubo-rubik/espacio.md
+      - "Capítulo 75 — Proyecto: rompecabezas con simetrías":
+          - capitulo-75-proyecto-rompecabezas-simetrias/index.md
+          - Soluciones: capitulo-75-proyecto-rompecabezas-simetrias/soluciones.md
+      - "Capítulo 76 — Proyecto: robots, laberintos y el caballo":
+          - capitulo-76-proyecto-robots-laberintos-caballo/index.md
+          - Soluciones: capitulo-76-proyecto-robots-laberintos-caballo/soluciones.md
+      - "Capítulo 77 — Proyecto: el mundo del Wumpus":
+          - capitulo-77-proyecto-mundo-wumpus/index.md
+          - Soluciones: capitulo-77-proyecto-mundo-wumpus/soluciones.md
+          - Los enfoques comparados: capitulo-77-proyecto-mundo-wumpus/enfoques.md
+      - "Capítulo 78 — Proyecto: Kalah, Mastermind y Nim":
+          - capitulo-78-proyecto-kalah-mastermind-nim/index.md
+          - Soluciones: capitulo-78-proyecto-kalah-mastermind-nim/soluciones.md
+      - "Capítulo 79 — Proyecto: un lenguaje de consejos para el ajedrez":
+          - capitulo-79-proyecto-lenguaje-consejos-ajedrez/index.md
+          - Soluciones: capitulo-79-proyecto-lenguaje-consejos-ajedrez/soluciones.md
+      - "Capítulo 80 — Proyecto: el etiquetado de Waltz":
+          - capitulo-80-proyecto-etiquetado-waltz/index.md
+          - Soluciones: capitulo-80-proyecto-etiquetado-waltz/soluciones.md
+      - "Capítulo 81 — Proyecto: una colección de problemas":
+          - capitulo-81-proyecto-coleccion-problemas/index.md
+          - Soluciones: capitulo-81-proyecto-coleccion-problemas/soluciones.md
+      - "Capítulo 82 — Proyecto: criptografía":
+          - capitulo-82-proyecto-criptografia/index.md
+          - Soluciones: capitulo-82-proyecto-criptografia/soluciones.md
+      - "Capítulo 83 — Proyecto: procesamiento de textos":
+          - capitulo-83-proyecto-procesamiento-textos/index.md
+          - Soluciones: capitulo-83-proyecto-procesamiento-textos/soluciones.md
+      - "Capítulo 84 — Proyecto: análisis de registros":
+          - capitulo-84-proyecto-analisis-registros/index.md
+          - Soluciones: capitulo-84-proyecto-analisis-registros/soluciones.md
+      - "Capítulo 85 — Proyecto: un motor Datalog":
+          - capitulo-85-proyecto-motor-datalog/index.md
+          - Soluciones: capitulo-85-proyecto-motor-datalog/soluciones.md
+      - "Capítulo 86 — Proyecto: un mini-SQL en Prolog":
+          - capitulo-86-proyecto-mini-sql-prolog/index.md
+          - Soluciones: capitulo-86-proyecto-mini-sql-prolog/soluciones.md
+      - "Capítulo 87 — Proyecto: preguntas en castellano":
+          - capitulo-87-proyecto-preguntas-en-castellano/index.md
+          - Soluciones: capitulo-87-proyecto-preguntas-en-castellano/soluciones.md
   - Apéndice B — Los capítulos en PDF: pdf.md
   - Licencia: licencia.md

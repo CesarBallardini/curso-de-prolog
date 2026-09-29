@@ -7,8 +7,11 @@
 
 % --- Ejercicio 2 -----------------------------------------------------------
 
+% gato(X): X es un gato.
 gato(felix).
 gato(gaturro).
+
+% perro(X): X es un perro.
 perro(rocco).
 
 %!  animal(?X) is nondet.
@@ -39,8 +42,11 @@ tiene_nieto(A) :-
 
 % --- Ejercicio 4 -----------------------------------------------------------
 
+% socio(P): P es socio.
 socio(ana).
 socio(pedro).
+
+% invita(S, P): S invita a P.
 invita(ana, luis).
 invita(pedro, eva).
 
@@ -67,9 +73,12 @@ paridad(N, impar) :-
 
 % --- Ejercicio 7 -----------------------------------------------------------
 
+% persona(P): P es una de las personas de la base.
 persona(ana).
 persona(luis).
 persona(eva).
+
+% tiene(P, M): P tiene la mascota M.
 tiene(ana, felix).
 
 %!  sin_mascota(?P) is nondet.
@@ -88,6 +97,7 @@ sin_mascota(P) :-
 tiene_mascota(P) :-
     tiene_gato(P).
 
+% tiene_gato(P): P tiene un gato.
 tiene_gato(ana).
 tiene_gato(eva).
 

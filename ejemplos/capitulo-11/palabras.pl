@@ -2,9 +2,10 @@
 
 % Capítulo 11 - Texto: buscar, dividir, unir y comparar.
 %
-% sub_atom/5 y atom_concat/3 buscan dentro de un átomo; split_string/4 y
-% atomic_list_concat/3 dividen y unen; upcase_atom/2 y normalize_space/2
-% normalizan antes de comparar.
+% sub_atom/5 y atom_concat/3 buscan dentro de un átomo, y sub_string/5 y
+% string_concat/3 dentro de una cadena; split_string/4 y atomic_list_concat/3
+% dividen y unen; upcase_atom/2 y normalize_space/2 normalizan antes de
+% comparar.
 %
 %?- empieza_con(prolog, pro).
 %?- contar_palabras("el  perro   ladra", N).
@@ -40,6 +41,20 @@ contar(X, [X|Resto], N) :-
 contar(X, [Y|Resto], N) :-
     X \== Y,
     contar(X, Resto, N).
+
+%!  sin_prefijo(?Prefijo, +Texto, ?Resto) is nondet.
+%!  sin_prefijo(+Prefijo, +Texto, -Resto) is semidet.
+%
+%   Texto es la cadena Prefijo seguida de la cadena Resto.
+sin_prefijo(Prefijo, Texto, Resto) :-
+    string_concat(Prefijo, Resto, Texto).
+
+%!  aparece_en(+Texto, +Buscado, -Posicion) is nondet.
+%
+%   Buscado aparece en Texto después de sus primeros Posicion caracteres.
+%   Una respuesta por aparición.
+aparece_en(Texto, Buscado, Posicion) :-
+    sub_string(Texto, Posicion, _, _, Buscado).
 
 %!  contar_palabras(+Texto, -N) is det.
 %

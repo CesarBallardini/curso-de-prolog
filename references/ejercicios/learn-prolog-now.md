@@ -962,7 +962,7 @@
 ### LPN-11.3 — Suma 1..n con memorización: `sigma/2`
 - **Fuente:** §11.3, Ejercicio 11.3. https://lpn.swi-prolog.org/lpnpage.php?pagetype=html&pageid=lpn-htmlse50
 - **Tema:** 7, 10
-- **Capítulos:** 20, 38
+- **Capítulos:** 20, 39
 - **Dificultad:** 2
 - **Solución:** propia, verificada:
   ```prolog

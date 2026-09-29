@@ -24,7 +24,7 @@ Al terminar el capítulo, el lector puede:
 !!! info "Tiempo estimado"
     Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **0:55 h**.
     Resolver los 7 ejercicios marcados con ★: **2:00 h**.
-    Resolver los 17 ejercicios del final: **5:25 h**.
+    Resolver los 18 ejercicios del final: **5:30 h**.
 
 ## 7.1 Una lista es un término
 
@@ -306,7 +306,8 @@ pegar([X|RestoA], B, [X|RestoC]) :-
 ```
 
 Este predicado requiere una lectura detenida, porque es el primero en el que la
-lista **se construye en la cabeza de la regla**.
+lista **se construye en la cabeza de la regla**, la técnica llamada
+*construcción en la cabeza*.
 
 El caso base establece que la concatenación de la lista vacía y `B` es `B`, sin
 modificaciones. El caso recursivo establece lo siguiente: si el primer elemento
@@ -349,7 +350,7 @@ Todos = [ana, luis, eva].
     ```
 
     La lista resultante se escribe en la **cabeza**; no se construye en el
-    cuerpo. Cada llamada aporta el primer elemento del resultado, y la recursión
+    cuerpo. Es la técnica llamada *construcción en la cabeza*. Cada llamada aporta el primer elemento del resultado, y la recursión
     completa el resto.
 
     Las dos partes que cambian de un predicado a otro son el caso base —qué
@@ -650,6 +651,15 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     [sección 7.7](#77-predicados-predefinidos). Consultarlo en los dos sentidos:
     qué materia ocupa la posición 3, y en qué posición está `fisica`. Después
     determinar qué responde `nth1(N, [a, b, a], a).` y por qué.
+18. **(1)** Determinar, sin ejecutarlas, qué responde cada una de estas
+    consultas, cuyas listas tienen como elementos otras listas o términos
+    compuestos. Verificarlas después:
+    `[[a, b], c] = [X|Y].` · `[[a, b], c] = [[X|Y]|Z].` ·
+    `[fecha(2021, 5, 3), ana] = [fecha(A, M, D)|R].` ·
+    `[mascota(gato, felix)] = [mascota(E, N), Otro].` ·
+    `[a, b|c] = [X|Y].` · `[a, b|c] = [a, b, c].`
+    La penúltima unifica, pero `[a, b|c]` no es una lista: explicar por qué, a
+    partir de la definición de la [sección 7.1](#71-una-lista-es-un-termino).
 
 ## Resumen
 

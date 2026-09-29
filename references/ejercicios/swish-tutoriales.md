@@ -373,7 +373,7 @@ El notebook traduce a Prolog las consultas SQL del curso de bases de datos de St
 ### SWISH-33 — Selección y proyección
 - **Fuente:** Robert Laing, "An introduction to Prolog for SQL programers", "Basic selection". https://swish.swi-prolog.org/p/sql2prolog.swinb
 - **Tema:** 1, 7, 11
-- **Capítulos:** 8, 40
+- **Capítulos:** 8, 42
 - **Dificultad:** 1
 - **Solución:** en el notebook; verificada: `student(SID,SName,GPA,_SizeHS), GPA > 3.6.` da 6 filas.
 - **SWISH:** sí
@@ -383,7 +383,7 @@ El notebook traduce a Prolog las consultas SQL del curso de bases de datos de St
 ### SWISH-34 — Join y DISTINCT
 - **Fuente:** Laing, "Table joins". https://swish.swi-prolog.org/p/sql2prolog.swinb
 - **Tema:** 2, 11
-- **Capítulos:** 3, 40
+- **Capítulos:** 3, 42
 - **Dificultad:** 1
 - **Solución:** en el notebook; verificada: `student(_ID,SName,_,_), apply(_ID,_,Major,_)` da 19 filas, y con `distinct([SName,Major], (...))` quedan 13.
 - **SWISH:** sí
@@ -393,7 +393,7 @@ El notebook traduce a Prolog las consultas SQL del curso de bases de datos de St
 ### SWISH-35 — Join con condiciones
 - **Fuente:** Laing, "Table joins" (sizeHS < 1000, CS, Stanford). https://swish.swi-prolog.org/p/sql2prolog.swinb
 - **Tema:** 7, 11
-- **Capítulos:** 8, 40
+- **Capítulos:** 8, 42
 - **Dificultad:** 1
 - **Solución:** en el notebook; verificada: da `Helen 3.7 Y` e `Irene 3.9 N`.
 - **SWISH:** sí
@@ -402,7 +402,7 @@ El notebook traduce a Prolog las consultas SQL del curso de bases de datos de St
 ### SWISH-36 — Campus grandes con postulantes a CS
 - **Fuente:** Laing, "Table joins". https://swish.swi-prolog.org/p/sql2prolog.swinb
 - **Tema:** 11
-- **Capítulos:** 8, 40
+- **Capítulos:** 8, 42
 - **Dificultad:** 1
 - **Solución:** en el notebook; verificada: `Berkeley` y `Cornell`.
 - **SWISH:** sí
@@ -411,7 +411,7 @@ El notebook traduce a Prolog las consultas SQL del curso de bases de datos de St
 ### SWISH-37 — ORDER BY
 - **Fuente:** Laing, "order by". https://swish.swi-prolog.org/p/sql2prolog.swinb
 - **Tema:** 9, 11
-- **Capítulos:** 40, 17, 22
+- **Capítulos:** 42, 17, 22
 - **Dificultad:** 2
 - **Solución:** en el notebook: `order_by([desc(GPA)], Goal)` y `order_by([desc(GPA), asc(Enrollment)], Goal)`.
 - **SWISH:** sí
@@ -421,7 +421,7 @@ El notebook traduce a Prolog las consultas SQL del curso de bases de datos de St
 ### SWISH-38 — LIKE con `sub_atom/5`
 - **Fuente:** Laing, "Searching for substrings". https://swish.swi-prolog.org/p/sql2prolog.swinb
 - **Tema:** 11
-- **Capítulos:** 11, 40
+- **Capítulos:** 11, 42
 - **Dificultad:** 1
 - **Solución:** en el notebook; verificada: `apply(SID,_,Major,_), sub_atom(Major,_,_,_,bio)` da 5 filas.
 - **SWISH:** sí
@@ -431,7 +431,7 @@ El notebook traduce a Prolog las consultas SQL del curso de bases de datos de St
 ### SWISH-39 — Columna calculada
 - **Fuente:** Laing, "Arithmetic Functions". https://swish.swi-prolog.org/p/sql2prolog.swinb
 - **Tema:** 7, 11
-- **Capítulos:** 8, 40
+- **Capítulos:** 8, 42
 - **Dificultad:** 1
 - **Solución:** en el notebook: `student(SID,SName,GPA,SizeHS), ScaledGPA is GPA*(SizeHS/1000).`
 - **SWISH:** sí
@@ -440,7 +440,7 @@ El notebook traduce a Prolog las consultas SQL del curso de bases de datos de St
 ### SWISH-40 — Self-join
 - **Fuente:** Laing, "Self joins". https://swish.swi-prolog.org/p/sql2prolog.swinb
 - **Tema:** 11
-- **Capítulos:** 8, 40
+- **Capítulos:** 8, 42
 - **Dificultad:** 1
 - **Solución:** en el notebook; verificada: 8 pares.
 - **SWISH:** sí
@@ -450,7 +450,7 @@ El notebook traduce a Prolog las consultas SQL del curso de bases de datos de St
 ### SWISH-41 — UNION, INTERSECT y EXCEPT
 - **Fuente:** Laing, "Union", "Intersection", "Except". https://swish.swi-prolog.org/p/sql2prolog.swinb
 - **Tema:** 2, 8, 11
-- **Capítulos:** 10, 40
+- **Capítulos:** 10, 42
 - **Dificultad:** 2
 - **Solución:** en el notebook; verificada: la unión con `;`; la intersección con `,` (con `distinct` da `[123,345]`); la diferencia con `\+`: `apply(SID,_,'CS',_), \+ apply(SID,_,'EE',_)`.
 - **SWISH:** sí
@@ -460,7 +460,7 @@ El notebook traduce a Prolog las consultas SQL del curso de bases de datos de St
 ### SWISH-42 — Subconsultas IN, EXISTS y NOT EXISTS
 - **Fuente:** Laing, "Subqueries in the where clause". https://swish.swi-prolog.org/p/sql2prolog.swinb
 - **Tema:** 8, 9, 11
-- **Capítulos:** 10, 40, 17
+- **Capítulos:** 10, 42, 17
 - **Dificultad:** 2
 - **Solución:** en el notebook; verificada: el colegio más grande, `college(C,_,E1), \+ (college(_,_,E2), E2 > E1)`, da `Berkeley`.
 - **SWISH:** sí
@@ -470,7 +470,7 @@ El notebook traduce a Prolog las consultas SQL del curso de bases de datos de St
 ### SWISH-43 — Subconsulta en FROM
 - **Fuente:** Laing, "Subqueries in the from clause". https://swish.swi-prolog.org/p/sql2prolog.swinb
 - **Tema:** 7, 11
-- **Capítulos:** 8, 40
+- **Capítulos:** 8, 42
 - **Dificultad:** 1
 - **Solución:** en el notebook; verificada: 7 estudiantes con |scaledGPA − GPA| > 1.
 - **SWISH:** sí
@@ -480,7 +480,7 @@ El notebook traduce a Prolog las consultas SQL del curso de bases de datos de St
 ### SWISH-44 — Subconsulta en SELECT (máximo GPA por colegio)
 - **Fuente:** Laing, "Subqueries in the select clause". https://swish.swi-prolog.org/p/sql2prolog.swinb
 - **Tema:** 9, 11
-- **Capítulos:** 17, 40
+- **Capítulos:** 17, 42
 - **Dificultad:** 2
 - **Solución:** **la del notebook es incorrecta:** compara el GPA del postulante con el de **todos** los estudiantes, no con el de los postulantes a ese colegio. Con los datos originales el resultado coincide por casualidad (todos tienen un postulante con 3.9). Si se agrega `college('Rice','TX',4000)` y `apply(789,'Rice','CS','Y')`, Rice no aparece (verificado). Versión correcta, verificada: `college(C,_,_), aggregate_all(max(G), (apply(S,C,_,_), student(S,_,G,_)), Max).`
 - **SWISH:** sí
@@ -490,7 +490,7 @@ El notebook traduce a Prolog las consultas SQL del curso de bases de datos de St
 ### SWISH-45 — Inner, natural y three-way join
 - **Fuente:** Laing, "Inner Join", "Three-way Inner Join", "Natural Join With Additional Conditions". https://swish.swi-prolog.org/p/sql2prolog.swinb
 - **Tema:** 11
-- **Capítulos:** 3, 40
+- **Capítulos:** 3, 42
 - **Dificultad:** 1
 - **Solución:** en el notebook.
 - **SWISH:** sí
@@ -500,7 +500,7 @@ El notebook traduce a Prolog las consultas SQL del curso de bases de datos de St
 ### SWISH-46 — Outer joins y `null`
 - **Fuente:** Laing, "Left Outer Join", "Right Outer Join", "Full Outer Join". https://swish.swi-prolog.org/p/sql2prolog.swinb
 - **Tema:** 8, 10, 11
-- **Capítulos:** 10, 40, 20
+- **Capítulos:** 10, 42, 20
 - **Dificultad:** 2
 - **Solución:** en el notebook: una regla por caso, con `\+` para las filas sin pareja, y `assertz/1` para agregar postulaciones de un SID inexistente.
 - **SWISH:** sí
@@ -510,7 +510,7 @@ El notebook traduce a Prolog las consultas SQL del curso de bases de datos de St
 ### SWISH-47 — Agregación: AVG, MIN y COUNT (DISTINCT)
 - **Fuente:** Laing, "Aggregation". https://swish.swi-prolog.org/p/sql2prolog.swinb
 - **Tema:** 9, 11
-- **Capítulos:** 17, 40
+- **Capítulos:** 17, 42
 - **Dificultad:** 2
 - **Solución:** en el notebook; verificada: el promedio de GPA da 3.5666...; cuántos estudiantes se postularon a Cornell, con `aggregate_all(count, SID, apply(SID,'Cornell',_,_), N)`, da 3, y sin discriminador da 6.
 - **SWISH:** sí
@@ -520,7 +520,7 @@ El notebook traduce a Prolog las consultas SQL del curso de bases de datos de St
 ### SWISH-48 — GROUP BY y HAVING
 - **Fuente:** Laing, "group by queries", "having". https://swish.swi-prolog.org/p/sql2prolog.swinb
 - **Tema:** 9, 11
-- **Capítulos:** 17, 40
+- **Capítulos:** 17, 42
 - **Dificultad:** 2
 - **Solución:** en el notebook; verificada: colegios con menos de 5 postulaciones: `Berkeley` (3) y `MIT` (4).
 - **SWISH:** sí
@@ -530,7 +530,7 @@ El notebook traduce a Prolog las consultas SQL del curso de bases de datos de St
 ### SWISH-49 — `null` y comparaciones
 - **Fuente:** Laing, "null". https://swish.swi-prolog.org/p/sql2prolog.swinb
 - **Tema:** 3, 7, 11
-- **Capítulos:** 10, 40
+- **Capítulos:** 10, 42
 - **Dificultad:** 2
 - **Solución:** en el notebook: filtrar con `number(GPA), GPA > 3.5`, o comparar con `@>` en el orden estándar.
 - **SWISH:** sí
@@ -540,7 +540,7 @@ El notebook traduce a Prolog las consultas SQL del curso de bases de datos de St
 ### SWISH-50 — Insertar y borrar filas
 - **Fuente:** Laing, "Data Modification" (insert, delete). https://swish.swi-prolog.org/p/sql2prolog.swinb
 - **Tema:** 9, 10, 11
-- **Capítulos:** 20, 40, 17
+- **Capítulos:** 20, 42, 17
 - **Dificultad:** 2
 - **Solución:** en el notebook: `assertz/1` dentro de `forall/2` para `insert ... select`, y `retract/1` dentro de `forall/2` para `delete`.
 - **SWISH:** sí (los cambios duran solo una consulta)
@@ -574,7 +574,7 @@ Casi todos son programas de demostración, con consultas sugeridas en un comenta
 ### SWISH-53 — Base de películas: consultas
 - **Fuente:** SWISH, ejemplo "Movie database", comentario "EXERCISES, Part 1". https://swish.swi-prolog.org/example/movies.pl
 - **Tema:** 1, 2, 7
-- **Capítulos:** 2, 8, 40
+- **Capítulos:** 2, 8, 42
 - **Dificultad:** 1
 - **Solución:** en el mismo archivo (bloque `<examples>`, que el autor sugiere borrar antes de dárselo a los estudiantes); verificada: `movie(american_beauty,Y)` da 1999; hay 3 películas del año 2000; la película con John Goodman y Jeff Bridges es `the_big_lebowski`.
 - **SWISH:** sí
@@ -654,7 +654,7 @@ Casi todos son programas de demostración, con consultas sugeridas en un comenta
 ### SWISH-61 — N reinas con backtracking: `queens.pl`
 - **Fuente:** SWISH, ejemplo "N-Queens (traditional)" (R. A. O'Keefe). https://swish.swi-prolog.org/example/queens.pl
 - **Tema:** 4, X
-- **Capítulos:** 39, 32
+- **Capítulos:** 40, 32
 - **Dificultad:** 3
 - **Solución:** en el mismo archivo.
 - **SWISH:** sí (dibuja el tablero)
@@ -684,7 +684,7 @@ Casi todos son programas de demostración, con consultas sugeridas en un comenta
 ### SWISH-64 — *Tabling*: Fibonacci y recursión por la izquierda
 - **Fuente:** SWISH, tutorial "Using tabling in SWI-Prolog" (menú *Prolog tutorials*). https://swish.swi-prolog.org/example/tabling.swinb
 - **Tema:** 5, X
-- **Capítulos:** 38, 16
+- **Capítulos:** 39, 16
 - **Dificultad:** 2
 - **Solución:** en el notebook.
 - **SWISH:** sí

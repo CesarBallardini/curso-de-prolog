@@ -1,6 +1,8 @@
 # The source books are about 100 MB.
 # books/ contributes the Markdown conversions.
 books/**/*.pdf
+books/**/*.djvu
+books/**/*.epub
 
 # The PDF of each chapter is built by `make pdf` and rebuilt by the publishing
 # workflow. They are downloaded from the site; they do not live in the repository.
@@ -28,3 +30,7 @@ ejemplos/**/salida/
 ejemplos/**/*.state
 ejemplos/**/*.qlf
 ejemplos/**/*.tgz
+
+# PlDoc writes to html/ by default when run on a directory without an output folder;
+# the course's pages come from `make pldoc` into docs/<chapter>/pldoc/ instead.
+/html/

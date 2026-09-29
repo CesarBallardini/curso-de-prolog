@@ -8,21 +8,25 @@
 %?- primo(tomas, Quien).
 %?- hijo(Quien, pedro).
 
+% varon(P): P es varón.
 varon(juan).
 varon(pedro).
 varon(luis).
 varon(tomas).
 
+% mujer(P): P es mujer.
 mujer(marta).
 mujer(ana).
 mujer(eva).
 mujer(sofia).
 
+% padre(P, H): P es el padre de H.
 padre(juan, ana).
 padre(juan, pedro).
 padre(pedro, luis).
 padre(pedro, eva).
 
+% madre(M, H): M es la madre de H.
 madre(marta, ana).
 madre(marta, pedro).
 madre(ana, tomas).

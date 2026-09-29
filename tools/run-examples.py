@@ -46,8 +46,16 @@ def run(swipl, example):
     if not example.tests.exists():
         return False, f'has no {example.tests.name}'
     try:
+        # stdin is closed: a program that reads user_input gets end of file at
+        # once, instead of waiting on whatever stdin make was started with (an
+        # open pipe in a background run), which ran it into the limit.
         done = subprocess.run(  # noqa: S603
-            [swipl, '-g', goal(example), '-t', 'halt'], capture_output=True, text=True, errors='replace', timeout=LIMIT
+            [swipl, '-g', goal(example), '-t', 'halt'],
+            stdin=subprocess.DEVNULL,
+            capture_output=True,
+            text=True,
+            errors='replace',
+            timeout=LIMIT,
         )
     except subprocess.TimeoutExpired:
         # A program that does not terminate leaves swipl waiting at the debugger

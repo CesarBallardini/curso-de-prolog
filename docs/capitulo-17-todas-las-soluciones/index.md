@@ -591,5 +591,5 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | El agente del mundo del Wumpus, que usa `forall/2` y `aggregate_all/3` | [capítulo 20](../capitulo-20-base-de-datos-dinamica/index.md) |
 | El orden estándar, `sort/4` y los pares | [capítulo 22](../capitulo-22-estructuras-de-datos-de-la-biblioteca/index.md) |
 | El Buscaminas: descubrir una región | [capítulo 18](../capitulo-18-orden-superior/index.md) |
-| Tabulación: reunir respuestas de relaciones recursivas sin repetirlas | [capítulo 38](../capitulo-38-tabulacion/index.md) |
-| Consultas de SQL con `GROUP BY` y funciones de agregación | [capítulo 40](../capitulo-40-prolog-y-sql/index.md) |
+| Tabulación: reunir respuestas de relaciones recursivas sin repetirlas | [capítulo 39](../capitulo-39-tabulacion/index.md) |
+| Consultas de SQL con `GROUP BY` y funciones de agregación | [capítulo 42](../capitulo-42-prolog-y-sql/index.md) |

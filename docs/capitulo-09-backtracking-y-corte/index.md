@@ -27,7 +27,7 @@ Al terminar el capítulo, el lector puede:
 !!! info "Tiempo estimado"
     Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **0:30 h**.
     Resolver los 7 ejercicios marcados con ★: **2:00 h**.
-    Resolver los 15 ejercicios del final: **5:00 h**.
+    Resolver los 16 ejercicios del final: **5:20 h**.
 
 ## 9.1 Un programa que produce respuestas de más
 
@@ -362,7 +362,7 @@ ese caso, y no se lo debe usar para verificar un valor dado.
 La técnica se aplica a problemas de mucha mayor escala que la búsqueda de
 múltiplos: ubicar reinas en un tablero, resolver un sudoku, asignar horarios.
 Cambian el generador y la condición; la estructura es siempre la misma. El
-[capítulo 39](../capitulo-39-busqueda-y-juegos/index.md) la retoma con problemas de mayor complejidad, y el [capítulo 23](../capitulo-23-programacion-con-restricciones/index.md)
+[capítulo 40](../capitulo-40-busqueda-y-planificacion/index.md) la retoma con problemas de mayor complejidad, y el [capítulo 23](../capitulo-23-programacion-con-restricciones/index.md)
 presenta una técnica que la hace mucho más eficiente.
 
 ## Ejercicios
@@ -458,6 +458,39 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     distingan un corte verde de uno rojo: una que verifique la respuesta, una
     que verifique que **no** hay una segunda respuesta, y una que muestre qué
     ocurre al consultar con el tercer argumento ya instanciado.
+16. **(2)** El programa siguiente describe las prendas de un catálogo: una
+    muestra, las combinaciones de talle, color y tela, y un saldo.
+
+    ```prolog
+    % talle(T): T es un talle del catálogo.
+    talle(chico).
+    talle(grande).
+
+    % color(C): C es un color del catálogo.
+    color(rojo).
+    color(azul).
+
+    % tela(M): M es una tela del catálogo.
+    tela(algodon).
+    tela(lana).
+
+    %!  prenda(?T, ?C, ?M) is nondet.
+    %
+    %   Hay una prenda de talle T, color C y tela M.
+    prenda(unico, blanco, lino).
+    prenda(T, C, M) :-
+        talle(T),
+        color(C),
+        tela(M).
+    prenda(unico, negro, cuero).
+    ```
+
+    Determinar cuántas respuestas produce `prenda(T, C, M).` y en qué orden.
+    Repetirlo después con un `!` agregado a la segunda cláusula en tres
+    posiciones distintas: a continuación de `talle(T)`, a continuación de
+    `color(C)` y al final del cuerpo. Explicar cada resultado con las reglas de
+    la [sección 9.3](#93-que-poda-exactamente), e indicar en cuáles de los cuatro
+    casos se llega a la tercera cláusula.
 
 ## Resumen
 
@@ -478,4 +511,5 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | `->` y `;`, que expresan lo mismo con otra notación | [capítulo 15](../capitulo-15-control/index.md) |
 | Cuándo el corte mejora el rendimiento y cuándo lo perjudica | [capítulo 16](../capitulo-16-rendimiento/index.md) |
 | Generar y probar con restricciones, que descarta antes de generar | [capítulo 23](../capitulo-23-programacion-con-restricciones/index.md) |
-| Búsquedas de mayor escala: reinas, laberintos, juegos | [capítulo 39](../capitulo-39-busqueda-y-juegos/index.md) |
+| Búsquedas de mayor escala: reinas y laberintos | [capítulo 40](../capitulo-40-busqueda-y-planificacion/index.md) |
+| Juegos: la búsqueda con un adversario | [capítulo 41](../capitulo-41-juegos/index.md) |

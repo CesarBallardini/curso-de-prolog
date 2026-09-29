@@ -207,6 +207,7 @@ la conclusión a la izquierda:
 tiene_mascota(P) :-
     tiene_gato(P).
 
+% tiene_gato(P): P tiene un gato.
 tiene_gato(ana).
 tiene_gato(eva).
 ```
@@ -288,3 +289,196 @@ recorrido nunca llega. Las respuestas se siguen del programa y están en el
 
 Es el mismo programa de la [sección 5.6](../capitulo-05-como-responde-prolog/index.md#56-ramas-infinitas), leído ahora desde la lógica: ninguna de
 sus dos cláusulas es falsa, y aun así no responde.
+
+## 14
+
+Las cláusulas R1 a R4 son las de la
+[sección 12.5](index.md#la-refutacion-en-forma-clausal), y los subíndices de las
+sustituciones, los del árbol de la
+[solución del ejercicio 1 del capítulo 5](../capitulo-05-como-responde-prolog/soluciones.md#1).
+La consulta negada es $\lnot \mathit{abuelo}(\mathit{Quien}, \mathit{luis})$.
+
+| Paso | Se resuelve | Sustitución | Resolvente |
+|---|---|---|---|
+| 1 | la consulta negada con R4 | θ₁ = { A/Quien, N/luis } | $\lnot \mathit{padre}(\mathit{Quien}, P) \lor \lnot \mathit{padre}(P, \mathit{luis})$ |
+| 2 | el resolvente 1 con R1 | θ₂ = { Quien/juan, P/ana } | $\lnot \mathit{padre}(\mathit{ana}, \mathit{luis})$ |
+| 3 | el resolvente 1 con R2 | θ₃ = { Quien/juan, P/pedro } | $\lnot \mathit{padre}(\mathit{pedro}, \mathit{luis})$ |
+| 4 | el resolvente 3 con R3 | θ₄ = { } | $\square$ |
+| 5 | el resolvente 1 con R3 | θ₅ = { Quien/pedro, P/luis } | $\lnot \mathit{padre}(\mathit{luis}, \mathit{luis})$ |
+
+Las tres ramas parten del resolvente 1, porque su primer átomo,
+$\mathit{padre}(\mathit{Quien}, P)$, unifica con los tres hechos. La del paso 3
+llega a la cláusula vacía en el paso 4, y la sustitución acumulada da la
+respuesta `Quien = juan`. Las de los pasos 2 y 5 terminan en un resolvente que
+no se puede resolver con ninguna cláusula: ningún hecho afirma
+$\mathit{padre}(\mathit{ana}, \mathit{luis})$ ni
+$\mathit{padre}(\mathit{luis}, \mathit{luis})$, y R4 no contiene ningún átomo
+$\mathit{padre}$ sin negar. Son las dos hojas de falla del árbol.
+
+El orden de los pasos es el del recorrido de Prolog: la rama de R1 se prueba
+primero y la de R3, al final. Para la resolución el orden no importa: la
+refutación existe cualquiera sea el orden en que se elijan los pasos.
+
+## 15
+
+En forma clausal, la regla y el hecho son:
+
+$$\lnot \mathit{mujer}(M) \lor \lnot \mathit{progenitor}(M, H) \lor \mathit{madre}(M, H)
+  \qquad\qquad \mathit{mujer}(\mathit{marta})$$
+
+El átomo $\mathit{mujer}(M)$ aparece negado en la regla y sin negar en el
+hecho, y las dos apariciones unifican con θ = { M/marta }. El resolvente es
+
+$$\lnot \mathit{progenitor}(\mathit{marta}, H) \lor \mathit{madre}(\mathit{marta}, H)$$
+
+que, escrito como cláusula de Prolog, es:
+
+```prolog
+madre(marta, H) :-
+    progenitor(marta, H).
+```
+
+Es una consecuencia del programa porque la resolución solo produce cláusulas que
+son verdaderas en toda situación en que lo son las dos cláusulas de partida: si
+marta es mujer, y toda mujer progenitora de H es madre de H, entonces marta es
+madre de todo H del que es progenitora. Por eso agregar la cláusula al programa
+no cambia ninguna respuesta. Sobre `logica.pl`, las dos consultas siguientes
+responden lo mismo:
+
+<!-- ejemplo: capitulo-12/logica.pl predicado: madre/2 consulta: madre(marta, H). -->
+```prolog
+%!  madre(?M, ?H) is nondet.
+%
+%   Para toda M y todo H, si M es mujer y M es progenitora de H, entonces M es
+%   madre de H.
+madre(M, H) :-
+    mujer(M),
+    progenitor(M, H).
+```
+
+```prolog
+?- madre(marta, H).
+H = ana ;
+H = pedro.
+
+?- progenitor(marta, H).
+H = ana ;
+H = pedro.
+```
+
+Ninguna consulta la produce porque Prolog no resuelve nunca dos cláusulas del
+programa entre sí. Cada uno de sus pasos combina la consulta pendiente, que es
+una cláusula sin conclusión, con una cláusula del programa, y el resolvente es
+otra vez una cláusula sin conclusión: la consulta siguiente. Los resolventes que
+Prolog construye son siempre nodos del árbol, nunca reglas nuevas. La
+resolución, como regla de inferencia, admite muchos más pasos que los que
+Prolog da, y esa restricción es la que convierte el método en el recorrido de
+un árbol.
+
+## 16
+
+**La primera** tiene una conjunción en la conclusión. Afirma que, si X es
+enemigo de Y, entonces X odia a Y **y** Y odia a X: dos conclusiones, y una
+cláusula de Horn tiene una sola. Como la conclusión es una conjunción y no una
+disyunción, la afirmación se puede escribir como dos cláusulas de Horn, una por
+cada conclusión:
+
+```prolog
+odia(X, Y) :-
+    enemigo(X, Y).
+odia(Y, X) :-
+    enemigo(X, Y).
+```
+
+Al cargarla tal como está escrita, SWI-Prolog lee la cabeza como el término
+`','(odia(X, Y), odia(Y, X))`, es decir, como una cláusula del predicado `,/2`,
+que es predefinido. Es la misma situación de la actividad de la
+[sección 12.4](index.md#124-clausulas-de-horn) con `;/2`:
+
+```text
+ERROR: No permission to modify static procedure `(',')/2'
+```
+
+**La segunda** tiene una implicación en el cuerpo. El cuerpo afirma
+$r(X) \rightarrow q(X)$, que equivale a $\lnot r(X) \lor q(X)$, y la cláusula
+completa afirma:
+
+$$\bigl( \lnot r(X) \lor q(X) \bigr) \rightarrow p(X)
+  \;\equiv\; \bigl( r(X) \land \lnot q(X) \bigr) \lor p(X)
+  \;\equiv\; \bigl( r(X) \lor p(X) \bigr) \land \bigl( \lnot q(X) \lor p(X) \bigr)$$
+
+La segunda cláusula de la conjunción es de Horn, `p(X) :- q(X).`, pero la
+primera, $r(X) \lor p(X)$, tiene dos átomos sin negar: dos conclusiones
+posibles, que es exactamente lo que una cláusula de Horn excluye.
+
+SWI-Prolog carga la cláusula sin informar nada, porque sintácticamente es
+correcta: su cuerpo es un único objetivo, el término `:-(q(X), r(X))`. El error
+aparece al ejecutar `p(ana).`, cuando Prolog intenta probar ese objetivo como
+una llamada al predicado `:-/2`, que no existe:
+
+```text
+ERROR: Unknown procedure: (:-)/2
+ERROR:   Rules must be loaded from a file
+```
+
+La segunda línea del mensaje supone que se intentó escribir una regla en una
+consulta; aquí la causa es otra, y la información está en la primera línea. En
+ninguno de los dos casos Prolog interpreta la cláusula como la fórmula que
+parece expresar.
+
+## 17
+
+**a.** Las cláusulas que se piden, en forma clausal, y la negación de la
+conclusión:
+
+| | |
+|---|---|
+| C1 | $\mathit{templado}$ |
+| C2 | $\mathit{llueve}$ |
+| C4 | $\lnot \mathit{picnic} \lor \mathit{remar}$ |
+| C5 | $\lnot \mathit{remar} \lor \lnot \mathit{llueve}$ |
+| negación de la conclusión | $\mathit{remar}$ |
+
+La conclusión que se quiere demostrar es $\lnot \mathit{remar}$, y su negación es
+$\mathit{remar}$. La refutación tiene dos pasos:
+
+| Paso | Se resuelve | Resolvente |
+|---|---|---|
+| 1 | $\mathit{remar}$ con C5 | $\lnot \mathit{llueve}$ |
+| 2 | el resolvente 1 con C2 | $\square$ |
+
+Como las cláusulas no tienen variables, no hay sustituciones. C1 y C4 no
+intervienen: la conclusión se sigue de la lluvia y de la restricción, y de nada
+más. La tercera cláusula del programa queda afuera por otro motivo: `\+ llueve`
+no es $\lnot \mathit{llueve}$ ([sección 12.6](index.md#126-lo-que-excede-la-logica)),
+y aun leída como si lo fuera,
+$\mathit{templado} \land \lnot \mathit{llueve} \rightarrow \mathit{picnic}$ tiene como
+forma clausal $\lnot \mathit{templado} \lor \mathit{llueve} \lor \mathit{picnic}$, con
+dos átomos sin negar.
+
+**b.** $\lnot \mathit{remar} \lor \lnot \mathit{llueve}$ no tiene ningún átomo sin
+negar, es decir, ninguna conclusión. Un hecho es una conclusión sin condiciones y
+una regla es una conclusión con condiciones; esta cláusula tiene solamente
+condiciones. Su forma es la del tercer caso de la
+[sección 12.4](index.md#124-clausulas-de-horn), la consulta: es exactamente la
+cláusula que Prolog agrega al programa ante la consulta `?- remar, llueve.` Un
+programa Prolog no puede contener una afirmación de esa forma, y por eso la
+restricción «no se rema cuando llueve» no se puede escribir en él.
+
+**c.** `?- \+ remar.` tiene éxito porque `remar` no se puede probar. Para probar
+`remar` se debe probar `picnic`; para `picnic`, `templado` y `\+ llueve`; y
+`\+ llueve` falla, porque `llueve` es un hecho. Sin `picnic`, ninguna cláusula
+permite probar `remar`, y `\+ remar` tiene éxito.
+
+La razón es distinta de la del punto a. Allí, $\lnot \mathit{remar}$ se deduce de
+la restricción C5 y del hecho de que llueve: es una consecuencia lógica. `\+`,
+en cambio, informa que `remar` no se pudo probar con lo que el programa contiene
+([capítulo 10](../capitulo-10-negacion-como-falla/index.md)), y el programa ni
+siquiera contiene la restricción. Que los dos resultados coincidan depende de
+cómo está escrito `picnic`: si su regla no mencionara la lluvia, `remar` se
+probaría y `\+ remar` fallaría. Con la restricción agregada como fórmula, ese
+conjunto de afirmaciones sería contradictorio, y Prolog no lo advertiría, porque
+la restricción no forma parte del programa. El
+[capítulo 38](../capitulo-38-semantica-de-los-programas-logicos/index.md)
+retoma la forma clausal de fórmulas cualesquiera y la relación entre las
+consecuencias lógicas de un programa y lo que Prolog responde.

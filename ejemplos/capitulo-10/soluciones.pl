@@ -5,20 +5,24 @@
 %?- sin_hermanos(Quien).
 %?- solo_en_la_primera([ana, luis, eva], [luis], R).
 
+% persona(P): P es una de las personas de la base.
 persona(juan).
 persona(ana).
 persona(pedro).
 persona(luis).
 persona(eva).
 
+% padre(P, H): P es el padre de H.
 padre(juan, ana).
 padre(juan, pedro).
 padre(pedro, luis).
 padre(pedro, eva).
 
+% tiene(P, M): P tiene la mascota M.
 tiene(ana, gato).
 tiene(luis, perro).
 
+% casado(A, B): A está casado con B.
 casado(juan, marta).
 
 % --- Ejercicio 3 -----------------------------------------------------------

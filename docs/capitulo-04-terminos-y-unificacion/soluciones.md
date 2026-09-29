@@ -173,6 +173,7 @@ la segunda mitad de la regla 2.
 | `f(X, g(X))` — `f(ana, g(ana))` | sí | `X = ana` |
 | `f(X, g(X))` — `f(ana, g(eva))` | **no** | — |
 | `f(X, X)` — `f(Y, ana)` | sí | `X = Y`, `Y = ana` |
+| `terna(X, Y, Z)` — `terna(M, M, M)` | sí | `X = Y`, `Y = Z`, `Z = M` |
 
 Los dos casos que fallan lo hacen por la regla 4: al llegar al segundo
 argumento, `X` ya está ligada a `ana`, de modo que se la compara como si dijera
@@ -182,9 +183,23 @@ El tercero muestra la diferencia con el primero: dos variables **distintas**
 pueden tomar el mismo valor sin que nada lo exija; lo que la repetición de un
 nombre impone es que el valor sea el mismo, no que sean dos nombres distintos.
 
-El último es interesante: las dos variables se ligan entre sí al comparar el
-primer argumento, y al llegar al segundo, ligar una liga a la otra. SWI lo
-muestra escribiendo `X = Y, Y = ana`.
+En el sexto, las dos variables se ligan entre sí al comparar el primer
+argumento, y al llegar al segundo, ligar una liga a la otra. SWI lo muestra
+escribiendo `X = Y, Y = ana`.
+
+En el séptimo ninguna variable recibe un valor. Al comparar el primer argumento,
+`X` queda ligada a `M`; al comparar el segundo, `Y` queda ligada a `M`, que ya
+es la misma variable que `X`; al comparar el tercero ocurre lo mismo con `Z`. Las
+cuatro variables quedan ligadas entre sí, y SWI lo muestra como una cadena de
+igualdades:
+
+```prolog
+?- terna(X, Y, Z) = terna(M, M, M).
+X = Y, Y = Z, Z = M.
+```
+
+Si más adelante cualquiera de las cuatro toma un valor, las otras tres lo
+comparten.
 
 ## 13
 

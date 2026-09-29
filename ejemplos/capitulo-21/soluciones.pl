@@ -88,9 +88,10 @@ persona(ana).
 persona(pedro).
 persona(marta).
 
-% padre(P, H): P es el padre de H. madre(M, H): M es la madre de H.
+% padre(P, H): P es el padre de H.
 padre(juan, ana).
 padre(juan, pedro).
+% madre(M, H): M es la madre de H.
 madre(marta, ana).
 madre(marta, pedro).
 
@@ -310,7 +311,9 @@ operaciones(Hasta, V) -->
 operaciones(V, V) -->
     [].
 
-% operacion(Op)//: la palabra de una operación.
+%!  operacion(?Op)// is nondet.
+%
+%   Los códigos de la palabra que nombra la operación Op.
 operacion(suma)     --> "mas".
 operacion(resta)    --> "menos".
 operacion(producto) --> "por".

@@ -27,7 +27,7 @@ Al terminar el capítulo, el lector puede:
   herramienta.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **0:40 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **0:35 h**.
     Resolver los 6 ejercicios marcados con ★: **1:40 h**.
     Resolver los 17 ejercicios del final: **5:25 h**.
 
@@ -455,6 +455,7 @@ tiene de propio, y los capítulos siguientes los dan por resueltos.
     d. `f(X, g(X))` con `f(ana, g(ana))`
     e. `f(X, g(X))` con `f(ana, g(eva))`
     f. `f(X, X)` con `f(Y, ana)`
+    g. `terna(X, Y, Z)` con `terna(M, M, M)`
 13. ★ **(2)** Escribir `propietario_y_especie(F, P, E)`, que extrae de una ficha
     el propietario y la especie de la mascota, en una sola cláusula y sin
     cuerpo. Es la plantilla 7 con dos componentes en lugar de uno.

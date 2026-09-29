@@ -216,7 +216,7 @@ Advertencias generales sobre el documento:
 ### ES-US-20 — El mono y el plátano
 - **Fuente:** ídem, ejercicio 3.4.
 - **Tema:** 3, 4, 5
-- **Capítulos:** 6, 39
+- **Capítulos:** 6, 40
 - **Dificultad:** 2
 - **Solución:** en el documento
 - **SWISH:** sí
@@ -226,7 +226,7 @@ Advertencias generales sobre el documento:
 ### ES-US-21 — Saltos del caballo de ajedrez
 - **Fuente:** ídem, ejercicio 3.5.
 - **Tema:** 4, 5, 6, 7
-- **Capítulos:** 8, 39
+- **Capítulos:** 8, 40
 - **Dificultad:** 2
 - **Solución:** en el documento
 - **SWISH:** sí
@@ -341,7 +341,7 @@ Advertencias generales sobre el documento:
 ### ES-US-33 — Subsucesión común maximal
 - **Fuente:** ídem, ejercicio 4.15.
 - **Tema:** 5, 6, 7, X
-- **Capítulos:** 8, 38
+- **Capítulos:** 8, 39
 - **Dificultad:** 3
 - **Solución:** en el documento
 - **SWISH:** sí
@@ -758,7 +758,7 @@ en la línea 22. En SWISH cargan bien.
 ### ES-US-71 — Mundo de bloques y 8 reinas como búsqueda en espacio de estados
 - **Fuente:** ídem, `src/ejercicios-tema-8.pl`, ejercicios 1 y 2, con `src/b_profundidad_sin_ciclos.pl`, `src/b_profundidad_con_ciclos.pl` y `src/b_anchura.pl`.
 - **Tema:** 4, 5, 6, X
-- **Capítulos:** 39, 22
+- **Capítulos:** 40, 22
 - **Dificultad:** 3
 - **Solución:** en el archivo
 - **SWISH:** sí

@@ -28,9 +28,9 @@ Al terminar el capítulo, el lector puede:
   un conjunto de visitados.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:18 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:20 h**.
     Resolver los 6 ejercicios marcados con ★: **1:53 h**.
-    Resolver los 15 ejercicios del final: **4:40 h**.
+    Resolver los 16 ejercicios del final: **4:58 h**.
 
 ## 22.1 El resto de `library(lists)`
 
@@ -195,7 +195,10 @@ L = [ana, eva, luis, pedro].
 `map_list_to_pairs(atom_length, Nombres, Pares)` decora cada nombre con su
 longitud: `[5-pedro, 3-ana, 4-luis, 3-eva]`. `keysort/2` ordena por la
 longitud, conservando el orden de ana y eva, que empatan. `pairs_values/2`
-quita la decoración.
+quita la decoración. Del mismo modo, `pairs_keys/2` da las claves de una lista
+de pares, y `pairs_keys_values(Pares, Claves, Valores)` relaciona la lista de
+pares con la de sus claves y la de sus valores, en los dos sentidos: separa
+los pares, o los arma a partir de dos listas del mismo largo.
 
 !!! example "Patrón 23 — Decorar, ordenar, desdecorar"
     **Problema.** Es necesario ordenar elementos por un valor que no está en
@@ -211,6 +214,25 @@ quita la decoración.
 
     **Cuándo no usarlo.** Cuando la clave ya es un argumento del término:
     `sort/4` ordena por él directamente.
+
+`clumped/2`, de `library(lists)`, también produce pares: relaciona una lista
+con los pares `Elemento-Cantidad` de sus **rachas**, los grupos de elementos
+iguales consecutivos. Sobre la lista tal como viene, da las rachas; sobre la
+lista ordenada con `msort/2`, que conserva los repetidos, los iguales quedan
+juntos y cada racha es la **frecuencia** de un elemento:
+
+```prolog
+?- clumped([a, a, b, a, a, a], Rachas).
+Rachas = [a-2, b-1, a-3].
+
+?- msort([b, a, c, a, b, a], Ordenada), clumped(Ordenada, Frecuencias).
+Ordenada = [a, a, a, b, b, c],
+Frecuencias = [a-3, b-2, c-1].
+```
+
+Son el mapeo secuencial con estado y el mapeo disperso con estado de la tabla
+de la [sección 18.7](../capitulo-18-orden-superior/index.md#187-cuando-no-usar-el-orden-superior). Con `sort/2` en lugar de `msort/2`, cada frecuencia
+sería 1: `sort/2` elimina los repetidos antes de contarlos.
 
 ## 22.5 `library(assoc)` y `library(rbtrees)`
 
@@ -322,6 +344,8 @@ solo_en_el_primero(A, B, Solo) :-
 L = [ana, luis].
 ```
 
+`list_to_ord_set/2` convierte una lista cualquiera en un conjunto ordenado: la
+ordena y elimina los repetidos.
 Las operaciones de `library(lists)` sobre listas comunes —`intersection/3`,
 `subtract/3`— hacen lo mismo recorriendo una lista por cada elemento de la
 otra. Con conjuntos grandes, la diferencia es la de la sección anterior.
@@ -546,7 +570,7 @@ sola vez, y la búsqueda termina aunque el grafo de estados tenga ciclos
     de los más cortos.
 
     **Cuándo no usarlo.** Cuando el espacio de estados es enorme y hace falta
-    una heurística que guíe la búsqueda, como en el [capítulo 39](../capitulo-39-busqueda-y-juegos/index.md); o
+    una heurística que guíe la búsqueda, como en el [capítulo 40](../capitulo-40-busqueda-y-planificacion/index.md); o
     cuando el problema se modela mejor con restricciones
     ([capítulo 23](../capitulo-23-programacion-con-restricciones/index.md)).
 
@@ -749,22 +773,50 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 14. **(2)** Escribir `ranking_de_carrera(Carrera, Ranking)` para el proyecto.
 15. **(3)** Escribir un índice de cada materia al conjunto ordenado de sus
     alumnos, y `alumnos_en_comun/4`, con `ord_intersection/3`.
+16. **(2)** Un árbol binario de búsqueda se representa con la constante
+    `vacio` y el término `n(Izq, Clave, Der)`: las claves de `Izq` son menores
+    que `Clave` y las de `Der`, mayores. La versión siguiente de
+    `insertar(Clave, Arbol0, Arbol)` es incorrecta:
+
+    ```prolog
+    %!  insertar(+Clave, +Arbol0, -Arbol) is det.
+    %
+    %   Arbol es Arbol0 con Clave agregada.
+    insertar(Clave, vacio, n(vacio, Clave, vacio)).
+    insertar(Clave, n(Izq, Clave0, _), Arbol) :-
+        Clave @< Clave0,
+        insertar(Clave, Izq, Arbol).
+    insertar(Clave, n(_, Clave0, Der), Arbol) :-
+        Clave @> Clave0,
+        insertar(Clave, Der, Arbol).
+    insertar(Clave, n(_, Clave, _), _).
+    ```
+
+    Predecir la respuesta de `insertar(5, n(vacio, 7, vacio), A).` y la de
+    `insertar(7, n(vacio, 7, vacio), A).`, y explicar qué pone cada cláusula
+    en el tercer argumento. Corregirla con `compare/3`, sin dejar alternativas
+    pendientes. ¿Cuántos nodos nuevos construye una inserción, y qué se obtiene
+    al insertar una clave que ya está? Relacionarlo con lo que la
+    [sección 22.5](#225-libraryassoc-y-libraryrbtrees) dice de `put_assoc/4`.
 
 ## Resumen
 
 | | |
 |---|---|
-| `library(lists)` | `nth1/3`, `last/2`, `sum_list/2`, `max_member/2`, `select/3`, `subtract/3`, … |
+| `library(lists)` | `nth1/3`, `last/2`, `sum_list/2`, `max_member/2`, `select/3`, `subtract/3`, `list_to_set/2`, … |
 | orden estándar | variables, números, cadenas, átomos, compuestos (por aridad, nombre y argumentos) |
 | `sort/2`, `msort/2` | ordenar sin repetidos, o con ellos |
 | `sort/4` | ordenar por un argumento, en cualquier sentido; estable con `@=<` y `@>=` |
 | `predsort/3` | ordenar con una comparación propia; elimina los iguales |
 | pares y `keysort/2` | `Clave-Valor`; ordenar por la clave, de forma estable |
-| `library(assoc)` | árbol balanceado de búsqueda: `list_to_assoc/2`, `get_assoc/3`, `put_assoc/4` |
-| `library(ordsets)` | conjuntos como listas ordenadas: unión, intersección, diferencia |
+| `library(pairs)`: `map_list_to_pairs/3`, `pairs_keys_values/3`, `pairs_keys/2`, `pairs_values/2`, `group_pairs_by_key/2` | armar pares, separar claves y valores, agrupar los valores de claves consecutivas iguales |
+| `clumped/2` | las rachas de elementos iguales consecutivos, como pares `Elemento-Cantidad`; después de `msort/2`, las frecuencias |
+| `library(assoc)` | árbol balanceado de búsqueda: `list_to_assoc/2`, `get_assoc/3`, `put_assoc/4`; `empty_assoc/1` (en las soluciones); `assoc_to_keys/2`, `assoc_to_values/2` |
+| `library(ordsets)`: `list_to_ord_set/2`, `ord_union/3`, `ord_intersection/3`, `ord_subtract/3`, `ord_memberchk/2`, `ord_add_element/3` | conjuntos como listas ordenadas: conversión desde una lista, unión, intersección, diferencia, pertenencia, agregado |
 | dicts | `_{clave: valor}`, `get_dict/3`, `put_dict/4`, `D.clave` |
 | `option/3` | una opción de una lista, con valor por omisión |
-| `library(random)` | azar con semilla; en un solo predicado, con la semilla fija en las pruebas |
+| `library(random)`: `randseq/3`, `set_random/1` | azar con semilla; en un solo predicado, con la semilla fija en las pruebas |
+| `string_length/2` | la cantidad de caracteres de una cadena (en las soluciones) |
 | **Patrones 23, 24, 25** | decorar, ordenar, desdecorar; tabla de búsqueda con `assoc`; búsqueda con visitados |
 
 ## Temas que se retoman
@@ -775,4 +827,5 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | JSON y dicts en archivos | [capítulo 27](../capitulo-27-archivos-streams-y-formatos/index.md) |
 | El tablero en la terminal, con un tablero al azar | [capítulo 28](../capitulo-28-programas-de-linea-de-comandos/index.md) |
 | Dicts en un servicio web | [capítulo 30](../capitulo-30-servicios-web-rest/index.md) |
-| Búsqueda con heurísticas y juegos; el mundo de bloques con análisis de medios y fines | [capítulo 39](../capitulo-39-busqueda-y-juegos/index.md) |
+| Búsqueda con heurísticas; el mundo de bloques con análisis de medios y fines | [capítulo 40](../capitulo-40-busqueda-y-planificacion/index.md) |
+| Los juegos de dos jugadores | [capítulo 41](../capitulo-41-juegos/index.md) |

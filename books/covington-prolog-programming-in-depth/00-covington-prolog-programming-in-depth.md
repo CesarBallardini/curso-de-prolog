@@ -1,3 +1,23 @@
+<!-- toc-by-line -->
+**Contents by line** (added 2026-09-28: this conversion has no chapter headings; each number is the
+line of this file, table included, where the chapter begins; open the file at that line).
+
+- Chapter 1 — Introducing Prolog: line 780
+- Chapter 2 — Constructing Prolog Programs: line 1933
+- Chapter 3 — Data Structures and Computation: line 3359
+- Chapter 4 — Expressing Procedural Algorithms: line 4699
+- Chapter 5 — Reading Data in Foreign Formats: line 6398
+- Chapter 6 — Prolog as Its Own Metalanguage: line 7483
+- Chapter 7 — Advanced Techniques: line 8195
+- Chapter 8 — Artificial Intelligence and the Search for Solutions: line 9599
+- Chapter 9 — A Simple Expert System Shell: line 12409
+- Chapter 10 — An Expert System Shell with Uncertainty: line 14273
+- Chapter 11 — Defeasible Prolog: line 15548
+- Chapter 12 — Natural Language Processing: line 17941
+- Appendix A — Summary of ISO Prolog: line 20243
+- Appendix B — Some Differences Between Prolog Implementations: line 21084
+
+---
 <!-- page 1 -->
 **PROLOG**
 

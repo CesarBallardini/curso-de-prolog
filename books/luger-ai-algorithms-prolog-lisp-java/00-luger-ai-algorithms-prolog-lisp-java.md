@@ -1,3 +1,42 @@
+<!-- toc-by-line -->
+**Contents by line** (added 2026-09-29: this conversion has no chapter headings; each number is the
+line of this file, table included, where the chapter's «Chapter Objectives» begin).
+
+- Chapter 1 — Idioms, Patterns, and Programming: line 595
+- Chapter 2 — Prolog: Representation: line 1012
+- Chapter 3 — Abstract Data Types and Search: line 1593
+- Chapter 4 — Depth-, Breadth-, and Best-First Search: line 2034
+- Chapter 5 — Meta-Linguistic Abstraction, Types, and Meta-Interpreters: line 2739
+- Chapter 6 — Three Meta-Interpreters: Prolog in Prolog, EXSHELL, and a Planner: line 3135
+- Chapter 7 — Machine Learning Algorithms in Prolog: line 3867
+-   § 7.1 — Machine Learning: Version Space Search: line 3887
+-   § 7.2 — Explanation Based Learning in Prolog: line 4463
+- Chapter 8 — Natural Language Processing in Prolog: line 4806
+- Chapter 9 — Dynamic Programming and the Earley Parser: line 5464
+- Chapter 10 — Prolog: Final Thoughts: line 6566
+- Chapter 11 — S-Expressions, the Syntax of Lisp: line 6714
+- Chapter 12 — Lists and Recursive Search: line 7181
+- Chapter 13 — Variables, Datatypes, and Search: line 7526
+- Chapter 14 — Higher-Order Functions and Flexible Search: line 8064
+- Chapter 15 — Unification and Embedded Languages in Lisp: line 8471
+- Chapter 16 — Logic Programming in Lisp: line 8911
+- Chapter 17 — Lisp-shell: An Expert System Shell in Lisp: line 9433
+- Chapter 18 — Semantic Networks, Inheritance, and CLOS: line 9996
+- Chapter 19 — Machine Learning in Lisp (chapter 20, «Lisp: Final Thoughts», has no marker in the conversion: it lies between 19 and 21): line 10731
+- Chapter 21 — Java, Representation and Object-Oriented Programming: line 11566
+- Chapter 22 — Problem Spaces and Search: line 11958
+- Chapter 23 — Java Representation for Predicate Calculus and Unification: line 12757
+- Chapter 24 — A Logic-Based Reasoning System: line 13655
+- Chapter 25 — An Expert System Shell: line 14816
+- Chapter 26 — Case Studies: JESS and other Expert System Shells in Java: line 15344
+- Chapter 27 — ID3: Learning from Examples: line 15451
+- Chapter 28 — Genetic and Evolutionary Computing: line 16591
+- Chapter 29 — Case Studies: Java Machine Learning Software Available on the Web: line 17290
+- Chapter 30 — The Earley Parser: Dynamic Programming in Java: line 17348
+- Chapter 31 — Case Studies: Java Natural Language Tools on the Web: line 18144
+- Chapter 32 — Conclusion: The Master Programmer: line 18354
+
+---
 <!-- page 1 -->
 <!-- page 3 -->
 AI Algorithms, Data Structures, and Idioms in Prolog, Lisp, and Java AI Algorithms, Data Structures, and Idioms in Prolog, Lisp, and Java

@@ -93,7 +93,7 @@
 - **Fuente:** Triska, *Nontermination*, "Failure slicing". https://www.metalevel.at/prolog/nontermination
 - **Tipo:** tarea derivada de un ejemplo
 - **Tema:** 4, 5
-- **Capítulos:** 5, 38
+- **Capítulos:** 5, 39
 - **Dificultad:** 2
 - **Solución:** texto, verificada: separar los hechos en `adjacent_/2` y definir `adjacent/2` con dos reglas no recursivas. Así, `?- adjacent(X, Y), false.` termina.
 - **SWISH:** sí
@@ -218,7 +218,7 @@
 - **Fuente:** Triska, *Fun Facts about Prolog*, "Iterative deepening is often a good strategy" (**Exercise: Why?**). https://www.metalevel.at/prolog/fun
 - **Tipo:** ejercicio explícito
 - **Tema:** 4, X
-- **Capítulos:** 39
+- **Capítulos:** 40
 - **Dificultad:** 2
 - **Solución:** no (es un argumento matemático: la suma de b^j·(k+1−j) está dominada por el término b^k cuando b ≥ 2)
 - **SWISH:** no corresponde
@@ -229,7 +229,7 @@
 - **Fuente:** Triska, *Memoization*, "Tabling". https://www.metalevel.at/prolog/memoization#tabling
 - **Tipo:** tarea derivada de un ejemplo
 - **Tema:** 5, 7, X
-- **Capítulos:** 38, 8
+- **Capítulos:** 39, 8
 - **Dificultad:** 1
 - **Solución:** texto, verificada: con `:- table fibonacci/2.`, `fibonacci(100, F)` da `F = 573147844013817084101` (con la convención F0 = F1 = 1).
 - **SWISH:** sí (SWI-Prolog tiene `table/1` incorporado)
@@ -298,7 +298,7 @@
 - **Fuente:** Triska, *Logic Puzzles with Prolog*, "Wolf and Goat etc.". https://www.metalevel.at/prolog/puzzles (ejemplo completo en https://www.metalevel.at/zurg/)
 - **Tipo:** tarea derivada de un ejemplo (el texto solo describe el método)
 - **Tema:** 4, 6
-- **Capítulos:** 22, 39
+- **Capítulos:** 22, 40
 - **Dificultad:** 3
 - **Solución:** no para el lobo, la cabra y el repollo; *Escape from Zurg* está resuelto en el enlace.
 - **SWISH:** sí
@@ -355,7 +355,7 @@
 - **Fuente:** Triska, *Attributed Variables*, "left as an exercise". https://www.metalevel.at/prolog/attributedvariables
 - **Tipo:** ejercicio explícito
 - **Tema:** X
-- **Capítulos:** 20, 38
+- **Capítulos:** 20, 39
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí

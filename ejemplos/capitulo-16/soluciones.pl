@@ -4,6 +4,7 @@
 %
 %?- suma_lista_acc([3, 1, 4], S).
 %?- contar_bien([a, b, c], N).
+%?- hojas_acc(nodo(nodo(hoja, hoja), hoja), N).
 
 % --- Ejercicio 3 -----------------------------------------------------------
 
@@ -93,3 +94,57 @@ inferencias(Objetivo, I) :-
     forall(Objetivo, true),
     statistics(inferences, I1),
     I is I1 - I0.
+
+% --- Ejercicio 15 ----------------------------------------------------------
+
+%!  hojas(+A, -N:integer) is det.
+%
+%   N es la cantidad de hojas del árbol binario A, formado por la constante
+%   hoja y por términos nodo(Izq, Der). Una llamada por subárbol y la suma
+%   después: ninguna de las dos llamadas es el último objetivo.
+hojas(hoja, 1).
+hojas(nodo(Izq, Der), N) :-
+    hojas(Izq, NIzq),
+    hojas(Der, NDer),
+    N is NIzq + NDer.
+
+%!  hojas_acc(+A, -N:integer) is det.
+%
+%   La misma relación, con un acumulador que pasa por los dos subárboles.
+hojas_acc(A, N) :-
+    contando_hojas(A, 0, N).
+
+%!  contando_hojas(+A, +Hasta:integer, -N:integer) is det.
+%
+%   N es Hasta más la cantidad de hojas de A. La cuenta que sale del subárbol
+%   izquierdo entra en el derecho, y la llamada sobre el derecho es el último
+%   objetivo; la llamada sobre el izquierdo no lo es.
+contando_hojas(hoja, Hasta, N) :-
+    N is Hasta + 1.
+contando_hojas(nodo(Izq, Der), Hasta, N) :-
+    contando_hojas(Izq, Hasta, Medio),
+    contando_hojas(Der, Medio, N).
+
+%!  peine_derecho(+Nodos:integer, -A) is det.
+%
+%   A es el árbol de Nodos nodos que se inclina a la derecha:
+%   nodo(hoja, nodo(hoja, ...)). Tiene Nodos + 1 hojas.
+peine_derecho(Nodos, A) :-
+    (   Nodos =:= 0
+    ->  A = hoja
+    ;   A = nodo(hoja, Resto),
+        Faltan is Nodos - 1,
+        peine_derecho(Faltan, Resto)
+    ).
+
+%!  peine_izquierdo(+Nodos:integer, -A) is det.
+%
+%   A es el árbol de Nodos nodos que se inclina a la izquierda:
+%   nodo(nodo(..., hoja), hoja).
+peine_izquierdo(Nodos, A) :-
+    (   Nodos =:= 0
+    ->  A = hoja
+    ;   A = nodo(Resto, hoja),
+        Faltan is Nodos - 1,
+        peine_izquierdo(Faltan, Resto)
+    ).

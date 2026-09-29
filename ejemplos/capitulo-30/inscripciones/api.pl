@@ -33,6 +33,8 @@
 :- use_module(informes).
 :- use_module(puente).
 
+:- meta_predicate responder(0).
+
 :- http_handler(root(alumnos), alumnos, [method(get)]).
 :- http_handler(root(alumnos/Legajo), alumno(Legajo), [method(get)]).
 :- http_handler(root(materias), materias, [method(get)]).

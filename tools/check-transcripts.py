@@ -25,7 +25,10 @@ that are not mistakes.
 Each query runs against the example file named by the nearest `<!-- ejemplo: -->`
 marker above it, which is the program the section is talking about. A query that
 needs something that file does not define is reported as skipped, not as a
-failure.
+failure. Where no code block belongs, a context comment sets that file for the
+transcripts that follow without rendering anything:
+
+    <!-- contexto: capitulo-67/subsuncion.pl -->
 
 Exits 1 if any transcript disagrees with the interpreter.
 """
@@ -46,7 +49,7 @@ LIMIT = 15  # seconds per query
 PROBE = examples.ROOT / 'tools' / 'transcript-probe.pl'
 
 FENCE = re.compile(r'^```(\w*)\s*$')
-MARKER_LINE = re.compile(r'^<!-- ejemplo: (?P<file>[\w./-]+)')
+MARKER_LINE = re.compile(r'^<!-- (?:ejemplo|contexto): (?P<file>[\w./-]+)')
 PROMPT = re.compile(r'^\?-\s*(?P<query>.*)$')
 
 COUNT = re.compile(r'^COUNT (\d+)$', re.M)
@@ -216,6 +219,11 @@ def run_once(swipl: str, item: Transcript, context: list[Path]) -> tuple[str, st
         # in place of the `-t` toplevel after the probe.
         done = subprocess.run(  # noqa: S603
             [swipl, '-q', '--stack-limit=64m', '-g', f'probe(({query})),halt', '-t', 'halt', *files],
+            # A query that reads user_input (chapter 33's consultar/1 asks the
+            # reader) gets end of file at once. Inheriting stdin made it wait on
+            # make's: an open pipe in a background run, so it hit LIMIT there
+            # and passed when run by hand.
+            stdin=subprocess.DEVNULL,
             capture_output=True,
             text=True,
             errors='replace',
@@ -279,6 +287,9 @@ def pages(wanted: list[str]) -> list[Path]:
 
 
 def main() -> int:
+    # The lines it prints quote queries and answers, → and ★ included, which the Windows
+    # console encoding cannot write.
+    sys.stdout.reconfigure(encoding='utf-8')
     swipl = shutil.which('swipl')
     if swipl is None:
         print('swipl is not on PATH', file=sys.stderr)

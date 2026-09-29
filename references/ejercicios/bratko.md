@@ -58,7 +58,7 @@
 ### BRA-4 — Ejemplos de programación (cap. 4)
 - **Fuente:** Bratko, cap. 4 "Programming Examples", pp. 86–125: 4.1 caminos en un grafo; 4.2 planificación de tareas de un robot; 4.3 planificación de viajes; 4.4 criptoaritmética; 4.5 las ocho reinas; 4.6 ontología WordNet.
 - **Tema:** 4, 6, X
-- **Capítulos:** 7, 39, 23
+- **Capítulos:** 7, 40, 23
 - **Dificultad:** 2–3
 - **Solución:** no disponible legalmente
 - **SWISH:** sí (excepto lo de WordNet, que necesita la base de datos)
@@ -128,7 +128,7 @@
 ### BRA-11 — Resolución de problemas como búsqueda (cap. 11)
 - **Fuente:** Bratko, cap. 11 "Problem-Solving as Search", pp. 261–279: búsqueda en profundidad, profundización iterativa y búsqueda en anchura.
 - **Tema:** 4, X
-- **Capítulos:** 39
+- **Capítulos:** 40
 - **Dificultad:** 3
 - **Solución:** no disponible legalmente
 - **SWISH:** sí
@@ -137,7 +137,7 @@
 ### BRA-12 — Búsqueda heurística y A* (cap. 12)
 - **Fuente:** Bratko, cap. 12, pp. 280–299.
 - **Tema:** X
-- **Capítulos:** 39
+- **Capítulos:** 40
 - **Dificultad:** 3
 - **Solución:** no disponible legalmente
 - **SWISH:** sí
@@ -146,7 +146,7 @@
 ### BRA-13 — Búsqueda primero el mejor con poco tiempo y espacio (cap. 13)
 - **Fuente:** Bratko, cap. 13 (IDA*, RBFS, RTA*), pp. 301–317.
 - **Tema:** X
-- **Capítulos:** 39
+- **Capítulos:** 40
 - **Dificultad:** 3
 - **Solución:** no disponible legalmente
 - **SWISH:** sí
@@ -155,7 +155,7 @@
 ### BRA-14 — Descomposición de problemas y grafos Y/O (cap. 14)
 - **Fuente:** Bratko, cap. 14, pp. 318–342.
 - **Tema:** X
-- **Capítulos:** 39
+- **Capítulos:** 40
 - **Dificultad:** 3
 - **Solución:** no disponible legalmente
 - **SWISH:** sí
@@ -183,7 +183,7 @@
 ### BRA-17 — Planificación (cap. 17)
 - **Fuente:** Bratko, cap. 17, pp. 385–404.
 - **Tema:** X
-- **Capítulos:** 39
+- **Capítulos:** 40
 - **Dificultad:** 3
 - **Solución:** no disponible legalmente
 - **SWISH:** sí
@@ -192,7 +192,7 @@
 ### BRA-18 — Planificación de orden parcial y GRAPHPLAN (cap. 18)
 - **Fuente:** Bratko, cap. 18, desde p. 406.
 - **Tema:** X
-- **Capítulos:** 39
+- **Capítulos:** 40
 - **Dificultad:** 3
 - **Solución:** no disponible legalmente
 - **SWISH:** sí
@@ -229,7 +229,7 @@
 ### BRA-22 — Juegos y metaprogramación (caps. 24–25)
 - **Fuente:** Bratko, cap. 24 "Game Playing" (minimax, alfa-beta, *Advice Language*) y cap. 25 "Meta-Programming" (metaintérpretes de Prolog y de CLP).
 - **Tema:** X
-- **Capítulos:** 39, 33
+- **Capítulos:** 41, 33
 - **Dificultad:** 3
 - **Solución:** no disponible legalmente
 - **SWISH:** sí

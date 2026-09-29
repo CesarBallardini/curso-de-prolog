@@ -40,7 +40,7 @@
 ### AoP-2.1-1 — Hermana, sobrina y hermanos completos
 - **Fuente:** Sterling & Shapiro, §2.1, ej. (i), p. 75
 - **Tema:** 2, 11
-- **Capítulos:** 3, 40
+- **Capítulos:** 3, 42
 - **Dificultad:** 1
 - **Solución:** sí (verificada en SWI-Prolog 9.2.9 con la base bíblica del cap. 1)
   ```prolog
@@ -57,7 +57,7 @@
 ### AoP-2.1-2 — Relaciones políticas: suegra, cuñado, yerno
 - **Fuente:** Sterling & Shapiro, §2.1, ej. (ii), p. 75
 - **Tema:** 2, 11
-- **Capítulos:** 3, 40
+- **Capítulos:** 3, 42
 - **Dificultad:** 1
 - **Solución:** no
 - **SWISH:** sí
@@ -77,7 +77,7 @@
 ### AoP-2.2-1 — Consultas sobre cursos: ubicación, ocupado, no pueden reunirse
 - **Fuente:** Sterling & Shapiro, §2.2, ej. (i), p. 79
 - **Tema:** 2, 3, 11
-- **Capítulos:** 4, 40
+- **Capítulos:** 4, 42
 - **Dificultad:** 1
 - **Solución:** no
 - **SWISH:** sí
@@ -87,7 +87,7 @@
 ### AoP-2.2-2 — Conflicto de horarios
 - **Fuente:** Sterling & Shapiro, §2.2, ej. (ii), p. 79
 - **Tema:** 2, 7, 11
-- **Capítulos:** 8, 40
+- **Capítulos:** 8, 42
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -97,7 +97,7 @@
 ### AoP-2.2-3 — Requisitos de graduación
 - **Fuente:** Sterling & Shapiro, §2.2, ej. (iii), p. 79
 - **Tema:** 2, 11
-- **Capítulos:** 3, 17, 40
+- **Capítulos:** 3, 17, 42
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -107,7 +107,7 @@
 ### AoP-2.2-4 — Base de datos propia
 - **Fuente:** Sterling & Shapiro, §2.2, ej. (iv), p. 79
 - **Tema:** 1, 2, 11
-- **Capítulos:** 3, 40
+- **Capítulos:** 3, 42
 - **Dificultad:** 1
 - **Solución:** no
 - **SWISH:** sí
@@ -117,7 +117,7 @@
 ### AoP-2.3-1 — Pila de bloques: `above` como clausura transitiva de `on`
 - **Fuente:** Sterling & Shapiro, §2.3, ej. (i), p. 82
 - **Tema:** 5, 11
-- **Capítulos:** 6, 40
+- **Capítulos:** 6, 42
 - **Dificultad:** 1
 - **Solución:** sí (verificada)
   ```prolog
@@ -151,7 +151,7 @@
 ### AoP-2.4-P — Álgebra relacional en Prolog (adaptado de §2.4)
 - **Fuente:** Sterling & Shapiro, §2.4, p. 83–84 (sin ejercicios en el libro; adaptado del texto)
 - **Tema:** 2, 8, 11
-- **Capítulos:** 40, 10
+- **Capítulos:** 42, 10
 - **Dificultad:** 1
 - **Solución:** no
 - **SWISH:** sí
@@ -1103,7 +1103,7 @@
 ### AoP-12.3-1 — Juego de llegar a 20 con funciones memo
 - **Fuente:** Sterling & Shapiro, §12.3, ej. (i), p. 263
 - **Tema:** 7, 10
-- **Capítulos:** 20, 38
+- **Capítulos:** 20, 39
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1205,7 +1205,7 @@
 ### AoP-14.1-2 — Matrimonios estables
 - **Fuente:** Sterling & Shapiro, §14.1, ej. (ii), p. 302–303
 - **Tema:** 4, 6
-- **Capítulos:** 7, 39
+- **Capítulos:** 7, 40
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1264,7 +1264,7 @@
 ### AoP-14.2-1 — Otro problema del mundo de bloques
 - **Fuente:** Sterling & Shapiro, §14.2, ej. (i), p. 311
 - **Tema:** 4
-- **Capítulos:** 22, 39
+- **Capítulos:** 22, 40
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -1274,7 +1274,7 @@
 ### AoP-14.2-2 — Planificar operaciones de un acumulador — X
 - **Fuente:** Sterling & Shapiro, §14.2, ej. (ii), p. 311
 - **Tema:** X (4)
-- **Capítulos:** 39, 22
+- **Capítulos:** 40, 22
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1322,7 +1322,7 @@
 ### AoP-14.3-5 — Reconstruir otro clásico de IA (GPS) — X
 - **Fuente:** Sterling & Shapiro, §14.3, ej. (v), p. 319
 - **Tema:** X
-- **Capítulos:** 39
+- **Capítulos:** 40
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1415,7 +1415,7 @@
 ### AoP-16.2-1 — Algoritmo de Lee con otros obstáculos — X
 - **Fuente:** Sterling & Shapiro, §16.2, ej. (i), p. 355
 - **Tema:** X
-- **Capítulos:** 39
+- **Capítulos:** 40
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1612,7 +1612,7 @@
 ### AoP-20.1-1 — Jarras de agua con dos operaciones
 - **Fuente:** Sterling & Shapiro, §20.1, ej. (i), p. 439
 - **Tema:** 4, 7
-- **Capítulos:** 22, 39
+- **Capítulos:** 22, 40
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -1622,7 +1622,7 @@
 ### AoP-20.1-2 — Misioneros y caníbales
 - **Fuente:** Sterling & Shapiro, §20.1, ej. (ii), p. 439
 - **Tema:** 4, 6
-- **Capítulos:** 22, 39
+- **Capítulos:** 22, 40
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -1632,7 +1632,7 @@
 ### AoP-20.1-3 — Los cinco maridos celosos
 - **Fuente:** Sterling & Shapiro, §20.1, ej. (iii), p. 442
 - **Tema:** 4, 6
-- **Capítulos:** 22, 39
+- **Capítulos:** 22, 40
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1642,7 +1642,7 @@
 ### AoP-20.1-4 — Marco de búsqueda en anchura — X
 - **Fuente:** Sterling & Shapiro, §20.1, ej. (iv), p. 442
 - **Tema:** X (9)
-- **Capítulos:** 39, 22
+- **Capítulos:** 40, 22
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1651,7 +1651,7 @@
 ### AoP-20.1-5 — Ocho reinas en el marco de búsqueda informada — X
 - **Fuente:** Sterling & Shapiro, §20.1, ej. (v), p. 442
 - **Tema:** X
-- **Capítulos:** 39
+- **Capítulos:** 40
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1697,7 +1697,7 @@
 ### AoP-P-2.2 — Circuito lógico como base de datos (adaptado del Programa 2.2)
 - **Fuente:** Sterling & Shapiro, Programa 2.2, p. 74
 - **Tema:** 2, 11
-- **Capítulos:** 3, 40
+- **Capítulos:** 3, 42
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -1815,7 +1815,7 @@
 ### AoP-P-14.10 — Caminos en grafos con ciclos (adaptado de los Programas 14.8–14.10)
 - **Fuente:** Sterling & Shapiro, Programas 14.8–14.10, p. 306–307
 - **Tema:** 4, 6, 11
-- **Capítulos:** 10, 40
+- **Capítulos:** 10, 42
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -1825,7 +1825,7 @@
 ### AoP-P-16.2 — Predicados de todas las soluciones sobre una base de datos (adaptado de los Programas 16.1 y 16.2)
 - **Fuente:** Sterling & Shapiro, Programas 16.1 (p. 343) y 16.2 (p. 344)
 - **Tema:** 9, 11
-- **Capítulos:** 17, 40
+- **Capítulos:** 17, 42
 - **Dificultad:** 1
 - **Solución:** no
 - **SWISH:** sí
@@ -1875,7 +1875,7 @@
 ### AoP-P-20.2 — Problemas de cruce del río (adaptado de los Programas 20.1–20.3)
 - **Fuente:** Sterling & Shapiro, Programas 20.1 (p. 431), 20.2 (p. 433) y 20.3 (p. 435)
 - **Tema:** 4, 6
-- **Capítulos:** 22, 39
+- **Capítulos:** 22, 40
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí

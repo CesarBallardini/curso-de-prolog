@@ -261,7 +261,7 @@
 ### END-3.4 — Fibonacci eficiente
 - **Fuente:** Endriss, cap. 3, Ejercicio 3.4, pp. 26–27.
 - **Tema:** 5, 7
-- **Capítulos:** 8, 16, 38
+- **Capítulos:** 8, 16, 39
 - **Dificultad:** 2
 - **Solución:** propia, verificada: F42 = 267914296 y F100 = 354224848179261915075.
   ```prolog
@@ -316,7 +316,7 @@
 ### END-3.9 — Base de datos de fechas de nacimiento
 - **Fuente:** Endriss, cap. 3, Ejercicio 3.9, pp. 28–29.
 - **Tema:** 1, 2, 3, 7, 11
-- **Capítulos:** 8, 3, 40
+- **Capítulos:** 8, 3, 42
 - **Dificultad:** 2
 - **Solución:** propia, verificada: `older(X, Y)` da 28 soluciones porque son 8 personas con fechas distintas y cada par se cuenta una sola vez: C(8,2) = 28.
   ```prolog

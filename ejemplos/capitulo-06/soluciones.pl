@@ -33,8 +33,11 @@ valor(s(N), V) :-
 
 % --- Ejercicio 1 -----------------------------------------------------------
 
+% dos(N): N es el natural dos.
 dos(s(s(cero))).
+% tres(N): N es el natural tres.
 tres(s(s(s(cero)))).
+% cuatro(N): N es el natural cuatro.
 cuatro(s(s(s(s(cero))))).
 
 % --- Ejercicio 3 -----------------------------------------------------------

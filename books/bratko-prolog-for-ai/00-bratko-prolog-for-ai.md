@@ -1,3 +1,26 @@
+<!-- toc-by-line -->
+**Contents by line** (added 2026-09-28: this conversion has no chapter headings; each number is the
+line of this file, table included, where the chapter begins; open the file at that line).
+
+- Chapter 1 — An Overview of Prolog: line 535
+- Chapter 2 — Syntax and Meaning of Prolog Programs: line 1651
+- Chapter 3 — Lists, Operators, Arithmetic: line 3356
+- Chapter 4 — Using Structures: Example Programs: line 4536
+- Chapter 5 — Controlling Backtracking: line 5793
+- Chapter 6 — Input and Output: line 6447
+- Chapter 7 — More Built-in Procedures: line 7104
+- Chapter 8 — Programming Style and Technique: line 8089
+- Chapter 9 — Operations on Data Structures: line 8952
+- Chapter 10 — Advanced Tree Representations: line 10395
+- Chapter 11 — Basic Problem-Solving Strategies: line 10922
+- Chapter 12 — Best First: A Heuristic Search Principle: line 11569
+- Chapter 13 — Problem Reduction and AND/OR Graphs: line 12297
+- Chapter 14 — Expert Systems: line 13249
+- Chapter 15 — Game Playing: line 14820
+- Chapter 16 — Pattern-directed Programming: line 15952
+- Solutions to selected exercises: line 16579
+
+---
 <!-- page 1 -->
 PROLOG PROGRAMMING FOR
 

@@ -110,3 +110,60 @@ clasificar(N, negativo) :-
 clasificar(0, cero) :-
     !.
 clasificar(_, positivo).
+
+% --- Ejercicio 16 ----------------------------------------------------------
+
+% talle(T): T es un talle del catálogo.
+talle(chico).
+talle(grande).
+
+% color(C): C es un color del catálogo.
+color(rojo).
+color(azul).
+
+% tela(M): M es una tela del catálogo.
+tela(algodon).
+tela(lana).
+
+%!  prenda(?T, ?C, ?M) is nondet.
+%
+%   Hay una prenda de talle T, color C y tela M.
+prenda(unico, blanco, lino).
+prenda(T, C, M) :-
+    talle(T),
+    color(C),
+    tela(M).
+prenda(unico, negro, cuero).
+
+%!  prenda_corte_talle(-T, -C, -M) is multi.
+%
+%   prenda/3 con un corte después de talle/1. T, C y M deben llegar libres.
+prenda_corte_talle(unico, blanco, lino).
+prenda_corte_talle(T, C, M) :-
+    talle(T),
+    !,
+    color(C),
+    tela(M).
+prenda_corte_talle(unico, negro, cuero).
+
+%!  prenda_corte_color(-T, -C, -M) is multi.
+%
+%   prenda/3 con un corte después de color/1. T, C y M deben llegar libres.
+prenda_corte_color(unico, blanco, lino).
+prenda_corte_color(T, C, M) :-
+    talle(T),
+    color(C),
+    !,
+    tela(M).
+prenda_corte_color(unico, negro, cuero).
+
+%!  prenda_corte_final(-T, -C, -M) is multi.
+%
+%   prenda/3 con un corte al final del cuerpo. T, C y M deben llegar libres.
+prenda_corte_final(unico, blanco, lino).
+prenda_corte_final(T, C, M) :-
+    talle(T),
+    color(C),
+    tela(M),
+    !.
+prenda_corte_final(unico, negro, cuero).

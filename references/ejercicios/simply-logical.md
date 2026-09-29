@@ -518,7 +518,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-5.1 — Reconstruir el camino en la búsqueda en profundidad
 - **Fuente:** Flach & Sokol, sección 5.2, Ejercicio 5.1. https://book.simply-logical.space/src/text/2_part_ii/5.2.html
 - **Tema:** 4, X
-- **Capítulos:** 39, 22
+- **Capítulos:** 40, 22
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -527,7 +527,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-5.2 — Escribir un árbol por niveles
 - **Fuente:** Flach & Sokol, sección 5.3, Ejercicio 5.2. https://book.simply-logical.space/src/text/2_part_ii/5.3.html
 - **Tema:** X
-- **Capítulos:** 39
+- **Capítulos:** 40
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -583,7 +583,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-6.1 — Mezclar hijos ordenados con la agenda
 - **Fuente:** Flach & Sokol, sección 6.1, Ejercicio 6.1. https://book.simply-logical.space/src/text/2_part_ii/6.1.html
 - **Tema:** 6, X
-- **Capítulos:** 8, 39
+- **Capítulos:** 8, 40
 - **Dificultad:** 2
 - **Solución:** sí, Apéndice C.6: https://book.simply-logical.space/src/text/appendices/c_6.html
 - **SWISH:** sí
@@ -602,7 +602,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-6.3 — Algoritmo A para el problema de las fichas
 - **Fuente:** Flach & Sokol, sección 6.2, Ejercicio 6.3. https://book.simply-logical.space/src/text/2_part_ii/6.2.html
 - **Tema:** X
-- **Capítulos:** 39
+- **Capítulos:** 40
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -611,7 +611,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-6.4 — Una heurística demasiado pesimista
 - **Fuente:** Flach & Sokol, sección 6.2, Ejercicio 6.4.
 - **Tema:** X
-- **Capítulos:** 39
+- **Capítulos:** 40
 - **Dificultad:** 2
 - **Solución:** sí, Apéndice C.6
 - **SWISH:** no
@@ -620,7 +620,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-6.5 — Metaintérprete con búsqueda A
 - **Fuente:** Flach & Sokol, sección 6.2, Ejercicio 6.5.
 - **Tema:** X
-- **Capítulos:** 33, 39
+- **Capítulos:** 33, 40
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -629,7 +629,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-6.6 — Búsqueda en haz
 - **Fuente:** Flach & Sokol, sección 6.3, Ejercicio 6.6. https://book.simply-logical.space/src/text/2_part_ii/6.3.html
 - **Tema:** X
-- **Capítulos:** 39
+- **Capítulos:** 40
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -791,7 +791,7 @@ URL base de las secciones: `https://book.simply-logical.space/src/text/<parte>/<
 ### SL-9.5 — Búsqueda en haz para la inducción descendente
 - **Fuente:** Flach & Sokol, sección 9.3, Ejercicio 9.5. https://book.simply-logical.space/src/text/3_part_iii/9.3.html
 - **Tema:** X
-- **Capítulos:** 39, 33
+- **Capítulos:** 40, 33
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí

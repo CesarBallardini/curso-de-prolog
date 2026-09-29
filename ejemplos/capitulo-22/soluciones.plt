@@ -70,4 +70,33 @@ test(sorteo_sin_repetidos, true(N == 6)) :-
     sort(L, S),
     length(S, N).
 
+% Ejercicio 16: la versión incorrecta pierde la raíz, o deja el árbol libre.
+test(insertar_mal_pierde_la_raiz, [nondet, true(A == n(vacio, 5, vacio))]) :-
+    insertar_mal(5, n(vacio, 7, vacio), A).
+
+test(insertar_mal_deja_libre, true(var(A))) :-
+    insertar_mal(7, n(vacio, 7, vacio), A).
+
+test(insertar_menor, true(A == n(n(vacio, 5, vacio), 7, vacio))) :-
+    insertar(5, n(vacio, 7, vacio), A).
+
+test(insertar_existente, true(A == n(vacio, 7, vacio))) :-
+    insertar(7, n(vacio, 7, vacio), A).
+
+test(insertar_varias,
+     true(A == n(n(n(vacio, 1, vacio), 3, n(vacio, 5, vacio)), 7,
+                 n(vacio, 9, vacio)))) :-
+    foldl(insertar, [7, 3, 9, 1, 5], vacio, A).
+
+test(reinsertar_da_el_mismo_arbol, true(A == B)) :-
+    foldl(insertar, [7, 3, 9, 1, 5], vacio, A),
+    insertar(9, A, B).
+
+% El subárbol derecho de la raíz no está en el camino de 4: no se copia.
+test(insertar_comparte, true(same_term(D, D1))) :-
+    foldl(insertar, [7, 3, 9, 1, 5], vacio, A),
+    insertar(4, A, B),
+    A = n(_, 7, D),
+    B = n(_, 7, D1).
+
 :- end_tests(soluciones).

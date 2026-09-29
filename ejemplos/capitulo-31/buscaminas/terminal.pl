@@ -5,7 +5,7 @@
 %
 % Muestra el tablero, lee una jugada por línea y la aplica con el módulo
 % partida, hasta que la partida termina. Las jugadas son d F C (descubrir),
-% m F C (marcar) y ? (pedir una celda segura al resolvedor). Lee de un
+% m F C (marcar) y ? (pedir una celda segura al módulo resolver). Lee de un
 % stream, y las pruebas juegan partidas enteras con las jugadas en una
 % cadena.
 %

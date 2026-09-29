@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 18 - Soluciones de los ejercicios 1 a 10.
+% Capítulo 18 - Soluciones de los ejercicios 1 a 12.
 %
 %?- dobles([1, 2, 3], D).
 %?- todos_hijos_de(P, [luis, eva]).
@@ -346,3 +346,37 @@ a_lo_ancho([F-C|Pendientes], Vistas, Descubiertas) :-
         a_lo_ancho(Siguientes, [F-C|Vistas], Descubiertas)
     ;   a_lo_ancho(Pendientes, [F-C|Vistas], Descubiertas)
     ).
+
+% --- Ejercicios 11 y 12: recorridos con estado y con dos listas ---------------
+
+%!  promedios_parciales(+Notas:list(number), -Promedios:list(number)) is det.
+%
+%   El elemento i-ésimo de Promedios es el promedio de las i primeras Notas.
+%   Un solo recorrido: el valor acumulado es el par Cantidad-Suma.
+promedios_parciales(Notas, Promedios) :-
+    foldl(promedio_parcial, Notas, Promedios, 0-0, _).
+
+%!  promedio_parcial(+Nota:number, -Promedio:number, +Hasta:pair,
+%!                   -Total:pair) is det.
+%
+%   Total es el par Cantidad-Suma de Hasta con Nota agregada, y Promedio es
+%   el promedio de las notas que Total reúne.
+promedio_parcial(Nota, Promedio, Cantidad0-Suma0, Cantidad-Suma) :-
+    Cantidad is Cantidad0 + 1,
+    Suma is Suma0 + Nota,
+    Promedio is Suma / Cantidad.
+
+%!  producto_interno(+V1:list(number), +V2:list(number),
+%!                   -P:number) is semidet.
+%
+%   P es el producto interno de los vectores V1 y V2. Falla si los dos
+%   vectores tienen distinto largo.
+producto_interno(V1, V2, P) :-
+    foldl(sumar_producto, V1, V2, 0, P).
+
+%!  sumar_producto(+X:number, +Y:number, +Hasta:number,
+%!                 -Total:number) is det.
+%
+%   Total es Hasta más el producto de X por Y.
+sumar_producto(X, Y, Hasta, Total) :-
+    Total is Hasta + X * Y.

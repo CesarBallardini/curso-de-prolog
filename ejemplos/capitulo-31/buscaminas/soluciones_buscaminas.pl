@@ -16,6 +16,8 @@
 % solo-local: SWISH no admite módulos propios ni ejecuta programas.
 %
 %?- nueva_partida(9, 9, 10, 7, P), mostrar(P, false).
+%
+% thread_get_message/1: lo presenta el capítulo 37, con los hilos.
 
 :- use_module(library(main)).
 :- use_module(partida).

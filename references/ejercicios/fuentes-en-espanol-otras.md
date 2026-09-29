@@ -531,7 +531,7 @@ Dialecto: ECLiPSe (el libro lo elige explícitamente). Las soluciones escriben
 ### ES-UJI-8 — Búsqueda con predicados predefinidos y gensym
 - **Fuente:** ídem, cap. 4, ejercicios 4.2 a 4.5.
 - **Tema:** 4, 6, 10
-- **Capítulos:** 39, 20
+- **Capítulos:** 40, 20
 - **Dificultad:** 3
 - **Solución:** en el libro
 - **SWISH:** sí
@@ -541,7 +541,7 @@ Dialecto: ECLiPSe (el libro lo elige explícitamente). Las soluciones escriben
 ### ES-UJI-9 — Suministradores y partes: álgebra relacional en Prolog
 - **Fuente:** ídem, cap. 5 "Programación lógica y Bases de Datos", ejercicio 5.1 (y 5.3).
 - **Tema:** 11, 9, 8
-- **Capítulos:** 40, 17
+- **Capítulos:** 42, 17
 - **Dificultad:** 2
 - **Solución:** en el libro (usa `findall` y `not` prefijo); verificada con consultas propias equivalentes: (a) partes rojas: `juan`; (b) no suministran p2: `luis`; (c) suministran todo lo de s2: `juan`; (e) partes suministradas por todos: ninguna (s5, luis, no suministra nada); (g) totales: juan 2000, maria 900, pedro 700, raquel 200, luis 0.
 - **SWISH:** sí (el 5.3 no: pide `lib(db)` de ECLiPSe)
@@ -555,7 +555,7 @@ Dialecto: ECLiPSe (el libro lo elige explícitamente). Las soluciones escriben
 ### ES-UJI-10 — Base de datos de familias con estructuras anidadas
 - **Fuente:** ídem, cap. 5, ejercicio 5.2.
 - **Tema:** 3, 9, 11
-- **Capítulos:** 4, 17, 40
+- **Capítulos:** 4, 17, 42
 - **Dificultad:** 2
 - **Solución:** en el libro
 - **SWISH:** sí
