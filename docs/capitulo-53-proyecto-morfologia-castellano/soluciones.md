@@ -405,8 +405,8 @@ dos_niveles:regla(dieresis,
 ```
 
 ```prolog
-?- forma(P, verbo("averiguar", preterito, 1, singular)).
-P = "averigüé".
+?- findall(P, forma(P, verbo("averiguar", preterito, 1, singular)), Ps).
+Ps = ["averigüé"].
 
 ?- forma(P, verbo("averiguar", presente, 1, singular)).
 P = "averiguo" ;

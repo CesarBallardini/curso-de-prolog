@@ -116,9 +116,8 @@ false.
 A = verbo("ser", preterito, 3, singular) ;
 A = verbo("ir", preterito, 3, singular).
 
-?- forma(P, adjetivo("joven", femenino, plural)).
-P = "jóvenes" ;
-false.
+?- findall(P, forma(P, adjetivo("joven", femenino, plural)), Ps).
+Ps = ["jóvenes"].
 
 ?- forma("tocé", A).
 false.
