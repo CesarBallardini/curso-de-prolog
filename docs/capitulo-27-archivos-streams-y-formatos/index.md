@@ -854,7 +854,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 2. **(1)** Escribir `agregar_termino/2`, que agrega un término al final de un
    archivo sin borrar lo que tiene.
 3. ★ **(2)** Escribir `copiar_en_mayusculas/2`, que copia un archivo de texto
-   con cada línea en mayúsculas, con el Patrón 36.
+   con cada línea en mayúsculas, con el [Patrón 36](../patrones.md#36-leer-procesar-escribir).
 4. **(2)** Escribir `linea_mas_larga/2`: la línea más larga de un archivo.
 5. ★ **(2)** Escribir `frecuencias/2`: los pares `Palabra-Cantidad` de las
    palabras de un archivo, de la más frecuente a la menos frecuente.

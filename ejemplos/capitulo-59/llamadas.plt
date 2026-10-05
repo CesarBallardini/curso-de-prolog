@@ -53,4 +53,44 @@ test(definidos, [true(N == 12)]) :-
     definidos(Cs, Ps),
     length(Ps, N).
 
+test(extra, [true(L == [call-0-0, call-2-2, maplist-1-1, maplist-3-3,
+                        foldl-3-3, include-2-1])]) :-
+    findall(N-K-E, ( member(N, [call, maplist, foldl, include]),
+                     member(K, [0, 1, 2, 3]),
+                     extra(N, K, E),
+                     ( N == call -> K mod 2 =:= 0 ; true ),
+                     ( N == maplist -> K mod 2 =:= 1 ; true ) ),
+            L).
+
+% En sentido inverso: las metallamadas que agregan un argumento a una meta
+% con dos argumentos después del primero.
+test(extra_inversa, all(N == [include, exclude])) :-
+    extra(N, 2, 1).
+
+test(extra_foldl_corto, [fail]) :-
+    extra(foldl, 2, _).
+
+% true no es una meta; la negación y la disyunción se atraviesan, y la meta
+% de findall/3 sigue a la metallamada.
+test(metas_de, [true(Ps == [p/1, findall/3, q/1])]) :-
+    phrase(metas_de((true, p(_) ; \+ findall(Y, q(Y), _))), Ms),
+    maplist(indicador, Ms, Ps).
+
+% Con P libre, una respuesta por predicado definido; un hecho no llama.
+test(llamadas_de, all(P-Qs == [p/0-[q/0, r/0], q/0-[r/0], r/0-[]])) :-
+    llamadas_de([(p :- q, r), (q :- r), r], P, Qs).
+
+% Una llamada repetida aparece una sola vez.
+test(llamadas_de_repetida, [true(Qs == [q/0])]) :-
+    llamadas_de([(p :- q, q), (p :- q)], p/0, Qs).
+
+test(llamadas_de_no_definido, [fail]) :-
+    llamadas_de([(p :- q)], q/0, _).
+
+test(meta_argumento_forall, all(G-E == [a-0, b-0])) :-
+    meta_argumento(forall(a, b), G, E).
+
+test(meta_argumento_maplist, all(G-E == [f-2])) :-
+    meta_argumento(maplist(f, x, y), G, E).
+
 :- end_tests(llamadas).

@@ -106,4 +106,54 @@ test(medir, [true(R == [18-69-2, 19-75-2])]) :-
     findall(N-P-M, ( member(C, [compilar_fusion, compilar_optimizado]),
                      medir_ejemplo(factorial, C, N, P, M) ), R).
 
+test(modismo_fusion, all(C =@= [[saltar_si_no(<, L)]])) :-
+    modismo_fusion([comparar(<), saltar_si_cero(L)], C).
+
+test(modismo_fusion_otro, all(C == [[apilar(3)]])) :-
+    modismo_fusion([apilar(1), apilar(2), sumar], C).
+
+test(ciclo_medido, true(S-P-M == [3]-4-2)) :-
+    maquina_medida([apilar(1), apilar(2), sumar, escribir], S, P, M).
+
+test(condicion_reordenada, true(C == rel(>, bin(+, id(b), id(c)), id(a)))) :-
+    condicion_reordenada(rel(<, id(a), bin(+, id(b), id(c))), C).
+
+test(reasociar, true(T == x + 5)) :-
+    reasociar((x + 2) + 3, T).
+
+test(regla_asociar_resta, true(T == x - 5)) :-
+    regla_asociar((x - 2) - 3, T).
+
+test(regla_asociar_sin_constantes, fail) :-
+    regla_asociar(a + (b + c), _).
+
+test(quitar_marcas, true(C == [apilar(1), saltar(L), etiqueta(L)])) :-
+    quitar_marcas([etiqueta(_), apilar(1), saltar(L), etiqueta(L)], C).
+
+test(marca_sin_uso) :-
+    marca_sin_uso([etiqueta(L), apilar(1)], etiqueta(L)).
+
+test(marca_usada, fail) :-
+    marca_sin_uso([etiqueta(L), saltar(L)], etiqueta(L)).
+
+test(expresion_texto, true(T == '(a + 1) * b')) :-
+    expresion_texto(bin(*, bin(+, id(a), num(1)), id(b)), 0, T).
+
+test(compartir_expresion,
+     true(N-Ts-E == 2-[asignar(t_1, bin(+, id(a), id(b)))]-
+                    bin(*, id(t_1), id(t_1)))) :-
+    compartir_expresion(bin(*, bin(+, id(a), id(b)), bin(+, id(a), id(b))),
+                        1, N, Ts, E).
+
+test(repetidas, true(R == [bin(+, id(a), id(b))])) :-
+    repetidas(bin(*, bin(+, id(a), id(b)), bin(+, id(a), id(b))), R).
+
+test(sin_repetidas, true(R == [])) :-
+    repetidas(bin(+, id(a), id(b)), R).
+
+test(tablas, true(Ps == [(+)-1, (-)-1, (*)-2, (/)-2])) :-
+    findall(O-N, precedencia(O, N), Ps),
+    destino(saltar(x), x),
+    destino(saltar_si_cero(y), y).
+
 :- end_tests(soluciones).

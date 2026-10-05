@@ -43,4 +43,11 @@ test(medir, [true(R == [gana-11, pierde(pozo)-1])]) :-
     numlist(1, 12, Ss),
     medir_caza(Ss, R).
 
+test(explican) :-
+    cazador:explican([1-[], 2-[wumpus]], wumpus, [3]).
+
+% El wumpus en la sala 8 daría olor en la 1.
+test(no_explican, [fail]) :-
+    cazador:explican([1-[], 2-[wumpus]], wumpus, [8]).
+
 :- end_tests(cazador).

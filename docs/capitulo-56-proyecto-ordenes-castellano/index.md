@@ -29,8 +29,18 @@ sigue ese diseño; las versiones siguientes lo reemplazan por una gramática
 y un planificador. Del apartado 11.2, «Advanced Projects», de *Programming
 in Prolog* de William Clocksin y Christopher Mellish, se toma el enunciado
 del proyecto 16: una interfaz en lengua natural al sistema de archivos que
-responde preguntas sobre sus propiedades, como las fechas. Las reglas, las
-gramáticas y el código son propios, en castellano.
+responde preguntas sobre sus propiedades, como las fechas, los dueños y los
+archivos compartidos. Las reglas, las gramáticas y el código son propios, en
+castellano.
+
+![Una pantalla de MS-DOS: el arranque del sistema y, después de la orden dir, la lista de los archivos de la unidad C con su tamaño, su fecha y su hora](msdos-dir.png)
+
+El lenguaje de destino del sistema de Covington: la orden `dir` de MS-DOS
+lista los archivos de una unidad, con su tamaño y la fecha de su última
+modificación. Cada orden de ese lenguaje hace una sola cosa y no admite
+variantes de redacción; el sistema de plantillas traduce a él frases como
+«What files are on disk A?». Imagen: Przemub, dominio público, vía
+[Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Ms-dosdir.png).
 
 El capítulo reutiliza, cargándolos, la gramática del castellano del
 [capítulo 54](../capitulo-54-proyecto-traduccion-castellanoingles/index.md)
@@ -64,11 +74,13 @@ Al terminar el capítulo, el lector puede:
   proceso y ofrecer un modo de simulación y confirmaciones;
 - probar un programa que modifica archivos con carpetas temporales que las
   pruebas crean y borran.
+- agregar preguntas a la gramática, al planificador y a las respuestas sin
+  modificarlos, con cláusulas de predicados `multifile`.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:40 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:55 h**.
     Resolver los 5 ejercicios marcados con ★: **1:25 h**.
-    Resolver los 12 ejercicios del final: **3:05 h**.
+    Resolver los 13 ejercicios del final: **3:25 h**.
 
 ## 56.1 El programa terminado
 
@@ -115,6 +127,16 @@ Cada línea recorre las mismas cuatro etapas: las palabras, el significado
 redacta como una oración. La prueba `sesion` de `ordenes.plt` crea esta
 carpeta en un directorio temporal, envía estas líneas al programa y compara
 su salida con la sesión, línea por línea.
+
+```mermaid
+flowchart LR
+    T["texto<br/>«Copia los archivos .txt<br/>de informes a respaldo»"] --> P["palabras/2"]
+    P --> S["significado<br/>copiar(archivos(…), a(…))"]
+    S --> PL["plan<br/>copiar/2, copiar/2"]
+    M["modelo<br/>de la carpeta"] --> PL
+    PL --> E["ejecución<br/>o simulación"]
+    E --> R["respuesta<br/>en castellano"]
+```
 
 | Versión | Archivo | Agrega | Lo que no puede hacer todavía |
 |---|---|---|---|
@@ -745,14 +767,131 @@ de sus subcarpetas: `archivos(".", todos)` nombra lo que está directamente
 en ella. El modo simulación es la manera de averiguar qué hará una orden
 antes de darla.
 
+## 56.7 Propietarios y archivos compartidos
+
+El proyecto 16 de Clocksin y Mellish pide más que el tamaño y la fecha de
+un archivo: pregunta de quién es —«How many files does David own?»— y si
+dos personas lo comparten —«Does Chris share PROG.MAC with David?»—. Las
+versiones anteriores no pueden responder porque el modelo no registra
+dueños, y SWI-Prolog no tiene un predicado portable que lea el dueño de un
+archivo: en Windows y en Unix los permisos se representan de maneras
+distintas. `propietarios.pl` responde esas preguntas sobre un modelo que
+los registra, con dos clases de términos nuevas:
+
+<!-- ejemplo: capitulo-56/propietarios.pl predicado: modelo_con_usuarios/1 -->
+```prolog
+%!  modelo_con_usuarios(-Modelo:list) is det.
+%
+%   Modelo es el modelo de ejemplo con los dueños de sus archivos y los
+%   permisos que comparten algunos de ellos.
+modelo_con_usuarios(Modelo) :-
+    modelo_ejemplo(M0),
+    append(M0,
+           [ propietario("borrador.tmp", "david"),
+             propietario("hola.pl", "chris"),
+             propietario("informes/acta.txt", "david"),
+             propietario("informes/notas.txt", "david"),
+             propietario("informes/resumen.pdf", "bill"),
+             propietario("notas.txt", "chris"),
+             compartido("notas.txt", "david"),
+             compartido("informes/acta.txt", "bill")
+           ],
+           Modelo).
+```
+
+El archivo no modifica ningún otro: agrega cláusulas a `pedido//1`,
+`plan/3` y `oracion/2`, que la gramática, el planificador y las respuestas
+declaran `multifile`. La gramática gana cuatro preguntas; los nombres de
+las personas los reconoce `nombre//1`, como los de los archivos:
+
+<!-- ejemplo: capitulo-56/propietarios.pl fragmento: pedido(contar_de(U)) .. nombre(U2). -->
+```prolog
+pedido(contar_de(U)) -->
+    ["cuantos"],
+    sustantivo(archivo, _, pl),
+    ["tiene"],
+    nombre(U).
+pedido(listar_de(U)) -->
+    ["que"],
+    sustantivo(archivo, _, pl),
+    ["tiene"],
+    nombre(U).
+pedido(propietario(archivo(R))) -->
+    ["de", "quien", "es"],
+    nombre(R).
+pedido(comparten(archivo(R), U1, U2)) -->
+    ["comparte"],
+    nombre(U1),
+    nombre(R),
+    ["con"],
+    nombre(U2).
+```
+
+El planificador responde con un hecho para `informar/1`, como en las demás
+preguntas. Una persona que no aparece en el modelo es un rechazo, y un
+archivo que no existe también, por `seleccion/3`. Dos personas comparten un
+archivo cuando las dos tienen **acceso** a él: una es la dueña y el archivo
+se comparte con la otra, o se comparte con las dos:
+
+<!-- ejemplo: capitulo-56/propietarios.pl predicado: usuario/2 acceso/3 -->
+```prolog
+%!  usuario(+U:string, +Modelo:list) is det.
+%
+%   U es el dueño de un archivo de Modelo, o alguien con quien se comparte
+%   uno.
+%
+%   @throws rechazo(no_es_usuario(U)) si U no aparece en Modelo.
+usuario(U, M) :-
+    (   (   memberchk(propietario(_, U), M)
+        ;   memberchk(compartido(_, U), M)
+        )
+    ->  true
+    ;   throw(rechazo(no_es_usuario(U)))
+    ).
+
+%!  acceso(+R:string, +U:string, +Modelo:list) is semidet.
+%
+%   U puede usar el archivo R: es su dueño, o R se comparte con U.
+acceso(R, U, M) :-
+    (   memberchk(propietario(R, U), M)
+    ->  true
+    ;   memberchk(compartido(R, U), M)
+    ).
+```
+
+`responder_modelo/2` encadena las tres etapas sobre el modelo con usuarios:
+
+```prolog
+?- responder_modelo("¿Cuántos archivos tiene David?", R).
+R = "David tiene 3 archivos.".
+
+?- responder_modelo("¿Comparte Chris notas.txt con David?", R).
+R = "Sí: Chris y David pueden usar notas.txt.".
+
+?- responder_modelo("¿Comparte Bill notas.txt con David?", R).
+R = "No: Bill y David no comparten notas.txt.".
+
+?- responder_modelo("¿Cuántos archivos tiene Ana?", R).
+R = "Ana no tiene archivos ni permisos en la carpeta.".
+```
+
+Cargado junto con el programa terminado, `propietarios.pl` entiende las
+mismas preguntas en `ordenes/1`, pero el modelo que `leer_modelo/2` lee del
+disco no tiene dueños: «¿De quién es notas.txt?» responde que no tiene
+dueño registrado. La separación entre el modelo y el disco de la
+[sección 56.4](#564-version-3-del-significado-al-plan) hace que el
+planificador no cambie si los dueños se leen de otra fuente, como un
+archivo de texto o un comando del sistema operativo; solo cambia el
+predicado que arma el modelo.
+
 !!! success "Criterios de calidad"
     | Criterio | En este capítulo |
     |---|---|
     | C1 | cada predicado declara modos y determinación; `planificar/3`, `leer_modelo/2` y `ejecutar_plan/6` son `det`, `entender/2` y `traducir/2` son `semidet`, y las gramáticas y `comodin/2` son `nondet` |
-    | C4 | las elecciones del planificador y de la redacción usan `->` o cortan después de decidir; `pasa/2` envuelve con `once/1` el `comodin/2` no determinista, y las pruebas, que fallan si queda una alternativa pendiente, lo confirman |
+    | C4 | las elecciones del planificador y de la redacción usan `->` o cortan después de decidir, y cada cláusula de `realizar/6` en modo `real` corta después de la cabeza; `pasa/2` envuelve con `once/1` el `comodin/2` no determinista, y las pruebas, que fallan si queda una alternativa pendiente, lo confirman |
     | C5 | una orden imposible produce un rechazo con su motivo, no un fallo; una ruta que sale de la carpeta produce un error de permiso en `ruta_real/3` |
     | C6 | la gramática y el planificador son puros; el disco solo se toca en `sistema.pl`, y la lectura y la escritura están en `ordenes.pl` y en la confirmación de `sistema.pl`, que reciben los streams como argumentos |
-    | C7 | 78 pruebas en cinco archivos, y 22 más en las soluciones: cada orden con su significado, las concordancias rechazadas, cada plan y cada rechazo, y una carpeta temporal creada y borrada por cada prueba que toca el disco |
+    | C7 | 139 pruebas en seis archivos, y 39 más en las soluciones: cada orden con su significado, las concordancias rechazadas, cada plan y cada rechazo, y una carpeta temporal creada y borrada por cada prueba que toca el disco |
 
 ## Ejercicios
 
@@ -817,6 +956,9 @@ los predicados que el capítulo declara `multifile`.
     programa, con su plan, su realización y su descripción en modo
     simulación. Probarla con un programa que escribe los argumentos que
     recibe.
+13. **(2)** Agregar a `propietarios.pl`, en un archivo aparte, la pregunta
+    «¿Qué archivos comparte Chris con David?», que responde con la lista de
+    los archivos a los que las dos personas tienen acceso.
 
 ## Resumen
 
@@ -827,11 +969,13 @@ los predicados que el capítulo declara `multifile`.
 | **plan** | la lista de acciones que cumplen la orden sobre un modelo de la carpeta, o un rechazo con su motivo |
 | **carpeta de trabajo** | la única carpeta que el programa puede tocar; se verifica al planificar y al resolver cada ruta |
 | **modo simulación** | el plan se describe en lugar de realizarse |
+| **dueños y permisos** | términos nuevos del modelo, `propietario/2` y `compartido/2`, y preguntas agregadas por los predicados `multifile` |
 | `palabras/2`, `simplifica/2`, `plantilla/2`, `traducir/2` | la versión 1: las palabras, las reglas de simplificación, las plantillas |
 | `entender/2`, `orden//1`, `objeto//2`, `nombre//1` | la gramática de órdenes |
 | `planificar/3`, `seleccion/3`, `destino/5`, `comodin/2` | el planificador |
 | `leer_modelo/2`, `ruta_real/3`, `ejecutar_plan/6`, `crear_muestra/2` | el modelo leído del disco y la ejecución |
 | `ordenes/1`, `ordenes/4`, `oracion/2`, `cantidad/4` | el bucle y las respuestas |
+| `modelo_con_usuarios/1`, `acceso/3`, `responder_modelo/2` | los propietarios y los archivos compartidos |
 | `sub_term/2` | cada subtérmino de un término, por retroceso |
 | `copy_file/2`, `set_time_file/3` | de `library(filesex)`: copiar un archivo, cambiar su fecha de modificación |
 
@@ -863,8 +1007,16 @@ los predicados que el capítulo declara `multifile`.
   16: una interfaz en lengua natural al sistema de archivos que responde
   preguntas sobre sus propiedades, como la cantidad de archivos y la fecha
   de un cambio. Las preguntas de tamaño, fecha y cantidad del capítulo y
-  el [ejercicio 9](#ejercicios) toman esa idea; el libro no tiene edición
-  legal en línea.
+  el [ejercicio 9](#ejercicios) toman esa idea, y la
+  [sección 56.7](#567-propietarios-y-archivos-compartidos), sus preguntas
+  sobre el dueño de un archivo y los archivos compartidos; el libro no
+  tiene edición legal en línea.
+- SWI-Prolog, *Manual de referencia*, las secciones
+  [«File System Interaction»](https://www.swi-prolog.org/pldoc/man?section=files)
+  y [«library(filesex): Extended operations on files»](https://www.swi-prolog.org/pldoc/man?section=filesex).
+  La versión 4 lee el modelo de la carpeta y ejecuta el plan con los
+  predicados que documentan: `directory_files/2`, `size_file/2`,
+  `time_file/2`, `copy_file/2`, `rename_file/2` y `delete_file/1`.
 
 El código del capítulo es propio del curso: las plantillas, la gramática,
 el planificador, la ejecución y las respuestas se escribieron para él; de

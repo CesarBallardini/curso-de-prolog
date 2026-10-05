@@ -1,0 +1,39 @@
+// markdownlint rules for the course's Markdown, read by the VS Code extension
+// davidanson.vscode-markdownlint and by markdownlint-cli2. The book is linted,
+// never reformatted: see the "[markdown]" block of .vscode/settings.json.
+{
+  "default": true,
+
+  // Prose is wrapped by hand at about 80 columns, but code lines, tables and
+  // long links may run longer.
+  "MD013": false,
+
+  // Inline HTML is part of the sources: `<br/>` in mermaid labels and the
+  // `<!-- ejemplo: … -->` markers that tools/sync-examples.py fills in.
+  "MD033": false,
+
+  // The body of a MkDocs admonition (`!!! example "…"`) is indented four
+  // spaces, which this rule takes for an indented code block.
+  "MD046": false,
+
+  // Shell commands are always written with a `$ ` prompt (chapters 28–31), with
+  // or without their output, so that a command never looks like output.
+  "MD014": false,
+
+  // Chapters repeat sub-headings such as «Solución» under different parents.
+  "MD024": { "siblings_only": true },
+
+  // Tables are written compact (`|---|---|`); padding them is what corrupts
+  // cells such as `[Primero|Resto]` (see .vscode/settings.json).
+  "MD060": false,
+
+  // Anchors are slugged by Python-Markdown, not GitHub; `mkdocs build --strict`
+  // already validates every fragment, with the slugs the site really uses.
+  "MD051": false,
+
+  // A pipe inside a code span in a table cell is left unescaped on purpose
+  // (Python-Markdown would print the backslash); this rule then counts one
+  // column too many, and MD038 sees the split span.
+  "MD056": false,
+  "MD038": false
+}

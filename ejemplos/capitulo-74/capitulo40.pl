@@ -37,19 +37,43 @@
 :- load_files(anchura40:'../capitulo-40/visitados', []).
 :- load_files(iterativa40:'../capitulo-40/profundizacion', []).
 
+% anchura40:inicial(Problema, C): C es el estado inicial de cubo(C).
 anchura40:inicial(cubo(C), C).
+
+%!  anchura40:meta(+Problema, +C) is semidet.
+%
+%   El cubo C es una meta de Problema: en cubo(_), el cubo resuelto.
 anchura40:meta(cubo(_), C) :-
     user:resuelto(C).
+
+%!  anchura40:sucesor(+Problema, +C, -M, -C1, -Costo:integer) is nondet.
+%
+%   El cubo C1 sigue a C en Problema con el cuarto de vuelta M, que
+%   cuesta 1.
 anchura40:sucesor(cubo(_), C, M, C1, 1) :-
     user:cuarto_de_vuelta(M),
     user:mover(M, C, C1).
 
+% iterativa40:inicial(Problema, C): C es el estado inicial de cubo(C) y
+% de pieza(Etapa, C, Criterios).
 iterativa40:inicial(cubo(C), C).
 iterativa40:inicial(pieza(_, C, _), C).
+
+%!  iterativa40:meta(+Problema, +C) is semidet.
+%
+%   El cubo C es una meta de Problema: en cubo(_), el cubo resuelto; en
+%   pieza(_, _, Criterios), un cubo que unifica con alguno de Criterios.
 iterativa40:meta(cubo(_), C) :-
     user:resuelto(C).
 iterativa40:meta(pieza(_, _, Criterios), C) :-
     memberchk(C, Criterios).
+
+%!  iterativa40:sucesor(+Problema, +C, -Ms, -C1, -Costo:integer)
+%!      is nondet.
+%
+%   El cubo C1 sigue a C en Problema, con costo 1: en cubo(_), por el
+%   cuarto de vuelta Ms; en pieza(Etapa, _, _), por el candidato de Etapa
+%   cuya lista de giros es Ms.
 iterativa40:sucesor(cubo(_), C, M, C1, 1) :-
     user:cuarto_de_vuelta(M),
     user:mover(M, C, C1).

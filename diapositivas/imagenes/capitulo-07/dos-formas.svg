@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" width="960" height="480">
+  <title>Dos maneras de ser una lista, la vacía o un primer elemento seguido de una lista, y una cláusula por cada una</title>
+  <rect x="0" y="0" width="960" height="480" fill="#FFFFFF"/>
+  <text x="480.0" y="44.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="24" fill="#1F2933" text-anchor="middle" xml:space="preserve" font-weight="bold">una lista es…</text>
+  <rect x="60.0" y="80.0" width="360.0" height="150.0" rx="10" fill="#E3F1E4" stroke="#2E7D32" stroke-width="3"/>
+  <text x="240.0" y="135.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="30" fill="#1F2933" text-anchor="middle" xml:space="preserve" font-weight="bold">[]</text>
+  <text x="240.0" y="185.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#2E7D32" text-anchor="middle" xml:space="preserve">la lista vacía</text>
+  <text x="480.0" y="165.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="24" fill="#52606D" text-anchor="middle" xml:space="preserve">o</text>
+  <rect x="540.0" y="80.0" width="360.0" height="150.0" rx="10" fill="#FCE8D2" stroke="#D9822B" stroke-width="3"/>
+  <text x="720.0" y="135.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="30" fill="#1F2933" text-anchor="middle" xml:space="preserve" font-weight="bold">[X|Resto]</text>
+  <text x="720.0" y="175.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#D9822B" text-anchor="middle" xml:space="preserve">un primer elemento</text>
+  <text x="720.0" y="205.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#D9822B" text-anchor="middle" xml:space="preserve">y una lista</text>
+  <line x1="240.0" y1="232.0" x2="240.0" y2="284.0" stroke="#2E7D32" stroke-width="3"/>
+  <polygon points="240.0,296.0 246.6,284.0 233.4,284.0" fill="#2E7D32"/>
+  <line x1="720.0" y1="232.0" x2="720.0" y2="284.0" stroke="#D9822B" stroke-width="3"/>
+  <polygon points="720.0,296.0 726.6,284.0 713.4,284.0" fill="#D9822B"/>
+  <rect x="60.0" y="300.0" width="840.0" height="150.0" rx="10" fill="#F1F3F5"/>
+  <text x="100.0" y="345.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#1F2933" text-anchor="start" xml:space="preserve">p([]) :- …</text>
+  <text x="100.0" y="390.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#1F2933" text-anchor="start" xml:space="preserve">p([X|Resto]) :- …, p(Resto).</text>
+  <text x="480.0" y="435.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="middle" xml:space="preserve">el programa reproduce la estructura que recorre</text>
+</svg>

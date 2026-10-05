@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 470" width="960" height="470">
+  <title>hermana_de_verdad(ana, Quien): en el primer intento B = ana y la comparación final ana \== ana falla; en el segundo B = pedro y se cumple</title>
+  <defs>
+    <marker id="a-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1F2933"/></marker>
+    <marker id="a-navy" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1F3A5F"/></marker>
+    <marker id="a-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#D9822B"/></marker>
+    <marker id="a-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2E7D32"/></marker>
+    <marker id="a-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#C62828"/></marker>
+    <marker id="a-grey" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#9AA5B1"/></marker>
+  </defs>
+  <rect x="0" y="0" width="960" height="470" fill="#FFFFFF"/>
+  <text x="40.0" y="44.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#1F2933" text-anchor="start" font-weight="bold" xml:space="preserve">?- hermana_de_verdad(ana, Quien).</text>
+  <text x="420.0" y="92.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#52606D" text-anchor="middle" font-weight="bold" xml:space="preserve">1.er intento</text>
+  <text x="740.0" y="92.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#52606D" text-anchor="middle" font-weight="bold" xml:space="preserve">2.º intento</text>
+  <rect x="40.0" y="110.0" width="220.0" height="50.0" rx="8" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2.5"/>
+  <text x="56.0" y="143.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#1F2933" text-anchor="start" xml:space="preserve">mujer(A)</text>
+  <rect x="300.0" y="110.0" width="240.0" height="50.0" rx="8" fill="#FFFFFF" stroke="#9AA5B1" stroke-width="1.5"/>
+  <text x="420.0" y="143.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F2933" text-anchor="middle" xml:space="preserve">A = ana</text>
+  <rect x="620.0" y="110.0" width="240.0" height="50.0" rx="8" fill="#FFFFFF" stroke="#9AA5B1" stroke-width="1.5"/>
+  <text x="740.0" y="143.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F2933" text-anchor="middle" xml:space="preserve">A = ana</text>
+  <rect x="40.0" y="174.0" width="220.0" height="50.0" rx="8" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2.5"/>
+  <text x="56.0" y="207.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#1F2933" text-anchor="start" xml:space="preserve">padre(P, A)</text>
+  <rect x="300.0" y="174.0" width="240.0" height="50.0" rx="8" fill="#FFFFFF" stroke="#9AA5B1" stroke-width="1.5"/>
+  <text x="420.0" y="207.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F2933" text-anchor="middle" xml:space="preserve">P = juan</text>
+  <rect x="620.0" y="174.0" width="240.0" height="50.0" rx="8" fill="#FFFFFF" stroke="#9AA5B1" stroke-width="1.5"/>
+  <text x="740.0" y="207.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F2933" text-anchor="middle" xml:space="preserve">P = juan</text>
+  <rect x="40.0" y="238.0" width="220.0" height="50.0" rx="8" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2.5"/>
+  <text x="56.0" y="271.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#1F2933" text-anchor="start" xml:space="preserve">padre(P, B)</text>
+  <rect x="300.0" y="238.0" width="240.0" height="50.0" rx="8" fill="#FFFFFF" stroke="#9AA5B1" stroke-width="1.5"/>
+  <text x="420.0" y="271.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F2933" text-anchor="middle" xml:space="preserve">B = ana</text>
+  <rect x="620.0" y="238.0" width="240.0" height="50.0" rx="8" fill="#FFFFFF" stroke="#9AA5B1" stroke-width="1.5"/>
+  <text x="740.0" y="271.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F2933" text-anchor="middle" xml:space="preserve">B = pedro</text>
+  <rect x="40.0" y="302.0" width="220.0" height="50.0" rx="8" fill="#FCE8D2" stroke="#D9822B" stroke-width="2.5"/>
+  <text x="56.0" y="335.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#1F2933" text-anchor="start" xml:space="preserve">A \== B</text>
+  <rect x="300.0" y="302.0" width="240.0" height="50.0" rx="8" fill="#FDECEA" stroke="#C62828" stroke-width="2.5"/>
+  <text x="420.0" y="335.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F2933" text-anchor="middle" xml:space="preserve">ana \== ana</text>
+  <rect x="620.0" y="302.0" width="240.0" height="50.0" rx="8" fill="#E3F1E4" stroke="#2E7D32" stroke-width="2.5"/>
+  <text x="740.0" y="335.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F2933" text-anchor="middle" xml:space="preserve">ana \== pedro</text>
+  <path d="M553.6,320.6 L566.4,333.4 M566.4,320.6 L553.6,333.4" fill="none" stroke="#C62828" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M876.8,327.0 L882.4,332.6 L892.0,319.8" fill="none" stroke="#2E7D32" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M420,300 C420,286 740,286 740,300" fill="none" stroke="#9AA5B1" stroke-width="2" stroke-dasharray="6 4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="580.0" y="282.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#52606D" text-anchor="middle" xml:space="preserve">retroceso</text>
+  <rect x="40.0" y="390.0" width="300.0" height="46.4" rx="8" fill="#1F2933" stroke="#1F2933" stroke-width="2"/>
+  <text x="58.0" y="420.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#E4E7EB" text-anchor="start" font-weight="bold" xml:space="preserve">Quien = pedro.</text>
+  <text x="380.0" y="416.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#1F2933" text-anchor="start" xml:space="preserve">Al final, A y B ya tienen valor:</text>
+  <text x="380.0" y="441.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#1F2933" text-anchor="start" xml:space="preserve">la comparación descarta a ana.</text>
+</svg>

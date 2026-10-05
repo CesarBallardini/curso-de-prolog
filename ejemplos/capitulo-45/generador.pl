@@ -23,6 +23,14 @@
 :- ensure_loaded(sintaxis).
 :- ensure_loaded('../capitulo-34/diccionario').
 
+% El código de las sentencias y de las expresiones, y las clases de las
+% instrucciones, son multifile: otros archivos agregan construcciones e
+% instrucciones.
+:- multifile
+    codigo_sentencia//1,
+    codigo_expresion//1,
+    clase/2.
+
 %!  compilar(+Texto, -Objeto:list) is semidet.
 %
 %   Objeto es el código ensamblado del programa Mini de Texto. Falla si

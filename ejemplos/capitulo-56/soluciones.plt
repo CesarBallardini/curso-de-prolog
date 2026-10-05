@@ -144,4 +144,51 @@ etapa(Texto, R) :-
     ;   R = gramatica
     ).
 
+test(relacion_temporal, all(R == [despues])) :-
+    phrase(relacion_temporal(R), ["posteriores", "al"]).
+
+test(comparar_fecha, all(Rel == [antes])) :-
+    member(Rel, [antes, despues]),
+    comparar_fecha(Rel, "2026-08-30", "2026-09-01").
+
+test(comparar_fecha_igual, fail) :-
+    member(Rel, [antes, despues]),
+    comparar_fecha(Rel, "2026-09-01", "2026-09-01").
+
+test(varias_una, all(Os == [[borrar(archivo("a.txt"))]])) :-
+    phrase(varias(Os), ["borra", "a.txt"]).
+
+test(varias_dos, all(Os == [[borrar(archivo("a.txt")),
+                             borrar(archivo("b.txt"))]])) :-
+    phrase(varias(Os), ["borra", "a.txt", "y", "borra", "b.txt"]).
+
+test(planificar_varias_ejemplo,
+     true(P == [ mover("notas.txt", "apuntes.txt"),
+                 copiar("apuntes.txt", "respaldo/apuntes.txt") ])) :-
+    planificar_varias_ejemplo([ mover(archivo("notas.txt"), a("apuntes.txt")),
+                                copiar(archivo("apuntes.txt"), a("respaldo")) ],
+                              P).
+
+test(aplicar_accion_mover,
+     true(M == [archivo("b.txt", 1, "f"), carpeta("c")])) :-
+    aplicar_accion(mover("a.txt", "b.txt"),
+                   [archivo("a.txt", 1, "f"), carpeta("c")], M).
+
+test(aplicar_accion_copiar,
+     true(M == [archivo("b.txt", 1, "f"), archivo("a.txt", 1, "f")])) :-
+    aplicar_accion(copiar("a.txt", "b.txt"), [archivo("a.txt", 1, "f")], M).
+
+test(aplicar_accion_borrar, true(M == [])) :-
+    aplicar_accion(borrar("a.txt"), [archivo("a.txt", 1, "f")], M).
+
+test(aplicar_accion_informar, true(M == [carpeta("c")])) :-
+    aplicar_accion(informar(x), [carpeta("c")], M).
+
+test(palabra_conservada, true(Ps == ["Informe.PDF", "copia", "2026"])) :-
+    maplist(palabra_conservada, ["Informe.PDF", "Copia", "2026"], Ps).
+
+test(parece_nombre, all(P == ["a.txt", "dir/x", "v2"])) :-
+    member(P, ["a.txt", "dir/x", "v2", "Informe"]),
+    parece_nombre(P).
+
 :- end_tests(soluciones).

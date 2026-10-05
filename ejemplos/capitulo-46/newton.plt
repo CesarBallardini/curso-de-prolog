@@ -35,4 +35,13 @@ test(no_derivable, [error(domain_error(expresion_derivable, cos(x)))]) :-
 test(tolerancia_cero, [fail]) :-
     newton(x ^ 2 = 2, x, 1, 0.0, _).
 
+test(paso, [true(X1-E-C == 1.5-1.5-0.5)]) :-
+    paso_newton(x ^ 2 - 2, 2 * x, x, 1.0, X1, E, C).
+
+test(paso_derivada_nula, [fail]) :-
+    paso_newton(x ^ 2 - 2, 2 * x, x, 0.0, _, _, _).
+
+test(newton_primeros, [true(Xs == [1.5, 1.4166666666666667])]) :-
+    newton(x ^ 2 = 2, x, 1, 0.1, Xs).
+
 :- end_tests(newton).

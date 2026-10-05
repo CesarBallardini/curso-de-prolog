@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500">
+  <title>Las cuatro causas de no terminación: falta el caso base; el caso recursivo no reduce; la reducción está después de la llamada; dos predicados se llaman en ciclo</title>
+  <rect x="0" y="0" width="800" height="500" fill="#FFFFFF"/>
+  <rect x="8" y="8" width="384" height="222" rx="12" fill="#F7F9FB" stroke="#B3261E" stroke-width="2"/>
+  <circle cx="34" cy="36" r="14" fill="#B3261E"/>
+  <text x="34" y="42" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#FFFFFF" font-weight="bold" text-anchor="middle">1</text>
+  <text x="58" y="42" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#1F2933" font-weight="bold">Falta el caso base</text>
+  <rect x="408" y="8" width="384" height="222" rx="12" fill="#F7F9FB" stroke="#B3261E" stroke-width="2"/>
+  <circle cx="434" cy="36" r="14" fill="#B3261E"/>
+  <text x="434" y="42" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#FFFFFF" font-weight="bold" text-anchor="middle">2</text>
+  <text x="458" y="42" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#1F2933" font-weight="bold">No reduce el problema</text>
+  <rect x="8" y="238" width="384" height="222" rx="12" fill="#F7F9FB" stroke="#B3261E" stroke-width="2"/>
+  <circle cx="34" cy="266" r="14" fill="#B3261E"/>
+  <text x="34" y="272" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#FFFFFF" font-weight="bold" text-anchor="middle">3</text>
+  <text x="58" y="272" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#1F2933" font-weight="bold">Reduce después de llamar</text>
+  <rect x="408" y="238" width="384" height="222" rx="12" fill="#F7F9FB" stroke="#B3261E" stroke-width="2"/>
+  <circle cx="434" cy="266" r="14" fill="#B3261E"/>
+  <text x="434" y="272" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#FFFFFF" font-weight="bold" text-anchor="middle">4</text>
+  <text x="458" y="272" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#1F2933" font-weight="bold">Dos predicados en ciclo</text>
+  <rect x="140" y="108" width="120" height="48" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="200" y="139" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="19" fill="#1F2933" text-anchor="middle">p(X)</text>
+  <path d="M 260 120 C 338 88 308 44 230 102" fill="none" stroke="#B3261E" stroke-width="3"/>
+  <polygon points="222,94 238,96 226,110" fill="#B3261E"/>
+  <text x="200" y="194" font-family="Verdana, DejaVu Sans, sans-serif" font-size="14" fill="#52606D" text-anchor="middle">solo la cláusula recursiva:</text>
+  <text x="200" y="214" font-family="Verdana, DejaVu Sans, sans-serif" font-size="14" fill="#52606D" text-anchor="middle">ninguna llamada termina</text>
+  <rect x="428" y="98" width="90" height="44" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="473" y="127" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#1F2933" text-anchor="middle">p(X)</text>
+  <rect x="443" y="154" width="60" height="14" rx="3" fill="#FBE4E2" stroke="#B3261E" stroke-width="2"/>
+  <line x1="518" y1="120" x2="534" y2="120" stroke="#B3261E" stroke-width="3"/>
+  <polygon points="532,112 532,128 546,120" fill="#B3261E"/>
+  <rect x="546" y="98" width="90" height="44" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="591" y="127" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#1F2933" text-anchor="middle">p(X)</text>
+  <rect x="561" y="154" width="60" height="14" rx="3" fill="#FBE4E2" stroke="#B3261E" stroke-width="2"/>
+  <line x1="636" y1="120" x2="652" y2="120" stroke="#B3261E" stroke-width="3"/>
+  <polygon points="650,112 650,128 664,120" fill="#B3261E"/>
+  <rect x="664" y="98" width="90" height="44" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="709" y="127" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#1F2933" text-anchor="middle">p(X)</text>
+  <rect x="679" y="154" width="60" height="14" rx="3" fill="#FBE4E2" stroke="#B3261E" stroke-width="2"/>
+  <text x="600" y="204" font-family="Verdana, DejaVu Sans, sans-serif" font-size="14" fill="#52606D" text-anchor="middle">el mismo tamaño en cada llamada</text>
+  <rect x="28" y="302" width="300" height="40" rx="8" fill="#FBE4E2" stroke="#B3261E" stroke-width="2"/>
+  <text x="42" y="328" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="16" fill="#1F2933">generaciones(Hijo, D, Faltan)</text>
+  <path d="M 328 312 C 384 298 384 348 342 334" fill="none" stroke="#B3261E" stroke-width="3"/>
+  <polygon points="344,326 344,342 330,333" fill="#B3261E"/>
+  <rect x="28" y="364" width="300" height="40" rx="8" fill="#FFFFFF" stroke="#9AA5B1" stroke-width="2" stroke-dasharray="6 5"/>
+  <text x="42" y="390" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="16" fill="#9AA5B1">padre(A, Hijo)</text>
+  <text x="200" y="438" font-family="Verdana, DejaVu Sans, sans-serif" font-size="14" fill="#52606D" text-anchor="middle">nunca se alcanza</text>
+  <rect x="428" y="328" width="130" height="44" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="493" y="357" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#1F2933" text-anchor="middle">hijo/2</text>
+  <rect x="626" y="328" width="150" height="44" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="701" y="357" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#1F2933" text-anchor="middle">progenitor/2</text>
+  <path d="M 518 326 C 558 288 638 288 670 322" fill="none" stroke="#B3261E" stroke-width="3"/>
+  <polygon points="660,318 678,316 674,332" fill="#B3261E"/>
+  <path d="M 670 374 C 638 412 558 412 518 378" fill="none" stroke="#B3261E" stroke-width="3"/>
+  <polygon points="528,384 510,384 514,368" fill="#B3261E"/>
+  <text x="600" y="438" font-family="Verdana, DejaVu Sans, sans-serif" font-size="14" fill="#52606D" text-anchor="middle">ninguno llega a un hecho</text>
+  <text x="400" y="490" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#1F3A5F" font-weight="bold" text-anchor="middle">Ante un programa que no termina, se verifica en este orden: 1, 2, 3, 4.</text>
+</svg>

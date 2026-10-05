@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" width="800" height="400">
+  <title>Dos términos enfrentados, fecha(A, 5, 3) arriba y fecha(2021, M, 3) abajo, con sus argumentos emparejados: ¿pueden hacerse idénticos?</title>
+  <rect x="0" y="0" width="800" height="400" fill="#FFFFFF"/>
+  <path d="M250,50 H40 Q22,50 22,68 V332 Q22,350 40,350 H250" fill="none" stroke="#9AA5B1" stroke-width="3" stroke-dasharray="6 5"/>
+  <line x1="170" y1="160" x2="170" y2="232" stroke="#9AA5B1" stroke-width="3" stroke-dasharray="6 5"/>
+  <line x1="300" y1="160" x2="300" y2="232" stroke="#9AA5B1" stroke-width="3" stroke-dasharray="6 5"/>
+  <line x1="430" y1="160" x2="430" y2="232" stroke="#9AA5B1" stroke-width="3" stroke-dasharray="6 5"/>
+  <line x1="300" y1="50" x2="170" y2="140" stroke="#1F3A5F" stroke-width="2"/>
+  <line x1="300" y1="50" x2="300" y2="140" stroke="#1F3A5F" stroke-width="2"/>
+  <line x1="300" y1="50" x2="430" y2="140" stroke="#1F3A5F" stroke-width="2"/>
+  <ellipse cx="300" cy="50" rx="48.25" ry="20" fill="#1F3A5F" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="300" y="57.7" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#FFFFFF" text-anchor="middle" font-weight="bold">fecha</text>
+  <rect x="150" y="122" width="40" height="36" rx="6" fill="#EFE7F7" stroke="#6A3D9A" stroke-width="2"/>
+  <text x="170" y="147.7" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#1F2933" text-anchor="middle">A</text>
+  <rect x="280" y="122" width="40" height="36" rx="18" fill="#E3F2F1" stroke="#2B7A78" stroke-width="2"/>
+  <text x="300" y="147.7" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#1F2933" text-anchor="middle">5</text>
+  <rect x="410" y="122" width="40" height="36" rx="18" fill="#E3F2F1" stroke="#2B7A78" stroke-width="2"/>
+  <text x="430" y="147.7" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#1F2933" text-anchor="middle">3</text>
+  <line x1="300" y1="350" x2="170" y2="252" stroke="#1F3A5F" stroke-width="2"/>
+  <line x1="300" y1="350" x2="300" y2="252" stroke="#1F3A5F" stroke-width="2"/>
+  <line x1="300" y1="350" x2="430" y2="252" stroke="#1F3A5F" stroke-width="2"/>
+  <ellipse cx="300" cy="350" rx="48.25" ry="20" fill="#1F3A5F" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="300" y="357.7" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#FFFFFF" text-anchor="middle" font-weight="bold">fecha</text>
+  <rect x="132.8" y="234" width="74.4" height="36" rx="18" fill="#E3F2F1" stroke="#2B7A78" stroke-width="2"/>
+  <text x="170" y="259.7" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#1F2933" text-anchor="middle">2021</text>
+  <rect x="280" y="234" width="40" height="36" rx="6" fill="#EFE7F7" stroke="#6A3D9A" stroke-width="2"/>
+  <text x="300" y="259.7" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#1F2933" text-anchor="middle">M</text>
+  <rect x="410" y="234" width="40" height="36" rx="18" fill="#E3F2F1" stroke="#2B7A78" stroke-width="2"/>
+  <text x="430" y="259.7" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#1F2933" text-anchor="middle">3</text>
+  <circle cx="22" cy="200" r="17" fill="#FFFFFF"/>
+  <text x="22" y="212" font-family="Verdana, DejaVu Sans, sans-serif" font-size="32" fill="#52606D" text-anchor="middle" font-weight="bold">=</text>
+  <rect x="540" y="110" width="245" height="180" rx="12" fill="#F1F3F5"/>
+  <text x="662" y="165" font-family="Verdana, DejaVu Sans, sans-serif" font-size="18" fill="#1F3A5F" text-anchor="middle" font-weight="bold">¿pueden hacerse</text>
+  <text x="662" y="192" font-family="Verdana, DejaVu Sans, sans-serif" font-size="18" fill="#1F3A5F" text-anchor="middle" font-weight="bold">idénticos?</text>
+  <text x="662" y="245" font-family="Verdana, DejaVu Sans, sans-serif" font-size="18" fill="#6A3D9A" text-anchor="middle" font-weight="bold">¿con qué valores?</text>
+</svg>

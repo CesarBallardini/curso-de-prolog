@@ -479,7 +479,7 @@ alg  algebra            4
 bd   bases_de_datos     0
 ```
 
-La frontera sigue el Patrón 39. Del lado de Prolog, el módulo nuevo `puente`
+La frontera sigue el [Patrón 39](../patrones.md#39-frontera-pythonprolog). Del lado de Prolog, el módulo nuevo `puente`
 convierte las respuestas del programa en datos que cruzan:
 
 <!-- ejemplo: capitulo-29/inscripciones/puente.pl predicado: ranking_py/1 fila_del_ranking/2 inscribir_py/3 resultado_py/2 consulta: ranking_py(Filas). -->

@@ -84,4 +84,55 @@ test(dos_dias, true(R == [no_entiende])) :-
 test(no_es_de_la_agenda, fail) :-
     atender("Estoy cansado", [], _, _).
 
+test(hora_la_una, all(H == [hora(13, 0)])) :-
+    phrase(agenda:hora(H), [a, la, una, de, la, tarde]).
+
+test(hora_cuarto_noche, all(H == [hora(21, 15)])) :-
+    phrase(agenda:hora(H), [a, las, '9', y, cuarto, de, la, noche]).
+
+test(hora_minutos, all(H == [hora(10, 45)])) :-
+    phrase(agenda:hora(H), [a, las, '10', '45']).
+
+test(hora_invalida, fail) :-
+    phrase(agenda:hora(_), [a, las, '25']).
+
+test(dia_fecha, all(D == [fecha(10, 3)])) :-
+    phrase(agenda:dia(D), [el, '3', de, octubre]).
+
+test(dia_semana, all(D == [dia(miercoles)])) :-
+    phrase(agenda:dia(D), [miercoles]).
+
+test(dia_fecha_invalida, fail) :-
+    phrase(agenda:dia(_), [el, '31', de, septiembre]).
+
+test(complemento, all(C == [con(nombre(el, director))])) :-
+    phrase(agenda:complemento(C), [con, el, director]).
+
+test(complementos, all(Cs == [[con(nombre(ninguno, ana)),
+                               en(nombre(la, oficina))]])) :-
+    phrase(agenda:complementos(Cs), [con, ana, en, la, oficina]).
+
+test(efecto_que_hay_ordena,
+     true(R == del_dia(dia(lunes), [cita(dia(lunes), hora(9, 0), d, e, f),
+                                     cita(dia(lunes), hora(11, 0), a, b, c)]))) :-
+    agenda:efecto(que_hay(dia(lunes)), "",
+                  [cita(dia(lunes), hora(11, 0), a, b, c),
+                   cita(dia(martes), hora(9, 0), x, y, z),
+                   cita(dia(lunes), hora(9, 0), d, e, f)], _, R).
+
+test(cita, true(C == cita(dia(lunes), hora(9, 0), nombre(una, "clase"),
+                          nadie, ninguno))) :-
+    agenda:cita(nombre(una, clase), [hora(hora(9, 0)), dia(dia(lunes))],
+                "una clase", C).
+
+test(cita_dos_horas, fail) :-
+    agenda:cita(nombre(una, clase),
+                [hora(hora(9, 0)), dia(dia(lunes)), hora(hora(10, 0))],
+                "una clase", _).
+
+test(oracion_libre, true(S == "El lunes a las 9:05 no tienes nada \c
+                               anotado.")) :-
+    phrase(agenda:oracion(libre(dia(lunes), hora(9, 5))), Codigos),
+    string_codes(S, Codigos).
+
 :- end_tests(agenda).

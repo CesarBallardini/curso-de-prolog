@@ -127,4 +127,36 @@ test(cantidad, all(T == ["ningún archivo", "ninguna carpeta", "1 byte",
                    2-carpeta-f]),
     cantidad(K, L, G, T).
 
+test(coincide, all(V == ["coincida", "coincide", "coinciden"])) :-
+    member(K, [0, 1, 3]),
+    coincide(K, V).
+
+test(atender_salir, [ setup(muestra(D)),
+                      cleanup(delete_directory_and_contents(D)),
+                      true(S-T == no-"Hasta luego.\n") ]) :-
+    with_output_to(string(T),
+                   ( current_output(Out),
+                     atender(D, [], user_input, Out, "Salir", S) )).
+
+test(atender_no_entiende, [ setup(muestra(D)),
+                            cleanup(delete_directory_and_contents(D)),
+                            true(S == si) ]) :-
+    with_output_to(string(T),
+                   ( current_output(Out),
+                     atender(D, [], user_input, Out, "Haz algo", S) )),
+    sub_string(T, 0, _, _, "La orden no se entiende.").
+
+test(atender_simulacion, [ setup(muestra(D)),
+                           cleanup(delete_directory_and_contents(D)),
+                           true(S-Existe == si-true) ]) :-
+    with_output_to(string(_),
+                   ( current_output(Out),
+                     atender(D, [simulacion(true)], user_input, Out,
+                             "Renombra notas.txt como apuntes.txt", S) )),
+    directory_file_path(D, 'notas.txt', P),
+    (   exists_file(P)
+    ->  Existe = true
+    ;   Existe = false
+    ).
+
 :- end_tests(ordenes).

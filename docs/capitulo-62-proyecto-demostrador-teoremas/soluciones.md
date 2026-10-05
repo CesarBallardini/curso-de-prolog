@@ -148,7 +148,10 @@ definir(o(A, B), N0, N, +d(N0), [[-d(N0), LA, LB]|Cs]) :-
 true.
 ```
 
-La forma definicional tiene 3n cláusulas: la unitaria de la raíz, dos por
+Es la transformación de Tseitin con las definiciones en un solo
+sentido, d(N) implica la subfórmula, que alcanza porque la fórmula está
+en forma normal negada ([Referencias](index.md#referencias)). La forma
+definicional tiene 3n cláusulas: la unitaria de la raíz, dos por
 cada una de las n conjunciones y una por cada una de las n − 1
 disyunciones. Desde n = 4 es más pequeña que la forma por distribución, que
 tiene $2^n$. La refutación de `(p ∧ q) ∨ (p ∧ ¬q) → p` pasa de un paso a
@@ -326,6 +329,8 @@ más: uno de los dos padres tiene un solo literal.
 %!  derivar_unitaria(?Pasos:list, +Clausulas:list) is nondet.
 %
 %   Como derivar/2 de resolucion.pl, con un padre unitario en cada paso.
+%   La condición es un condicional y no una disyunción: con los dos
+%   padres unitarios, la disyunción daría cada derivación dos veces.
 derivar_unitaria([], Clausulas) :-
     memberchk([], Clausulas).
 derivar_unitaria([r(I, J, R)|Pasos], Clausulas) :-
@@ -333,6 +338,7 @@ derivar_unitaria([r(I, J, R)|Pasos], Clausulas) :-
     nth1(I, Clausulas, C1),
     I < J,
     (   C1 = [_]
+    ->  true
     ;   C2 = [_]
     ),
     resolvente(C1, C2, R),
@@ -482,3 +488,72 @@ inferencias, como mide la página
 [La lógica de predicados](primer-orden.md#la-subsuncion). Con 4 palomas,
 la versión con subsunción no termina en 300 millones de inferencias, y la
 versión sin ella, en ocho minutos.
+
+## 12
+
+`modelo_minimo/2` descarta los modelos de `modelo/2`, de `modelos.pl`, que tienen un
+subconjunto propio que también es un modelo. `subconjunto/2` genera los
+subconjuntos de un conjunto ordenado, y `es_modelo/2` verifica que ninguna
+cláusula esté violada:
+
+<!-- ejemplo: capitulo-62/soluciones.pl predicado: modelo_minimo/2 es_modelo/2 subconjunto_propio/2 subconjunto/2 -->
+```prolog
+%!  modelo_minimo(+Clausulas:list, -Modelo:list) is nondet.
+%
+%   Modelo es un modelo de las Clausulas que construye modelo/2 y del que
+%   ningún subconjunto propio es un modelo. Puede dar dos veces el mismo
+%   modelo, si modelo/2 lo construye por dos caminos.
+modelo_minimo(Clausulas, Modelo) :-
+    modelo(Clausulas, Modelo),
+    \+ ( subconjunto_propio(Modelo, Menor),
+         es_modelo(Clausulas, Menor)
+       ).
+
+%!  es_modelo(+Clausulas:list, +Modelo:list) is semidet.
+%
+%   Ninguna de las Clausulas está violada en el Modelo.
+es_modelo(Clausulas, Modelo) :-
+    \+ ( member(C, Clausulas),
+         modelos:violada(C, Modelo, _)
+       ).
+
+%!  subconjunto_propio(+Conjunto:list, -Subconjunto:list) is nondet.
+%
+%   Subconjunto es un subconjunto de Conjunto con al menos un elemento
+%   menos, en el mismo orden.
+subconjunto_propio(Conjunto, Subconjunto) :-
+    subconjunto(Conjunto, Subconjunto),
+    Subconjunto \== Conjunto.
+
+%!  subconjunto(+Conjunto:list, -Subconjunto:list) is multi.
+%
+%   Subconjunto tiene algunos de los elementos de Conjunto, en el mismo
+%   orden.
+subconjunto([], []).
+subconjunto([X|Xs], [X|Ys]) :-
+    subconjunto(Xs, Ys).
+subconjunto([_|Xs], Ys) :-
+    subconjunto(Xs, Ys).
+```
+
+```prolog
+?- modelo_minimo([[+gusta(pedro, maria)], [+estudiante(maria)], [+docente(X), +amable(Y), -gusta(X, Y), -estudiante(Y)], [+amable(Y1), -docente(X1), -gusta(X1, Y1)]], M).
+M = [amable(maria), estudiante(maria), gusta(pedro, maria)].
+```
+
+Quitar una fórmula por vez no alcanza. Con las cláusulas a ∨ c, a → b,
+b → a y b → c, `modelo/2` construye primero [a, b, c]: sin a se viola
+a ← b, sin b se viola b ← a, y sin c se viola c ← b. Pero [c] solo es un
+modelo, porque a y b falsas hacen verdaderas las tres implicaciones:
+
+```prolog
+?- modelo([[+a, +c], [-a, +b], [-b, +a], [+c, -b]], M).
+M = [a, b, c] ;
+M = [c].
+
+?- modelo_minimo([[+a, +c], [-a, +b], [-b, +a], [+c, -b]], M).
+M = [c].
+```
+
+Recorrer todos los subconjuntos cuesta 2ⁿ verificaciones para un modelo de
+n fórmulas; sirve para modelos chicos como estos.

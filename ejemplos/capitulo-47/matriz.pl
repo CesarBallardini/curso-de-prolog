@@ -20,6 +20,10 @@
 :- use_module(library(error)).
 :- use_module(library(lists)).
 
+:- meta_predicate
+    producto_con(3, +, +, -),
+    fila_por_columnas(3, +, +, -).
+
 %!  transpuesta(+M:list(list), -T:list(list)) is det.
 %
 %   T es la traspuesta de la matriz M: la fila i de T es la columna i de
@@ -103,7 +107,7 @@ producto(A, B, C) :-
 %   I es la matriz identidad de N filas y N columnas.
 identidad(N, I) :-
     must_be(nonneg, N),
-    numlist(1, N, Is),
+    findall(K, between(1, N, K), Is),
     maplist(fila_identidad(Is), Is, I).
 
 %!  fila_identidad(+Indices:list(integer), +K:integer, -Fila:list) is det.

@@ -54,4 +54,10 @@ test(aproximacion_pi, [true(Q == 355r113)]) :-
 test(aproximacion_exacta, [true(Q == 1r2)]) :-
     mejor_aproximacion(0.5, 10, Q).
 
+test(sin_factor, [true(R-K == 3-3)]) :-
+    sin_factor(24, 2, R, K).
+
+test(sin_factor_ninguno, [true(R-K == 7-0)]) :-
+    sin_factor(7, 5, R, K).
+
 :- end_tests(soluciones_racional).

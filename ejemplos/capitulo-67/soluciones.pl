@@ -25,7 +25,9 @@
 lgg_lista([T|Ts], G) :-
     foldl(lgg_con, Ts, T, G).
 
-% lgg_con(T, G0, G): G es la lgg de G0 y T.
+%!  lgg_con(+T, +G0, -G) is det.
+%
+%   G es la lgg de G0 y T.
 lgg_con(T, G0, G) :-
     lgg(G0, T, G).
 
@@ -116,7 +118,9 @@ cubrir_con([P|Ps], Reducir, Negs, M, H, N0, N) :-
         N = N1
     ).
 
-% cubre_en(C, M, E): la cláusula C cubre el ejemplo E en el modelo M.
+%!  cubre_en(+C, +M:list, +E) is semidet.
+%
+%   La cláusula C cubre el ejemplo E en el modelo M.
 cubre_en(C, M, E) :-
     cubre(C, E, M).
 
@@ -218,8 +222,10 @@ sin_poda(D, C, E, Negs, M, L, R, N0, N) :-
         N = N0
     ).
 
-% sin_poda_en(Cs, D, E, Negs, M, L, R, N0, N): sin_poda/9 sobre cada
-% cláusula de Cs hasta encontrar una.
+%!  sin_poda_en(+Cs:list, +D:integer, +E, +Negs:list, +M:list, +L:list,
+%!              -R, +N0:integer, -N:integer) is det.
+%
+%   sin_poda/9 sobre cada cláusula de Cs, en orden, hasta encontrar una.
 sin_poda_en([], _, _, _, _, _, ninguna, N, N).
 sin_poda_en([C|Cs], D, E, Negs, M, L, R, N0, N) :-
     sin_poda(D, C, E, Negs, M, L, R1, N0, N1),
@@ -261,14 +267,18 @@ reducir_ordenado((H :- B0), Negs, M, (H :- B)) :-
     \+ cubre_algun_ordenado((H :- B0), Negs, M),
     quitar_ordenado(B0, [], H, Negs, M, B).
 
-% cubre_algun_ordenado(C, Negs, M): C cubre algún ejemplo de Negs.
+%!  cubre_algun_ordenado(+C, +Negs:list, +M:list) is semidet.
+%
+%   C cubre algún ejemplo de Negs, probado con cubre_ordenado/3.
 cubre_algun_ordenado(C, Negs, M) :-
     member(N, Negs),
     cubre_ordenado(C, N, M),
     !.
 
-% quitar_ordenado(Pendientes, Guardados, H, Negs, M, B): quitar/6 de la
-% versión 3 con cubre_ordenado/3.
+%!  quitar_ordenado(+Pendientes:list, +Guardados:list, +H, +Negs:list,
+%!                  +M:list, -B:list) is det.
+%
+%   quitar/6 de la versión 3 con cubre_ordenado/3.
 quitar_ordenado([], Guardados, _, _, _, B) :-
     reverse(Guardados, B).
 quitar_ordenado([L|Ls], Guardados, H, Negs, M, B) :-
@@ -318,11 +328,15 @@ haz(D, K, Max, Frontera, E-Pos-Negs-M-L, R, N0, N) :-
         N = N0
     ).
 
-% cubre_algun_negativo(Negs, M, C): C cubre un ejemplo de Negs.
+%!  cubre_algun_negativo(+Negs:list, +M:list, +C) is semidet.
+%
+%   C cubre un ejemplo de Negs.
 cubre_algun_negativo(Negs, M, C) :-
     cubre_alguno(C, Negs, M).
 
-% cubre_ej(E, M, C): la cláusula C cubre el ejemplo E.
+%!  cubre_ej(+E, +M:list, +C) is semidet.
+%
+%   La cláusula C cubre el ejemplo E en el modelo M.
 cubre_ej(E, M, C) :-
     cubre(C, E, M).
 

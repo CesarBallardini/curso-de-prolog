@@ -4,8 +4,8 @@
 %
 % Carga la última versión, que vuelve a exportar las anteriores: el
 % intérprete perezoso con alias y tablas, la biblioteca de funciones de
-% configuración m de Turing, la traza, la expansión a la tabla completa y
-% los números de descripción.
+% configuración m de Turing, la traza, la expansión a la tabla completa,
+% los números de descripción y la máquina universal.
 %
 % solo-local: carga módulos propios, y SWISH no los admite.
 %
@@ -15,4 +15,4 @@
 %?- completa(contador, inicio, [0, 1, schwa], 1000, R).
 %?- numero(i, b, [0, 1], N).
 
-:- use_module(numeros).
+:- use_module(universal).

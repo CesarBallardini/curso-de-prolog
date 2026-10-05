@@ -29,4 +29,18 @@ test(ejercicio_10_raices, [true(Rs == [caso/2, como/2, identificar/2,
 test(ejercicio_10, [true(Ps == [consultar/1])]) :-
     no_usados_del_ejemplo(ejemplos('capitulo-33/experto.pl'), Ps).
 
+% El encabezado de la primera cláusula de q/1 declara p/1: aviso. El de r/0
+% lo declara bien.
+test(encabezados_ajenos_de, [true(Avisos == [aviso(f:3, encabezado_ajeno,
+                                                   p/1)])]) :-
+    encabezados_ajenos_de([ leido((q(X) :- X > 0), f:3, ['X'=X],
+                                  ["%!  p(+X) is semidet."]),
+                            leido((r :- true), f:6, [], ["%!  r is det."]) ],
+                          Avisos).
+
+test(raices_consultadas_de, [true(Rs == [p/1, q/0])]) :-
+    raices_consultadas_de([ leido(a, f:1, [], ["%?- p(X), q.\n% otra"]),
+                            leido(b, f:2, [], ["% sin consultas"]) ],
+                          Rs).
+
 :- end_tests(soluciones_revision).

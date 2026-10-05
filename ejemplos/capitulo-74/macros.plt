@@ -56,4 +56,16 @@ test(efecto_macro, [true(Ps == ['UBR', 'UFR'])]) :-
 test(inferencias, [true(C < L)]) :-
     inferencias(dos_esquinas, 100, L, C).
 
+test(quieta, [true]) :-
+    giro(u, A, D),
+    quieta([5, 14], A, D).
+
+test(quieta_no, [fail]) :-
+    giro(u, A, D),
+    quieta([1], A, D).
+
+test(quieta_cuenta, [true(N == 34)]) :-
+    giro(u, A, D),
+    aggregate_all(count, ( between(1, 54, I), quieta([I], A, D) ), N).
+
 :- end_tests(macros).

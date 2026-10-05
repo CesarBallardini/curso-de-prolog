@@ -14,4 +14,12 @@ test(no_genera, error(instantiation_error)) :-
 test(genera_corregido, all(Ps == [["an", "apple"]])) :-
     phrase(sn_en(sn(a, [], apple, sg), sg), Ps).
 
+% La palabra siguiente se examina y vuelve a la entrada.
+test(articulo_an, all(A-N-Resto == [sin-pl-["an", "apple"],
+                                    a-sg-["apple"]])) :-
+    phrase(articulo_ingenuo(A, N), ["an", "apple"], Resto).
+
+test(articulo_a_mal, all(A == [sin])) :-
+    phrase(articulo_ingenuo(A, _), ["a", "apple"], _).
+
 :- end_tests(articulo).

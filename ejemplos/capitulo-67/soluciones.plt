@@ -3,6 +3,9 @@
 :- use_module(library(apply)).
 :- use_module(library(lists)).
 
+% sin_reducir(C0, Negs, M, C): reductor que deja la cláusula como está.
+sin_reducir(C, _, _, C).
+
 :- begin_tests(soluciones).
 
 test(ej1, [true(R =@= [f(g(A), A), [_, _|_]])]) :-
@@ -95,5 +98,57 @@ test(ej11, [true(Ns == [139, 272, 676])]) :-
 test(ej11_hermano, [true(H == [(hermano(luis, eva) :- []),
                                (hermano(pedro, ana) :- [])])]) :-
     aprender_haz(3, hermano, H, _).
+
+test(reducir_corta, [true(C =@= (abuelo(A, B) :- [progenitor(P, B),
+                                                 padre(A, P)]))]) :-
+    rlgg_de(abuelo, 1, 3, C0),
+    ejemplos(abuelo, _, Negs),
+    modelo_fondo(M),
+    reducir_corta(C0, Negs, M, C).
+
+test(reducir_corta_falla, [fail]) :-
+    reducir_corta((p(_) :- []), [p(a)], [], _).
+
+test(reducir_ordenado_igual, [true(C1 =@= C2)]) :-
+    rlgg_de(abuelo, 1, 3, C0),
+    ejemplos(abuelo, _, Negs),
+    modelo_fondo(M),
+    reducir(C0, Negs, M, C1),
+    reducir_ordenado(C0, Negs, M, C2).
+
+test(cubre_ordenado, [true]) :-
+    cubre_ordenado((p(X) :- [q(X, Y), r(Y)]), p(a), [q(a, b), r(b)]).
+
+test(cubre_ordenado_no, [fail]) :-
+    cubre_ordenado((p(X) :- [q(X, Y), r(Y)]), p(a), [q(a, b), r(c)]).
+
+% Sin la poda, con límite 1 se generan los 29 refinamientos y ninguno es
+% consistente.
+test(sin_poda, [true(R-N == ninguna-29)]) :-
+    ejemplos(abuelo, _, Negs),
+    modelo_fondo(M),
+    lenguaje(L),
+    sin_poda(1, (abuelo(_, _) :- []), abuelo(juan, eva), Negs, M, L, R, 0, N).
+
+test(haz_uno, [true(R-N =@= encontrada((abuelo(A, B) :- [varon(A),
+                        padre(A, C), progenitor(C, B)]))-109)]) :-
+    ejemplos(abuelo, Pos, Negs),
+    modelo_fondo(M),
+    lenguaje(L),
+    haz(0, 1, 3, [(abuelo(_, _) :- [])], abuelo(juan, eva)-Pos-Negs-M-L,
+        R, 0, N).
+
+test(haz_limite, [true(R-N == ninguna-29)]) :-
+    ejemplos(abuelo, Pos, Negs),
+    modelo_fondo(M),
+    lenguaje(L),
+    haz(0, 3, 1, [(abuelo(_, _) :- [])], abuelo(juan, eva)-Pos-Negs-M-L,
+        R, 0, N).
+
+% Con un reductor que no quita nada, la rlgg de los dos antepasados tiene
+% 253 literales enlazados (la reducción completa tarda decenas de segundos).
+test(reducir_antepasado, [true(K == 253)]) :-
+    reducir_antepasado(sin_reducir, (antepasado(_, _) :- B)),
+    length(B, K).
 
 :- end_tests(soluciones).

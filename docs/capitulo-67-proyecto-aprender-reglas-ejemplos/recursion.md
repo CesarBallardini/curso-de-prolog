@@ -16,7 +16,9 @@ recorre el grafo de especialización **por niveles**: el nivel D son las
 cláusulas a D refinamientos de la más general que todavía cubren el
 ejemplo que se explica. En el primer nivel que tiene cláusulas
 consistentes, elige la que cubre más positivos de los que faltan; ante un
-empate, la primera generada:
+empate, la primera generada. Es una versión mínima de la búsqueda guiada
+por una heurística que Flach toma de Quinlan, cuyo sistema elige cada
+literal por la ganancia de información sobre positivos y negativos:
 
 <!-- ejemplo: capitulo-67/recursion.pl predicado: nivel/7 -->
 ```prolog

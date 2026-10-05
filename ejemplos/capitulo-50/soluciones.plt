@@ -80,4 +80,69 @@ test(ejercicio_12, [true(V1 == V2)]) :-
     buscar(op(-, _, _), D, _),
     buscar(op(+, _, _), D, V2).
 
+test(profundidad_version, [true(P-Q == 5-8)]) :-
+    profundidad_version(mariposa, 8, P),
+    profundidad_version(matriz_grafo, 8, Q).
+
+test(rotaciones, [true(N == 16)]) :-
+    rotaciones(Es),
+    length(Es, N).
+
+% Ejercicio 6: el grafo comparte los productos de senos y cosenos.
+test(costo_rotaciones, [true(S0-P0-S-P == 4-8-4-7)]) :-
+    costo_rotaciones(S0, P0, S, P).
+
+test(presente, [true(I == 2)]) :-
+    presente(b, [a-1, b-2|_], I).
+
+% presente/3 no agrega la clave que falta.
+test(presente_ausente, [fail]) :-
+    presente(c, [a-1, b-2|_], _).
+
+test(presente_vacio, [fail]) :-
+    presente(c, _, _).
+
+test(agregar_rapido, [true(D == [a-1, b-2, a*b-3, a*b+a*b-4])]) :-
+    agregar_rapido(D, a * b + a * b, _),
+    numerar(D, 1),
+    length(D, 4).
+
+test(valor_exacto, [true(V == c(2, 1))]) :-
+    valor_exacto(4, [1, 2], a(1) + w(1) * a(0), V).
+
+test(raiz_exacta, [true(Vs == [c(0, -1), c(-1, 0), c(1, 0)])]) :-
+    raiz_exacta(4, 3, V1),
+    raiz_exacta(2, 1, V2),
+    raiz_exacta(1, 5, V3),
+    Vs = [V1, V2, V3].
+
+test(fft_exacta, [true(Vs == [c(10, 0), c(-2, -2), c(-2, 0), c(-2, 2)])]) :-
+    fft_exacta([1, 2, 3, 4], Vs).
+
+test(fft_inversa_grafo, [true(Ss == [3, 4])]) :-
+    fft_inversa_grafo(2, _, Ss).
+
+% La salida 1 de la inversa de orden 4 usa la potencia 3 = -1 módulo 4.
+test(salida_inversa, [true(E == a(0) + w(2) * a(2)
+                                + w(3) * (a(1) + w(2) * a(3)))]) :-
+    salida_inversa([0, 1, 2, 3], 4, 1, E).
+
+test(dividir, [true(W == c(0.5, -2))]) :-
+    dividir(4, c(2, -8), W).
+
+test(potencia_mayor, [true(Ns == [8, 4, 8])]) :-
+    potencia_mayor(5, 1, N1),
+    potencia_mayor(4, 4, N2),
+    potencia_mayor(1, 8, N3),
+    Ns = [N1, N2, N3].
+
+test(completar, [true(Q == [1, 2, 0, 0])]) :-
+    completar([1, 2], 4, Q).
+
+test(completar_lleno, [true(Q == [1, 2])]) :-
+    completar([1, 2], 2, Q).
+
+test(producto_constantes, [true(R == [6])]) :-
+    producto_polinomios([3], [2], R).
+
 :- end_tests(soluciones).

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 450" width="960" height="450">
+  <title>Dentro de una cláusula el mismo nombre es la misma variable; en otra cláusula es otra variable; y cada uso de progenitor recibe variables nuevas, P1 y H1, P2 y H2</title>
+  <defs>
+    <marker id="a-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1F2933"/></marker>
+    <marker id="a-navy" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1F3A5F"/></marker>
+    <marker id="a-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#D9822B"/></marker>
+    <marker id="a-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2E7D32"/></marker>
+    <marker id="a-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#C62828"/></marker>
+    <marker id="a-grey" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#9AA5B1"/></marker>
+  </defs>
+  <rect x="0" y="0" width="960" height="450" fill="#FFFFFF"/>
+  <rect x="30.0" y="20.0" width="440.0" height="220.0" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="50.0" y="50.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="16" fill="#1F3A5F" text-anchor="start" font-weight="bold" xml:space="preserve">una cláusula</text>
+  <text x="60.0" y="96.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#1F2933" text-anchor="start" xml:space="preserve">abuelo(A, N) :-</text>
+  <text x="108.4" y="132.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#1F2933" text-anchor="start" xml:space="preserve">varon(A),</text>
+  <rect x="274.8" y="150.0" width="18.1" height="26.4" rx="6" fill="#FCE8D2" stroke="#D9822B" stroke-width="3"/>
+  <text x="108.4" y="168.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#1F2933" text-anchor="start" xml:space="preserve">progenitor(A, P),</text>
+  <rect x="238.5" y="186.0" width="18.1" height="26.4" rx="6" fill="#FCE8D2" stroke="#D9822B" stroke-width="3"/>
+  <text x="108.4" y="204.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#1F2933" text-anchor="start" xml:space="preserve">progenitor(P, N).</text>
+  <text x="250.0" y="268.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="16" fill="#D9822B" text-anchor="middle" font-weight="bold" xml:space="preserve">la misma P: la misma persona</text>
+  <rect x="500.0" y="20.0" width="430.0" height="150.0" rx="10" fill="#F1F3F5" stroke="#9AA5B1" stroke-width="2"/>
+  <text x="520.0" y="50.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="16" fill="#52606D" text-anchor="start" font-weight="bold" xml:space="preserve">otra cláusula</text>
+  <rect x="660.1" y="78.0" width="18.1" height="26.4" rx="6" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2.5"/>
+  <rect x="648.0" y="114.0" width="18.1" height="26.4" rx="6" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2.5"/>
+  <text x="530.0" y="96.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#1F2933" text-anchor="start" xml:space="preserve">progenitor(P, H) :-</text>
+  <text x="578.4" y="132.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#1F2933" text-anchor="start" xml:space="preserve">padre(P, H).</text>
+  <text x="715.0" y="196.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="16" fill="#52606D" text-anchor="middle" font-weight="bold" xml:space="preserve">otra P, aunque se llame igual</text>
+  <text x="30.0" y="320.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="19" fill="#1F2933" text-anchor="start" font-weight="bold" xml:space="preserve">Cada uso de una regla emplea variables nuevas</text>
+  <text x="50.0" y="370.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">progenitor(A, P)</text>
+  <line x1="262.0" y1="364.0" x2="330.0" y2="364.0" stroke="#1F3A5F" stroke-width="2.5" marker-end="url(#a-navy)"/>
+  <text x="340.0" y="370.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F3A5F" text-anchor="start" xml:space="preserve">progenitor(P₁, H₁) :- padre(P₁, H₁).</text>
+  <text x="50.0" y="420.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">progenitor(P, N)</text>
+  <line x1="262.0" y1="414.0" x2="330.0" y2="414.0" stroke="#1F3A5F" stroke-width="2.5" marker-end="url(#a-navy)"/>
+  <text x="340.0" y="420.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F3A5F" text-anchor="start" xml:space="preserve">progenitor(P₂, H₂) :- padre(P₂, H₂).</text>
+</svg>

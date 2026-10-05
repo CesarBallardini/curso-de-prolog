@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 440" width="400" height="440">
+  <title>La consulta antepasado(tare, isaac) contiene otra más chica, antepasado(abraham, isaac), que se resuelve por el caso base</title>
+  <rect x="0" y="0" width="400" height="440" fill="#FFFFFF"/>
+  <rect x="6" y="6" width="388" height="428" rx="14" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="3"/>
+  <rect x="26" y="206" width="352" height="210" rx="12" fill="#FCE8D2" stroke="#D9822B" stroke-width="3"/>
+  <g font-family="Consolas, DejaVu Sans Mono, monospace" font-size="17" fill="#1F2933">
+    <text x="22" y="38" font-size="19" font-weight="bold" fill="#1F3A5F">antepasado(tare, isaac)</text>
+    <text x="22" y="92" fill="#9AA5B1">progenitor(tare, isaac)</text>
+    <text x="22" y="148">progenitor(tare, Hijo)</text>
+    <text x="22" y="174" fill="#D9822B" font-weight="bold">Hijo = abraham</text>
+    <text x="42" y="238" font-size="19" font-weight="bold" fill="#D9822B">antepasado(abraham, isaac)</text>
+    <text x="42" y="292">progenitor(abraham, isaac)</text>
+    <text x="42" y="392" font-size="22" font-weight="bold" fill="#2E7D32">true</text>
+  </g>
+  <g font-family="Verdana, DejaVu Sans, sans-serif" font-size="14" fill="#52606D">
+    <text x="22" y="68">cláusula 1 (caso base)</text>
+    <text x="22" y="124">cláusula 2 (caso recursivo)</text>
+    <text x="42" y="268">cláusula 1 (caso base)</text>
+  </g>
+  <g font-family="Verdana, DejaVu Sans, sans-serif" font-size="16" font-weight="bold">
+    <text x="318" y="92" fill="#B3261E">falla</text>
+    <text x="100" y="330" fill="#2E7D32">se prueba: termina</text>
+  </g>
+  <circle cx="60" cy="325" r="15" fill="#2E7D32"/>
+  <path d="M 52 326 L 58 332 L 69 318" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

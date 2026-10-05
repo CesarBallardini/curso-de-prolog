@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" width="960" height="480">
+  <title>Qué cambia el orden de las cláusulas: el mismo árbol en espejo; las hojas de éxito se encuentran en otro orden y cambia el orden de las respuestas</title>
+  <rect x="0" y="0" width="960" height="480" fill="#FFFFFF"/>
+  <line x1="480.0" y1="20.0" x2="480.0" y2="380.0" stroke="#EAF1F8" stroke-width="2"/>
+  <text x="240.0" y="40.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="24" fill="#1F3A5F" text-anchor="middle" xml:space="preserve" font-weight="bold">un orden</text>
+  <text x="720.0" y="40.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="24" fill="#1F3A5F" text-anchor="middle" xml:space="preserve" font-weight="bold">el orden inverso</text>
+  <line x1="181.1" y1="80.0" x2="82.9" y2="136.0" stroke="#1F3A5F" stroke-width="3.0618621784789726"/>
+  <line x1="82.9" y1="136.0" x2="51.4" y2="192.0" stroke="#1F3A5F" stroke-width="3.0618621784789726"/>
+  <line x1="82.9" y1="136.0" x2="114.3" y2="192.0" stroke="#1F3A5F" stroke-width="3.0618621784789726"/>
+  <line x1="181.1" y1="80.0" x2="279.3" y2="136.0" stroke="#1F3A5F" stroke-width="3.0618621784789726"/>
+  <line x1="279.3" y1="136.0" x2="208.6" y2="192.0" stroke="#1F3A5F" stroke-width="3.0618621784789726"/>
+  <line x1="208.6" y1="192.0" x2="177.1" y2="248.0" stroke="#1F3A5F" stroke-width="3.0618621784789726"/>
+  <line x1="208.6" y1="192.0" x2="240.0" y2="248.0" stroke="#1F3A5F" stroke-width="3.0618621784789726"/>
+  <line x1="279.3" y1="136.0" x2="350.0" y2="192.0" stroke="#1F3A5F" stroke-width="3.0618621784789726"/>
+  <line x1="350.0" y1="192.0" x2="302.9" y2="248.0" stroke="#1F3A5F" stroke-width="3.0618621784789726"/>
+  <line x1="302.9" y1="248.0" x2="302.9" y2="304.0" stroke="#1F3A5F" stroke-width="3.0618621784789726"/>
+  <line x1="350.0" y1="192.0" x2="397.1" y2="248.0" stroke="#1F3A5F" stroke-width="3.0618621784789726"/>
+  <line x1="397.1" y1="248.0" x2="397.1" y2="304.0" stroke="#1F3A5F" stroke-width="3.0618621784789726"/>
+  <line x1="397.1" y1="304.0" x2="365.7" y2="360.0" stroke="#1F3A5F" stroke-width="3.0618621784789726"/>
+  <line x1="397.1" y1="304.0" x2="428.6" y2="360.0" stroke="#1F3A5F" stroke-width="3.0618621784789726"/>
+  <circle cx="181.1" cy="80.0" r="12.0" fill="#1F3A5F"/>
+  <circle cx="82.9" cy="136.0" r="7.5" fill="#1F3A5F"/>
+  <circle cx="51.42857142857143" cy="192" r="18.0" fill="#2E7D32"/>
+  <path d="M 42.42857142857143 193.0 L 49.42857142857143 200.0 L 61.42857142857143 184.0" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="51.4" y="236.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#2E7D32" text-anchor="middle" xml:space="preserve" font-weight="bold">1</text>
+  <circle cx="114.28571428571429" cy="192" r="18.0" fill="#2E7D32"/>
+  <path d="M 105.28571428571429 193.0 L 112.28571428571429 200.0 L 124.28571428571429 184.0" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="114.3" y="236.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#2E7D32" text-anchor="middle" xml:space="preserve" font-weight="bold">2</text>
+  <circle cx="279.3" cy="136.0" r="7.5" fill="#1F3A5F"/>
+  <circle cx="208.6" cy="192.0" r="12.0" fill="#1F3A5F"/>
+  <circle cx="177.14285714285714" cy="248" r="15.0" fill="#B3261E"/>
+  <path d="M 170.39285714285714 241.25 L 183.89285714285714 254.75 M 183.89285714285714 241.25 L 170.39285714285714 254.75" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="240.0" cy="248" r="15.0" fill="#B3261E"/>
+  <path d="M 233.25 241.25 L 246.75 254.75 M 246.75 241.25 L 233.25 254.75" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="350.0" cy="192.0" r="12.0" fill="#1F3A5F"/>
+  <circle cx="302.9" cy="248.0" r="7.5" fill="#1F3A5F"/>
+  <circle cx="302.8571428571429" cy="304" r="18.0" fill="#2E7D32"/>
+  <path d="M 293.8571428571429 305.0 L 300.8571428571429 312.0 L 312.8571428571429 296.0" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="302.9" y="348.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#2E7D32" text-anchor="middle" xml:space="preserve" font-weight="bold">3</text>
+  <circle cx="397.1" cy="248.0" r="7.5" fill="#1F3A5F"/>
+  <circle cx="397.1" cy="304.0" r="12.0" fill="#1F3A5F"/>
+  <circle cx="365.7142857142857" cy="360" r="15.0" fill="#B3261E"/>
+  <path d="M 358.9642857142857 353.25 L 372.4642857142857 366.75 M 372.4642857142857 353.25 L 358.9642857142857 366.75" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="428.57142857142856" cy="360" r="15.0" fill="#B3261E"/>
+  <path d="M 421.82142857142856 353.25 L 435.32142857142856 366.75 M 435.32142857142856 353.25 L 421.82142857142856 366.75" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <line x1="763.2" y1="80.0" x2="649.3" y2="136.0" stroke="#1F3A5F" stroke-width="3.0618621784789726"/>
+  <line x1="649.3" y1="136.0" x2="562.9" y2="192.0" stroke="#1F3A5F" stroke-width="3.0618621784789726"/>
+  <line x1="562.9" y1="192.0" x2="531.4" y2="248.0" stroke="#1F3A5F" stroke-width="3.0618621784789726"/>
+  <line x1="562.9" y1="192.0" x2="594.3" y2="248.0" stroke="#1F3A5F" stroke-width="3.0618621784789726"/>
+  <line x1="649.3" y1="136.0" x2="735.7" y2="192.0" stroke="#1F3A5F" stroke-width="3.0618621784789726"/>
+  <line x1="735.7" y1="192.0" x2="688.6" y2="248.0" stroke="#1F3A5F" stroke-width="3.0618621784789726"/>
+  <line x1="688.6" y1="248.0" x2="688.6" y2="304.0" stroke="#1F3A5F" stroke-width="3.0618621784789726"/>
+  <line x1="688.6" y1="304.0" x2="657.1" y2="360.0" stroke="#1F3A5F" stroke-width="3.0618621784789726"/>
+  <line x1="688.6" y1="304.0" x2="720.0" y2="360.0" stroke="#1F3A5F" stroke-width="3.0618621784789726"/>
+  <line x1="735.7" y1="192.0" x2="782.9" y2="248.0" stroke="#1F3A5F" stroke-width="3.0618621784789726"/>
+  <line x1="782.9" y1="248.0" x2="782.9" y2="304.0" stroke="#1F3A5F" stroke-width="3.0618621784789726"/>
+  <line x1="763.2" y1="80.0" x2="877.1" y2="136.0" stroke="#1F3A5F" stroke-width="3.0618621784789726"/>
+  <line x1="877.1" y1="136.0" x2="845.7" y2="192.0" stroke="#1F3A5F" stroke-width="3.0618621784789726"/>
+  <line x1="877.1" y1="136.0" x2="908.6" y2="192.0" stroke="#1F3A5F" stroke-width="3.0618621784789726"/>
+  <circle cx="763.2" cy="80.0" r="12.0" fill="#1F3A5F"/>
+  <circle cx="649.3" cy="136.0" r="7.5" fill="#1F3A5F"/>
+  <circle cx="562.9" cy="192.0" r="12.0" fill="#1F3A5F"/>
+  <circle cx="531.4285714285714" cy="248" r="15.0" fill="#B3261E"/>
+  <path d="M 524.6785714285714 241.25 L 538.1785714285714 254.75 M 538.1785714285714 241.25 L 524.6785714285714 254.75" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="594.2857142857143" cy="248" r="15.0" fill="#B3261E"/>
+  <path d="M 587.5357142857143 241.25 L 601.0357142857143 254.75 M 601.0357142857143 241.25 L 587.5357142857143 254.75" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="735.7" cy="192.0" r="12.0" fill="#1F3A5F"/>
+  <circle cx="688.6" cy="248.0" r="7.5" fill="#1F3A5F"/>
+  <circle cx="688.6" cy="304.0" r="12.0" fill="#1F3A5F"/>
+  <circle cx="657.1428571428571" cy="360" r="15.0" fill="#B3261E"/>
+  <path d="M 650.3928571428571 353.25 L 663.8928571428571 366.75 M 663.8928571428571 353.25 L 650.3928571428571 366.75" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="720.0" cy="360" r="15.0" fill="#B3261E"/>
+  <path d="M 713.25 353.25 L 726.75 366.75 M 726.75 353.25 L 713.25 366.75" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="782.9" cy="248.0" r="7.5" fill="#1F3A5F"/>
+  <circle cx="782.8571428571428" cy="304" r="18.0" fill="#2E7D32"/>
+  <path d="M 773.8571428571428 305.0 L 780.8571428571428 312.0 L 792.8571428571428 296.0" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="782.9" y="348.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#2E7D32" text-anchor="middle" xml:space="preserve" font-weight="bold">1</text>
+  <circle cx="877.1" cy="136.0" r="7.5" fill="#1F3A5F"/>
+  <circle cx="845.7142857142857" cy="192" r="18.0" fill="#2E7D32"/>
+  <path d="M 836.7142857142857 193.0 L 843.7142857142857 200.0 L 855.7142857142857 184.0" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="845.7" y="236.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#2E7D32" text-anchor="middle" xml:space="preserve" font-weight="bold">2</text>
+  <circle cx="908.5714285714286" cy="192" r="18.0" fill="#2E7D32"/>
+  <path d="M 899.5714285714286 193.0 L 906.5714285714286 200.0 L 918.5714285714286 184.0" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="908.6" y="236.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#2E7D32" text-anchor="middle" xml:space="preserve" font-weight="bold">3</text>
+  <rect x="90.0" y="420.0" width="780.0" height="40.0" rx="20" fill="#FCE8D2" stroke="#D9822B" stroke-width="2"/>
+  <text x="480.0" y="447.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="22" fill="#D9822B" text-anchor="middle" xml:space="preserve" font-weight="bold">el mismo árbol en espejo: cambia el orden de las respuestas</text>
+</svg>

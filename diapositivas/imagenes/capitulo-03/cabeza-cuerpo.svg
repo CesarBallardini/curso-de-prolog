@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 440" width="960" height="440">
+  <title>La regla es_padre(P) :- padre(P, _): la cabeza es lo que se concluye, :- se lee si, el cuerpo es lo que debe cumplirse, y _ es alguien cuyo valor no interesa</title>
+  <defs>
+    <marker id="a-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1F2933"/></marker>
+    <marker id="a-navy" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1F3A5F"/></marker>
+    <marker id="a-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#D9822B"/></marker>
+    <marker id="a-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2E7D32"/></marker>
+    <marker id="a-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#C62828"/></marker>
+    <marker id="a-grey" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#9AA5B1"/></marker>
+  </defs>
+  <rect x="0" y="0" width="960" height="440" fill="#FFFFFF"/>
+  <rect x="78.0" y="146.0" width="266.0" height="64.0" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="3"/>
+  <rect x="408.0" y="146.0" width="288.0" height="64.0" rx="10" fill="#E3F1E4" stroke="#2E7D32" stroke-width="3"/>
+  <text x="90.0" y="190.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="40" fill="#1F2933" text-anchor="start" xml:space="preserve">es_padre(P)</text>
+  <text x="354.0" y="190.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="40" fill="#D9822B" text-anchor="start" font-weight="bold" xml:space="preserve">:-</text>
+  <text x="420.0" y="190.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="40" fill="#1F2933" text-anchor="start" xml:space="preserve">padre(P, </text>
+  <text x="618.0" y="190.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="40" fill="#D9822B" text-anchor="start" font-weight="bold" xml:space="preserve">_</text>
+  <text x="640.0" y="190.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="40" fill="#1F2933" text-anchor="start" xml:space="preserve">).</text>
+  <text x="211.0" y="80.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="26" fill="#1F3A5F" text-anchor="middle" font-weight="bold" xml:space="preserve">cabeza</text>
+  <text x="211.0" y="110.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#52606D" text-anchor="middle" xml:space="preserve">lo que se concluye</text>
+  <text x="552.0" y="80.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="26" fill="#2E7D32" text-anchor="middle" font-weight="bold" xml:space="preserve">cuerpo</text>
+  <text x="552.0" y="110.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#52606D" text-anchor="middle" xml:space="preserve">lo que debe cumplirse</text>
+  <text x="376.0" y="262.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="28" fill="#D9822B" text-anchor="middle" font-weight="bold" xml:space="preserve">si</text>
+  <line x1="629.0" y1="214.0" x2="629.0" y2="290.0" stroke="#D9822B" stroke-width="2.5"/>
+  <text x="629.0" y="318.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="18" fill="#D9822B" text-anchor="middle" font-weight="bold" xml:space="preserve">alguien:</text>
+  <text x="629.0" y="342.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="16" fill="#52606D" text-anchor="middle" xml:space="preserve">el valor no interesa</text>
+  <text x="420.0" y="410.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="24" fill="#1F2933" text-anchor="middle" font-style="italic" xml:space="preserve">P es padre si P es padre de alguien</text>
+</svg>

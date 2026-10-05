@@ -91,14 +91,17 @@ realizar(_, _, _, _, salir, salir) :-
 realizar(simulacion, _, _, _, Accion, simulada(Accion)) :-
     !.
 realizar(real, Raiz, _, _, copiar(R, D), copiado(R, D)) :-
+    !,
     ruta_real(Raiz, R, De),
     ruta_real(Raiz, D, A),
     copy_file(De, A).
 realizar(real, Raiz, _, _, mover(R, D), movido(R, D)) :-
+    !,
     ruta_real(Raiz, R, De),
     ruta_real(Raiz, D, A),
     rename_file(De, A).
 realizar(real, Raiz, Leer, Out, borrar(R), Resultado) :-
+    !,
     ruta_real(Raiz, R, Abs),
     format(Out, "¿Quieres borrar ~s? (s/n) ", [R]),
     flush_output(Out),
@@ -109,6 +112,7 @@ realizar(real, Raiz, Leer, Out, borrar(R), Resultado) :-
     ;   Resultado = conservado(R)
     ).
 realizar(real, Raiz, _, _, ejecutar(R), salida(R, Estado, Lineas)) :-
+    !,
     ruta_real(Raiz, R, Abs),
     salida_de(swipl, ['-t', halt, Abs], Texto, Estado),
     split_string(Texto, "\n", "\r", Lineas0),

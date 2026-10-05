@@ -63,4 +63,36 @@ invierte(Ruta, R, Tipo, Es, S) :-
     ;   S = S0
     ).
 
+test(bit, all(B == [0, 1])) :-
+    bit(B).
+
+test(circuito, [true(Es-Ss == [a, b]-[s, c])]) :-
+    circuito(semisumador, Es, Ss).
+
+test(componentes, all(Id == [m1, m2, o1])) :-
+    componente(sumador, Id, _, _, _).
+
+test(normal, [true(S == 1)]) :-
+    normal([g1], nand, [0, 1], S).
+
+test(normal_inverso, all(E == [[0, 0], [0, 1], [1, 0]])) :-
+    normal([g1], nand, E, 1).
+
+test(cables, [true(Ns == [a, b, c1, c2, ci, co, s, t])]) :-
+    circuitos:cables(sumador, Cables),
+    pairs_keys(Cables, Ns).
+
+test(valores, [true(Vs == [1, 2])]) :-
+    circuitos:valores([a-1, b-2, c-3], [a, b], Vs).
+
+test(valor_ausente, [fail]) :-
+    circuitos:valor([a-1], z, _).
+
+test(activar, [nondet, true(S == 0)]) :-
+    circuitos:activar(normal, [], [x-1, y-1, t-S],
+                      c(g1, nand, [x, y], [t])).
+
+test(simular_en, [nondet, true(Ss == [1, 0])]) :-
+    circuitos:simular_en(normal, [m1], semisumador, [1, 0], Ss).
+
 :- end_tests(circuitos).

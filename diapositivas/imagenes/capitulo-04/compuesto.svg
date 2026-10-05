@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" width="800" height="400">
+  <title>El término compuesto mascota(gato, felix) como árbol: el nombre mascota en la raíz y dos argumentos, gato y felix; se identifica como mascota/2</title>
+  <rect x="0" y="0" width="800" height="400" fill="#FFFFFF"/>
+  <text x="400" y="50" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="30" fill="#1F2933" text-anchor="middle">mascota(gato, felix)</text>
+  <line x1="400" y1="150" x2="290" y2="270" stroke="#1F3A5F" stroke-width="2"/>
+  <line x1="400" y1="150" x2="510" y2="270" stroke="#1F3A5F" stroke-width="2"/>
+  <ellipse cx="400" cy="150" rx="60.35" ry="20" fill="#1F3A5F" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="400" y="157.7" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#FFFFFF" text-anchor="middle" font-weight="bold">mascota</text>
+  <rect x="252.8" y="252" width="74.4" height="36" rx="18" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="290" y="277.7" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#1F2933" text-anchor="middle">gato</text>
+  <rect x="466.75" y="252" width="86.5" height="36" rx="18" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="510" y="277.7" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#1F2933" text-anchor="middle">felix</text>
+  <line x1="250" y1="150" x2="310" y2="150" stroke="#D9822B" stroke-width="3"/>
+  <polygon points="318.0,150.0 306.7,156.5 306.7,143.5" fill="#D9822B"/>
+  <text x="240" y="144" font-family="Verdana, DejaVu Sans, sans-serif" font-size="18" fill="#D9822B" text-anchor="end" font-weight="bold">nombre</text>
+  <text x="240" y="168" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#52606D" text-anchor="end">un átomo</text>
+  <path d="M250,305 L250,318 L550,318 L550,305" fill="none" stroke="#52606D" stroke-width="2"/>
+  <text x="400" y="350" font-family="Verdana, DejaVu Sans, sans-serif" font-size="18" fill="#1F2933" text-anchor="middle">argumentos: dos, aridad 2</text>
+  <text x="690" y="250" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#52606D" text-anchor="middle">se identifica por</text>
+  <text x="690" y="285" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="28" fill="#D9822B" text-anchor="middle" font-weight="bold">mascota/2</text>
+</svg>

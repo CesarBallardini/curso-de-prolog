@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 440" width="800" height="440">
+  <title>suma, paso 3: al retorno, Cuanto = s(C) = s(s(s(cero)))</title>
+  <rect x="0" y="0" width="800" height="440" fill="#FFFFFF"/>
+  <rect x="20" y="30" width="440" height="90" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="40" y="68" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="19" fill="#1F2933">suma(s(cero), s(s(cero)), Cuanto)</text>
+  <text x="40" y="100" font-family="Verdana, DejaVu Sans, sans-serif" font-size="14" fill="#52606D">cláusula 2: una s menos en el primero</text>
+  <rect x="520" y="42" width="260" height="66" rx="10" fill="#FFFFFF" stroke="#9AA5B1" stroke-width="2" stroke-dasharray="6 5"/>
+  <rect x="520" y="42" width="260" height="66" rx="10" fill="#E3F1E4" stroke="#2E7D32" stroke-width="3"/>
+  <text x="534" y="72" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="17" fill="#1F2933">Cuanto = s(C)</text>
+  <text x="534" y="97" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="17" fill="#2E7D32" font-weight="bold">= s(s(s(cero)))</text>
+  <line x1="120" y1="120" x2="120" y2="188" stroke="#9AA5B1" stroke-width="3"/>
+  <polygon points="112,186 128,186 120,200" fill="#9AA5B1"/>
+  <text x="135" y="166" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#52606D">llamada recursiva</text>
+  <rect x="80" y="200" width="380" height="90" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="100" y="238" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="19" fill="#1F2933">suma(cero, s(s(cero)), C)</text>
+  <text x="100" y="270" font-family="Verdana, DejaVu Sans, sans-serif" font-size="14" fill="#2E7D32">cláusula 1: caso base</text>
+  <rect x="520" y="212" width="260" height="66" rx="10" fill="#E3F1E4" stroke="#2E7D32" stroke-width="3"/>
+  <text x="540" y="253" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#2E7D32" font-weight="bold">C = s(s(cero))</text>
+  <line x1="650" y1="212" x2="650" y2="120" stroke="#2E7D32" stroke-width="4"/>
+  <polygon points="642,122 658,122 650,108" fill="#2E7D32"/>
+  <text x="665" y="170" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#2E7D32" font-weight="bold">al retorno</text>
+  <rect x="10" y="330" width="780" height="96" rx="8" fill="#F1F3F5" stroke="#F1F3F5" stroke-width="0"/>
+  <text x="30" y="368" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#1F2933">C ya tiene valor, y con él Cuanto:</text>
+  <text x="30" y="402" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#1F2933">uno más dos es tres.</text>
+</svg>

@@ -8,7 +8,6 @@ pruebas, y corren en SWISH.
 
 ## Claves, restricciones y actualizaciones
 
-
 `INSERT`, `DELETE` y `UPDATE` son `assertz/1` y `retract/1` sobre los
 predicados dinámicos del [capítulo 20](../capitulo-20-base-de-datos-dinamica/index.md); un `UPDATE` es un `retract/1`
 seguido de un `assertz/1`. La diferencia está en lo que se verifica. SQLite

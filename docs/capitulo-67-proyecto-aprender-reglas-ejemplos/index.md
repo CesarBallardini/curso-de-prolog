@@ -31,7 +31,10 @@ quita lo que sobra. La cuarta aprende de arriba hacia abajo: parte de la
 regla más general y la especializa hasta que no cubre ningún ejemplo
 negativo. La quinta elige, entre las reglas posibles, la que cubre más
 ejemplos, y con ella aprende la definición recursiva de `antepasado/2`
-del [capítulo 6](../capitulo-06-recursion/index.md).
+del [capítulo 6](../capitulo-06-recursion/index.md). Una sexta parte
+recorre lo que queda del capítulo de Flach: la inducción como abducción,
+la búsqueda incremental que retira la cláusula falsa, los tipos que
+permiten aprender `append/3`, y un programa con acumulador.
 
 El proyecto parte del capítulo «Inductive reasoning» de *Simply Logical:
 Intelligent Reasoning by Example* de Peter Flach
@@ -70,9 +73,9 @@ Al terminar el capítulo, el lector puede:
   con la relación esperada.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:25 h**.
-    Resolver los 5 ejercicios marcados con ★: **1:05 h**.
-    Resolver los 11 ejercicios del final: **3:30 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:30 h**.
+    Resolver los 6 ejercicios marcados con ★: **1:25 h**.
+    Resolver los 13 ejercicios del final: **3:55 h**.
 
 ## 67.1 El problema
 
@@ -156,6 +159,31 @@ Con siete personas hay 49 pares: 3 positivos y 46 negativos para
 `abuelo/2`, 2 y 47 para `abuela/2` y `hermano/2`, 14 y 35 para
 `antepasado/2`. Son pocos ejemplos, y eso hace visible lo que en un
 problema grande queda oculto: cuántas reglas distintas explican lo mismo.
+
+El problema completo, para `abuelo/2`, tiene cuatro entradas y una salida:
+
+```mermaid
+flowchart LR
+    P["positivos<br/>abuelo(juan, luis)<br/>abuelo(juan, eva)<br/>abuelo(pedro, sofia)"] --> A["programa<br/>que aprende"]
+    N["negativos<br/>los otros 46 pares"] --> A
+    F["conocimiento de fondo<br/>varon/1, mujer/1, padre/2,<br/>madre/2, progenitor/2"] --> A
+    L["lenguaje de hipótesis<br/>qué predicados pueden<br/>ir en el cuerpo"] --> A
+    A --> H["hipótesis<br/>abuelo(A, B) :-<br/>padre(A, C),<br/>progenitor(C, B)"]
+```
+
+Entre la entrada y la salida está el espacio de las cláusulas posibles,
+ordenado de la más general a las más específicas. La figura muestra una
+parte de ese espacio para otra relación de familia:
+
+![Parte del grafo de especialización de la relación has_daughter(X)](familia-ilp.png)
+
+Parte del grafo de especialización para aprender `has_daughter(X)`, «X
+tiene una hija», desde la cláusula más general: cada flecha agrega un
+literal o une dos variables, y una rama se abandona cuando deja de cubrir
+un ejemplo positivo (aquí, el de mary). Es la búsqueda de la
+[sección 67.5](#675-version-4-induccion-descendente).
+Imagen: Volkova t a, [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/),
+vía [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:ILP_family2.png).
 
 ## 67.2 Versión 1: la lgg de dos términos
 
@@ -304,7 +332,8 @@ segunda solo las de longitud par: la primera implica a la segunda. Pero
 ninguna sustitución lleva una a la otra, porque W tendría que ser a la vez
 `[Y|Z]` y `Z`. La θ-subsunción es más débil que la consecuencia lógica de
 la [sección 38.1](../capitulo-38-semantica-de-los-programas-logicos/index.md#381-modelos-y-consecuencia-logica); a cambio, se decide con un programa corto y
-da una lgg única.
+da una lgg única. Flach toma el ejemplo y la comparación de Gottlob, que
+caracteriza con precisión la diferencia entre las dos relaciones.
 
 La **lgg de dos cláusulas** generaliza las cabezas y después cada par de
 literales del mismo predicado, uno de cada cuerpo. Como los cuerpos no
@@ -358,7 +387,8 @@ recibe.
 ## 67.4 Versión 3: inducción ascendente
 
 Las explicaciones de la sección anterior se escribieron a mano. La **lgg
-relativa** (rlgg) las construye: la explicación de un ejemplo E es la
+relativa** (rlgg), la idea del sistema GOLEM de Muggleton y Feng que Flach
+reduce a un programa corto, las construye: la explicación de un ejemplo E es la
 cláusula `E :- M`, con M el modelo de fondo entero, y la rlgg de E1 y E2 es
 la lgg de `E1 :- M` y `E2 :- M`. El resultado es grande: con 21 átomos en
 el modelo, la lgg tiene 99 literales, uno por cada par de átomos del mismo
@@ -560,8 +590,9 @@ familia, la hipótesis es exacta aunque no sea la regla esperada.
 
 ## 67.5 Versión 4: inducción descendente
 
-La inducción descendente recorre las cláusulas en el sentido opuesto.
-Parte de la más general, `abuelo(A, B)`, que afirma que todos son abuelos
+La inducción descendente recorre las cláusulas en el sentido opuesto;
+Flach la presenta siguiendo el sistema MIS de Shapiro. Parte de la más
+general, `abuelo(A, B)`, que afirma que todos son abuelos
 de todos, y la **especializa** mientras cubra un negativo. Un
 **operador de refinamiento** da las especializaciones mínimas de una
 cláusula bajo θ-subsunción: aplicar una sustitución, aquí unificar dos de
@@ -637,7 +668,7 @@ buscar(D, C, E-Negs-M-L, R, N0, N) :-
     ).
 ```
 
-!!! example "Patrón 62 — Especializar podando por el ejemplo"
+!!! example "Patrón 66 — Especializar podando por el ejemplo"
     **Problema.** Es necesario buscar, en un grafo de especialización,
     una cláusula que cubra un ejemplo positivo y ningún negativo, y el
     grafo crece exponencialmente con la cantidad de refinamientos.
@@ -719,13 +750,26 @@ pocos negativos, y con la cobertura extensional de una cláusula
 recursiva. Está en la página
 [La mejor cláusula y la recursión](recursion.md#la-mejor-clausula-y-la-recursion).
 
+## 67.7 Versión 6: otras formas de inducir
+
+El capítulo de Flach contiene cuatro ideas que las versiones anteriores
+no usan. La primera plantea la inducción como abducción de cláusulas:
+un metaintérprete que, para explicar un ejemplo, supone cláusulas de una
+lista de cláusulas posibles. La segunda es la búsqueda incremental del
+sistema MIS de Shapiro: los ejemplos llegan de a uno, y un negativo que
+la hipótesis deduce se corrige quitando la cláusula falsa de su prueba.
+La tercera agrega términos y tipos al lenguaje, y con ellos el programa
+aprende `append/3` y una traducción entre listas. La cuarta es el
+ejercicio de Flach de aprender `reverse/3`, un programa con acumulador.
+Están en la página [Otras formas de inducir](otras-formas.md#otras-formas-de-inducir).
+
 !!! success "Criterios de calidad"
     | Criterio | En este capítulo |
     |---|---|
     | C1 | cada predicado declara modos y determinación; `refinar/3` e `incluido/2` son `nondet` porque enumeran alternativas, y los que aprenden son `det`: devuelven una hipótesis y la cuenta de cláusulas |
     | C2 | el problema es de datos: los ejemplos salen de `ejemplos/3`, el fondo de `de_fondo/1` y el lenguaje de `lenguaje/1`; los hechos son los del [capítulo 3](../capitulo-03-reglas-y-conjunciones/index.md), sin copiarlos |
     | C4 | `subsume/2`, `cubre/3` y `cubre_alguno/3` no dejan ligaduras ni alternativas: usan `\+ \+` o un corte después de la primera prueba |
-    | C7 | 66 pruebas en seis archivos; cada versión se verifica contra la anterior o contra la relación esperada: la lgg subsume a los dos términos, cada refinamiento es subsumido por su cláusula, y la extensión de cada hipótesis se compara con `esperado/2` |
+    | C7 | 150 pruebas en nueve archivos; cada versión se verifica contra la anterior o contra la relación esperada: la lgg subsume a los dos términos, cada refinamiento es subsumido por su cláusula, y la extensión de cada hipótesis se compara con `esperado/2` |
 
 ## Ejercicios
 
@@ -785,6 +829,19 @@ tiene de propio.
     las K cláusulas que cubren más positivos. Medir, con K = 1, 3 y 10,
     las cláusulas generadas y el resultado para `antepasado/2` y
     `hermano/2`.
+12. ★ **(2)** Flach propone procesar todos los ejemplos a la vez, con
+    cláusulas supuestas sin instanciar, para que una cláusula sirva a
+    varios ejemplos. Escribir `inducir_todos(Ejemplos, Inducibles, Fondo,
+    H)`, con su encabezado de PlDoc, y aplicarlo a los positivos de
+    `abuelo/2` con las cláusulas de `inducibles/2`. Comparar su primera
+    respuesta con las explicaciones de la
+    [sección 67.7](otras-formas.md#la-induccion-como-abduccion).
+13. **(1)** La hipótesis de `numerales` en la
+    [sección 67.7](otras-formas.md#refutar-la-clausula-falsa) tiene la
+    cláusula base `listnum([], _)`. Agregar a los ejemplos los negativos
+    necesarios para que `mis/4` aprenda `listnum([], [])`, y explicar por
+    qué con uno solo, `listnum([], [uno])`, la cláusula base pasa a ser
+    `listnum(_, [])`.
 
 ## Resumen
 
@@ -804,8 +861,10 @@ tiene de propio.
 | `subsume/2`, `lgg_clausula/3` | la versión 2 |
 | `rlgg/4`, `cubre/3`, `reducir/4`, `aprender_asc/3`, `evaluar/5` | la versión 3 |
 | `refinar/3`, `buscar_clausula/8`, `aprender_desc/3`, `evaluar_en/6` | la versión 4 |
-| **[Patrón 62](../patrones.md#62-especializar-podando-por-el-ejemplo)** | especializar podando por el ejemplo |
+| **[Patrón 66](../patrones.md#66-especializar-podando-por-el-ejemplo)** | especializar podando por el ejemplo |
 | `mejor_clausula/9`, `aprender_rec/3`, `probar/4` | la versión 5 |
+| **cláusula falsa** | la cláusula más alta de una prueba que deduce una cabeza falsa de un cuerpo verdadero |
+| `inducir/5`, `refinar_tipado/3`, `clausula_falsa/3`, `mis/4`, `bien_fundada/2` | la versión 6 |
 
 ## Temas que se retoman
 
@@ -825,11 +884,34 @@ tiene de propio.
   congeladas, la antiunificación con sustituciones inversas, la lgg de
   cláusulas y la relativa a un modelo con su reducción por los negativos,
   el algoritmo de cobertura, y la búsqueda descendente con refinamientos,
-  tipos y profundización iterativa. Flach basa la inducción ascendente en
-  el sistema GOLEM (Muggleton y Feng, «Efficient induction of logic
-  programs», 1990) y la descendente en el sistema MIS (Shapiro,
-  *Algorithmic Program Debugging*, MIT Press, 1983); el capítulo los
-  conoce a través de él.
+  tipos y profundización iterativa, y de su ejercicio final la búsqueda
+  en haz del ejercicio 11. Flach basa la inducción ascendente en GOLEM y
+  la descendente en MIS; las referencias siguientes son las que él cita
+  para esas ideas, y el capítulo las conoce a través de él.
+- Stephen H. Muggleton y Cao Feng, «Efficient induction of logic
+  programs», en *Proceedings of the First Conference on Algorithmic
+  Learning Theory*, Ohmsha, Tokio, 1990, págs. 368–381. Sin edición en
+  línea de acceso libre verificada. Presenta GOLEM, que construye
+  cláusulas con la lgg relativa a un modelo de hechos de fondo y las
+  reduce: es el origen de la versión 3.
+- Ehud Y. Shapiro, *Algorithmic Program Debugging*, MIT Press, 1983. Sin
+  edición en línea de acceso libre verificada. Su sistema MIS aprende
+  cláusulas buscando de la más general a las más específicas con un
+  operador de refinamiento: es el origen de la versión 4. La versión 6
+  toma de él, a través de Flach, el procesamiento incremental de los
+  ejemplos y la búsqueda de la cláusula falsa en la prueba de un
+  negativo, la idea de su depuración algorítmica.
+- Georg Gottlob, «Subsumption and implication», *Information Processing
+  Letters* 24(2), 1987, págs. 109–111. Sin edición en línea de acceso
+  libre verificada. Caracteriza la diferencia entre la θ-subsunción y la
+  consecuencia lógica que la [sección 67.3](#673-version-2-subsuncion-y-lgg-de-clausulas)
+  muestra con dos cláusulas de `lista/1`.
+- Tim Niblett, «A study of generalisation in logic programs», en
+  *Proceedings of the Third European Working Session on Learning*,
+  Pitman, 1988, págs. 131–138. Sin edición en línea de acceso libre
+  verificada. Es la referencia de Flach para el orden de generalidad
+  entre cláusulas y la generalización menos general de las versiones 1
+  y 2.
 - J. Ross Quinlan, «Learning logical definitions from relations»,
   *Machine Learning* 5(3), 1990, págs. 239–266,
   [doi:10.1007/BF00117105](https://doi.org/10.1007/BF00117105). Es la

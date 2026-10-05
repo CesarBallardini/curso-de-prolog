@@ -34,4 +34,24 @@ test(biestable_memoria, [true(Qs == [1-0, 0-1])]) :-
 test(biestable_fija, [true(Qs == [1-0])]) :-
     findall(Q-Qn, biestable(0, 1, Q, Qn), Qs).
 
+% Las tablas de las cinco compuertas de dos entradas, en el orden de las
+% filas 00, 01, 10, 11.
+test(and, [true(Ss == [0, 0, 0, 1])]) :-
+    findall(S, and(_, _, S), Ss).
+
+test(or, [true(Ss == [0, 1, 1, 1])]) :-
+    findall(S, or(_, _, S), Ss).
+
+test(xor, [true(Ss == [0, 1, 1, 0])]) :-
+    findall(S, xor(_, _, S), Ss).
+
+test(nand, [true(Ss == [1, 1, 1, 0])]) :-
+    findall(S, nand(_, _, S), Ss).
+
+test(nor, [true(Ss == [1, 0, 0, 0])]) :-
+    findall(S, nor(_, _, S), Ss).
+
+test(and_inverso, all(A-B == [0-0, 0-1, 1-0])) :-
+    and(A, B, 0).
+
 :- end_tests(compuertas).

@@ -58,4 +58,55 @@ test(hora_invalida, [error(type_error(hora, 25:0))]) :-
 test(origen_libre, [error(instantiation_error)]) :-
     ruta(_, piedra_mora, _, _).
 
+test(tramo, [true(Km == 36)]) :-
+    tramo(pradera_alta, puerto_quieto, Km, _, _, _).
+
+test(velocidades, [true(Vs == [autopista-110, pavimento-80, ripio-50])]) :-
+    findall(C-V, velocidad(C, V), Vs).
+
+test(factores, [true(Ts-Ps == [1, 4r5, 3r5]-[1, 9r10, 7r10])]) :-
+    findall(F, factor_transito(_, F), Ts),
+    findall(F, factor_pendiente(_, F), Ps).
+
+test(conecta_dos_sentidos, all(B == [puerto_quieto, ribera_honda])) :-
+    conecta(B, piedra_mora, _, _, _, _).
+
+test(conecta_vecinos, all(B == [ribera_honda, puerto_quieto])) :-
+    conecta(piedra_mora, B, _, _, _, _).
+
+test(km_tramo, [true(Km == 26)]) :-
+    km_tramo(piedra_mora, puerto_quieto, Km).
+
+test(km_tramo_sin_tramo, [fail]) :-
+    km_tramo(pradera_alta, ermita_vieja, _).
+
+test(agregar_a_frontera, [true(P-C == 1-[b])]) :-
+    list_to_heap([5-[a]], F0),
+    agregar_a_frontera(1-[b], F0, F),
+    get_from_heap(F, P, C, _).
+
+test(es) :-
+    es(a, a).
+
+test(es_distinto, [fail]) :-
+    es(a, b).
+
+test(paso_del_horario, [true(P == '8:33'-puerto_quieto)]) :-
+    paso_del_horario(480, puerto_quieto-360r11, P).
+
+test(minutos_del_dia, [true(M == 525)]) :-
+    minutos_del_dia(8:45, M).
+
+test(minutos_del_dia_minuto_invalido, [error(type_error(hora, 8:60))]) :-
+    minutos_del_dia(8:60, _).
+
+test(hora_escrita, [true(H == '8:05')]) :-
+    hora_escrita(485, H).
+
+test(hora_escrita_redondea, [true(H == '8:33')]) :-
+    hora_escrita(480 + 360r11, H).
+
+test(hora_escrita_medianoche, [true(H == '0:10')]) :-
+    hora_escrita(1450, H).
+
 :- end_tests(rutas).

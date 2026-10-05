@@ -11,6 +11,29 @@ las acerca entre sí; y el método del **polinomio**, que lleva la ecuación a
 una forma normal. Cuando ningún método simbólico da una solución, el
 programa busca raíces numéricas con el **método de Newton**.
 
+![Dos páginas manuscritas en árabe, con dos diagramas de cuadrados y rectángulos trazados en rojo al pie](al-juarismi.jpg)
+
+Dos páginas de una copia de 1342 del *Compendio de cálculo por restauración y
+oposición* de al-Juarismi (siglo IX), con las soluciones geométricas de dos
+ecuaciones cuadráticas. *Al-jabr*, la «restauración», pasa un término al otro
+lado de la ecuación, el paso que el aislamiento repite en cada nivel; de esa
+palabra viene «álgebra». Imagen: Muhammad ibn Musa al-Juarismi, Bodleian
+Libraries (MS. Huntington 214, fol. 4v–5r), dominio público
+([PD-Art](https://commons.wikimedia.org/wiki/Template:PD-Art)), vía
+[Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Bodleian_MS._Huntington_214_roll332_frame36.jpg).
+
+Una ecuación que necesita tres de esos métodos, uno detrás de otro, recorre
+este camino; cada flecha es un método, y la última solución se descarta al
+comprobarla en la ecuación original:
+
+```mermaid
+flowchart LR
+    E0["log(x + 1) + log(x - 1) = 3"] -- "atracción" --> E1["log((x + 1) * (x - 1)) = 3"]
+    E1 -- "colección" --> E2["log(x ^ 2 - 1 * 1) = 3"]
+    E2 -- "aislamiento" --> S1["x = sqrt(exp(3) + 1)"]
+    E2 -- "aislamiento" --> S2["x = -sqrt(exp(3) + 1)<br/>(no cumple la ecuación)"]
+```
+
 El programa crece en cinco versiones, una por sección, y cada una termina con
 una ecuación que no puede resolver y que motiva la siguiente. Reutiliza, sin
 copiarlos, el simplificador, `apariciones/3`, `evaluar/3` y `derivar/3` del
@@ -31,7 +54,9 @@ de aislamiento con una solución por axioma, la forma normal de un polinomio
 como lista de coeficientes y grados, y los métodos de factorización y de
 homogeneización que los ejercicios agregan. La colección y la atracción son
 otros dos métodos de PRESS, descritos en el artículo de Bundy y Welham (1981)
-que Sterling y Shapiro citan. El capítulo «Case Study: Term Rewriting», el
+y en la presentación de PRESS de Sterling, Bundy, Byrd, O'Keefe y Silver
+(1982), que Sterling y Shapiro citan; la homogeneización del ejercicio 7
+sigue a Bundy y Silver (1981). El capítulo «Case Study: Term Rewriting», el
 sexto, de *Clause and Effect* de William Clocksin aporta la etapa de forma normal
 antes de reescribir: llevar la negación hacia adentro y dejar la
 simplificación a un paso separado. El apartado 7.11, «Symbolic
@@ -60,12 +85,15 @@ Al terminar el capítulo, el lector puede:
 - usar el método de Newton como respaldo numérico, y comprobar cada
   solución en la ecuación original;
 - extender el programa con axiomas, reglas y métodos nuevos sin modificar
-  sus archivos.
+  sus archivos;
+- agregar métodos de PRESS que trabajan sobre la forma de la ecuación: la
+  homogeneización, el intercambio de funciones, el emparejamiento
+  conmutativo, los intervalos y las desigualdades.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:20 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:30 h**.
     Resolver los 5 ejercicios marcados con ★: **1:35 h**.
-    Resolver los 12 ejercicios del final: **3:45 h**.
+    Resolver los 14 ejercicios del final: **4:20 h**.
 
 ## 43.1 El programa terminado
 
@@ -556,6 +584,11 @@ D = 6.
 D = 4.
 ```
 
+Son las cifras de la descripción de PRESS de Sterling, Bundy, Byrd, O'Keefe
+y Silver (1982), que mide la distancia en arcos del árbol de la expresión:
+seis entre las dos apariciones de `log(x + 1) + log(x - 1)` y cuatro
+después de la atracción.
+
 Las reglas de atracción usan la misma notación, cargadas en `atraer.pl`; el
 despachador prueba aislar, colectar y atraer, en ese orden:
 
@@ -667,6 +700,53 @@ original: la comprobación que la versión 3 necesitaba. Es la versión que la
 versión 5 no la encuentra; el ejercicio 9 amplía la derivada, y el
 [capítulo 46](../capitulo-46-proyecto-metodos-numericos/index.md) desarrolla métodos que no la necesitan.
 
+Las secciones 43.7 a 43.11 agregan cinco partes de PRESS que las versiones
+anteriores no tienen. Cada una es un módulo propio que carga la versión 5,
+y todas están en la página
+[Más métodos de PRESS](press.md#mas-metodos-de-press).
+
+## 43.7 La homogeneización trigonométrica
+
+`trigonometria.pl` escribe una ecuación en senos y cosenos de `x` y de
+`2 * x` como un polinomio en `sin(x)` o en `cos(x)`, con las identidades
+del ángulo doble y del cuadrado, lo resuelve en una incógnita nueva y aísla
+`x` en cada valor: es el tercer ejercicio de Sterling y Shapiro y el caso
+trigonométrico de Bundy y Silver. La página la desarrolla en
+[su sección](press.md#437-la-homogeneizacion-trigonometrica), que resuelve
+`cos(2 * x) - sin(x) = 0`.
+
+## 43.8 El intercambio de funciones
+
+`intercambio.pl` aísla una raíz cuadrada como si fuera una incógnita y
+eleva los dos lados al cuadrado, con la cantidad de raíces como medida que
+decrece, y comprueba cada valor, porque el cuadrado agrega soluciones
+espurias. Resuelve el ejemplo de la descripción de PRESS,
+`sqrt(5 * x - 25) - sqrt(x - 1) = 2`, en
+[su sección](press.md#438-el-intercambio-de-funciones).
+
+## 43.9 El emparejamiento conmutativo
+
+`emparejamiento.pl` prueba cada regla de colección también sobre las
+variantes de un subtérmino con los operandos de sumas y productos
+intercambiados, una parte del emparejador de Borning y Bundy (1981), y
+resuelve `sin(x) * 2 + 3 * sin(x) = 1`, que la versión 5 no resuelve
+([su sección](press.md#439-el-emparejamiento-conmutativo)).
+
+## 43.10 Intervalos
+
+`intervalos.pl` calcula el intervalo de valores de una expresión a partir
+del intervalo de la incógnita, como el paquete de Bundy (1984) con que
+PRESS comprueba las condiciones de sus reglas, y lo usa para probar que una
+ecuación no tiene raíces en un intervalo y para encerrar las que tiene
+([su sección](press.md#4310-intervalos)).
+
+## 43.11 Desigualdades
+
+`desigualdades.pl` aísla la incógnita en una desigualdad, con axiomas que
+invierten el sentido al multiplicar o dividir por un número negativo y al
+pasar un sustraendo al otro lado
+([su sección](press.md#4311-desigualdades)).
+
 !!! success "Criterios de calidad"
     | Criterio | En este capítulo |
     |---|---|
@@ -674,7 +754,7 @@ versión 5 no la encuentra; el ejercicio 9 amplía la derivada, y el
     | C3 | `resolver/3` elige el método con `->` en la condición, no después de la solución: con la solución ligada, comprueba (las pruebas `comprueba` de `aislar.plt` y `colectar.plt`) |
     | C5 | una ecuación o una incógnita sin instanciar producen un error de instanciación en cada versión; una operación que `derivar/3` no deriva produce un error de dominio que el respaldo numérico captura con nombre, y un valor no real, un error de evaluación que `valores/3` captura |
     | C6 | todo el programa es puro salvo los ganchos de carga (`term_expansion/2`) y las cláusulas `multifile` que los ejercicios agregan |
-    | C7 | 89 pruebas en siete archivos; los resultados numéricos se comparan con una tolerancia, y lo que no termina se prueba con `call_with_inference_limit/3` |
+    | C7 | 208 pruebas en doce archivos; los resultados numéricos se comparan con una tolerancia, y lo que no termina se prueba con `call_with_inference_limit/3` |
 
 ## Ejercicios
 
@@ -744,6 +824,15 @@ prueba su método y usa `resolver/3` si no se aplica.
     incógnita, y un despachador que lo use. Agregar la atracción
     `sqrt(U) * sqrt(V) ~> sqrt(U * V)` y resolver
     `sqrt(x) * sqrt(x + 5) = 6`. ¿Cuál de las soluciones cumple la ecuación?
+13. **(2)** Agregar a `desigualdades.pl`, desde un archivo propio, el axioma
+    de la potencia de exponente natural impar, que es creciente y conserva el
+    sentido. Resolver `x ^ 3 + 1 > -7` y `2 * x ^ 5 =< 64`, y explicar por
+    qué la raíz de un número negativo necesita un caso aparte en `is/2`.
+14. **(2)** Escribir `valores_en(Ecuacion, X, I, Vs)`: Vs son los valores
+    de `valores/3` que están en el intervalo I, y si `sin_raices/3` prueba
+    que la ecuación no tiene raíces en I, Vs es `[]` sin resolverla.
+    Probarlo con `x ^ 2 - 2 = 0` en `i(0, 3)` y con `x ^ 2 + 1 = 0` en
+    `i(-10, 10)`.
 
 ## Resumen
 
@@ -768,6 +857,11 @@ prueba su método y usa `resolver/3` si no se aplica.
 | `resolver_polinomio/3`, `colectar_normal/3` | los dos métodos que da la forma normal |
 | `newton/4`, `raices/4`, `valores/3` | el respaldo numérico y la comprobación de las soluciones |
 | `resolver/3` | el despachador de cada versión |
+| **homogeneización** | escribir los términos que impiden que una ecuación sea algebraica como funciones de un término reducido, y cambiar la incógnita |
+| **intercambio de funciones** | reemplazar una función por otra que los métodos manejan mejor: una raíz por un cuadrado |
+| **aritmética de intervalos** | el intervalo de una expresión calculado con los extremos de los intervalos de sus argumentos |
+| `resolver_trigonometrica/3`, `intercambiar/3`, `colectar_ac/3` | la homogeneización trigonométrica, el intercambio de la raíz cuadrada y la colección con conmutatividad |
+| `intervalo/3`, `encerrar/5`, `resolver_desigualdad/3` | los intervalos y las desigualdades |
 | **[Patrón 56](../patrones.md#56-medida-que-decrece)** | medida que decrece |
 
 ## Temas que se retoman
@@ -787,13 +881,51 @@ prueba su método y usa `resolver/3` si no se aplica.
   El capítulo toma de allí la organización del programa: los métodos
   probados en orden, la posición de la incógnita como lista de números de
   argumento, los axiomas de aislamiento, la forma normal de un polinomio y
-  los métodos de factorización y de homogeneización de los ejercicios.
+  los métodos de factorización y de homogeneización de los ejercicios, y la
+  ecuación trigonométrica de su tercer ejercicio, que resuelve la
+  [sección 43.7](#437-la-homogeneizacion-trigonometrica).
 - Alan Bundy y Bob Welham, «Using meta-level inference for selective
   application of multiple rewrite rule sets in algebraic manipulation»,
   *Artificial Intelligence* 16, 1981, pp. 189–212.
   [Página de la editorial](https://doi.org/10.1016/0004-3702%2881%2990010-2).
   Describe PRESS; de allí vienen la colección y la atracción, y la idea de
   que cada reescritura reduzca una medida.
+- Leon Sterling, Alan Bundy, Lawrence Byrd, Richard O'Keefe y Bernard
+  Silver, «Solving symbolic equations with PRESS», en *Computer Algebra
+  (EUROCAM '82)*, Lecture Notes in Computer Science 144, Springer, 1982,
+  pp. 109–116. [Copia de acceso abierto](https://era.ed.ac.uk/handle/1842/4475).
+  Es la descripción de PRESS que Sterling y Shapiro adaptan: los seis
+  métodos probados en orden y reiniciados después de cada transformación,
+  la colección, la atracción con la distancia medida en arcos del árbol
+  (seis antes y cuatro después en `log(x + 1) + log(x - 1)`), la ecuación
+  `log(x + 1) + log(x - 1) = 3` resuelta por atracción, colección y
+  aislamiento, y el descarte de las raíces espurias. Las secciones 43.8 a
+  43.11 toman de allí el intercambio de funciones con su ejemplo de dos
+  raíces cuadradas, el emparejador, el paquete de intervalos y la
+  resolución de desigualdades.
+- Alan Bundy y Bernard Silver, «Homogenization: Preparing Equations for
+  Change of Unknown», *Proceedings of the Seventh International Joint
+  Conference on Artificial Intelligence (IJCAI-81)*, 1981, pp. 551–553.
+  [Edición en línea](https://www.ijcai.org/Proceedings/81-1/Papers/099.pdf).
+  Describe la homogeneización —el conjunto de términos que impiden que la
+  ecuación sea algebraica, el término reducido y el cambio de incógnita—
+  que el ejercicio 7 escribe para el caso exponencial y la
+  [sección 43.7](#437-la-homogeneizacion-trigonometrica), para el
+  trigonométrico.
+- Alan Borning y Alan Bundy, «Using Matching in Algebraic Equation
+  Solving», *Proceedings of the Seventh International Joint Conference on
+  Artificial Intelligence (IJCAI-81)*, 1981, pp. 466–471.
+  [Edición en línea](https://www.ijcai.org/Proceedings/81-1/Papers/086.pdf).
+  Describe el emparejador de PRESS, que conoce la conmutatividad y la
+  asociatividad de la suma y el producto; la
+  [sección 43.9](#439-el-emparejamiento-conmutativo) toma de allí la
+  conmutatividad, con las variantes de un subtérmino.
+- Alan Bundy, «A Generalized Interval Package and its Use for Semantic
+  Checking», *ACM Transactions on Mathematical Software* 10(4), 1984,
+  pp. 397–409. [Copia de acceso abierto](https://era.ed.ac.uk/handle/1842/4547).
+  El paquete de intervalos de PRESS, que comprueba las condiciones de las
+  reglas; la [sección 43.10](#4310-intervalos) toma de allí el cálculo del
+  intervalo de una expresión a partir del de la incógnita.
 - William F. Clocksin, *Clause and Effect: Prolog Programming for the
   Working Programmer*, Springer, 1997 — «Case Study: Term Rewriting». El
   capítulo toma la etapa de forma normal previa a la reescritura y la
@@ -807,7 +939,17 @@ prueba su método y usa `resolver/3` si no se aplica.
   Depth*, Prentice Hall, 1997 — apartado 7.13, «Solving equations
   numerically». [Edición en línea](https://www.covingtoninnovations.com/books/PPID.pdf).
   El capítulo toma la búsqueda de un cero de `Izq - Der` como respaldo
-  numérico y la enumeración de sus formas de fallar.
+  numérico, la enumeración de sus formas de fallar, que el apartado
+  describe para el método de la secante, y las ecuaciones `cos(x) = x` y
+  `x + 1 = 1 / x` del ejercicio 9.
+- William H. Press, Saul A. Teukolsky, William T. Vetterling y Brian P.
+  Flannery, *Numerical Recipes: The Art of Scientific Computing*, 3.ª
+  edición, Cambridge University Press, 2007 — apartado 9.4,
+  «Newton-Raphson Method Using Derivative».
+  [Lectura en línea de los autores](https://numerical.recipes/book.html).
+  Covington remite a esta obra para métodos mejores que la secante; el
+  capítulo toma de allí el método de Newton y sus fallas: la derivada
+  nula, los ciclos y la convergencia a otra raíz.
 
 Los programas del capítulo están escritos para el curso: las fuentes aportan
 ideas, métodos y ejemplos, no código copiado ni adaptado.

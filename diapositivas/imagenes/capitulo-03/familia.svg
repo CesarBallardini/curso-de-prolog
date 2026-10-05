@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" width="960" height="540">
+  <title>La familia de reglas.pl: juan y marta son padre y madre de ana y de pedro; pedro es padre de luis y de eva; eva es madre de sofia</title>
+  <defs>
+    <marker id="a-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1F2933"/></marker>
+    <marker id="a-navy" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1F3A5F"/></marker>
+    <marker id="a-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#D9822B"/></marker>
+    <marker id="a-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2E7D32"/></marker>
+    <marker id="a-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#C62828"/></marker>
+    <marker id="a-grey" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#9AA5B1"/></marker>
+  </defs>
+  <rect x="0" y="0" width="960" height="540" fill="#FFFFFF"/>
+  <line x1="390.0" y1="60.0" x2="450.0" y2="60.0" stroke="#1F3A5F" stroke-width="3"/>
+  <line x1="510.0" y1="60.0" x2="450.0" y2="60.0" stroke="#D9822B" stroke-width="3" stroke-dasharray="9 6"/>
+  <path d="M446,60 L446,131 L326,131 L326,186 M446,131 L566,131 L566,186" fill="none" stroke="#1F3A5F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M454,60 L454,139 L334,139 L334,186 M454,139 L574,139 L574,186" fill="none" stroke="#D9822B" stroke-width="3" stroke-dasharray="9 6" stroke-linecap="round" stroke-linejoin="round"/>
+  <line x1="570.0" y1="234.0" x2="450.0" y2="336.0" stroke="#1F3A5F" stroke-width="3"/>
+  <line x1="570.0" y1="234.0" x2="690.0" y2="336.0" stroke="#1F3A5F" stroke-width="3"/>
+  <line x1="690.0" y1="384.0" x2="690.0" y2="476.0" stroke="#D9822B" stroke-width="3" stroke-dasharray="9 6"/>
+  <rect x="270.0" y="36.0" width="120.0" height="48.0" rx="4" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2.5"/>
+  <text x="330.0" y="67.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">juan</text>
+  <rect x="510.0" y="36.0" width="120.0" height="48.0" rx="24" fill="#FCE8D2" stroke="#D9822B" stroke-width="2.5"/>
+  <text x="570.0" y="67.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">marta</text>
+  <rect x="270.0" y="186.0" width="120.0" height="48.0" rx="24" fill="#FCE8D2" stroke="#D9822B" stroke-width="2.5"/>
+  <text x="330.0" y="217.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">ana</text>
+  <rect x="510.0" y="186.0" width="120.0" height="48.0" rx="4" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2.5"/>
+  <text x="570.0" y="217.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">pedro</text>
+  <rect x="390.0" y="336.0" width="120.0" height="48.0" rx="4" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2.5"/>
+  <text x="450.0" y="367.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">luis</text>
+  <rect x="630.0" y="336.0" width="120.0" height="48.0" rx="24" fill="#FCE8D2" stroke="#D9822B" stroke-width="2.5"/>
+  <text x="690.0" y="367.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">eva</text>
+  <rect x="630.0" y="476.0" width="120.0" height="48.0" rx="24" fill="#FCE8D2" stroke="#D9822B" stroke-width="2.5"/>
+  <text x="690.0" y="507.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">sofia</text>
+  <line x1="40.0" y1="430.0" x2="90.0" y2="430.0" stroke="#1F3A5F" stroke-width="3"/>
+  <text x="100.0" y="436.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#52606D" text-anchor="start" xml:space="preserve">padre</text>
+  <line x1="40.0" y1="470.0" x2="90.0" y2="470.0" stroke="#D9822B" stroke-width="3" stroke-dasharray="9 6"/>
+  <text x="100.0" y="476.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#52606D" text-anchor="start" xml:space="preserve">madre</text>
+  <rect x="40.0" y="496.0" width="50.0" height="30.0" rx="4" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="100.0" y="518.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#52606D" text-anchor="start" xml:space="preserve">varon</text>
+  <rect x="190.0" y="496.0" width="50.0" height="30.0" rx="15" fill="#FCE8D2" stroke="#D9822B" stroke-width="2"/>
+  <text x="250.0" y="518.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#52606D" text-anchor="start" xml:space="preserve">mujer</text>
+</svg>

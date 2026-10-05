@@ -93,4 +93,69 @@ test(ejercicio_12, [nondet], A == por(antepasado(juan, sofia), antepasado_2,
                                [inicial(madre(ana, sofia))])])])) :-
     explicar(antepasado(juan, sofia), A).
 
+% Sin refracción, la regla vuelve a dispararse con el mismo hecho hasta
+% el límite; con ella, una sola vez.
+test(vigilado_sin_refraccion, [true(R-H == limite(3)-[b, a])]) :-
+    memoria_con([a], M),
+    vigilado_63([(r :: [a] ---> [agregar(b)])], orden, no, 3, 0, [], M,
+                M1, R),
+    hechos(M1, H).
+
+test(vigilado_con_refraccion, [true(R-H == nada_aplicable-[b, a])]) :-
+    memoria_con([a], M),
+    vigilado_63([(r :: [a] ---> [agregar(b)])], orden, si, 3, 0, [], M,
+                M1, R),
+    hechos(M1, H).
+
+test(candidatas_si, [true(C == [])]) :-
+    candidatas(si, [instanciacion(r, [1], 1, [])], [r-[1]], C).
+
+test(candidatas_no, [true(C == [instanciacion(r, [1], 1, [])])]) :-
+    candidatas(no, [instanciacion(r, [1], 1, [])], [r-[1]], C).
+
+test(prioridad_de, [true(P1-P2 == 1-0)]) :-
+    prioridad_de(apilar, P1),
+    prioridad_de(otra, P2).
+
+% El gabinete pasa a ser una fase obligatoria antes del fin.
+test(memoria_con_gabinete, [true(F-G == no-si)]) :-
+    memoria_con_gabinete([pedido(nucleos, 6)], H),
+    (   memberchk(despues(fuente, fin), H) -> F = si ; F = no ),
+    (   memberchk(despues(gabinete, fin), H) -> G = si ; G = no ).
+
+% compatible/4 enumera las 15 configuraciones del pedido; la más barata
+% es la de mas_barata/3.
+test(compatible, [true(N-P == 15-415)]) :-
+    catalogo(Cat),
+    Pedido = [pedido(nucleos, 6), pedido(memoria, 16), pedido(video, no)],
+    aggregate_all(count, compatible(Cat, Pedido, _, _), N),
+    aggregate_all(min(P0), compatible(Cat, Pedido, _, P0), P).
+
+test(copia, [true(H == padre(juan-2, ana-2))]) :-
+    copia(2, padre(juan, ana), H).
+
+% regla_con_origen/2 agrega el origen después de cada agregar/1, con los
+% patrones de la regla, sin las pruebas ni las negaciones.
+test(regla_con_origen,
+     [true(R =@= (r :: [padre(X, Y), {X \== Y}, no(z)]
+                    ---> [agregar(p(X, Y)),
+                          agregar(origen(p(X, Y), r, [padre(X, Y)])),
+                          quitar(q)]))]) :-
+    regla_con_origen((r :: [padre(X0, Y0), {X0 \== Y0}, no(z)]
+                        ---> [agregar(p(X0, Y0)), quitar(q)]), R).
+
+test(con_su_origen_otra, [true(A == [quitar(b)])]) :-
+    con_su_origen(r, [a], quitar(b), A).
+
+test(con_origen, [true(Rs == [(r :: [a] ---> [agregar(b),
+                                              agregar(origen(b, r, [a]))])])]) :-
+    con_origen([(r :: [a] ---> [agregar(b)])], Rs).
+
+% En placa_de_video gana el valor por omisión; en la subclase, el cálculo,
+% salvo que no pueda calcular y la herencia siga hasta el valor por omisión.
+test(ejercicio13, [true(C1-C2-C3 == 200-260-200)]) :-
+    valor_con_facetas(placa_de_video, [memoria_gb-8], consumo, C1),
+    valor_con_facetas(placa_calculada, [memoria_gb-8], consumo, C2),
+    valor_con_facetas(placa_calculada, [], consumo, C3).
+
 :- end_tests(soluciones).

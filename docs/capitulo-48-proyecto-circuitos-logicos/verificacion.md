@@ -11,6 +11,9 @@ equivalencias con `library(clpb)`. El ejemplo está en `verificar.pl`, en
 
 `library(clpb)` representa cada fórmula con un diagrama de decisión binario,
 una forma **canónica**: dos fórmulas equivalentes tienen el mismo diagrama.
+Markus Triska describe esa implementación en «The Boolean Constraint Solver
+of SWI-Prolog: System Description» (FLOPS 2016,
+[versión del autor](https://www.metalevel.at/swiclpb.pdf)).
 `taut/2` decide si una fórmula es verdadera para todos los valores de sus
 variables sin recorrer la tabla. `verificar.pl` usa la misma descripción una
 tercera vez, con una conducta que impone a cada compuerta una restricción:

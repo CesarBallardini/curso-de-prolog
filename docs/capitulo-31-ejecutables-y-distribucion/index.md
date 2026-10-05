@@ -679,6 +679,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | `mayor.menor.corrección` | el versionado semántico |
 | `pack.pl`, `pack_install/2` | una biblioteca como pack |
 | `qcompile/1`, `.qlf` | un archivo fuente ya compilado |
+| `jugar/4` | una jugada del Buscaminas sobre una partida ([el módulo `partida`](buscaminas.md#partida)) |
 | **[Patrón 42](../patrones.md#42-construir-en-un-comando)** | construir en un comando |
 
 ## Temas que se retoman

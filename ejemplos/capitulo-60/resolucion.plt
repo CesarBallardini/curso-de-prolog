@@ -51,4 +51,15 @@ test(traza, S == "1: resolver de 3, con [clausula([p]),clausula([-p])]\n\c
                   2: contradiccion de 2, con [clausula([])]\n") :-
     with_output_to(string(S), trazar_demostracion(p v -p, primera, _)).
 
+test(fnc_literal, [true(Cs-Ds == [[a]]-[[-a]])]) :-
+    fnc(a, Cs),
+    fnc(-a, Ds).
+
+% La disyunción distribuye: (a & b) v c da dos cláusulas.
+test(fnc_distribuye, [true(Cs == [[a, c], [b, c]])]) :-
+    fnc((a & b) v c, Cs).
+
+test(fnc_conjuncion, [true(Cs == [[a], [-b], [c, d]])]) :-
+    fnc(a & -b & (c v d), Cs).
+
 :- end_tests(resolucion).

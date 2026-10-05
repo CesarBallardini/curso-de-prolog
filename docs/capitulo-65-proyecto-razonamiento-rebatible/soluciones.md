@@ -5,8 +5,9 @@ Las soluciones de los ejercicios 2, 3, 6, 7, 9 y 10 están en
 comparten predicados y que carga el módulo `explicaciones`
 (`explicaciones.pl`, que reexporta el intérprete de `rebatible.pl`); la del
 ejercicio 5, en `soluciones_pato.pl`; la del 8, en `soluciones_cadena.pl`;
-y las de los ejercicios 4 y 11, en `soluciones_inscripciones.pl`, que carga
-`correlativas.pl`. Cada archivo tiene sus pruebas en el `.plt` del mismo
+las de los ejercicios 4 y 11, en `soluciones_inscripciones.pl`, que carga
+`correlativas.pl`; la del 12, en `soluciones_yale.pl`; y la del 13, en
+`soluciones_complecion.pl`, que carga `complecion.pl`. Cada archivo tiene sus pruebas en el `.plt` del mismo
 nombre.
 
 ## Ejercicio 1
@@ -533,3 +534,135 @@ queda pendiente, `a_revisar(alg)`. Con la superioridad declarada, la autorizaci�
 la inscripción sigue siendo condicional. `decisiones/2` agrega la
 autorización con `assertz/1`, porque `autorizacion/3` es dinámico, y deja
 los datos como estaban con `estado/1` y `restaurar/1` del módulo `datos`.
+
+## Ejercicio 12
+
+La base repite la de `yale.pl` y agrega la regla de la descarga:
+
+<!-- ejemplo: capitulo-65/soluciones_yale.pl fragmento: % Después de una descarga, .. neg vale(cargada, result(descarga, S)) :~ vale(cargada, S). -->
+```prolog
+% Después de una descarga, el arma normalmente no está cargada.
+neg vale(cargada, result(descarga, S)) :~ vale(cargada, S).
+```
+
+`historia/3` es la de `yale.pl` con los fluentes `cargada` y `vivo`:
+
+```prolog
+?- historia([especificidad], [descarga, espera, disparo], H).
+H = [inicio-definitivamente_si-definitivamente_si, descarga-sin_conclusion-presumiblemente_si, espera-sin_conclusion-presumiblemente_si, disparo-sin_conclusion-presumiblemente_si].
+```
+
+Después de la descarga compiten dos reglas sobre `vale(cargada, S)`: la
+persistencia, con el cuerpo `vale(cargada, s0)`, y la regla de la
+descarga, con el mismo cuerpo. Cada cuerpo se deriva del otro, así que
+ninguna es más específica, y las dos se derrotan. Que el arma esté
+cargada queda sin conclusión, la regla causal del disparo no se aplica, y
+Johnnie sobrevive. En la regla del disparo, la condición `vale(vivo, S)`
+hacía la diferencia; aquí la condición de la regla causal, `vale(cargada,
+S)`, es la misma que la de la persistencia, y no hay condición que
+agregar. La superioridad declarada decide:
+
+<!-- ejemplo: capitulo-65/soluciones_yale.pl fragmento: % La regla de la descarga prevalece .. (vale(F, result(_, S)) :~ vale(F, S))). -->
+```prolog
+% La regla de la descarga prevalece sobre la persistencia.
+superior((neg vale(cargada, result(descarga, S)) :~ vale(cargada, S)),
+         (vale(F, result(_, S)) :~ vale(F, S))).
+```
+
+Pero con ella sola, el arma vuelve a quedar sin conclusión después de la
+espera: la persistencia solo lleva hacia adelante lo que vale, y
+`neg vale(cargada, …)` no es un `vale/2`. Falta la persistencia de lo que
+no vale:
+
+<!-- ejemplo: capitulo-65/soluciones_yale.pl fragmento: % Lo que no vale normalmente .. neg vale(F, result(_, S)) :~ neg vale(F, S). -->
+```prolog
+% Lo que no vale normalmente sigue sin valer: sin esta regla, la descarga
+% no persiste.
+neg vale(F, result(_, S)) :~ neg vale(F, S).
+```
+
+```prolog
+?- historia([declarada], [descarga, espera, disparo], H).
+H = [inicio-definitivamente_si-definitivamente_si, descarga-presumiblemente_no-presumiblemente_si, espera-presumiblemente_no-presumiblemente_si, disparo-presumiblemente_no-presumiblemente_si].
+```
+
+Con las dos reglas, el arma presumiblemente no está cargada desde la
+descarga, y Johnnie presumiblemente sigue vivo después del disparo.
+
+## Ejercicio 13
+
+`soluciones_complecion.pl` agrega los tres programas con `generado/2`:
+
+<!-- ejemplo: capitulo-65/soluciones_complecion.pl fragmento: % generado(Nombre, Clausulas): .. generado(tautologia, [ (p :- p) ]). -->
+```prolog
+% generado(Nombre, Clausulas): los programas del ejercicio.
+generado(amistoso, [ (amistoso(pedro) :- \+ amistoso(pedro)) ]).
+generado(antepasados,
+    [ (progenitor(ana, luis) :- true),
+      (progenitor(luis, eva) :- true),
+      (antepasado(X, Y) :- progenitor(X, Y)),
+      (antepasado(X, Y) :- progenitor(X, Z), antepasado(Z, Y))
+    ]).
+generado(tautologia, [ (p :- p) ]).
+```
+
+El encabezado es `completo(+Nombre, -Modelo) is semidet`: el nombre del
+programa tiene que llegar instanciado, porque `clausulas/2` del
+[capítulo 38](../capitulo-38-semantica-de-los-programas-logicos/index.md)
+lo exige, y el predicado falla cuando la compleción tiene cero modelos o
+más de uno. `modelo_unico/2` da además qué ocurre en esos casos:
+
+<!-- ejemplo: capitulo-65/soluciones_complecion.pl predicado: completo/2 modelo_unico/2 -->
+```prolog
+%!  completo(+Nombre, -Modelo:list) is semidet.
+%
+%   La compleción del programa Nombre tiene un único modelo, Modelo.
+completo(Nombre, Modelo) :-
+    modelos(Nombre, [Modelo]).
+
+%!  modelo_unico(+Nombre, -Respuesta) is det.
+%
+%   Respuesta es el único modelo de la compleción del programa Nombre, o
+%   ninguno, o varios(N) si tiene N modelos.
+modelo_unico(Nombre, Respuesta) :-
+    modelos(Nombre, Ms),
+    length(Ms, N),
+    (   N =:= 1
+    ->  Ms = [Respuesta]
+    ;   N =:= 0
+    ->  Respuesta = ninguno
+    ;   Respuesta = varios(N)
+    ).
+```
+
+```prolog
+?- findall(N-M, ( member(N, [amistoso, tautologia, gusta]), modelo_unico(N, M) ), L).
+L = [amistoso-ninguno, tautologia-varios(2), gusta-[alumno_de(pablo, pedro), gusta(pedro, pablo)]].
+
+?- escribir_complecion(amistoso).
+sii(amistoso(A),(A=pedro,\+amistoso(pedro)))
+true.
+
+?- escribir_complecion(antepasados).
+sii(progenitor(A,B),(A=ana,B=luis;A=luis,B=eva))
+sii(antepasado(A,B),(progenitor(A,B);existe([C],(progenitor(A,C),antepasado(C,B)))))
+true.
+
+?- completo(antepasados, M), modelo_minimo(antepasados, Min), M == Min.
+M = Min, Min = [antepasado(ana, eva), antepasado(ana, luis), antepasado(luis, eva), progenitor(ana, luis), progenitor(luis, eva)].
+```
+
+La compleción de `amistoso(pedro) :- \+ amistoso(pedro)` dice que Pedro es
+amistoso si y solo si no lo es, y no tiene modelos, aunque la cláusula
+equivale en lógica clásica al hecho `amistoso(pedro)`: es el caso más
+simple de recursión a través de la negación, como `r :- \+ r` en la
+[sección 38.3](../capitulo-38-semantica-de-los-programas-logicos/index.md#383-negacion-como-falla-la-complecion-de-clark-y-sldnf).
+La de `p :- p` es `p` si y solo si `p`, que vale en las dos
+interpretaciones: la compleción no siempre es completa, y una recursión
+sin negación ni hechos que la funden deja el átomo sin decidir, mientras
+que el modelo mínimo lo hace falso. En `antepasado/2`, la variable del
+medio pasa a estar cuantificada existencialmente, y el programa, definido,
+tiene un único modelo, que coincide con el modelo mínimo. La búsqueda
+recorre las $2^{18}$ interpretaciones de una base de 18 átomos, y tarda en
+este caso un segundo y medio: `modelos/2` sirve para comprobar programas
+pequeños, no para calcular el modelo de uno real.

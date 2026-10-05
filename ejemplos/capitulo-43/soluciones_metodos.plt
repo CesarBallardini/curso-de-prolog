@@ -60,4 +60,56 @@ test(parcial_logaritmos, all(S == [x = sqrt(exp(3) + 1),
                                    x = -sqrt(exp(3) + 1)])) :-
     resolver_parcial(log(x + 1) + log(x - 1) = 3, x, S).
 
+test(factores_lista, true(Fs == [cos(x), 1 - 2 * sin(x)])) :-
+    soluciones_metodos:factores(cos(x) * (1 - 2 * sin(x)) * 3, x, Fs).
+
+test(factores_ninguno, true(Fs == [])) :-
+    soluciones_metodos:factores(2 * 3, x, Fs).
+
+test(homogeneizar, true(B-E == 2-(u ^ 2 - 5 * (2 ^ 1 * u) + 16 = 0))) :-
+    soluciones_metodos:homogeneizar(2 ^ (2 * x) - 5 * 2 ^ (x + 1) + 16 = 0,
+                                    x, u, B, E).
+
+test(homogeneizar_sin_potencias, [fail]) :-
+    soluciones_metodos:homogeneizar(x ^ 2 = 4, x, u, _, _).
+
+test(homogeneo_termino, true(E == 2 ^ 1 * u)) :-
+    soluciones_metodos:homogeneo(2, x, u, 2 ^ (x + 1), E).
+
+test(homogeneo_no_lineal, [fail]) :-
+    soluciones_metodos:homogeneo(2, x, u, 2 ^ (x * x), _).
+
+test(lineal, true(C-D == 3-2)) :-
+    soluciones_metodos:lineal([1-3, 0-2], C, D).
+
+test(lineal_sin_constante, true(C-D == 3-0)) :-
+    soluciones_metodos:lineal([1-3], C, D).
+
+test(lineal_grado_2, [fail]) :-
+    soluciones_metodos:lineal([2-1, 0-2], _, _).
+
+test(grado_par) :-
+    soluciones_metodos:grado_par(4-1).
+
+test(grado_impar, [fail]) :-
+    soluciones_metodos:grado_par(3-1).
+
+test(mitad, true(M == 2-(-5))) :-
+    soluciones_metodos:mitad(4-(-5), M).
+
+test(parcial_directo, all(S == [x = 4.0, x = -9.0])) :-
+    soluciones_metodos:parcial(sqrt(x) * sqrt(x + 5) = 6, x, S).
+
+test(subtermino, true(S == b)) :-
+    soluciones_metodos:subtermino([1, 2], f(g(a, b), c), S).
+
+test(subtermino_raiz, true(S == f(a))) :-
+    soluciones_metodos:subtermino([], f(a), S).
+
+test(reemplazo, true(T == z)) :-
+    soluciones_metodos:reemplazo(x + 1, z, x + 1, T).
+
+test(reemplazo_otro, [fail]) :-
+    soluciones_metodos:reemplazo(x + 1, z, x + 2, _).
+
 :- end_tests(soluciones_metodos).

@@ -4,8 +4,9 @@ Las soluciones de los ejercicios 2 a 8, 10 y 11 están en
 `ejemplos/capitulo-68/soluciones.pl`, que carga las versiones 4
 (`preguntas.pl`) y 6 (`ebg.pl`), como `proyecto.pl`, y la versión 3 del
 [capítulo 67](../capitulo-67-proyecto-aprender-reglas-ejemplos/index.md) para comparar con la inducción. La del ejercicio 9 está
-en `soluciones_ebg.pl`. Las pruebas están en `soluciones.plt` y
-`soluciones_ebg.plt`.
+en `soluciones_ebg.pl`, las de los ejercicios 12 y 13 en
+`soluciones_v7.pl` y la del ejercicio 14 en `soluciones_interactivo.pl`.
+Las pruebas de cada archivo están en el `.plt` del mismo nombre.
 
 ## Ejercicio 1
 
@@ -471,3 +472,293 @@ explicación, como `taza(vaso1)`. Usan la primera explicación, con
 resultado de un objetivo con varias pruebas no está definido por una
 sola. De los 21 hechos del modelo de la familia, la explicación de
 `abuelo(juan, luis)` usa tres.
+
+## Ejercicio 12
+
+<!-- ejemplo: capitulo-68/soluciones_v7.pl predicado: disyunciones/2 sin_variantes/2 -->
+```prolog
+%!  disyunciones(+Nombre, -Ds:list) is det.
+%
+%   Ds son las disyunciones distintas que da disyuncion_de/2 con cada
+%   orden de los positivos de la secuencia Nombre, seguidos de los
+%   negativos.
+disyunciones(Nombre, Ds) :-
+    ejemplos_de(Nombre, Ejs),
+    findall(pos(I), member(pos(I), Ejs), Pos),
+    findall(neg(I), member(neg(I), Ejs), Negs),
+    findall(D, ( permutation(Pos, Pos1),
+                 append(Pos1, Negs, Ejs1),
+                 disyuncion_de(Ejs1, D) ), Ds0),
+    sin_variantes(Ds0, Ds).
+
+%!  sin_variantes(+Ts:list, -Us:list) is det.
+%
+%   Us son los términos de Ts sin variantes repetidas, en el orden de su
+%   primera aparición.
+sin_variantes([], []).
+sin_variantes([T|Ts], [T|Us]) :-
+    exclude(=@=(T), Ts, Ts1),
+    sin_variantes(Ts1, Us).
+```
+
+```prolog
+?- disyunciones(esferas_y_cubos_verdes, Ds), length(Ds, N).
+Ds = [[pieza(esfera, _, _, _), pieza(cubo, verde, grande, metal)], [pieza(_, _, grande, metal), pieza(esfera, rojo, chico, madera)]],
+N = 2.
+
+?- disyunciones(rojo_o_esfera, Ds).
+Ds = [[pieza(esfera, verde, chico, madera), pieza(cubo, rojo, chico, madera)], [pieza(cubo, rojo, chico, madera), pieza(esfera, verde, chico, madera)]].
+```
+
+Los seis órdenes de los tres positivos de `esferas_y_cubos_verdes` dan
+dos disyunciones distintas, según cuál de dos piezas llega antes. Si la
+esfera roja llega antes que el cubo verde, las dos esferas se
+generalizan juntas en `pieza(esfera, _, _, _)` y el cubo verde queda
+solo. Si el cubo verde llega antes que la esfera roja, la esfera azul se
+generaliza con él en `pieza(_, _, grande, metal)`, que tampoco cubre
+ningún negativo, y la esfera roja queda sola: no se generaliza con ese
+disyunto sin liberar los cuatro atributos. Las dos disyunciones son consistentes y clasifican
+distinto a otras instancias: la primera acepta cualquier esfera, la
+segunda cualquier pieza grande de metal.
+
+El orden importa cuando un positivo se puede generalizar, sin cubrir
+negativos, con más de un disyunto o con más de un positivo: el
+procesamiento es voraz y toma la primera generalización consistente,
+sin volver atrás. Con `rojo_o_esfera` ninguna generalización de los dos
+positivos es consistente, y el orden solo cambia el orden de los
+disyuntos.
+
+## Ejercicio 13
+
+<!-- ejemplo: capitulo-68/soluciones_v7.pl predicado: costos_incorporar/3 -->
+```prolog
+%!  costos_incorporar(-Recorrer:integer, -Teoria:integer,
+%!      -Segunda:integer) is det.
+%
+%   Inferencias que usa reconocer las tazas de la población: Recorrer con
+%   recorrer/2, que empieza sin reglas; Teoria con la teoría sola; y
+%   Segunda en una segunda pasada, con las reglas que dejó la primera.
+costos_incorporar(Recorrer, Teoria, Segunda) :-
+    inferencias(recorrer(taza, _), Recorrer),
+    inferencias(clasificar_con_teoria(taza, _), Teoria),
+    recorrer(taza, _),
+    poblacion(Os),
+    inferencias(maplist(reconocer(taza), Os, _), Segunda).
+```
+
+```prolog
+?- costos_incorporar(Recorrer, Teoria, Segunda).
+Recorrer = 25855,
+Teoria = 15390,
+Segunda = 24735.
+```
+
+La primera pasada cuesta casi el doble que la teoría sola, y la segunda,
+con las dos reglas ya guardadas, apenas menos que la primera. De los 48
+objetos, 44 no son tazas, y para concluirlo `reconocer/3` agota primero
+las reglas aprendidas y después la teoría: las reglas se suman al costo
+de la teoría en lugar de reemplazarlo. Solo las cuatro tazas se
+benefician, y en la segunda pasada las cuatro se reconocen con una regla,
+lo que explica la diferencia entre `Recorrer` y `Segunda`.
+
+Guardar las reglas abarataría el reconocimiento en una población donde
+la mayoría de los objetos son tazas por las razones que las reglas ya
+cubren: cada una se reconocería con una regla operacional, sin la
+búsqueda de la teoría. Es otra forma del problema de la utilidad del
+[ejercicio 10](#ejercicio-10): una regla aprendida conviene si el ahorro
+en los casos que reconoce supera lo que cuesta probarla en los que no.
+
+## Ejercicio 14
+
+<!-- ejemplo: capitulo-68/soluciones_interactivo.pl predicado: aprender_interactivo/1 lazo/2 leer/1 paso/3 ejemplo_valido/1 -->
+```prolog
+%!  aprender_interactivo(-EV) is det.
+%
+%   Lee ejemplos de la entrada actual hasta el término fin o el final de
+%   la entrada, y escribe los bordes y el estado después de cada uno. EV
+%   es el espacio de versiones de los ejemplos bien formados. Mientras
+%   lee, el indicador de la terminal es «ejemplo: ».
+aprender_interactivo(EV) :-
+    inicial(EV0),
+    setup_call_cleanup(prompt(Anterior, 'ejemplo: '),
+                       lazo(EV0, EV),
+                       prompt(_, Anterior)).
+
+%!  lazo(+EV0, -EV) is det.
+%
+%   EV es el espacio EV0 después de los ejemplos que quedan en la entrada
+%   actual, hasta fin o el final de la entrada.
+lazo(EV0, EV) :-
+    leer(Lectura),
+    (   Lectura = termino(T),
+        ( T == end_of_file ; T == fin )
+    ->  EV = EV0
+    ;   paso(Lectura, EV0, EV1),
+        lazo(EV1, EV)
+    ).
+
+%!  leer(-Lectura) is det.
+%
+%   Lectura es termino(T), con T el próximo término de la entrada actual,
+%   o sintaxis(M), si el texto hasta el próximo punto final no es un
+%   término; M describe el error.
+leer(Lectura) :-
+    catch(( read_term(T, []),
+            Lectura = termino(T) ),
+          error(syntax_error(M), _),
+          Lectura = sintaxis(M)).
+
+%!  paso(+Lectura, +EV0, -EV) is det.
+%
+%   EV es EV0 actualizado con el ejemplo leído, si está bien formado, y
+%   EV0 en otro caso. Escribe el ejemplo con los bordes y el estado, o el
+%   motivo por el que se ignora.
+paso(Lectura, EV0, EV) :-
+    (   Lectura = termino(T),
+        ejemplo_valido(T)
+    ->  actualizar(T, EV0, EV),
+        mostrar_conceptos([T]),
+        informar(EV)
+    ;   Lectura = sintaxis(M)
+    ->  EV = EV0,
+        format("error de sintaxis (~w): se ignora~n", [M])
+    ;   Lectura = termino(T),
+        EV = EV0,
+        format("ejemplo mal formado: "),
+        mostrar_conceptos([T])
+    ).
+
+%!  ejemplo_valido(@T) is semidet.
+%
+%   T es pos(I) o neg(I), con I una instancia del lenguaje: una pieza sin
+%   variables con un valor admitido en cada atributo.
+ejemplo_valido(T) :-
+    nonvar(T),
+    T =.. [Clase, I],
+    memberchk(Clase, [pos, neg]),
+    ground(I),
+    once(instancia(I)).
+```
+
+Con `soluciones_interactivo.pl` cargado, la consulta
+`aprender_interactivo(EV)` muestra en la terminal la sesión siguiente. Lo
+que sigue a cada `ejemplo: ` es lo que se escribe; el tercer ejemplo
+tiene tres atributos en lugar de cuatro:
+
+```text
+ejemplo: pos(pieza(esfera, rojo, chico, madera)).
+pos(pieza(esfera, rojo, chico, madera))
+  S:
+    pieza(esfera, rojo, chico, madera)
+  G:
+    pieza(_, _, _, _)
+  abierto
+ejemplo: neg(pieza(cilindro, verde, grande, metal)).
+neg(pieza(cilindro, verde, grande, metal))
+  S:
+    pieza(esfera, rojo, chico, madera)
+  G:
+    pieza(esfera, _, _, _)
+    pieza(_, rojo, _, _)
+    pieza(_, _, chico, _)
+    pieza(_, _, _, madera)
+  abierto
+ejemplo: pos(pieza(esfera, rojo, grande)).
+ejemplo mal formado: pos(pieza(esfera, rojo, grande))
+ejemplo: pos(pieza(esfera, rojo, grande, metal)).
+pos(pieza(esfera, rojo, grande, metal))
+  S:
+    pieza(esfera, rojo, _, _)
+  G:
+    pieza(esfera, _, _, _)
+    pieza(_, rojo, _, _)
+  abierto
+ejemplo: fin.
+EV = ev([pieza(esfera, rojo, _, _)], [pieza(esfera, _, _, _), pieza(_, rojo, _, _)]).
+```
+
+El lazo no aprende nada por su cuenta: `inicial/1`, `actualizar/3` y
+`estado/2` de la versión 3 hacen todo el trabajo, y el lazo solo lee,
+decide si el término es un ejemplo y escribe. Por eso las pruebas
+verifican que, con la secuencia `esfera_roja` como texto, el lazo llega a
+los mismos bordes que `eliminar/2`. Los bordes de la sesión son los del
+tercer paso de `traza/1` en la
+[sección 68.3](index.md#683-version-3-eliminacion-de-candidatos): el
+ejemplo mal formado no cambió el espacio.
+
+Hay dos maneras de que una entrada no sirva, y las dos se tratan como
+un dato más. `leer/1` captura el error de sintaxis y lo devuelve como
+`sintaxis(M)`; después del error, `read_term/2` sigue leyendo desde el
+punto final siguiente, de modo que el lazo continúa. Un término que se lee
+pero no es un ejemplo lo rechaza `ejemplo_valido/1`, que pide `pos/1` o
+`neg/1` alrededor de una pieza sin variables con valores del lenguaje.
+`nonvar/1` va primero, porque con una variable leída `=../2` lanzaría
+un error de instanciación, y `ground/1` va antes de `instancia/1`,
+porque `instancia/1` ligaría las variables de una pieza incompleta y la
+aceptaría como ejemplo. El final de la entrada llega como el término
+`end_of_file`, y el lazo lo trata como `fin`.
+
+Luger y Stubblefield leen con `read/1`, que es `read_term/2` sin
+opciones. Su `specific_to_general/2` no tiene caso de terminación, y su
+`candidate_elim/3` termina solo cuando el espacio converge; con un
+término que no es un ejemplo los dos fallan, y con un error de sintaxis
+los dos se interrumpen con una excepción. El de la solución termina por
+la entrada, y sigue aceptando ejemplos después de converger: un negativo
+mal clasificado que llegue después colapsa el espacio, como en la
+[sección 68.4](index.md#684-version-4-preguntar-antes-de-converger), y el
+lazo lo informa.
+
+<!-- ejemplo: capitulo-68/soluciones_interactivo.pl predicado: con_entrada/2 -->
+```prolog
+%!  con_entrada(+Texto:string, :Meta) is semidet.
+%
+%   Prueba Meta una vez con Texto como entrada actual, en lugar de la
+%   terminal. La entrada anterior se restituye aunque Meta falle o lance
+%   una excepción.
+con_entrada(Texto, Meta) :-
+    current_input(Anterior),
+    setup_call_cleanup(( open_string(Texto, Flujo),
+                         set_input(Flujo) ),
+                       once(Meta),
+                       ( set_input(Anterior),
+                         close(Flujo) )).
+```
+
+El lazo lee de la entrada actual, como `read/1` en la fuente, y no de un
+stream que recibe como argumento, como `menu/1` en la
+[sección 15.7](../capitulo-15-control/index.md#157-bucles-por-falla).
+`con_entrada/2` reemplaza la entrada actual por una cadena mientras se
+prueba la meta, de modo que el lazo se ejecuta sin terminal:
+
+```prolog
+?- con_entrada("pos(pieza(esfera, rojo, chico, madera)). fin.", aprender_interactivo(EV)).
+pos(pieza(esfera, rojo, chico, madera))
+  S:
+    pieza(esfera, rojo, chico, madera)
+  G:
+    pieza(_, _, _, _)
+  abierto
+EV = ev([pieza(esfera, rojo, chico, madera)], [pieza(_, _, _, _)]).
+```
+
+Las pruebas capturan lo escrito con `with_output_to/2`. Así verifican el informe de un paso línea por línea,
+el corte en `fin`, la entrada vacía, los seis términos mal formados de
+una entrada, el error de sintaxis y que la entrada anterior se restituye
+aunque la meta falle:
+
+```prolog
+test(mal_formados, [true(EV-N =@= EV0-6)]) :-
+    sesion("pos(pieza(esfera, rojo, grande)). \c
+            pos(pieza(esfera, rosa, chico, madera)). \c
+            neg(pieza(esfera, _, chico, madera)). \c
+            ejemplo(pieza(esfera, rojo, chico, madera)). \c
+            X. \c
+            pieza(esfera, rojo, chico, madera).", EV, Salida),
+    inicial(EV0),
+    aggregate_all(count, sub_string(Salida, _, _, _, "mal formado"), N).
+```
+
+El indicador `ejemplo: ` lo escribe el sistema solo cuando la entrada es
+la terminal: `prompt/2` lo cambia y `setup_call_cleanup/3` restituye el
+anterior. Con la entrada tomada de una cadena no se escribe, y la salida
+que comparan las pruebas no lo incluye.

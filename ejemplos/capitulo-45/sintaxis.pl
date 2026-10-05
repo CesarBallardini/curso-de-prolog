@@ -20,6 +20,14 @@
 %?- analizar("x := 2 * (y + 1); escribir x", P).
 %?- programa_ejemplo(factorial, P).
 
+% Las palabras reservadas, los símbolos, las sentencias y los factores son
+% multifile: otros archivos agregan construcciones al lenguaje.
+:- multifile
+    reservada/1,
+    simbolo//1,
+    sentencia//1,
+    factor//1.
+
 %!  analizar(+Texto, -Programa:list) is semidet.
 %
 %   Programa es la sintaxis abstracta del programa Mini escrito en Texto,

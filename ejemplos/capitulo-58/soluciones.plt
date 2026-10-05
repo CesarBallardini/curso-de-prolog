@@ -71,4 +71,91 @@ test(umbrales_cubre, [forall(caso(N, _, _))]) :-
     muestra(N, Cs),
     forall(member(C, Cs), cubre(F, Os, C)).
 
+test(operar_paridad, [true(Vs == [impar, par, top, top])]) :-
+    maplist(operar_paridad(+), [par, impar, top], [impar, impar, par], Vs0),
+    operar_paridad(/, par, par, V4),
+    append(Vs0, [V4], Vs).
+
+% Un factor par hace par el producto aunque el otro sea top.
+test(multiplicar_paridad, [true(Vs == [par, impar, top, par])]) :-
+    maplist(multiplicar_paridad, [par, impar, top, top], [top, impar, impar, par],
+            Vs).
+
+test(refinar_paridad, [true(Vs == [par, impar, top])]) :-
+    refinar_paridad(=, top, par, V1),
+    refinar_paridad(<>, impar, impar, V2),
+    refinar_paridad(<, top, par, V3),
+    Vs = [V1, V2, V3].
+
+test(refinar_paridad_imposible, [fail]) :-
+    refinar_paridad(=, impar, par, _).
+
+test(def_lee_sin_asignar, all(S == [s([x-asignada, y-sin_asignar], [y])])) :-
+    def(asignar(x, bin(+, id(x), id(y))), s([x-asignada, y-sin_asignar], []),
+        S).
+
+% Un mientras sale sin vueltas o después de alguna: dos estados.
+test(def_mientras, set(S == [s([x-asignada], []), s([x-sin_asignar], [])])) :-
+    def(mientras(rel(<, num(0), num(1)), [asignar(x, num(1))]),
+        s([x-sin_asignar], []), S).
+
+test(leer, [true(L == [a, z])]) :-
+    leer(rel(<, id(a), id(b)), [a-sin_asignar, b-asignada], [z], L).
+
+test(estrechar_bucle, [true(I == estado(intervalos, [i-i(0, 10)]))]) :-
+    estrechar(mientras(rel(<, id(i), num(10)),
+                       [asignar(i, bin(+, id(i), num(1)))]),
+              estado(intervalos, [i-i(0, 0)]), I).
+
+test(representa6, all(V == [noneg])) :-
+    representa6(V, [cero, pos]).
+
+% Un conjunto sin valor propio, como neg y pos, se representa con top.
+test(alfa6, [true(Vs == [noneg, top, top, nopos])]) :-
+    maplist(alfa6, [[pos, cero, pos], [], [neg, pos], [neg, cero]], Vs).
+
+test(restriccion_imposible, [fail]) :-
+    Ps = [n-N],
+    restriccion(Ps, n*n < 0),
+    label([N]).
+
+test(restriccion, [true(D == 4..sup)]) :-
+    Ps = [n-N],
+    restriccion(Ps, n > 3),
+    fd_dom(N, D).
+
+test(muertas_desde_muerto, [true(Ss == [escribir(id(x)),
+                                        asignar(x, num(1))])]) :-
+    phrase(muertas([escribir(id(x)), asignar(x, num(1))], muerto, []), Ss).
+
+% Un mientras cuya condición siempre se cumple mata lo que le sigue.
+test(muerta_en_mientras, [true(Ss-Sigue == []-muerto)]) :-
+    phrase(muerta_en(mientras(rel(>, id(x), num(0)), [escribir(id(x))]),
+                     [siempre(rel(>, id(x), num(0)))], Sigue),
+           Ss).
+
+test(rama, [true(Ss1-Ss2 == [escribir(id(x))]-[])]) :-
+    phrase(rama([escribir(id(x))], nunca(c), [nunca(c)]), Ss1),
+    phrase(rama([escribir(id(x))], nunca(c), []), Ss2).
+
+test(umbral_arriba, [true(Fs == [10, 1, sup])]) :-
+    maplist(umbral_arriba([0, 1, 10]), [5, 1, 11], Fs).
+
+test(umbral_abajo, [true(Es == [1, 0, inf])]) :-
+    maplist(umbral_abajo([0, 1, 10]), [5, 0, -1], Es).
+
+test(ej12_cociente, [true(Cs == [])]) :-
+    bloque_caso(cociente, B, Es),
+    contextos_con_error(B, Es, Cs).
+
+test(ej12_directo, [true(Cs == [dividir-[cero]])]) :-
+    cociente_directo(B),
+    contextos_con_error(B, [a-entre(inf, sup)], Cs).
+
+test(ej12_factorial, [true(Cs == [])]) :-
+    contextos_caso(factorial, Cs).
+
+test(ej12_directo_caso, [true(Cs == [dividir-[cero]])]) :-
+    contextos_directo(Cs).
+
 :- end_tests(soluciones).

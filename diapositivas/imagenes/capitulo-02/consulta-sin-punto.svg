@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 260" width="560" height="260" role="img" aria-labelledby="t">
+  <title id="t">Una consulta sin punto final: el intérprete espera el resto de la entrada con |: y la ejecuta al recibir el punto</title>
+  <defs>
+    <marker id="a-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1f2933"/></marker>
+    <marker id="a-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1d5fa8"/></marker>
+    <marker id="a-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2e7d32"/></marker>
+    <marker id="a-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#c62828"/></marker>
+    <marker id="a-muted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#7b8794"/></marker>
+    <marker id="a-amber" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#b7791f"/></marker>
+    <marker id="a-violet" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6a3d9a"/></marker>
+  </defs>
+  <rect x="0" y="0" width="560" height="260" fill="#ffffff"/>
+  <rect x="20" y="20" width="520" height="220" rx="10" ry="10" fill="#1f2933" stroke="#1f2933" stroke-width="2"/>
+  <text x="45" y="70" font-family="'DejaVu Sans Mono', 'Cascadia Mono', monospace" font-size="22" fill="#e4e7eb" text-anchor="start" font-weight="normal" font-style="normal">?- padre(juan, ana)</text>
+  <text x="45" y="115" font-family="'DejaVu Sans Mono', 'Cascadia Mono', monospace" font-size="22" fill="#f0b429" text-anchor="start" font-weight="bold" font-style="normal">|:</text>
+  <text x="84.732" y="115" font-family="'DejaVu Sans Mono', 'Cascadia Mono', monospace" font-size="22" fill="#ffffff" text-anchor="start" font-weight="bold" font-style="normal">.</text>
+  <text x="45" y="160" font-family="'DejaVu Sans Mono', 'Cascadia Mono', monospace" font-size="22" fill="#8fd19e" text-anchor="start" font-weight="bold" font-style="normal">true.</text>
+  <rect x="82" y="90" width="34" height="34" rx="5" ry="5" fill="none" stroke="#f0b429" stroke-width="2.5"/>
+  <text x="135" y="114" font-family="'DejaVu Sans', Arial, sans-serif" font-size="16" fill="#f0b429" text-anchor="start" font-weight="normal" font-style="normal">el intérprete espera el resto; el punto la completa</text>
+  <text x="45" y="210" font-family="'DejaVu Sans', Arial, sans-serif" font-size="17" fill="#cbd2d9" text-anchor="start" font-weight="normal" font-style="italic">sin punto: la consulta sigue abierta</text>
+</svg>

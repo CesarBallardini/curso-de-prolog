@@ -4,7 +4,9 @@ Las soluciones de los ejercicios 2 a 12 están en
 `ejemplos/capitulo-66/soluciones.pl`, que carga las versiones del proyecto
 (`cotas.pl` y `compilado.pl`, que cargan las demás) y agrega dos métodos de
 combinación con cláusulas `multifile` de `evidencia`. Sus pruebas están en
-`soluciones.plt`.
+`soluciones.plt`. La del ejercicio 13 está en `soluciones_certeza.pl`, que
+carga `certeza.pl`, y la del 14, en `soluciones_id3.pl`, que carga
+`id3.pl`; cada una tiene sus pruebas en el `.plt` del mismo nombre.
 
 ## Ejercicio 1
 
@@ -505,3 +507,118 @@ confiable. Con 20 casos, 0,107 frente a 0,35: el mismo ejemplo de Rowe,
 que la acepta con reservas. Con 2 casos en 2000 el error es igual a la
 estimación, 0,001: el suceso es tan raro que la muestra no alcanza, y la
 fuerza no se debe tomar de estos datos.
+
+## Ejercicio 13
+
+<!-- ejemplo: capitulo-66/soluciones_certeza.pl fragmento: % umbral_regla(Regla, U): .. umbral_regla(r7, 0.5). -->
+```prolog
+% umbral_regla(Regla, U): la Regla se aplica solo si su premisa llega a U.
+umbral_regla(c1, 0.4).
+umbral_regla(r7, 0.5).
+```
+
+<!-- ejemplo: capitulo-66/soluciones_certeza.pl predicado: umbral_de/3 factor_con_umbrales/4 aporte_con_umbral/4 -->
+```prolog
+%!  umbral_de(+Regla, +General:float, -U:float) is det.
+%
+%   U es el umbral de la Regla: el propio, si lo tiene, o el General.
+umbral_de(Regla, General, U) :-
+    (   umbral_regla(Regla, U0)
+    ->  U = U0
+    ;   U = General
+    ).
+
+%!  factor_con_umbrales(+Meta, +Observaciones:list, +General:float,
+%!                      -F:float) is det.
+%
+%   F es el factor de certeza de Meta como en factor/4, con el umbral de
+%   cada regla dado por umbral_de/3. Las conclusiones intermedias se
+%   evalúan con el umbral General.
+factor_con_umbrales(Meta, Observaciones, General, F) :-
+    findall(A, aporte_con_umbral(Meta, Observaciones, General, A), As),
+    foldl(cf_combinar, As, 0.0, F0),
+    F is round(F0 * 10000) / 10000.0.
+
+%!  aporte_con_umbral(+Meta, +Observaciones:list, +General:float, -A:float)
+%!      is nondet.
+%
+%   A es como en aporte/4, con el umbral propio de cada regla.
+aporte_con_umbral(Meta, Observaciones, _, A) :-
+    observable(Meta),
+    member(Meta-A, Observaciones).
+aporte_con_umbral(Meta, Observaciones, General, A) :-
+    regla(Regla, si Condiciones entonces Meta),
+    premisa(Condiciones, Observaciones, General, P),
+    umbral_de(Regla, General, U),
+    P >= U,
+    fuerza(Regla, F),
+    A is F * P.
+aporte_con_umbral(Meta, Observaciones, General, A) :-
+    en_contra(Regla, Condicion, Meta, F),
+    premisa(Condicion, Observaciones, General, P),
+    umbral_de(Regla, General, U),
+    P >= U,
+    A is -F * P.
+```
+
+```prolog
+?- atardecer(Os), factor_con_umbrales(guepardo, Os, 0.2, F).
+Os = [tiene_pelo-0.9, come_carne-0.7, color_leonado-0.8, manchas_oscuras-0.6, rayas_negras-0.3],
+F = 0.476.
+
+?- factor_con_umbrales(guepardo, [tiene_pelo-0.9, come_carne-0.7, color_leonado-0.8, manchas_oscuras-0.6, rayas_negras-0.5], 0.2, F).
+F = 0.0473.
+```
+
+Con el animal del atardecer, las rayas de grado 0,3 no llegan al umbral
+de 0,4 de la regla c1, y la evidencia en contra no cuenta: queda solo el
+aporte de r7, cuya premisa vale 0,56 y supera su umbral de 0,5. Con rayas
+de grado 0,5, c1 se aplica con $-0{,}9 \cdot 0{,}5 = -0{,}45$, y la
+combinación de signos distintos da
+$(0{,}476 - 0{,}45) / (1 - 0{,}45) = 0{,}0473$, lo mismo que `factor/4`
+con el umbral general. Un umbral propio permite exigir más a una regla
+cuya condición se observa mal, como las rayas vistas con poca luz, sin
+cambiar las demás. Las conclusiones intermedias, como el carnívoro de la
+premisa de r7, se siguen evaluando con el umbral general.
+
+## Ejercicio 14
+
+`valores/2` es `multifile` en `id3.pl`, y la solución agrega el día:
+
+<!-- ejemplo: capitulo-66/soluciones_id3.pl predicado: valores/2 con_dia/1 -->
+```prolog
+% valores(dia, Ds): el día es el número del ejemplo, de 1 a 14.
+valores(dia, Ds) :-
+    numlist(1, 14, Ds).
+
+%!  con_dia(-Ejemplos:list) is det.
+%
+%   Ejemplos son los de ejemplos/1 con el par dia=N agregado al objeto
+%   del ejemplo N.
+con_dia(Ejemplos) :-
+    findall([dia=N, cielo=C, temperatura=T, humedad=H, viento=V]-K,
+            sabado(N, C, T, H, V, K),
+            Ejemplos).
+```
+
+```prolog
+?- comparar_dia(Filas).
+Filas = [dia-0.94-0.247, cielo-0.247-0.156, temperatura-0.029-0.019, humedad-0.152-0.152, viento-0.048-0.049].
+
+?- arboles_con_dia(G, R).
+G = R, R = dia.
+
+?- clasifica_dia_nuevo(C).
+false.
+```
+
+El día separa los catorce ejemplos en catorce grupos de uno, todos puros,
+y gana toda la información: 0,94 bits, el máximo. Su valor intrínseco es
+$\log_2 14 \approx 3{,}81$, y la razón de ganancia lo reduce a 0,247; pero
+el cielo queda en 0,156, y la razón también elige el día. La corrección
+de Quinlan reduce el sesgo hacia los atributos con muchos valores, y
+alcanza cuando la ganancia de los otros es comparable; no alcanza cuando
+el atributo identifica cada ejemplo. El árbol resultante tiene una hoja
+por ejemplo y no generaliza: un sábado nuevo, el 15, no tiene rama, y
+`clasificar/3` falla. La solución es no ofrecer como atributo lo que
+identifica a los ejemplos.

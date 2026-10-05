@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420" width="800" height="420">
+  <title>Cada llamada desciende una generación; el árbol es finito, y en las personas sin hijos progenitor(A, Hijo) falla</title>
+  <rect x="0" y="0" width="800" height="420" fill="#FFFFFF"/>
+  <rect x="8" y="16" width="784" height="68" rx="8" fill="#F1F3F5" stroke="#F1F3F5" stroke-width="0"/>
+  <rect x="8" y="126" width="784" height="68" rx="8" fill="#FFFFFF" stroke="#F1F3F5" stroke-width="0"/>
+  <rect x="8" y="236" width="784" height="68" rx="8" fill="#F1F3F5" stroke="#F1F3F5" stroke-width="0"/>
+  <line x1="400" y1="72" x2="200" y2="138" stroke="#1F3A5F" stroke-width="3"/>
+  <line x1="400" y1="72" x2="400" y2="138" stroke="#1F3A5F" stroke-width="3"/>
+  <line x1="400" y1="72" x2="600" y2="138" stroke="#1F3A5F" stroke-width="3"/>
+  <line x1="200" y1="182" x2="200" y2="248" stroke="#1F3A5F" stroke-width="3"/>
+  <line x1="600" y1="182" x2="480" y2="248" stroke="#1F3A5F" stroke-width="3"/>
+  <line x1="600" y1="182" x2="600" y2="248" stroke="#1F3A5F" stroke-width="3"/>
+  <line x1="600" y1="182" x2="720" y2="248" stroke="#1F3A5F" stroke-width="3"/>
+  <rect x="345.0" y="28" width="110" height="44" rx="22" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="400" y="57" font-family="Verdana, DejaVu Sans, sans-serif" font-size="20" fill="#1F2933" text-anchor="middle">Taré</text>
+  <rect x="135.0" y="138" width="130" height="44" rx="22" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="200" y="167" font-family="Verdana, DejaVu Sans, sans-serif" font-size="20" fill="#1F2933" text-anchor="middle">Abraham</text>
+  <rect x="345.0" y="138" width="110" height="44" rx="22" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="400" y="167" font-family="Verdana, DejaVu Sans, sans-serif" font-size="20" fill="#1F2933" text-anchor="middle">Nacor</text>
+  <rect x="545.0" y="138" width="110" height="44" rx="22" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="600" y="167" font-family="Verdana, DejaVu Sans, sans-serif" font-size="20" fill="#1F2933" text-anchor="middle">Harán</text>
+  <rect x="145.0" y="248" width="110" height="44" rx="22" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="200" y="277" font-family="Verdana, DejaVu Sans, sans-serif" font-size="20" fill="#1F2933" text-anchor="middle">Isaac</text>
+  <rect x="425.0" y="248" width="110" height="44" rx="22" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="480" y="277" font-family="Verdana, DejaVu Sans, sans-serif" font-size="20" fill="#1F2933" text-anchor="middle">Lot</text>
+  <rect x="545.0" y="248" width="110" height="44" rx="22" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="600" y="277" font-family="Verdana, DejaVu Sans, sans-serif" font-size="20" fill="#1F2933" text-anchor="middle">Milca</text>
+  <rect x="665.0" y="248" width="110" height="44" rx="22" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="720" y="277" font-family="Verdana, DejaVu Sans, sans-serif" font-size="20" fill="#1F2933" text-anchor="middle">Isca</text>
+  <line x1="50" y1="40" x2="50" y2="278" stroke="#D9822B" stroke-width="4"/>
+  <polygon points="42,276 58,276 50,290" fill="#D9822B"/>
+  <text x="70" y="110" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#D9822B" font-weight="bold">una generación</text>
+  <text x="70" y="130" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#D9822B" font-weight="bold">por llamada</text>
+  <line x1="20" y1="330" x2="780" y2="330" stroke="#B3261E" stroke-width="3" stroke-dasharray="10 6"/>
+  <line x1="400" y1="182" x2="400" y2="330" stroke="#B3261E" stroke-width="2" stroke-dasharray="4 5"/>
+  <text x="400" y="365" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#B3261E" text-anchor="middle">sin hijos: progenitor(A, Hijo) falla</text>
+  <text x="400" y="400" font-family="Verdana, DejaVu Sans, sans-serif" font-size="16" fill="#52606D" text-anchor="middle">la rama se agota</text>
+</svg>

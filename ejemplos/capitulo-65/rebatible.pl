@@ -31,6 +31,7 @@
             rival/4,
             supera/3,
             contrario/2,
+            complemento/2,
             partes/3,
             predefinido/1,
             regla_estricta/2,
@@ -40,7 +41,8 @@
 :- use_module(library(error)).
 :- use_module(library(lists)).
 
-:- dynamic user:(:~)/2, user:(:^)/2, user:(neg)/1, user:superior/2.
+:- dynamic user:(:~)/2, user:(:^)/2, user:(neg)/1, user:superior/2,
+           user:incompatible/2.
 :- discontiguous user:(:~)/2, user:(:^)/2, user:(neg)/1.
 
 %!  estricto(+Meta) is nondet.
@@ -185,31 +187,56 @@ supera(Cr, R1, R2) :-
 %
 %   Respuesta resume lo que la base dice de Meta, sin variables:
 %   contradiccion, definitivamente_si, definitivamente_no,
-%   presumiblemente_si, presumiblemente_no o sin_conclusion.
+%   presumiblemente_si, presumiblemente_no o sin_conclusion. La respuesta
+%   es negativa cuando se deriva un contrario de Meta: su complemento o un
+%   literal incompatible con ella.
 respuesta(Criterio, Meta, Respuesta) :-
     must_be(ground, Meta),
-    contrario(Meta, Contrario),
-    (   estricto(Meta), estricto(Contrario)
+    (   estricto(Meta), contrario_estricto(Meta)
     ->  Respuesta = contradiccion
     ;   estricto(Meta)
     ->  Respuesta = definitivamente_si
-    ;   estricto(Contrario)
+    ;   contrario_estricto(Meta)
     ->  Respuesta = definitivamente_no
     ;   derivable(Criterio, Meta)
     ->  Respuesta = presumiblemente_si
-    ;   derivable(Criterio, Contrario)
+    ;   contrario(Meta, Contrario),
+        derivable(Criterio, Contrario)
     ->  Respuesta = presumiblemente_no
     ;   Respuesta = sin_conclusion
     ).
 
-%!  contrario(+Literal, -Contrario) is det.
+%!  contrario_estricto(+Meta) is semidet.
 %
-%   Contrario es la negación fuerte de Literal, o el átomo que Literal
+%   Un contrario de Meta se deriva en forma estricta.
+contrario_estricto(Meta) :-
+    contrario(Meta, Contrario),
+    estricto(Contrario),
+    !.
+
+%!  contrario(+Literal, -Contrario) is nondet.
+%
+%   Contrario es el complemento de Literal o, si la base declara
+%   incompatible/2, un literal incompatible con él en cualquiera de los
+%   dos órdenes. Sin incompatibilidades declaradas, la única respuesta es
+%   el complemento.
+contrario(Literal, Contrario) :-
+    (   user:incompatible(_, _)
+    ->  (   complemento(Literal, Contrario)
+        ;   user:incompatible(Literal, Contrario)
+        ;   user:incompatible(Contrario, Literal)
+        )
+    ;   complemento(Literal, Contrario)
+    ).
+
+%!  complemento(+Literal, -Complemento) is det.
+%
+%   Complemento es la negación fuerte de Literal, o el átomo que Literal
 %   niega.
-contrario(neg Atomo, Contrario) :-
+complemento(neg Atomo, Complemento) :-
     !,
-    Contrario = Atomo.
-contrario(Atomo, neg Atomo).
+    Complemento = Atomo.
+complemento(Atomo, neg Atomo).
 
 %!  partes(?Regla, ?Cabeza, ?Cuerpo) is semidet.
 %

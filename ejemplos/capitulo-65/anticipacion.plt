@@ -24,4 +24,11 @@ test(cuesta_mas, [true(A > E)]) :-
     medir([especificidad], paga(lucia), E),
     medir([anticipacion, especificidad], paga(lucia), A).
 
+% anticipado/3: la regla de los inscriptos queda anticipada solo si el
+% criterio incluye la anticipación.
+test(anticipado) :-
+    Rival = (paga(lucia) :~ inscripto(lucia)),
+    rebatible:anticipado([anticipacion, especificidad], raiz, Rival),
+    \+ rebatible:anticipado([especificidad], raiz, Rival).
+
 :- end_tests(anticipacion).

@@ -47,4 +47,32 @@ test(subsucesion, all(G == [[a, x, c], [x, a, c]])) :-
     once(subsucesion([x], G)),
     \+ G = [_, _, x].
 
+test(guiones, all(G == [restaurante, colectivo])) :-
+    guion(G, _, _).
+
+test(una_lectura, all(G == [restaurante])) :-
+    historia(leones, H),
+    entender(H, G, _).
+
+test(papeles_por_omision,
+     all(E == [[ ir(luis, casa, restaurante),
+                 sentarse(luis, mesa),
+                 pedir(luis, empanadas, mozo),
+                 traer(mozo, empanadas, luis),
+                 comer(luis, empanadas),
+                 pagar(luis, cuenta, mozo),
+                 ir(luis, restaurante, otro_lugar) ]])) :-
+    historia(mozo, H),
+    entender(H, restaurante, E).
+
+test(palabra_de, all(P == [juan, leones])) :-
+    guiones:palabra_de([ir(juan, _, leones)], P).
+
+test(por_omision_libre, true(X == casa)) :-
+    guiones:por_omision(X-casa).
+
+test(por_omision_ligado, true(X == plaza)) :-
+    X = plaza,
+    guiones:por_omision(X-casa).
+
 :- end_tests(guiones).

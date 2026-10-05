@@ -8,7 +8,6 @@ controlador ODBC de SQLite y no corren en SWISH.
 
 ## La base en SQLite
 
-
 ODBC es una interfaz estándar para comunicarse con bases de datos a través de
 un controlador por cada sistema. `library(odbc)` de SWI-Prolog la usa, y
 con el controlador de SQLite un programa Prolog crea, llena y consulta una
@@ -160,7 +159,7 @@ juntas en una lista. Una sesión en Linux, con `$C` para reusar la conexión
 de la consulta anterior (la respuesta repite `C = '$odbc_connection'(…)`,
 que se omite desde la segunda consulta):
 
-~~~text
+```text
 ?- use_module(sqlite).
 true.
 
@@ -181,7 +180,7 @@ Cursando = [101-pp, 103-am2, 105-am1].
 
 ?- odbc_query($C, 'INSERT INTO alumnos VALUES (101, \'zoe\', \'civil\', 2025)').
 ERROR: ODBC: State HY000: [SQLite]UNIQUE constraint failed: alumnos.legajo (19)
-~~~
+```
 
 `alumnos_de/3` es una consulta con parámetro, como la vista `de_carrera/3`
 de la [sección 42.2](index.md#422-el-algebra-relacional-en-clausulas), y `leer_tabla/3` convierte cada fila en el hecho

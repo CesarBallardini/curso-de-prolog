@@ -584,7 +584,7 @@ sola vez, y la búsqueda termina aunque el grafo de estados tenga ciclos
 
 Los capítulos [17](../capitulo-17-todas-las-soluciones/index.md) y [18](../capitulo-18-orden-superior/index.md) representaron el tablero con hechos `mina/2`. Un juego de
 verdad necesita tableros distintos en cada partida, que se construyen durante
-la ejecución, y consulta el valor de una celda muchas veces: es el Patrón 25.
+la ejecución, y consulta el valor de una celda muchas veces: es el [Patrón 25](../patrones.md#25-busqueda-en-un-espacio-de-estados-con-visitados).
 Un tablero es `tablero(Filas, Columnas, Celdas)`, con `Celdas` un assoc de cada
 celda a `mina` o a la cantidad de minas vecinas, calculada una sola vez.
 
@@ -745,7 +745,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 2. **(1)** Aplicar `sort/2`, `msort/2` y `list_to_set/2` a `[c, a, b, a]`.
    ¿Cuál conserva el orden original, y cuáles eliminan los repetidos?
 3. ★ **(2)** Escribir `por_longitud(Listas, Ordenadas)`, que ordena una lista
-   de listas de la más corta a la más larga, con el Patrón 23.
+   de listas de la más corta a la más larga, con el [Patrón 23](../patrones.md#23-decorar-ordenar-desdecorar).
 4. **(2)** Escribir `anagramas(Palabra, Candidatas, Anagramas)`: las candidatas
    con las mismas letras que la palabra, en otro orden.
 5. ★ **(2)** Escribir el registro de una escuela: `agregar_alumno/4` agrega un

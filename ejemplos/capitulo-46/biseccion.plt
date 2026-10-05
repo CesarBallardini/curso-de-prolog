@@ -35,4 +35,17 @@ test(tolerancia_inalcanzable, [fail]) :-
 test(ecuacion_libre, [error(instantiation_error)]) :-
     biseccion(_, x, 1-2, _).
 
+% x^2 - 2 en [1, 2]: en el punto medio 1.5 vale 0.25, y la raíz queda en
+% la mitad izquierda.
+test(paso_izquierda, [true(I-M-A == intervalo(1.0, -1.0, 1.5)-1.5-0.5)]) :-
+    paso_biseccion(x ^ 2 - 2, x, intervalo(1.0, -1.0, 2.0), I, M, A).
+
+test(paso_derecha,
+     [true(I-M-A == intervalo(1.25, V, 1.5)-1.25-0.25)]) :-
+    paso_biseccion(x ^ 2 - 2, x, intervalo(1.0, -1.0, 1.5), I, M, A),
+    V is 1.25 ^ 2 - 2.
+
+test(biseccion_tolerancia_ancha, [true(Xs == [1.5])]) :-
+    biseccion(x ^ 2 = 2, x, 1-2, 1.0, Xs).
+
 :- end_tests(biseccion).

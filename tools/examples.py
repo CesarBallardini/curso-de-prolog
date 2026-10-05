@@ -38,6 +38,10 @@ from urllib.parse import quote
 ROOT = Path(__file__).resolve().parent.parent
 EXAMPLES = ROOT / 'ejemplos'
 DOCS = ROOT / 'docs'
+# The slides of a chapter, one Pandoc Markdown file each: diapositivas/capitulo-01.md.
+# They declare their code with the same markers as the text, and their
+# transcripts are checked the same way.
+SLIDES = ROOT / 'diapositivas'
 
 # The chapter comes from the directory name, with or without a slug after the
 # number: ejemplos/capitulo-07/ and docs/capitulo-07-listas/ are both chapter 7.

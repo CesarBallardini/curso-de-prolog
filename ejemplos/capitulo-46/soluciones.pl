@@ -347,12 +347,19 @@ raices(Ecuacion, X, A-B, N, Raices) :-
 %!                +I:integer, -R:float) is semidet.
 %
 %   R es la raíz que da la bisección en el tramo I, de A + I·Ancho a
-%   A + (I + 1)·Ancho. Falla si el tramo no tiene cambio de signo.
+%   A + (I + 1)·Ancho. Falla si el tramo no tiene cambio de signo. Una raíz
+%   en el borde entre dos tramos pertenece al que termina en ella, y solo
+%   el primer tramo toma la que está en su extremo izquierdo.
 raiz_en_tramo(Ecuacion, X, A, Ancho, I, R) :-
     Desde is A + I * Ancho,
     Hasta is Desde + Ancho,
     funcion(Ecuacion, F),
     valor_en(F, X, Desde, FD),
     valor_en(F, X, Hasta, FH),
-    FD * FH =< 0,
+    (   FD * FH < 0
+    ;   FH =:= 0
+    ;   I =:= 0,
+        FD =:= 0
+    ),
+    !,
     biseccion(Ecuacion, X, Desde-Hasta, R).

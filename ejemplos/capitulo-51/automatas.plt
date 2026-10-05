@@ -43,4 +43,43 @@ test(acepta_reconoce) :-
            ;   \+ reconoce(termina_ab, W)
            )).
 
+test(clausura_conjunto, [true(D == [s0, s1])]) :-
+    clausura_conjunto(ciclo, [s0], D).
+
+test(clausura_conjunto_vacio, [true(D == [])]) :-
+    clausura_conjunto(ciclo, [], D).
+
+% Sin transiciones ε, la clausura es el conjunto ordenado y sin repetir.
+test(clausura_conjunto_repetidos, [true(D == [q0, q1])]) :-
+    clausura_conjunto(termina_ab, [q1, q0, q1], D).
+
+test(lee, set(W-Q == [[a, a]-s0, [a, a]-s1, [a, b]-s2])) :-
+    length(W, 2),
+    automatas:lee(ciclo, s0, W, Q).
+
+test(alcanzable, set(Q == [s0, s1, s2])) :-
+    alcanzable(ciclo, Q).
+
+test(numero_estados, [true(N == 3)]) :-
+    numero_estados(multiplo3, N).
+
+test(palabra_vacia, [true(Ws == [[]])]) :-
+    palabras(multiplo3, 0, Ws).
+
+test(sin_palabras, [true(Ws == [])]) :-
+    palabras(termina_ab, 1, Ws).
+
+% Un símbolo fuera del alfabeto no tiene transición.
+test(fuera_del_alfabeto, [fail]) :-
+    acepta(termina_ab, [a, c, b]).
+
+test(anchura, [true(O == [r0, r1, r2])]) :-
+    automatas:anchura([r0], multiplo3, [r0], O).
+
+test(anchura_vacia, [true(O == [])]) :-
+    automatas:anchura([], multiplo3, [], O).
+
+test(nuevos, [true(N-V == [a, b]-[b, a, c])]) :-
+    automatas:nuevos([a, b, a, c], [c], N, V).
+
 :- end_tests(automatas).

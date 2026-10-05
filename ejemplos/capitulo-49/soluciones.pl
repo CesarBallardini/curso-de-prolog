@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 49 - Soluciones de los ejercicios 2 a 4 y 6 a 11.
+% Capítulo 49 - Soluciones de los ejercicios 2 a 4, 6 a 11 y 13.
 %
 % Carga los módulos del proyecto; las reglas nuevas de la teoría y los
 % circuitos nuevos se agregan con cláusulas multifile.
@@ -251,3 +251,15 @@ elegir(Circuito, Entradas, Fallas, Pruebas, NoDetectadas) :-
         Pruebas = [Mejor|Pruebas1],
         elegir(Circuito, Entradas, Restantes, Pruebas1, NoDetectadas)
     ).
+
+% Ejercicio 13
+
+%!  conjunto_fuerte(+Circuito, +Observaciones:list(pair), +Rutas:list)
+%!      is semidet.
+%
+%   Algún diagnóstico del modelo fuerte tiene en falla exactamente las
+%   compuertas de Rutas, una lista ordenada.
+conjunto_fuerte(Circuito, Observaciones, Rutas) :-
+    diagnostico(fuerte, Circuito, Observaciones, Diagnostico),
+    rutas(Diagnostico, Rutas),
+    !.

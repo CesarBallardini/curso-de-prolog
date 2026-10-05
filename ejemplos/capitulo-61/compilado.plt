@@ -58,4 +58,50 @@ test(indefinido, [error(existence_error(procedure, q/0))]) :-
 test(repetida, all(Z == [f(a)])) :-
     almacen:resolver_clausulas(compilado, [(p(X, f(X)) :- true)], p(a, Z)).
 
+% ejecutar/6, instrucción por instrucción. La variable 0 de la cláusula
+% es la celda 10.
+test(ejecutar_primera, [true(L == [10-a])]) :-
+    empty_assoc(A0),
+    compilado:ejecutar(p(a), 10, 0, primera(1, 0), A0-[], A-_),
+    assoc_to_list(A, L).
+
+test(ejecutar_constante_liga, [true(L-R == [3-b]-[3])]) :-
+    empty_assoc(A0),
+    compilado:ejecutar(p('$v'(3)), 10, 5, constante(1, b), A0-[], A-R),
+    assoc_to_list(A, L).
+
+test(ejecutar_constante_distinta, [fail]) :-
+    empty_assoc(A0),
+    compilado:ejecutar(p(a), 10, 0, constante(1, b), A0-[], _).
+
+test(ejecutar_otra, [true]) :-
+    list_to_assoc([10-a], A0),
+    compilado:ejecutar(p(a), 10, 0, otra(1, 0), A0-[], _).
+
+test(ejecutar_otra_distinta, [fail]) :-
+    list_to_assoc([10-a], A0),
+    compilado:ejecutar(p(b), 10, 0, otra(1, 0), A0-[], _).
+
+% Con una celda libre, estructura/4 construye el esqueleto renombrado;
+% con un término compuesto, lo verifica y sigue con las instrucciones hijas.
+test(ejecutar_construye, [true(L == [3-f('$v'(10))])]) :-
+    empty_assoc(A0),
+    compilado:ejecutar(p('$v'(3)), 10, 0,
+                       estructura(1, f/1, [primera(1, 0)], f('$v'(0))),
+                       A0-[], A-_),
+    assoc_to_list(A, L).
+
+test(ejecutar_verifica, [true(L == [10-c])]) :-
+    empty_assoc(A0),
+    compilado:ejecutar(p(f(c)), 10, 0,
+                       estructura(1, f/1, [primera(1, 0)], f('$v'(0))),
+                       A0-[], A-_),
+    assoc_to_list(A, L).
+
+test(ejecutar_otro_functor, [fail]) :-
+    empty_assoc(A0),
+    compilado:ejecutar(p(g(c)), 10, 0,
+                       estructura(1, f/1, [primera(1, 0)], f('$v'(0))),
+                       A0-[], _).
+
 :- end_tests(compilado).

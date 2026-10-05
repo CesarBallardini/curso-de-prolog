@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 350" width="960" height="350" role="img" aria-labelledby="t">
+  <title id="t">Cantidad de respuestas: det exactamente una; semidet cero o una; multi una o más; nondet cualquier cantidad</title>
+  <defs>
+    <marker id="a-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1f2933"/></marker>
+    <marker id="a-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1d5fa8"/></marker>
+    <marker id="a-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2e7d32"/></marker>
+    <marker id="a-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#c62828"/></marker>
+    <marker id="a-muted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#7b8794"/></marker>
+    <marker id="a-amber" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#b7791f"/></marker>
+    <marker id="a-violet" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6a3d9a"/></marker>
+  </defs>
+  <rect x="0" y="0" width="960" height="350" fill="#ffffff"/>
+  <line x1="250" y1="40" x2="250" y2="330" stroke="#e4e7eb" stroke-width="2"/>
+  <text x="250" y="30" font-family="'DejaVu Sans Mono', 'Cascadia Mono', monospace" font-size="20" fill="#7b8794" text-anchor="middle" font-weight="bold" font-style="normal">0</text>
+  <line x1="400" y1="40" x2="400" y2="330" stroke="#e4e7eb" stroke-width="2"/>
+  <text x="400" y="30" font-family="'DejaVu Sans Mono', 'Cascadia Mono', monospace" font-size="20" fill="#7b8794" text-anchor="middle" font-weight="bold" font-style="normal">1</text>
+  <line x1="550" y1="40" x2="550" y2="330" stroke="#e4e7eb" stroke-width="2"/>
+  <text x="550" y="30" font-family="'DejaVu Sans Mono', 'Cascadia Mono', monospace" font-size="20" fill="#7b8794" text-anchor="middle" font-weight="bold" font-style="normal">2</text>
+  <line x1="700" y1="40" x2="700" y2="330" stroke="#e4e7eb" stroke-width="2"/>
+  <text x="700" y="30" font-family="'DejaVu Sans Mono', 'Cascadia Mono', monospace" font-size="20" fill="#7b8794" text-anchor="middle" font-weight="bold" font-style="normal">3</text>
+  <line x1="850" y1="40" x2="850" y2="330" stroke="#e4e7eb" stroke-width="2"/>
+  <text x="850" y="30" font-family="'DejaVu Sans Mono', 'Cascadia Mono', monospace" font-size="20" fill="#7b8794" text-anchor="middle" font-weight="bold" font-style="normal">…</text>
+  <text x="40" y="83" font-family="'DejaVu Sans Mono', 'Cascadia Mono', monospace" font-size="24" fill="#1d5fa8" text-anchor="start" font-weight="bold" font-style="normal">det</text>
+  <circle cx="400" cy="75" r="11" fill="#2e7d32" stroke="#2e7d32" stroke-width="2"/>
+  <text x="40" y="153" font-family="'DejaVu Sans Mono', 'Cascadia Mono', monospace" font-size="24" fill="#1d5fa8" text-anchor="start" font-weight="bold" font-style="normal">semidet</text>
+  <line x1="250" y1="145" x2="400" y2="145" stroke="#2e7d32" stroke-width="8"/>
+  <circle cx="250" cy="145" r="11" fill="#2e7d32" stroke="#2e7d32" stroke-width="2"/>
+  <circle cx="400" cy="145" r="11" fill="#2e7d32" stroke="#2e7d32" stroke-width="2"/>
+  <text x="40" y="223" font-family="'DejaVu Sans Mono', 'Cascadia Mono', monospace" font-size="24" fill="#1d5fa8" text-anchor="start" font-weight="bold" font-style="normal">multi</text>
+  <line x1="400" y1="215" x2="832" y2="215" stroke="#2e7d32" stroke-width="8"/>
+  <path d="M828,201 L854,215 L828,229 Z" fill="#2e7d32" stroke="#2e7d32" stroke-width="1"/>
+  <circle cx="400" cy="215" r="11" fill="#2e7d32" stroke="#2e7d32" stroke-width="2"/>
+  <text x="40" y="293" font-family="'DejaVu Sans Mono', 'Cascadia Mono', monospace" font-size="24" fill="#1d5fa8" text-anchor="start" font-weight="bold" font-style="normal">nondet</text>
+  <line x1="250" y1="285" x2="832" y2="285" stroke="#2e7d32" stroke-width="8"/>
+  <path d="M828,271 L854,285 L828,299 Z" fill="#2e7d32" stroke="#2e7d32" stroke-width="1"/>
+  <circle cx="250" cy="285" r="11" fill="#2e7d32" stroke="#2e7d32" stroke-width="2"/>
+</svg>

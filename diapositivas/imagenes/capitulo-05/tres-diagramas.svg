@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" width="960" height="480">
+  <title>Tres diagramas del mismo recorrido: el árbol muestra todas las alternativas, la traza el orden exacto de los pasos y las cajas por dónde entra y sale un objetivo</title>
+  <rect x="0" y="0" width="960" height="480" fill="#FFFFFF"/>
+  <rect x="20.0" y="20.0" width="294.0" height="440.0" rx="12" fill="#F7F9FB" stroke="#EAF1F8" stroke-width="2"/>
+  <text x="167.0" y="60.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="24" fill="#1F3A5F" text-anchor="middle" xml:space="preserve" font-weight="bold">el árbol</text>
+  <text x="167.0" y="372.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="middle" xml:space="preserve">todas las</text>
+  <text x="167.0" y="400.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="middle" xml:space="preserve">alternativas, también</text>
+  <text x="167.0" y="428.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="middle" xml:space="preserve">las no recorridas</text>
+  <rect x="333.0" y="20.0" width="294.0" height="440.0" rx="12" fill="#F7F9FB" stroke="#EAF1F8" stroke-width="2"/>
+  <text x="480.0" y="60.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="24" fill="#1F3A5F" text-anchor="middle" xml:space="preserve" font-weight="bold">la traza</text>
+  <text x="480.0" y="372.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="middle" xml:space="preserve">el orden exacto</text>
+  <text x="480.0" y="400.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="middle" xml:space="preserve">de los pasos</text>
+  <rect x="646.0" y="20.0" width="294.0" height="440.0" rx="12" fill="#F7F9FB" stroke="#EAF1F8" stroke-width="2"/>
+  <text x="793.0" y="60.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="24" fill="#1F3A5F" text-anchor="middle" xml:space="preserve" font-weight="bold">las cajas</text>
+  <text x="793.0" y="372.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="middle" xml:space="preserve">por dónde entra</text>
+  <text x="793.0" y="400.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="middle" xml:space="preserve">y sale la ejecución</text>
+  <text x="793.0" y="428.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="middle" xml:space="preserve">de un objetivo</text>
+  <line x1="167.0" y1="104.0" x2="167.0" y2="166.0" stroke="#1F3A5F" stroke-width="2.5"/>
+  <line x1="167.0" y1="166.0" x2="113.5" y2="228.0" stroke="#1F3A5F" stroke-width="2.5"/>
+  <line x1="113.5" y1="228.0" x2="113.5" y2="290.0" stroke="#1F3A5F" stroke-width="2.5"/>
+  <line x1="167.0" y1="166.0" x2="220.5" y2="228.0" stroke="#1F3A5F" stroke-width="2.5"/>
+  <line x1="220.5" y1="228.0" x2="220.5" y2="290.0" stroke="#1F3A5F" stroke-width="2.5"/>
+  <circle cx="167.0" cy="104.0" r="7" fill="#1F3A5F"/>
+  <circle cx="167.0" cy="166.0" r="7" fill="#1F3A5F"/>
+  <circle cx="113.5" cy="228.0" r="7" fill="#1F3A5F"/>
+  <circle cx="113.5" cy="290" r="10" fill="#B3261E"/>
+  <path d="M 109.0 285.5 L 118.0 294.5 M 118.0 285.5 L 109.0 294.5" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="220.5" cy="228.0" r="7" fill="#1F3A5F"/>
+  <circle cx="220.5" cy="290" r="12" fill="#2E7D32"/>
+  <path d="M 214.5 290.6666666666667 L 219.16666666666666 295.3333333333333 L 227.16666666666666 284.6666666666667" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="346.0" y="98.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F3A5F" text-anchor="start" xml:space="preserve" font-weight="bold">Call:</text>
+  <text x="416.0" y="98.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">(10) abuelo(…)</text>
+  <text x="346.0" y="123.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F3A5F" text-anchor="start" xml:space="preserve" font-weight="bold">Call:</text>
+  <text x="416.0" y="123.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">(11) padre(…)</text>
+  <text x="346.0" y="148.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#2E7D32" text-anchor="start" xml:space="preserve" font-weight="bold">Exit:</text>
+  <text x="416.0" y="148.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">(11) padre(…)</text>
+  <text x="346.0" y="173.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F3A5F" text-anchor="start" xml:space="preserve" font-weight="bold">Call:</text>
+  <text x="416.0" y="173.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">(11) padre(…)</text>
+  <text x="346.0" y="198.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#B3261E" text-anchor="start" xml:space="preserve" font-weight="bold">Fail:</text>
+  <text x="416.0" y="198.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">(11) padre(…)</text>
+  <text x="346.0" y="223.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#D9822B" text-anchor="start" xml:space="preserve" font-weight="bold">Redo:</text>
+  <text x="416.0" y="223.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">(11) padre(…)</text>
+  <text x="346.0" y="248.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#2E7D32" text-anchor="start" xml:space="preserve" font-weight="bold">Exit:</text>
+  <text x="416.0" y="248.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">(11) padre(…)</text>
+  <text x="346.0" y="273.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F3A5F" text-anchor="start" xml:space="preserve" font-weight="bold">Call:</text>
+  <text x="416.0" y="273.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">(11) padre(…)</text>
+  <text x="346.0" y="298.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#2E7D32" text-anchor="start" xml:space="preserve" font-weight="bold">Exit:</text>
+  <text x="416.0" y="298.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">(11) padre(…)</text>
+  <text x="346.0" y="323.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#2E7D32" text-anchor="start" xml:space="preserve" font-weight="bold">Exit:</text>
+  <text x="416.0" y="323.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">(10) abuelo(…)</text>
+  <rect x="706.0" y="160.0" width="140.0" height="120.0" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <line x1="660.0" y1="190.0" x2="693.0" y2="190.0" stroke="#1F3A5F" stroke-width="5"/>
+  <polygon points="706.0,190.0 693.0,182.8 693.0,197.2" fill="#1F3A5F"/>
+  <line x1="846.0" y1="190.0" x2="879.0" y2="190.0" stroke="#2E7D32" stroke-width="5"/>
+  <polygon points="892.0,190.0 879.0,182.8 879.0,197.2" fill="#2E7D32"/>
+  <line x1="706.0" y1="250.0" x2="671.0" y2="250.0" stroke="#B3261E" stroke-width="2.5"/>
+  <polygon points="660.0,250.0 671.0,256.1 671.0,243.9" fill="#B3261E"/>
+  <line x1="892.0" y1="250.0" x2="857.0" y2="250.0" stroke="#D9822B" stroke-width="2.5"/>
+  <polygon points="846.0,250.0 857.0,256.1 857.0,243.9" fill="#D9822B"/>
+  <text x="776.0" y="228.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">objetivo</text>
+</svg>

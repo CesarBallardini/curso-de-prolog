@@ -2,7 +2,8 @@
 
 % Capítulo 58 - Soluciones de los ejercicios.
 %
-% solo-local: carga informe.pl y simbolico.pl con ensure_loaded/1.
+% solo-local: carga informe.pl, simbolico.pl y procedimientos.pl con
+% ensure_loaded/1.
 %
 %?- analizar("x := 2 * n + 1; mientras x <> 0 hacer x := x - 2 fin", P),
 %   analisis(paridad, P, [n-entre(inf, sup)], F, Os).
@@ -12,6 +13,7 @@
 :- use_module(library(clpfd)).
 :- ensure_loaded(informe).
 :- ensure_loaded(simbolico).
+:- ensure_loaded(procedimientos).
 
 % Los ejercicios 3, 6 y 11 agregan dominios: cláusulas de las operaciones
 % multifile de reticulado.pl, separadas por dominio.
@@ -472,3 +474,40 @@ analisis_umbrales(Programa, Entradas, F, Obs) :-
     findall(N, sub_term(num(N), Programa), Ns),
     sort([0|Ns], Ts),
     analisis(umbrales(Ts), Programa, Entradas, F, Obs).
+
+% Ejercicio 12: los contextos que pueden terminar en error.
+
+%!  contextos_con_error(+Bloque, +Entradas:list, -Contextos:list) is det.
+%
+%   Contextos son los pares N-Vs, ordenados, de los procedimientos N que el
+%   análisis de signos llama con los signos Vs en sus argumentos y cuyo
+%   resumen incluye error.
+contextos_con_error(Bloque, Entradas, Contextos) :-
+    p_resumenes(Bloque, Entradas, Resumenes),
+    findall(N-Vs, ( member(resumen(N, Vs, _, Salidas), Resumenes),
+                    memberchk(error, Salidas) ),
+            Contextos0),
+    sort(Contextos0, Contextos).
+
+%!  cociente_directo(-Bloque) is det.
+%
+%   Bloque es el de cociente con el bloque principal cambiado por una sola
+%   llamada a dividir con a, sin la condición.
+cociente_directo(bloque(Ds, Ss)) :-
+    bloque_caso(cociente, bloque(Ds, _), _),
+    traducir_sentencias([llamar(dividir, ["a"])], Ss).
+
+%!  contextos_caso(+Nombre, -Contextos:list) is semidet.
+%
+%   Como contextos_con_error/3, sobre el caso Nombre con sus entradas.
+contextos_caso(Nombre, Contextos) :-
+    bloque_caso(Nombre, Bloque, Entradas),
+    contextos_con_error(Bloque, Entradas, Contextos).
+
+%!  contextos_directo(-Contextos:list) is det.
+%
+%   Como contextos_con_error/3, sobre el bloque de cociente_directo/1 con
+%   a de cualquier signo.
+contextos_directo(Contextos) :-
+    cociente_directo(Bloque),
+    contextos_con_error(Bloque, [a-entre(inf, sup)], Contextos).

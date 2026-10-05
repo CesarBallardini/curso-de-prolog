@@ -175,9 +175,11 @@ caracteres([C|Cs]) -->
 caracteres([]) -->
     [].
 
-%!  rango(+A, +B, -Cs:list) is det.
+%!  rango(+A, +B, -Cs:list) is semidet.
 %
 %   Cs son los caracteres desde A hasta B, en el orden de sus códigos.
+%   Falla si el código de B es menor que el de A: z-a no es un rango, y
+%   caracteres//1 lee entonces sus tres caracteres sueltos.
 rango(A, B, Cs) :-
     char_code(A, CA),
     char_code(B, CB),

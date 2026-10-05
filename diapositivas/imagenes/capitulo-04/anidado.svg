@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" width="800" height="400">
+  <title>ficha(M, F, ana) = ficha(mascota(gato, felix), fecha(2021, 5, 3), ana): M se liga al subárbol mascota, F al subárbol fecha, y ana unifica con ana</title>
+  <rect x="0" y="0" width="800" height="400" fill="#FFFFFF"/>
+  <path d="M295,40 H40 Q22,40 22,58 V354 Q22,372 40,372 H295" fill="none" stroke="#2E7D32" stroke-width="3"/>
+  <rect x="52" y="218" width="188" height="118" rx="14" fill="#E3F1E4" stroke="#2E7D32" stroke-width="2" stroke-dasharray="7 5"/>
+  <rect x="264" y="218" width="232" height="118" rx="14" fill="#E3F1E4" stroke="#2E7D32" stroke-width="2" stroke-dasharray="7 5"/>
+  <line x1="145" y1="140" x2="145" y2="218" stroke="#2E7D32" stroke-width="3"/>
+  <line x1="385" y1="140" x2="385" y2="218" stroke="#2E7D32" stroke-width="3"/>
+  <line x1="540" y1="140" x2="540" y2="290" stroke="#2E7D32" stroke-width="3"/>
+  <line x1="340" y1="40" x2="145" y2="122" stroke="#1F3A5F" stroke-width="2"/>
+  <line x1="340" y1="40" x2="385" y2="122" stroke="#1F3A5F" stroke-width="2"/>
+  <line x1="340" y1="40" x2="540" y2="122" stroke="#1F3A5F" stroke-width="2"/>
+  <ellipse cx="340" cy="40" rx="45.5" ry="20" fill="#1F3A5F" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="340" y="47" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#FFFFFF" text-anchor="middle" font-weight="bold">ficha</text>
+  <rect x="125" y="104" width="40" height="36" rx="6" fill="#EFE7F7" stroke="#6A3D9A" stroke-width="2"/>
+  <text x="145" y="129" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F2933" text-anchor="middle">M</text>
+  <rect x="365" y="104" width="40" height="36" rx="6" fill="#EFE7F7" stroke="#6A3D9A" stroke-width="2"/>
+  <text x="385" y="129" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F2933" text-anchor="middle">F</text>
+  <rect x="510.5" y="104" width="59" height="36" rx="18" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="540" y="129" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F2933" text-anchor="middle">ana</text>
+  <line x1="340" y1="372" x2="145" y2="308" stroke="#1F3A5F" stroke-width="2"/>
+  <line x1="145" y1="308" x2="95" y2="243" stroke="#1F3A5F" stroke-width="2"/>
+  <line x1="145" y1="308" x2="195" y2="243" stroke="#1F3A5F" stroke-width="2"/>
+  <line x1="340" y1="372" x2="385" y2="308" stroke="#1F3A5F" stroke-width="2"/>
+  <line x1="385" y1="308" x2="310" y2="243" stroke="#1F3A5F" stroke-width="2"/>
+  <line x1="385" y1="308" x2="385" y2="243" stroke="#1F3A5F" stroke-width="2"/>
+  <line x1="385" y1="308" x2="460" y2="243" stroke="#1F3A5F" stroke-width="2"/>
+  <line x1="340" y1="372" x2="540" y2="308" stroke="#1F3A5F" stroke-width="2"/>
+  <ellipse cx="340" cy="372" rx="42.75" ry="20" fill="#1F3A5F" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="340" y="378.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#FFFFFF" text-anchor="middle" font-weight="bold">ficha</text>
+  <ellipse cx="145" cy="308" rx="52.65" ry="20" fill="#1F3A5F" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="145" y="314.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#FFFFFF" text-anchor="middle" font-weight="bold">mascota</text>
+  <rect x="62.2" y="225" width="65.6" height="36" rx="18" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="95" y="249.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#1F2933" text-anchor="middle">gato</text>
+  <rect x="157.25" y="225" width="75.5" height="36" rx="18" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="195" y="249.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#1F2933" text-anchor="middle">felix</text>
+  <ellipse cx="385" cy="308" rx="42.75" ry="20" fill="#1F3A5F" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="385" y="314.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#FFFFFF" text-anchor="middle" font-weight="bold">fecha</text>
+  <rect x="277.2" y="225" width="65.6" height="36" rx="18" fill="#E3F2F1" stroke="#2B7A78" stroke-width="2"/>
+  <text x="310" y="249.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#1F2933" text-anchor="middle">2021</text>
+  <rect x="365" y="225" width="40" height="36" rx="18" fill="#E3F2F1" stroke="#2B7A78" stroke-width="2"/>
+  <text x="385" y="249.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#1F2933" text-anchor="middle">5</text>
+  <rect x="440" y="225" width="40" height="36" rx="18" fill="#E3F2F1" stroke="#2B7A78" stroke-width="2"/>
+  <text x="460" y="249.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#1F2933" text-anchor="middle">3</text>
+  <rect x="512.15" y="290" width="55.7" height="36" rx="18" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="540" y="314.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#1F2933" text-anchor="middle">ana</text>
+  <text x="532" y="212" font-family="Verdana, DejaVu Sans, sans-serif" font-size="13" fill="#2E7D32" text-anchor="end" font-weight="bold">regla 1</text>
+  <rect x="580" y="30" width="205" height="340" rx="12" fill="#F1F3F5"/>
+  <text x="594" y="60" font-family="Verdana, DejaVu Sans, sans-serif" font-size="16" fill="#1F3A5F" text-anchor="start" font-weight="bold">sustitución</text>
+  <text x="594" y="100" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="17" fill="#2E7D32" text-anchor="start" font-weight="bold">M =</text>
+  <text x="606" y="126" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="15" fill="#2E7D32" text-anchor="start" font-weight="bold">mascota(gato, felix)</text>
+  <text x="594" y="170" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="17" fill="#2E7D32" text-anchor="start" font-weight="bold">F =</text>
+  <text x="606" y="196" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="15" fill="#2E7D32" text-anchor="start" font-weight="bold">fecha(2021, 5, 3)</text>
+  <text x="594" y="250" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#1F2933" text-anchor="start">raíz: regla 3</text>
+  <text x="594" y="274" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#1F2933" text-anchor="start">M y F: regla 2</text>
+  <path d="M731,330 L741,341 L760,317" fill="none" stroke="#2E7D32" stroke-width="6"/>
+</svg>

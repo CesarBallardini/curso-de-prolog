@@ -29,7 +29,13 @@ obtuvo una conclusión y por qué no se obtuvo otra. La quinta aplica todo a
 Una última sección
 compara las tres lecturas de una regla con excepciones que el curso ya
 conoce o conoce desde aquí: la negación como falla, la semántica bien
-fundada y la derivación rebatible.
+fundada y la derivación rebatible. La página
+[Cuatro ampliaciones del intérprete](ampliaciones.md) trata después lo que
+las fuentes cubren y las versiones dejan afuera: las conclusiones
+incompatibles, las consultas exhaustivas y la búsqueda de contradicciones
+de d-Prolog, la persistencia en el tiempo con el problema del disparo de
+Yale, y el programa pretendido de Flach, con el supuesto de mundo cerrado
+y la compleción del programa entero.
 
 El proyecto parte del capítulo «Defeasible Prolog» de *Prolog Programming
 in Depth*, de Michael A. Covington, Donald Nute y André Vellino
@@ -41,8 +47,8 @@ comparar dos reglas derivando el cuerpo de una a partir del cuerpo de la
 otra. Los apartados 8.1, «Default reasoning», y 8.2, «The semantics of
 incomplete information», de *Simply Logical* de Peter Flach
 ([edición en línea del autor](https://book.simply-logical.space/)) dan la
-lectura de una excepción con `\+`, la no monotonía y el supuesto de mundo
-cerrado. La notación, el código y los ejemplos de *Inscripciones* son
+lectura de una excepción con `\+`, la no monotonía, el supuesto de mundo
+cerrado y la compleción. La notación, el código y los ejemplos de *Inscripciones* son
 propios del curso.
 
 El capítulo reutiliza, sin copiarlos, los módulos `datos` y `reglas` de
@@ -70,14 +76,26 @@ Al terminar el capítulo, el lector puede:
 - representar las excepciones de un sistema real, las correlativas de
   *Inscripciones*, y medir lo que cuestan;
 - comparar la negación como falla, la semántica bien fundada y la
-  derivación rebatible sobre los mismos casos.
+  derivación rebatible sobre los mismos casos;
+- declarar conclusiones incompatibles, buscar las contradicciones de una
+  base, razonar sobre la persistencia de los hechos en el tiempo, y
+  construir el programa pretendido de uno con negaciones.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:30 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:35 h**.
     Resolver los 5 ejercicios marcados con ★: **1:20 h**.
-    Resolver los 11 ejercicios del final: **3:40 h**.
+    Resolver los 13 ejercicios del final: **4:15 h**.
 
 ## 65.1 El problema: excepciones con negación como falla
+
+![Un pingüino rey de pie sobre la hierba, con las aletas junto al cuerpo](pinguino-rey.jpg)
+
+Un pingüino rey (*Aptenodytes patagonicus*) en la isla Gran Malvina. Los
+pingüinos son aves y no vuelan: la excepción con que se ilustra, desde los
+primeros trabajos sobre el razonamiento no monotónico, la regla «las aves
+vuelan». Imagen: Ben Tubby,
+[CC BY 2.0](https://creativecommons.org/licenses/by/2.0/deed.es), vía
+[Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Falkland_Islands_Penguins_49.jpg).
 
 La forma más directa de escribir «las aves vuelan, salvo las anormales» es
 la del [capítulo 10](../capitulo-10-negacion-como-falla/index.md): la regla pide que no se pueda probar la excepción, y
@@ -291,7 +309,22 @@ reglas rebatibles, y `sin_conclusion` si nada decide. El primer argumento
 es el **criterio** con que se comparan las reglas; en esta versión es la
 lista vacía: ninguna regla supera a otra.
 
-La base de las aves empieza por el **triángulo de Tweety**:
+La base de las aves empieza por el **triángulo de Tweety**, que Covington
+dibuja como un grafo: una flecha llena es una regla estricta, una punteada
+una regla rebatible, y la etiqueta dice si la regla concluye la propiedad o
+su negación fuerte.
+
+```mermaid
+flowchart BT
+    opus["opus"] --> pinguino["pingüino"]
+    pinguino -- "estricta" --> ave["ave"]
+    ave -. "normalmente vuela" .-> vuela["vuela"]
+    pinguino -. "normalmente no vuela" .-> vuela
+```
+
+Las dos reglas rebatibles concluyen lo contrario sobre Opus, y el lado
+del pingüino es el más específico: todo pingüino es un ave, y no a la
+inversa. En código:
 
 <!-- ejemplo: capitulo-65/aves.pl fragmento: % pinguino(X): X es un pingüino. .. neg vuela(X) :~ pinguino(X). -->
 ```prolog
@@ -378,7 +411,7 @@ supera(Cr, R1, R2) :-
     \+ derivable(Cr, cuerpo(C2), C1).
 ```
 
-!!! example "Patrón 61 — Superioridad como parámetro"
+!!! example "Patrón 64 — Superioridad como parámetro"
     **Problema.** Un intérprete de reglas con excepciones tiene que decidir
     qué regla prevalece cuando dos concluyen cosas contrarias, y hay más de
     un criterio razonable: ninguno, la regla más específica, una prioridad
@@ -397,7 +430,7 @@ supera(Cr, R1, R2) :-
     `[declarada, especificidad]` muestra qué decide cada criterio, y un
     criterio nuevo, como la anticipación de la
     [sección 65.7](#657-version-6-la-anticipacion-de-los-rivales), es un elemento más de la lista. Es un caso del
-    [Patrón 59](../patrones.md#59-interprete-con-conducta-como-parametro): allí el argumento es la conducta de cada pieza; aquí, la
+    [Patrón 60](../patrones.md#60-interprete-con-conducta-como-parametro): allí el argumento es la conducta de cada pieza; aquí, la
     política que resuelve los conflictos entre las piezas.
 
     **Cuándo no usarlo.** Cuando las reglas no compiten nunca, o cuando un
@@ -761,7 +794,7 @@ un criterio de superioridad decide.
     | C2 | la base es de datos: hechos, cláusulas y términos `:~` y `:^` que el intérprete examina; los datos de *Inscripciones* son los del [capítulo 31](../capitulo-31-ejecutables-y-distribucion/index.md), cargados sin cambios, y el `experto.pl` del [capítulo 39](../capitulo-39-tabulacion/index.md) también |
     | C5 | `derivable/2`, `derivacion/3` y `por_que_no/3` validan el criterio y la meta con `must_be/2`: un criterio desconocido produce un error de tipo, no una respuesta vacía |
     | C6 | el intérprete no cambia de la versión 1 a la 3: la especificidad y la superioridad son un argumento, los refutadores, una cláusula de `rival/4` que una base sin refutadores no usa, y la anticipación, un elemento más del criterio; las explicaciones son un módulo aparte |
-    | C7 | 67 pruebas en nueve archivos; `derivacion/3` se compara con `derivable/2`, e `inscripcion_rebatible/3` con `inscripcion_posible/3` en las 49 combinaciones, donde solo dos difieren |
+    | C7 | 158 pruebas en veinte archivos; `derivacion/3` se compara con `derivable/2`, e `inscripcion_rebatible/3` con `inscripcion_posible/3` en las 49 combinaciones, donde solo dos difieren |
 
 ## Ejercicios
 
@@ -826,6 +859,20 @@ tiene de propio.
     de la autorización prevalece sobre el refutador, y mostrar la decisión
     antes y después de que Bruno se inscriba de nuevo en Álgebra, con los
     dos criterios.
+12. **(2)** Agregar al disparo de Yale de la
+    [sección 65.11](ampliaciones.md#6511-la-persistencia-el-disparo-de-yale)
+    un evento `descarga`, después del cual el arma normalmente no está
+    cargada, y mostrar la historia de los eventos `descarga`, `espera` y
+    `disparo` con la especificidad. Explicar por qué la especificidad no
+    decide entre la regla de la descarga y la persistencia, resolver el
+    conflicto con la superioridad declarada, y explicar qué regla falta
+    para que el arma siga descargada después de la espera.
+13. **(2)** Escribir `completo(Nombre, Modelo)`, que tiene éxito si la
+    compleción del programa Nombre de la
+    [sección 65.12](ampliaciones.md#6512-el-programa-pretendido) tiene un
+    único modelo. Aplicarlo al programa de Flach en que Pedro es amistoso
+    si no lo es, a `p :- p`, y a `antepasado/2` sobre dos hechos de
+    `progenitor/2`, y explicar cada resultado.
 
 ## Resumen
 
@@ -839,12 +886,18 @@ tiene de propio.
 | **refutar, socavar** | derrotar una regla concluyendo lo contrario, o mostrando que podría no aplicarse |
 | **especificidad** | una regla es más específica si el cuerpo de la otra se deriva del suyo y no a la inversa, sin usar los hechos |
 | **anticipación** | un rival rebatible o un refutador deja de derrotar si una regla que lo supera lo refuta |
-| **[Patrón 61](../patrones.md#61-superioridad-como-parametro)** | superioridad como parámetro |
+| **[Patrón 64](../patrones.md#64-superioridad-como-parametro)** | superioridad como parámetro |
 | **no monotonía** | agregar información puede quitar conclusiones |
 | `estricto/1`, `derivable/2`, `respuesta/3` | la derivación estricta, la rebatible y su resumen en seis valores |
 | `rival/4`, `supera/3` | lo que derrota a una regla, y el criterio de superioridad |
 | `derivacion/3`, `supuestos/2`, `por_que_no/3` | el árbol de una derivación, lo que da por supuesto, y lo que derrotó a cada regla |
 | `inscripcion_rebatible/3` | la inscripción de *Inscripciones* con excepciones en las correlativas |
+| **conclusiones incompatibles** | dos literales que se excluyen sin ser uno la negación del otro: `incompatible/2`; con el complemento, los **contrarios** |
+| **contradicción** | un literal y un contrario derivados los dos en forma estricta: algún hecho o regla de la base es falso |
+| **persistencia** | lo que vale en una situación normalmente sigue valiendo después de un evento: el único axioma de marco |
+| **programa pretendido** | un programa completo, con un solo modelo, que se obtiene del original con el supuesto de mundo cerrado o con la compleción |
+| `respuestas/3`, `contradicciones/1` | la consulta exhaustiva sobre cada instancia con evidencia, y las contradicciones de la base |
+| `cwa/2`, `completar/2`, `modelos/2` | los átomos que el supuesto de mundo cerrado niega, la compleción del programa entero, y sus modelos |
 
 ## Temas que se retoman
 
@@ -863,9 +916,15 @@ tiene de propio.
   derivando el cuerpo de una regla desde el de otra sin usar los hechos,
   los ejemplos del triángulo de Tweety, del estudiante empleado y del
   pingüino alterado, la presunción negativa como supuesto de mundo cerrado,
-  la advertencia de que la parte procedural queda en Prolog común, y la
-  anticipación de los rivales, que el capítulo agrega como un criterio más.
-  No toma el predicado `incompatible/2`. Covington escribe las reglas
+  la advertencia de que la parte procedural queda en Prolog común, la
+  anticipación de los rivales («Preemption of Defeaters»), que el capítulo
+  agrega como un criterio más, y los tres casos de la explicación de un
+  fracaso del predicado `whynot/1` («A Special Explanatory Facility»).
+  La [página de ampliaciones](ampliaciones.md) toma además las
+  conclusiones incompatibles y el ciclo de Ping (apartado 11.4,
+  `incompatible/2`), la consulta exhaustiva `@@`, el diccionario y la
+  búsqueda de contradicciones (apartados 11.11 a 11.16), y la persistencia
+  temporal con su versión del disparo de Yale (apartado 11.21). Covington escribe las reglas
   rebatibles con `:=`, que en SWI-Prolog ya es un operador con otro
   significado (las funciones sobre diccionarios); el curso escribe `:~`.
 - Peter Flach, *Simply Logical: Intelligent Reasoning by Example*, John
@@ -873,11 +932,60 @@ tiene de propio.
   semantics of incomplete information».
   [Edición en línea](https://book.simply-logical.space/src/text/3_part_iii/8.1.html).
   El capítulo toma la regla con excepciones escrita con la negación como
-  falla, la no monotonía, el ejemplo de Drácula y la idea de un intérprete
-  que agrega supuestos por defecto cuando no contradicen las reglas.
+  falla, la no monotonía, el ejemplo de Drácula, la idea de un intérprete
+  que agrega supuestos por defecto cuando no contradicen las reglas, con
+  los supuestos nombrados que una regla puede cancelar, y el supuesto de
+  mundo cerrado; la página de ampliaciones toma del apartado 8.2 el
+  programa pretendido, el supuesto de mundo cerrado como transformación,
+  la compleción del programa entero y sus ejemplos (los alumnos de Pedro,
+  Tweety, el sabio y el docente), sin el código del apéndice B.2.
+- Donald Nute, «Basic Defeasible Logic», en L. Fariñas del Cerro y
+  M. Penttonen (eds.), *Intensional Logics for Programming*, Oxford
+  University Press, 1992, págs. 125–154,
+  [DOI 10.1093/oso/9780198537755.003.0005](https://doi.org/10.1093/oso/9780198537755.003.0005);
+  y «A Decidable Quantified Defeasible Logic», en D. Prawitz, B. Skyrms y
+  D. Westerståhl (eds.), *Logic, Methodology and Philosophy of Science IX*,
+  Elsevier, 1994, págs. 263–284. Son la teoría sobre la que Covington
+  construye d-Prolog: reglas estrictas, rebatibles y refutadores, y la
+  superioridad entre reglas rivales.
+- David Poole, «A Logical Framework for Default Reasoning», *Artificial
+  Intelligence* 36 (1), 1988, págs. 27–47.
+  [DOI 10.1016/0004-3702(88)90077-X](https://doi.org/10.1016/0004-3702(88)90077-X).
+  Flach atribuye a este artículo la distinción entre reglas y supuestos
+  por defecto que el ejercicio 10 implementa.
+- Raymond Reiter, «On Closed World Data Bases», en H. Gallaire y J. Minker
+  (eds.), *Logic and Data Bases*, Plenum Press, 1978, págs. 55–76.
+  [DOI 10.1007/978-1-4684-3384-5_3](https://doi.org/10.1007/978-1-4684-3384-5_3).
+  La formulación del supuesto de mundo cerrado, que Flach cita y que el
+  capítulo escribe como una presunción negativa.
+- Keith L. Clark, «Negation as Failure», en H. Gallaire y J. Minker
+  (eds.), *Logic and Data Bases*, Plenum Press, 1978, págs. 293–322.
+  [DOI 10.1007/978-1-4684-3384-5_11](https://doi.org/10.1007/978-1-4684-3384-5_11).
+  La compleción de un programa, que la
+  [sección 65.12](ampliaciones.md#6512-el-programa-pretendido) aplica al
+  programa entero con el `complecion_de/3` del
+  [capítulo 38](../capitulo-38-semantica-de-los-programas-logicos/index.md).
+- John McCarthy y Patrick J. Hayes, «Some Philosophical Problems from the
+  Standpoint of Artificial Intelligence», en B. Meltzer y D. Michie
+  (eds.), *Machine Intelligence 4*, Edinburgh University Press, 1969,
+  págs. 463–502.
+  [Versión en el sitio de McCarthy](http://jmc.stanford.edu/articles/mcchay69.html).
+  El cálculo de situaciones y el problema del marco, que Covington cita.
+- Drew McDermott, «We've Been Framed: Or, Why AI Is Innocent of the Frame
+  Problem», en Z. Pylyshyn (ed.), *The Robot's Dilemma: The Frame Problem
+  in Artificial Intelligence*, Ablex, 1987, págs. 113–122. La regla de
+  persistencia como único axioma de marco, según Covington.
+- Steve Hanks y Drew McDermott, «Nonmonotonic Logic and Temporal
+  Projection», *Artificial Intelligence* 33 (3), 1987, págs. 379–412.
+  [DOI 10.1016/0004-3702(87)90043-9](https://doi.org/10.1016/0004-3702(87)90043-9).
+  El problema del disparo de Yale, que la
+  [sección 65.11](ampliaciones.md#6511-la-persistencia-el-disparo-de-yale)
+  resuelve en la versión de Covington.
 
 El código del capítulo es propio, escrito para el curso: de Covington se
 toman el diseño de d-Prolog y sus ejemplos, no su código, con otra
 notación (`:~` en lugar de `:=`); de Flach, ideas y ejemplos. Las
 excepciones de *Inscripciones*, las explicaciones y la comparación con la
-semántica bien fundada son del curso.
+semántica bien fundada son del curso, como las utilidades, el disparo de
+Yale y la compleción de la página de ampliaciones, escritos a partir de
+las descripciones de las fuentes.

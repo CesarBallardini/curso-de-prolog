@@ -21,4 +21,16 @@ test(falla, [true(Arcos == [ '<consulta>'-inversa/2,
                              inversa/2-inversa/2 ])]) :-
     arcos_usados(inversa([a], [b]), Arcos).
 
+% resolver_desde/2 anota el arco desde el predicado dado; una meta del
+% sistema no anota nada. arco_usado/2 es del módulo user, no de la unidad
+% de pruebas.
+test(resolver_desde, [true(Arcos == [p/0-concatenar/3]), nondet]) :-
+    retractall(user:arco_usado(_, _)),
+    resolver_desde((concatenar([], [a], L), L = [a]), p/0),
+    findall(A-B, user:arco_usado(A, B), Arcos).
+
+test(resolver_desde_todas, all(X == [[], [a]])) :-
+    retractall(user:arco_usado(_, _)),
+    resolver_desde(concatenar(X, _, [a]), p/0).
+
 :- end_tests(soluciones_perfil).

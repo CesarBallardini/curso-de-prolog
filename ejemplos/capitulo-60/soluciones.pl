@@ -102,19 +102,21 @@ distancia(Acciones, Clave) :-
     ).
 
 %!  historia(+Programa, +Estrategia, +Memoria0:list, -Historia:list,
-%!           -Resultado) is det.
+%!           -Resultado) is semidet.
 %
 %   Ejercicio 10. Historia es la traza de la ejecución como datos: un
 %   término ciclo(N, Nombre, Cantidad, Hechos) por ciclo, con el módulo
 %   elegido, el tamaño del conjunto de conflicto y los hechos que usa.
+%   Falla si falla una acción de la instancia elegida.
 historia(Programa, Estrategia, Memoria0, Historia, Resultado) :-
     programa(Programa, Modulos),
     historia(Modulos, Estrategia, 1, Memoria0, Historia, Resultado).
 
 %!  historia(+Modulos:list, +Estrategia, +N:integer, +Memoria0:list,
-%!           -Historia:list, -Resultado) is det.
+%!           -Historia:list, -Resultado) is semidet.
 %
-%   Historia es la traza desde el ciclo N con la memoria Memoria0.
+%   Historia es la traza desde el ciclo N con la memoria Memoria0. Falla
+%   si falla una acción de la instancia elegida.
 historia(Modulos, Estrategia, N, Memoria0, Historia, Resultado) :-
     conflicto(Modulos, Memoria0, Instancias),
     (   Instancias == []

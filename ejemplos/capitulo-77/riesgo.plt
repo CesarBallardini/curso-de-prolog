@@ -58,4 +58,10 @@ test(medir, [true(R == r(2, 0, 8, 192))]) :-
     numlist(1, 10, Ss),
     medir(prudente, Ss, R).
 
+test(peso, [true(abs(W - 0.16) < 1.0e-9)]) :-
+    riesgo:peso(2, [x], W).
+
+test(peso_sin_pozos, [true(abs(W - 0.512) < 1.0e-9)]) :-
+    riesgo:peso(3, [], W).
+
 :- end_tests(riesgo).

@@ -66,4 +66,45 @@ test(ejercicio11, [true(Ms == [51-4, 101-4])]) :-
                    metas_de(longitud_acc_hasta(N, _), Q)
                  ), Ms).
 
+test(ocurre, [true]) :-
+    empty_assoc(A),
+    ocurre(0, f(a, g('$v'(0))), A).
+
+% La celda 1 está ligada a un término que contiene la celda 0.
+test(ocurre_ligada, [true]) :-
+    list_to_assoc([1-h('$v'(0))], A),
+    ocurre(0, f('$v'(1)), A).
+
+test(ocurre_no, [fail]) :-
+    empty_assoc(A),
+    ocurre(0, f(a, '$v'(1)), A).
+
+test(auxiliar, [true(N-L =@= 3-'$o3'(A, B))]) :-
+    auxiliar(o, f(A, B, A), 2, N, L).
+
+test(transformar_cuerpo,
+     [true(C-Aux-N =@= (a, '$no1'(Y))-[('$no1'(Y) :- b(Y), !, fail),
+                                       ('$no1'(Y) :- true)]-1)]) :-
+    transformar_cuerpo((a, \+ b(Y)), C, Aux, [], 0, N).
+
+test(transformar,
+     [true(Cs =@= [ (p(X) :- '$o1'(X)),
+                    ('$o1'(X) :- q(X)),
+                    ('$o1'(X) :- r(X)),
+                    (s :- '$no2'),
+                    ('$no2' :- t, !, fail),
+                    ('$no2' :- true)
+                  ])]) :-
+    transformar([(p(X) :- (q(X) ; r(X))), (s :- \+ t)], Cs).
+
+% Un programa sin disyunciones ni negaciones queda igual.
+test(transformar_igual, [true(Cs == Cs0)]) :-
+    Cs0 = [(p(a) :- true), (q :- p(a), p(a))],
+    transformar(Cs0, Cs).
+
+test(medir_con_acumuladores, [true(R-M == 1-4)]) :-
+    medir_con_acumuladores(longitud_acc_hasta(10, _), Ms),
+    memberchk(respuestas-R, Ms),
+    memberchk(metas-M, Ms).
+
 :- end_tests(soluciones).

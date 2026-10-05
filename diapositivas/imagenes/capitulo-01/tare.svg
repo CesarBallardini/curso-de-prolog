@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 360" width="800" height="360">
+  <title>El árbol de Taré: Taré es padre de Abraham, Nacor y Harán; Abraham y Sara son padre y madre de Isaac; Harán es padre de Lot, Milca e Isca</title>
+  <rect x="0" y="0" width="800" height="360" fill="#FFFFFF"/>
+  <g stroke="#1F3A5F" stroke-width="3">
+    <line x1="330" y1="72" x2="230" y2="148"/>
+    <line x1="330" y1="72" x2="400" y2="148"/>
+    <line x1="330" y1="72" x2="590" y2="148"/>
+    <line x1="230" y1="192" x2="170" y2="278"/>
+    <line x1="590" y1="192" x2="470" y2="278"/>
+    <line x1="590" y1="192" x2="590" y2="278"/>
+    <line x1="590" y1="192" x2="710" y2="278"/>
+  </g>
+  <line x1="80" y1="192" x2="140" y2="278" stroke="#D9822B" stroke-width="3" stroke-dasharray="9 6"/>
+  <g fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2">
+    <rect x="270" y="28" width="120" height="44" rx="22"/>
+    <rect x="20" y="148" width="120" height="44" rx="22" fill="#FCE8D2" stroke="#D9822B"/>
+    <rect x="170" y="148" width="120" height="44" rx="22"/>
+    <rect x="340" y="148" width="120" height="44" rx="22"/>
+    <rect x="530" y="148" width="120" height="44" rx="22"/>
+    <rect x="95" y="278" width="120" height="44" rx="22"/>
+    <rect x="410" y="278" width="120" height="44" rx="22"/>
+    <rect x="535" y="278" width="110" height="44" rx="22"/>
+    <rect x="660" y="278" width="110" height="44" rx="22"/>
+  </g>
+  <g font-family="Verdana, DejaVu Sans, sans-serif" font-size="20" fill="#1F2933" text-anchor="middle">
+    <text x="330" y="57">Taré</text>
+    <text x="80" y="177">Sara</text>
+    <text x="230" y="177">Abraham</text>
+    <text x="400" y="177">Nacor</text>
+    <text x="590" y="177">Harán</text>
+    <text x="155" y="307">Isaac</text>
+    <text x="470" y="307">Lot</text>
+    <text x="590" y="307">Milca</text>
+    <text x="715" y="307">Isca</text>
+  </g>
+  <g font-family="Verdana, DejaVu Sans, sans-serif" font-size="16" fill="#52606D">
+    <line x1="560" y1="40" x2="600" y2="40" stroke="#1F3A5F" stroke-width="3"/>
+    <text x="610" y="46">padre</text>
+    <line x1="680" y1="40" x2="720" y2="40" stroke="#D9822B" stroke-width="3" stroke-dasharray="9 6"/>
+    <text x="730" y="46">madre</text>
+  </g>
+</svg>

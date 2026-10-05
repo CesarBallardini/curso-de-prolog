@@ -51,4 +51,34 @@ test(definido_gana, [true(G == [length/2-[length/2], p/0-[length/2]])]) :-
            length([], 0),
            (length([_|Xs], N) :- length(Xs, N0), N is N0 + 1)], G).
 
+test(propio) :-
+    propio([length/2], length/2),
+    propio([], promedo/2),
+    \+ propio([], length/2).
+
+test(indefinidos_de, [true(Ps == [b/0, d/1])]) :-
+    indefinidos_de([(a :- b, d(_), length(_, _)), c], Ps).
+
+test(indefinidos_de_ninguno, [true(Ps == [])]) :-
+    indefinidos_de([(a :- b), b], Ps).
+
+test(recursivos_de, [true(Ps == [a/0, b/0, d/0])]) :-
+    recursivos_de([(a :- b), (b :- a, c), c, (d :- d)], Ps).
+
+% Desde un estado con a/0 ya numerado, una aparición remite a su número.
+test(nodo_visto, [true(Ls-N == [linea(-, 2, a/0, ver(1))]-2)]) :-
+    list_to_assoc([a/0-1], Vistos),
+    phrase(nodo([a], [a/0], 2, a/0, Vistos-2, _-N), Ls).
+
+test(nodo_ciclo, [true(Ls == [linea(1, 0, a/0, ninguna),
+                              linea(2, 1, b/0, ninguna),
+                              linea(-, 2, a/0, ver(1))])]) :-
+    empty_assoc(V),
+    phrase(nodo([(a :- b), (b :- a)], [a/0, b/0], 0, a/0, V-1, _), Ls).
+
+test(escribir_arbol_de,
+     [true(S == "   1 a/0\n   2    b/0\n   3       c/0\n           a/0 (ver 1)\n        c/0 (ver 3)\n")]) :-
+    with_output_to(string(S),
+                   escribir_arbol_de([(a :- b, c), (b :- c, a), c], a/0)).
+
 :- end_tests(problemas).

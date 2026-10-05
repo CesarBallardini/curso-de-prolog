@@ -41,4 +41,23 @@ test(ejercicio_11_ciclos, [fail]) :-
     grafo(Cs, G),
     top_sort(G, _).
 
+% Una cadena: r es la raíz; a no tiene llamadas, y al quitarlo b tampoco, y
+% después c.
+test(sin_llamadas_hasta_el_fin_de, [true(Ps == [a/0, b/0, c/0])]) :-
+    sin_llamadas_hasta_el_fin_de([(r :- d), d, (a :- b), (b :- c), c], [r/0],
+                                 Ps).
+
+test(sin_llamadas_hasta_el_fin_de_nada, [true(Ps == [])]) :-
+    sin_llamadas_hasta_el_fin_de([(r :- d), d], [r/0], Ps).
+
+% Un ciclo forma una sola capa, antes de lo que llama.
+test(capas_de, [true(Cs == [[a/0], [b/0, c/0], [d/0]])]) :-
+    capas_de([(a :- b), (b :- c), (c :- b, d), d], Cs).
+
+test(componente_de, [true(C1-C2 == [b/0, c/0]-[d/0])]) :-
+    Clausura = [a/0-[b/0, c/0, d/0], b/0-[b/0, c/0, d/0], c/0-[b/0, c/0, d/0],
+                d/0-[]],
+    componente_de(Clausura, b/0, C1),
+    componente_de(Clausura, d/0, C2).
+
 :- end_tests(soluciones).

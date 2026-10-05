@@ -53,4 +53,15 @@ test(mas_general_no_liga, [true]) :-
 test(mas_general_falla, [fail]) :-
     mas_general(f(Z, Z), f(_, _)).
 
+% reemplazado/4 encuentra el par comparando con ==, sin unificar.
+test(reemplazado, [true(V == W)]) :-
+    generalizar:reemplazado([(a-b)-U, (2-3)-W], 2, 3, V),
+    var(U).
+
+test(reemplazado_no_unifica, [fail]) :-
+    generalizar:reemplazado([(_-b)-_], a, b, _).
+
+test(reemplazado_vacio, [fail]) :-
+    generalizar:reemplazado([], a, b, _).
+
 :- end_tests(generalizar).

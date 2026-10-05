@@ -172,9 +172,8 @@ léxico descarta cada hipótesis en cuanto deja de ser el comienzo de una
 palabra:
 
 ```prolog
-?- transducir(compuesta(lexico, ortografia([epentesis, u])), S, [l, u, c, e, s]).
-S = [l, u, z, +, s] ;
-false.
+?- findall(S, transducir(compuesta(lexico, ortografia([epentesis, u])), S, [l, u, c, e, s]), Ss).
+Ss = [[l, u, z, +, s]].
 ```
 
 !!! question "Actividad"

@@ -11,14 +11,26 @@ capítulo construye esos métodos: programas que no manipulan la ecuación,
 sino que la evalúan en puntos elegidos y producen una sucesión de
 aproximaciones que se acerca a una raíz.
 
-El programa crece en cinco versiones: la bisección, que no puede fallar pero
+![Gráfico de una función creciente que corta el eje horizontal; la recta tangente en el punto (x_n, f(x_n)) corta el eje en x_n+1, más cerca del cero de la función](newton.png){ style="background-color: white" }
+
+Un paso del método de Newton: la recta tangente a la curva y = f(x) en la
+aproximación xₙ corta el eje horizontal en xₙ₊₁, que queda más cerca del
+punto donde la curva corta el eje, la raíz buscada. Repetir el paso
+produce la sucesión de aproximaciones; la
+[sección 46.5](#465-version-3-newton-con-la-derivada-simbolica) lo programa.
+Imagen: Olegalexandrov (original) y Pbroks13 (versión vectorial), dominio
+público, vía
+[Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Newton_iteration.svg).
+
+El programa crece en seis versiones: la bisección, que no puede fallar pero
 avanza despacio; la secante, más rápida pero sin garantías; el método de
 Newton, con la derivada exacta que calcula `derivar/3` del
 [capítulo 32](../capitulo-32-inspeccion-de-terminos/index.md); el método de Gauss–Seidel para sistemas de ecuaciones
-lineales; y un resolvedor que elige el método y recurre al siguiente cuando
-uno falla. Las cinco comparten la forma de representar la ecuación y un
-único ciclo de iteración con su tolerancia, y una sección entre la tercera y
-la cuarta mide cómo converge cada método y qué limita la tolerancia.
+lineales; un resolvedor que elige el método y recurre al siguiente cuando
+uno falla; y, por último, el programa original de Covington, que recibe la
+incógnita como una variable de Prolog. Todas comparten un único ciclo de
+iteración con su tolerancia, y una sección entre la tercera y la cuarta mide
+cómo converge cada método y qué limita la tolerancia.
 
 El proyecto parte de dos fuentes. De *Prolog Programming in Depth* de
 Michael Covington, Donald Nute y André Vellino, apartado 7.13 «Solving
@@ -33,7 +45,12 @@ actualización de una incógnita por vez con los valores más recientes de las
 demás, y el sistema de cuatro ecuaciones que una de las pruebas resuelve. El
 código es propio: la secante se escribe como un paso del ciclo común, y el
 barrido de Gauss–Seidel recorre las filas sin rotar la matriz, con una
-tolerancia en lugar de un número fijo de iteraciones.
+tolerancia en lugar de un número fijo de iteraciones. La bisección, el método
+de Newton y la comparación de su convergencia siguen la presentación de los
+textos de análisis numérico a los que remiten las dos fuentes: Hamming y
+*Numerical Recipes* de Press y otros, citados por Covington, y *Advanced
+Engineering Mathematics* de Kreyszig, citado por Csenki (los datos completos
+están en las [Referencias](#referencias)).
 
 Todos los ejemplos cargan los programas del [capítulo 32](../capitulo-32-inspeccion-de-terminos/index.md), y por eso
 ninguno corre en SWISH: se ejecutan con SWI-Prolog instalado.
@@ -55,12 +72,15 @@ Al terminar el capítulo, el lector puede:
 - resolver un sistema de ecuaciones lineales por Gauss–Seidel y reconocer
   cuándo converge;
 - combinar varios métodos en un resolvedor que recurre al siguiente cuando
-  uno falla.
+  uno falla;
+- escribir la incógnita como una variable de Prolog, encontrarla dentro de
+  la ecuación y evaluar la ecuación sobre copias, sin modificar el
+  programa.
 
 !!! info "Tiempo estimado"
     Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:40 h**.
-    Resolver los 5 ejercicios marcados con ★: **1:35 h**.
-    Resolver los 12 ejercicios del final: **3:45 h**.
+    Resolver los 6 ejercicios marcados con ★: **1:55 h**.
+    Resolver los 14 ejercicios del final: **4:20 h**.
 
 ## 46.1 El programa terminado
 
@@ -103,7 +123,7 @@ menos de 1.0e-12, la tolerancia del método. Ninguna respuesta de este
 capítulo es exacta, y las pruebas de `ejemplos/capitulo-46/` comparan cada
 resultado con el esperado mediante una tolerancia, nunca con `==`.
 
-El programa se reparte en seis archivos, uno por versión más la base común:
+El programa se reparte en siete archivos, uno por versión más la base común:
 
 | Archivo | Contenido | Sección |
 |---|---|---|
@@ -113,6 +133,7 @@ El programa se reparte en seis archivos, uno por versión más la base común:
 | `newton.pl` | versión 3, Newton con `derivar/3` | [46.5](#465-version-3-newton-con-la-derivada-simbolica) |
 | `gauss_seidel.pl` | versión 4, sistemas lineales | [46.7](#467-version-4-sistemas-lineales-por-gaussseidel) |
 | `metodos.pl` | versión 5, el resolvedor | [46.8](#468-version-5-un-resolvedor-que-elige-el-metodo) |
+| `covington.pl` | versión 6, la incógnita como variable | [46.9](#469-version-6-la-incognita-como-variable-de-prolog) |
 
 ## 46.2 La ecuación como término y el ciclo de iteración
 
@@ -747,13 +768,28 @@ una raíz, con la precisión de la tolerancia. El programa del
 simbólico no puede aislar la incógnita, y devuelve en ese caso un valor
 aproximado en lugar de una expresión.
 
+## 46.9 Versión 6: la incógnita como variable de Prolog
+
+Las versiones anteriores escriben la incógnita como un átomo y la reciben
+como un argumento aparte. El programa original de Covington, en el apartado
+7.13 de *Prolog Programming in Depth*, la escribe como una variable de
+Prolog: `solve(X + 1 = 1 / X)` liga X con la raíz. La página
+[La incógnita como variable de Prolog](covington.md#la-incognita-como-variable-de-prolog)
+reescribe ese programa con las herramientas del capítulo: el evaluador
+`:=/2` de Covington, con una cláusula por operación; `libre_en/2`, que
+encuentra la incógnita dentro de la ecuación; y `resolver_libre/1`, que
+evalúa la diferencia entre los dos miembros sobre copias de la ecuación
+hechas con `copy_term/2`, en lugar de agregar una cláusula con `assert`, y
+aplica la secante desde 1 y 2. La página termina comparando las dos
+maneras de escribir la incógnita.
+
 !!! success "Criterios de calidad"
     | Criterio | En este capítulo |
     |---|---|
     | C1 | cada predicado declara modos y determinación; los métodos son `semidet` porque pueden no converger, y lo dicen en el encabezado junto con las condiciones de su fallo |
     | C5 | un intervalo sin cambio de signo y una expresión que no se sabe derivar producen errores de dominio, y un átomo desconocido un error de existencia; la falta de convergencia es un fallo, porque no indica un error en los datos |
     | C6 | todo el programa es puro: el ciclo, los pasos y el resolvedor no tienen estado ni efectos; la tolerancia y el punto de partida son argumentos |
-    | C7 | 51 pruebas en seis archivos; los resultados de punto flotante se comparan con una tolerancia, y cada fallo descrito en el texto (los tres de Covington, el ciclo de Newton, la tolerancia inalcanzable, el sistema que diverge) tiene su prueba |
+    | C7 | 113 pruebas en siete archivos; los resultados de punto flotante se comparan con una tolerancia, y cada fallo descrito en el texto (los tres de Covington, el ciclo de Newton, la tolerancia inalcanzable, el sistema que diverge) tiene su prueba |
 
 ## Ejercicios
 
@@ -816,6 +852,15 @@ tiene de propio.
     que se encuentran partiendo `A-B` en N intervalos iguales y aplicando la
     bisección en cada uno que tiene cambio de signo. Encontrar las raíces de
     sen(x) = 0 en `1-10`. ¿Qué raíces se pierden si N es demasiado chico?
+13. **(2)** Escribir `valor_ampliado/2`, que evalúa como `:=/2` y además la
+    potencia `X ^ N` con exponente entero, el opuesto `-X` y `sqrt/1`.
+    Evaluar `sqrt(2 ^ 2 * 4) - -1` y `2 ^ -1`, y explicar por qué no basta
+    con agregar tres cláusulas a `operacion/2`.
+14. ★ **(2)** Escribir `resolver_variable(Ecuacion, Metodo)`, que recibe la
+    ecuación con la incógnita como variable, como `resolver_libre/1`, la
+    reemplaza en una copia por un átomo que no aparece en la ecuación y
+    aplica `resolver/5` desde 1. Comparar sus respuestas con las de
+    `resolver_libre/1` para `X * X = X * 3` y `X + 1 = 1 / X`.
 
 ## Resumen
 
@@ -836,6 +881,8 @@ tiene de propio.
 | `gauss_seidel/3,5`, `barrido/5` | el método para sistemas lineales |
 | `resolver/5`, `derivable/1` | el resolvedor que elige el método |
 | `errores/3` | la distancia de cada aproximación al valor exacto |
+| `:=/2`, `valor_c/2` | el evaluador de Covington, con una cláusula por operación |
+| `libre_en/2`, `resolver_libre/1` | la incógnita como variable de Prolog, encontrada en la ecuación y ligada con la raíz |
 | `nexttoward/2` | la función aritmética que da el flotante vecino en una dirección |
 
 ## Temas que se retoman
@@ -849,16 +896,47 @@ tiene de propio.
 
 - Michael A. Covington, Donald Nute y André Vellino, *Prolog Programming in
   Depth*, Prentice Hall, 1997 — apartado 7.13, «Solving equations
-  numerically». [Edición en línea](https://www.covingtoninnovations.com/books/PPID.pdf).
+  numerically», figuras 7.9 «An expression evaluator in Prolog», 7.10 y
+  7.11 «A numerical equation solver».
+  [Edición en línea](https://www.covingtoninnovations.com/books/PPID.pdf).
   El capítulo toma el método de la secante sobre la diferencia entre los
   dos miembros de la ecuación, los tres modos en que ese método falla y el
-  ejercicio de la ecuación de Kepler.
+  ejercicio de la ecuación de Kepler, del ejercicio 7.13.3 la idea de un
+  resolvedor que elige entre varios métodos, que es la versión 5, y para la
+  versión 6 el evaluador `:=`, la búsqueda de la incógnita con `free_in/2`
+  y la incógnita como variable de Prolog.
+- Michael A. Covington, «A numerical equation solver in Prolog»,
+  *Computer Language* 6 (10), octubre de 1989, págs. 45–51. Es el artículo
+  original del programa SOLVER.PL que reproduce el apartado 7.13 de
+  *Prolog Programming in Depth*; no tiene edición en línea.
+- Richard W. Hamming, *Introduction to Applied Numerical Analysis*,
+  McGraw-Hill, 1971, y William H. Press, Brian P. Flannery, Saul A.
+  Teukolsky y William T. Vetterling, *Numerical Recipes: The Art of
+  Scientific Computing*, Cambridge University Press, 1986 — los capítulos
+  sobre raíces de ecuaciones no lineales. Son las dos obras a las que
+  Covington remite para métodos mejores que la secante; de ese tema provienen
+  la bisección, el método de Newton, la falsa posición y la distinción entre
+  convergencia lineal y cuadrática de las
+  secciones [46.3](#463-version-1-la-biseccion) a
+  [46.6](#466-convergencia-y-tolerancia). Ninguna de las dos tiene una
+  edición en línea gratuita.
 - Attila Csenki, *Prolog Techniques*, Ventus Publishing (Bookboon), 2009 —
   apartado 2.5.4, «Application: The Gauss–Seidel Method».
   [Página de la editorial, copia de archivo](https://web.archive.org/web/20220123025207/https://bookboon.com/en/prolog-techniques-applications-of-prolog-ebook?mediaType=ebook).
   El capítulo toma la formulación de Gauss–Seidel como la actualización de
   una incógnita por vez con los valores más recientes de las demás, y el
   sistema de cuatro ecuaciones que una de las pruebas resuelve.
+- Erwin Kreyszig, *Advanced Engineering Mathematics*, Wiley, 8.ª edición,
+  1998 — el capítulo de métodos numéricos del álgebra lineal, apartado
+  sobre la solución de sistemas por iteración. Es la fuente que Csenki cita
+  para el método y para el sistema de cuatro ecuaciones de su ejemplo 2.1;
+  trata también la condición de convergencia que la
+  [sección 46.7](#467-version-4-sistemas-lineales-por-gaussseidel) enuncia
+  como diagonal estrictamente dominante. No tiene edición en línea
+  gratuita.
+- Los programas `evaluar/3` y `derivar/3` son las soluciones de los
+  ejercicios 12 y 13 del [capítulo 32](../capitulo-32-inspeccion-de-terminos/index.md),
+  del propio curso.
 
 El código del capítulo es propio, escrito para el curso: la secante es un
 paso del ciclo de iteración común, y el barrido de Gauss–Seidel recorre las

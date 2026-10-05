@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 420" width="960" height="420">
+  <title>La consulta gusta(ana, Que), gusta(luis, Que) tiene dos objetivos unidos por una coma, que se lee y</title>
+  <defs>
+    <marker id="a-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1F2933"/></marker>
+    <marker id="a-navy" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1F3A5F"/></marker>
+    <marker id="a-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#D9822B"/></marker>
+    <marker id="a-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2E7D32"/></marker>
+    <marker id="a-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#C62828"/></marker>
+    <marker id="a-grey" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#9AA5B1"/></marker>
+  </defs>
+  <rect x="0" y="0" width="960" height="420" fill="#FFFFFF"/>
+  <rect x="179.1" y="172.1" width="290.5" height="40.8" rx="6" fill="#E3F1E4" stroke="#2E7D32" stroke-width="3"/>
+  <rect x="497.0" y="172.1" width="309.2" height="40.8" rx="6" fill="#E3F1E4" stroke="#2E7D32" stroke-width="3"/>
+  <rect x="461.6" y="172.1" width="24.7" height="40.8" rx="6" fill="#FCE8D2" stroke="#D9822B" stroke-width="3"/>
+  <text x="128.0" y="200.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="34" fill="#1F2933" text-anchor="start" xml:space="preserve">?- gusta(ana, Que), gusta(luis, Que).</text>
+  <path d="M128.0,130 L128.0,118 L838.6,118 L838.6,130" fill="none" stroke="#1F3A5F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="483.3" y="100.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="24" fill="#1F3A5F" text-anchor="middle" font-weight="bold" xml:space="preserve">consulta</text>
+  <text x="483.3" y="70.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#52606D" text-anchor="middle" xml:space="preserve">lo que se ingresa, completo</text>
+  <line x1="324.4" y1="232.0" x2="324.4" y2="262.0" stroke="#2E7D32" stroke-width="3"/>
+  <text x="324.4" y="290.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="22" fill="#2E7D32" text-anchor="middle" font-weight="bold" xml:space="preserve">objetivo 1</text>
+  <line x1="651.6" y1="232.0" x2="651.6" y2="262.0" stroke="#2E7D32" stroke-width="3"/>
+  <text x="651.6" y="290.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="22" fill="#2E7D32" text-anchor="middle" font-weight="bold" xml:space="preserve">objetivo 2</text>
+  <line x1="474.0" y1="232.0" x2="474.0" y2="330.0" stroke="#D9822B" stroke-width="3"/>
+  <text x="474.0" y="364.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="30" fill="#D9822B" text-anchor="middle" font-weight="bold" xml:space="preserve">y</text>
+  <text x="474.0" y="394.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#52606D" text-anchor="middle" xml:space="preserve">conjunción: los dos objetivos deben cumplirse</text>
+</svg>

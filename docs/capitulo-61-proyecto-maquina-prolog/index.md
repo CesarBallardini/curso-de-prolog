@@ -14,12 +14,23 @@ deshacer. Con esas piezas se agregan el corte y la indexación por el primer
 argumento, y cada versión mide lo que cambia: pasos, cabezas intentadas,
 largo de la resolvente, puntos de elección, entradas del rastro y celdas.
 
-La máquina crece en seis versiones, una por sección. La primera hace de la
+![Una DECsystem-10 de Digital Equipment Corporation, con el panel de la unidad central KI10 y dos unidades de cinta magnética](decsystem-10.jpg)
+
+Una DECsystem-10 (PDP-10, unidad central KI10), de la década de 1970. En
+una máquina de esta familia funcionó DEC-10 Prolog, el compilador con el que
+David H. D. Warren mostró en 1977 que Prolog se puede ejecutar con
+pilas, puntos de elección y un rastro, las mismas piezas que este capítulo
+escribe en Prolog.
+Imagen: Gah4, [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/),
+vía [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:DEC_PDP-10_(from_ca._1970_named_decsystem-10)_mainframe_computer_system,_1970s_(edited,_white_background).jpg).
+
+La máquina crece en siete versiones, una por sección. La primera hace de la
 resolvente un dato y deja la elección de la cláusula a Prolog; la segunda
 convierte la búsqueda en un ciclo sobre una pila de alternativas; la tercera
 reemplaza las variables de Prolog por celdas y agrega los puntos de elección
 y el rastro; la cuarta, el corte; la quinta, la indexación; la sexta
-**compila** el programa a instrucciones. Una segunda página,
+**compila** el programa a instrucciones, y la séptima agrega la negación y
+el manejo de errores. Una segunda página,
 [Los programas de otros capítulos](archivos.md), ejecuta en la máquina
 archivos de otros capítulos, leídos con el lector del [capítulo 59](../capitulo-59-proyecto-analisis-programas/index.md). El capítulo usa la medición del [capítulo 16](../capitulo-16-rendimiento/index.md), los
 árboles AVL de `library(assoc)` del [capítulo 22](../capitulo-22-estructuras-de-datos-de-la-biblioteca/index.md) para el almacén, la inspección de
@@ -64,9 +75,9 @@ Al terminar el capítulo, el lector puede:
   alternativas pendientes, recursión de cola e indexación.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:30 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:40 h**.
     Resolver los 5 ejercicios marcados con ★: **1:50 h**.
-    Resolver los 11 ejercicios del final: **3:45 h**.
+    Resolver los 12 ejercicios del final: **4:05 h**.
 
 ## 61.1 La máquina terminada
 
@@ -349,14 +360,25 @@ creada después del último punto de elección (su número no es menor que la
 `Marca`) deja de existir para la búsqueda al volver a ese punto, porque la
 resolvente guardada no la menciona. Spivey llama **críticas** a las otras,
 las únicas que `ligar/5` anota. `ejecutar/5` es el ciclo de la máquina, con
-la versión como parámetro, un [intérprete con conducta como parámetro](../patrones.md#59-interprete-con-conducta-como-parametro):
+la versión como parámetro, un [intérprete con conducta como parámetro](../patrones.md#60-interprete-con-conducta-como-parametro):
 el módulo que se le pasa define el paso y la vuelta atrás, y las versiones
 4 y 5 cambian solo esos dos predicados. Ninguno de los dos falla: el paso
 devuelve `sigue(Estado)` o `falla(Estado)`, y la vuelta atrás `sigue(Estado)`
 o `fin(Estado)`. Si una falla de Prolog señalara la falla de la meta, el
-estado del intento se perdería, y con él lo que midió.
+estado del intento se perdería, y con él lo que midió. El ciclo es este:
 
-!!! example "Patrón 60 — Estado como resultado, no como falla"
+```mermaid
+flowchart LR
+    E["estado m(Metas, Pila,<br/>Almacen, Rastro,<br/>Libre, Medidas)"] --> P["paso:<br/>la primera meta"]
+    P -- "sigue(Estado)" --> E
+    P -- "falla(Estado)" --> V["volver atrás:<br/>el último punto de elección,<br/>deshacer el rastro"]
+    V -- "sigue(Estado)" --> E
+    V -- "fin(Estado)" --> F["no hay más respuestas"]
+    E -- "Metas = []" --> R["una respuesta,<br/>reconstruida del almacén"]
+    R -- "pedir otra" --> V
+```
+
+!!! example "Patrón 63 — Estado como resultado, no como falla"
     **Problema.** Un paso de un intérprete o de una simulación puede
     fallar, y el estado que produce lleva algo que no debe perderse aunque
     falle: contadores, medidas, un registro de lo que ocurrió.
@@ -695,7 +717,8 @@ almacén, que es un árbol, y las medidas que la máquina anota. En la
 concatenación que separa una lista, la compilación pierde: los dos primeros
 argumentos son celdas libres, y el modo de construcción renombra los
 esqueletos, que cuestan más que la cabeza entera. Un compilador de Prolog
-como el de Warren va mucho más lejos: las celdas son posiciones de una
+como el de Warren (DEC-10 Prolog, 1977, y su máquina abstracta de 1983,
+en las [Referencias](#referencias)) va mucho más lejos: las celdas son posiciones de una
 memoria, las instrucciones son de la máquina que ejecuta el programa, y la
 decisión entre construir y verificar se toma una vez por argumento, sin
 examinar el término. Kluźniak y Szpakowicz dejan la compilación fuera de su
@@ -710,6 +733,113 @@ con el lector del [capítulo 59](../capitulo-59-proyecto-analisis-programas/inde
 sección está en una página propia:
 [Los programas de otros capítulos](archivos.md).
 
+## 61.9 La negación y los errores
+
+Las fuentes describen dos piezas que las seis versiones no tienen. picoProlog
+tiene la negación `not`, y Spivey cuenta cómo la implementa: el ciclo del
+intérprete se llama otra vez, desde el paso, para la meta negada. Toy, el
+intérprete de Kluźniak y Szpakowicz, no detiene la ejecución ante una
+llamada errónea: la reemplaza por una llamada a `error/1` con la meta que
+la produjo, y el programa decide qué hacer. La séptima versión,
+`negacion.pl`, agrega las dos sobre la máquina con corte de la versión 4.
+
+`\+ G` se prueba con una segunda ejecución de la máquina, que empieza con
+la resolvente `[G]`, la pila vacía y el almacén del momento. Si da una
+respuesta, la negación falla; si termina sin ninguna, la máquina sigue con
+el almacén de antes, y las ligaduras que hizo la segunda ejecución
+desaparecen con él. Como el almacén es un árbol persistente, volver a él no
+necesita el rastro. Un error de un paso se captura con `catch/3`, y si el
+programa objeto define `error/1`, la meta que lo produjo se reemplaza por
+`error(Meta)`:
+
+<!-- ejemplo: capitulo-61/negacion.pl predicado: paso/5 negar/5 manejar/7 -->
+```prolog
+%!  paso(+Meta, +Metas:list, +Tabla, +Estado0, -Resultado) is det.
+%
+%   Como paso/5 de corte.pl, con \+ G y con los errores dirigidos a
+%   error/1 cuando el programa objeto lo define.
+paso(Meta, Metas, Tabla, Estado0, Resultado) :-
+    (   Meta = (\+ G)
+    ->  negar(G, Metas, Tabla, Estado0, Resultado)
+    ;   catch(corte:paso(Meta, Metas, Tabla, Estado0, Resultado),
+              error(Error, Contexto),
+              manejar(Error, Contexto, Meta, Metas, Tabla, Estado0,
+                      Resultado))
+    ).
+
+%!  negar(+G, +Metas:list, +Tabla, +Estado0, -Resultado) is det.
+%
+%   Prueba \+ G con una segunda ejecución de la máquina desde el almacén
+%   de Estado0. Resultado es falla(Estado) si G tiene una respuesta, y
+%   sigue(Estado), con Metas y el almacén de Estado0, si no tiene
+%   ninguna. Estado lleva las medidas y las celdas de las dos ejecuciones.
+negar(G, Metas, Tabla, m(Ms, Pila, A, R, L0, M0), Resultado) :-
+    once(almacen:ciclo(negacion, Tabla, m([G], [], A, [], L0, M0), Evento)),
+    arg(1, Evento, m(_, _, _, _, L, M)),
+    (   Evento = fin(_)
+    ->  Resultado = sigue(m(Metas, Pila, A, R, L, M))
+    ;   Resultado = falla(m(Ms, Pila, A, R, L, M))
+    ).
+
+%!  manejar(+Error, +Contexto, +Meta, +Metas:list, +Tabla, +Estado0,
+%!          -Resultado) is det.
+%
+%   Si el programa objeto define error/1, la Meta que produjo el Error se
+%   reemplaza por error(Meta); si no, el error se vuelve a lanzar.
+manejar(Error, Contexto, Meta, Metas, Tabla, Estado0, Resultado) :-
+    (   get_assoc(error/1, Tabla, _)
+    ->  Estado0 = m(_, Pila, A, R, L, M),
+        Resultado = sigue(m([error(Meta)|Metas], Pila, A, R, L, M))
+    ;   throw(error(Error, Contexto))
+    ).
+```
+
+`objeto/2` de `negacion.pl` guarda dos programas. En `soltero`, la negación
+se usa con su argumento ya instanciado; en `desconocido`, la primera
+cláusula de `desconocido/1` llama a un predicado sin cláusulas, y
+`error(_) :- fail` hace que esa llamada falle en lugar de detener la
+máquina:
+
+```prolog
+?- resolver(soltero(X)).
+X = ana ;
+X = eva.
+
+?- resolver(desconocido(X)).
+X = b.
+
+?- resolver(siguiente(_, Y)).
+false.
+```
+
+La tercera consulta evalúa `Y is X + 1` con `X` libre: el error de
+instanciación también pasa a `error/1`, que falla. Las medidas cuentan los
+pasos de las dos ejecuciones:
+
+```prolog
+?- medir_programa(soltero, soltero(_), M).
+M = [respuestas-2, pasos-8, intentos-7, metas-2, elecciones-1, rastro-1, celdas-2].
+```
+
+Un corte dentro de la meta negada actúa sobre la pila de la segunda
+ejecución, que empieza vacía, y no puede quitar los puntos de elección de
+la primera ([ejercicio 12](#ejercicios)).
+
+Dos optimizaciones que describen las fuentes quedan fuera. La llamada de
+cola con marcos de activación (Spivey, «Tail recursion»; el `trooverlay`
+de Toy) no tiene sentido en esta máquina, que no tiene marcos: la
+resolvente ya no guarda la cláusula que hizo la llamada, como mostró la
+columna `metas` de la [sección 61.6](#616-indexacion-por-el-primer-argumento).
+La recolección de basura (Spivey, «Garbage collection», sobre el
+algoritmo LISP 2 de Knuth) recuperaría las celdas que ninguna meta ni
+ningún punto de elección mencionan; escribirla exige recorrer la
+resolvente, cada punto de elección y el almacén entero en cada
+recolección, y las medidas de las seis versiones, que el capítulo compara
+entre sí, dejarían de ser comparables. Tampoco se agregan `assert/1` ni
+`clause/2` sobre el programa objeto, que Toy tiene: la tabla de
+procedimientos es un argumento del ciclo, no parte del estado, y
+agregarlos cambiaría la firma de todas las versiones.
+
 !!! success "Criterios de calidad"
     | Criterio | En este capítulo |
     |---|---|
@@ -718,7 +848,7 @@ sección está en una página propia:
     | C4 | el ciclo de la máquina no deja puntos de elección de Prolog: el único es el que entrega cada respuesta, y el último se omite si la pila de la máquina está vacía |
     | C5 | una meta variable produce un error de instanciación, y un predicado sin cláusulas un error de existencia, como en Prolog |
     | C6 | las cinco versiones son puras: el estado es un término que cada paso transforma, y solo `tabla_de_medidas/1` escribe |
-    | C7 | 56 pruebas en ocho archivos; cada versión compara sus respuestas con las de Prolog en un módulo temporal |
+    | C7 | 106 pruebas en nueve archivos; cada versión compara sus respuestas con las de Prolog en un módulo temporal |
 
 ## Ejercicios
 
@@ -780,6 +910,11 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     `longitud/2` y de una `longitud/3` con acumulador, escrita como lista
     de cláusulas, para listas de 50 y 100 elementos. Relacionar la
     diferencia con la [sección 16.2](../capitulo-16-rendimiento/index.md#162-la-pila-y-la-recursion).
+12. **(2)** En la versión 7, predecir qué responde
+    `almacen:resolver_clausulas(negacion, [(p(a) :- true), (p(b) :- true)], (p(X), \+ (p(_), !, fail)))`
+    y explicar por qué el corte de la meta negada no quita el punto de
+    elección de `p(X)`. Comprobarlo, y decir qué respondería si la
+    negación usara la misma pila que la ejecución principal.
 
 ## Resumen
 
@@ -804,8 +939,9 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | `cortar/4`, `purgar/3` | la versión 4 |
 | `clave_de/2`, `siguiente/4` | la versión 5 |
 | `compilar_clausula_v6/2`, `ejecutar/6` | la versión 6 |
+| `negar/5`, `manejar/7` | la versión 7: la negación con una segunda ejecución y los errores dirigidos a `error/1` |
 | `resolver/3`, `tabla_de_medidas/1`, `tabla_de_inferencias/1`, `ejecutar_archivo/2`, `igual_que_prolog/3` | la máquina terminada |
-| **[Patrón 60](../patrones.md#60-estado-como-resultado-no-como-falla)** | estado como resultado, no como falla |
+| **[Patrón 63](../patrones.md#63-estado-como-resultado-no-como-falla)** | estado como resultado, no como falla |
 | `term_size/2` | la cantidad de celdas de memoria que ocupa un término |
 | `del_assoc/4` | quita un par de un árbol AVL de `library(assoc)` |
 | `map_assoc/3` | aplica un predicado al valor de cada par de un árbol AVL y da el árbol que resulta |
@@ -833,7 +969,8 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
   la unificación sin prueba de ocurrencia y su justificación, la indexación
   por el primer argumento que filtra también las cláusulas guardadas, y la
   llamada de cola y la recolección de basura como las dos optimizaciones que
-  completan la indexación. De picoProlog, escrito en otro lenguaje, el
+  completan la indexación, y la negación `not` como una llamada del ciclo
+  del intérprete desde el paso, que la versión 7 escribe. De picoProlog, escrito en otro lenguaje, el
   capítulo toma las ideas, no el código.
 - Feliks Kluźniak y Stanisław Szpakowicz, con Janusz S. Bień, *Prolog for
   Programmers*, Academic Press, 1985 — «Principles of Prolog
@@ -845,7 +982,27 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
   activación; el rastro limitado a las variables de las zonas protegidas; y,
   del intérprete Toy, los prototipos sin variables que no se copian, el
   cuerpo de la cláusula como una lista de llamadas, y el corte que quita
-  registros de vuelta atrás y purga el rastro.
+  registros de vuelta atrás y purga el rastro, y el manejo de errores
+  que reemplaza la llamada errónea por una llamada a `error/1`, en la
+  versión 7.
+- David H. D. Warren, *Applied Logic — Its Use and Implementation as a
+  Programming Tool*, tesis doctoral, Universidad de Edimburgo, 1977.
+  [Edinburgh Research Archive](https://era.ed.ac.uk/handle/1842/6648).
+  Kluźniak y Szpakowicz citan de esta tesis la clasificación de las
+  variables en locales y globales y los nombres *skeleton* y *molecule* para
+  el prototipo de un término y su instancia; el capítulo toma la palabra
+  **esqueleto** para la cláusula guardada que comparten todos sus usos, y
+  la referencia del compilador DEC-10 Prolog de la [sección 61.7](#617-el-programa-compilado).
+- David H. D. Warren, «An Abstract Prolog Instruction Set», Technical Note
+  309, SRI International, 1983.
+  [Edición de SRI](https://www.sri.com/wp-content/uploads/2021/12/641.pdf).
+  La máquina abstracta de Warren, con la que se compila Prolog a
+  instrucciones que trabajan sobre una memoria de celdas; el capítulo la
+  nombra como el final del camino que la versión 6 empieza.
+- Hassan Aït-Kaci, *Warren's Abstract Machine: A Tutorial Reconstruction*,
+  MIT Press, 1991. Spivey la recomienda para la compilación de Prolog; es
+  la explicación paso a paso de la máquina anterior, y el capítulo remite a
+  ella para lo que la [sección 61.7](#617-el-programa-compilado) no hace.
 
 El código del capítulo es propio, escrito para el curso. La versión 2
 reescribe con otra representación la búsqueda en profundidad que Spivey

@@ -1,33 +1,17 @@
 :- encoding(utf8).
 
-% Capítulo 48 - Solución del ejercicio 10: transistores CMOS.
+% Capítulo 48 - Soluciones de los ejercicios 10 y 14: la compuerta NAND CMOS
+% y la XOR sin uno de los transistores del par en paralelo.
 %
-% Un transistor es la relación de sus estados estables (Spivey, capítulo
-% 12). Un transistor p conecta la fuente con el drenador cuando su
-% compuerta está en 0, y entonces los dos tienen el mismo valor; con la
-% compuerta en 1 no los conecta, y cada uno tiene cualquier valor. Un
-% transistor n se comporta al revés.
+% Con los transistores de transistores.pl (Spivey, capítulo 12), la NAND
+% tiene dos transistores p en paralelo y dos n en serie.
+%
+% solo-local: carga transistores.pl, y SWISH no carga otros archivos.
 %
 %?- nand_cmos(1, 1, Z).
-%?- inversor_cmos(X, X).
+%?- nand_cmos(A, B, Z).
 
-% ptran(F, G, D): estado estable de un transistor p con fuente F,
-% compuerta G y drenador D.
-ptran(X, 0, X).
-ptran(_, 1, _).
-
-% ntran(F, G, D): estado estable de un transistor n con fuente F,
-% compuerta G y drenador D.
-ntran(X, 1, X).
-ntran(_, 0, _).
-
-%!  inversor_cmos(?A, ?Z) is nondet.
-%
-%   Z es la salida del inversor CMOS con entrada A: un transistor p entre
-%   el 1 y la salida, y uno n entre la salida y el 0.
-inversor_cmos(A, Z) :-
-    ptran(1, A, Z),
-    ntran(Z, A, 0).
+:- ensure_loaded(transistores).
 
 %!  nand_cmos(?A, ?B, ?Z) is nondet.
 %
@@ -39,3 +23,23 @@ nand_cmos(A, B, Z) :-
     ptran(1, B, Z),
     ntran(Z, A, W),
     ntran(W, B, 0).
+
+%!  xor_sin_par_p(?A, ?B, ?Z) is nondet.
+%
+%   La XOR de seis transistores de xor_cmos/3 sin el transistor p del par
+%   en paralelo: cinco transistores.
+xor_sin_par_p(A, B, Z) :-
+    inversor_cmos(A, NA),
+    ntran(B, NA, Z),
+    ptran(A, B, Z),
+    ntran(NA, B, Z).
+
+%!  xor_sin_par_n(?A, ?B, ?Z) is nondet.
+%
+%   La XOR de seis transistores de xor_cmos/3 sin el transistor n del par
+%   en paralelo: cinco transistores.
+xor_sin_par_n(A, B, Z) :-
+    inversor_cmos(A, NA),
+    ptran(B, A, Z),
+    ptran(A, B, Z),
+    ntran(NA, B, Z).

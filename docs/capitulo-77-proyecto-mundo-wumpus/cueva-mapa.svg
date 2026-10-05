@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="100%" viewBox="-330 -345 660 660">
+ <title>Hunt the Wumpus map</title>
+ <desc>Map of Hunt the Wumpus game, by CMG Lee.</desc>
+ <style type="text/css">
+.main { font-family:Helvetica,Arial,sans-serif; font-size:60px; font-weight:bold; text-anchor:middle;
+        fill:#ffffff; stroke:#999999; stroke-width:15; }
+text  { stroke:none; cursor:default; }
+ </style>
+ <defs>
+  <filter id="filter_blur"><feGaussianBlur stdDeviation="4"/></filter>
+  <radialGradient id="grad_sphere" cx="50%" cy="50%" r="50%" fx="50%" fy="90%">
+   <stop offset="0%"  stop-color="#000000" stop-opacity="0"/>
+   <stop offset="99%" stop-color="#000000" stop-opacity="0.3"/>
+  </radialGradient>
+  <linearGradient id="grad_highlight" x1="0%" y1="0%" x2="0%" y2="100%">
+   <stop offset="10%" stop-color="#ffffff" stop-opacity="0.9"/>
+   <stop offset="99%" stop-color="#ffffff" stop-opacity="0"/>
+  </linearGradient>
+  <g id="orb" stroke="none">
+   <circle  cx="0" cy="0" r="100"/>
+   <circle  cx="0" cy="0" r="100" fill="url(#grad_sphere)"/>
+   <ellipse cx="0" cy="-45" rx="70" ry="50" fill="url(#grad_highlight)" filter="url(#filter_blur)"/>
+  </g>
+  <g id="cave"><use xlink:href="#orb" transform="scale(0.4)" fill="#000000"/></g>
+  <path id="radii" d="M 0,100 V 200 M 0,-200 V -300"/>
+ </defs>
+ <circle cx="0" cy="0" r="99999" fill="#ffffff"/>
+ <g class="main">
+  <circle cx="0" cy="0" r="300"/>
+  <circle cx="0" cy="0" r="200"/>
+  <circle cx="0" cy="0" r="100"/>
+  <use transform="rotate(  0)" xlink:href="#radii"/>
+  <use transform="rotate( 72)" xlink:href="#radii"/>
+  <use transform="rotate(144)" xlink:href="#radii"/>
+  <use transform="rotate(216)" xlink:href="#radii"/>
+  <use transform="rotate(288)" xlink:href="#radii"/>
+  <g transform="rotate(180) translate(0,300) rotate(-180)"><use xlink:href="#cave"/><text y="0.7ex"><tspan>1</tspan></text></g>
+  <g transform="rotate(252) translate(0,300) rotate(-252)"><use xlink:href="#cave"/><text y="0.7ex"><tspan>2</tspan></text></g>
+  <g transform="rotate(324) translate(0,300) rotate(-324)"><use xlink:href="#cave"/><text y="0.7ex"><tspan>3</tspan></text></g>
+  <g transform="rotate( 36) translate(0,300) rotate( -36)"><use xlink:href="#cave"/><text y="0.7ex"><tspan>4</tspan></text></g>
+  <g transform="rotate(108) translate(0,300) rotate(-108)"><use xlink:href="#cave"/><text y="0.7ex"><tspan>5</tspan></text></g>
+  <g transform="rotate(108) translate(0,200) rotate(-108)"><use xlink:href="#cave"/><text y="0.7ex"><tspan>6</tspan></text></g>
+  <g transform="rotate(144) translate(0,200) rotate(-144)"><use xlink:href="#cave"/><text y="0.7ex"><tspan>7</tspan></text></g>
+  <g transform="rotate(180) translate(0,200) rotate(-180)"><use xlink:href="#cave"/><text y="0.7ex"><tspan>8</tspan></text></g>
+  <g transform="rotate(216) translate(0,200) rotate(-216)"><use xlink:href="#cave"/><text y="0.7ex"><tspan>9</tspan></text></g>
+  <g transform="rotate(252) translate(0,200) rotate(-252)"><use xlink:href="#cave"/><text y="0.7ex"><tspan>1</tspan><tspan dx="-0.2ex">0</tspan></text></g>
+  <g transform="rotate(288) translate(0,200) rotate(-288)"><use xlink:href="#cave"/><text y="0.7ex"><tspan>1</tspan><tspan dx="-0.2ex">1</tspan></text></g>
+  <g transform="rotate(324) translate(0,200) rotate(-324)"><use xlink:href="#cave"/><text y="0.7ex"><tspan>1</tspan><tspan dx="-0.2ex">2</tspan></text></g>
+  <g transform="rotate(  0) translate(0,200) rotate(   0)"><use xlink:href="#cave"/><text y="0.7ex"><tspan>1</tspan><tspan dx="-0.2ex">3</tspan></text></g>
+  <g transform="rotate( 36) translate(0,200) rotate( -36)"><use xlink:href="#cave"/><text y="0.7ex"><tspan>1</tspan><tspan dx="-0.2ex">4</tspan></text></g>
+  <g transform="rotate( 72) translate(0,200) rotate( -72)"><use xlink:href="#cave"/><text y="0.7ex"><tspan>1</tspan><tspan dx="-0.2ex">5</tspan></text></g>
+  <g transform="rotate( 72) translate(0,100) rotate( -72)"><use xlink:href="#cave"/><text y="0.7ex"><tspan>1</tspan><tspan dx="-0.2ex">6</tspan></text></g>
+  <g transform="rotate(144) translate(0,100) rotate(-144)"><use xlink:href="#cave"/><text y="0.7ex"><tspan>1</tspan><tspan dx="-0.2ex">7</tspan></text></g>
+  <g transform="rotate(216) translate(0,100) rotate(-216)"><use xlink:href="#cave"/><text y="0.7ex"><tspan>1</tspan><tspan dx="-0.2ex">8</tspan></text></g>
+  <g transform="rotate(288) translate(0,100) rotate(-288)"><use xlink:href="#cave"/><text y="0.7ex"><tspan>1</tspan><tspan dx="-0.2ex">9</tspan></text></g>
+  <g transform="rotate(  0) translate(0,100) rotate(   0)"><use xlink:href="#cave"/><text y="0.7ex"><tspan>2</tspan><tspan dx="-0.1ex">0</tspan></text></g>
+ </g>
+</svg>

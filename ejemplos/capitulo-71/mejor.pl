@@ -151,10 +151,14 @@ menor(Ts, I) :-
 %!  rehacer(+Tipo, +N, +Ts:list, -T) is det.
 %
 %   T es el árbol de búsqueda del nodo N de Tipo o o y con los hijos Ts: su
-%   F se recalcula, y queda hecho o imposible si corresponde.
+%   F se recalcula, y queda hecho o imposible si corresponde. Un nodo O sin
+%   hijos es imposible.
 rehacer(o, N, Ts, T) :-
     maplist(f_arco, Ts, Fs),
-    min_member(F, Fs),
+    (   min_member(F0, Fs)
+    ->  F = F0
+    ;   F = inf
+    ),
     (   F == inf
     ->  T = imposible(N)
     ;   nth1(I, Fs, F),

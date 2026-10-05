@@ -613,7 +613,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 6. **(1)** Escribir en `cliente.py` la función `ficha_o_none(base, persona)`,
    que devuelve `None` en lugar de lanzar la excepción.
 7. ★ **(2)** Escribir las pruebas de plunit de los códigos 405 del ejercicio 2,
-   con el Patrón 41.
+   con el [Patrón 41](../patrones.md#41-servidor-bajo-prueba).
 8. **(2)** Habilitar CORS en `/hola`, y escribir una prueba que verifique el
    encabezado `Access-Control-Allow-Origin`.
 9. **(1)** Agregar la ruta `GET /hora`, con la fecha y la hora del servidor en

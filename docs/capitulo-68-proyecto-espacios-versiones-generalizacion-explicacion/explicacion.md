@@ -11,6 +11,10 @@ cargan archivos de otros capítulos y se ejecutan localmente.
 
 ## Versión 5: explicar un ejemplo
 
+Las entradas del aprendizaje por explicación, en la formulación de
+DeJong y Mooney, son un concepto, un ejemplo, una teoría del dominio y un
+criterio de operacionalidad. El dominio de la taza viene de Winston y
+sus colegas, a través de Mitchell, Keller y Kedar-Cabelli.
 Una **teoría del dominio** es un conjunto de reglas. La de la taza dice
 que un objeto sirve de taza si se puede levantar, contiene un líquido y
 se apoya firme, y define cada una de esas condiciones:
@@ -114,8 +118,9 @@ con sus reglas intermedias y sus alternativas.
 
 ## Versión 6: generalizar la explicación
 
-La **generalización basada en la explicación** prueba dos objetivos a la
-vez, con las mismas reglas: el del ejemplo, `taza(taza1)`, y una copia
+La **generalización basada en la explicación**, en la forma de
+Kedar-Cabelli y McCarty que siguen Luger y Stubblefield, prueba dos
+objetivos a la vez, con las mismas reglas: el del ejemplo, `taza(taza1)`, y una copia
 general, `taza(X)`. La prueba del ejemplo elige las reglas y consulta los
 hechos; la copia general sigue las mismas reglas sin consultar ningún
 hecho, y así recibe solo las ligaduras que imponen las reglas. Cuando la

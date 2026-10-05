@@ -107,4 +107,86 @@ test(raices_perdidas, [true(length(Rs, 1))]) :-
 test(raices_sin_tramos, [error(type_error(positive_integer, 0))]) :-
     raices(sin(x) = 0, x, 1-10, 0, _).
 
+test(iterar_relativa_mitades, [true(Xs == [0.5, 0.25, 0.125, 0.0625])]) :-
+    iterar_relativa(mitad, 0.1, 1.0, Xs).
+
+test(iterar_relativa_limite, [fail]) :-
+    iterar_relativa(mitad, 0.0, 1.0, _).
+
+test(iterar_relativa_restantes, [fail]) :-
+    iterar_relativa(mitad, 0.1, 3, 1.0, _).
+
+% Secante por los extremos (1, -1) y (2, 2): corta en 4/3, donde la
+% función es negativa; queda la parte derecha.
+test(paso_falsa_posicion,
+     [true(E-C == falsa(1.3333333333333335, F, 2.0, 2.0, 1.3333333333333335)
+                  -1.3333333333333335)]) :-
+    paso_falsa_posicion(x ^ 2 - 2, x, falsa(1.0, -1.0, 2.0, 2.0, 1.0), E, C,
+                        _),
+    F is 1.3333333333333335 ^ 2 - 2.
+
+test(paso_falsa_posicion_igual, [fail]) :-
+    paso_falsa_posicion(x ^ 2 - 2, x, falsa(1.0, 2.0, 2.0, 2.0, 1.0), _, _,
+                        _).
+
+test(paso_newton_multiple, [true(X1 =:= 1.0)]) :-
+    paso_newton_multiple((x - 1) ^ 2, 2 * (x - 1), x, 2, 2.0, X1, X1, _).
+
+test(paso_newton_multiple_nulo, [fail]) :-
+    paso_newton_multiple((x - 1) ^ 2, 2 * (x - 1), x, 2, 1.0, _, _, _).
+
+test(barrido_jacobi, [true(Xs == [0.75, 3.4, 3.0])]) :-
+    barrido_jacobi([[4, 1, -1], [1, 5, 2], [2, -1, 6]], [3, 17, 18], [],
+                   [0, 0, 0], Xs).
+
+test(barrido_jacobi_diagonal_nula, [fail]) :-
+    barrido_jacobi([[0, 1], [1, 1]], [1, 2], [], [0, 0], _).
+
+test(paso_jacobi, [true(C =:= 3.4)]) :-
+    paso_jacobi([[4, 1, -1], [1, 5, 2], [2, -1, 6]], [3, 17, 18], [0, 0, 0],
+                Xs, Xs, C).
+
+test(diagonal_dominante_desde_k) :-
+    diagonal_dominante([[1, 5, 2]], 1).
+
+test(sumar_absoluto, [true(S =:= 5)]) :-
+    sumar_absoluto(-3, 2, S).
+
+test(residuo_fila, [true(R =:= 2)]) :-
+    residuo_fila([1, 1], [1, 1], 4, 0.5, R).
+
+test(residuo_fila_conserva, [true(R =:= 7)]) :-
+    residuo_fila([1, 1], [1, 1], 2, 7, R).
+
+% Un paso de Newton para x + y = 3, x - y = 1 desde (0, 0) llega a la
+% solución exacta (2, 1), porque el sistema es lineal.
+test(paso_newton_sistema, [true(P-C == (2.0-1.0)-2.0)]) :-
+    paso_newton_sistema(x-y, (x + y - 3)-(x - y - 1), 1-1, 1-(-1), 0.0-0.0,
+                        P, P, C).
+
+test(paso_newton_sistema_singular, [fail]) :-
+    paso_newton_sistema(x-y, (x + y - 1)-(2 * x + 2 * y - 3), 1-1, 2-2,
+                        0.0-0.0, _, _, _).
+
+test(valor_en_punto, [true(V == 5.0)]) :-
+    valor_en_punto([x-1, y-2], x + 2 * y, V).
+
+test(raiz_en_tramo, [true(abs(R - pi) =< 1.0e-9)]) :-
+    raiz_en_tramo(sin(x) = 0, x, 1, 1, 2, R).
+
+test(raiz_en_tramo_sin_cambio, [fail]) :-
+    raiz_en_tramo(sin(x) = 0, x, 1, 1, 0, _).
+
+% Una raíz en el borde entre dos tramos aparece una sola vez.
+test(raices_borde, [true(cerca(Rs, [2], 1.0e-9))]) :-
+    raices(x ^ 2 = 4, x, 0-4, 2, Rs).
+
+test(raices_borde_izquierdo, [true(cerca(Rs, [0, pi], 1.0e-9))]) :-
+    raices(sin(x) = 0, x, 0-4, 2, Rs).
+
+% mitad(X0, X, X, Cambio): un paso que divide por dos.
+mitad(X0, X, X, Cambio) :-
+    X is X0 / 2,
+    Cambio is X0 - X.
+
 :- end_tests(soluciones).

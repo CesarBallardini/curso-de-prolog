@@ -38,4 +38,32 @@ test(espiar, [true(Lineas == [ "+ concatenar([], [b], [b])",
                    perfil(inversa([a, b], [a, b]), falla, _)),
     split_string(Salida, "\n", "", Lineas).
 
+% resolver/1 en sentido inverso: todas las particiones de una lista, en el
+% orden de las cláusulas.
+test(resolver, all(X-Y == [[]-[a, b], [a]-[b], [a, b]-[]])) :-
+    resolver(concatenar(X, Y, [a, b])).
+
+test(resolver_condicional, all(R == [no])) :-
+    resolver(( concatenar([a], [], [b]) -> R = si ; R = no )).
+
+% Un predicado espiado con varias respuestas escribe + por cada una y -
+% cuando se agotan; la llamada recursiva, también espiada, escribe las
+% suyas entre medio.
+test(resolver_espiado, [true(Ls == [ "+ concatenar([], [a], [a])",
+                                     "+ concatenar([], [], [])",
+                                     "+ concatenar([a], [], [a])",
+                                     "- concatenar(A, B, [])",
+                                     "- concatenar(A, B, [a])",
+                                     "" ]),
+                        cleanup(no_espiar(concatenar/3))]) :-
+    espiar(concatenar/3),
+    with_output_to(string(S),
+                   forall(resolver_espiado(concatenar(_, _, [a])), true)),
+    split_string(S, "\n", "", Ls).
+
+test(no_espiar, [true(S == "")]) :-
+    espiar(concatenar/3),
+    no_espiar(concatenar/3),
+    with_output_to(string(S), perfil(inversa([a, b], _), exito, _)).
+
 :- end_tests(perfil).

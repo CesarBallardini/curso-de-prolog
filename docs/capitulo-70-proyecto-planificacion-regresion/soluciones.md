@@ -181,6 +181,9 @@ agrega(junto(robot, X), empujar_por(X, _, _, _)).
 %   Las de robot.pl, y las de empujar_por/4: la caja y el robot dejan la
 %   habitación de la que salen, su punto y lo que tenían al lado, salvo
 %   estar uno junto al otro.
+%   La cláusula de junto/2 compara con ==: el planificador la llama sobre
+%   una copia sin variables, y un hecho junto(X, Y) con X o Y libres no da
+%   respuestas.
 borra(Hecho, Accion) :-
     robot:borra(Hecho, Accion).
 borra(en_habitacion(X, _), empujar_por(X, _, _, _)).
@@ -360,3 +363,23 @@ imposible([sobre(X, Y), sobre(Y, X)]).
 `inconsistente/3` hace la prueba sobre una copia con `numbervars/3`: X
 se convierte en un objeto desconocido, el mismo en las dos metas, y la
 combinación `[sobre(X, Y), sobre(Y, X)]` unifica con las dos.
+
+## Ejercicio 12
+
+<!-- contexto: capitulo-70/condicional.pl -->
+```prolog
+?- planificar_casos(dudoso, [c_sobre_a, c_sobre_b], [sobre(c, a)], 4, P).
+P = si(libre(a), [mover(c, b, a)], []).
+
+?- planificar_casos(dudoso, [c_sobre_a, c_sobre_b], [sobre(b, c)], 4, P), ejecutar_casos(dudoso, c_sobre_b, P, A).
+P = si(libre(a), [mover(c, b, mesa), mover(b, mesa, c)], [mover(b, mesa, c)]),
+A = [mover(c, b, mesa), mover(b, mesa, c)].
+```
+
+El hecho que separa los dos estados es `libre(a)`, el primero en el orden
+estándar de términos entre los que valen en uno y no en el otro. Para
+`sobre(c, a)`, la rama de `c_sobre_a` está vacía porque la meta ya vale en
+ese estado: `resolver/9` la encuentra con `vale/4` y no agrega ninguna
+acción. En `c_sobre_b`, c está libre y se mueve de b a a con una acción.
+Para `sobre(b, c)`, en `c_sobre_b` hay que bajar c antes de mover b, y en
+`c_sobre_a` b y c están libres desde el principio.

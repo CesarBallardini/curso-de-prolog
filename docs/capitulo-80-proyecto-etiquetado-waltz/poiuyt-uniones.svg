@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 440" width="440" height="440" role="img" aria-labelledby="t">
+  <title id="t">Un dibujo con las uniones del poiuyt</title>
+  <rect width="440" height="440" fill="#ffffff"/>
+  <line x1="40.0" y1="40.0" x2="400.0" y2="40.0" stroke="#222222" stroke-width="2" stroke-linecap="round"/>
+  <line x1="40.0" y1="40.0" x2="40.0" y2="400.0" stroke="#222222" stroke-width="2" stroke-linecap="round"/>
+  <line x1="400.0" y1="40.0" x2="400.0" y2="220.0" stroke="#222222" stroke-width="2" stroke-linecap="round"/>
+  <line x1="190.0" y1="340.0" x2="250.0" y2="304.0" stroke="#222222" stroke-width="2" stroke-linecap="round"/>
+  <line x1="190.0" y1="340.0" x2="220.0" y2="400.0" stroke="#222222" stroke-width="2" stroke-linecap="round"/>
+  <line x1="250.0" y1="304.0" x2="280.0" y2="364.0" stroke="#222222" stroke-width="2" stroke-linecap="round"/>
+  <line x1="100.0" y1="124.0" x2="160.0" y2="160.0" stroke="#222222" stroke-width="2" stroke-linecap="round"/>
+  <line x1="100.0" y1="124.0" x2="100.0" y2="184.0" stroke="#222222" stroke-width="2" stroke-linecap="round"/>
+  <line x1="160.0" y1="160.0" x2="160.0" y2="220.0" stroke="#222222" stroke-width="2" stroke-linecap="round"/>
+  <line x1="40.0" y1="400.0" x2="220.0" y2="400.0" stroke="#222222" stroke-width="2" stroke-linecap="round"/>
+  <line x1="280.0" y1="364.0" x2="220.0" y2="400.0" stroke="#222222" stroke-width="2" stroke-linecap="round"/>
+  <line x1="100.0" y1="184.0" x2="160.0" y2="220.0" stroke="#222222" stroke-width="2" stroke-linecap="round"/>
+  <line x1="400.0" y1="220.0" x2="160.0" y2="220.0" stroke="#222222" stroke-width="2" stroke-linecap="round"/>
+  <text x="46.0" y="34.0" font-family="sans-serif" font-size="13" fill="#555555">a</text>
+  <text x="406.0" y="34.0" font-family="sans-serif" font-size="13" fill="#555555">b</text>
+  <text x="196.0" y="334.0" font-family="sans-serif" font-size="13" fill="#555555">c</text>
+  <text x="256.0" y="298.0" font-family="sans-serif" font-size="13" fill="#555555">d</text>
+  <text x="106.0" y="118.0" font-family="sans-serif" font-size="13" fill="#555555">e</text>
+  <text x="166.0" y="154.0" font-family="sans-serif" font-size="13" fill="#555555">f</text>
+  <text x="46.0" y="394.0" font-family="sans-serif" font-size="13" fill="#555555">g</text>
+  <text x="286.0" y="358.0" font-family="sans-serif" font-size="13" fill="#555555">h</text>
+  <text x="106.0" y="178.0" font-family="sans-serif" font-size="13" fill="#555555">i</text>
+  <text x="406.0" y="214.0" font-family="sans-serif" font-size="13" fill="#555555">j</text>
+  <text x="166.0" y="214.0" font-family="sans-serif" font-size="13" fill="#555555">k</text>
+  <text x="226.0" y="394.0" font-family="sans-serif" font-size="13" fill="#555555">l</text>
+</svg>

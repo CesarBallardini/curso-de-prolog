@@ -96,4 +96,32 @@ test(mostrar_aprendida, [true(sub_string(S, 0, _, _, "abuelo(A, B) :-"))]) :-
     with_output_to(string(S),
                    mostrar_aprendida(familia, familia, abuelo(juan, luis))).
 
+% ebg/5 da una regla por cada prueba: liviano por el peso y por el
+% material.
+test(ebg_dos_pruebas, all(P == [peso, material])) :-
+    hechos(taza1, H0),
+    operacionales(taza, Ops),
+    ebg(taza, Ops, [material(taza1, carton)|H0], taza(taza1),
+        (_ :- [C|_])),
+    functor(C, P, _).
+
+test(ebg_sin_prueba, [fail]) :-
+    hechos(vaso1, Hs),
+    operacionales(taza, Ops),
+    ebg(taza, Ops, Hs, taza(vaso1), _).
+
+% generalizar//5: la copia general recibe solo lo que impone la regla.
+test(generalizar, [nondet, true(G-L =@= liviano(X)-[peso(X, P), P < 400])]) :-
+    hechos(taza1, Hs),
+    phrase(ebg:generalizar(taza, [peso/2, material/2], Hs, liviano(taza1),
+                           G),
+           L).
+
+test(mostrar_aprendida_con,
+     [true(S == "taza(A) :-\n    se_levanta(A),\n    parte(A, B),\n    concava(B),\n    abierta_arriba(B),\n    parte(A, C),\n    base(C),\n    plana(C).\n")]) :-
+    operacionales(taza, Ops),
+    with_output_to(string(S),
+                   mostrar_aprendida_con(taza, [se_levanta/1|Ops], taza1,
+                                         taza(taza1))).
+
 :- end_tests(ebg).

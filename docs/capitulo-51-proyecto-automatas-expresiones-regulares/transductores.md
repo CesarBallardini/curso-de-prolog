@@ -56,7 +56,8 @@ sentidos, y la tabla asegura que termina aunque haya ciclos ε y que cada
 par aparece una vez.
 
 Una **máquina de Mealy** es el caso en que cada transición lee un símbolo y
-escribe uno: la salida depende del estado y de la entrada. `gray` convierte
+escribe uno: la salida depende del estado y de la entrada, como en el
+método de Mealy (1955) para sintetizar circuitos secuenciales. `gray` convierte
 un número binario en su código Gray, y su estado es el bit anterior; en el
 sentido inverso, decodifica:
 
@@ -194,3 +195,80 @@ Ps = [[0, 0], [0, 1], [0, 1]].
 
 1 + 3 = 4, y los siete pares de números de tres bits que suman 6: 3 + 3,
 1 + 5, 5 + 1, 2 + 4, 6 + 0, 0 + 6 y 4 + 2, en el orden de la tabla.
+
+## Máquinas de Moore
+
+En una máquina de Mealy la salida está en las transiciones. En una
+**máquina de Moore** está en los estados: cada estado escribe un símbolo
+cada vez que la máquina entra en él, y también al comenzar, en el estado
+inicial. Hein trata las dos en apartados seguidos del capítulo
+«Computability», con un intérprete para cada una. `moore.pl` describe la
+máquina con las transiciones de un autómata del módulo `automatas` y una
+relación más, `salida_estado/3`. `resto3` es el autómata `multiplo3` de la
+[sección 51.1](index.md#511-automatas-finitos-como-hechos) con una salida
+en cada estado: el resto de dividir por 3 el número leído hasta ese
+momento.
+
+<!-- ejemplo: capitulo-51/moore.pl predicado: moore/3 recorrer/4 -->
+```prolog
+%!  moore(+M, ?Entrada:list, ?Salida:list) is nondet.
+%
+%   La máquina de Moore M, con la Entrada, escribe la Salida: la salida
+%   del estado inicial y la de cada estado al que entra. Salida tiene un
+%   símbolo más que Entrada. Una de las dos debe llegar ligada, o al menos
+%   su longitud.
+moore(M, Entrada, [S0|Salida]) :-
+    inicial(M, Q0),
+    salida_estado(M, Q0, S0),
+    recorrer(M, Q0, Entrada, Salida).
+
+%!  recorrer(+M, +Q, ?Entrada:list, ?Salida:list) is nondet.
+%
+%   Desde el estado Q, M lee Entrada y escribe Salida, un símbolo por
+%   cada uno que lee.
+recorrer(_, _, [], []).
+recorrer(M, Q, [E|Es], [S|Ss]) :-
+    delta(M, Q, E, Q1),
+    salida_estado(M, Q1, S),
+    recorrer(M, Q1, Es, Ss).
+```
+
+```prolog
+?- moore(resto3, [1, 0, 1], S).
+S = [0, 1, 2, 2] ;
+false.
+
+?- length(E, 3), moore(resto3, E, [0, 1, 2, 2]).
+E = [1, 0, 1] ;
+false.
+```
+
+Los números leídos son 0, 1, 2 y 5, y sus restos, 0, 1, 2 y 2. La salida
+tiene un símbolo más que la entrada, el del estado inicial. En sentido
+inverso, con la longitud fija, la consulta reconstruye la entrada: desde
+cada resto, los dos bits llevan a restos distintos.
+
+Las dos clases de máquinas calculan lo mismo, salvo ese primer símbolo.
+`mealy(M)` es la máquina de Mealy de una máquina de Moore, escrita, como
+las construcciones del capítulo, como un nombre: cada transición escribe la
+salida del estado al que llega.
+
+<!-- ejemplo: capitulo-51/moore.pl fragmento: automatas:inicial(mealy(M), Q0) :- .. salida_estado(M, Q1, S). -->
+```prolog
+automatas:inicial(mealy(M), Q0) :-
+    inicial(M, Q0).
+automatas:final(mealy(M), Q) :-
+    salida_estado(M, Q, _).
+automatas:delta(mealy(M), Q, [E]:[S], Q1) :-
+    delta(M, Q, E, Q1),
+    salida_estado(M, Q1, S).
+```
+
+```prolog
+?- transducir(mealy(resto3), [1, 0, 1], S).
+S = [1, 2, 2].
+```
+
+La conversión inversa, de Mealy a Moore, también existe, pero no es un
+cambio de nombre: un estado de Mealy al que se llega escribiendo símbolos
+distintos tiene que desdoblarse en un estado de Moore por cada símbolo.

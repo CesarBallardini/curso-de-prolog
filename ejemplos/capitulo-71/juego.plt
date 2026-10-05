@@ -49,4 +49,8 @@ test(ninguna, [true(Rs == [profundidad-9689, compartido-1878, mejor-5165])]) :-
               estrategia(B, [v,v,v, v,v,v, v,v,v], ninguna, K) ),
             Rs).
 
+test(estimacion, [true(H1-H2 == 1-2)]) :-
+    estimacion(gana(tateti(3), x), mueve(_), H1),
+    estimacion(gana(tateti(3), x), responde(_), H2).
+
 :- end_tests(juego).

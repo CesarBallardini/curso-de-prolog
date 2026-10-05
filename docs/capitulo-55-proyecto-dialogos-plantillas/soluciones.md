@@ -358,7 +358,7 @@ leer_citas(In, Citas) :-
 %
 %   T es una cita bien formada, sin variables.
 es_cita(cita(D, hora(H, M), A, Con, Lugar)) :-
-    ground(D),
+    ground(cita(D, hora(H, M), A, Con, Lugar)),
     ( D = dia(_) ; D = fecha(_, _) ),
     integer(H),
     integer(M),
@@ -556,3 +556,28 @@ aburrido», «biblioteca», «tomar la llave» y «adiós»: la primera y las do
 últimas órdenes van al juego y la segunda frase a ELIZA, que responde
 «¿Por qué estás aburrido?». Los dos estados son distintos: el del juego en
 la base de datos del módulo `estado`, el de ELIZA en el argumento del bucle.
+
+## 13
+
+La clave nueva se agrega a los predicados `multifile` del módulo `doctor`,
+sin modificar `doctor.pl`:
+
+<!-- ejemplo: capitulo-55/soluciones_doctor.pl fragmento: doctor:sustituye(recuerdo, "recuerdas"). .. ["¿Qué más recuerdas?"] ] ]). -->
+```prolog
+doctor:sustituye(recuerdo, "recuerdas").
+
+doctor:clave(recuerdo, 5,
+             [ [0, "recuerdas", 0]
+               - [ ["¿Piensas a menudo en ", 3, "?"],
+                   ["¿Qué más recuerdas?"] ] ]).
+```
+
+```prolog
+?- respuestas_doctor(["Recuerdo mi barrio.", "Recuerdo mi barrio.", "Bueno."], R).
+R = ["¿Piensas a menudo en tu barrio?", "¿Qué más recuerdas?", "Continúa, por favor."].
+```
+
+«recuerdo», de rango 5, queda arriba de «mi», de rango 2, y la memoria
+solo guarda una frase cuya clave principal es `mi`; por eso «Bueno.» no
+encuentra recuerdos y responde la clave `ninguna`. Con «mi» arriba, como
+en «Mi barrio me gusta.», la frase sí se guarda.

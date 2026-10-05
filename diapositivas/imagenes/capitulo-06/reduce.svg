@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420" width="800" height="420">
+  <title>Qué se reduce: en suma el primer argumento pierde una s por llamada hasta cero, y termina; en natural(N) con N libre los términos crecen, y no termina</title>
+  <rect x="0" y="0" width="800" height="420" fill="#FFFFFF"/>
+  <rect x="8" y="8" width="386" height="404" rx="12" fill="#F7F9FB" stroke="#2E7D32" stroke-width="2"/>
+  <rect x="406" y="8" width="386" height="404" rx="12" fill="#F7F9FB" stroke="#B3261E" stroke-width="2"/>
+  <text x="24" y="44" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#1F3A5F" font-weight="bold">suma(s(s(cero)), B, C)</text>
+  <text x="24" y="70" font-family="Verdana, DejaVu Sans, sans-serif" font-size="14" fill="#52606D">el primer argumento</text>
+  <text x="24" y="126" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="19" fill="#1F2933">s(s(cero))</text>
+  <rect x="200" y="104" width="32" height="32" rx="4" fill="#D9822B" stroke="#D9822B" stroke-width="0"/>
+  <rect x="240" y="104" width="32" height="32" rx="4" fill="#D9822B" stroke="#D9822B" stroke-width="0"/>
+  <line x1="80" y1="136" x2="80" y2="158" stroke="#9AA5B1" stroke-width="2"/>
+  <polygon points="72,156 88,156 80,170" fill="#9AA5B1"/>
+  <text x="24" y="196" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="19" fill="#1F2933">s(cero)</text>
+  <rect x="200" y="174" width="32" height="32" rx="4" fill="#D9822B" stroke="#D9822B" stroke-width="0"/>
+  <line x1="80" y1="206" x2="80" y2="228" stroke="#9AA5B1" stroke-width="2"/>
+  <polygon points="72,226 88,226 80,240" fill="#9AA5B1"/>
+  <text x="24" y="266" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="19" fill="#1F2933">cero</text>
+  <text x="200" y="266" font-family="Verdana, DejaVu Sans, sans-serif" font-size="16" fill="#2E7D32" font-weight="bold">caso base</text>
+  <circle cx="40" cy="368" r="15" fill="#2E7D32"/>
+  <path d="M 32 369 L 38 375 L 49 361" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="66" y="375" font-family="Verdana, DejaVu Sans, sans-serif" font-size="18" fill="#2E7D32" font-weight="bold">termina: dos llamadas</text>
+  <text x="422" y="44" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#1F3A5F" font-weight="bold">natural(N), con N libre</text>
+  <text x="422" y="70" font-family="Verdana, DejaVu Sans, sans-serif" font-size="14" fill="#52606D">los términos que construye</text>
+  <text x="422" y="116" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#1F2933">cero</text>
+  <text x="422" y="168" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#1F2933">s(cero)</text>
+  <rect x="600" y="147" width="30" height="30" rx="4" fill="#FBE4E2" stroke="#B3261E" stroke-width="2"/>
+  <text x="422" y="220" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#1F2933">s(s(cero))</text>
+  <rect x="600" y="199" width="30" height="30" rx="4" fill="#FBE4E2" stroke="#B3261E" stroke-width="2"/>
+  <rect x="640" y="199" width="30" height="30" rx="4" fill="#FBE4E2" stroke="#B3261E" stroke-width="2"/>
+  <text x="422" y="272" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#1F2933">s(s(s(cero)))</text>
+  <rect x="600" y="251" width="30" height="30" rx="4" fill="#FBE4E2" stroke="#B3261E" stroke-width="2"/>
+  <rect x="640" y="251" width="30" height="30" rx="4" fill="#FBE4E2" stroke="#B3261E" stroke-width="2"/>
+  <rect x="680" y="251" width="30" height="30" rx="4" fill="#FBE4E2" stroke="#B3261E" stroke-width="2"/>
+  <text x="600" y="330" font-family="Verdana, DejaVu Sans, sans-serif" font-size="28" fill="#B3261E" font-weight="bold">…</text>
+  <circle cx="438" cy="368" r="15" fill="#B3261E"/>
+  <path d="M 431 361 L 445 375 M 445 361 L 431 375" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/>
+  <text x="464" y="375" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#B3261E" font-weight="bold">nada se reduce: no termina</text>
+</svg>

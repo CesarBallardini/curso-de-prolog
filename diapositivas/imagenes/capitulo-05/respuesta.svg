@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" width="960" height="480">
+  <title>La respuesta: se juntan las sustituciones de la rama de éxito y se conservan solo las variables de la consulta, Quien = luis</title>
+  <rect x="0" y="0" width="960" height="480" fill="#FFFFFF"/>
+  <line x1="170.0" y1="61.0" x2="170.0" y2="115.0" stroke="#2E7D32" stroke-width="4"/>
+  <line x1="170.0" y1="185.0" x2="170.0" y2="239.0" stroke="#2E7D32" stroke-width="4"/>
+  <line x1="170.0" y1="281.0" x2="170.0" y2="335.0" stroke="#2E7D32" stroke-width="4"/>
+  <rect x="46.3" y="18.8" width="247.5" height="42.4" rx="10" fill="#E3F1E4" stroke="#2E7D32" stroke-width="3"/>
+  <text x="170.0" y="47.5" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">abuelo(juan, Quien)</text>
+  <rect x="69.4" y="114.7" width="201.2" height="70.7" rx="10" fill="#E3F1E4" stroke="#2E7D32" stroke-width="3"/>
+  <text x="170.0" y="143.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">padre(juan, P),</text>
+  <text x="170.0" y="171.6" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">padre(P, Quien)</text>
+  <rect x="46.3" y="238.8" width="247.5" height="42.4" rx="10" fill="#E3F1E4" stroke="#2E7D32" stroke-width="3"/>
+  <text x="170.0" y="267.5" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">padre(pedro, Quien)</text>
+  <text x="182.0" y="96.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#2E7D32" text-anchor="start" xml:space="preserve">θ₁</text>
+  <text x="182.0" y="220.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#2E7D32" text-anchor="start" xml:space="preserve">θ₃</text>
+  <text x="182.0" y="316.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#2E7D32" text-anchor="start" xml:space="preserve">θ₄</text>
+  <rect x="70.0" y="335.0" width="200.0" height="76.0" rx="12" fill="#E3F1E4" stroke="#2E7D32" stroke-width="3"/>
+  <text x="170.0" y="366.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#2E7D32" text-anchor="middle" xml:space="preserve" font-weight="bold">consulta vacía</text>
+  <text x="170.0" y="396.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="middle" xml:space="preserve">hoja de éxito</text>
+  <text x="334.0" y="50.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">sustituciones de la rama</text>
+  <rect x="324.0" y="64.0" width="330.0" height="150.0" rx="10" fill="#F1F3F5"/>
+  <text x="340.0" y="102.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" xml:space="preserve"><tspan fill="#1F2933">θ₁ = { </tspan><tspan fill="#9AA5B1">A/juan, N/Quien</tspan><tspan fill="#1F2933"> }</tspan></text>
+  <text x="340.0" y="146.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" xml:space="preserve"><tspan fill="#1F2933">θ₃ = { </tspan><tspan fill="#9AA5B1">P/pedro</tspan><tspan fill="#1F2933"> }</tspan></text>
+  <text x="340.0" y="190.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" xml:space="preserve"><tspan fill="#1F2933">θ₄ = { </tspan><tspan fill="#2E7D32" font-weight="bold">Quien/luis</tspan><tspan fill="#1F2933"> }</tspan></text>
+  <text x="672.0" y="102.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#9AA5B1" text-anchor="start" xml:space="preserve">A, N, P:</text>
+  <text x="672.0" y="132.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">variables de R4,</text>
+  <text x="672.0" y="160.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">no aparecen</text>
+  <line x1="489.0" y1="222.0" x2="489.0" y2="278.0" stroke="#2E7D32" stroke-width="3"/>
+  <polygon points="489.0,290.0 495.6,278.0 482.4,278.0" fill="#2E7D32"/>
+  <text x="504.0" y="262.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">las variables de la consulta</text>
+  <rect x="369.0" y="300.0" width="240.0" height="64.0" rx="8" fill="#1F2933"/>
+  <text x="489.0" y="341.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#E4E7EB" text-anchor="middle" xml:space="preserve" font-weight="bold">Quien = luis.</text>
+</svg>

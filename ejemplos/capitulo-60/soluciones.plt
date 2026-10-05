@@ -100,4 +100,17 @@ test(ej5_ciclos_invertida, [N, P] == [10, 190]) :-
     ciclos_invertida(ordenar, lejana, 20, N),
     ciclos_invertida(ordenar, primera, 20, P).
 
+test(distancia, [true(Cs == [-3, 0])]) :-
+    distancia([reemplazar(pos(2, b), pos(2, a)),
+               reemplazar(pos(5, a), pos(5, b))], C1),
+    distancia([agregar(x)], C2),
+    Cs = [C1, C2].
+
+% La estrategia lejana prefiere el intercambio más distante.
+test(clave_lejana, [true(C == -4)]) :-
+    clave(lejana, 9, instancia(i, 3, [0, 4],
+                               [reemplazar(pos(1, c), pos(1, a)),
+                                reemplazar(pos(5, a), pos(5, c))]),
+          C).
+
 :- end_tests(soluciones).

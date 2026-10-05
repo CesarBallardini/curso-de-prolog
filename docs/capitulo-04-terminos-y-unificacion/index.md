@@ -285,7 +285,8 @@ Las variables estaban distribuidas entre los dos términos, una en cada uno. La
 ubicación es indistinta: la unificación es simétrica y trata a los dos términos
 por igual.
 
-El siguiente ejemplo tiene términos anidados, y aplica la regla 3 dos veces:
+El siguiente ejemplo tiene términos anidados, y aplica la regla 3 una vez, la 2
+dos veces y la 1 una vez:
 
 ```prolog
 ?- ficha(M, F, ana) = ficha(mascota(gato, felix), fecha(2021, 5, 3), ana).

@@ -28,7 +28,7 @@ PDFS      := $(PDFS_CAP) $(PDFS_SOL)
 SWI_HOME_DIR ?= $(shell swipl --dump-runtime-variables 2>/dev/null | sed -n 's/^PLBASE="\(.*\)";/\1/p')
 
 .PHONY: help install browser test swish part-1 transcripts math time sync sql appendix windows \
-        docs docs-serve pdf pldoc clean-pldoc lint format check clean clean-pdf
+        docs docs-serve pdf pldoc clean-pldoc slides slides-pdf video lint format check clean clean-pdf
 
 help: ## List the available targets
 	@echo "Curso de Prolog"
@@ -165,6 +165,93 @@ pldoc: clean-pldoc ## Recreate every PlDoc site from the examples (docs/*/pldoc/
 # is watching cannot be removed ("Device or resource busy").
 clean-pldoc: ## Remove the generated PlDoc sites
 	rm -rf $(addsuffix /*,$(PLDOC_DIRS))
+
+## --- Slides --------------------------------------------------------------
+
+# One deck per diapositivas/capitulo-NN.md, written in Pandoc Markdown. Pandoc
+# writes PowerPoint but not Impress, so the .pptx is an intermediate step in a
+# scratch directory and LibreOffice turns it into the .odp that is committed.
+# The styles come from diapositivas/plantilla.pptx, which tools/slides-template.py
+# builds from pandoc's default reference document. CI has no LibreOffice, so
+# `make check` does not build the slides; it does check their code blocks and
+# transcripts, like the text's.
+SLIDES_MD  := $(wildcard diapositivas/capitulo-*.md)
+SLIDES_ODP := $(SLIDES_MD:.md=.odp)
+SLIDES_IMG := $(wildcard diapositivas/imagenes/*/*)
+
+# LibreOffice is rarely on the PATH on Windows; its usual place is the default.
+ifeq ($(OS),Windows_NT)
+SOFFICE ?= $(or $(shell command -v soffice 2>/dev/null),/c/Program Files/LibreOffice/program/soffice.exe)
+else
+SOFFICE ?= soffice
+endif
+
+slides: $(SLIDES_ODP) ## Build the slides of every chapter (diapositivas/capitulo-NN.odp; needs pandoc and LibreOffice)
+
+diapositivas/plantilla.pptx: tools/slides-template.py
+	$(UV) tools/slides-template.py
+
+# Pandoc: a slide per `##`, whatever the file's first heading is, and an image
+# alone in a paragraph stays an image (its text is the description the slide
+# carries) instead of becoming a figure with a caption under it. Pandoc writes a
+# block it does not highlight (```text) with literal line feeds, which
+# LibreOffice would turn into one paragraph per line; tools/slides-breaks.py
+# makes them line breaks, as in highlighted code.
+#
+# LibreOffice runs with a profile of its own in the scratch directory: with the
+# user's profile, a LibreOffice window already open swallows the conversion and
+# the command ends without writing anything. A profile that is being created
+# can also end the first run without output, so the conversion gets a second
+# try. cygpath gives the file:/// URL the Windows build needs; elsewhere the
+# plain path is already right.
+diapositivas/%.odp: diapositivas/%.md diapositivas/plantilla.pptx tools/slides-breaks.py $(SLIDES_IMG)
+	@tmp=$$(mktemp -d) && \
+	url=$$(cygpath -m "$$tmp" 2>/dev/null || echo "$$tmp") && \
+	pandoc $< --from=markdown-implicit_figures --slide-level=2 --resource-path=diapositivas \
+	  --reference-doc=diapositivas/plantilla.pptx -o "$$tmp/$*.pptx" && \
+	$(UV) tools/slides-breaks.py "$$tmp/$*.pptx" && \
+	rm -f $@ && \
+	for try in 1 2; do \
+	  "$(SOFFICE)" -env:UserInstallation=file:///$${url#/}/perfil --headless \
+	    --convert-to odp --outdir diapositivas "$$tmp/$*.pptx"; \
+	  test -f $@ && break; \
+	done; \
+	rm -rf "$${tmp:?}"; \
+	test -f $@ || { echo "LibreOffice did not write $@"; exit 1; }
+
+# A PDF of each deck, exported from its .odp, so it follows every change of the
+# deck (and, through the .odp, of its source). Same private profile and second
+# try as the .odp.
+SLIDES_PDF := $(SLIDES_MD:.md=.pdf)
+
+slides-pdf: $(SLIDES_PDF) ## Export every deck to PDF (diapositivas/capitulo-NN.pdf), rebuilding the .odp first if needed
+
+diapositivas/%.pdf: diapositivas/%.odp
+	@tmp=$$(mktemp -d) && \
+	url=$$(cygpath -m "$$tmp" 2>/dev/null || echo "$$tmp") && \
+	rm -f $@ && \
+	for try in 1 2; do \
+	  "$(SOFFICE)" -env:UserInstallation=file:///$${url#/}/perfil --headless \
+	    --convert-to pdf --outdir diapositivas $<; \
+	  test -f $@ && break; \
+	done; \
+	rm -rf "$${tmp:?}"; \
+	test -f $@ || { echo "LibreOffice did not write $@"; exit 1; }
+
+## --- Video -----------------------------------------------------------------
+
+# A narrated video per deck: every slide on screen while a Piper voice reads its
+# notes; tools/video.py documents the pipeline and the timing. It needs
+# LibreOffice, ffmpeg and, the first time, the download of the voice model, so
+# neither CI nor `make check` builds it, and the .mp4 is not versioned.
+# tools/video.py is a PEP 723 script with its own dependencies: plain `uv run`,
+# because --frozen asks for a lockfile the script does not have.
+VIDEOS := $(if $(c),diapositivas/capitulo-$(c).mp4,$(SLIDES_MD:.md=.mp4))
+
+video: $(VIDEOS) ## Build the narrated video of every deck (one chapter: make video c=01)
+
+diapositivas/%.mp4: diapositivas/%.odp tools/video.py
+	SOFFICE="$(SOFFICE)" uv run tools/video.py $< -o $@
 
 ## --- Verification ----------------------------------------------------------
 

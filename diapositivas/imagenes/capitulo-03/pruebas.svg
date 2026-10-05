@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 400" width="960" height="400">
+  <title>swipl carga hermana.pl y hermana.plt y ejecuta run_tests: las cinco pruebas pasan</title>
+  <defs>
+    <marker id="a-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1F2933"/></marker>
+    <marker id="a-navy" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1F3A5F"/></marker>
+    <marker id="a-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#D9822B"/></marker>
+    <marker id="a-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2E7D32"/></marker>
+    <marker id="a-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#C62828"/></marker>
+    <marker id="a-grey" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#9AA5B1"/></marker>
+  </defs>
+  <rect x="0" y="0" width="960" height="400" fill="#FFFFFF"/>
+  <text x="40.0" y="44.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#52606D" text-anchor="start" xml:space="preserve">se cargan juntos el programa y sus pruebas</text>
+  <rect x="40.0" y="60.0" width="880.0" height="52.0" rx="8" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="60.0" y="94.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#1F2933" text-anchor="start" xml:space="preserve">swipl -g "consult(['hermana.pl','hermana.plt']),run_tests" -t halt</text>
+  <rect x="40.0" y="140.0" width="880.0" height="171.9" rx="8" fill="#1F2933" stroke="#1F2933" stroke-width="2"/>
+  <text x="58.0" y="168.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="19" fill="#E4E7EB" text-anchor="start" font-weight="bold" xml:space="preserve">% [1/5] hermana:hermana_se_cuenta_a_si_misma ....... passed</text>
+  <text x="58.0" y="193.7" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="19" fill="#E4E7EB" text-anchor="start" font-weight="bold" xml:space="preserve">% [2/5] hermana:hermanas_de_verdad ................. passed</text>
+  <text x="58.0" y="219.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="19" fill="#E4E7EB" text-anchor="start" font-weight="bold" xml:space="preserve">% [3/5] hermana:eva_es_hermana_de_luis ............. passed</text>
+  <text x="58.0" y="244.9" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="19" fill="#E4E7EB" text-anchor="start" font-weight="bold" xml:space="preserve">% [4/5] hermana:nadie_es_hermana_de_si_misma ....... passed</text>
+  <text x="58.0" y="270.6" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="19" fill="#E4E7EB" text-anchor="start" font-weight="bold" xml:space="preserve">% [5/5] hermana:pedro_no_es_hermana ................ passed</text>
+  <text x="58.0" y="296.2" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="19" fill="#E4E7EB" text-anchor="start" font-weight="bold" xml:space="preserve">% All 5 tests passed</text>
+  <path d="M883.7,172.7 L888.6,177.6 L897.0,166.4" fill="none" stroke="#7BD389" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M883.7,197.4 L888.6,202.3 L897.0,191.1" fill="none" stroke="#7BD389" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M883.7,222.1 L888.6,227.0 L897.0,215.8" fill="none" stroke="#7BD389" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M883.7,246.8 L888.6,251.7 L897.0,240.5" fill="none" stroke="#7BD389" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M883.7,271.5 L888.6,276.4 L897.0,265.2" fill="none" stroke="#7BD389" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="40.0" y="380.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#52606D" text-anchor="start" xml:space="preserve">La salida real muestra además el tiempo de cada prueba.</text>
+</svg>

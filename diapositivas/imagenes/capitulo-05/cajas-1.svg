@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" width="960" height="480">
+  <title>Cajas anidadas: la caja de abuelo(juan, Quien) contiene las de padre(juan, P) y padre(P, Quien), con sus puertas conectadas</title>
+  <rect x="0" y="0" width="960" height="480" fill="#FFFFFF"/>
+  <rect x="170.0" y="100.0" width="620.0" height="260.0" rx="14" fill="#F7F9FB" stroke="#1F3A5F" stroke-width="3"/>
+  <text x="190.0" y="132.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F3A5F" text-anchor="start" xml:space="preserve" font-weight="bold">abuelo(juan, Quien)</text>
+  <rect x="240.0" y="180.0" width="200.0" height="140.0" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <rect x="520.0" y="180.0" width="200.0" height="140.0" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="340.0" y="257.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">padre(juan, P)</text>
+  <text x="620.0" y="257.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">padre(P, Quien)</text>
+  <line x1="40.0" y1="210.0" x2="224.0" y2="210.0" stroke="#1F3A5F" stroke-width="5"/>
+  <polygon points="240.0,210.0 224.0,201.2 224.0,218.8" fill="#1F3A5F"/>
+  <line x1="440.0" y1="210.0" x2="504.0" y2="210.0" stroke="#2E7D32" stroke-width="5"/>
+  <polygon points="520.0,210.0 504.0,201.2 504.0,218.8" fill="#2E7D32"/>
+  <line x1="720.0" y1="210.0" x2="904.0" y2="210.0" stroke="#2E7D32" stroke-width="5"/>
+  <polygon points="920.0,210.0 904.0,201.2 904.0,218.8" fill="#2E7D32"/>
+  <line x1="520.0" y1="290.0" x2="452.0" y2="290.0" stroke="#B3261E" stroke-width="2.5"/>
+  <polygon points="440.0,290.0 452.0,296.6 452.0,283.4" fill="#B3261E"/>
+  <line x1="240.0" y1="290.0" x2="52.0" y2="290.0" stroke="#B3261E" stroke-width="2.5"/>
+  <polygon points="40.0,290.0 52.0,296.6 52.0,283.4" fill="#B3261E"/>
+  <line x1="920.0" y1="290.0" x2="732.0" y2="290.0" stroke="#D9822B" stroke-width="2.5"/>
+  <polygon points="720.0,290.0 732.0,296.6 732.0,283.4" fill="#D9822B"/>
+  <text x="40.0" y="196.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F3A5F" text-anchor="start" xml:space="preserve" font-weight="bold">Call (10)</text>
+  <text x="810.0" y="196.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#2E7D32" text-anchor="start" xml:space="preserve" font-weight="bold">Exit (10)</text>
+  <text x="40.0" y="318.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#B3261E" text-anchor="start" xml:space="preserve" font-weight="bold">Fail (10)</text>
+  <text x="810.0" y="318.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#D9822B" text-anchor="start" xml:space="preserve" font-weight="bold">Redo (10)</text>
+  <text x="480.0" y="170.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#2E7D32" text-anchor="middle" xml:space="preserve" font-weight="bold">Exit (11) → Call (11)</text>
+  <text x="480.0" y="346.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#B3261E" text-anchor="middle" xml:space="preserve" font-weight="bold">Fail (11) → Redo (11)</text>
+  <text x="480.0" y="414.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="middle" xml:space="preserve">el Exit de una caja lleva al Call de la siguiente;</text>
+  <text x="480.0" y="446.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="middle" xml:space="preserve">el Fail de una caja lleva al Redo de la anterior</text>
+</svg>

@@ -130,7 +130,7 @@ cabeza(mientras(C, Cuerpo), E0, I) :-
 %   Si es el estado E restringido a los valores que cumplen la condición C,
 %   y No a los que no la cumplen; nada si no queda ninguno. Observa las
 %   divisiones de C, nunca(C) si Si es nada y siempre(C) si No es nada.
-partir(_, nada, nada, nada) -->
+partir(rel(_, _, _), nada, nada, nada) -->
     [].
 partir(rel(Op, A, B), estado(D, Env), Si, No) -->
     valor_abs(A, D, Env, VA),

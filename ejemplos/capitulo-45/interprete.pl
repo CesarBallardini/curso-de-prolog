@@ -22,6 +22,12 @@
 
 :- ensure_loaded(sintaxis).
 
+% Las sentencias y los nodos que nombran variables son multifile: leer.pl
+% agrega la sentencia leer.
+:- multifile
+    ejecutar_sentencia//3,
+    nombre/2.
+
 %!  ejecutar(+Texto, -Salida:list(integer)) is semidet.
 %
 %   Salida es lo que escribe el programa Mini de Texto, interpretado. Falla

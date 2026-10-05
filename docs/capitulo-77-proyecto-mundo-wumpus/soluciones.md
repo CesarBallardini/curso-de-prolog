@@ -490,3 +490,45 @@ accion(disparar(D)) -->
     { atom_codes(D, Cs),
       memberchk(D, [norte, sur, este, oeste]) }.
 ```
+
+## 12
+
+El axioma tiene la forma de los de `temporal.pl`: el fluente vale en T
+si la acción de T − 1 lo produjo, o si valía en T − 1. `soluciones.pl`
+reexporta `temporal.pl`, de modo que `hizo/3`, `percibio/3`, `traducir/4`
+e `historia/3` están disponibles:
+
+<!-- ejemplo: capitulo-77/soluciones.pl predicado: tiene_oro/2 -->
+```prolog
+%!  tiene_oro(+H, +T:integer) is semidet.
+%
+%   En el momento T de la historia H el agente lleva el oro: en un momento
+%   anterior lo tomó mientras percibía el brillo. Ninguna acción lo suelta,
+%   así que una vez tomado se conserva.
+tiene_oro(H, T) :-
+    T > 0,
+    T0 is T - 1,
+    (   hizo(H, tomar, T0),
+        percibio(H, brillo, T0)
+    ->  true
+    ;   tiene_oro(H, T0)
+    ).
+```
+
+<!-- contexto: capitulo-77/soluciones.pl -->
+```prolog
+?- mundo(figura_7_2, M), jugar(M, final(_, _, Plan)), traducir(Plan, p(1-1, este), As, _), historia(M, As, H), findall(T, (between(0, 18, T), tiene_oro(H, T)), Ts).
+M = mundo(4, [3-1, 3-3, 4-4], 1-3, 2-3),
+Plan = [ir(1-2), ir(1-1), ir(2-1), ir(2-2), ir(2-3), tomar, ir(2-2), ir(... - ...), ir(...)|...],
+As = [girar(izquierda), avanzar, girar(izquierda), girar(izquierda), avanzar, girar(izquierda), avanzar, girar(izquierda), avanzar|...],
+H = h(4, [[], [], [hedor], [hedor], [hedor], [], [], [...]|...], [girar(izquierda), avanzar, girar(izquierda), girar(izquierda), avanzar, girar(izquierda), avanzar, girar(...)|...]),
+Ts = [11, 12, 13, 14, 15, 16, 17, 18].
+```
+
+La acción del momento 10 es `tomar`, en (2, 3), donde el agente percibe
+el brillo: el fluente vale desde el momento 11 hasta el final. La
+segunda rama de la condicional, `tiene_oro(H, T0)`, es la que resuelve el
+problema del marco: dice que el oro se conserva mientras ninguna acción lo
+suelta, y como entre las acciones del libro no hay ninguna que lo suelte,
+no necesita ninguna condición. La condición `percibio(H, brillo, T0)`
+impide que un `tomar` en una celda sin oro produzca el fluente.

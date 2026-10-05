@@ -10,6 +10,28 @@ la terminal y una pantalla que se redibuja. El capítulo lo construye en seis
 versiones, cada una en su archivo y con sus pruebas; cada versión carga la
 anterior como módulo y corrige lo que esa no podía hacer.
 
+![Pantalla de una terminal VT100 con el comienzo de una partida de Colossal Cave Adventure, en letras mayúsculas](colossal-cave.jpg)
+
+*Colossal Cave Adventure*, la primera aventura de texto, escrita por Will
+Crowther hacia 1976 y ampliada por Don Woods en 1977, en una terminal VT100
+conectada a una PDP-11/34: el programa describe el lugar, el jugador escribe
+una orden de una o dos palabras (`ENTER BUILDING`, `GET LAMP`, `INVENTORY`) y
+el programa responde. Imagen: Autopilot,
+[CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/), vía
+[Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Colossal_Cave_Adventure_on_VT100_terminal.jpg).
+
+El mundo del capítulo es un observatorio de cinco salas. Cada flecha es un
+paso que se recorre en los dos sentidos; dos de ellos empiezan cerrados, y el
+sótano no tiene luz propia:
+
+```mermaid
+flowchart LR
+    V["vestíbulo<br/>perchero"] -- "puerta de la biblioteca" --- B["biblioteca<br/>escritorio con la llave,<br/>catálogo"]
+    V -- "puerta del taller<br/>(cerrada: hace falta la llave)" --- T["taller<br/>banco con la linterna"]
+    T -- "trampilla (cerrada)" --- S["sótano (oscuro)<br/>baúl cerrado con la lente"]
+    B -- "escalera" --- C["cúpula<br/>telescopio"]
+```
+
 El proyecto parte de dos libros. El principal es *Adventure in Prolog*, de
 Dennis Merritt, que enseña Prolog construyendo capítulo a capítulo un juego,
 *Nani Search*; Amzi! lo publica en línea sin costo en
@@ -54,12 +76,15 @@ Al terminar el capítulo, el lector puede:
 - escribir un bucle de juego y un menú que leen de un stream recibido como
   argumento, y probarlos con cadenas;
 - montar una interfaz de pantalla completa sobre el modelo de pantalla del
-  [capítulo 36](../capitulo-36-interfaces-de-usuario/index.md).
+  [capítulo 36](../capitulo-36-interfaces-de-usuario/index.md);
+- agregar al juego, como capas que no modifican el estado, un puntaje por
+  logros, personajes que se mueven solos y un laberinto con búsqueda del
+  camino más corto, y leer menús de una sola tecla.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:34 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:40 h**.
     Resolver los 5 ejercicios marcados con ★: **1:35 h**.
-    Resolver los 12 ejercicios del final: **3:34 h**.
+    Resolver los 15 ejercicios del final: **4:05 h**.
 
 ## 44.1 El programa terminado
 
@@ -255,6 +280,49 @@ modificar `mundo.pl`. El ejercicio 2 lo usa. `mundo.plt` verifica además que
 los datos sean coherentes: que cada puerta una dos salas, que todo lo que
 aparece en el estado inicial tenga nombre y que haya un solo lugar inicial.
 
+!!! example "Patrón 57 — Extensión por cláusulas multifile"
+    **Problema.** Un programa está hecho de módulos que otros archivos
+    cargan, y es necesario agregarle casos —una sala, un sinónimo, un
+    logro, un personaje— sin modificar el archivo que define el
+    predicado y sin copiarlo.
+
+    **Versión ingenua.** Editar `mundo.pl` cada vez que el mundo crece,
+    con lo que cada variante del juego es una copia del archivo. O
+    escribir en otro archivo `mundo:sala(jardin, "…")` sin más: si
+    `sala/2` no es `multifile`, SWI-Prolog avisa `Redefined static
+    procedure mundo:sala/2`, y la consulta `mundo:sala(S, _)` responde
+    solo `jardin`; las cinco salas del observatorio desaparecen.
+
+    **Patrón.** El módulo declara `multifile`, en su propio archivo, los
+    predicados que deja abiertos: `mundo.pl` los nueve predicados de
+    datos, `lenguaje.pl` `forma/2`, `puntaje.pl` `logro/2` y
+    `personajes.pl` `ruta/2` y `bloquea/3`. Otro archivo carga el módulo
+    y escribe sus cláusulas con el nombre del módulo delante, como la
+    solución del ejercicio 2, que agrega el jardín: las salas pasan a ser
+    seis, y `conecta/3`, `objeto/1` y la gramática las usan sin cambio
+    alguno. En el
+    [capítulo 45](../capitulo-45-proyecto-compilador/index.md), los
+    predicados abiertos son las etapas de un compilador —la gramática, el
+    intérprete, el generador de código y el paso de la máquina—, y
+    `leer.pl` agrega una sentencia con una cláusula en cada etapa. El
+    [Patrón 79](../patrones.md#79-clausulas-para-un-modulo-cargado)
+    resuelve el mismo problema cuando el programa cargado no declaró nada:
+    un archivo puente declara `multifile` antes de cargarlo; aquí el
+    módulo se escribe desde el principio para ser extendido. Y el
+    [Patrón 46](../patrones.md#46-extender-el-interprete-no-el-programa)
+    cambia lo que el intérprete calcula, con un argumento más en todas sus
+    cláusulas, algo que agregar cláusulas no consigue.
+
+    **Cuándo no usarlo.** Cuando la cláusula nueva tiene que ir antes que
+    las originales: las de otro archivo quedan después, y una cláusula
+    general o un corte del módulo deciden antes de alcanzarlas. Cuando dos
+    extensiones pueden unificar la misma cabeza: las respuestas de una se
+    mezclan con las de la otra. Y cuando lo que cambia es la conducta de
+    una consulta y no el contenido del programa: un argumento, como en el
+    [Patrón 60](../patrones.md#60-interprete-con-conducta-como-parametro),
+    es más local que cláusulas que valen para todos los que usan el
+    módulo.
+
 **Lo que falta.** Los hechos describen el mundo al empezar, pero nada los
 cambia: tomar la llave tiene que sacarla del escritorio y ponerla en el
 inventario.
@@ -424,7 +492,7 @@ Las respuestas son términos y no texto: el núcleo no sabe castellano, y las
 pruebas comparan términos. `estado.plt` recorre la partida entera con
 dieciséis órdenes y verifica `ganado/0` al final.
 
-!!! example "Patrón 57 — Impedimento y efecto"
+!!! example "Patrón 58 — Impedimento y efecto"
     **Problema.** Una orden cambia el estado de un programa, pero solo
     cuando las reglas lo permiten; si no, hay que decir por qué, sin haber
     cambiado nada.
@@ -759,7 +827,39 @@ verificadas.
     | C1 | cada predicado declara modos y determinación; `realizar/2`, `entender/2`, `responder/2` y los no terminales de las respuestas son `det`, y las pruebas, que fallan si queda una alternativa pendiente, lo confirman |
     | C5 | una orden desconocida, un hecho de estado inválido o un archivo de partida dañado producen un error de dominio, de sintaxis o de existencia; `restablecer/1` valida antes de cambiar nada |
     | C6 | el estado cambia solo en `iniciar/0`, `restablecer/1` y los cinco predicados de cambio; `impedimento/2` y los modelos de respuesta y de pantalla no escriben; la lectura y la escritura están en `partida/1`, `menu/3` y `bucle/2`, que reciben el stream como argumento |
-    | C7 | 70 pruebas en seis archivos: la coherencia de los datos, cada impedimento, la ida y vuelta de la instantánea y de un archivo, las dos gramáticas en los dos sentidos, el menú y la partida entera con la entrada en una cadena, y la pantalla comparada línea por línea |
+    | C7 | 161 pruebas en diez archivos: la coherencia de los datos, cada impedimento, la ida y vuelta de la instantánea y de un archivo, las dos gramáticas en los dos sentidos, el menú y la partida entera con la entrada en una cadena, la pantalla comparada línea por línea, y en las secciones 44.8 a 44.11 el puntaje de una partida completa, el bloqueo del gato, los caminos más cortos del laberinto y los menús de una tecla leídos de cadenas |
+
+## 44.8 El puntaje y los turnos
+
+`puntaje.pl` cuenta los turnos y da puntos por logros, como *Colossal
+Cave*: un logro es un hecho del estado que se cumple por primera vez, y
+queda registrado aunque después deje de cumplirse. `jugada/2` envuelve a
+`realizar/2` sin modificarlo, y `informe/1` redacta el puntaje, los turnos
+y el rango del final. La página de los elementos de *Colossal Cave* lo
+desarrolla en [su sección](colossal-cave.md#448-el-puntaje-y-los-turnos).
+
+## 44.9 Personajes que se mueven solos
+
+`personajes.pl` agrega un gato que recorre una ruta fija de salas, un paso
+por turno, y que en la cúpula impide poner algo en el telescopio.
+`turno/2` realiza la orden, mueve los personajes y avisa de los que llegan
+a la sala del jugador o se van:
+[su sección](colossal-cave.md#449-personajes-que-se-mueven-solos).
+
+## 44.10 Un laberinto de pasadizos retorcidos
+
+`laberinto.pl` describe salas unidas por direcciones cuyos pasadizos no
+siempre vuelven por la dirección opuesta, busca el camino más corto con
+profundización iterativa y recorre el laberinto marcando las salas, como el
+jugador que deja un objeto en cada una:
+[su sección](colossal-cave.md#4410-un-laberinto-de-pasadizos-retorcidos).
+
+## 44.11 Menús de una tecla
+
+`teclas.pl` lee una sola tecla, con `get_single_char/1` en la terminal y
+con `get_char/2` en cualquier otro stream, y escribe sobre esa lectura el
+menú de un dígito y la pregunta de sí o no de Covington, Nute y Vellino:
+[su sección](colossal-cave.md#4411-menus-de-una-tecla).
 
 ## Ejercicios
 
@@ -820,6 +920,16 @@ archivo que carga los del capítulo, sin modificarlos.
     última orden que lo cambió. Escribir un bucle
     `partida_con_deshacer(+In)` que lleva en un argumento la pila de
     instantáneas.
+13. **(1)** Agregar, en un archivo aparte y solo con hechos, un perro que va
+    y viene entre el taller y el sótano. Predecir los avisos de
+    `turno/2` a dos órdenes «mirar» seguidas con el jugador en el taller, y
+    comprobarlos.
+14. **(2)** Escribir `trampa(?S)`: `S` es una sala del laberinto que se
+    alcanza desde la entrada y desde la cual la entrada no se alcanza. Usar
+    `explorar/2`.
+15. **(1)** Escribir `logros_pendientes(-Logros)`, la lista de los pares
+    `Hecho-Puntos` de los logros que todavía no se obtuvieron, en el orden de
+    `logro/2`.
 
 ## Resumen
 
@@ -827,7 +937,8 @@ archivo que carga los del capítulo, sin modificarlos.
 |---|---|
 | **mundo como hechos** | nombres con género, salas, puertas y propiedades; el estado inicial, `inicio/1`, con los mismos términos que el estado del juego |
 | **estado detrás de una interfaz** | cuatro predicados dinámicos que solo cambian `iniciar/0`, `restablecer/1` y cinco predicados de cambio ([Patrón 19](../patrones.md#19-estado-detras-de-una-interfaz)) |
-| **[Patrón 57](../patrones.md#57-impedimento-y-efecto)** | impedimento y efecto: las reglas del juego como una relación sin efectos, consultada antes de aplicar un solo efecto; el orden de las cláusulas decide el aviso |
+| **[Patrón 58](../patrones.md#58-impedimento-y-efecto)** | impedimento y efecto: las reglas del juego como una relación sin efectos, consultada antes de aplicar un solo efecto; el orden de las cláusulas decide el aviso |
+| **[Patrón 57](../patrones.md#57-extension-por-clausulas-multifile)** | extensión por cláusulas multifile |
 | **instantánea** | la lista ordenada de los hechos del estado; sirve para probar, guardar, cargar y deshacer |
 | **cargar sin ejecutar** | `read_term/3` analiza los términos; `restablecer/1` los valida antes de cambiar nada |
 | **gramática de órdenes** | verbos como datos, sustantivos tomados de los nombres del mundo, tipos de complemento, contracciones y concordancia |
@@ -838,6 +949,11 @@ archivo que carga los del capítulo, sin modificarlos.
 | **pantalla completa** | el modelo de pantalla del [capítulo 36](../capitulo-36-interfaces-de-usuario/index.md) con tres recuadros; el bucle lleva los mensajes en un argumento |
 | `mundo.pl`, `estado.pl`, `partidas.pl` | el mundo, el estado y las partidas guardadas |
 | `lenguaje.pl`, `juego.pl`, `aventura.pl` | el castellano, el bucle y el menú, y la pantalla completa |
+| **puntaje por logros** | un logro registrado la primera vez que un hecho del estado se cumple; turnos contados en `jugada/2`, que envuelve a `realizar/2` |
+| **personajes** | una posición en una ruta, avanzada cada turno; avisos por diferencia entre quiénes están antes y después |
+| **laberinto** | pasadizos por dirección sin sentido inverso; camino más corto por profundización iterativa acotada; exploración con una lista de salas marcadas |
+| **menú de una tecla** | la tecla se lee sin esperar Intro en la terminal y carácter a carácter en los demás streams, que es como se prueba |
+| `puntaje.pl`, `personajes.pl`, `laberinto.pl`, `teclas.pl` | el puntaje, los personajes, el laberinto y los menús de una tecla |
 
 ## Temas que se retoman
 
@@ -863,8 +979,21 @@ archivo que carga los del capítulo, sin modificarlos.
   Depth*, Prentice Hall, 1997 — apartados 2.13 y 5.5, «Constructing menus».
   [Edición en línea](https://www.covingtoninnovations.com/books/PPID.pdf).
   El capítulo toma el menú generado a partir de una lista de opciones, que
-  vuelve a preguntar ante una respuesta inválida, y un ejercicio sobre la
-  elección por inicial.
+  vuelve a preguntar ante una respuesta inválida, un ejercicio sobre la
+  elección por inicial, y en la
+  [sección 44.11](#4411-menus-de-una-tecla) la lectura de una sola tecla
+  y la pregunta que solo acepta sí o no (`get_yes_or_no/1`).
+- William Crowther y Don Woods, *Colossal Cave Adventure*, 1976–1977, el
+  juego que Merritt nombra en su prefacio como el modelo de todos los que lo
+  siguieron. [Historia y versiones del juego](https://rickadams.org/adventure/),
+  en el sitio de Rick Adams. El capítulo toma de allí el género: un mundo de
+  lugares y objetos que el programa describe, órdenes breves en lenguaje
+  natural que el jugador escribe, y respuestas que relatan lo que ocurre;
+  y en las secciones [44.8](#448-el-puntaje-y-los-turnos) a
+  [44.10](#4410-un-laberinto-de-pasadizos-retorcidos), tres elementos del juego: el puntaje por
+  logros con los turnos contados y un rango final, los personajes que
+  recorren la cueva por su cuenta (los enanos y el pirata) y el laberinto
+  de pasadizos retorcidos que se describen todos igual.
 
 El código del capítulo es propio, escrito para el curso: el mundo, los
 textos en castellano y los programas son nuevos, y de Merritt y de Covington

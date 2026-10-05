@@ -91,7 +91,7 @@ Al terminar el capítulo, el lector puede:
 !!! info "Tiempo estimado"
     Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:25 h**.
     Resolver los 5 ejercicios marcados con ★: **1:20 h**.
-    Resolver los 11 ejercicios del final: **3:55 h**.
+    Resolver los 12 ejercicios del final: **4:15 h**.
 
 ## 77.1 Seis maneras de programar el agente
 
@@ -165,9 +165,18 @@ del 32. `enfoques.pl` es la comparación de la sección anterior.
 
 ## 77.3 Versión 1: «Hunt the Wumpus»
 
-La cueva es un dodecaedro: veinte salas, cada una con tres túneles. Se
-escribe como veinte hechos `tuneles(S, Vecinas)`, y `tunel/2` los lee de a
-un túnel. Las pruebas verifican que la figura es la correcta: 30 túneles,
+La cueva es un dodecaedro: veinte salas, cada una con tres túneles.
+
+![Mapa de la cueva: tres anillos concéntricos de salas numeradas del 1 al 20, unidos por túneles](cueva-mapa.svg)
+
+La cueva de Yob aplanada: las salas 1 a 5 en el anillo exterior, 6 a 15
+en el medio y 16 a 20 en el interior, con la misma numeración que usan las
+instrucciones de 1973 y el programa del capítulo. Imagen: CMG Lee,
+[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/), vía
+[Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Hunt_the_Wumpus_map.svg).
+
+La cueva se escribe como veinte hechos `tuneles(S, Vecinas)`, y
+`tunel/2` los lee de a un túnel. Las pruebas verifican que la figura es la correcta: 30 túneles,
 todos en los dos sentidos, sin ciclos de tres ni de cuatro salas.
 
 El estado de la partida es un término `j(Jugador, Wumpus, Pozos,
@@ -672,7 +681,20 @@ con tres, 74: fallar despierta al wumpus y borra lo que se sabía de él.
     | C2 | representaciones limpias: el estado del juego, el mundo y el conocimiento son términos con un functor cada uno; las jugadas devuelven términos y el texto se redacta aparte |
     | C4 | `actuar/6` resuelve el disparo en una sola cláusula y `pares_con/4` recorre la lista en su primer argumento, de modo que las pruebas no encuentran alternativas pendientes |
     | C6 | el núcleo es puro: `jugada/5` y `simular/5` no escriben nada, y el bucle de la terminal y `narrar/1` solo escriben lo que ellos devuelven |
-    | C7 | 95 pruebas en diez archivos; el azar sale de una semilla, así que cada partida de las pruebas es reproducible en cualquier instalación |
+    | C7 | 156 pruebas en once archivos; el azar sale de una semilla, así que cada partida de las pruebas es reproducible en cualquier instalación |
+
+## 77.8 El agente con historia
+
+Las cinco versiones dan al agente su celda como dato. El agente del
+apartado «Agents Based on Propositional Logic» de Russell y Norvig no la
+recibe: avanza, gira y dispara, y deduce dónde está de lo que hizo y de lo
+que percibió, con un **axioma de estado sucesor** por cada propiedad que
+cambia con el tiempo. La página [El agente con historia](temporal.md)
+escribe esos axiomas como cláusulas de `temporal.pl`, arma con ellos el
+conocimiento de la versión 3 en cada momento de una historia, traduce los
+planes de la versión 3 a las acciones del libro y explica por qué el
+conocimiento `c/7`, que se actualiza con cada acción, evita releer la
+historia en cada decisión.
 
 ## Ejercicios
 
@@ -729,6 +751,12 @@ que cargan los del capítulo, sin modificarlos.
     en la terminal: muestra las percepciones con mensajes de tú y lee
     acciones como `ir 2 1`, `tomar`, `disparar norte` y `salir` de un
     stream. Probarlo con una cadena que gana la cueva de la figura 7.2.
+12. **(2)** Escribir el axioma de estado sucesor del fluente «lleva el
+    oro» como un predicado `tiene_oro(H, T)` sobre las historias de
+    `temporal.pl`: el agente lleva el oro si en un momento anterior lo
+    tomó mientras percibía el brillo. Comprobarlo con la partida de la
+    cueva de la figura 7.2 traducida a las acciones del libro, y explicar
+    qué parte del predicado resuelve el problema del marco.
 
 ## Resumen
 
@@ -741,6 +769,8 @@ que cargan los del capítulo, sin modificarlos.
 | **azar como estado** | el generador congruencial lineal pasa su estado de un predicado a otro: una partida queda determinada por su semilla |
 | **coordenadas trasladadas** | una búsqueda escrita para una meta fija sirve para cualquier otra si el problema se traslada |
 | **forall/2 y las restricciones** | lo que `forall/2` prueba se deshace al terminar, incluidas las restricciones; se imponen con `maplist/2` |
+| **fluente** | una propiedad que cambia con el tiempo, como la celda del agente o la flecha |
+| **axioma de estado sucesor** | un fluente vale en t + 1 si una acción de t lo produjo, o si valía en t y ninguna lo deshizo; resuelve el problema del marco con un axioma por fluente |
 | **lambdas de `library(yall)` compilados** | si la biblioteca ya está cargada, un lambda se traduce al compilar y sus variables libres no declaradas con `/` quedan como variables nuevas; un predicado con nombre evita el problema |
 | `nueva_partida/2`, `jugada/5`, `observacion/2` | el juego de Yob |
 | `mundo/2`, `mundo_sembrado/2`, `percepciones/3`, `actuar/6`, `simular/5` | el simulador de la grilla |
@@ -748,6 +778,7 @@ que cargan los del capítulo, sin modificarlos.
 | `probabilidad_pozo/3`, `riesgo/3`, `disparo/3`, `medir/3` | la flecha y el riesgo |
 | `cazar/3`, `narrar/1`, `medir_caza/2` | el agente en la cueva de Yob |
 | `seguras_con/3`, `comparar_en/3` | la comparación de los enfoques |
+| `vale/3`, `conocimiento_en/3`, `ok/3`, `traducir/4`, `historia/3` | el agente con historia |
 
 ## Temas que se retoman
 
@@ -769,6 +800,12 @@ que cargan los del capítulo, sin modificarlos.
   tres avisos. La historia del juego, su publicación en *Creative
   Computing* en 1975 y sus versiones están resumidas en el artículo
   [«Hunt the Wumpus» de Wikipedia](https://en.wikipedia.org/wiki/Hunt_the_Wumpus).
+- Gregory Yob, «Hunt the Wumpus», con el programa en BASIC, en *Creative
+  Computing*, septiembre-octubre de 1975, reimpreso en *The Best of
+  Creative Computing*, volumen 1, 1976. Sin edición en línea de acceso
+  libre verificada. Es la versión del juego que lleva el código; las
+  instrucciones de 1973 no dicen con qué frecuencia se mueve el wumpus al
+  despertar, y el capítulo fija tres casos de cada cuatro.
 - Stuart Russell y Peter Norvig, *Artificial Intelligence: A Modern
   Approach*, 4.ª edición, Pearson, 2020 — capítulo «Logical Agents»,
   secciones «Knowledge-Based Agents», «The Wumpus World» y «Agents Based
@@ -779,7 +816,14 @@ que cargan los del capítulo, sin modificarlos.
   situación de la figura 7.4, la inferencia de celdas seguras como
   consecuencia lógica, el orden de decisiones del agente híbrido y el
   cálculo de la probabilidad de un pozo sumando mundos consistentes, con
-  sus valores 0,31 y 0,86.
+  sus valores 0,31 y 0,86. Del apartado «Agents Based on Propositional
+  Logic», la página [El agente con historia](temporal.md) toma las
+  acciones de avanzar y girar, los fluentes con el tiempo como
+  superíndice, los axiomas de estado sucesor de la flecha y de la
+  ubicación, el fluente OK, el problema del marco y la estimación del
+  estado como remedio del costo creciente de la inferencia. El mundo del wumpus como banco de pruebas de
+  agentes se atribuye a Michael Genesereth, que lo adaptó del juego de Yob
+  (artículo [«Wumpus world» de Wikipedia](https://en.wikipedia.org/wiki/Wumpus_world)).
 - aima-python, el código oficial del libro, con licencia MIT:
   `aima/agents.py` (`WumpusEnvironment`) y `aima/logic.py` (`WumpusKB`,
   `HybridWumpusAgent`). [Repositorio](https://github.com/aimacode/aima-python).
@@ -787,7 +831,10 @@ que cargan los del capítulo, sin modificarlos.
   de la entrada para el wumpus y el oro, y la formulación proposicional
   del conocimiento que usa el enfoque de `library(clpb)`: cada brisa
   equivale a la disyunción de los pozos vecinos, y hay al menos un wumpus
-  y a lo sumo uno.
+  y a lo sumo uno. De `WumpusKB` toma también el axioma de estado
+  sucesor del wumpus vivo, que la página del agente con historia usa
+  junto con los del libro, y la negación explícita de las acciones no
+  hechas, que en Prolog da la compleción del programa.
 
 El código del capítulo es propio, escrito para el curso: ninguno de los
 programas de esas fuentes se copió, y la enumeración de mundos

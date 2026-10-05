@@ -379,19 +379,21 @@ para su memoria de trabajo.
 <!-- ejemplo: capitulo-60/soluciones.pl predicado: historia/5 historia/6 escribir_historia/1 -->
 ```prolog
 %!  historia(+Programa, +Estrategia, +Memoria0:list, -Historia:list,
-%!           -Resultado) is det.
+%!           -Resultado) is semidet.
 %
 %   Ejercicio 10. Historia es la traza de la ejecución como datos: un
 %   término ciclo(N, Nombre, Cantidad, Hechos) por ciclo, con el módulo
 %   elegido, el tamaño del conjunto de conflicto y los hechos que usa.
+%   Falla si falla una acción de la instancia elegida.
 historia(Programa, Estrategia, Memoria0, Historia, Resultado) :-
     programa(Programa, Modulos),
     historia(Modulos, Estrategia, 1, Memoria0, Historia, Resultado).
 
 %!  historia(+Modulos:list, +Estrategia, +N:integer, +Memoria0:list,
-%!           -Historia:list, -Resultado) is det.
+%!           -Historia:list, -Resultado) is semidet.
 %
-%   Historia es la traza desde el ciclo N con la memoria Memoria0.
+%   Historia es la traza desde el ciclo N con la memoria Memoria0. Falla
+%   si falla una acción de la instancia elegida.
 historia(Modulos, Estrategia, N, Memoria0, Historia, Resultado) :-
     conflicto(Modulos, Memoria0, Instancias),
     (   Instancias == []
@@ -471,11 +473,12 @@ programa no lo haga:
 <!-- ejemplo: capitulo-60/terminacion.pl predicado: vigilar/6 -->
 ```prolog
 %!  vigilar(+Programa, +Estrategia, +Limite:integer, +Memoria0:list,
-%!          -Memoria:list, -Resultado) is det.
+%!          -Memoria:list, -Resultado) is semidet.
 %
 %   Como ejecutar/5, con dos resultados más: limite(N) si el programa hizo
 %   Limite ciclos sin terminar, y repetida(K, N) si la memoria después de
 %   N ciclos es la misma, como colección de hechos, que después de K.
+%   Falla si falla una acción de la instancia elegida.
 vigilar(Programa, Estrategia, Limite, Memoria0, Memoria, Resultado) :-
     programa(Programa, Modulos),
     empty_assoc(Vistas),
@@ -509,3 +512,86 @@ primero, pero con `N` mayor que 0 su condición no se cumple, así que el
 orden no altera el resultado; en cambio, si `fin` fuera después, con `N` en
 0 sería igual el único módulo aplicable, porque los otros dos piden
 `N > 0`.
+
+## 13
+
+La solución está en `soluciones_indices.pl`, que carga `indices.pl`. El
+programa `contador_fases` tiene tres fases: `limpiar` quita los hechos
+`ruido(I)`, `contar` aumenta el contador hasta 3 y deja un `ruido(I)` en
+cada paso, e `informar` para con el valor del contador:
+
+<!-- ejemplo: capitulo-60/soluciones_indices.pl fragmento: programa_fases(contador_fases, .. ]). -->
+```prolog
+% programa_fases(contador_fases, Fases): limpiar quita los hechos
+% ruido(I), contar aumenta el contador hasta 3 y deja un ruido(I) en cada
+% paso, informar para con el contador.
+programa_fases(contador_fases,
+    [ limpiar - [ quitar_ruido :: [ruido(I)]
+                       ---> [quitar(ruido(I))] ],
+      contar - [ paso :: [contador(N), {N < 3}]
+                       ---> [{M is N + 1},
+                             reemplazar(contador(N), contador(M)),
+                             agregar(ruido(M))] ],
+      informar - [ fin :: [contador(N)]
+                       ---> [parar(N)] ]
+    ]).
+```
+
+La metarregla de prioridades busca, en cada ciclo, la primera fase con un
+conjunto de conflicto no vacío:
+
+<!-- ejemplo: capitulo-60/soluciones_indices.pl predicado: prioridades/5 primera_fase/3 -->
+```prolog
+%!  prioridades(+Fases:list, +Estrategia, +Memoria0, -Memoria,
+%!              -Resultado) is semidet.
+%
+%   Aplica una instancia de la primera fase con instancias, y vuelve a
+%   empezar desde la primera fase, hasta parar/1 o hasta que ninguna fase
+%   tiene instancias. Falla si falla una acción de la instancia elegida.
+prioridades(Fases, Estrategia, Memoria0, Memoria, Resultado) :-
+    (   primera_fase(Fases, Memoria0, Instancias)
+    ->  elegir_i(Estrategia, Instancias, instancia(_, _, _, Acciones)),
+        acciones_i(Acciones, Memoria0, Memoria1, Fin),
+        (   Fin = parar(R)
+        ->  Memoria = Memoria1,
+            Resultado = R
+        ;   prioridades(Fases, Estrategia, Memoria1, Memoria, Resultado)
+        )
+    ;   Memoria = Memoria0,
+        Resultado = nada_aplicable
+    ).
+
+%!  primera_fase(+Fases:list, +Memoria, -Instancias:list) is semidet.
+%
+%   Instancias es el conjunto de conflicto, no vacío, de la primera fase de
+%   Fases que tiene alguno. Falla si ninguna lo tiene.
+primera_fase([_-Modulos|Fases], Memoria, Instancias) :-
+    conflicto_i(Modulos, Memoria, Instancias0),
+    (   Instancias0 == []
+    ->  primera_fase(Fases, Memoria, Instancias)
+    ;   Instancias = Instancias0
+    ).
+```
+
+Como etapas, `limpiar` se agota al principio, cuando no hay ruido, y no
+vuelve a activarse: los tres hechos `ruido(I)` quedan en la memoria. Como
+prioridades, `limpiar` vuelve a ser la fase activa después de cada paso de
+`contar`, y quita el ruido que ese paso dejó:
+
+```prolog
+?- ejecutar_fases_de(contador_fases, primera, [contador(0)], M, R).
+M = [ruido(3), contador(3), ruido(2), ruido(1)],
+R = 3.
+
+?- ejecutar_prioridades_de(contador_fases, primera, [contador(0)], M, R).
+M = [contador(3)],
+R = 3.
+```
+
+En `mcd_fases` ninguna acción de `calcular` vuelve aplicable a un módulo de
+una fase anterior, porque no hay fase anterior, y la fase `informar` para:
+las dos metarreglas dan 5 con las tres
+estrategias, como comprueban las pruebas de `soluciones_indices.plt`. Con
+prioridades, las fases funcionan como una estrategia de resolución de
+conflictos que ordena los módulos por grupos; como etapas, además, recuerdan
+qué grupos ya terminaron.

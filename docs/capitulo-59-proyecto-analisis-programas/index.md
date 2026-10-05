@@ -8,6 +8,39 @@ cuáles son recursivos, solos o en grupo, y dónde el código se aparta de las
 convenciones del curso. Ejecutado por un intérprete propio, responde además
 cuántas veces se llama cada predicado en una ejecución concreta.
 
+```mermaid
+flowchart LR
+    informe["informe/0"] --> alumnos["alumnos/1"]
+    informe --> mejor["mejor/1"]
+    informe --> mostrar["mostrar/1"]
+    alumnos --> notas["notas/2"]
+    mejor --> notas
+    mejor --> promedio["promedio/2"]
+    mejor --> promedo["promedo/2<br/>indefinido"]
+    mostrar --> mediana["mediana/2"]
+    mostrar --> notas
+    mostrar --> promedio
+    mediana --> par["longitud_par/1"]
+    par --> impar["longitud_impar/1"]
+    impar --> par
+    promedio --> suma["suma/2"]
+    suma --> suma
+    varianza["varianza/2<br/>no alcanzable"] --> desvio2["desvio2/3<br/>no alcanzable"]
+    varianza --> promedio
+    varianza --> suma
+    classDef defecto stroke-dasharray: 5 5
+    class promedo,varianza,desvio2 defecto
+```
+
+El grafo de llamadas del programa `notas` de la
+[sección 59.1](#591-el-grafo-de-llamadas), sin los predicados predefinidos:
+un arco de P a Q si una cláusula de P llama a Q. El análisis lee en él lo
+que el programa tiene de defectuoso, con borde punteado: `promedo/2` se
+llama y nadie lo define, y `varianza/2` y `desvio2/3` no se alcanzan desde
+`informe/0`, el punto de entrada. Los ciclos son la recursión: `suma/2` se
+llama a sí mismo, y `longitud_par/1` y `longitud_impar/1` se llaman
+mutuamente.
+
 El proyecto crece en cinco versiones. La primera recibe el programa como una
 lista de cláusulas y arma el grafo de llamadas, con las construcciones de
 control y las metallamadas. La segunda pregunta al grafo, con
@@ -94,9 +127,9 @@ Al terminar el capítulo, el lector puede:
   análisis con `library(prolog_xref)`.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:35 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:40 h**.
     Resolver los 5 ejercicios marcados con ★: **1:50 h**.
-    Resolver los 11 ejercicios del final: **3:20 h**.
+    Resolver los 12 ejercicios del final: **3:25 h**.
 
 ## 59.1 El grafo de llamadas
 
@@ -183,10 +216,11 @@ argumentos a su clausura:
 
 <!-- ejemplo: capitulo-59/llamadas.pl predicado: extra/3 -->
 ```prolog
-%!  extra(?Nombre, ?N:integer, ?Extra:integer) is nondet.
+%!  extra(?Nombre, +N:integer, ?Extra:integer) is nondet.
 %
 %   Una metallamada Nombre con N argumentos después del primero llama a su
-%   primer argumento con Extra argumentos más.
+%   primer argumento con Extra argumentos más. N debe llegar instanciado:
+%   las cláusulas de maplist y foldl lo comparan con >=/2.
 extra(call, N, N).
 extra(maplist, N, N) :-
     N >= 1.
@@ -666,7 +700,9 @@ aparece más; `separadas`, un predicado cuyas cláusulas no están juntas;
 `sin_encabezado`, un predicado con alguna regla y sin comentario `%!`; y
 `sin_comentario`, un predicado de hechos sin comentario. Las dos últimas son
 la convención de documentación del curso, el criterio C1 de la
-[sección 14.8](../capitulo-14-estilo-y-documentacion/index.md#148-criterios-de-calidad).
+[sección 14.8](../capitulo-14-estilo-y-documentacion/index.md#148-criterios-de-calidad),
+y la pauta de Covington, Bagnara, O'Keefe, Wielemaker y Price de empezar
+cada predicado con un comentario de presentación.
 
 Contar las apariciones de cada variable es un recorrido genérico de un
 término, como los de la [sección 32.4](../capitulo-32-inspeccion-de-terminos/index.md#324-recorrer-cualquier-termino): `ocurrencias//1` describe la lista de
@@ -763,13 +799,25 @@ solo si está cargada; sin ellas, informa siete predicados más, falsos
 positivos del mismo origen que los que explicó la
 [sección 59.3](#593-el-programa-leido-de-sus-archivos).
 
+## 59.7 Un editor de cláusulas
+
+El primero de los tres programas del apéndice de Kluźniak y Szpakowicz es un
+editor de las cláusulas de un predicado, con un cursor y comandos para
+moverlo, listar, borrar e insertar. La página
+[Un editor de cláusulas](editor.md#un-editor-de-clausulas) lo escribe con lo
+que SWI-Prolog ofrece hoy: el estado del editor es un término, cada comando
+es una relación pura entre dos estados, los comandos se leen con
+`read_term/3`, las cláusulas se escriben con `portray_clause/1`, y cada
+cambio se guarda en la base con `transaction/1`, que reemplaza todas las
+cláusulas del predicado a la vez o ninguna.
+
 !!! success "Criterios de calidad"
     | Criterio | En este capítulo |
     |---|---|
     | C1 | cada predicado declara modos y determinación; la revisión de estilo de la cuarta versión verifica el encabezado de cada predicado, y los once archivos de *Inscripciones* y los del capítulo pasan sin avisos |
     | C4 | `llamadas_de/3` con el predicado ligado no deja alternativas pendientes: usa `memberchk/2` en lugar de `member/2`, y las pruebas sin `nondet` lo verifican |
-    | C6 | los análisis que terminan en `_de` son puros sobre listas de cláusulas y de términos leídos, y las formas que reciben el nombre del programa solo agregan `clausulas/2` y `raices/2`; leen archivos solo `leer_archivo/2` y `leer_programa/3`, escriben solo `escribir_arbol_de/2`, `informe_de/1` y `referencias_de/2`, y solo el intérprete de `perfil.pl` modifica la base de datos |
-    | C7 | 66 pruebas en once archivos, más una prueba de carga por cada archivo de la copia de *Inscripciones*; cada resultado se compara con otra fuente: el intérprete con la fórmula $n(n+1)/2$, las variables singulares con `read_term/3`, los predicados sin llamadas con `prolog_xref` |
+    | C6 | los análisis que terminan en `_de` son puros sobre listas de cláusulas y de términos leídos, y las formas que reciben el nombre del programa solo agregan `clausulas/2` y `raices/2`; leen archivos solo `leer_archivo/2` y `leer_programa/3`, escriben solo `escribir_arbol_de/2`, `informe_de/1` y `referencias_de/2`, y solo el intérprete de `perfil.pl` y `grabar/1` del editor modifican la base de datos; los comandos del editor son puros sobre su estado |
+    | C7 | 137 pruebas en trece archivos, más una prueba de carga por cada archivo de la copia de *Inscripciones*; cada resultado se compara con otra fuente: el intérprete con la fórmula $n(n+1)/2$, las variables singulares con `read_term/3`, los predicados sin llamadas con `prolog_xref` |
 
 ## Ejercicios
 
@@ -826,6 +874,11 @@ tiene de propio.
     ciclos. Escribir `capas_de(+Clausulas, -Capas)`, las componentes
     fuertemente conexas en un orden en que cada una llama solo a las que
     vienen después, condensando el grafo: un vértice por componente.
+12. **(1)** El editor del libro tiene un comando que inserta después del
+    cursor las cláusulas de un archivo. Escribir
+    `insertar_archivo(+Archivo, +Estado0, -Estado)` con `comando/3` y
+    `grabar/1` del editor, y explicar cómo se agrega a la sesión como el
+    comando `f(Archivo)`.
 
 ## Resumen
 
@@ -852,6 +905,7 @@ tiene de propio.
 | `vertices_edges_to_ugraph/3`, `vertices/2`, `edges/2`, `neighbours/3`, `reachable/3`, `transitive_closure/2`, `top_sort/2` | `library(ugraphs)` |
 | `read_term/3`, `stream_position_data/3`, `dcg_translate_rule/2`, `open_string/2`, `set_module/1` | leer un programa sin cargarlo, y el módulo `externo` |
 | `xref_source/2`, `xref_defined/3`, `xref_exported/2`, `xref_called/3` | `library(prolog_xref)` |
+| `comando/3`, `grabar/1`, `editar/1` | el editor de cláusulas: el estado y sus comandos, la base y la sesión |
 
 ## Temas que se retoman
 
@@ -864,15 +918,20 @@ tiene de propio.
 
 - Feliks Kluźniak y Stanisław Szpakowicz, con Janusz S. Bień, *Prolog for
   Programmers*, Academic Press, 1985 — apéndice «Three Useful Programs»:
-  «A Primitive Tracing Tool» y «A Program Structure Analyser with Analyser
-  Analysed».
+  «A simple editor», «A Primitive Tracing Tool» y «A Program Structure
+  Analyser with Analyser Analysed».
   [Edición en línea en el sitio del coautor](https://www.site.uottawa.ca/~szpak/pub/P4P/Prolog_for_Programmers_neat.pdf).
   El capítulo toma del analizador el árbol de llamadas numerado con
   referencias a los predicados ya listados, la marca de los indefinidos, la
   omisión de los predefinidos con una tabla y el examen de los argumentos de
   las metallamadas, y la idea de aplicar el analizador a un programa real;
   del rastreador, los predicados espiados que escriben `+` al tener éxito y
-  `-` al fallar.
+  `-` al fallar. El analizador del libro guarda los predicados en una cola
+  abierta, una lista con la cola libre, en la que busca linealmente; el
+  capítulo la reemplaza por `library(assoc)` y `library(ugraphs)`. Del
+  editor, la [sección 59.7](#597-un-editor-de-clausulas) toma el cursor, sus
+  comandos, la inserción hasta `end.` y la instancia anidada que relee el
+  predicado al volver.
 - *SWI-Prolog Reference Manual* —
   «[library(prolog_xref): Prolog cross-referencer data collection](https://www.swi-prolog.org/pldoc/man?section=prologxref)»,
   «[library(ugraphs): Graph manipulation library](https://www.swi-prolog.org/pldoc/man?section=ugraphs)»,
@@ -884,6 +943,20 @@ tiene de propio.
   `check/0`, que recorre el código cargado con `library(prolog_codewalk)`;
   la segunda versión usa los predicados de `library(ugraphs)`, y la
   tercera, las opciones de lectura.
+- Stephen Warshall, «A theorem on Boolean matrices», *Journal of the ACM*
+  9(1), 1962, págs. 11–12. DOI [10.1145/321105.321107](https://doi.org/10.1145/321105.321107).
+  `transitive_closure/2` de `library(ugraphs)` calcula la clausura
+  transitiva con este algoritmo, y la
+  [sección 59.2](#592-lo-que-el-grafo-dice-del-programa) obtiene de ella los
+  predicados recursivos y las componentes fuertemente conexas.
+- Michael A. Covington, Roberto Bagnara, Richard A. O'Keefe, Jan Wielemaker
+  y Simon Price, «Coding guidelines for Prolog», *Theory and Practice of
+  Logic Programming* 12(6), 2012, págs. 889–927 — sección 4,
+  «Documentation». [Edición libre en arXiv](https://arxiv.org/abs/0911.2899).
+  Las revisiones de la [sección 59.4](#594-revisiones-de-estilo) son la
+  forma automática de algunas de sus pautas: un comentario de presentación
+  para cada predicado, las cláusulas juntas y las variables con nombre que
+  aparecen una vez.
 
 El código del capítulo es propio, escrito para el curso: los programas del
 apéndice dependen de primitivas del intérprete Toy-Prolog del libro, y se

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" width="960" height="480">
+  <title>Tres siluetas de recorrido: la plantilla 9 procesa cada elemento, la 10 busca uno que cumpla y fracasa sobre la lista vacía, la 11 exige que todos cumplan y tiene éxito sobre la lista vacía</title>
+  <rect x="0" y="0" width="960" height="480" fill="#FFFFFF"/>
+  <rect x="12.0" y="12.0" width="296.0" height="456.0" rx="12" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="3"/>
+  <text x="160.0" y="56.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="24" fill="#1F3A5F" text-anchor="middle" xml:space="preserve" font-weight="bold">9 · recorrer</text>
+  <text x="160.0" y="120.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">procesa cada</text>
+  <text x="160.0" y="150.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">elemento</text>
+  <line x1="32.0" y1="190.0" x2="288.0" y2="190.0" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="160.0" y="240.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">sobre []:</text>
+  <text x="160.0" y="270.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">el caso base</text>
+  <line x1="32.0" y1="310.0" x2="288.0" y2="310.0" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="160.0" y="360.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="middle" xml:space="preserve">en el capítulo:</text>
+  <text x="160.0" y="400.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve" font-weight="bold">largo/2</text>
+  <rect x="320.0" y="12.0" width="296.0" height="456.0" rx="12" fill="#FBE4E2" stroke="#B3261E" stroke-width="3"/>
+  <text x="468.0" y="56.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="24" fill="#B3261E" text-anchor="middle" xml:space="preserve" font-weight="bold">10 · buscar</text>
+  <text x="468.0" y="120.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">alguno cumple</text>
+  <line x1="340.0" y1="190.0" x2="596.0" y2="190.0" stroke="#B3261E" stroke-width="2"/>
+  <text x="468.0" y="240.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">sobre []:</text>
+  <text x="468.0" y="270.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">fracasa</text>
+  <line x1="340.0" y1="310.0" x2="596.0" y2="310.0" stroke="#B3261E" stroke-width="2"/>
+  <text x="468.0" y="360.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="middle" xml:space="preserve">en el capítulo:</text>
+  <text x="468.0" y="400.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve" font-weight="bold">esta_en/2</text>
+  <rect x="628.0" y="12.0" width="296.0" height="456.0" rx="12" fill="#E3F1E4" stroke="#2E7D32" stroke-width="3"/>
+  <text x="776.0" y="56.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="24" fill="#2E7D32" text-anchor="middle" xml:space="preserve" font-weight="bold">11 · todos</text>
+  <text x="776.0" y="120.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">todos cumplen</text>
+  <line x1="648.0" y1="190.0" x2="904.0" y2="190.0" stroke="#2E7D32" stroke-width="2"/>
+  <text x="776.0" y="240.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">sobre []:</text>
+  <text x="776.0" y="270.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">tiene éxito</text>
+  <line x1="648.0" y1="310.0" x2="904.0" y2="310.0" stroke="#2E7D32" stroke-width="2"/>
+  <text x="776.0" y="360.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="middle" xml:space="preserve">en el capítulo:</text>
+  <text x="776.0" y="400.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve" font-weight="bold">todos_estan/2</text>
+</svg>

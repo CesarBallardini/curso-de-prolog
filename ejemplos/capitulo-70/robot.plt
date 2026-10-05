@@ -42,4 +42,35 @@ test(subir, [true(Hs == [en_el_piso])]) :-
 test(imposible, [nondet]) :-
     imposible([en(X, Y), en(X, Z), distinto(Y, Z)]).
 
+test(une, [all(D-R == [puerta(1)-habitacion(1), puerta(2)-habitacion(2),
+                       puerta(3)-habitacion(3), puerta(4)-habitacion(4)])]) :-
+    robot:une(D, R, habitacion(5)).
+
+test(une_pasillo_segundo, [fail]) :-
+    robot:une(_, habitacion(5), _).
+
+test(movido_empujar, [all(X == [robot, caja(1)])]) :-
+    robot:movido(X, empujar(caja(1), caja(2), habitacion(1))).
+
+test(movido_encender, [fail]) :-
+    robot:movido(_, encender(interruptor(1))).
+
+test(conserva_subir, [all(H == [junto(robot, caja(1)),
+                                junto(caja(1), robot)])]) :-
+    robot:conserva(H, subir(caja(1))).
+
+test(conserva_otra_caja, [fail]) :-
+    robot:conserva(junto(robot, caja(2)), empujar(caja(1), caja(2),
+                                                  habitacion(1))).
+
+test(puede_subir, [true(Pre == [junto(robot, caja(1)), en_el_piso])]) :-
+    puede(subir(caja(1)), Pre).
+
+test(prueba) :-
+    prueba(distinto(a, b)).
+
+test(siempre_puntos, [all(P == [punto(1), punto(2), punto(3), punto(4),
+                                punto(5)])]) :-
+    siempre(punto_en(P, habitacion(1))).
+
 :- end_tests(robot).

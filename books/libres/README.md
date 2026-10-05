@@ -73,6 +73,15 @@ autorizada; se los renombró el 2026-09-27 con la convención de este directorio
 | Prolog and its Applications: A Japanese Perspective (Springer, 1991) | F. Mizoguchi (ed.) | `mizoguchi-prolog-and-its-applications.djvu` | — | Aplicaciones de Prolog |
 | The Craft of Prolog (MIT Press, 1990): **solo las páginas preliminares** (14 pp.: tapas, página legal, índice, prólogo de la serie, prefacio y comienzo de la introducción) | R. A. O'Keefe | `okeefe-craft-of-prolog-front-matter.pdf` (escaneo sin capa de texto, 3,5 MB) | — | © MIT Press; escaneo publicado por la biblioteca del Istituto per la Matematica Applicata del CNR (Génova), `http://geca.area.ge.cnr.it/files/15802.pdf` (descargado el 2026-09-28; el servidor no responde por HTTPS). El índice sirve para ubicar temas; el libro completo no está disponible en forma abierta |
 | Prolog Programming and Applications (Macmillan Computer Science Series, Macmillan Education UK, 1985; doi 10.1007/978-1-349-07962-9) | W. D. Burnham, A. R. Hall | `burnham-hall-prolog-programming-and-applications.pdf` (126 pp., con capa de texto y marcadores) | `books/burnham-hall-prolog-programming-and-applications/` (un archivo por capítulo, 2026-09-28) | © Macmillan / Springer; vía legal: SpringerLink (el DOI). Descargado por el autor el 2026-09-28 con nombre de libgen, renombrado ese día. Capítulos: 1–7 el lenguaje, depuración; 8 «Case Studies»; apéndices sobre Prolog-1 y Quintus Prolog |
+| The Art of Prolog: Advanced Programming Techniques, 2.ª ed. (MIT Press, 1994; reimpresión de 2018) | L. Sterling, E. Shapiro | `sterling-shapiro-art-of-prolog.pdf` (553 pp., generado con calibre) | — (la conversión `books/the-art-of-prolog/` sale de otra copia) | Agregado el 2026-10-04. Su capa de texto es más ruidosa que la de la conversión existente (espacios dentro de los identificadores, `:-` perdido, `\|` leído como `I`), pero los dígitos salen bien donde la otra lee `0` como `O`: sirve para cotejar un pasaje dudoso |
+| The Practice of Prolog (MIT Press, 1990) | L. Sterling (ed.) | `sterling-practice-of-prolog.pdf` (331 pp.) | — | Aplicaciones de Prolog, un capítulo por sistema |
+| Building Expert Systems in Prolog (Springer, 1989; doi 10.1007/978-1-4613-8911-8) | D. Merritt | `merritt-building-expert-systems-in-prolog.pdf` (360 pp.) | — | La edición original de Springer; `merritt-expert-systems-in-prolog.pdf` (308 pp.) es la copia de la FU Berlin |
+| PROLOG for Computer Science (Springer, 1994; doi 10.1007/978-1-4471-2031-5) | M. S. Dawe, C. M. Dawe | `dawe-prolog-for-computer-science.pdf` (189 pp.) | — | © Springer |
+| Artificial Intelligence Techniques in Prolog (Morgan Kaufmann / Elsevier, 1994) | Y. Shoham | `shoham-ai-techniques-in-prolog.pdf` (332 pp.) | — | Búsqueda (con minimax), metaintérpretes, encadenamiento hacia adelante, mantenimiento de la verdad, restricciones, incertidumbre, planificación y razonamiento temporal, aprendizaje, lenguaje natural (según el prefacio) |
+| Warren's Abstract Machine: A Tutorial Reconstruction (MIT Press, 1991; reimpresión del autor, 1999) | H. Aït-Kaci | `aitkaci-warrens-abstract-machine.pdf` (144 pp.) | — | La máquina abstracta de Warren, explicada paso a paso |
+| The Implementation of Prolog, segundo escaneo | P. Boizumault | `boizumault-implementation-of-prolog-escaneo-2.pdf` (312 pp.) | — | Otro escaneo del mismo libro, con una página menos; se conserva por si una página es ilegible en el primero |
+| The Annotated Turing: A Guided Tour through Alan Turing's Historic Paper on Computability and the Turing Machine (Wiley, 2008; ISBN 978-0-470-22905-7) | C. Petzold | `petzold-annotated-turing.pdf` (386 pp., escaneo con OCR, sin marcadores) | `books/petzold-annotated-turing/` (un solo archivo con tabla «Contents by line») | © Wiley. Agregado el 2026-10-05 con nombre de libgen, renombrado ese día. El artículo de Turing de 1936 comentado línea por línea, con las tablas de la máquina universal: fuente para el capítulo 52 |
+| The Essential Turing: Seminal Writings in Computing, Logic, Philosophy, Artificial Intelligence, and Artificial Life plus The Secrets of Enigma (Clarendon Press / Oxford University Press, 2004; ISBN 0-19-825080-0) | B. J. Copeland (ed.) | `copeland-essential-turing.pdf` (622 pp., con capa de texto y marcadores) | `books/copeland-essential-turing/` (un archivo por capítulo) | © Oxford University Press. Agregado el 2026-10-05 con nombre de libgen, renombrado ese día. Incluye el artículo de 1936, la corrección de 1938, la crítica de Post (1947) y «Corrections to Turing's Universal Computing Machine» de D. W. Davies: fuente para el capítulo 52 |
 
 ### Artículos y reseñas
 
@@ -93,10 +102,19 @@ autorizada; se los renombró el 2026-09-27 con la convención de este directorio
 | R. Lai, reseña del mismo libro, *The Knowledge Engineering Review* 4 (1), 1989 | `review-1989-smith-expert-systems-prolog-turbo-prolog-ker.pdf` (4 pp.) | Reseña |
 | Reseña de C. Marcus, *Prolog Programming: Applications for Database Systems, Expert Systems and Natural Language Systems*, *International Journal of Adaptive Control and Signal Processing* 2 (1), 1988 | `review-1988-marcus-prolog-programming.pdf` (2 pp.) | Reseña |
 | M. Spivey, reseña de T. Dodd, *Prolog: A Logical Approach*; C. J. Hogger, *Essentials of Logic Programming*; y R. A. O'Keefe, *The Craft of Prolog*, *Science of Computer Programming* 17 (1-3), 1991, p. 254 | `review-1991-spivey-okeefe-dodd-hogger-scp.pdf` (3 pp.) | Reseña; renombrado el 2026-09-28 desde el nombre de libgen |
+| D. H. D. Warren, «An Abstract Prolog Instruction Set», Technical Note 309, SRI International, 1983 | `warren-1983-abstract-prolog-instruction-set.pdf` (34 pp., escaneo sin capa de texto) | La definición original de la WAM; agregado el 2026-10-04 (antes `641.pdf`) |
+| D. Gardner, M. Rizack, «A Prolog knowledge base for drug interactions», *Computers and Biomedical Research* 23 (2), 1990, pp. 139–152 | `gardner-1990-prolog-knowledge-base-drug-interactions.pdf` (14 pp.) | Aplicación: base de conocimiento |
+| B. A. Nadel, «Constraint satisfaction in Prolog: Complexity and theory-based heuristics», *Information Sciences* 83 (3-4), 1995, pp. 113–131 | `nadel-1995-constraint-satisfaction-in-prolog.pdf` (19 pp.) | Restricciones (capítulo 23) |
+| Z. Brezočnik, B. Horvat, «Formal hardware specification and verification using Prolog», *Microprocessing and Microprogramming* 27 (1-5), 1989, pp. 163–170 | `brezocnik-1989-hardware-specification-verification-prolog.pdf` (8 pp.) | Aplicación: verificación de circuitos |
+
+**Renombrados el 2026-10-04:** los once archivos nuevos de las dos tablas (siete libros y cuatro
+artículos) llegaron con el nombre de libgen o sin un nombre descriptivo (`641.pdf`), y
+se renombraron con la misma convención.
 
 **Duplicados eliminados (2026-09-27):** una segunda copia, idéntica byte a byte (mismo MD5), del
 artículo de Okada et al.; y la copia de JSTOR (11 pp., con portada) del artículo de Brna, Pain y
-du Boulay, del que se conserva la versión de la editorial.
+du Boulay, del que se conserva la versión de la editorial. El 2026-10-04, una segunda copia de
+*The Implementation of Prolog*, idéntica byte a byte a `boizumault-implementation-of-prolog.pdf`.
 
 ## Resumen
 

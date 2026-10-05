@@ -29,4 +29,13 @@ test(identidad_neutra, [true(P == R)]) :-
     identidad(4, I),
     producto_simbolico(R, I, P).
 
+test(producto_interno_simbolico, [true(E == 0 + a * x + b * y)]) :-
+    producto_interno_simbolico([a, b], [x, y], E).
+
+test(producto_interno_simbolico_vacio, [true(E == 0)]) :-
+    producto_interno_simbolico([], [], E).
+
+test(sumar_producto_simbolico, [true(E == e + a * b)]) :-
+    sumar_producto_simbolico(a, b, e, E).
+
 :- end_tests(matriz_simbolica).

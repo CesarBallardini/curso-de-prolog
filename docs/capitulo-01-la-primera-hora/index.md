@@ -382,7 +382,7 @@ X = 2+1.
 
 `X` no queda con el valor 3. Queda con el valor `2+1`, que es el término de
 nombre `+` con dos argumentos, `2` y `1`. Es un término compuesto, igual que
-`mascota(gato, felix)`; lo único distinto es que su nombre se escribe en entre los argumentos (se dice que es un operador infijo) y no adelante. El operador `=` determina si dos términos unifican; no
+`mascota(gato, felix)`; lo único distinto es que su nombre se escribe entre los argumentos (se dice que es un operador infijo) y no adelante. El operador `=` determina si dos términos unifican; no
 realiza ninguna operación aritmética.
 
 Por la misma razón:
@@ -707,8 +707,7 @@ La respuesta termina en `true ;` porque queda una alternativa sin explorar: la
 segunda cláusula, que Prolog todavía no descartó. Al solicitarla con `;`, esa
 alternativa falla —`1` no es mayor que `5`— y la respuesta final es `false.`.
 
-Este caso tiene un punto muy interesante: ambas cláusulas son mutuamente excluyentes,  cuando una de ellas es eligible, la otra no.
-
+Este caso tiene un punto muy interesante: ambas cláusulas son mutuamente excluyentes: cuando una de ellas es elegible, la otra no.
 
 ## 1.13 Listas
 

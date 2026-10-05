@@ -12,10 +12,31 @@ Los sistemas de producción se usaron para configurar equipos a partir de un
 pedido, una tarea con muchas soluciones posibles que no conviene enumerar
 hacia atrás.
 
+![Gabinete de una VAX-11/780 de Digital Equipment Corporation](vax-11-780.jpg)
+
+Una VAX-11/780. Para configurar los pedidos de estas máquinas, Digital
+Equipment Corporation usó desde 1980 XCON (antes llamado R1), un sistema de
+producción escrito en OPS5 que elegía y ubicaba los componentes a partir
+del pedido del cliente (ver [Referencias](#referencias)).
+Imagen: Emiliano Russo, Associazione Culturale VerdeBinario, dominio
+público, vía
+[Wikimedia Commons](https://commons.wikimedia.org/wiki/File:VAX_11-780_intero.jpg).
+
+```mermaid
+flowchart LR
+    M["memoria de trabajo:<br/>hechos con sellos"] --> C["conjunto de conflicto:<br/>las instanciaciones<br/>de todas las reglas"]
+    C --> R["refracción:<br/>quitar las ya disparadas"]
+    R -- "ninguna" --> F["nada_aplicable"]
+    R --> E["estrategia:<br/>orden, LEX o MEA<br/>elige una"]
+    E --> A["acciones:<br/>agregar, quitar,<br/>reemplazar"]
+    A -- "nueva memoria" --> M
+    A -- "parar(R)" --> P["resultado R"]
+```
+
 El [capítulo 60](../capitulo-60-proyecto-interprete-dirigido-patrones/index.md)
 construyó la arquitectura: módulos `Nombre :: Condiciones ---> Acciones`, la
 memoria como argumento y el conjunto de conflicto ordenado por una clave.
-Este capítulo da el paso siguiente con el mismo lenguaje de reglas, en cinco
+Este capítulo da el paso siguiente con el mismo lenguaje de reglas, en siete
 versiones. La primera trata la memoria como un **conjunto** de hechos con
 **sellos de tiempo** y aplica la **refracción**: la misma regla con los
 mismos hechos se dispara una sola vez. La segunda agrega las estrategias de
@@ -24,7 +45,9 @@ los hechos y por la especificidad de las reglas. La tercera agrega
 **marcos**: clases con valores por omisión y herencia, cuyos objetos viven en
 la memoria. La cuarta es un **configurador** de computadoras, y la quinta
 mide lo que cuesta, en cada ciclo, volver a comparar todas las reglas con
-toda la memoria.
+toda la memoria. La sexta agrega a los marcos los valores calculados y los
+demonios, y la séptima agrupa las reglas en conjuntos que eligen reglas de
+control.
 
 El proyecto parte de tres fuentes. De *Building Expert Systems in Prolog* de
 Dennis Merritt vienen el sistema *Oops* —la memoria con sellos de tiempo, el
@@ -71,9 +94,9 @@ Al terminar el capítulo, el lector puede:
   ese trabajo se repite.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:30 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:50 h**.
     Resolver los 5 ejercicios marcados con ★: **1:35 h**.
-    Resolver los 12 ejercicios del final: **3:50 h**.
+    Resolver los 13 ejercicios del final: **4:10 h**.
 
 ## 63.1 El programa terminado
 
@@ -343,7 +366,8 @@ las reglas: el primer programa que ordene mal sus reglas elige mal, como el
 
 ## 63.3 Versión 2: las estrategias LEX y MEA
 
-OPS5, el lenguaje de sistemas de producción más difundido, ofrece dos
+OPS5, el lenguaje de sistemas de producción más difundido, definido por
+Charles Forgy ([Referencias](#referencias)), ofrece dos
 estrategias. **LEX**, después de la refracción, prefiere la instanciación
 que usa los hechos más **recientes**, y entre dos igual de recientes, la de
 la regla más **específica**, la que tiene más condiciones. **MEA** compara
@@ -477,8 +501,9 @@ repite en cada una.
 
 ## 63.4 Versión 3: marcos
 
-Un **marco** describe una clase con **ranuras**: los atributos de sus
-objetos, con valores por omisión. Una clase hereda de otras, y un valor que
+Un **marco**, en el sentido que propuso Marvin Minsky
+([Referencias](#referencias)), describe una clase con **ranuras**: los
+atributos de sus objetos, con valores por omisión. Una clase hereda de otras, y un valor que
 la clase no define se busca en sus padres. `marcos.pl` escribe cada clase
 como un hecho `marco(Clase, Padres, Ranuras)`, con los componentes de una
 computadora:
@@ -723,6 +748,159 @@ proporcional a todo lo que hay. El
 entre ciclos las comparaciones ya hechas y procesa solo los hechos que
 entran y salen.
 
+## 63.7 Versión 6: valores calculados y demonios
+
+En *Foops*, Merritt da a cada ranura de un marco varias **facetas**: el
+valor propio, el valor por omisión, un procedimiento que calcula el valor
+cuando no hay otro, y **demonios**, procedimientos que se ejecutan al poner
+o quitar un valor. La versión 3 tiene las dos primeras. `facetas.pl` agrega
+las otras dos como predicados aparte, `calculo/4` y `demonio/5`, sin cambiar
+los marcos: el precio de una memoria se calcula por gigabyte; un precio
+propio negativo se rechaza; y cambiar el tamaño de una memoria quita su
+precio propio, para que el cálculo vuelva a regir.
+
+<!-- ejemplo: capitulo-63/facetas.pl fragmento: calculo(memoria, precio, Ranuras, Precio) :- .. exclude(de_ranura(precio), Ranuras0, Ranuras). -->
+```prolog
+calculo(memoria, precio, Ranuras, Precio) :-
+    memberchk(gb-Gb, Ranuras),
+    Precio is Gb * 3.
+
+% Un precio propio no puede ser negativo.
+demonio(componente, precio, Precio, Ranuras, Ranuras) :-
+    (   number(Precio),
+        Precio >= 0
+    ->  true
+    ;   domain_error(precio_no_negativo, Precio)
+    ).
+% Al cambiar el tamaño de una memoria, su precio propio deja de valer, y
+% el cálculo vuelve a regir.
+demonio(memoria, gb, _, Ranuras0, Ranuras) :-
+    exclude(de_ranura(precio), Ranuras0, Ranuras).
+```
+
+El valor de una ranura sigue la cadena de herencia, y en cada clase busca
+primero el valor por omisión y después el cálculo; así el cálculo de
+`memoria` oculta el precio 0 que `componente` da por omisión:
+
+<!-- ejemplo: capitulo-63/facetas.pl predicado: valor_con_facetas/4 faceta/4 poner_con_demonios/5 -->
+```prolog
+%!  valor_con_facetas(+Clase, +Ranuras:list, +Ranura, -Valor) is semidet.
+%
+%   Valor es el de la Ranura en un objeto de la Clase con los valores
+%   propios Ranuras: el propio, o, en la primera clase de la cadena de
+%   herencia que tenga alguno, el valor por omisión o el calculado. Falla
+%   si ninguna clase lo define.
+valor_con_facetas(_, Ranuras, Ranura, Valor) :-
+    memberchk(Ranura-Propio, Ranuras),
+    !,
+    Valor = Propio.
+valor_con_facetas(Clase, Ranuras, Ranura, Valor) :-
+    once(( es_un(Clase, Superclase),
+           faceta(Superclase, Ranuras, Ranura, Valor0)
+         )),
+    Valor = Valor0.
+
+%!  faceta(+Clase, +Ranuras:list, +Ranura, -Valor) is semidet.
+%
+%   Valor es el valor por omisión de la Ranura en la Clase, o, si no lo
+%   tiene, el que calcula calculo/4 para los valores propios Ranuras.
+faceta(Clase, Ranuras, Ranura, Valor) :-
+    (   marco(Clase, _, PorOmision),
+        memberchk(Ranura-Valor0, PorOmision)
+    ->  Valor = Valor0
+    ;   once(calculo(Clase, Ranura, Ranuras, Valor))
+    ).
+
+%!  poner_con_demonios(+Clase, +Ranuras0:list, +Ranura, +Valor,
+%!                     -Ranuras:list) is det.
+%
+%   Ranuras es Ranuras0 con Ranura-Valor como valor propio, después de
+%   ejecutar el demonio de la Ranura de la primera clase de la cadena de
+%   herencia que tenga uno. Sin demonio, es lo que da fijar_ranura/4.
+poner_con_demonios(Clase, Ranuras0, Ranura, Valor, Ranuras) :-
+    fijar_ranura(Ranuras0, Ranura, Valor, Ranuras1),
+    (   es_un(Clase, Superclase),
+        clause(demonio(Superclase, Ranura, _, _, _), _)
+    ->  once(demonio(Superclase, Ranura, Valor, Ranuras1, Ranuras))
+    ;   Ranuras = Ranuras1
+    ).
+```
+
+```prolog
+?- valor_con_facetas(memoria, [gb-16], precio, P).
+P = 48.
+
+?- valor_con_facetas(memoria, [gb-16, precio-40], precio, P).
+P = 40.
+```
+
+Las reglas no cambian: `con_facetas/2` las traduce con `con_marcos/2` y
+después cambia la consulta de las ranuras por `consultar_facetas/3` y la
+escritura por `poner_con_demonios/5`. El programa `ampliar_memoria` lleva
+cada memoria al tamaño pedido e informa su precio; la memoria que tenía un
+precio propio de 40 lo pierde al crecer:
+
+```prolog
+?- encadenar(ampliar_memoria, orden, [objeto(mem_a, memoria, [gb-8]), objeto(mem_b, memoria, [gb-16, precio-40]), pedido_memoria(32)], M, R).
+M = [precio(mem_b, 32, 96), precio(mem_a, 32, 96), objeto(mem_a, memoria, [gb-32]), objeto(mem_b, memoria, [gb-32]), pedido_memoria(32)],
+R = nada_aplicable.
+```
+
+Un demonio de Merritt también puede conversar con el usuario, como el que
+pide confirmación antes de borrar un valor, y su configurador de muebles
+lee los datos con reglas que ponen metas de lectura en la memoria. El
+capítulo no escribe esa parte: el intérprete es puro, la memoria es un
+argumento y cada ciclo se puede repetir y medir, y una lectura del
+teclado en medio de las reglas lo impediría. Los demonios de esta versión
+solo validan o ajustan las ranuras del objeto que cambia.
+
+## 63.8 Versión 7: conjuntos de reglas y reglas de control
+
+En un programa grande, todas las reglas compiten en cada ciclo, y el
+resultado puede depender de la estrategia. Merritt propone agrupar las
+reglas en **conjuntos**, cada uno con su conjunto de conflicto, que se
+ejecuta hasta que no tiene nada que hacer, y reglas de nivel superior que
+deciden qué conjunto sigue; Rowe llama **meta-reglas** a las reglas que
+eligen entre reglas. `conjuntos.pl` lo escribe sin cambiar el intérprete.
+El hecho `conjunto(C)` de la memoria dice qué conjunto está activo, y
+`con_conjuntos/4` agrega la condición `conjunto(C)` al principio de cada
+regla del conjunto `C`; las reglas de control no la tienen, y la estrategia
+`conjuntos(E)` las pone detrás de todas las demás:
+
+<!-- ejemplo: capitulo-63/conjuntos.pl fragmento: % Con conjuntos(E), la clave es c(P, K): .. clave_estrategia(E, Instanciacion, K). -->
+```prolog
+% Con conjuntos(E), la clave es c(P, K): P es 0 para una regla de control
+% y 1 para las demás, y K es la clave de la estrategia E.
+clave_estrategia(conjuntos(E), Instanciacion, c(P, K)) :-
+    Instanciacion = instanciacion(Nombre, _, _, _),
+    (   control(_, Nombre)
+    ->  P = 0
+    ;   P = 1
+    ),
+    clave_estrategia(E, Instanciacion, K).
+```
+
+Una regla de control se dispara, entonces, solo cuando el conjunto activo
+ya no tiene ninguna instanciación nueva, y reemplaza `conjunto(C)` por el
+siguiente. El ejemplo es un ticket de compra en tres etapas: cargar los
+ítems como líneas, aplicar las ofertas, sumar. Con conjuntos, el total es
+el mismo con cualquier estrategia; sin ellos, LEX suma la línea de la leche,
+el hecho más reciente, antes de aplicarle la oferta del 25 %:
+
+```prolog
+?- ticket(ticket, conjuntos(lex), [item(pan, 2), item(leche, 3), item(queso, 1)], T).
+T = 680.
+
+?- ticket(ticket_plano, lex, [item(pan, 2), item(leche, 3), item(queso, 1)], T).
+T = 740.
+```
+
+Es el uso de MEA de la [sección 63.3](#633-version-2-las-estrategias-lex-y-mea) llevado un paso más
+allá: allí una meta en el primer patrón dirige qué reglas se prefieren;
+aquí la etapa activa decide qué reglas existen. La anotación de las reglas
+de control es lo único que la versión guarda fuera de la memoria: un hecho
+`control/2` que `con_conjuntos/4` escribe al construir el programa.
+
 !!! success "Criterios de calidad"
     | Criterio | En este capítulo |
     |---|---|
@@ -730,7 +908,7 @@ entran y salen.
     | C2 | las reglas son datos del lenguaje del [capítulo 60](../capitulo-60-proyecto-interprete-dirigido-patrones/index.md), verificadas con su `bien_formado/1`; los marcos se traducen a ese lenguaje en lugar de extender el intérprete |
     | C4 | los ciclos eligen con un si-entonces y `valor_ranura/4` corta después del valor propio; las pruebas, que fallan si queda una alternativa pendiente, lo confirman |
     | C6 | la memoria viaja en argumentos como un término `mt/2`; la traza es la única salida, y las estrategias se agregan con cláusulas `multifile` sin tocar el intérprete |
-    | C7 | 52 pruebas en seis archivos: la memoria como conjunto, el punto fijo del [capítulo 20](../capitulo-20-base-de-datos-dinamica/index.md), la comparación con el [capítulo 60](../capitulo-60-proyecto-interprete-dirigido-patrones/index.md), las claves y sus empates, la herencia, la traducción de reglas, las tres configuraciones, el programa invertido y las mediciones |
+    | C7 | 85 pruebas en ocho archivos: la memoria como conjunto, el punto fijo del [capítulo 20](../capitulo-20-base-de-datos-dinamica/index.md), la comparación con el [capítulo 60](../capitulo-60-proyecto-interprete-dirigido-patrones/index.md), las claves y sus empates, la herencia, la traducción de reglas, las tres configuraciones, el programa invertido y las mediciones |
 
 ## Ejercicios
 
@@ -790,6 +968,11 @@ archivo que carga los del capítulo, sin modificarlos.
     para que cada `agregar(F)` agregue también `origen(F, Regla, Hechos)`,
     con los hechos que cumplieron los patrones de la regla. Usarlo para
     explicar cómo se obtuvo `antepasado(juan, sofia)` en `familia`.
+13. **(2)** Agregar en un archivo propio un cálculo del consumo de una
+    `placa_de_video` según su ranura `memoria_gb`, 100 más 20 por
+    gigabyte. Predecir qué da `valor_con_facetas/4` para una placa con
+    `memoria_gb-8`, comprobarlo, y lograr que el cálculo rija sin quitar
+    el valor por omisión de la clase.
 
 ## Resumen
 
@@ -808,6 +991,9 @@ archivo que carga los del capítulo, sin modificarlos.
 | `memoria.pl`, `produccion.pl` | la memoria con sellos, el conjunto de conflicto, la refracción y el ciclo |
 | `estrategias.pl`, `marcos.pl` | LEX, MEA, el robot de las cajas; las clases y la traducción de `es/3` |
 | `configurador.pl`, `costo.pl` | el configurador de computadoras y la medición del reconocimiento |
+| **faceta, demonio** | un valor calculado cuando la ranura no tiene otro; un procedimiento que se ejecuta al poner un valor |
+| **conjunto de reglas, regla de control** | las reglas de una etapa, activas mientras `conjunto(C)` está en la memoria; la regla que pasa a la etapa siguiente cuando la activa no tiene nada que hacer |
+| `facetas.pl`, `conjuntos.pl` | los valores calculados y los demonios; los conjuntos de reglas y la estrategia `conjuntos(E)` |
 
 ## Temas que se retoman
 
@@ -828,8 +1014,10 @@ archivo que carga los del capítulo, sin modificarlos.
   primer patrón, las metas de control en la memoria, la regla sin
   condiciones que se dispara al final por especificidad, los marcos con
   valores por omisión y herencia múltiple, los objetos de marco en la
-  memoria con reglas que los consultan, y la idea de un configurador como
-  caso de estudio.
+  memoria con reglas que los consultan, la idea de un configurador como
+  caso de estudio, y, en las versiones 6 y 7, las facetas de cálculo y los
+  demonios de los marcos y los conjuntos de reglas con reglas de nivel
+  superior que eligen el siguiente (su ejercicio 5.6).
 - Michael A. Covington, Donald Nute y André Vellino, *Prolog Programming in
   Depth*, Prentice Hall, 1997 — apartados «A Simple Forward Chainer» y
   «Production Rules in Prolog».
@@ -845,8 +1033,25 @@ archivo que carga los del capítulo, sin modificarlos.
   Naval Postgraduate School. El capítulo toma de allí el foco de atención
   —el hecho más reciente primero—, la especificidad como criterio de orden
   entre reglas, las meta-reglas que eligen entre reglas, que aquí son las
-  claves de orden, y las reglas parciales con condiciones ya cumplidas, que
+  claves de orden y las reglas de control de la versión 7, y las reglas parciales con condiciones ya cumplidas, que
   anticipan la red del [capítulo 64](../capitulo-64-proyecto-algoritmo-rete/index.md).
+- Charles L. Forgy, *OPS5 User's Manual*, informe técnico CMU-CS-81-135,
+  Carnegie-Mellon University, 1981. Merritt toma de OPS5 las estrategias
+  LEX y MEA y la refracción; el capítulo toma de ese lenguaje la
+  definición de las dos estrategias, con los sellos de tiempo de los
+  elementos de la memoria, y el uso del primer patrón como meta de control
+  en MEA.
+- John McDermott, «R1: A Rule-Based Configurer of Computer Systems»,
+  *Artificial Intelligence* 19(1), 1982. Merritt cita XCON, el nombre
+  posterior de R1, como el sistema de encadenamiento hacia adelante más
+  conocido; es el antecedente del configurador de la versión 4, que elige
+  componentes compatibles a partir de un pedido, por fases y sin
+  enumerar las configuraciones.
+- Marvin Minsky, «A Framework for Representing Knowledge», MIT AI
+  Laboratory Memo 306, 1974.
+  [Edición del MIT](https://dspace.mit.edu/handle/1721.1/6089).
+  El origen de los marcos con ranuras, valores por omisión y herencia que
+  Merritt implementa y que la versión 3 escribe como hechos `marco/3`.
 
 El código del capítulo es propio, escrito para el curso: la memoria, el
 intérprete, las claves, la traducción de los marcos, el robot, el

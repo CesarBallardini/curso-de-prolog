@@ -43,4 +43,35 @@ test(vacio) :-
 test(mas_corta, [true(W == [a, b])]) :-
     palabra_mas_corta(termina_ab, W).
 
+test(alfabeto_producto, [true(A == [0, 1, a, b])]) :-
+    construcciones:alfabeto_producto(termina_ab, multiplo3, A).
+
+test(inicial_producto, [true(P == [q0]-[s0, s1])]) :-
+    construcciones:inicial_producto(termina_ab, ciclo, P).
+
+test(paso_producto, [true(P == [q0, q1]-[s0, s1])]) :-
+    construcciones:paso_producto(termina_ab, ciclo, [q0]-[s0, s1], a, P).
+
+% Un símbolo ajeno a un autómata lo deja sin estados.
+test(paso_producto_ajeno, [true(P == []-[r1])]) :-
+    construcciones:paso_producto(termina_ab, multiplo3, [q0]-[r0], 1, P).
+
+test(acepta_conjunto, [true]) :-
+    construcciones:acepta_conjunto(termina_ab, [q0, q2]).
+
+test(acepta_conjunto_no, [fail]) :-
+    construcciones:acepta_conjunto(termina_ab, [q0, q1]).
+
+test(vacio_no, [fail]) :-
+    vacio(termina_ab).
+
+test(mas_corta_epsilon, [true(W == [b])]) :-
+    palabra_mas_corta(ciclo, W).
+
+test(equivalente_consigo, [true]) :-
+    equivalentes(termina_ab, termina_ab).
+
+test(no_equivalentes, [fail]) :-
+    equivalentes(termina_ab, ciclo).
+
 :- end_tests(construcciones).

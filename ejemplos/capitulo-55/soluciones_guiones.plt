@@ -33,4 +33,23 @@ test(dos_sujetos, true(R == "Ana fue de su casa a la parada. Ana subió al \c
 test(sin_guion, fail) :-
     comprender("Juan comió una hamburguesa.", _).
 
+test(sujeto_nombrado, all(S == [ana, juan])) :-
+    phrase(soluciones_guiones:sujeto(juan, S), [ana], _).
+
+test(sujeto_omitido, all(S == [juan])) :-
+    phrase(soluciones_guiones:sujeto(juan, S), [comio, una, pera], _).
+
+test(predicado, all(E == [comer(juan, pera)])) :-
+    phrase(soluciones_guiones:predicado(juan, E), [comio, una, pera]).
+
+test(mas_sucesos) :-
+    findall(Ss, phrase(soluciones_guiones:mas_sucesos(juan, Ss),
+                       [comio, una, pera, y, se, fue]), L),
+    assertion(L =@= [[comer(juan, pera), ir(juan, _, _)]]).
+
+test(mas_sucesos_otro_sujeto) :-
+    findall(Ss, phrase(soluciones_guiones:mas_sucesos(juan, Ss),
+                       [ana, subio, al, colectivo]), L),
+    assertion(L =@= [[subir(ana, colectivo, _)]]).
+
 :- end_tests(soluciones_guiones).

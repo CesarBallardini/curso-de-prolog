@@ -652,14 +652,21 @@ raices(Ecuacion, X, A-B, N, Raices) :-
 %!                +I:integer, -R:float) is semidet.
 %
 %   R es la raíz que da la bisección en el tramo I, de A + I·Ancho a
-%   A + (I + 1)·Ancho. Falla si el tramo no tiene cambio de signo.
+%   A + (I + 1)·Ancho. Falla si el tramo no tiene cambio de signo. Una raíz
+%   en el borde entre dos tramos pertenece al que termina en ella, y solo
+%   el primer tramo toma la que está en su extremo izquierdo.
 raiz_en_tramo(Ecuacion, X, A, Ancho, I, R) :-
     Desde is A + I * Ancho,
     Hasta is Desde + Ancho,
     funcion(Ecuacion, F),
     valor_en(F, X, Desde, FD),
     valor_en(F, X, Hasta, FH),
-    FD * FH =< 0,
+    (   FD * FH < 0
+    ;   FH =:= 0
+    ;   I =:= 0,
+        FD =:= 0
+    ),
+    !,
     biseccion(Ecuacion, X, Desde-Hasta, R).
 ```
 
@@ -677,5 +684,146 @@ en los dos extremos, el tramo no tiene cambio de signo, y las dos raíces se
 pierden. Un tramo con una cantidad par de raíces no cambia de signo; la
 búsqueda solo es completa si los tramos son más chicos que la menor
 distancia entre dos raíces, que en general no se conoce. Una raíz que cae
-exactamente en el borde de dos tramos aparece dos veces, porque los dos
-tienen producto de signos igual a cero.
+exactamente en el borde de dos tramos hace cero el producto de signos de
+los dos; `raiz_en_tramo/6` la asigna solo al tramo que termina en ella (o
+al primero, si es el extremo izquierdo de `A-B`), y así no aparece dos
+veces:
+
+```prolog
+?- raices(x ^ 2 = 4, x, 0-4, 2, Rs).
+Rs = [1.9999999999990905].
+```
+
+## 13
+
+`operacion/2` evalúa los argumentos de cada operación con `valor_c/2`, que
+solo conoce las cinco operaciones de Covington: tres cláusulas más en
+`operacion/2` evaluarían `2 ^ 3`, pero no `2 * sqrt(4)`, porque el
+argumento `sqrt(4)` volvería a pasar por `valor_c/2`. La ampliación necesita
+su propio par de predicados, que se llaman entre sí:
+
+<!-- ejemplo: capitulo-46/soluciones_covington.pl predicado: valor_ampliado/2 ampliado/2 operacion_ampliada/2 -->
+```prolog
+%!  valor_ampliado(+Expresion, -Valor:number) is det.
+%
+%   Como :=/2, con la potencia X ^ N de exponente entero, el opuesto -X y
+%   sqrt/1 además de las operaciones de valor_c/2.
+valor_ampliado(Expresion, Valor) :-
+    must_be(ground, Expresion),
+    (   ampliado(Expresion, Valor0)
+    ->  Valor = Valor0
+    ;   type_error(expresion_evaluable, Expresion)
+    ).
+
+%!  ampliado(+Expresion, -Valor:number) is semidet.
+%
+%   Valor es el valor de Expresion, un número o una operación de
+%   operacion_ampliada/2. Falla si usa otra operación.
+ampliado(E, V) :-
+    (   number(E)
+    ->  V = E
+    ;   operacion_ampliada(E, V)
+    ).
+
+%!  operacion_ampliada(+Expresion, -Valor:number) is semidet.
+%
+%   Las cláusulas de operacion/2, con ampliado/2 para los argumentos, y
+%   tres más.
+operacion_ampliada(X + Y, V) :-
+    ampliado(X, VX),
+    ampliado(Y, VY),
+    V is VX + VY.
+operacion_ampliada(X - Y, V) :-
+    ampliado(X, VX),
+    ampliado(Y, VY),
+    V is VX - VY.
+operacion_ampliada(X * Y, V) :-
+    ampliado(X, VX),
+    ampliado(Y, VY),
+    V is VX * VY.
+operacion_ampliada(X / Y, V) :-
+    ampliado(X, VX),
+    ampliado(Y, VY),
+    V is VX / VY.
+operacion_ampliada(rec(X), V) :-
+    ampliado(X, VX),
+    V is 1 / VX.
+operacion_ampliada(X ^ N, V) :-
+    integer(N),
+    ampliado(X, VX),
+    V is VX ** N.
+operacion_ampliada(-X, V) :-
+    ampliado(X, VX),
+    V is -VX.
+operacion_ampliada(sqrt(X), V) :-
+    ampliado(X, VX),
+    V is sqrt(VX).
+```
+
+```prolog
+?- valor_ampliado(sqrt(2 ^ 2 * 4) - -1, V).
+V = 5.0.
+
+?- valor_ampliado(2 ^ -1, V).
+V = 0.5.
+```
+
+La potencia se evalúa con `**`, que con un exponente entero negativo da un
+número de punto flotante; con `^`, `2 ^ -1` sería un error, porque `^`
+entre enteros debe dar un entero. Un exponente que no es entero no
+corresponde a ninguna cláusula, y la expresión produce el error de tipo.
+
+## 14
+
+La copia de la ecuación reemplaza la variable por un átomo nuevo, y
+`resolver/5` trabaja sobre la copia; al final, la variable original se
+liga con la raíz:
+
+<!-- ejemplo: capitulo-46/soluciones_covington.pl predicado: resolver_variable/2 nueva_incognita/2 -->
+```prolog
+%!  resolver_variable(+Ecuacion, -Metodo:atom) is semidet.
+%
+%   Liga la variable libre de Ecuacion con una raíz que encuentra
+%   resolver/5 desde 1, y Metodo con el método que la encontró. Falla si
+%   Ecuacion no tiene variables o si ningún método encuentra una raíz.
+resolver_variable(Ecuacion, Metodo) :-
+    once(libre_en(Ecuacion, X)),
+    nueva_incognita(Ecuacion, A),
+    copy_term(X-Ecuacion, A-EcuacionA),
+    resolver(EcuacionA, A, 1, Raiz, Metodo),
+    X = Raiz.
+
+%!  nueva_incognita(+Termino, -A:atom) is det.
+%
+%   A es el primero de los átomos x1, x2, ... que no aparece en Termino.
+%   La comparación usa ==: sub_term(A, Termino) unificaría A con una
+%   variable de Termino.
+nueva_incognita(Termino, A) :-
+    between(1, inf, N),
+    atom_concat(x, N, A),
+    \+ ( sub_term(S, Termino),
+         S == A
+       ),
+    !.
+```
+
+`nueva_incognita/2` compara con `==`: `sub_term(A, Termino)` unificaría el
+átomo con la propia incógnita, que es una variable de `Termino`, y ningún
+átomo resultaría nuevo.
+
+```prolog
+?- resolver_variable(X * X = X * 3, M).
+X = 0.0,
+M = newton.
+
+?- resolver_variable(X + 1 = 1 / X, M).
+X = 0.6180339887498948,
+M = secante.
+```
+
+La primera ecuación es la secante horizontal de Covington, que
+`resolver_libre/1` no resuelve: Newton, desde 1, llega a la raíz 0. En la
+segunda, `derivar/3` no conoce la división, Newton queda descartado, y la
+secante da la misma raíz que `resolver_libre/1`. La variable da la
+comodidad de la consulta, y la copia con un átomo da los métodos que
+necesitan examinar la ecuación.

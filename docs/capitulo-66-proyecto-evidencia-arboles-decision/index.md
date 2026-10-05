@@ -24,8 +24,13 @@ hasta que cada hipótesis queda definida solo por preguntas. La cuarta
 construye con las reglas colapsadas un **árbol de preguntas** y compara
 tres criterios para elegir la pregunta de cada nodo. La quinta **compila**
 el árbol en cláusulas al cargar el archivo y lo consulta con las
-respuestas de una lista o del usuario. El proyecto completo carga dos
-módulos:
+respuestas de una lista o del usuario. La página
+[Cinco ampliaciones](ampliaciones.md) trata después lo que las fuentes
+cubren y las versiones dejan afuera: la regla de Bayes, la conjunción de
+entropía máxima, la evidencia en contra con los factores de certeza con
+signo, el aprendizaje del árbol a partir de ejemplos con ID3, y el
+reticulado que comparte los subárboles repetidos. El proyecto completo
+carga dos módulos:
 
 <!-- ejemplo: capitulo-66/proyecto.pl archivo -->
 ```prolog
@@ -78,8 +83,10 @@ intérprete `demostrar/4`. Retoma también el despliegue y la evaluación
 parcial del
 [capítulo 35](../capitulo-35-transformacion-de-programas-y-compilacion/index.md),
 y la tabulación del [capítulo 39](../capitulo-39-tabulacion/index.md) en un
-ejercicio. Todos los archivos son módulos que cargan el sistema experto de
-otro capítulo, y se ejecutan en una instalación local, no en SWISH.
+ejercicio. Los archivos de las cinco versiones son módulos que cargan el
+sistema experto de otro capítulo, y se ejecutan en una instalación local,
+no en SWISH; tres de las ampliaciones no cargan nada y se ejecutan en
+SWISH.
 
 ## Objetivos del capítulo
 
@@ -96,12 +103,15 @@ Al terminar el capítulo, el lector puede:
 - construir un árbol de preguntas con una estrategia elegida, medirlo y
   comprobarlo contra el sistema original sobre todos los casos posibles;
 - compilar el árbol en cláusulas al cargarlo y consultarlo con respuestas
-  de una lista o del usuario.
+  de una lista o del usuario;
+- obtener una probabilidad con la regla de Bayes, combinar evidencia a
+  favor y en contra, aprender un árbol de ejemplos con ID3, y guardar un
+  árbol como reticulado.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:15 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:20 h**.
     Resolver los 5 ejercicios marcados con ★: **1:35 h**.
-    Resolver los 12 ejercicios del final: **3:40 h**.
+    Resolver los 14 ejercicios del final: **4:15 h**.
 
 ## 66.1 El problema
 
@@ -145,6 +155,42 @@ pregunta cada observación la primera vez que el intérprete la necesita, y
 las hipótesis se prueban en el orden de `hipotesis/1`. Las preguntas
 salen del recorrido de la búsqueda, no de una decisión sobre qué conviene
 saber primero.
+
+Los dos problemas se encuentran en un árbol de decisión que lleva números
+en las hojas:
+
+![Árbol de decisión sobre la supervivencia de los pasajeros del Titanic, con preguntas por el sexo, la edad y la cantidad de familiares a bordo](arbol-titanic.jpg)
+
+Un árbol de decisión sobre los pasajeros del Titanic. Cada nodo interno
+hace una pregunta (el sexo, la edad, `sibsp`, la cantidad de cónyuges y
+hermanos a bordo), y cada hoja da una probabilidad de supervivencia y el
+porcentaje de los pasajeros que llegan a ella. Imagen: Gilgoldm,
+[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/deed.es), vía
+[Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Decision_Tree.jpg).
+
+Rowe obtiene un árbol así de un conjunto de reglas: colapsa las
+conclusiones intermedias, elige la condición que aparece en más reglas y
+que las divide de manera más pareja entre el sí y el no, y
+reparte las reglas según la respuesta. Con sus siete reglas colapsadas
+para las conclusiones `r` a `v`, el resultado es este reticulado, que el
+capítulo construye para el sistema experto de los animales en las
+versiones 3 a 5:
+
+```mermaid
+flowchart TD
+    n1{"a"} -- "sí" --> n2{"d"}
+    n1 -- "no" --> n3{"c"}
+    n2 -- "sí" --> n4{"e"}
+    n2 -- "no" --> u1(["u"])
+    n4 -- "sí" --> u2(["u"])
+    n4 -- "no" --> r(["r"])
+    n3 -- "sí" --> n5{"b"}
+    n3 -- "no" --> n6{"d"}
+    n5 -- "sí" --> t1(["t"])
+    n5 -- "no" --> v(["v"])
+    n6 -- "sí" --> t2(["t"])
+    n6 -- "no" --> s(["s"])
+```
 
 ## 66.2 Versión 1: probabilidades en las reglas
 
@@ -477,8 +523,8 @@ Con el animal del atardecer, la ventaja de guepardo sobre tigre depende
 del método; con observaciones seguras, la cebra domina a todas las demás.
 
 Los *shells* de sistemas expertos no eligen uno de los tres métodos: los
-mezclan. Clam, el *shell* con factores de certeza de Merritt, que sigue a
-MYCIN, toma el mínimo para la conjunción de las premisas y acumula las
+mezclan. Clam, el *shell* con factores de certeza de Merritt, que sigue el
+modelo de Shortliffe y Buchanan para MYCIN, toma el mínimo para la conjunción de las premisas y acumula las
 reglas con la fórmula de la independencia; CONMAN, el de Covington, Nute y
 Vellino, toma el mínimo para la conjunción y el máximo para la
 disyunción, que es la mejor regla sola. El [ejercicio 3](#ejercicios) los
@@ -633,7 +679,7 @@ preguntas y en inferencias. Está en la página
     | C1 | cada predicado declara modos y determinación; `grado/4`, `arbol/2` y `nodo/3` son `det` |
     | C2 | las reglas son las del [capítulo 33](../capitulo-33-introspeccion-y-metainterpretes/index.md), cargadas y no copiadas; las fuerzas son una tabla aparte y los métodos, cláusulas `multifile` que otro archivo puede extender |
     | C4 | `se_cumple/2` no liga las preguntas y no deja alternativas; el árbol se consulta con `->/2` |
-    | C7 | 47 pruebas en siete archivos; los tres árboles y el compilado se comparan con el sistema original sobre los 24 576 animales posibles, y la estimación independiente con las dos cotas |
+    | C7 | 171 pruebas en catorce archivos; los tres árboles y el compilado se comparan con el sistema original sobre los 24 576 animales posibles, y la estimación independiente con las dos cotas |
 
 ## Ejercicios
 
@@ -698,6 +744,19 @@ tiene de propio.
     `fuerza_estimada(Exitos, Total, F, Error)` y aplicarlo a 200 de 500, 7
     de 20 y 2 de 2000. Decidir en cuáles se puede confiar, con el criterio
     de Rowe: no, si el error es comparable a $F$.
+13. **(2)** Merritt propone que una regla pueda tener su propio umbral,
+    que reemplaza al general. Declarar `umbral_regla(Regla, U)` para c1
+    (0,4) y r7 (0,5), y escribir
+    `factor_con_umbrales(Meta, Observaciones, General, F)`, como
+    `factor/4` de la
+    [sección 66.9](ampliaciones.md#669-evidencia-a-favor-y-en-contra) con
+    el umbral de cada regla. Calcularlo para el guepardo del atardecer, y
+    con rayas de grado 0,5, y explicar los resultados.
+14. **(2)** Agregar a los sábados de la
+    [sección 66.10](ampliaciones.md#6610-aprender-el-arbol-de-ejemplos) un
+    atributo `dia`, el número del ejemplo. Calcular su ganancia y su razón
+    de ganancia, decidir qué atributo elige cada criterio para la raíz, y
+    explicar qué ocurre al clasificar un sábado nuevo.
 
 ## Resumen
 
@@ -717,6 +776,16 @@ tiene de propio.
 | `colapsada/2`, `preguntas/1`, `se_cumple/2` | las reglas colapsadas |
 | `arbol/2`, `consultar/4`, `medir/4`, `prototipo/2` | el árbol, su consulta y sus medidas |
 | `identificar_compilado/2`, `consulta_interactiva/1`, `preguntas_encadenando/2` | el árbol compilado y la comparación con el encadenamiento |
+| **regla de Bayes** | $p(A \mid B) = p(B \mid A) \, p(A) / p(B)$: una probabilidad condicional a partir de la inversa |
+| **entropía máxima** | la estimación que menos información agrega; para la conjunción, el producto de la independencia |
+| **factor de certeza** | un número entre $-1$ y $1$ que reúne evidencia a favor y en contra; la premisa debe llegar a un umbral |
+| **razón de ganancia** | la ganancia dividida por la información del valor del atributo; corrige el sesgo hacia los atributos con muchos valores |
+| **ventana** | la parte de los ejemplos de la que ID3 aprende, que crece con los que el árbol clasifica mal |
+| **reticulado de decisión** | un árbol en el que los subárboles iguales se guardan una vez |
+| **[Patrón 65](../patrones.md#65-una-tabla-de-valores-como-conjunto-de-nodos-compartidos)** | una tabla de valores como conjunto de nodos compartidos |
+| `bayes/4`, `posterior/3`, `y_maxima_entropia/3` | la regla de Bayes, la probabilidad de cada animal, y la conjunción de entropía máxima |
+| `balance/4`, `factor/4`, `cf_combinar/3` | la evidencia a favor menos la en contra, y los factores de certeza con signo |
+| `id3/4`, `ventana/5`, `reticulado/3` | el árbol aprendido de ejemplos, el esquema de la ventana, y el reticulado |
 
 ## Temas que se retoman
 
@@ -737,13 +806,21 @@ tiene de propio.
   independiente, conservadora y liberal con sus casos de uso, la negación
   como complemento, los criterios para aceptar una fórmula, la estimación
   de las fuerzas con su error estándar, y el colapso de las reglas y la
-  elección de la pregunta que las reparte.
+  elección de la pregunta que las reparte. La
+  [página de ampliaciones](ampliaciones.md) toma además, del primero, la
+  regla de Bayes con sus desigualdades de consistencia, la conjunción de
+  entropía máxima y la resta de la evidencia en contra, y del segundo,
+  junto con el apartado «Decision lattices» del capítulo sobre el
+  control, el reticulado
+  y sus ventajas y desventajas.
 - Dennis Merritt, *Building Expert Systems in Prolog*, Springer, 1989 —
   «Backward Chaining with Uncertainty».
   [Edición en línea de Amzi!](https://www.amzi.com/ExpertSystemsInProlog/03backwarduncertainty.php).
   De allí vienen los factores de certeza de MYCIN, con el mínimo para las
   premisas y la acumulación de las reglas, que el ejercicio 3 compara con
-  los tres métodos.
+  los tres métodos; la página de ampliaciones agrega los factores
+  negativos, la combinación de tres casos según los signos y el umbral de
+  la premisa, y el ejercicio 13, el umbral por regla de su ejercicio 3.4.
 - Michael A. Covington, Donald Nute y André Vellino, *Prolog Programming in
   Depth*, Prentice Hall, 1997 — «An Expert System Shell with Uncertainty».
   [Edición en línea](https://www.covingtoninnovations.com/books/PPID.pdf).
@@ -753,11 +830,32 @@ tiene de propio.
   1986, pp. 81–106.
   [Página de la editorial](https://doi.org/10.1007/BF00116251).
   De allí viene la ganancia de información de la estrategia
-  `informacion`.
+  `informacion` (apartado «ID3»), y la presentación de ID3 como
+  descendiente del *Concept Learning System*. La página de ampliaciones
+  toma los catorce sábados de su tabla 1, el árbol de su figura 2, la
+  ventana, el ruido con la prueba de chi-cuadrado (apartado «Noise») y la
+  razón de ganancia (apartado «The selection criterion»).
+- Claude E. Shannon, «A Mathematical Theory of Communication», *Bell
+  System Technical Journal* 27 (3), 1948, págs. 379–423.
+  [DOI 10.1002/j.1538-7305.1948.tb01338.x](https://doi.org/10.1002/j.1538-7305.1948.tb01338.x).
+  La entropía que la ganancia de información de Quinlan resta antes y
+  después de cada pregunta.
+- Earl B. Hunt, Janet Marin y Philip J. Stone, *Experiments in Induction*,
+  Academic Press, 1966. El *Concept Learning System*, que construye un
+  árbol de decisión partiendo los ejemplos por un atributo en cada nodo;
+  Quinlan lo cita como el origen de ID3.
+- Edward H. Shortliffe y Bruce G. Buchanan, «A Model of Inexact Reasoning
+  in Medicine», *Mathematical Biosciences* 23, 1975, págs. 351–379.
+  [DOI 10.1016/0025-5564(75)90047-4](https://doi.org/10.1016/0025-5564(75)90047-4).
+  Los factores de certeza de MYCIN que Merritt implementa en Clam y que el
+  ejercicio 3 agrega como método.
 
 El código del capítulo es propio, escrito para el curso sobre el sistema
 experto del
 [capítulo 33](../capitulo-33-introspeccion-y-metainterpretes/index.md): de
 las fuentes se toman ideas, fórmulas y ejemplos, no código; las cotas
 como intervalo, la comparación de estrategias con su medición y la
-consulta del encadenamiento por repetición son del curso.
+consulta del encadenamiento por repetición son del curso, como la
+búsqueda numérica de la entropía máxima, la probabilidad de cada animal
+con un error de registro, y el reticulado construido numerando los
+subárboles.

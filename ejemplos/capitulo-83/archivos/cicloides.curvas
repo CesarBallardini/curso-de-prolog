@@ -1,0 +1,7 @@
+% Las tres clases de cicloide: un disco de radio 1 rueda dos vueltas.
+% Cicloide común: el punto está en el borde del disco.
+curva(comun, cicloide(1, 1), 0, 4*pi, 120).
+% Cicloide acortada: el punto está dentro del disco.
+curva(acortada, cicloide(1, 0.5), 0, 4*pi, 120).
+% Cicloide alargada: el punto está fuera del disco.
+curva(alargada, cicloide(1, 1.6), 0, 4*pi, 120).

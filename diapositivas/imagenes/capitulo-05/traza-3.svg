@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" width="960" height="480">
+  <title>La traza junto al árbol, 3: Redo de padre(juan, P) y Exit por la rama de R2</title>
+  <rect x="0" y="0" width="960" height="480" fill="#FFFFFF"/>
+  <line x1="265.0" y1="59.0" x2="265.0" y2="132.7" stroke="#1F3A5F" stroke-width="3"/>
+  <text x="277.0" y="102.8" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">R4</text>
+  <line x1="215.0" y1="203.3" x2="145.0" y2="289.0" stroke="#9AA5B1" stroke-width="3"/>
+  <text x="159.0" y="253.2" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#9AA5B1" text-anchor="end" xml:space="preserve">R1</text>
+  <line x1="315.0" y1="203.3" x2="400.0" y2="289.0" stroke="#D9822B" stroke-width="3"/>
+  <text x="380.4" y="253.2" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#D9822B" text-anchor="start" xml:space="preserve">R2</text>
+  <line x1="125.0" y1="331.0" x2="125.0" y2="366.0" stroke="#9AA5B1" stroke-width="3"/>
+  <rect x="141.3" y="16.8" width="247.5" height="42.4" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="265.0" y="45.5" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">abuelo(juan, Quien)</text>
+  <rect x="164.4" y="132.7" width="201.2" height="70.7" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="265.0" y="161.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">padre(juan, P),</text>
+  <text x="265.0" y="189.6" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">padre(P, Quien)</text>
+  <rect x="12.8" y="288.8" width="224.4" height="42.4" rx="10" fill="#F1F3F5" stroke="#9AA5B1" stroke-width="2"/>
+  <text x="125.0" y="317.5" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#9AA5B1" text-anchor="middle" xml:space="preserve">padre(ana, Quien)</text>
+  <rect x="296.3" y="288.8" width="247.5" height="42.4" rx="10" fill="#FCE8D2" stroke="#D9822B" stroke-width="3"/>
+  <text x="420.0" y="317.5" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">padre(pedro, Quien)</text>
+  <circle cx="125" cy="382" r="16" fill="#F1F3F5" stroke="#9AA5B1" stroke-width="2"/>
+  <path d="M 117.8 374.8 L 132.2 389.2 M 132.2 374.8 L 117.8 389.2" fill="none" stroke="#9AA5B1" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M 10 289 C -10 220 20 175 155 168" fill="none" stroke="#D9822B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 5"/>
+  <polygon points="163.0,168.0 148.6,161.0 149.4,176.4" fill="#D9822B"/>
+  <circle cx="120" cy="38" r="16" fill="#9AA5B1"/>
+  <text x="120.0" y="45.6" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#FFFFFF" text-anchor="middle" xml:space="preserve" font-weight="bold">1</text>
+  <circle cx="150" cy="120" r="16" fill="#9AA5B1"/>
+  <text x="150.0" y="127.6" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#FFFFFF" text-anchor="middle" xml:space="preserve" font-weight="bold">2</text>
+  <circle cx="180" cy="246" r="16" fill="#9AA5B1"/>
+  <text x="180.0" y="253.6" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#FFFFFF" text-anchor="middle" xml:space="preserve" font-weight="bold">3</text>
+  <circle cx="36" cy="356" r="16" fill="#9AA5B1"/>
+  <text x="36.0" y="363.6" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#FFFFFF" text-anchor="middle" xml:space="preserve" font-weight="bold">4</text>
+  <circle cx="160" cy="382" r="16" fill="#9AA5B1"/>
+  <text x="160.0" y="389.6" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#FFFFFF" text-anchor="middle" xml:space="preserve" font-weight="bold">5</text>
+  <circle cx="380" cy="120" r="16" fill="#D9822B"/>
+  <text x="380.0" y="127.6" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#FFFFFF" text-anchor="middle" xml:space="preserve" font-weight="bold">6</text>
+  <circle cx="357" cy="246" r="16" fill="#2E7D32"/>
+  <text x="357.0" y="253.6" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#FFFFFF" text-anchor="middle" xml:space="preserve" font-weight="bold">7</text>
+  <rect x="552.0" y="10.0" width="404.0" height="350.0" rx="8" fill="#F1F3F5"/>
+  <text x="568.0" y="36.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">trace</text>
+  <circle cx="577" cy="72" r="15" fill="#9AA5B1"/>
+  <text x="577.0" y="79.6" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#FFFFFF" text-anchor="middle" xml:space="preserve" font-weight="bold">1</text>
+  <text x="602.0" y="79.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">Call: (10) abuelo(juan, _8106)</text>
+  <circle cx="577" cy="102" r="15" fill="#9AA5B1"/>
+  <text x="577.0" y="109.6" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#FFFFFF" text-anchor="middle" xml:space="preserve" font-weight="bold">2</text>
+  <text x="602.0" y="109.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">Call: (11) padre(juan, _8960)</text>
+  <circle cx="577" cy="132" r="15" fill="#9AA5B1"/>
+  <text x="577.0" y="139.6" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#FFFFFF" text-anchor="middle" xml:space="preserve" font-weight="bold">3</text>
+  <text x="602.0" y="139.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">Exit: (11) padre(juan, ana)</text>
+  <circle cx="577" cy="162" r="15" fill="#9AA5B1"/>
+  <text x="577.0" y="169.6" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#FFFFFF" text-anchor="middle" xml:space="preserve" font-weight="bold">4</text>
+  <text x="602.0" y="169.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">Call: (11) padre(ana, _8106)</text>
+  <circle cx="577" cy="192" r="15" fill="#9AA5B1"/>
+  <text x="577.0" y="199.6" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#FFFFFF" text-anchor="middle" xml:space="preserve" font-weight="bold">5</text>
+  <text x="602.0" y="199.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">Fail: (11) padre(ana, _8106)</text>
+  <rect x="556.0" y="208.0" width="396.0" height="28.0" rx="5" fill="#FCE8D2" stroke="#D9822B" stroke-width="1.5"/>
+  <circle cx="577" cy="222" r="15" fill="#D9822B"/>
+  <text x="577.0" y="229.6" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#FFFFFF" text-anchor="middle" xml:space="preserve" font-weight="bold">6</text>
+  <text x="602.0" y="229.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">Redo: (11) padre(juan, _8960)</text>
+  <rect x="556.0" y="238.0" width="396.0" height="28.0" rx="5" fill="#E3F1E4" stroke="#2E7D32" stroke-width="1.5"/>
+  <circle cx="577" cy="252" r="15" fill="#2E7D32"/>
+  <text x="577.0" y="259.6" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#FFFFFF" text-anchor="middle" xml:space="preserve" font-weight="bold">7</text>
+  <text x="602.0" y="259.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">Exit: (11) padre(juan, pedro)</text>
+</svg>

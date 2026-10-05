@@ -62,4 +62,62 @@ test(ej9_estados, [true(N-M == 4-3)]) :-
 bits(N, Bs) :-
     findall(B, ( between(0, 3, I), B is (N >> I) /\ 1 ), Bs).
 
+test(contiene_final, [true]) :-
+    contiene_final(termina_ab, [q0, q2]).
+
+test(contiene_final_no, [fail]) :-
+    contiene_final(termina_ab, [q0]).
+
+test(contiene_final_vacio, [fail]) :-
+    contiene_final(termina_ab, []).
+
+test(repetir_cero, [true(R == vacia)]) :-
+    repetir(0, sim(a), R).
+
+test(repetir_uno, [true(R == sim(a))]) :-
+    repetir(1, sim(a), R).
+
+test(repetir_tres, [true(R == cat(sim(a), cat(sim(a), sim(a))))]) :-
+    repetir(3, sim(a), R).
+
+% Ejercicio 12: las dos expresiones describen el lenguaje de multiplo3.
+test(ej12_kleene) :-
+    expresion_texto(multiplo3, T),
+    equivalentes(er(T), multiplo3).
+
+test(ej12_corta) :-
+    expresion_corta(T),
+    equivalentes(er(T), multiplo3).
+
+test(ej12_mas_corta, [true(L1 < L2)]) :-
+    expresion_corta(T1),
+    string_length(T1, L1),
+    expresion_texto(multiplo3, T2),
+    string_length(T2, L2).
+
+% Ejercicio 13: la máquina de Moore escribe S0 y después lo mismo que la
+% de Mealy, para todas las entradas de hasta 5 bits.
+test(ej13_gray, [forall(( between(0, 5, L), length(E, L),
+                          maplist([B]>>member(B, [0, 1]), E) )),
+                 nondet, true(S == [0|G])]) :-
+    transducir(gray, E, G),
+    moore(moore_de(gray, 0), E, S).
+
+test(ej13_complemento2, [forall(( between(0, 4, L), length(E, L),
+                                  maplist([B]>>member(B, [0, 1]), E) )),
+                         nondet, true(S == [x|G])]) :-
+    transducir(complemento2, E, G),
+    moore(moore_de(complemento2, x), E, S).
+
+% Los estados de gray se desdoblan: b0 y b1 se alcanzan escribiendo 0 y 1.
+test(ej13_estados, [true(Qs == [b0-0, b0-1, b1-0, b1-1])]) :-
+    findall(Q, alcanzable(moore_de(gray, 0), Q), Qs0),
+    sort(Qs0, Qs).
+
+test(ej13_salida, [true(S == 1)]) :-
+    moore:salida_estado(moore_de(gray, 0), b0-1, S).
+
+test(ej13_inverso, [nondet, true(E == [1, 0, 1, 1])]) :-
+    moore(moore_de(gray, 0), E, [0, 1, 1, 1, 0]).
+
 :- end_tests(soluciones).

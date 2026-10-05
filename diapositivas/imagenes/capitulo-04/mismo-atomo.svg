@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 350" width="400" height="350">
+  <title>hola y 'hola' son dos notaciones del mismo átomo; 'Hola' es un átomo y Hola, una variable</title>
+  <rect x="0" y="0" width="400" height="350" fill="#FFFFFF"/>
+  <text x="110" y="45" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="26" fill="#1F2933" text-anchor="middle">hola</text>
+  <text x="290" y="45" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="26" fill="#1F2933" text-anchor="middle">'hola'</text>
+  <line x1="115" y1="60" x2="179.262" y2="122.426" stroke="#1F3A5F" stroke-width="3"/>
+  <polygon points="185.0,128.0 172.4,124.8 181.5,115.5" fill="#1F3A5F"/>
+  <line x1="285" y1="60" x2="220.738" y2="122.426" stroke="#1F3A5F" stroke-width="3"/>
+  <polygon points="215.0,128.0 218.5,115.5 227.6,124.8" fill="#1F3A5F"/>
+  <rect x="162.8" y="132" width="74.4" height="36" rx="18" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="200" y="157.7" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#1F2933" text-anchor="middle">hola</text>
+  <text x="200" y="196" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#52606D" text-anchor="middle">un solo átomo</text>
+  <line x1="20" y1="220" x2="380" y2="220" stroke="#C9D3DE" stroke-width="2"/>
+  <text x="110" y="252" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="26" fill="#1F2933" text-anchor="middle">'Hola'</text>
+  <text x="290" y="252" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="26" fill="#1F2933" text-anchor="middle">Hola</text>
+  <line x1="110" y1="262" x2="110" y2="276" stroke="#1F3A5F" stroke-width="3"/>
+  <polygon points="110.0,284.0 103.5,272.7 116.5,272.7" fill="#1F3A5F"/>
+  <line x1="290" y1="262" x2="290" y2="276" stroke="#6A3D9A" stroke-width="3"/>
+  <polygon points="290.0,284.0 283.5,272.7 296.5,272.7" fill="#6A3D9A"/>
+  <rect x="72.8" y="286" width="74.4" height="36" rx="18" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="110" y="311.7" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#1F2933" text-anchor="middle">Hola</text>
+  <rect x="252.8" y="286" width="74.4" height="36" rx="6" fill="#EFE7F7" stroke="#6A3D9A" stroke-width="2"/>
+  <text x="290" y="311.7" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#1F2933" text-anchor="middle">Hola</text>
+  <text x="110" y="342" font-family="Verdana, DejaVu Sans, sans-serif" font-size="14" fill="#52606D" text-anchor="middle">átomo</text>
+  <text x="290" y="342" font-family="Verdana, DejaVu Sans, sans-serif" font-size="14" fill="#52606D" text-anchor="middle">variable</text>
+</svg>

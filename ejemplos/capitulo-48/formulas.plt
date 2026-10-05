@@ -68,4 +68,44 @@ evaluar(F * G, Vs, V) :- evaluar(F, Vs, V1), evaluar(G, Vs, V2), V is V1 /\ V2.
 evaluar(F + G, Vs, V) :- evaluar(F, Vs, V1), evaluar(G, Vs, V2), V is V1 \/ V2.
 evaluar(F # G, Vs, V) :- evaluar(F, Vs, V1), evaluar(G, Vs, V2), V is V1 xor V2.
 
+test(simbolica_inv, [nondet, true(F == ~a)]) :-
+    formulas:simbolica([], inv, [a], F).
+
+test(simbolica_nand, [nondet, true(F == ~(a * b))]) :-
+    formulas:simbolica([], nand, [a, b], F).
+
+test(negar_nombre, [true(N == ~a)]) :-
+    formulas:negar(a, N).
+
+test(negar_constantes, [true(N0-N1 == 1-0)]) :-
+    formulas:negar(0, N0),
+    formulas:negar(1, N1).
+
+test(negar_de_morgan, [true(N == ~a + b)]) :-
+    formulas:negar(a * ~b, N).
+
+test(negar_xor, [true(N == a * b + ~a * ~b)]) :-
+    formulas:negar(a # b, N).
+
+test(contradictorio) :-
+    formulas:contradictorio([a, b, ~a]).
+
+test(no_contradictorio, [fail]) :-
+    formulas:contradictorio([a, ~b]).
+
+test(absorbido) :-
+    formulas:absorbido([[a], [a, b]], [a, b]).
+
+test(no_absorbido, [fail]) :-
+    formulas:absorbido([[a, b], [c]], [a, b]).
+
+test(producto, [true(F == a * ~b * c)]) :-
+    formulas:producto([a, ~b, c], F).
+
+test(producto_vacio, [true(F == 1)]) :-
+    formulas:producto([], F).
+
+test(sumar, [true(F == x + a * b)]) :-
+    formulas:sumar([a, b], x, F).
+
 :- end_tests(formulas).

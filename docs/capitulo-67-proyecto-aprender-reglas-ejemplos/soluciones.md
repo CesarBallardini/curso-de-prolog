@@ -431,3 +431,106 @@ cubren pocos positivos: el resultado es mejor que el de la versión 5 por
 accidente, porque la hipótesis de dos hechos por lo menos no es falsa. La
 búsqueda en haz no es completa: una cláusula consistente puede quedar
 fuera del haz en un nivel anterior.
+
+## Ejercicio 12
+
+La hipótesis guarda las cláusulas tal como están en la lista de
+cláusulas posibles, sin instanciar, y cada uso toma una copia: así la
+cláusula supuesta para el primer ejemplo sirve para los siguientes sin
+quedar atada a sus constantes. El recorrido de los ejemplos es un
+plegado sobre la hipótesis:
+
+<!-- ejemplo: capitulo-67/soluciones_otras.pl predicado: inducir_todos/4 inducir_general/5 -->
+```prolog
+%!  inducir_todos(+Ejemplos:list, +Inducibles:list, +Fondo:list, -H:list)
+%!      is nondet.
+%
+%   H es una lista de cláusulas de Inducibles, sin instanciar, con las que
+%   se prueban todos los Ejemplos junto con los hechos de Fondo. Una
+%   cláusula supuesta para un ejemplo se reutiliza, renombrada, para los
+%   siguientes.
+inducir_todos(Ejemplos, Inducibles, Fondo, H) :-
+    foldl(inducir_general(Inducibles, Fondo), Ejemplos, [], H).
+
+%!  inducir_general(+Inducibles:list, +Fondo:list, +Meta, +H0:list,
+%!                  -H:list) is nondet.
+%
+%   Como inducir/5, pero las cláusulas de H0 y H no están instanciadas:
+%   cada uso es una copia.
+inducir_general(_, Fondo, Meta, H, H) :-
+    member(Meta, Fondo).
+inducir_general(Inducibles, Fondo, Meta, H0, H) :-
+    member(C, H0),
+    copy_term(C, (Meta :- Cuerpo)),
+    foldl(inducir_general(Inducibles, Fondo), Cuerpo, H0, H).
+inducir_general(Inducibles, Fondo, Meta, H0, H) :-
+    member(R, Inducibles),
+    \+ ( member(C, H0),
+         C =@= R ),
+    copy_term(R, (Meta :- Cuerpo)),
+    foldl(inducir_general(Inducibles, Fondo), Cuerpo, [R|H0], H).
+```
+
+La consulta
+`once(inducir_todos(Pos, Is, M, H)), maplist(mostrar, H)`, con los
+positivos de `abuelo/2`, las cláusulas de `inducibles/2` y el modelo de
+fondo, escribe:
+
+```text
+abuelo(A, B) :-
+    varon(A),
+    padre(A, C),
+    progenitor(C, B).
+```
+
+La primera respuesta es una sola cláusula, la más larga de la lista, que
+explica los tres ejemplos; `inducir/5` daba, para un solo ejemplo, diez
+explicaciones instanciadas. Las respuestas siguientes recorren las demás
+combinaciones de cláusulas: son muchas, y llegan hasta `abuelo(_, _)`.
+Sin negativos, el orden de la lista de cláusulas posibles es lo único
+que decide cuál se elige primero.
+
+## Ejercicio 13
+
+`listnum([], _)` es consistente porque ningún negativo tiene la primera
+lista vacía y la segunda no. Con el negativo `listnum([], [uno])`, la
+búsqueda refuta esa cláusula y prueba la siguiente en el orden de los
+refinamientos, que reemplaza primero la segunda variable: `listnum(_,
+[])`, consistente porque ningún negativo tiene la segunda lista vacía y
+la primera no. Hacen falta los dos negativos:
+
+<!-- ejemplo: capitulo-67/soluciones_otras.pl predicado: numerales_corregidos/1 -->
+```prolog
+%!  numerales_corregidos(-H:list) is semidet.
+%
+%   H es la hipótesis de mis/4 para los ejemplos de numerales con dos
+%   negativos más después del primer positivo: listnum([], [uno]) y
+%   listnum([uno], []).
+numerales_corregidos(H) :-
+    mis(numerales,
+        [ pos(listnum([], [])),
+          neg(listnum([], [uno])),
+          neg(listnum([uno], [])),
+          neg(listnum([uno], [uno])),
+          neg(listnum([1, dos], [uno, dos])),
+          pos(listnum([1], [uno])),
+          neg(listnum([cuatro, dos], [4, dos])),
+          pos(listnum([cuatro], [4]))
+        ], H, _).
+```
+
+La consulta `numerales_corregidos(H), maplist(mostrar, H)` escribe:
+
+```text
+listnum([A|B], [C|D]) :-
+    listnum(B, D),
+    num(C, A).
+listnum([A|B], [C|D]) :-
+    listnum(B, D),
+    num(A, C).
+listnum([], []).
+```
+
+Es la hipótesis de Flach. Cada negativo descarta una de las dos maneras
+de generalizar el caso base; en una búsqueda descendente, los negativos
+son los que dicen hasta dónde especializar.

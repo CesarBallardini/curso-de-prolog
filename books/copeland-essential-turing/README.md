@@ -1,0 +1,26 @@
+# copeland-essential-turing
+
+- [Contents](00-contents.md) — pages 8–9
+- [Alan Turing 1912–1954](01-alan-turing-19121954.md) — pages 10–13
+- [Computable Numbers: A Guide](02-computable-numbers-a-guide.md) — pages 14–66
+- [1. On Computable Numbers, with an Application to the Entscheidungsproblem (1936)](03-1-on-computable-numbers-with-an-application-to-the-entscheid.md) — pages 67–99
+- [2. On Computable Numbers: Corrections and Critiques](04-2-on-computable-numbers-corrections-and-critiques.md) — pages 100–133
+- [3. Systems of Logic Based on Ordinals (1938), including excerpts from Turing’s correspondence, 1936–1938](05-3-systems-of-logic-based-on-ordinals-1938-including-excerpts.md) — pages 134–213
+- [4. Letters on Logic to Max Newman (c.1940)](06-4-letters-on-logic-to-max-newman-c-1940.md) — pages 214–225
+- [Enigma](07-enigma.md) — pages 226–273
+- [5. History of Hut 8 to December 1941 (1945), featuring an excerpt from Turing’s ‘Treatise on the Enigma’](08-5-history-of-hut-8-to-december-1941-1945-featuring-an-excerp.md) — pages 274–321
+- [6. Bombe and Spider (1940)](09-6-bombe-and-spider-1940.md) — pages 322–344
+- [7. Letter to Winston Churchill (1941)](10-7-letter-to-winston-churchill-1941.md) — pages 345–349
+- [8. Memorandum to OP-20-G on Naval Enigma (c.1941)](11-8-memorandum-to-op-20-g-on-naval-enigma-c-1941.md) — pages 350–361
+- [Artificial Intelligence](12-artificial-intelligence.md) — pages 362–370
+- [9. Lecture on the Automatic Computing Engine (1947)](13-9-lecture-on-the-automatic-computing-engine-1947.md) — pages 371–403
+- [10. Intelligent Machinery (1948)](14-10-intelligent-machinery-1948.md) — pages 404–441
+- [11. Computing Machinery and Intelligence (1950)](15-11-computing-machinery-and-intelligence-1950.md) — pages 442–473
+- [12. Intelligent Machinery, A Heretical Theory (c.1951)](16-12-intelligent-machinery-a-heretical-theory-c-1951.md) — pages 474–484
+- [13. Can Digital Computers Think? (1951)](17-13-can-digital-computers-think-1951.md) — pages 485–495
+- [14. Can Automatic Calculating Machines Be Said to Think? (1952)](18-14-can-automatic-calculating-machines-be-said-to-think-1952.md) — pages 496–515
+- [Artificial Life](19-artificial-life.md) — pages 516–527
+- [15. The Chemical Basis of Morphogenesis (1952)](20-15-the-chemical-basis-of-morphogenesis-1952.md) — pages 528–570
+- [16. Chess (1953)](21-16-chess-1953.md) — pages 571–584
+- [17. Solvable and Unsolvable Problems (1954)](22-17-solvable-and-unsolvable-problems-1954.md) — pages 585–605
+- [Index](23-index.md) — pages 606–622

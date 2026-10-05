@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" width="960" height="480">
+  <title>Árbol de antepasado(juan, Quien), 3 de 3: la rama de pedro; R4 da la tercera respuesta, luis, y antepasado(luis, Quien) falla con R4 y con R5</title>
+  <rect x="0" y="0" width="960" height="480" fill="#FFFFFF"/>
+  <text x="20" y="472" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="start">la rama de pedro, desde θ₈</text>
+  <line x1="388.4" y1="48.2" x2="210.0" y2="126.3" stroke="#1F3A5F" stroke-width="3"/>
+  <line x1="571.6" y1="48.2" x2="700.0" y2="112.2" stroke="#1F3A5F" stroke-width="3"/>
+  <line x1="210.0" y1="168.7" x2="210.0" y2="208.0" stroke="#1F3A5F" stroke-width="3"/>
+  <line x1="700.0" y1="182.8" x2="700.0" y2="222.8" stroke="#1F3A5F" stroke-width="3"/>
+  <line x1="611.9" y1="265.2" x2="380.0" y2="343.3" stroke="#1F3A5F" stroke-width="3"/>
+  <line x1="788.1" y1="265.2" x2="790.0" y2="329.1" stroke="#1F3A5F" stroke-width="3"/>
+  <line x1="380.0" y1="385.7" x2="380.0" y2="416.0" stroke="#B3261E" stroke-width="3"/>
+  <line x1="790.0" y1="399.9" x2="790.0" y2="416.0" stroke="#B3261E" stroke-width="3"/>
+  <rect x="327.4" y="5.8" width="305.2" height="42.4" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="480.0" y="34.5" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">antepasado(pedro, Quien)</text>
+  <rect x="86.3" y="126.3" width="247.5" height="42.4" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="210.0" y="155.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">padre(pedro, Quien)</text>
+  <rect x="547.4" y="112.2" width="305.2" height="70.7" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="700.0" y="140.8" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">padre(pedro, Hijo₃),</text>
+  <text x="700.0" y="169.1" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">antepasado(Hijo₃, Quien)</text>
+  <rect x="110.4" y="208.0" width="199.3" height="72.0" rx="12" fill="#E3F1E4" stroke="#2E7D32" stroke-width="3"/>
+  <text x="210.0" y="236.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#2E7D32" text-anchor="middle" xml:space="preserve" font-weight="bold">3.ª respuesta</text>
+  <text x="210.0" y="266.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve" font-weight="bold">Quien = luis</text>
+  <rect x="553.2" y="222.8" width="293.7" height="42.4" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="700.0" y="251.5" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">antepasado(luis, Quien)</text>
+  <rect x="262.1" y="343.3" width="235.9" height="42.4" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="380.0" y="372.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">padre(luis, Quien)</text>
+  <rect x="637.4" y="329.1" width="305.2" height="70.7" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="790.0" y="357.8" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">padre(luis, Hijo₄),</text>
+  <text x="790.0" y="386.1" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">antepasado(Hijo₄, Quien)</text>
+  <circle cx="380" cy="432" r="16" fill="#B3261E"/>
+  <path d="M 372.8 424.8 L 387.2 439.2 M 387.2 424.8 L 372.8 439.2" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="790" cy="432" r="16" fill="#B3261E"/>
+  <path d="M 782.8 424.8 L 797.2 439.2 M 797.2 424.8 L 782.8 439.2" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <g class="elabel">
+  <rect x="165.2" y="61.2" width="268.1" height="52.0" rx="4" fill="#FFFFFF" opacity="0.95"/>
+  <text x="299.2" y="81.2" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="middle" xml:space="preserve">R4. θ₉ =</text>
+  <text x="299.2" y="105.2" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="middle" xml:space="preserve">{ A₃/pedro, D₃/Quien }</text>
+  </g>
+  <g class="elabel">
+  <rect x="501.7" y="54.2" width="268.1" height="52.0" rx="4" fill="#FFFFFF" opacity="0.95"/>
+  <text x="635.8" y="74.2" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="middle" xml:space="preserve">R5. θ₁₁ =</text>
+  <text x="635.8" y="98.2" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="middle" xml:space="preserve">{ A₃/pedro, D₃/Quien }</text>
+  </g>
+  <g class="elabel">
+  <rect x="64.4" y="174.3" width="291.2" height="28.0" rx="4" fill="#FFFFFF" opacity="0.95"/>
+  <text x="210.0" y="194.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="middle" xml:space="preserve">R3. θ₁₀ = { Quien/luis }</text>
+  </g>
+  <g class="elabel">
+  <rect x="554.4" y="188.8" width="291.2" height="28.0" rx="4" fill="#FFFFFF" opacity="0.95"/>
+  <text x="700.0" y="208.8" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="middle" xml:space="preserve">R3. θ₁₂ = { Hijo₃/luis }</text>
+  </g>
+  <g class="elabel">
+  <rect x="367.7" y="278.2" width="256.6" height="52.0" rx="4" fill="#FFFFFF" opacity="0.95"/>
+  <text x="496.0" y="298.2" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="middle" xml:space="preserve">R4. θ₁₃ =</text>
+  <text x="496.0" y="322.2" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="middle" xml:space="preserve">{ A₄/luis, D₄/Quien }</text>
+  </g>
+  <g class="elabel">
+  <rect x="660.8" y="271.2" width="256.6" height="52.0" rx="4" fill="#FFFFFF" opacity="0.95"/>
+  <text x="789.0" y="291.2" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="middle" xml:space="preserve">R5. θ₁₄ =</text>
+  <text x="789.0" y="315.2" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="middle" xml:space="preserve">{ A₄/luis, D₄/Quien }</text>
+  </g>
+</svg>

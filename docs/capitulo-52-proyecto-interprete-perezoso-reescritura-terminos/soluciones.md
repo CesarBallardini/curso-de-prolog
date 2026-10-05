@@ -13,7 +13,7 @@ de `traza.pl`; `transicion/5`, de `completa.pl`, y `contenido/2`, de
 
 <!-- ejemplo: capitulo-52/proyecto.pl archivo -->
 ```prolog
-:- use_module(numeros).
+:- use_module(universal).
 ```
 
 ```prolog
@@ -398,3 +398,56 @@ valores posibles: `cuantas(rapido, inicio, [0, 1, schwa], 500, N)` da
 `mas_de(500)`. Una máquina de Turing tiene finitas configuraciones m, y
 todo lo que no cabe en ellas tiene que ir en la cinta; la máquina II lo
 paga con los pasos que da para recorrerla.
+
+## Ejercicio 12
+
+<!-- ejemplo: capitulo-52/soluciones.pl fragmento: plana:fila(reimprime, b, blanco, [p(0)], c). .. plana:fila(reimprime, c, simbolo(0), [p(1), r, r], b). -->
+```prolog
+plana:fila(reimprime, b, blanco, [p(0)], c).
+plana:fila(reimprime, c, simbolo(0), [p(1), r, r], b).
+```
+
+```prolog
+?- figuras(reimprime, b, 4, Fs), universal(reimprime, b, [0, 1], 4, Us).
+Fs = [0, 1, 0, 1],
+Us = [0, 0, 0, 0].
+
+?- descripcion(reimprime, b, [0, 1], SD).
+SD = "DADDCNDAA;DAADCDCCRDAAA;DAAADDRDA;DAAADCDCRDA;DAAADCCDCCRDA;".
+```
+
+`figuras/4` cuenta cada 0 y cada 1 que la máquina imprime. 𝔘, con
+`universal/5` de `universal.pl`, solo escribe
+una figura cuando la instrucción imprime 0 o 1 en una casilla en blanco:
+`sh2` examina la letra anterior al símbolo impreso, la última del símbolo
+leído, y sigue solo si es una `D` sola, es decir, si la casilla leída
+estaba en blanco. La segunda instrucción, `DAADCDCCRDAAA`, lee un 0 (`DC`)
+e imprime un 1 (`DCC`), y 𝔘 no la cuenta. La diferencia sigue la
+convención de Turing: las figuras de la sucesión se escriben en casillas F
+en blanco y no se borran ni se reemplazan, así que una máquina que
+reescribe una figura no calcula una sucesión en su sentido.
+
+## Ejercicio 13
+
+<!-- ejemplo: capitulo-52/soluciones.pl fragmento: plana:fila(corta, b, blanco, [p(0), r], c). .. plana:fila(corta, b, blanco, [p(0), r], c). -->
+```prolog
+plana:fila(corta, b, blanco, [p(0), r], c).
+```
+
+```prolog
+?- descripcion(corta, b, [0, 1], SD).
+SD = "DADDCRDAA;".
+```
+
+𝔘 escribe la primera configuración, `DAD`, encuentra la instrucción,
+escribe `0:` y la configuración siguiente, `DCDAAD`, en la que la
+configuración m es q₂. Para el paso siguiente, `kom` busca hacia la
+izquierda un punto y coma sin marca z: el único ya está marcado, así que
+sigue hacia la izquierda, pasa ə y recorre casillas en blanco sin fin.
+Con un límite de 200 000 pasos, `ejecutar/5` da `limite(kom, C)`, y
+`escrito/2` sobre esa cinta da `":DAD:0:DCDAAD"`. 𝔘 no tiene una
+configuración para «no hay instrucción»: la tabla de la sección 7 supone
+que la máquina simulada siempre tiene una, como las máquinas sin círculo
+de Turing. Decidir desde afuera si una descripción estándar describe una
+máquina sin círculo es el problema que la sección 8 del artículo prueba
+que no tiene solución.

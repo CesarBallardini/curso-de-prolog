@@ -496,3 +496,26 @@ y el simplificador del
 reduciría. Una integral que ninguna transformación reduce a inmediatas,
 como la de `x*sin(x)`, que requiere integración por partes, no tiene
 solución en este grafo.
+
+## 13
+
+<!-- contexto: capitulo-71/ascendente.pl -->
+```prolog
+?- ascendente(rio(cero), ruta(bosque, jardin), C, R).
+C = 105,
+R = 55.
+
+?- findall(N-R, (between(1, 6, N), ascendente(hanoi, torre(N, a, c), _, R)), L).
+L = [1-4, 2-9, 3-14, 4-18, 5-21, 6-24].
+```
+
+En las torres, el método resuelve todos los nodos que se alcanzan desde
+`torre(N, a, c)`, porque la raíz es el nodo de mayor costo y sale del
+montón al final. Esos nodos son los seis movimientos `mover(X, Y)` posibles
+y los problemas `torre(K, X, Y)` que aparecen en la reducción. En cada
+nivel K hay a lo sumo tres: la reducción alterna entre los tres pares de
+postes que giran en un sentido y los tres que giran en el otro. Con seis
+discos, los niveles 0 a 4 tienen tres problemas cada uno, el nivel 5 tiene
+dos y el 6 uno: 18 problemas y 6 movimientos, 24 nodos. Cada disco más
+agrega un nivel completo de tres; con menos de cuatro discos los niveles
+superiores todavía no están completos y el aumento es mayor.

@@ -41,4 +41,47 @@ test(sin_cota, [true(C == sin_cota)]) :-
 test(proteger, [true(Ps == [libre(a)])]) :-
     proteger(libre(a), [libre(a)], Ps).
 
+% resolver/9, un caso por cláusula: ya vale (queda protegida), prueba
+% que se cumple, una acción la logra, y sin cota para la acción.
+test(resolver_ya_vale, [true(Ps-H == [sobre(c, a)]-[]), nondet]) :-
+    extension:resolver(cubos, sussman, sobre(c, a), [], Ps, [], H, 0, _).
+
+test(resolver_prueba, [true(Ps-H == []-[]), nondet]) :-
+    extension:resolver(cubos, sussman, distinto(a, b), [], Ps, [], H, 0, _).
+
+test(resolver_accion, [all(H-C == [[mover(c, a, b)]-0])]) :-
+    extension:resolver(cubos, sussman, sobre(c, b), [], _, [], H, 1, C).
+
+test(resolver_sin_cota, [fail]) :-
+    extension:resolver(cubos, sussman, sobre(c, b), [], _, [], _, 0, _).
+
+% lograr/8: la acción va al final; falla si borra un protegido.
+test(lograr, [all(H == [[mover(c, a, b)]])]) :-
+    extension:lograr(cubos, sussman, mover(c, a, b), [], [], H, 1, _).
+
+test(lograr_borra_protegido, [fail]) :-
+    extension:lograr(cubos, sussman, mover(c, a, b), [libre(b)], [], _, 1,
+                     _).
+
+% no_borra_ninguna/3: con el destino libre, la prueba es optimista.
+test(no_borra_ninguna_variable) :-
+    no_borra_ninguna(cubos, mover(c, a, _), [libre(b), sobre(a, mesa)]).
+
+test(no_borra_ninguna_ligada, [fail]) :-
+    no_borra_ninguna(cubos, mover(c, a, b), [libre(b)]).
+
+% inconsistente/3: entre los nuevos, o entre nuevos y protegidos; un
+% objeto desconocido no basta para la prueba distinto/2.
+test(inconsistente_nuevos) :-
+    inconsistente(cubos, [sobre(a, b), sobre(a, c)], []).
+
+test(inconsistente_protegidos) :-
+    inconsistente(cubos, [sobre(a, b)], [libre(b)]).
+
+test(inconsistente_desconocido, [fail]) :-
+    inconsistente(cubos, [sobre(a, _)], [sobre(a, b)]).
+
+test(consistente, [fail]) :-
+    inconsistente(cubos, [sobre(a, b)], []).
+
 :- end_tests(extension).

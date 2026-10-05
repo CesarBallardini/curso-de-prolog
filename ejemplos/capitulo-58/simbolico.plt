@@ -26,4 +26,34 @@ test(condiciones, [true(Cs == [n>0, n-1>0, n-1-1=<0])]) :-
     findall(C, limit(3, simbolizar(P, [n], C, _)), Todas),
     last(Todas, Cs).
 
+test(caso_cuadrado, all(Cs-S == [[n*n<0]-[0], [n*n>=0]-[n*n]])) :-
+    simbolizar_caso(cuadrado, Cs, S).
+
+test(caso_inexistente, [fail]) :-
+    simbolizar_caso(inexistente, _, _).
+
+test(negar, [true(NoC == rel(>=, id(x), num(1)))]) :-
+    negar(rel(<, id(x), num(1)), NoC).
+
+% Con una incógnita, la condición queda en el camino.
+test(suponer_incognita, [true(S == s([x-n], [n<1]))]) :-
+    suponer(rel(<, id(x), num(1)), s([x-n], []), S).
+
+% Con números, la condición se decide: se cumple o falla.
+test(suponer_cierta, [true(S == s([x-0], []))]) :-
+    suponer(rel(<, id(x), num(1)), s([x-0], []), S).
+
+test(suponer_falsa, [fail]) :-
+    suponer(rel(>, id(x), num(1)), s([x-0], []), _).
+
+test(sentencia_escribir, [true(Sal-S == [n+1]-s([x-n], []))]) :-
+    phrase(sim_sentencia(escribir(bin(+, id(x), num(1))), s([x-n], []), S),
+           Sal).
+
+test(sentencia_si, all(Sal-Cs == [[1]-[n>0], [2]-[n=<0]])) :-
+    phrase(sim_sentencia(si(rel(>, id(x), num(0)), [escribir(num(1))],
+                            [escribir(num(2))]),
+                         s([x-n], []), s(_, Cs)),
+           Sal).
+
 :- end_tests(simbolico).

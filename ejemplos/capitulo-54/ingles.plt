@@ -36,4 +36,46 @@ test(generar_plural, all(Ps == [["cats", "eat", "apples"]])) :-
     phrase(oracion_en(o(sn(sin, [], cat, pl), eat, sn(sin, [], apple, pl))),
            Ps).
 
+test(sujeto_pronombre, all(S-N == [pron(they)-pl])) :-
+    phrase(sujeto_en(S, N), ["they"]).
+
+test(sn_an, all(SN == [sn(a, [old], book, sg)])) :-
+    phrase(sn_en(SN, sg), ["an", "old", "book"]).
+
+test(sn_a_mal, fail) :-
+    phrase(sn_en(_, _), ["a", "old", "book"]).
+
+test(sn_genera_an, all(Fs == [["an", "apple"]])) :-
+    phrase(sn_en(sn(a, [], apple, sg), sg), Fs).
+
+test(articulo_the, all(A-F == [the-"the"])) :-
+    phrase(articulo_en(A, _, F), ["the"]).
+
+test(adjetivos, all(As-Resto == [[]-["big", "black"], [big]-["black"],
+                                  [big, black]-[]])) :-
+    phrase(adjetivos_en(As, _, _), ["big", "black"], Resto).
+
+test(nombre, all(L-N == [apple-pl])) :-
+    phrase(nombre_en(L, N, _), ["apples"]).
+
+test(verbo, all(L-C-N == [sleep-intransitivo-sg])) :-
+    phrase(verbo_en(L, C, N), ["sleeps"]).
+
+test(antes_de, [true(Ps == [an-apple, the-apple, a-book])]) :-
+    findall(A-P, ( member(A0-P0, ["an"-"apple", "an"-"book", "a"-"apple",
+                                  "the"-"apple", "a"-"book"]),
+                   antes_de(A0, P0),
+                   atom_string(A, A0),
+                   atom_string(P, P0) ),
+            Ps).
+
+test(empieza_con_vocal) :-
+    empieza_con_vocal("old").
+
+test(empieza_con_consonante, fail) :-
+    empieza_con_vocal("cat").
+
+test(palabra_vacia, fail) :-
+    empieza_con_vocal("").
+
 :- end_tests(ingles).

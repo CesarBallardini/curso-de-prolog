@@ -15,6 +15,29 @@ aprenden de datos: calcula una suma pesada de las entradas y responde con
 su signo, y una regla de corrección cambia los pesos cada vez que la
 respuesta es incorrecta.
 
+![Cuatro etapas del entrenamiento de un perceptrón: la recta que separa dos clases de puntos se corrige a medida que llegan ejemplos](perceptron-ejemplo.svg)
+
+Cuatro etapas del entrenamiento de un perceptrón con dos entradas, el
+tamaño (size) y el grado de domesticación (domestication) de un animal.
+Los pesos definen una recta, la frontera entre las dos clases; cada
+ejemplo mal clasificado la desplaza, y con suficientes ejemplos la recta
+deja cada clase de un lado. Es el problema de las versiones 1 y 2: hallar
+esa recta a partir de los ejemplos.
+Imagen: Elizabeth Goodspeed, [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/),
+vía [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Perceptron_example.svg).
+
+El perceptrón del capítulo, con dos entradas y el sesgo como una entrada
+fija en 1, calcula así su respuesta:
+
+```mermaid
+flowchart LR
+    b["1 (sesgo)"] -- "w₀" --> S["suma pesada<br/>w₀ + w₁·x₁ + w₂·x₂"]
+    x1["x₁"] -- "w₁" --> S
+    x2["x₂"] -- "w₂" --> S
+    S --> F["signo"]
+    F --> y["clase<br/>1 o −1"]
+```
+
 El programa crece en cuatro versiones. La primera escribe la regla de
 aprendizaje y entrena con un ejemplo por vez, rotando la lista de
 ejemplos, hasta que todos quedan bien clasificados. La segunda organiza el
@@ -43,7 +66,8 @@ La primera versión corre en SWISH. Las demás cargan el ciclo de iteración
 del [capítulo 46](../capitulo-46-proyecto-metodos-numericos/index.md), que
 a su vez carga los programas del
 [capítulo 32](../capitulo-32-inspeccion-de-terminos/index.md), y se
-ejecutan con SWI-Prolog instalado.
+ejecutan con SWI-Prolog instalado; la quinta carga la primera, y también
+se ejecuta localmente.
 
 ## Objetivos del capítulo
 
@@ -63,12 +87,15 @@ Al terminar el capítulo, el lector puede:
   no es linealmente separable, y reconocer cuándo esa demostración no está
   disponible;
 - volver separable un problema agregando un rasgo calculado a los
-  ejemplos.
+  ejemplos;
+- escribir una operación sobre listas por recursión simple y con
+  acumulador, medir las dos, y reconocer el esquema general de un
+  predicado con acumulador.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:40 h**.
-    Resolver los 5 ejercicios marcados con ★: **1:35 h**.
-    Resolver los 12 ejercicios del final: **3:45 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:45 h**.
+    Resolver los 6 ejercicios marcados con ★: **1:55 h**.
+    Resolver los 14 ejercicios del final: **4:20 h**.
 
 ## 69.1 El programa terminado
 
@@ -288,7 +315,8 @@ su tasa de 0.25, y da los mismos 801 pasos que el libro informa. Un paso
 cuenta aunque el ejemplo esté bien clasificado y los pesos no cambien.
 
 El límite de esta versión es la terminación. Si el conjunto es separable,
-un teorema clásico, que Csenki cita, garantiza que la regla encuentra
+un teorema clásico, el de Novikoff (1962), al que Csenki remite a
+través de los textos que cita, garantiza que la regla encuentra
 pesos que lo separan en un número finito de pasos. Si no lo es, ninguna
 corrección deja todos los ejemplos bien clasificados, y `entrenar_uno/5`
 no termina. La o exclusiva es el caso más pequeño: `[0, 1]` y `[1, 0]` son
@@ -476,7 +504,7 @@ curva, ni si con más épocas se habría llegado a cero errores.
 Con entradas enteras, pesos iniciales enteros y una tasa entera, todos los
 pesos son enteros. Si el entrenamiento no termina, los pesos del final de
 cada época se mantienen en una región acotada —un resultado conocido sobre
-el perceptrón, que aquí no se demuestra—, y en una región acotada hay una
+el perceptrón, de Minsky y Papert, que aquí no se demuestra—, y en una región acotada hay una
 cantidad finita de listas de enteros: tarde o temprano los pesos del final
 de una época repiten los de una época anterior. Desde ese momento, como la
 época es una función de los pesos, todo se repite, y el entrenamiento no
@@ -563,7 +591,7 @@ repetidos prueban que ninguna época futura terminará sin errores. Y como
 el entrenamiento termina siempre que los ejemplos son separables, un ciclo
 prueba también que la o exclusiva no es linealmente separable.
 
-!!! example "Patrón 64 — Historia en el estado del ciclo"
+!!! example "Patrón 68 — Historia en el estado del ciclo"
     **Problema.** Un ciclo que se detiene al alcanzar una tolerancia puede
     no alcanzarla nunca, y es necesario distinguir un proceso que todavía
     no convergió de uno que repite estados y no convergerá.
@@ -757,6 +785,23 @@ recibe las salidas de otros dos la calcula. El
     producto que sin él, y comprobarlo con `aprender/3`. Explicar el peso
     0 que recibe x₂ en los pesos finales.
 
+## 69.6 Versión 5: vectores y el esquema del acumulador
+
+Csenki escribe la regla del perceptrón con dos operaciones sobre
+vectores, el producto por un número y la suma, y propone definirlas por
+recursión simple y con acumulador y comparar las dos. La quinta versión
+lo hace y mide las inferencias: la recursión simple es la más barata, y
+en Prolog no necesita acumulador porque construye la lista resultado
+hacia adelante. Muestra también que el orden de los argumentos que usa
+Csenki, con el número primero, deja una alternativa pendiente que la
+indexación evita con la lista primero. Por último, escribe el
+entrenamiento de a un ejemplo con el esquema general del acumulador de
+Csenki, un argumento que se transforma hasta una condición de parada y
+del que se extrae el resultado, y lo compara con `iterar/5` del
+[capítulo 46](../capitulo-46-proyecto-metodos-numericos/index.md). Está
+en la página
+[Vectores y el esquema del acumulador](vectores.md#vectores-y-el-esquema-del-acumulador).
+
 !!! success "Criterios de calidad"
     | Criterio | En este capítulo |
     |---|---|
@@ -764,7 +809,7 @@ recibe las salidas de otros dos la calcula. El
     | C3 | `salida/3` compara la suma antes de unificar la clase, así que `salida(P, Xs, 1)` responde como `salida(P, Xs, C), C = 1`; `aprender/4` y `corregir/4` deciden con la comparación antes de ligar sus salidas |
     | C4 | ningún entrenamiento deja alternativas pendientes; `once/1` elige la posición del peso repetido, que es única |
     | C6 | todo el programa es puro: los pesos y la historia viajan en los argumentos, el ciclo es el del [capítulo 46](../capitulo-46-proyecto-metodos-numericos/index.md) y la tasa es un parámetro |
-    | C7 | 42 pruebas en los cuatro archivos del programa y 24 en las soluciones; cada afirmación del texto que depende de una ejecución —los 801 pasos, las 102 épocas, los pesos repetidos de la o exclusiva, las catorce y dieciséis funciones— tiene su prueba |
+    | C7 | 80 pruebas en los cinco archivos del programa y 51 en las soluciones; cada afirmación del texto que depende de una ejecución —los 801 pasos, las 102 épocas, los pesos repetidos de la o exclusiva, las catorce y dieciséis funciones— tiene su prueba |
 
 ## Ejercicios
 
@@ -829,6 +874,19 @@ tiene de propio.
     con `entrenar_o_ciclo/4` que no son separables, y que lo son si cada
     punto se reemplaza por los cuadrados de sus coordenadas. Explicar por
     qué ese rasgo sirve para este conjunto y no para la o exclusiva.
+13. ★ **(2)** Escribir `suma_rec/2` y `suma_acc/2`, la suma de los
+    elementos de un vector por recursión simple y con acumulador, medir
+    sus inferencias con mil elementos, y sumar los números de 1 a 200 000
+    con cada una con las pilas limitadas a 12 000 000 de bytes con el
+    indicador `stack_limit`. Explicar por qué aquí el acumulador conviene
+    y en `escalar_rec/3` de la
+    [sección 69.6](vectores.md#el-costo-de-cada-forma) no.
+14. **(2)** Escribir `esquema_general/5`, el esquema del acumulador de la
+    [sección 69.6](vectores.md#el-esquema-general-del-acumulador) con la
+    condición de parada, la extracción y la transformación como
+    parámetros, y usarlo para entrenar el perceptrón con las partes de
+    `vectores.pl` y para calcular el menor elemento de una lista no
+    vacía.
 
 ## Resumen
 
@@ -848,8 +906,10 @@ tiene de propio.
 | `entrenar_uno/5`, `pasos/5`, `inferencias/2` | la versión 1 y su medición |
 | `epoca/5`, `entrenar/5`, `curva/5`, `costos/5` | la versión 2, sobre `iterar/5` del [capítulo 46](../capitulo-46-proyecto-metodos-numericos/index.md) |
 | `entrenar_o_ciclo/4`, `probar/2`, `tabla/1`, `no_separables/1` | la versión 3 |
-| **[Patrón 64](../patrones.md#64-historia-en-el-estado-del-ciclo)** | historia en el estado del ciclo |
+| **[Patrón 68](../patrones.md#68-historia-en-el-estado-del-ciclo)** | historia en el estado del ciclo |
 | `rasgos/3`, `ampliar/3`, `aprender/3`, `separables_con/2` | la versión 4 |
+| **esquema del acumulador** | un argumento que se transforma hasta cumplir una condición de parada, y del que se extrae el resultado |
+| `escalar_rec/3`, `sumar_rec/3`, `escalar_acc/3`, `sumar_acc/3`, `corregir_vectores/4`, `costos_vectores/2`, `entrenar_esquema/5` | la versión 5 |
 
 ## Temas que se retoman
 
@@ -868,13 +928,43 @@ tiene de propio.
   entrenamiento de a un ejemplo por vez con el ejemplo usado pasado al
   final, la tabla de ocho puntos con sus pesos iniciales y su tasa, que
   la versión 1 reproduce con los mismos 801 pasos, y el ejercicio de
-  entrenar un número fijo de iteraciones; del segundo, la cola con una
+  entrenar un número fijo de iteraciones, el ejercicio de escribir el
+  producto de un vector por un número y la suma de vectores por recursión
+  simple y con acumulador, y el esquema general de los predicados con
+  acumulador de su apartado 1.5; del segundo, la cola con una
   lista diferencia en lugar de la rotación con `append/3`, y la medición
-  de su costo en inferencias.
+  de su costo en inferencias. Para el algoritmo y su convergencia, Csenki
+  remite a tres textos generales: Achim Hoffmann, *Paradigms of
+  Artificial Intelligence*, Springer, 1998; Michael Negnevitsky,
+  *Artificial Intelligence: A Guide to Intelligent Systems*,
+  Addison-Wesley, 2002, y Stuart Russell y Peter Norvig, *Artificial
+  Intelligence: A Modern Approach*, Prentice Hall, 1995 (Csenki lo cita
+  con el nombre de Nilsson en lugar del de Russell). El capítulo no toma
+  nada de ellos que no esté en Csenki.
+- Frank Rosenblatt, «The perceptron: a probabilistic model for
+  information storage and organization in the brain», *Psychological
+  Review* 65(6), 1958, págs. 386–408,
+  [doi:10.1037/h0042519](https://doi.org/10.1037/h0042519). Es el origen
+  del perceptrón y de su regla de corrección, que los textos que cita
+  Csenki presentan.
+- Albert B. J. Novikoff, «On convergence proofs on perceptrons», en
+  *Proceedings of the Symposium on the Mathematical Theory of Automata*,
+  vol. 12, Polytechnic Institute of Brooklyn, 1962, págs. 615–622. Sin
+  edición en línea de acceso libre verificada. Demuestra que la regla
+  termina en una cantidad finita de correcciones cuando los ejemplos son
+  separables: el teorema que enuncia la
+  [sección 69.2](#692-version-1-la-regla-del-perceptron).
+- Marvin Minsky y Seymour Papert, *Perceptrons: An Introduction to
+  Computational Geometry*, MIT Press, 1969. Sin edición en línea de
+  acceso libre verificada. Estudia lo que un perceptrón no puede
+  representar, con la o exclusiva como el caso más simple, y muestra que
+  sin separabilidad los pesos quedan acotados y el entrenamiento se
+  repite: la base de las versiones 3 y 4.
 
 El código del capítulo es propio, escrito para el curso: de la fuente se
 toman la regla, los datos y la idea de la rotación, no el código; las
 épocas como plegado, el uso del ciclo del
 [capítulo 46](../capitulo-46-proyecto-metodos-numericos/index.md), la
 curva de aprendizaje, la detección de ciclos, la medición de las
-dieciséis funciones y el rasgo producto son del curso.
+dieciséis funciones, el rasgo producto y la medición de las dos formas
+de las operaciones con vectores son del curso.

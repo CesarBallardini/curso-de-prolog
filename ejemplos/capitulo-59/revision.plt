@@ -66,4 +66,27 @@ unir_lineas(Lineas, Texto) :-
     atomic_list_concat(Lineas, '\n', Atomo),
     atom_string(Atomo, Texto).
 
+% Una variable por cada lugar donde aparece, de izquierda a derecha; un
+% átomo o un número no aporta nada.
+test(ocurrencias, [true(L == [X, Y, X])]) :-
+    phrase(ocurrencias(f(X, g(Y, X), 1, a)), L).
+
+test(ocurrencias_variable, [true(L == [X])]) :-
+    phrase(ocurrencias(X), L).
+
+test(ocurrencias_atomo, [true(L == [])]) :-
+    phrase(ocurrencias(a), L).
+
+% revisar/2 sobre términos ya leídos: la regla sin encabezado y la variable
+% singular de la línea 2 van antes del hecho sin comentario de la línea 5.
+test(revisar, [true(Avisos == [ aviso(f:2, sin_encabezado, p/1),
+                                aviso(f:2, singular, 'Y'),
+                                aviso(f:5, sin_comentario, q/0) ])]) :-
+    revisar([ leido((p(X) :- r(X, Y)), f:2, ['X'=X, 'Y'=Y], []),
+              leido(q, f:5, [], []) ],
+            Avisos).
+
+test(revisar_nada, [true(Avisos == [])]) :-
+    revisar([], Avisos).
+
 :- end_tests(revision).

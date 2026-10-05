@@ -75,4 +75,35 @@ test(relevantes_familia, [true(U == [varon(juan), padre(juan, pedro),
                                      padre(pedro, luis)])]) :-
     relevantes(familia, familia, abuelo(juan, luis), U).
 
+test(eliminar_todos, [true(EV =@= ev([pieza(A, verde, B, metal)],
+                                     [pieza(C, verde, D, metal)]))]) :-
+    eliminar_todos(pieza(_, verde, _, metal), EV),
+    EV = ev([pieza(A, _, B, _)], [pieza(C, _, D, _)]).
+
+test(pasivo_inverso, [true(N-E =@= 7-convergio(pieza(_, verde, _, metal)))]) :-
+    pasivo_inverso(pieza(_, verde, _, metal), N, E).
+
+% El negativo contradice al positivo anterior: se descarta.
+test(eliminar_con_descarte,
+     [true(D == [neg(pieza(esfera, rojo, chico, madera))])]) :-
+    eliminar_con_descarte([pos(pieza(esfera, rojo, chico, madera)),
+                           neg(pieza(esfera, rojo, chico, madera))], EV, D),
+    EV = ev([pieza(esfera, rojo, chico, madera)], _).
+
+test(eliminar_con_descarte_vacio, [true(EV-D =@= ev([vacio], [T])-[])]) :-
+    eliminar_con_descarte([], EV, D),
+    inicial(ev(_, [T])).
+
+test(con_descarte_acepta, [true(Ds == [x])]) :-
+    inicial(EV0),
+    con_descarte(pos(pieza(cubo, azul, chico, metal)), EV0-[x], EV-Ds),
+    EV = ev([pieza(cubo, azul, chico, metal)], _).
+
+test(sin_subsumidas, [true(Rs =@= [(p(X) :- [q(X)]), (r(Y) :- [])])]) :-
+    sin_subsumidas([(p(X) :- [q(X)]), (p(a) :- [q(a), s(a)]), (r(Y) :- []),
+                    (r(b) :- [])], Rs).
+
+test(sin_subsumidas_vacia, [true(Rs == [])]) :-
+    sin_subsumidas([], Rs).
+
 :- end_tests(soluciones).

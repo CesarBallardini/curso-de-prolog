@@ -53,4 +53,42 @@ test(factor_falso, [fail]) :-
     verificar(prueba([[+p(a), +p(b)], [-p(a)], [-p(b)]],
                      [f(1, [+p(a)]), r(2, 4, [])])).
 
+test(paso_correcto_resolvente, [true]) :-
+    verificador:paso_correcto(r(1, 2, [+q(a)]),
+                              [[+p(X), +q(X)], [-p(a)]], _).
+
+test(paso_correcto_otro_resolvente, [fail]) :-
+    verificador:paso_correcto(r(1, 2, [+q(b)]),
+                              [[+p(X), +q(X)], [-p(a)]], _).
+
+test(paso_correcto_factor, [true]) :-
+    verificador:paso_correcto(f(1, [+p(_)]), [[+p(_), +p(_)]], _).
+
+% Un número de cláusula fuera de la lista no es un paso correcto.
+test(paso_correcto_fuera, [fail]) :-
+    verificador:paso_correcto(r(1, 3, []), [[+p], [-p]], _).
+
+test(resolver, all(R == [[+q(a)]])) :-
+    verificador:resolver([+p(X), +q(X)], [-p(a)], R).
+
+% Las copias no comparten variables: p(f(Y)) y ¬p(Y) se resuelven.
+test(resolver_copias, all(R == [[]])) :-
+    verificador:resolver([+p(f(Y))], [-p(Y)], R).
+
+test(misma_clausula, [true]) :-
+    verificador:misma_clausula([+q(_), -r(_)], [-r(_), +q(_)]).
+
+% Una variable repetida no es lo mismo que dos variables distintas.
+test(misma_clausula_variables, [fail]) :-
+    verificador:misma_clausula([+q(A), +q(A)], [+q(_), +q(_)]).
+
+test(opuestos, [true(Q == a)]) :-
+    verificador:opuestos(-p(a), +p(Q)).
+
+test(opuestos_ocurrencia, [fail]) :-
+    verificador:opuestos(+p(X), -p(f(X))).
+
+test(opuestos_mismo_signo, [fail]) :-
+    verificador:opuestos(+p(a), +p(a)).
+
 :- end_tests(verificador).

@@ -67,4 +67,29 @@ test(rotaciones_z, [true(F == [cos(t) * cos(f) - sin(t) * sin(f),
     rotacion(z, f, B),
     producto_con_signos(A, B, [F|_]).
 
+test(det_vacia, [true(D == 1)]) :-
+    det([], D).
+
+test(det_dos, [true(D == -2)]) :-
+    det([[1, 2], [3, 4]], D).
+
+test(reducir_fila, [true(R == [-2])]) :-
+    reducir_fila([1, 2], [3, 4], R).
+
+test(reducir_fila_racional, [true(R == [1r2])]) :-
+    reducir_fila([2, 1], [1, 1], R).
+
+test(simplificar_signos_libre, [error(instantiation_error)]) :-
+    simplificar_signos(_ * -b, _).
+
+test(signos_anidados, [true(E == a * b * c)]) :-
+    signos(-(-(a * b)) * c, E).
+
+% Las reglas no son excluyentes: -a * -b reescribe con tres.
+test(regla_signo, all(E == [a * b, -(-a * b), -(a * -b)])) :-
+    regla_signo(-a * -b, E).
+
+test(regla_signo_ninguna, [fail]) :-
+    regla_signo(a * b, _).
+
 :- end_tests(soluciones_matriz).

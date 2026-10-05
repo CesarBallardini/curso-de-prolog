@@ -72,7 +72,8 @@ dec_de_racional(Q, dec(M, E)) :-
 
 %!  sin_factor(+N:integer, +P:integer, -R:integer, -K:integer) is det.
 %
-%   N es R * P^K, y R no es divisible por P.
+%   N es R * P^K, y R no es divisible por P. N y P son positivos, y P es
+%   mayor que 1: con N = 0 la recursión no termina.
 sin_factor(N, P, R, K) :-
     (   N mod P =:= 0
     ->  N1 is N // P,

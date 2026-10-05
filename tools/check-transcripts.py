@@ -30,6 +30,9 @@ transcripts that follow without rendering anything:
 
     <!-- contexto: capitulo-67/subsuncion.pl -->
 
+The slides of a chapter, `diapositivas/capitulo-NN.md`, are checked with it: they
+take the chapter from the file name, and are selected by the same argument.
+
 Exits 1 if any transcript disagrees with the interpreter.
 """
 
@@ -165,7 +168,9 @@ def candidates(item: Transcript) -> list[list[Path]]:
     if item.context and item.context.exists():
         tries.append([item.context])
 
-    chapter = examples.CHAPTER_DIR.match(item.page.parent.name)
+    # A page of the text takes its chapter from its directory; a slide file
+    # (diapositivas/capitulo-01.md) from its own name.
+    chapter = examples.CHAPTER_DIR.match(item.page.parent.name) or examples.CHAPTER_DIR.match(item.page.stem)
     if not chapter:
         return tries
     folder = examples.EXAMPLES / f'capitulo-{chapter.group(1)}'
@@ -283,6 +288,9 @@ def pages(wanted: list[str]) -> list[Path]:
         if not examples.is_written(directory):
             continue
         chosen.extend(sorted(directory.glob('*.md')))
+    for slides in sorted(examples.SLIDES.glob('capitulo-*.md')):
+        if not wanted or any(name in slides.stem for name in wanted):
+            chosen.append(slides)
     return chosen
 
 

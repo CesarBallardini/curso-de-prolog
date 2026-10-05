@@ -425,30 +425,14 @@ sin elegir una sucesión.
 
 ## Ejercicio 10
 
-La relación del transistor tiene una cláusula por estado de la compuerta.
-Con la compuerta en 1, el transistor p no impone nada: sus dos variables
-quedan libres.
+Las dos ramas de la NAND se escriben como en el inversor de la
+[sección 48.9](index.md#489-compuertas-hechas-con-transistores): los dos
+transistores p en paralelo comparten la fuente, en 1, y el drenador, la
+salida; los dos n en serie están unidos por un cable interno, W, que no
+aparece en la cabeza.
 
-<!-- ejemplo: capitulo-48/soluciones_cmos.pl predicado: ptran/3 ntran/3 inversor_cmos/2 nand_cmos/3 -->
+<!-- ejemplo: capitulo-48/soluciones_cmos.pl predicado: nand_cmos/3 -->
 ```prolog
-% ptran(F, G, D): estado estable de un transistor p con fuente F,
-% compuerta G y drenador D.
-ptran(X, 0, X).
-ptran(_, 1, _).
-
-% ntran(F, G, D): estado estable de un transistor n con fuente F,
-% compuerta G y drenador D.
-ntran(X, 1, X).
-ntran(_, 0, _).
-
-%!  inversor_cmos(?A, ?Z) is nondet.
-%
-%   Z es la salida del inversor CMOS con entrada A: un transistor p entre
-%   el 1 y la salida, y uno n entre la salida y el 0.
-inversor_cmos(A, Z) :-
-    ptran(1, A, Z),
-    ntran(Z, A, 0).
-
 %!  nand_cmos(?A, ?B, ?Z) is nondet.
 %
 %   Z es la salida de la compuerta NAND CMOS con entradas A y B: dos
@@ -472,17 +456,18 @@ B = 0 ;
 A = B, B = 1,
 Z = 0.
 
-?- inversor_cmos(X, X).
+?- nand_cmos(A, B, 0).
+A = B, B = 1 ;
 false.
 ```
 
 Las cuatro respuestas son la tabla de `nand/3`, y la prueba `nand` de
 `soluciones_cmos.plt` verifica que cada combinación de entradas tiene una
-sola salida. `inversor_cmos(X, X)` no tiene respuestas por la misma razón
-que `inv(X, X)`: con X = 0, el transistor p conduce y exige que la salida
-sea 1; con X = 1, el n conduce y exige que sea 0. Spivey observa que el
-modelo es más permisivo que el hardware: también admite usar la salida como
-entrada, lo que un transistor real no hace.
+sola salida. La segunda consulta usa la salida como dato y obtiene las
+entradas: el modelo describe estados estables, una relación entre los
+valores de los cables, y no distingue qué cable impone su valor a cuál.
+Spivey observa que por eso el modelo es más permisivo que el hardware, donde
+un transistor no puede llevar su compuerta a un valor desde el drenador.
 
 ## Ejercicio 11
 
@@ -546,3 +531,140 @@ El acarreo final atraviesa cuatro compuertas en lugar de cinco. En un
 sumador de n bits la diferencia crece con n, porque la cadena de acarreos
 crece y la fórmula anticipada no la recorre. La equivalencia se demuestra
 sin recorrer las 64 combinaciones.
+
+## Ejercicio 12
+
+La cobertura prueba los subconjuntos de los implicantes primos por tamaño
+creciente, de modo que el primero que cubre todas las filas es uno de los
+más chicos:
+
+<!-- ejemplo: capitulo-48/soluciones_vectores.pl predicado: cobertura/3 subconjunto/2 -->
+```prolog
+%!  cobertura(+Unos:list(list), +Primos:list(list), -Elegidos:list(list))
+%!      is semidet.
+%
+%   Elegidos es un subconjunto de Primos, de la menor cantidad posible de
+%   elementos, tal que cada vector de Unos está cubierto por alguno de
+%   ellos. Entre los del mismo tamaño, da el primero en el orden de
+%   Primos. Falla si Primos no cubre todos los Unos.
+cobertura(Unos, Primos, Elegidos) :-
+    length(Primos, N),
+    between(0, N, K),
+    length(Elegidos, K),
+    subconjunto(Primos, Elegidos),
+    forall(member(U, Unos),
+           ( member(P, Elegidos),
+             cubre(P, U) )),
+    !.
+
+%!  subconjunto(+Lista:list, ?Sub:list) is nondet.
+%
+%   Sub tiene elementos de Lista, en el mismo orden.
+subconjunto([], []).
+subconjunto([X|Xs], [X|Ys]) :-
+    subconjunto(Xs, Ys).
+subconjunto([_|Xs], Ys) :-
+    subconjunto(Xs, Ys).
+```
+
+```prolog
+?- unos(sumador, co, Us), implicantes_primos(Us, Ps), cobertura(Us, Ps, Cs).
+Us = [[-, +, +], [+, -, +], [+, +, -], [+, +, +]],
+Ps = Cs, Cs = [[0, +, +], [+, 0, +], [+, +, 0]].
+
+?- Us = [[+, -, -], [+, -, +], [+, +, +], [-, +, +]], implicantes_primos(Us, Ps), cobertura(Us, Ps, Cs).
+Us = [[+, -, -], [+, -, +], [+, +, +], [-, +, +]],
+Ps = [[0, +, +], [+, 0, +], [+, -, 0]],
+Cs = [[0, +, +], [+, -, 0]].
+```
+
+El acarreo necesita sus tres implicantes primos: cada uno es el único que
+cubre una de las filas con dos entradas en 1. En el segundo caso, a · c
+cubre las filas a · ¬b · c y a · b · c, pero la primera ya la cubre a · ¬b y
+la segunda b · c, y el resultado es b · c + a · ¬b. La búsqueda prueba hasta
+2ⁿ subconjuntos de n implicantes; el método de Quine y McCluskey elige
+primero los **esenciales**, los que son los únicos que cubren alguna fila,
+y reduce así la búsqueda, que en general es un problema difícil.
+
+## Ejercicio 13
+
+`retardar/3`, de la página
+[Retardos en cascada](secuenciales.md#retardos-en-cascada), recorre los
+pulsos con `retardo/4`:
+
+<!-- ejemplo: capitulo-48/retardos.pl predicado: retardar/3 -->
+```prolog
+%!  retardar(?Entradas:list, +Estado0:list, ?Salidas:list) is det.
+%
+%   Salidas son las salidas de la cascada de retardo/4 en cada pulso,
+%   desde el Estado0, cuando Entradas son sus entradas. Una de las dos
+%   listas debe tener longitud conocida.
+retardar(Entradas, Estado0, Salidas) :-
+    foldl(retardo_en_pulso, Entradas, Salidas, Estado0, _).
+```
+
+En cada pulso la salida es la entrada de dos pulsos antes, y los dos
+primeros pulsos dan los ceros del estado inicial:
+
+```prolog
+?- retardar([1, 0, 1, 1], [0, 0], Qs).
+Qs = [0, 0, 1, 0].
+
+?- retardar(Es, [0, 0], [0, 0, 1, 0]).
+Es = [1, 0, _, _].
+```
+
+En sentido inverso, las dos últimas entradas quedan libres: entraron en la
+cascada pero todavía no llegaron a la salida, y cualquier valor da las
+mismas salidas. `desplazamiento(N)` alcanza los 2ᴺ estados: con una sola
+entrada, en N pulsos se puede escribir en el registro cualquier sucesión de
+N bits, y el registro no tiene otros estados. Lo verifica la prueba
+`alcanzables` de `retardos.plt` para N = 3.
+
+## Ejercicio 14
+
+Cada variante quita un transistor del par en paralelo:
+
+<!-- ejemplo: capitulo-48/soluciones_cmos.pl predicado: xor_sin_par_p/3 xor_sin_par_n/3 -->
+```prolog
+%!  xor_sin_par_p(?A, ?B, ?Z) is nondet.
+%
+%   La XOR de seis transistores de xor_cmos/3 sin el transistor p del par
+%   en paralelo: cinco transistores.
+xor_sin_par_p(A, B, Z) :-
+    inversor_cmos(A, NA),
+    ntran(B, NA, Z),
+    ptran(A, B, Z),
+    ntran(NA, B, Z).
+
+%!  xor_sin_par_n(?A, ?B, ?Z) is nondet.
+%
+%   La XOR de seis transistores de xor_cmos/3 sin el transistor n del par
+%   en paralelo: cinco transistores.
+xor_sin_par_n(A, B, Z) :-
+    inversor_cmos(A, NA),
+    ptran(B, A, Z),
+    ptran(A, B, Z),
+    ntran(NA, B, Z).
+```
+
+```prolog
+?- xor_sin_par_p(A, B, Z).
+A = B, B = Z, Z = 0 ;
+A = 0,
+B = Z, Z = 1 ;
+A = Z, Z = 1,
+B = 0 ;
+A = B, B = 1,
+Z = 0.
+```
+
+Las dos variantes tienen la tabla de `xor_cmos/3`, y las pruebas `sin_par_p`
+y `sin_par_n` lo verifican. Cuando A es 0, el transistor n del par conduce y
+pasa B a la salida, y el p también; en el modelo, uno solo basta. En un
+circuito real, un transistor n transmite bien el 0 y mal el 1, que llega
+debilitado, y un p al revés: con los dos en paralelo, la salida recibe los
+dos valores completos. El modelo de estados estables solo distingue 0 y 1,
+y por eso no puede detectar ese defecto: una simulación que da la tabla
+correcta no prueba que el circuito funcione, aunque una que da una tabla
+incorrecta sí prueba que no funciona.

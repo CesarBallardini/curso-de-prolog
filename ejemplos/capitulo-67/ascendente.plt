@@ -70,4 +70,40 @@ test(hechos, [true(H == [(p(a) :- []), (p(b) :- [])])]) :-
 test(extension_hecho, [true(A == [abuelo(juan, luis)])]) :-
     extension(abuelo, [(abuelo(juan, luis) :- [])], A).
 
+test(cubre_alguno, [true]) :-
+    cubre_alguno((p(X) :- [q(X)]), [p(a), p(b)], [q(b)]).
+
+test(cubre_alguno_ninguno, [fail]) :-
+    cubre_alguno((p(X) :- [q(X)]), [p(a), p(c)], [q(b)]).
+
+test(cubre_alguno_vacio, [fail]) :-
+    cubre_alguno((p(_) :- []), [], []).
+
+% quitar/6 quita q(X) y conserva r(X), que excluye el negativo p(a).
+test(quitar, [true(B =@= [r(Y)])]) :-
+    ascendente:quitar([q(Y), r(Y)], [], p(Y), [p(a)],
+                      [q(a), q(b), r(b)], B).
+
+test(quitar_vacio, [true(B == [])]) :-
+    ascendente:quitar([], [], p(_), [], [], B).
+
+test(rlgg_de, [true(L == 18)]) :-
+    rlgg_de(abuelo, 1, 3, (abuelo(_, _) :- B)),
+    length(B, L).
+
+test(rlgg_de_cubre, [true]) :-
+    rlgg_de(abuelo, 1, 3, C),
+    modelo_fondo(M),
+    cubre(C, abuelo(juan, eva), M),
+    cubre(C, abuelo(pedro, sofia), M).
+
+test(reducida_de_directo,
+     [true(C =@= (abuelo(A, B) :- [padre(A, P), progenitor(D, E),
+                                   progenitor(D, P), progenitor(E, B)]))]) :-
+    reducida_de(abuelo, 1, 3, directo, C).
+
+test(reducida_de_inverso,
+     [true(C =@= (abuelo(A, B) :- [progenitor(P, B), padre(A, P)]))]) :-
+    reducida_de(abuelo, 1, 3, inverso, C).
+
 :- end_tests(ascendente).

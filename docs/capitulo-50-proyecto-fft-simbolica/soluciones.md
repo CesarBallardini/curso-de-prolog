@@ -54,12 +54,12 @@ I = [1, 2].
 
 El primer par va bien (0 a los pares, 1 a los impares), pero el segundo
 llega con las listas intercambiadas: 2 va a los impares y 3 a los pares.
-Con una copia de `mitades.pl` que tiene ese error, fallan cuatro pruebas
-de `mitades.plt`: `alternar`, `inversa`, `salida_seis` y
-`como_definicion` para los órdenes 4, 8 y 16. Pasan `impar`, `un_indice`,
-`no_potencia` y `costo`: con una lista de dos elementos el error no se
-manifiesta, y la cantidad de operaciones no depende de qué índice va en
-cada lugar. De las cuatro salidas de `fft_arboles(4, Es)` solo la 0 sigue
+Con una copia de `mitades.pl` que tiene ese error, fallan cinco pruebas
+de `mitades.plt`: `alternar`, `inversa`, `salida_seis`, `evaluar_5` y
+`como_definicion` para los órdenes 4, 8 y 16. Pasan las demás, entre ellas
+`impar`, `un_indice`, `orden_dos` y `costo`: con una lista de dos
+elementos el error no se manifiesta, y la cantidad de operaciones no
+depende de qué índice va en cada lugar. De las cuatro salidas de `fft_arboles(4, Es)` solo la 0 sigue
 siendo correcta, porque en ella todas las potencias son `w(0)` y el valor
 es la suma de los cuatro coeficientes, en cualquier orden. La prueba
 numérica es la que encuentra el error: la cantidad de operaciones no lo ve.

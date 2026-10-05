@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300" width="800" height="300">
+  <title>Las partes de un hecho: el predicado padre, dos argumentos entre paréntesis y el punto final; se nombra padre/2</title>
+  <rect x="0" y="0" width="800" height="300" fill="#FFFFFF"/>
+  <g font-family="Consolas, DejaVu Sans Mono, monospace" font-size="56">
+    <text x="138" y="170" fill="#1F3A5F" font-weight="bold">padre</text>
+    <text x="292" y="170" fill="#1F2933">(</text>
+    <text x="323" y="170" fill="#D9822B" font-weight="bold">juan</text>
+    <text x="446" y="170" fill="#1F2933">,</text>
+    <text x="508" y="170" fill="#D9822B" font-weight="bold">ana</text>
+    <text x="600" y="170" fill="#1F2933">)</text>
+    <text x="631" y="170" fill="#B3261E" font-weight="bold">.</text>
+  </g>
+  <g fill="none" stroke-width="3">
+    <path d="M 140 112 V 100 H 290 V 112" stroke="#1F3A5F"/>
+    <path d="M 323 190 V 202 H 600 V 190" stroke="#D9822B"/>
+    <line x1="700" y1="112" x2="656" y2="150" stroke="#B3261E"/>
+  </g>
+  <g font-family="Verdana, DejaVu Sans, sans-serif" font-size="22" font-weight="bold" text-anchor="middle">
+    <text x="215" y="86" fill="#1F3A5F">predicado</text>
+    <text x="461" y="234" fill="#D9822B">dos argumentos</text>
+    <text x="710" y="100" fill="#B3261E">punto final</text>
+  </g>
+  <text x="400" y="284" font-family="Verdana, DejaVu Sans, sans-serif" font-size="22" fill="#1F2933" text-anchor="middle">nombre y aridad: <tspan font-family="Consolas, DejaVu Sans Mono, monospace" font-weight="bold" fill="#1F3A5F">padre/2</tspan></text>
+</svg>

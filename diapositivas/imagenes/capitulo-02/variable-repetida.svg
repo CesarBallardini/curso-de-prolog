@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 360" width="960" height="360" role="img" aria-labelledby="t">
+  <title id="t">La consulta gusta(Quien, Quien) pide el mismo objeto en las dos posiciones; ningún hecho lo cumple y la respuesta es false</title>
+  <defs>
+    <marker id="a-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1f2933"/></marker>
+    <marker id="a-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1d5fa8"/></marker>
+    <marker id="a-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2e7d32"/></marker>
+    <marker id="a-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#c62828"/></marker>
+    <marker id="a-muted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#7b8794"/></marker>
+    <marker id="a-amber" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#b7791f"/></marker>
+    <marker id="a-violet" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6a3d9a"/></marker>
+  </defs>
+  <rect x="0" y="0" width="960" height="360" fill="#ffffff"/>
+  <text x="120.0" y="130" font-family="'DejaVu Sans Mono', 'Cascadia Mono', monospace" font-size="44" fill="#1d5fa8" text-anchor="start" font-weight="bold" font-style="normal">gusta(</text>
+  <text x="278.928" y="130" font-family="'DejaVu Sans Mono', 'Cascadia Mono', monospace" font-size="44" fill="#6a3d9a" text-anchor="start" font-weight="bold" font-style="normal">Quien</text>
+  <text x="411.368" y="130" font-family="'DejaVu Sans Mono', 'Cascadia Mono', monospace" font-size="44" fill="#1d5fa8" text-anchor="start" font-weight="bold" font-style="normal">,</text>
+  <text x="464.344" y="130" font-family="'DejaVu Sans Mono', 'Cascadia Mono', monospace" font-size="44" fill="#6a3d9a" text-anchor="start" font-weight="bold" font-style="normal">Quien</text>
+  <text x="596.784" y="130" font-family="'DejaVu Sans Mono', 'Cascadia Mono', monospace" font-size="44" fill="#1d5fa8" text-anchor="start" font-weight="bold" font-style="normal">)</text>
+  <path d="M345.1,88 C345.1,30 530.6,30 530.6,88" fill="none" stroke="#6a3d9a" stroke-width="3" marker-end="url(#a-violet)"/>
+  <text x="437.856" y="40" font-family="'DejaVu Sans', Arial, sans-serif" font-size="18" fill="#6a3d9a" text-anchor="middle" font-weight="bold" font-style="normal">un solo valor</text>
+  <rect x="60" y="200" width="160" height="80" rx="6" ry="6" fill="#ffffff" stroke="#9aa5b1" stroke-width="1.5"/>
+  <text x="140" y="232" font-family="'DejaVu Sans Mono', 'Cascadia Mono', monospace" font-size="20" fill="#1f2933" text-anchor="middle" font-weight="normal" font-style="normal">juan</text>
+  <text x="140" y="262" font-family="'DejaVu Sans Mono', 'Cascadia Mono', monospace" font-size="20" fill="#1f2933" text-anchor="middle" font-weight="normal" font-style="normal">futbol</text>
+  <text x="208" y="250" font-family="'DejaVu Sans', Arial, sans-serif" font-size="22" fill="#c62828" text-anchor="middle" font-weight="bold" font-style="normal">≠</text>
+  <rect x="235" y="200" width="160" height="80" rx="6" ry="6" fill="#ffffff" stroke="#9aa5b1" stroke-width="1.5"/>
+  <text x="315" y="232" font-family="'DejaVu Sans Mono', 'Cascadia Mono', monospace" font-size="20" fill="#1f2933" text-anchor="middle" font-weight="normal" font-style="normal">ana</text>
+  <text x="315" y="262" font-family="'DejaVu Sans Mono', 'Cascadia Mono', monospace" font-size="20" fill="#1f2933" text-anchor="middle" font-weight="normal" font-style="normal">prolog</text>
+  <text x="383" y="250" font-family="'DejaVu Sans', Arial, sans-serif" font-size="22" fill="#c62828" text-anchor="middle" font-weight="bold" font-style="normal">≠</text>
+  <rect x="410" y="200" width="160" height="80" rx="6" ry="6" fill="#ffffff" stroke="#9aa5b1" stroke-width="1.5"/>
+  <text x="490" y="232" font-family="'DejaVu Sans Mono', 'Cascadia Mono', monospace" font-size="20" fill="#1f2933" text-anchor="middle" font-weight="normal" font-style="normal">luis</text>
+  <text x="490" y="262" font-family="'DejaVu Sans Mono', 'Cascadia Mono', monospace" font-size="20" fill="#1f2933" text-anchor="middle" font-weight="normal" font-style="normal">futbol</text>
+  <text x="558" y="250" font-family="'DejaVu Sans', Arial, sans-serif" font-size="22" fill="#c62828" text-anchor="middle" font-weight="bold" font-style="normal">≠</text>
+  <rect x="585" y="200" width="160" height="80" rx="6" ry="6" fill="#ffffff" stroke="#9aa5b1" stroke-width="1.5"/>
+  <text x="665" y="232" font-family="'DejaVu Sans Mono', 'Cascadia Mono', monospace" font-size="20" fill="#1f2933" text-anchor="middle" font-weight="normal" font-style="normal">eva</text>
+  <text x="665" y="262" font-family="'DejaVu Sans Mono', 'Cascadia Mono', monospace" font-size="20" fill="#1f2933" text-anchor="middle" font-weight="normal" font-style="normal">prolog</text>
+  <text x="733" y="250" font-family="'DejaVu Sans', Arial, sans-serif" font-size="22" fill="#c62828" text-anchor="middle" font-weight="bold" font-style="normal">≠</text>
+  <rect x="760" y="200" width="160" height="80" rx="6" ry="6" fill="#ffffff" stroke="#9aa5b1" stroke-width="1.5"/>
+  <text x="840" y="232" font-family="'DejaVu Sans Mono', 'Cascadia Mono', monospace" font-size="20" fill="#1f2933" text-anchor="middle" font-weight="normal" font-style="normal">sofia</text>
+  <text x="840" y="262" font-family="'DejaVu Sans Mono', 'Cascadia Mono', monospace" font-size="20" fill="#1f2933" text-anchor="middle" font-weight="normal" font-style="normal">dibujar</text>
+  <text x="908" y="250" font-family="'DejaVu Sans', Arial, sans-serif" font-size="22" fill="#c62828" text-anchor="middle" font-weight="bold" font-style="normal">≠</text>
+  <text x="480" y="340" font-family="'DejaVu Sans Mono', 'Cascadia Mono', monospace" font-size="26" fill="#c62828" text-anchor="middle" font-weight="bold" font-style="normal">false.</text>
+</svg>

@@ -118,4 +118,85 @@ test(cargar_lo_que_no_existe,
      true(S == "No fue posible cargar la partida de otra.partida.")) :-
     en_un_directorio_temporal(sesion(["cargar otra"], [S])).
 
+test(sin_tilde, true(Cs == [0'u, 0'a])) :-
+    lenguaje:sin_tilde(0'ú, U),
+    lenguaje:sin_tilde(0'a, A),
+    Cs = [U, A].
+
+test(palabra, true(P-Resto == hola-` mundo`)) :-
+    phrase(lenguaje:palabra(P), `hola mundo`, Resto).
+
+test(no_es_letra, fail) :-
+    phrase(lenguaje:letra(_), `,`, _).
+
+test(destino, all(S == [cupula])) :-
+    phrase(lenguaje:destino(S), [a, la, cupula]).
+
+test(destino_contraccion, all(S == [sotano])) :-
+    phrase(lenguaje:destino(S), [al, sotano]).
+
+test(sinonimo, all(V == [tomar])) :-
+    phrase(lenguaje:verbo(V), [agarrar]).
+
+test(cosa, all(X == [llave])) :-
+    phrase(lenguaje:cosa(X), [la, llave, de, bronce]).
+
+test(cosa_sin_articulo, all(X == [lente])) :-
+    phrase(lenguaje:cosa(X), [lente]).
+
+test(cosa_no_es_sala, fail) :-
+    phrase(lenguaje:cosa(_), [la, biblioteca]).
+
+test(nombrada_por_nucleo, all(X == [llave])) :-
+    phrase(lenguaje:nombrada(X), [llave]).
+
+test(responder, true(T == "Estás en el vestíbulo. Un vestíbulo con \c
+                          baldosas gastadas y olor a humedad. Ves un \c
+                          perchero. Desde aquí puedes ir a la biblioteca \c
+                          y al taller.")) :-
+    iniciar,
+    lenguaje:responder(mirar, T).
+
+test(resultado, true(Rs == [vista(vestibulo, [perchero],
+                                  [biblioteca, taller])])) :-
+    iniciar,
+    lenguaje:resultado(mirar, Rs).
+
+test(del_juego, true(Rs == [fin])) :-
+    lenguaje:del_juego(salir, Rs).
+
+test(no_es_del_juego, fail) :-
+    lenguaje:del_juego(mirar, _).
+
+test(respuestas, true(S == "Tomas la llave de bronce. Tomas la linterna.")) :-
+    phrase(lenguaje:respuestas([tomado(llave), tomado(linterna)]), Cs),
+    string_codes(S, Cs).
+
+test(contenido, true(S == "en el escritorio ves una llave de bronce.")) :-
+    phrase(lenguaje:contenido([llave], escritorio), Cs),
+    string_codes(S, Cs).
+
+test(a_la_vista_nada, true(Cs == [])) :-
+    phrase(lenguaje:a_la_vista([]), Cs).
+
+test(enumeracion_uno, true(S == "una llave de bronce")) :-
+    phrase(lenguaje:enumeracion(lenguaje:un, [llave]), Cs),
+    string_codes(S, Cs).
+
+test(enumeracion_tres,
+     true(S == "el perchero, la linterna y la llave de bronce")) :-
+    phrase(lenguaje:enumeracion(lenguaje:el, [perchero, linterna, llave]),
+           Cs),
+    string_codes(S, Cs).
+
+test(articulos, true(Ss == ["un banco de trabajo", "a la cúpula"])) :-
+    phrase(lenguaje:un(banco), C1),
+    phrase(lenguaje:al(cupula), C2),
+    maplist([C, S]>>string_codes(S, C), [C1, C2], Ss).
+
+test(terminacion, true(Ts == ["a", "o"])) :-
+    phrase(lenguaje:terminacion(llave), C1),
+    phrase(lenguaje:terminacion(baul), C2),
+    maplist([C, S]>>string_codes(S, C), [C1, C2], Ts).
+
 :- end_tests(lenguaje).

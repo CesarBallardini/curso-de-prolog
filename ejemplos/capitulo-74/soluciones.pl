@@ -107,6 +107,10 @@ leer_notacion_rep(Texto, Movimientos) :-
     string_codes(Texto, Codigos),
     phrase(grupos(Movimientos), Codigos).
 
+%!  grupos(-Ms:list)// is det.
+%
+%   Ms son los movimientos de una sucesión de grupos separados por
+%   blancos: giros sueltos o secuencias entre paréntesis con repeticiones.
 grupos(Ms) -->
     blancos,
     grupo(G),
@@ -115,6 +119,11 @@ grupos(Ms) -->
     { append(G, Resto, Ms) }.
 grupos([]) --> blancos.
 
+%!  grupo(-Ms:list)// is semidet.
+%
+%   Ms son los movimientos de un grupo: una secuencia entre paréntesis,
+%   repetida tantas veces como dice el dígito que la sigue, o un giro
+%   escrito en la notación de Singmaster.
 grupo(Ms) -->
     "(", grupos(Interior), ")", !,
     veces(N),
@@ -123,6 +132,10 @@ grupo(Ms) -->
       append(Copias, Ms) }.
 grupo(Ms) --> escrito(Ms).
 
+%!  veces(-N:integer)// is det.
+%
+%   N es el dígito, de 1 a 9, que sigue a un paréntesis; 1 si no hay
+%   dígito.
 veces(N) --> [C], { code_type(C, digit(N)), N > 0 }, !.
 veces(1) --> [].
 

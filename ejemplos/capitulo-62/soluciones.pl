@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 62 - Soluciones de los ejercicios 2, 4, 6, 8, 9, 10 y 11.
+% Capítulo 62 - Soluciones de los ejercicios 2, 4, 6, 8, 9, 10, 11 y 12.
 %
 % Cada solución usa los módulos del capítulo sin modificarlos: comparacion
 % carga todas las versiones, resolucion agrega el demostrador
@@ -18,6 +18,7 @@
 :- use_module(comparacion).
 :- use_module(resolucion).
 :- ensure_loaded(verificador).
+:- use_module(modelos).
 
 % --- Ejercicio 2 ---------------------------------------------------------
 
@@ -174,6 +175,8 @@ refutar_unitaria(Clausulas, Max, Pasos) :-
 %!  derivar_unitaria(?Pasos:list, +Clausulas:list) is nondet.
 %
 %   Como derivar/2 de resolucion.pl, con un padre unitario en cada paso.
+%   La condición es un condicional y no una disyunción: con los dos
+%   padres unitarios, la disyunción daría cada derivación dos veces.
 derivar_unitaria([], Clausulas) :-
     memberchk([], Clausulas).
 derivar_unitaria([r(I, J, R)|Pasos], Clausulas) :-
@@ -181,6 +184,7 @@ derivar_unitaria([r(I, J, R)|Pasos], Clausulas) :-
     nth1(I, Clausulas, C1),
     I < J,
     (   C1 = [_]
+    ->  true
     ;   C2 = [_]
     ),
     resolvente(C1, C2, R),
@@ -277,3 +281,42 @@ subsumida(R, Clausulas) :-
     member(C, Clausulas),
     ord_subset(C, R),
     !.
+
+% --- Ejercicio 12 --------------------------------------------------------
+
+%!  modelo_minimo(+Clausulas:list, -Modelo:list) is nondet.
+%
+%   Modelo es un modelo de las Clausulas que construye modelo/2 y del que
+%   ningún subconjunto propio es un modelo. Puede dar dos veces el mismo
+%   modelo, si modelo/2 lo construye por dos caminos.
+modelo_minimo(Clausulas, Modelo) :-
+    modelo(Clausulas, Modelo),
+    \+ ( subconjunto_propio(Modelo, Menor),
+         es_modelo(Clausulas, Menor)
+       ).
+
+%!  es_modelo(+Clausulas:list, +Modelo:list) is semidet.
+%
+%   Ninguna de las Clausulas está violada en el Modelo.
+es_modelo(Clausulas, Modelo) :-
+    \+ ( member(C, Clausulas),
+         modelos:violada(C, Modelo, _)
+       ).
+
+%!  subconjunto_propio(+Conjunto:list, -Subconjunto:list) is nondet.
+%
+%   Subconjunto es un subconjunto de Conjunto con al menos un elemento
+%   menos, en el mismo orden.
+subconjunto_propio(Conjunto, Subconjunto) :-
+    subconjunto(Conjunto, Subconjunto),
+    Subconjunto \== Conjunto.
+
+%!  subconjunto(+Conjunto:list, -Subconjunto:list) is multi.
+%
+%   Subconjunto tiene algunos de los elementos de Conjunto, en el mismo
+%   orden.
+subconjunto([], []).
+subconjunto([X|Xs], [X|Ys]) :-
+    subconjunto(Xs, Ys).
+subconjunto([_|Xs], Ys) :-
+    subconjunto(Xs, Ys).

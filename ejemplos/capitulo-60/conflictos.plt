@@ -54,4 +54,25 @@ test(traza, S == "1: resta de 3, con [numero(12),numero(8)]\n\c
     with_output_to(string(S),
                    trazar(mcd, primera, [numero(12), numero(8)], _, _)).
 
+test(clave_primera, [true(C == 0)]) :-
+    clave(primera, 5, instancia(a, 2, [3], []), C).
+
+% reciente: la menor posición usada; sin hechos, el largo de la memoria.
+test(clave_reciente, [true(Cs == [1, 5])]) :-
+    clave(reciente, 5, instancia(a, 2, [3, 1], []), C1),
+    clave(reciente, 5, instancia(b, 1, [], []), C2),
+    Cs = [C1, C2].
+
+test(clave_especifica, [true(C == -3)]) :-
+    clave(especifica, 5, instancia(a, 3, [0], []), C).
+
+test(mostrar_sin_traza, [true(S == "")]) :-
+    with_output_to(string(S),
+                   mostrar(sin_traza, 1, [x], instancia(a, 1, [0], []), [h])).
+
+test(mostrar_con_traza, [true(S == "2: a de 3, con [h2,h0]\n")]) :-
+    with_output_to(string(S),
+                   mostrar(con_traza, 2, [x, y, z],
+                           instancia(a, 2, [2, 0], []), [h0, h1, h2])).
+
 :- end_tests(conflictos).

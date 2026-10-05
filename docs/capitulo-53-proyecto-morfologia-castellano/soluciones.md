@@ -76,9 +76,8 @@ lexico:adjetivo("cortés", invariable).
 P = "razones" ;
 false.
 
-?- forma(P, nombre("razón", femenino, plural)).
-P = "razones" ;
-false.
+?- findall(P, forma(P, nombre("razón", femenino, plural)), Ps).
+Ps = ["razones"].
 
 ?- reglas:lexica(nombre("origen", masculino, plural), S).
 S = [o, r, i, 'J', e, n, +, s] ;
@@ -156,17 +155,14 @@ el acento cae en la raíz. «Hacía» tiene dos análisis, porque la primera y
 la tercera persona del singular del imperfecto son la misma forma:
 
 ```prolog
-?- forma(P, verbo("contar", imperfecto, 1, plural)).
-P = "contábamos" ;
-false.
+?- findall(P, forma(P, verbo("contar", imperfecto, 1, plural)), Ps).
+Ps = ["contábamos"].
 
-?- forma("hacía", A).
-A = verbo("hacer", imperfecto, 3, singular) ;
-A = verbo("hacer", imperfecto, 1, singular).
+?- findall(A, forma("hacía", A), As).
+As = [verbo("hacer", imperfecto, 3, singular), verbo("hacer", imperfecto, 1, singular)].
 
-?- forma(P, verbo("ser", imperfecto, 1, plural)).
-P = "éramos" ;
-false.
+?- findall(P, forma(P, verbo("ser", imperfecto, 1, plural)), Ps).
+Ps = ["éramos"].
 ```
 
 ## 5
@@ -262,21 +258,17 @@ Las terminaciones del presente llevan tilde, así que para
 `acento_en_la_raiz/1` el acento no cae en la raíz y la vocal no cambia:
 
 ```prolog
-?- forma(P, verbo("contar", presente, vos, singular)).
-P = "contás" ;
-false.
+?- findall(P, forma(P, verbo("contar", presente, vos, singular)), Ps).
+Ps = ["contás"].
 
-?- forma(P, verbo("pedir", presente, vos, singular)).
-P = "pedís".
+?- findall(P, forma(P, verbo("pedir", presente, vos, singular)), Ps).
+Ps = ["pedís"].
 
-?- forma("tenés", A).
-A = verbo("tener", presente, vos, singular).
+?- findall(A, forma("tenés", A), As).
+As = [verbo("tener", presente, vos, singular)].
 
-?- forma("fuiste", A).
-A = verbo("ser", preterito, 2, singular) ;
-A = verbo("ser", preterito, vos, singular) ;
-A = verbo("ir", preterito, 2, singular) ;
-A = verbo("ir", preterito, vos, singular).
+?- findall(A, forma("fuiste", A), As).
+As = [verbo("ser", preterito, 2, singular), verbo("ser", preterito, vos, singular), verbo("ir", preterito, 2, singular), verbo("ir", preterito, vos, singular)].
 ```
 
 «Fuiste» tiene cuatro análisis: dos verbos por dos personas. La condición
@@ -372,12 +364,11 @@ dos_niveles:regla(ye,
 ```
 
 ```prolog
-?- forma(P, verbo("leer", preterito, 3, singular)).
-P = "leyó".
+?- findall(P, forma(P, verbo("leer", preterito, 3, singular)), Ps).
+Ps = ["leyó"].
 
-?- forma(P, verbo("leer", preterito, 1, plural)).
-P = "leimos" ;
-false.
+?- findall(P, forma(P, verbo("leer", preterito, 1, plural)), Ps).
+Ps = ["leimos"].
 
 ?- reglas:forma(P, verbo("leer", preterito, 3, singular)).
 P = "leió" ;
@@ -408,9 +399,8 @@ dos_niveles:regla(dieresis,
 ?- findall(P, forma(P, verbo("averiguar", preterito, 1, singular)), Ps).
 Ps = ["averigüé"].
 
-?- forma(P, verbo("averiguar", presente, 1, singular)).
-P = "averiguo" ;
-false.
+?- findall(P, forma(P, verbo("averiguar", presente, 1, singular)), Ps).
+Ps = ["averiguo"].
 
 ?- reglas:forma(P, verbo("averiguar", preterito, 1, singular)).
 false.
@@ -468,3 +458,90 @@ A = verbo("cuentar", presente, 2, singular).
 diptongo que solo el léxico explica, porque la clase `o_ue` es una
 propiedad de «contar» y no de la forma escrita. Sin el léxico, las reglas
 reconstruyen la ortografía, no la historia de cada palabra.
+
+## 13
+
+<!-- ejemplo: capitulo-53/soluciones_derivacion.pl fragmento: :- ensure_loaded(derivacion). .. :- ensure_loaded(derivacion). -->
+```prolog
+:- ensure_loaded(derivacion).
+```
+
+```prolog
+?- findall(D, derivada("lapicito", D), Ds).
+Ds = [diminutivo("lápiz")].
+
+?- findall(A, forma("desprotejo", A), As).
+As = [verbo("desproteger", presente, 1, singular)].
+
+?- findall(P, derivada(P, adverbio("inglés")), Ps).
+Ps = ["inglesamente"].
+```
+
+«Lapicito» pierde la tilde de «lápiz» porque el acento pasa al sufijo, y la
+regla z escribe c la z de la raíz ante la i de -ito. «Desprotejo» es una
+forma de «desproteger», que la lista `prefijo_verbal/2` agrega al léxico:
+hereda de «proteger» la `'J'` de su forma subyacente, que se escribe j ante
+o. «Inglesamente» agrega -mente al femenino «inglesa», que ya perdió la
+tilde por la regla `quitar_tilde`.
+
+## 14
+
+<!-- ejemplo: capitulo-53/soluciones_derivacion.pl fragmento: % Ejercicio 14: la regla jota en la notación de dos niveles, como dos .. [[limite, frontal], [frontal]]). -->
+```prolog
+% Ejercicio 14: la regla jota en la notación de dos niveles, como dos
+% reglas. No se registran: la versión 3 ya tiene la regla jota.
+regla_dos_niveles(jota_g, ['J']:[g], '<=>', [],
+                  [[limite, frontal], [frontal]]).
+```
+
+```prolog
+?- regla_dos_niveles(jota_g, P, O, I, D), compilar(P, O, I, D, Ps).
+P = ['J']:[g],
+O = '<=>',
+I = [],
+D = [[limite, frontal], [frontal]],
+Ps = [[par(['J']:[g]), no(o(limite, frontal))]-medio, [par(['J']:[g])]-final, [par(['J']:[g]), limite, no(frontal)]-medio, [par(['J']:[g]), limite]-final, [par(['J']:[j]), limite, frontal]-medio, [par(['J']:[j]), frontal]-medio].
+```
+
+`compilar/5`, de `kimmo.pl`, traduce cada regla. La primera da
+`solo_ante_frontal/2` para `'J'`:g y, por la
+coerción, `no_ante_frontal/2` para `'J'`:j. La segunda da
+`solo_ante_frontal/2` para j:j. Las pruebas comparan las dos listas juntas
+con `regla(jota, Ps)`. La j subyacente solo tiene una escritura, j, así que
+la coerción no tiene otro par que prohibir: `coercion/4` da la lista
+vacía, y `=>` basta.
+
+## 15
+
+<!-- ejemplo: capitulo-53/soluciones_derivacion.pl fragmento: % Ejercicio 15: la N de in- se escribe r ante r (irreal) y no se escribe .. admite_in("legal"). -->
+```prolog
+% Ejercicio 15: la N de in- se escribe r ante r (irreal) y no se escribe
+% ante l (ilegal).
+dos_niveles:par(['N']:[r]).
+dos_niveles:par(['N']:[]).
+regla_dos_niveles(nasal_r, ['N']:[r], '<=>', [],
+                  [[limite, par([r]:[r])]]).
+regla_dos_niveles(nasal_l, ['N']:[], '<=>', [],
+                  [[limite, par([l]:[l])]]).
+dos_niveles:regla(Nombre, Patrones) :-
+    member(Nombre, [nasal_r, nasal_l]),
+    regla_dos_niveles(Nombre, Par, Op, Izquierda, Derechas),
+    compilar(Par, Op, Izquierda, Derechas, Patrones).
+
+lexico:adjetivo("real", invariable).
+lexico:adjetivo("legal", invariable).
+admite_in("real").
+admite_in("legal").
+```
+
+```prolog
+?- findall(P, derivada(P, prefijo("in", _)), Ps).
+Ps = ["infeliz", "imposible", "inútil", "irreal", "ilegal"].
+```
+
+«Irreal» escribe r la N: el par `['N']:[r]`. «Ilegal» no la escribe: el
+par `['N']:[]` borra la letra subyacente, como `[+]:[]` borra el límite.
+Las dos reglas son coerciones con su restricción, como `nasal`, y cada una
+prohíbe en su contexto las otras escrituras de la N; `nasal_n` ya admitía
+la N escrita n ante cualquier límite, y la coerción de las reglas nuevas
+la excluye ante r y ante l.

@@ -91,4 +91,36 @@ test(fuera, [ setup(muestra(D)),
               error(permission_error(acceder, ruta, "../x")) ]) :-
     ruta_real(D, "../x", _).
 
+test(entrada_subcarpeta, [ setup(muestra(D)),
+                           cleanup(delete_directory_and_contents(D)),
+                           true(Es == [ archivo("informes/acta.txt", 300,
+                                                "2026-09-10"),
+                                        archivo("informes/notas.txt", 120,
+                                                "2026-09-12"),
+                                        archivo("informes/resumen.pdf", 2048,
+                                                "2026-09-15") ]) ]) :-
+    findall(E, entrada(D, "informes", E), Es0),
+    msort(Es0, Es).
+
+test(realizar_informar, true(R == lista(".", []))) :-
+    realizar(real, ".", _, user_output, informar(lista(".", [])), R).
+
+test(realizar_simulacion, true(R == simulada(borrar("x.txt")))) :-
+    realizar(simulacion, ".", _, user_output, borrar("x.txt"), R).
+
+test(realizar_mover, [ setup(muestra(D)),
+                       cleanup(delete_directory_and_contents(D)),
+                       true(R-Antes-Despues == movido("notas.txt", "a.txt")-
+                                               false-true) ]) :-
+    realizar(real, D, _, user_output, mover("notas.txt", "a.txt"), R),
+    (   existe(D, "notas.txt") -> Antes = true ; Antes = false ),
+    (   existe(D, "a.txt") -> Despues = true ; Despues = false ).
+
+test(afirmativa, all(R == ["s", "Sí", "si"])) :-
+    member(R, ["s", "Sí", "no", "", "si"]),
+    afirmativa(R).
+
+test(afirmativa_fin_de_archivo, fail) :-
+    afirmativa(end_of_file).
+
 :- end_tests(sistema).

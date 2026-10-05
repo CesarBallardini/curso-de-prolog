@@ -39,4 +39,24 @@ test(probar_o_exclusivo, [true(R == ciclo(1, [3, 3, 4]))]) :-
 test(pesos_nulos, [true(P == [0, 0, 0])]) :-
     pesos_nulos([ej([5, 7], 1)], P).
 
+test(clase, all(C == [-1, 1])) :-
+    ciclos:clase(C).
+
+test(ejemplo_de, [true(E == ej([0, 1], -1))]) :-
+    ciclos:ejemplo_de([0, 1], -1, E).
+
+test(paso_con_memoria_nuevo,
+     [true(S-R-C == ([0, 2, 2]-[[0, 0, 0]])-(2-[0, 2, 2])-1)]) :-
+    datos(y, Es),
+    paso_con_memoria(1, Es, [0, 0, 0]-[], S, R, C).
+
+% Pesos que separan: la época los repite y el cambio es 0.
+test(paso_con_memoria_repetido, [true(C == 0)]) :-
+    datos(y, Es),
+    paso_con_memoria(1, Es, [-3, 2, 2]-[], _, _, C).
+
+test(paso_con_memoria_visto, [true(C == 0)]) :-
+    datos(y, Es),
+    paso_con_memoria(1, Es, [0, 0, 0]-[[0, 2, 2]], _, _, C).
+
 :- end_tests(ciclos).

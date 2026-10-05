@@ -26,4 +26,20 @@ test(repetidas, [true(S-P == 2-2)]) :-
 test(orden_no_positivo, [error(type_error(positive_integer, 0))]) :-
     tdf_ingenua(0, _).
 
+test(fila_tdf, [true(F == [w(0), w(3), w(6)])]) :-
+    fila_tdf([0, 1, 2], 3, F).
+
+% Una respuesta por nodo: dos sumas o restas y un producto.
+test(operador_en, all(C == [suma, suma, producto])) :-
+    operador_en([a + b * c - d], C).
+
+test(clase, all(Op-C == [(+)-suma, (-)-suma, (*)-producto])) :-
+    clase(Op, C).
+
+test(operaciones_hoja, [true(S-P == 0-0)]) :-
+    operaciones([a(0)], S, P).
+
+test(operaciones_vacia, [true(S-P == 0-0)]) :-
+    operaciones([], S, P).
+
 :- end_tests(tdf).

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 340" width="800" height="340">
+  <title>Las partes de una regla: la cabeza abuelo(A, N), el símbolo :- que se lee si, y el cuerpo con dos objetivos unidos por una coma que se lee y</title>
+  <rect x="0" y="0" width="800" height="340" fill="#FFFFFF"/>
+  <rect x="20" y="110" width="230" height="80" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="3"/>
+  <rect x="350" y="110" width="430" height="80" rx="10" fill="#E3F1E4" stroke="#2E7D32" stroke-width="3"/>
+  <g font-family="Consolas, DejaVu Sans Mono, monospace" font-size="30" fill="#1F2933" text-anchor="middle">
+    <text x="135" y="160">abuelo(A, N)</text>
+    <text x="300" y="164" font-size="44" font-weight="bold" fill="#D9822B">:-</text>
+    <text x="452" y="160">padre(A, P)</text>
+    <text x="560" y="160" font-weight="bold" fill="#D9822B">,</text>
+    <text x="670" y="160">padre(P, N)</text>
+  </g>
+  <g font-family="Verdana, DejaVu Sans, sans-serif" text-anchor="middle">
+    <text x="135" y="66" font-size="24" font-weight="bold" fill="#1F3A5F">cabeza</text>
+    <text x="135" y="94" font-size="17" fill="#52606D">lo que se concluye</text>
+    <text x="565" y="66" font-size="24" font-weight="bold" fill="#2E7D32">cuerpo</text>
+    <text x="565" y="94" font-size="17" fill="#52606D">lo que debe cumplirse</text>
+    <text x="300" y="232" font-size="26" font-weight="bold" fill="#D9822B">si</text>
+    <text x="562" y="232" font-size="26" font-weight="bold" fill="#D9822B">y</text>
+    <text x="400" y="300" font-size="22" font-style="italic" fill="#1F2933">A es abuelo de N <tspan font-weight="bold" fill="#D9822B">si</tspan> A es padre de P <tspan font-weight="bold" fill="#D9822B">y</tspan> P es padre de N</text>
+  </g>
+</svg>

@@ -45,4 +45,32 @@ test(analisis_como_la_version_2, [true(Distintas == [])]) :-
               \+ msort(Bs4, S) ),
             Distintas).
 
+% leer_pares(R, Pares, D0, D): la regla R lee los Pares desde D0.
+leer_pares(_, [], D, D).
+leer_pares(R, [P|Ps], D0, D) :-
+    paso(P, R, D0, D1),
+    leer_pares(R, Ps, D1, D).
+
+test(inicial_regla, [true(D == [bucle, inicio, p(1, 0), p(2, 0), p(3, 0),
+                                p(4, 0), p(5, 0), p(6, 0)])]) :-
+    inicial_regla(z, D).
+
+test(regla_acepta, [nondet]) :-
+    inicial_regla(z, D0),
+    leer_pares(z, [[l]:[l], [u]:[u], [z]:[c], [+]:[], []:[e], [s]:[s]],
+               D0, D),
+    acepta_regla(z, D).
+
+% z escrita z ante una e: paso/4 falla en el medio de la palabra.
+test(regla_rechaza_en_el_medio, [fail]) :-
+    inicial_regla(z, D0),
+    leer_pares(z, [[l]:[l], [u]:[u], [z]:[z], [+]:[], []:[e], [s]:[s]],
+               D0, _).
+
+% z escrita c al final: el patrón se completa al terminar la palabra.
+test(regla_rechaza_al_final, [fail]) :-
+    inicial_regla(z, D0),
+    leer_pares(z, [[l]:[l], [u]:[u], [z]:[c]], D0, D),
+    acepta_regla(z, D).
+
 :- end_tests(paralelo).

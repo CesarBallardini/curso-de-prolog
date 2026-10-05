@@ -65,4 +65,37 @@ test(un_negativo, [true(FP == 0)]) :-
     inductivo(Pos, [abuelo(pedro, eva)], M, L, 3, H, _),
     evaluar_en(abuelo, H, M, _, FP, _).
 
+test(mejor_clausula,
+     [true(R-N =@= encontrada((abuelo(A, B) :- [padre(A, C),
+                                               progenitor(C, B)]))-403)]) :-
+    ejemplos(abuelo, Pos, Negs),
+    modelo_fondo(M),
+    lenguaje(L),
+    mejor_clausula(abuelo(juan, eva), Pos, Negs, M, L, 3, R, 0, N).
+
+test(mejor_clausula_sin_resultado, [true(R-N == ninguna-29)]) :-
+    ejemplos(abuelo, Pos, Negs),
+    modelo_fondo(M),
+    lenguaje(L),
+    mejor_clausula(abuelo(juan, eva), Pos, Negs, M, L, 1, R, 0, N).
+
+% nivel/7 elige entre las consistentes la que cubre más positivos: padre
+% de un progenitor cubre tres, padre de un padre, dos.
+test(nivel_elige, [true(R-N =@= encontrada((abuelo(A, B) :- [padre(A, C),
+                                            progenitor(C, B)]))-0)]) :-
+    ejemplos(abuelo, Pos, Negs),
+    modelo_fondo(M),
+    lenguaje(L),
+    recursion:nivel(5, 5, [(abuelo(X, Y) :- [padre(X, Z), padre(Z, Y)]),
+                           (abuelo(U, V) :- [padre(U, W), progenitor(W, V)])],
+                    abuelo(juan, eva)-Pos-Negs-M-L, R, 0, N).
+
+% En el nivel máximo, sin consistentes, no genera más cláusulas.
+test(nivel_maximo, [true(R-N == ninguna-7)]) :-
+    ejemplos(abuelo, Pos, Negs),
+    modelo_fondo(M),
+    lenguaje(L),
+    recursion:nivel(0, 0, [(abuelo(_, _) :- [])],
+                    abuelo(juan, eva)-Pos-Negs-M-L, R, 7, N).
+
 :- end_tests(recursion).

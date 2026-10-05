@@ -490,6 +490,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
         baja(s(N), Cero).
     baja(cero, cero).
     ```
+
 11. ★ **(2)** Sobre `suma/3` de la [sección 6.4](#64-la-suma), en tres partes:
 
     a. Ejecutar `suma(s(cero), s(s(cero)), R).` y explicar qué hace cada cláusula.

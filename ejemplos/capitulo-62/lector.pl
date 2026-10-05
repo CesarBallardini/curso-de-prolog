@@ -55,24 +55,39 @@ simbolos([]) -->
 %!  simbolo(-S)// is semidet.
 %
 %   S es el símbolo que empieza en el texto: un conectivo, un
-%   cuantificador, un paréntesis, una coma o id(Nombre).
-simbolo(no)     --> ( "¬" ; "~" ).
-simbolo(y)      --> ( "∧" ; "&" ).
-simbolo(o)      --> ( "∨" ; "|" ).
-simbolo(si)     --> ( "→" ; "->" ).
-simbolo(sii)    --> ( "↔" ; "<->" ).
-simbolo(todo)   --> "∀".
-simbolo(existe) --> "∃".
-simbolo('(')    --> "(".
-simbolo(')')    --> ")".
-simbolo(',')    --> ",".
+%   cuantificador, un paréntesis, una coma o id(Nombre). El primer
+%   carácter decide la clase del símbolo, de modo que no queda ninguna
+%   alternativa pendiente.
 simbolo(S) -->
     [C],
-    { code_type(C, csymf) },
-    resto_nombre(Cs),
-    { atom_codes(Nombre, [C|Cs]),
-      palabra(Nombre, S)
-    }.
+    (   { code_type(C, csymf) }
+    ->  resto_nombre(Cs),
+        { atom_codes(Nombre, [C|Cs]),
+          palabra(Nombre, S)
+        }
+    ;   signo(C, S)
+    ).
+
+%!  signo(+C, -S)// is semidet.
+%
+%   S es el símbolo que empieza con el carácter C, que no es el de un
+%   nombre; el resto del símbolo sigue en el texto. La indexación por el
+%   primer argumento elige la única cláusula que corresponde a C.
+signo(0'¬, no)      --> [].
+signo(0'~, no)      --> [].
+signo(0'∧, y)       --> [].
+signo(0'&, y)       --> [].
+signo(0'∨, o)       --> [].
+signo(0'|, o)       --> [].
+signo(0'→, si)      --> [].
+signo(0'-, si)      --> ">".
+signo(0'↔, sii)     --> [].
+signo(0'<, sii)     --> "->".
+signo(0'∀, todo)    --> [].
+signo(0'∃, existe)  --> [].
+signo(0'(, '(')     --> [].
+signo(0'), ')')     --> [].
+signo(0',, ',')     --> [].
 
 %!  palabra(+Nombre, -S) is det.
 %

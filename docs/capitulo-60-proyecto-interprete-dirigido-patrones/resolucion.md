@@ -17,6 +17,8 @@ cláusula vacía, que ninguna asignación satisface. Si la cláusula vacía
 aparece, la negación es contradictoria y la fórmula es un teorema. El paso
 de resolución toma dos cláusulas, una con un literal `P` y otra con `-P`, y
 produce el **resolvente**: la disyunción de los demás literales de las dos.
+El principio es el de Robinson (1965), aquí restringido a la lógica
+proposicional, donde no hace falta unificar.
 
 Las fórmulas se escriben con `-` (negación, predefinido), `&`, `v` y `==>`,
 con precedencias crecientes, de modo que la negación liga más que la

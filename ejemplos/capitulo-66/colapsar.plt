@@ -34,4 +34,19 @@ test(equivalentes, [forall(( caso(_, Os), hipotesis(H) ))]) :-
 test(sin_ligar, [true(var(X))]) :-
     se_cumple(peso(X) y X > 50, [peso(90)]).
 
+% desplegar/2 reemplaza mamifero por el cuerpo de cada una de sus reglas.
+test(desplegar, [true(Ls == [[tiene_pelo, come_carne],
+                             [da_leche, come_carne]])]) :-
+    findall(L, colapsar:desplegar(mamifero y come_carne, L), Ls).
+
+test(desplegar_observable, [true(Ls == [[tiene_pelo]])]) :-
+    findall(L, colapsar:desplegar(tiene_pelo, L), Ls).
+
+% agrupar/2 une cada comparación con la observación anterior.
+test(agrupar, [true(Ps =@= [a, peso(X) y X > 50, b])]) :-
+    colapsar:agrupar([a, peso(X), X > 50, b], Ps).
+
+test(agrupar_sin_comparaciones, [true(Ps == [a, b])]) :-
+    colapsar:agrupar([a, b], Ps).
+
 :- end_tests(colapsar).

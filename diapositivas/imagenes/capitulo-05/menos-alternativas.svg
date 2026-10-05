@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" width="960" height="480">
+  <title>Cuántos hechos unifican con el primer objetivo: padre(juan, P) con dos, padre(P, Quien) con los tres</title>
+  <rect x="0" y="0" width="960" height="480" fill="#FFFFFF"/>
+  <rect x="335.0" y="104.0" width="290.0" height="52.0" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <rect x="347.0" y="115.0" width="40.0" height="30.0" rx="5" fill="#1F3A5F"/>
+  <text x="367.0" y="138.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#FFFFFF" text-anchor="middle" xml:space="preserve" font-weight="bold">R1</text>
+  <text x="397.0" y="137.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">padre(juan, ana).</text>
+  <rect x="335.0" y="194.0" width="290.0" height="52.0" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <rect x="347.0" y="205.0" width="40.0" height="30.0" rx="5" fill="#1F3A5F"/>
+  <text x="367.0" y="228.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#FFFFFF" text-anchor="middle" xml:space="preserve" font-weight="bold">R2</text>
+  <text x="397.0" y="227.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">padre(juan, pedro).</text>
+  <rect x="335.0" y="284.0" width="290.0" height="52.0" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <rect x="347.0" y="295.0" width="40.0" height="30.0" rx="5" fill="#1F3A5F"/>
+  <text x="367.0" y="318.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#FFFFFF" text-anchor="middle" xml:space="preserve" font-weight="bold">R3</text>
+  <text x="397.0" y="317.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">padre(pedro, luis).</text>
+  <text x="112.0" y="150.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="middle" xml:space="preserve">primero en</text>
+  <text x="112.0" y="176.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="middle" xml:space="preserve">abuelo/2</text>
+  <text x="848.0" y="150.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="middle" xml:space="preserve">primero en</text>
+  <text x="848.0" y="176.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="middle" xml:space="preserve">abuelo_al_reves/2</text>
+  <rect x="17.1" y="198.8" width="189.7" height="42.4" rx="10" fill="#FCE8D2" stroke="#D9822B" stroke-width="3"/>
+  <text x="112.0" y="227.5" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">padre(juan, P)</text>
+  <rect x="747.4" y="198.8" width="201.2" height="42.4" rx="10" fill="#FCE8D2" stroke="#D9822B" stroke-width="3"/>
+  <text x="848.0" y="227.5" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">padre(P, Quien)</text>
+  <line x1="208.0" y1="220.0" x2="322.3" y2="137.0" stroke="#2E7D32" stroke-width="3"/>
+  <polygon points="332.0,130.0 318.4,131.7 326.2,142.4" fill="#2E7D32"/>
+  <line x1="208.0" y1="220.0" x2="320.0" y2="220.0" stroke="#2E7D32" stroke-width="3"/>
+  <polygon points="332.0,220.0 320.0,213.4 320.0,226.6" fill="#2E7D32"/>
+  <line x1="208.0" y1="220.0" x2="322.3" y2="303.0" stroke="#9AA5B1" stroke-width="2" stroke-dasharray="6 4"/>
+  <polygon points="332.0,310.0 326.2,297.6 318.4,308.3" fill="#9AA5B1"/>
+  <circle cx="275" cy="268" r="11" fill="#F1F3F5" stroke="#9AA5B1" stroke-width="2"/>
+  <path d="M 270.05 263.05 L 279.95 272.95 M 279.95 263.05 L 270.05 272.95" fill="none" stroke="#9AA5B1" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <line x1="746.0" y1="220.0" x2="637.5" y2="137.3" stroke="#2E7D32" stroke-width="3"/>
+  <polygon points="628.0,130.0 633.5,142.5 641.5,132.0" fill="#2E7D32"/>
+  <line x1="746.0" y1="220.0" x2="640.0" y2="220.0" stroke="#2E7D32" stroke-width="3"/>
+  <polygon points="628.0,220.0 640.0,226.6 640.0,213.4" fill="#2E7D32"/>
+  <line x1="746.0" y1="220.0" x2="637.5" y2="302.7" stroke="#2E7D32" stroke-width="3"/>
+  <polygon points="628.0,310.0 641.5,308.0 633.5,297.5" fill="#2E7D32"/>
+  <text x="112.0" y="300.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#2E7D32" text-anchor="middle" xml:space="preserve" font-weight="bold">2 alternativas</text>
+  <text x="848.0" y="300.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#2E7D32" text-anchor="middle" xml:space="preserve" font-weight="bold">3 alternativas</text>
+  <rect x="110.0" y="400.0" width="740.0" height="40.0" rx="20" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="480.0" y="427.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#1F3A5F" text-anchor="middle" xml:space="preserve" font-weight="bold">primero, el objetivo que genera menos alternativas</text>
+</svg>

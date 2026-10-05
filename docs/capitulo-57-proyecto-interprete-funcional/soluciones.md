@@ -381,3 +381,149 @@ evaluar ese argumento vuelve a recorrer toda la lista que se sustituyó,
 con la cláusula de las listas de `valor/2`, y la copia del cuerpo en la
 aplicación siguiente la copia otra vez. Con $n$ elementos hay $n$
 llamadas, y cada una recorre una lista de hasta $n$ elementos.
+
+## 13
+
+El código de esta solución y la del ejercicio 14 está en
+`ejemplos/capitulo-57/soluciones_tipos.pl`, con sus pruebas en
+`soluciones_tipos.plt`. Carga `tipos.pl`, y `tipo_con_plegados/2` agrega las
+definiciones de `plegados/1` a las del preludio:
+
+<!-- ejemplo: capitulo-57/soluciones_tipos.pl predicado: tipo_con_plegados/2 -->
+```prolog
+%!  tipo_con_plegados(+Texto:string, -Tipo:string) is semidet.
+%
+%   Tipo es el tipo de la expresión de Texto, con las definiciones del
+%   preludio y las de plegados/1. Falla si la expresión no tiene tipo.
+tipo_con_plegados(Texto, Tipo) :-
+    plegados(Definiciones),
+    tipo_de(Texto, Definiciones, Tipo).
+```
+
+```prolog
+?- tipo_con_plegados("plegar1_der", T).
+T = "(a -> a -> a) -> [a] -> a".
+
+?- tipo_con_plegados("plegar2_der", T).
+T = "(a -> b -> c -> c) -> c -> [a] -> [b] -> c".
+
+?- tipo_con_plegados("maximo", T).
+T = "[entero] -> entero".
+
+?- tipo_con_plegados("maximo []", T).
+T = "entero".
+```
+
+En `plegar_der`, el acumulador empieza siendo el valor inicial, que puede
+ser de un tipo distinto del de los elementos: `longitud` pliega una lista
+de cualquier tipo en un entero. En `plegar1_der` no hay valor inicial: el
+acumulador empieza siendo el último elemento, `cabeza l`, y el resultado
+de `f` vuelve a entrar como su segundo argumento. Los dos argumentos de
+`f` y su resultado son entonces del mismo tipo que los elementos, y la
+inferencia los unifica en una sola variable, `a`. `plegar2_der` recorre
+dos listas, cada una con su tipo de elemento, y un acumulador de un
+tercer tipo. `maximo` fija `a` en `entero`, porque `mayor` compara con
+`>`.
+
+`maximo []` tiene tipo `entero`, pero su evaluación produce un error de
+tipo: `vacia (cola l)` toma la cola de la lista vacía. Los tipos de Lam
+dicen de qué clase son los elementos de una lista, no cuántos tiene; la
+lista vacía y una lista de un elemento tienen el mismo tipo, `[entero]`, y
+el verificador no puede distinguir cuál llega a `maximo`.
+
+## 14
+
+<!-- ejemplo: capitulo-57/soluciones_tipos.pl predicado: tipo_ml/4 -->
+```prolog
+%!  tipo_ml(+E, +Locales:list, +Globales:list, ?T) is semidet.
+%
+%   Como tipo/4, con los nombres de «sea» generalizados.
+tipo_ml(num(_), _, _, T) :-
+    unificar(T, entero).
+tipo_ml(id(X), Loc, Glob, T) :-
+    (   memberchk(X-T0, Loc),
+        es_esquema(X-T0)
+    ->  T0 = esquema(T00),
+        instanciar(T00, Loc, T1)
+    ;   tipo_de_nombre(X, Loc, Glob, T1)
+    ),
+    unificar(T, T1).
+tipo_ml(lam(X, Cuerpo), Loc, Glob, T) :-
+    tipo_ml(Cuerpo, [X-A|Loc], Glob, B),
+    unificar(T, fn(A, B)).
+tipo_ml(ap(F, A), Loc, Glob, T) :-
+    tipo_ml(F, Loc, Glob, TF),
+    tipo_ml(A, Loc, Glob, TA),
+    unificar(TF, fn(TA, T)).
+tipo_ml(si(C, A, B), Loc, Glob, T) :-
+    tipo_ml(C, Loc, Glob, booleano),
+    tipo_ml(A, Loc, Glob, T),
+    tipo_ml(B, Loc, Glob, T).
+tipo_ml(sea(X, E1, E2), Loc, Glob, T) :-
+    tipo_ml(E1, Loc, Glob, T1),
+    tipo_ml(E2, [X-esquema(T1)|Loc], Glob, T).
+```
+
+<!-- ejemplo: capitulo-57/soluciones_tipos.pl predicado: instanciar/3 -->
+```prolog
+%!  instanciar(+T0, +Locales:list, -T) is det.
+%
+%   T es una copia de T0 con variables nuevas, salvo las que aparecen en
+%   los tipos de los parámetros de Locales, que T comparte con T0. Los
+%   esquemas no cuentan: sus variables propias son las que se generalizan.
+instanciar(T0, Loc, T) :-
+    exclude(es_esquema, Loc, Parametros),
+    term_variables(Parametros, Fijas),
+    copy_term(Fijas-T0, Copias-T),
+    Copias = Fijas.
+```
+
+<!-- ejemplo: capitulo-57/soluciones_tipos.pl predicado: es_esquema/1 -->
+```prolog
+%!  es_esquema(+Par) is semidet.
+%
+%   Par liga un nombre de «sea» a su esquema. Un tipo que es una variable
+%   no es un esquema, y no se liga.
+es_esquema(_-Tipo) :-
+    nonvar(Tipo),
+    Tipo = esquema(_).
+```
+
+```prolog
+?- tipo_ml_de("sea id = fun x -> x en si id verdadero entonces id 1 sino 2", T).
+T = "entero".
+
+?- tipo_ml_de("fun f -> sea g = f en si g verdadero entonces g 1 sino 2", T).
+false.
+
+?- tipo_ml_de("fun f -> sea g = f en g 1", T).
+T = "(entero -> a) -> a".
+```
+
+`tipo_ml/4` difiere de `tipo/4` en dos cláusulas. La del «sea» guarda el
+tipo del nombre como `esquema(T1)`, y la de los identificadores, cuando el
+nombre tiene un esquema, lo copia con `instanciar/3`. En el primer
+ejemplo, `id` tiene el esquema `a -> a`; el uso con `verdadero` recibe la
+copia `booleano -> booleano` y el uso con `1`, la copia `entero -> entero`.
+
+La copia no puede renovar todas las variables. En el segundo ejemplo, el
+tipo de `g` es el de `f`, un parámetro cuyo tipo todavía no se conoce: es
+una variable que también aparece en los locales, como tipo de `f`. Si
+cada uso de `g` la copiara, `f` podría ser a la vez una función de
+booleanos y de enteros, y ninguna función que se pase como `f` lo es.
+`instanciar/3` toma las variables de los tipos de los parámetros con
+`term_variables/2` y las copia junto con el tipo, en el mismo
+`copy_term/2`; unificar después las copias con las originales deja
+compartidas exactamente esas. El tercer ejemplo muestra el efecto: el uso
+de `g` liga el tipo de `f`, que queda `entero -> a`.
+
+`es_esquema/1` verifica con `nonvar/1` antes de unificar con `esquema(_)`:
+el tipo de un parámetro es muchas veces una variable, y unificarla con
+`esquema(_)` la ligaría, convirtiendo el parámetro en un esquema y su tipo
+en un término que no es un tipo. Por la misma razón, la cláusula de los
+identificadores busca primero el nombre en los locales y después
+pregunta si su tipo es un esquema, en lugar de buscar directamente el par
+`X-esquema(T0)`. Esta generalización es la del sistema de tipos de ML,
+debido a Milner: el nombre de un «sea» tiene un tipo polimórfico en todas
+las variables de su tipo que no aparecen en el entorno, y cada uso las
+renueva.

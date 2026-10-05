@@ -30,4 +30,21 @@ medir(Modo, I) :-
     statistics(inferences, I1),
     I is I1 - I0.
 
+test(prometer_necesidad) :-
+    prometer(necesidad, num(1), [], P),
+    assertion(P = memo(num(1), [], M)),
+    assertion(var(M)).
+
+% La primera vez que se fuerza, la promesa liga su valor.
+test(forzar_liga, [true(M == 5)]) :-
+    contexto(necesidad, [], Ctx),
+    P = memo(ap(ap(id(+), num(2)), num(3)), [], M),
+    forzar(P, Ctx, _).
+
+% Con el valor ya ligado, la expresión no vuelve a evaluarse: cabeza de la
+% lista vacía produciría un error.
+test(forzar_recuerda, [true(V == 9)]) :-
+    contexto(necesidad, [], Ctx),
+    forzar(memo(ap(id(cabeza), id(nil)), [], 9), Ctx, V).
+
 :- end_tests(necesidad).

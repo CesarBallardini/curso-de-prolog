@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 350" width="400" height="350">
+  <title>2 + 3 y +(2, 3) son dos notaciones del mismo término: + en la raíz, 2 y 3 como argumentos</title>
+  <rect x="0" y="0" width="400" height="350" fill="#FFFFFF"/>
+  <text x="95" y="45" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="28" fill="#1F2933" text-anchor="middle">2 + 3</text>
+  <text x="305" y="45" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="28" fill="#1F2933" text-anchor="middle">+(2, 3)</text>
+  <text x="95" y="75" font-family="Verdana, DejaVu Sans, sans-serif" font-size="14" fill="#52606D" text-anchor="middle">infija</text>
+  <text x="305" y="75" font-family="Verdana, DejaVu Sans, sans-serif" font-size="14" fill="#52606D" text-anchor="middle">prefija</text>
+  <line x1="110" y1="90" x2="172.426" y2="154.262" stroke="#1F3A5F" stroke-width="3"/>
+  <polygon points="178.0,160.0 165.5,156.5 174.8,147.4" fill="#1F3A5F"/>
+  <line x1="290" y1="90" x2="227.574" y2="154.262" stroke="#1F3A5F" stroke-width="3"/>
+  <polygon points="222.0,160.0 225.2,147.4 234.5,156.5" fill="#1F3A5F"/>
+  <line x1="200" y1="185" x2="140" y2="285" stroke="#1F3A5F" stroke-width="2"/>
+  <line x1="200" y1="185" x2="260" y2="285" stroke="#1F3A5F" stroke-width="2"/>
+  <circle cx="200" cy="185" r="22" fill="#1F3A5F" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="200" y="193.4" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#FFFFFF" text-anchor="middle" font-weight="bold">+</text>
+  <rect x="120" y="267" width="40" height="36" rx="18" fill="#E3F2F1" stroke="#2B7A78" stroke-width="2"/>
+  <text x="140" y="293.4" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#1F2933" text-anchor="middle">2</text>
+  <rect x="240" y="267" width="40" height="36" rx="18" fill="#E3F2F1" stroke="#2B7A78" stroke-width="2"/>
+  <text x="260" y="293.4" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#1F2933" text-anchor="middle">3</text>
+  <text x="200" y="335" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#52606D" text-anchor="middle">un término compuesto: +/2</text>
+</svg>

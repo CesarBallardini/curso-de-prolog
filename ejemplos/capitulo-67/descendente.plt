@@ -57,4 +57,43 @@ test(extension_general, [true(K == 49)]) :-
     extension_en(abuelo, [(abuelo(_, _) :- [])], M, As),
     length(As, K).
 
+% refinamiento/3: unificar las dos variables o agregar un literal con
+% al menos una variable de la cláusula.
+test(refinamiento, [true(Cs =@= [(p(X, X) :- []), (p(Y, _) :- [q(Y)]),
+                                 (p(_, W) :- [q(W)])])]) :-
+    findall(C, descendente:refinamiento([q/1], (p(_, _) :- []), C), Cs).
+
+% Con una sola variable no hay nada que unificar, y q(Y) ya está.
+test(refinamiento_no_repite, [true(Cs == [])]) :-
+    findall(C, descendente:refinamiento([q/1], (p(Y) :- [q(Y)]), C), Cs).
+
+test(buscar_limite_cero, [true(R-N == ninguna-5)]) :-
+    ejemplos(abuelo, _, Negs),
+    modelo_fondo(M),
+    lenguaje(L),
+    descendente:buscar(0, (abuelo(_, _) :- []), abuelo(juan, eva)-Negs-M-L,
+                       R, 5, N).
+
+test(buscar, [true(R-N =@= encontrada((abuelo(A, B) :- [padre(A, C),
+                                                        padre(C, B)]))-138)]) :-
+    ejemplos(abuelo, _, Negs),
+    modelo_fondo(M),
+    lenguaje(L),
+    descendente:buscar(2, (abuelo(_, _) :- []), abuelo(juan, eva)-Negs-M-L,
+                       R, 0, N).
+
+% buscar_clausula/8 suma las cláusulas de los niveles 0, 1 y 2: 0 + 29 + 138.
+test(buscar_clausula, [true(R-N =@= encontrada((abuelo(A, B) :- [padre(A, C),
+                                                padre(C, B)]))-167)]) :-
+    ejemplos(abuelo, _, Negs),
+    modelo_fondo(M),
+    lenguaje(L),
+    buscar_clausula(abuelo(juan, eva), Negs, M, L, 3, R, 0, N).
+
+test(buscar_clausula_sin_resultado, [true(R-N == ninguna-29)]) :-
+    ejemplos(abuelo, _, Negs),
+    modelo_fondo(M),
+    lenguaje(L),
+    buscar_clausula(abuelo(juan, eva), Negs, M, L, 1, R, 0, N).
+
 :- end_tests(descendente).

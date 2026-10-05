@@ -194,7 +194,7 @@ def inscriptos(materia):
 ```
 
 La conversión a dicts está del lado de Prolog, como en el módulo `puente`, y
-la función de Python solo consulta: es el Patrón 39.
+la función de Python solo consulta: es el [Patrón 39](../patrones.md#39-frontera-pythonprolog).
 
 ## 13
 

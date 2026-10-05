@@ -57,4 +57,26 @@ test(como_regla_hecho, [true(R == (p(a) :- true))]) :-
 test(como_regla, [true(R == (p(a) :- q(a), r(a), s(a)))]) :-
     como_regla((p(a) :- [q(a), r(a), s(a)]), R).
 
+test(incluido, all(B == [a, a])) :-
+    subsuncion:incluido([p(B)], [p(a), q(b), p(a)]).
+
+test(incluido_vacio, [nondet]) :-
+    subsuncion:incluido([], [p(a)]).
+
+test(incluido_falla, [fail]) :-
+    subsuncion:incluido([p(X), q(X)], [p(a), q(b)]).
+
+% pares/3 no copia los literales: el par conserva las variables.
+test(pares, [true(Ps == [p(X)-p(a), p(X)-p(b), q(X)-q(c)])]) :-
+    subsuncion:pares([p(X), q(X)], [p(a), r(a), p(b), q(c)], Ps).
+
+test(pares_sin_compatibles, [true(Ps == [])]) :-
+    subsuncion:pares([p(_)], [q(a)], Ps).
+
+test(mostrar, [true(S == "p(A) :-\n    q(A, _).\n")]) :-
+    with_output_to(string(S), mostrar((p(X) :- [q(X, _)]))).
+
+test(mostrar_hecho, [true(S == "p(a).\n")]) :-
+    with_output_to(string(S), mostrar((p(a) :- []))).
+
 :- end_tests(subsuncion).

@@ -43,4 +43,38 @@ test(division_por_cero_en_ejecucion, [error(evaluation_error(zero_divisor))]) :-
     analizar("mientras x < 1 hacer x := 1 / x fin", P),
     correr_especializado(P, _).
 
+test(nombrar, true(T == [si(a, b, c)-si_1, mientras(d, e)-mientras_2])) :-
+    nombrar([si(a, b, c), mientras(d, e)], 1, T).
+
+test(compuesta, fail) :-
+    compuesta(escribir(_)).
+
+test(llamada, true(L == si_1(1, 2, A, B, S0, S))) :-
+    llamada(si_1, [x-1, y-2], [x-A, y-B], S0, S, L).
+
+test(definicion, true(N == 2)) :-
+    K = mientras(rel(>, id(n), num(0)),
+                 [escribir(id(n)), asignar(n, bin(-, id(n), num(1)))]),
+    findall(C, definicion(K, mientras_1, [n], [K-mientras_1], C), Cs),
+    length(Cs, N).
+
+test(control_mini_valor, all(A-V == [dejar(true)-3])) :-
+    control_mini([], valor(x, [x-3], V), A).
+
+test(control_mini_comparacion, true(A == dejar(true))) :-
+    control_mini([], 3 < 4, A).
+
+test(control_mini_falsa, fail) :-
+    control_mini([], 3 > 4, _).
+
+test(comparaciones, true(N == 6)) :-
+    findall(C, comparacion(C), Cs),
+    length(Cs, N).
+
+test(listar_especializado, true(S == "principal([1|A], A).\n")) :-
+    with_output_to(string(S), listar_especializado([escribir(num(1))])).
+
+test(listar_ejemplo, true(sub_string(S, 0, _, _, "principal(A, B) :-"))) :-
+    with_output_to(string(S), listar_ejemplo(cuenta)).
+
 :- end_tests(especializar).

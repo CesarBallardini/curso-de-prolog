@@ -40,6 +40,55 @@ test(hilbert_flotante, [true(E4 < 1.0e-9), true(E12 > 1.0e-3)]) :-
 test(tipo, [error(type_error(oneof([racional, flotante]), entero))]) :-
     hilbert(3, entero, _).
 
+test(gauss_jordan, [true(R == [[1, 0, 1, -1], [0, 1, -1, 2]])]) :-
+    gauss_jordan([[2, 1, 1, 0], [1, 1, 0, 1]], [], R).
+
+test(gauss_jordan_singular, [fail]) :-
+    gauss_jordan([[1, 2, 1, 0], [2, 4, 0, 1]], [], _).
+
+test(elegir_pivote, [true(P-R == [1, 0]-[[0, 1], [2, 2]])]) :-
+    elegir_pivote(0, [[0, 1], [1, 0], [2, 2]], P, R).
+
+test(elegir_pivote_columna, [true(P == [0, 3])]) :-
+    elegir_pivote(1, [[5, 0], [0, 3]], P, _).
+
+test(elegir_pivote_ninguno, [fail]) :-
+    elegir_pivote(0, [[0, 1], [0, 2]], _, _).
+
+test(dividir_por_exacto, [true(Z == 3r2)]) :-
+    dividir_por(2, 3, Z).
+
+test(dividir_por_flotante, [true(Z == 1.5)]) :-
+    dividir_por(2.0, 3, Z).
+
+test(eliminar, [true(N == [0, -1, 1])]) :-
+    eliminar(0, [1, 1, 0], [1, 0, 1], N).
+
+test(restar_multiplo, [true(Y == 1)]) :-
+    restar_multiplo(2, 3, 7, Y).
+
+test(mitad_derecha, [true(D == [c, d])]) :-
+    mitad_derecha(2, [a, b, c, d], D).
+
+test(fila_hilbert, [true(F == [1r2, 1r3, 1r4])]) :-
+    fila_hilbert(racional, [1, 2, 3], 2, F).
+
+test(elemento_hilbert, [true(X-Y == 1r5-0.2)]) :-
+    elemento_hilbert(racional, 2, 4, X),
+    elemento_hilbert(flotante, 2, 4, Y).
+
+test(mayor_diferencia, [true(E == 3)]) :-
+    mayor_diferencia(1, 4, 2, E).
+
+test(desvio_cero, [true(E == 0)]) :-
+    desvio([[2, 1], [1, 1]], [[1, -1], [-1, 2]], E).
+
+test(inversa_vacia, [true(I == [])]) :-
+    inversa([], I).
+
+test(hilbert_cero, [true(H == [])]) :-
+    hilbert(0, racional, H).
+
 :- end_tests(inversa).
 
 :- begin_tests(desvio_hilbert).

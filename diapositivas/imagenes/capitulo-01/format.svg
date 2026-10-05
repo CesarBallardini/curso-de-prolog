@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300" width="800" height="300">
+  <title>Cómo compone format/2 la salida: cada ~w del texto de formato recibe el elemento siguiente de la lista, y ~n produce un salto de línea</title>
+  <rect x="0" y="0" width="800" height="300" fill="#FFFFFF"/>
+  <rect x="214" y="44" width="38" height="36" rx="6" fill="#FCE8D2"/>
+  <rect x="363" y="44" width="38" height="36" rx="6" fill="#FCE8D2"/>
+  <rect x="550" y="44" width="38" height="36" rx="6" fill="#EAF1F8"/>
+  <g font-family="Consolas, DejaVu Sans Mono, monospace" font-size="30" fill="#1F2933">
+    <text x="200" y="70">"</text>
+    <text x="216" y="70" fill="#D9822B" font-weight="bold">~w</text>
+    <text x="266" y="70">tiene</text>
+    <text x="365" y="70" fill="#D9822B" font-weight="bold">~w</text>
+    <text x="414" y="70">hermanos</text>
+    <text x="552" y="70" fill="#1F3A5F" font-weight="bold">~n</text>
+    <text x="588" y="70">"</text>
+    <text x="300" y="190">[</text>
+    <text x="316" y="190" fill="#D9822B" font-weight="bold">ana</text>
+    <text x="366" y="190">,</text>
+    <text x="399" y="190" fill="#D9822B" font-weight="bold">2</text>
+    <text x="416" y="190">]</text>
+  </g>
+  <g stroke="#D9822B" stroke-width="3">
+    <line x1="340" y1="164" x2="238" y2="92"/>
+    <line x1="407" y1="164" x2="384" y2="92"/>
+  </g>
+  <g fill="#D9822B">
+    <polygon points="236,84 252,90 242,100"/>
+    <polygon points="382,84 392,98 376,98"/>
+  </g>
+  <g font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#52606D">
+    <text x="180" y="68" text-anchor="end">formato</text>
+    <text x="284" y="186" text-anchor="end">lista</text>
+    <text x="569" y="110" text-anchor="middle" fill="#1F3A5F">salto de línea</text>
+  </g>
+  <rect x="200" y="226" width="400" height="54" rx="8" fill="#E3F1E4" stroke="#2E7D32" stroke-width="2"/>
+  <text x="400" y="262" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="26" fill="#1F2933" text-anchor="middle">ana tiene 2 hermanos</text>
+</svg>

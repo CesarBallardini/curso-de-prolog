@@ -44,4 +44,48 @@ test(dato_reevaluado, [true(V = [[lambda(_, _)]])]) :-
 test(patron, [fail]) :-
     valor(cabeza@[[]], _).
 
+test(valor_aplicacion_lambda, [true(V == 5)]) :-
+    valor_aplicacion(lambda(X, suma@[X, 1]), f, [4], V).
+
+test(valor_aplicacion_constructor, [true(V == par@[2, 3])]) :-
+    valor_aplicacion(par, par, [suma@[1, 1], 3], V).
+
+test(aplicar_lambdas_sin_argumentos, [true(V == lambda(x, x))]) :-
+    aplicar_lambdas([], lambda(x, x), V).
+
+test(aplicar_lambdas_dos, [true(V == 7)]) :-
+    aplicar_lambdas([3, 4], lambda(X, lambda(Y, suma@[X, Y])), V).
+
+% Cada aplicación copia la lambda: la original queda sin ligar.
+test(aplicar_lambdas_copia, [true(var(X))]) :-
+    L = lambda(X, suma@[X, 1]),
+    aplicar_lambdas([1], L, _).
+
+test(anidar_lambdas, [true(L == lambda(a, lambda(b, cuerpo)))]) :-
+    anidar_lambdas([a, b], cuerpo, L).
+
+test(elegir, all(E == [si])) :-
+    elegir(verdadero, si, no, E).
+
+test(elegir_otro, fail) :-
+    elegir(talvez, si, no, _).
+
+% G*F aplica F y después G.
+test(composicion, [true(V == 25)]) :-
+    valor(cuadrado_del_siguiente@[4], V).
+
+test(composicion_orden, [true(V1-V2 == 16-10)]) :-
+    valor((cuadrado*inc)@[3], V1),
+    valor((inc*cuadrado)@[3], V2).
+
+test(composicion_triple, [true(V == 9)]) :-
+    valor((cuadrado*inc*inc)@[1], V).
+
+% Una composición es una función como cualquier otra: map la recibe.
+test(composicion_en_map, [true(V == [4, 9, 16])]) :-
+    valor(cuadrados_de_siguientes@[[1, 2, 3]], V).
+
+test(composicion_es_lambda, [true(F = lambda(_, _))]) :-
+    valor(cuadrado*inc, F).
+
 :- end_tests(sustitucion).

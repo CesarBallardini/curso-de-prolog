@@ -12,14 +12,26 @@ equivalentes, y con un registro que guarda el estado entre dos pulsos de
 reloj, simula circuitos secuenciales y recorre todos los estados a los que
 pueden llegar.
 
+![Diagrama de un sumador completo: las entradas A, B y Cin; dos compuertas XOR en cadena dan la suma S, y dos compuertas AND y una OR, recuadradas como bloque de acarreo, dan el acarreo Cout](sumador-completo.png){ style="background-color: white" }
+
+Un sumador completo de un bit, el circuito `sumador` de la
+[sección 48.2](#482-el-circuito-como-dato): A ⊕ B ⊕ Cin es la suma S, y
+el acarreo Cout es 1 cuando A y B son 1 o cuando A ⊕ B y Cin lo son. La
+línea roja marca el camino del acarreo. Imagen: Inductiveload, dominio
+público, vía
+[Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Full-adder_logic_diagram.svg).
+
 El proyecto crece en seis versiones. La primera escribe las compuertas como
 tablas y cada circuito como una regla. La segunda describe los circuitos con
 hechos que el programa puede examinar, y los simula con un intérprete que
 recibe como argumento lo que hace cada compuerta; ese intérprete, sin
 cambios, sirve a las dos versiones siguientes, que calculan la fórmula de
 cada salida y verifican circuitos con `library(clpb)`. La quinta agrega los
-circuitos secuenciales, y la sexta, el grafo de sus estados. El programa
-terminado es un archivo que carga los cinco módulos:
+circuitos secuenciales, y la sexta, el grafo de sus estados. Tres secciones
+finales completan los temas de las fuentes: otra representación de los
+productos, los retardos en cascada y las compuertas hechas con transistores.
+El programa terminado es un archivo que carga los cinco módulos de las seis
+versiones:
 
 <!-- ejemplo: capitulo-48/proyecto.pl archivo -->
 ```prolog
@@ -99,12 +111,18 @@ Al terminar el capítulo, el lector puede:
   son, obtener una entrada que los distingue;
 - simular un circuito secuencial como un recorrido de los pulsos del reloj
   que lleva el estado, y verificar una propiedad sobre todos sus estados
-  alcanzables con una relación tabulada.
+  alcanzables con una relación tabulada;
+- representar un producto como un vector de signos y obtener los
+  implicantes primos de una salida combinando vectores adyacentes;
+- describir un circuito de tamaño variable con una recursión sobre la lista
+  de sus estados;
+- construir compuertas con transistores descritos por sus estados estables,
+  y reconocer un circuito sin estados estables.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:35 h**.
-    Resolver los 5 ejercicios marcados con ★: **1:20 h**.
-    Resolver los 11 ejercicios del final: **3:30 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **2:10 h**.
+    Resolver los 6 ejercicios marcados con ★: **1:55 h**.
+    Resolver los 14 ejercicios del final: **4:25 h**.
 
 ## 48.1 Compuertas como tablas, circuitos como reglas
 
@@ -516,7 +534,7 @@ F = ~ (~ (x* ~ (x*y))* ~ (y* ~ (x*y))) ;
 false.
 ```
 
-!!! example "Patrón 59 — Intérprete con conducta como parámetro"
+!!! example "Patrón 60 — Intérprete con conducta como parámetro"
     **Problema.** Una misma estructura —un circuito, un programa, una red—
     tiene que responder varias preguntas: qué valores da, qué fórmula
     calcula, qué pasa si una pieza falla. Cada pregunta da otro significado
@@ -609,8 +627,8 @@ alternativas pendientes: las demás cláusulas se distinguen por el functor.
 El segundo paso distribuye la conjunción sobre la disyunción, y representa
 el resultado como una lista de productos, cada uno una lista de literales.
 La lista vacía es la suma de ningún producto, 0; un producto vacío es 1.
-`simplificar/2` aplica cuatro leyes: X * X = X, X * ~X = 0, P + P = P, y la
-**absorción**, P + P * Q = P, que elimina un producto que contiene todos los
+`simplificar/2` aplica cuatro leyes: `X * X = X`, `X * ~X = 0`, `P + P = P`, y la
+**absorción**, `P + P * Q = P`, que elimina un producto que contiene todos los
 literales de otro:
 
 <!-- ejemplo: capitulo-48/formulas.pl predicado: productos/2 simplificar/2 absorbido/2 suma_de_productos/2 -->
@@ -751,13 +769,230 @@ sucesión como la clausura de su grafo de estados, que tiene ciclos y termina
 porque está tabulada, y verifica sobre ella, con `siempre/3`, que la salida
 del contador cambia un solo bit en cada pulso, para todos sus estados.
 
+## 48.7 Los productos como vectores de signos
+
+La suma de productos de la [sección 48.3](#483-que-calcula-un-circuito)
+escribe cada producto como una lista de literales, y `simplificar/2` tiene
+que buscar en ella un literal y su negación, o un producto contenido en
+otro. Clocksin, en el apartado 7.5 de *Clause and Effect*, «Alternative
+Representation», observa que cuando las variables son pocas y se conocen de
+antemano conviene otra estructura: un signo por variable, en un orden fijo,
+`+` si la variable aparece, `-` si aparece negada y `0` si no aparece. Con
+las variables a, b y ci, el producto a · ci · ¬b es `[+, -, +]`. Clocksin lo
+escribe como un término `p(+, -, +)`; una lista sirve para cualquier
+cantidad de variables. `vectores.pl` traduce entre las dos
+representaciones:
+
+<!-- ejemplo: capitulo-48/vectores.pl predicado: vector/3 signo/3 producto_de_vector/3 literal_de/4 -->
+```prolog
+%!  vector(+Nombres:list(atom), +Producto:list, -Signos:list) is det.
+%
+%   Signos tiene un signo por cada nombre de Nombres: + si el nombre
+%   aparece en Producto, - si aparece negado, y 0 si no aparece. Producto
+%   no es contradictorio.
+vector(Nombres, Producto, Signos) :-
+    maplist(signo(Producto), Nombres, Signos).
+
+%!  signo(+Producto:list, +Nombre:atom, -S) is det.
+%
+%   S es el signo de Nombre en Producto.
+signo(Producto, Nombre, S) :-
+    (   memberchk(Nombre, Producto)
+    ->  S = (+)
+    ;   memberchk(~Nombre, Producto)
+    ->  S = (-)
+    ;   S = 0
+    ).
+
+%!  producto_de_vector(+Nombres:list(atom), +Signos:list,
+%!                     -Producto:list) is det.
+%
+%   Producto es la lista de literales del vector Signos, en el orden de
+%   Nombres: el nombre si el signo es +, su negación si es -, y nada si
+%   es 0.
+producto_de_vector([], [], []).
+producto_de_vector([N|Ns], [S|Ss], Producto) :-
+    literal_de(S, N, Producto, Resto),
+    producto_de_vector(Ns, Ss, Resto).
+
+%!  literal_de(+S, +Nombre:atom, -Producto:list, ?Resto:list) is det.
+%
+%   Producto es Resto precedido por el literal de Nombre con el signo S, o
+%   Resto si S es 0.
+literal_de(0, _, Resto, Resto).
+literal_de(+, N, [N|Resto], Resto).
+literal_de(-, N, [~N|Resto], Resto).
+```
+
+```prolog
+?- vector([a, b, ci], [a, ci, ~b], V).
+V = [+, -, +].
+
+?- producto_de_vector([a, b, ci], [-, 0, +], P).
+P = [~a, ci].
+```
+
+En un vector, un producto contradictorio no se puede escribir: cada variable
+tiene un solo signo. La absorción P + P · Q = P se decide posición por
+posición: un vector **cubre** a otro si en cada posición tiene `0` o el
+mismo signo. Y la ley X · Y + X · ¬Y = X, que en la lista de literales
+obliga a buscar el par, en los vectores es la comparación de dos listas que
+difieren en una sola posición, con `+` en una y `-` en la otra:
+
+<!-- ejemplo: capitulo-48/vectores.pl predicado: cubre/2 cubre_signo/2 combinar/3 opuestos/2 -->
+```prolog
+%!  cubre(+V:list, +W:list) is semidet.
+%
+%   Cada literal del producto V está en el producto W: en una suma, V
+%   absorbe a W (P + P·Q = P). En cada posición, el signo de V es 0 o el
+%   mismo que el de W.
+cubre(V, W) :-
+    maplist(cubre_signo, V, W).
+
+%!  cubre_signo(+S, +T) is semidet.
+%
+%   El signo S cubre al signo T: S es 0, o los dos son iguales.
+cubre_signo(0, _).
+cubre_signo(+, +).
+cubre_signo(-, -).
+
+%!  combinar(+V:list, +W:list, -C:list) is semidet.
+%
+%   V y W difieren solo en una posición, con + en uno y - en el otro, y C
+%   es el vector con 0 en esa posición: X·Y + X·¬Y = X.
+combinar([S|Vs], [T|Ws], [C|Cs]) :-
+    (   S == T
+    ->  C = S,
+        combinar(Vs, Ws, Cs)
+    ;   opuestos(S, T),
+        C = 0,
+        Vs == Ws,
+        Cs = Vs
+    ).
+
+%!  opuestos(?S, ?T) is nondet.
+%
+%   S y T son los signos de una variable y de su negación.
+opuestos(+, -).
+opuestos(-, +).
+```
+
+Repetir esa combinación es el primer paso del método de Quine y McCluskey.
+`unos/3` da un vector por cada fila de la tabla de verdad en la que la
+salida vale 1, con `+` para cada entrada en 1 y `-` para cada una en 0;
+`implicantes_primos/2` combina los vectores de a dos, se queda con los que
+no se combinan con ningún otro, y repite con los combinados hasta que no
+quedan pares:
+
+<!-- ejemplo: capitulo-48/vectores.pl predicado: unos/3 signo_de_bit/2 implicantes_primos/2 -->
+```prolog
+%!  unos(+Circuito, +Salida, -Vectores:list(list)) is semidet.
+%
+%   Vectores tiene un vector por cada fila de la tabla de verdad de
+%   Circuito en la que Salida vale 1: + para una entrada en 1 y - para
+%   una en 0, en el orden de las entradas. Falla si Salida no es una
+%   salida de Circuito.
+unos(Circuito, Salida, Vectores) :-
+    circuito(Circuito, _, Salidas),
+    nth1(I, Salidas, Salida),
+    !,
+    tabla_de_verdad(Circuito, Filas),
+    findall(V,
+            ( member(Es-Ss, Filas),
+              nth1(I, Ss, 1),
+              maplist(signo_de_bit, Es, V) ),
+            Vectores).
+
+%!  signo_de_bit(?Bit, ?S) is nondet.
+%
+%   S es el signo de una entrada con el valor Bit.
+signo_de_bit(1, +).
+signo_de_bit(0, -).
+
+%!  implicantes_primos(+Vectores:list(list), -Primos:list(list)) is det.
+%
+%   Primos son los vectores que se obtienen combinando los de Vectores de
+%   a dos, mientras se pueda, y que ya no se combinan con ningún otro: los
+%   implicantes primos de la suma, en el orden estándar.
+implicantes_primos(Vectores0, Primos) :-
+    sort(Vectores0, Vectores),
+    findall(C-[V, W],
+            ( member(V, Vectores),
+              member(W, Vectores),
+              V @< W,
+              combinar(V, W, C) ),
+            Pares),
+    (   Pares == []
+    ->  Primos = Vectores
+    ;   pairs_keys_values(Pares, Combinados, Usados0),
+        append(Usados0, Usados1),
+        sort(Usados1, Usados),
+        ord_subtract(Vectores, Usados, Restantes),
+        implicantes_primos(Combinados, Primos1),
+        ord_union(Restantes, Primos1, Primos)
+    ).
+```
+
+```prolog
+?- unos(sumador, co, Vs), implicantes_primos(Vs, Ps).
+Vs = [[-, +, +], [+, -, +], [+, +, -], [+, +, +]],
+Ps = [[0, +, +], [+, 0, +], [+, +, 0]].
+
+?- unos(sumador, s, Vs), implicantes_primos(Vs, Ps).
+Vs = [[-, -, +], [-, +, -], [+, -, -], [+, +, +]],
+Ps = [[+, +, +], [+, -, -], [-, +, -], [-, -, +]].
+```
+
+Los implicantes primos del acarreo son b · ci, a · ci y a · b: el acarreo es
+la mayoría de las tres entradas, la forma del circuito `sumador_mayoria` de
+la [sección 48.4](#484-verificar-con-libraryclpb). La suma de productos de
+`suma_de_productos/2` para la misma salida, `[[a, b], [a, ci, ~b], [b, ci,
+~a]]`, es correcta pero no mínima, porque la absorción no reduce un producto
+con la ley de la combinación. La salida s no se reduce: en la suma de tres
+bits, dos filas en 1 nunca difieren en una sola entrada. Elegir, entre los
+implicantes primos, los que hacen falta para cubrir todas las filas es el
+segundo paso del método, y lo pide el [ejercicio 12](#ejercicios).
+
+!!! question "Actividad"
+    Predecir los implicantes primos de la salida de `xor_nand` y de la
+    salida `c` del semisumador, y comprobarlo con `unos/3` e
+    `implicantes_primos/2`. Explicar por qué uno de los dos resultados tiene
+    un solo vector.
+
+## 48.8 Retardos en cascada
+
+El registro de desplazamiento de la
+[sección 48.5](#485-circuitos-secuenciales) tiene cuatro etapas, escritas
+una por una en su descripción. Clocksin, en el apartado 8.5 de *Clause and
+Effect*, «Specification of Cascaded Components», conecta N retardos
+unitarios en serie con una recursión sobre la lista de sus estados, de modo
+que la cantidad de etapas es la longitud de esa lista. La página
+[Retardos en cascada](secuenciales.md#retardos-en-cascada) escribe esa
+cascada como `retardo/4`, la ejecuta pulso a pulso con `retardar/3`, y
+describe para el simulador del capítulo un registro de desplazamiento de N
+etapas, `desplazamiento(N)`, con una regla que genera los nombres de sus
+cables a partir de N; las pruebas comparan los dos para varios N y con el
+registro de cuatro etapas.
+
+## 48.9 Compuertas hechas con transistores
+
+Las compuertas de las secciones anteriores son tablas. Spivey, en el
+capítulo «Hardware simulation» de su libro, las construye con
+transistores CMOS descritos, como las compuertas, por la relación de sus
+estados estables. La página
+[Compuertas hechas con transistores](transistores.md#compuertas-hechas-con-transistores)
+presenta los transistores p y n, el inversor de dos transistores, el
+cortocircuito, que no tiene ningún estado estable, y la compuerta XOR de
+seis transistores del ejercicio 12.2 de Spivey, que la consulta con las
+entradas libres reduce a su tabla de verdad.
+
 !!! success "Criterios de calidad"
     | Criterio | En este capítulo |
     |---|---|
     | C1 | cada predicado declara modos y determinación; la simulación es `nondet` porque la relación, con entradas libres, tiene varias respuestas, aunque con las entradas ligadas tenga una |
     | C3 | los circuitos son relaciones: `simular/3`, `sumar_bits/4` y `ejecutar/4` se consultan también en sentido inverso, y las pruebas lo verifican |
     | C6 | la descripción de un circuito es solo datos, y el intérprete, `simular/4`, no depende de ninguno: cambia el significado de las compuertas con la conducta, sin tocar la descripción ni el intérprete |
-    | C7 | 64 pruebas en siete archivos; cada versión se compara con la anterior (la descripción del sumador con `sumador/5`, la fórmula con la simulación, el sumador de tres bits con la suma aritmética), y la recursión sin tabla se prueba con `call_with_inference_limit/3` |
+    | C7 | 152 pruebas en diez archivos; cada versión se compara con la anterior (la descripción del sumador con `sumador/5`, la fórmula con la simulación, el sumador de tres bits con la suma aritmética), y la recursión sin tabla se prueba con `call_with_inference_limit/3` |
 
 ## Ejercicios
 
@@ -814,16 +1049,13 @@ tiene de propio, y el [capítulo 49](../capitulo-49-proyecto-diagnostico-abducci
    0 y 1, en ese orden. El estado son las dos últimas entradas. Ejecutarlo
    con 1, 0, 1, 0, 1, 1, 0, 1 y verificar con `siempre/3` que la salida
    nunca es 1 si la entrada del pulso es 0.
-10. **(2)** Spivey («Hardware simulation») modela un transistor como la relación de
-    sus estados estables: un transistor p conecta su fuente con su drenador
-    cuando su compuerta está en 0, y en ese caso los dos tienen el mismo
-    valor; con la compuerta en 1 no los conecta, y cada uno tiene cualquier
-    valor. Un transistor n se comporta al revés. En el estilo de
-    `compuertas.pl`, escribir `ptran/3` y `ntran/3`, el inversor y la
-    compuerta NAND de la tecnología CMOS —el inversor, un transistor p entre
-    el 1 y la salida y uno n entre la salida y el 0; la NAND, dos p en
-    paralelo y dos n en serie—, y verificar que la NAND tiene la tabla de
-    `nand/3`. Explicar por qué `inversor_cmos(X, X)` no tiene respuestas.
+10. **(2)** Con `ptran/3` y `ntran/3` de la
+    [sección 48.9](#489-compuertas-hechas-con-transistores), escribir la
+    compuerta NAND de la tecnología CMOS, con dos transistores p en paralelo
+    entre el 1 y la salida y dos n en serie entre la salida y el 0, y
+    verificar que tiene la tabla de `nand/3`. Explicar por qué el modelo de
+    Spivey admite también la consulta inversa, con la salida dada, aunque un
+    transistor real no puede llevar su compuerta a un valor.
 11. **(3)** El sumador de tres bits espera en cada etapa el acarreo de la
     anterior. Un sumador con **acarreo anticipado** calcula cada acarreo
     directamente de las entradas: con gᵢ = aᵢ·bᵢ y pᵢ = aᵢ ⊕ bᵢ, el
@@ -831,6 +1063,22 @@ tiene de propio, y el [capítulo 49](../capitulo-49-proyecto-diagnostico-abducci
     Describirlo como `sumador3_anticipado`, con la misma interfaz que
     `sumador3`, demostrar que son equivalentes y comparar la cantidad de
     compuertas de los dos.
+12. ★ **(3)** Escribir `cobertura(Unos, Primos, Elegidos)`: Elegidos es la
+    menor cantidad de vectores de Primos que cubre todos los vectores de
+    Unos, el segundo paso del método de Quine y McCluskey. Aplicarlo al
+    acarreo del sumador, y a la salida que vale 1 en las filas a · ¬b · ¬c,
+    a · ¬b · c, a · b · c y ¬a · b · c, cuyos implicantes primos son tres y
+    de los que basta con dos.
+13. **(1)** Predecir, sin ejecutarlas, las respuestas de
+    `retardar([1, 0, 1, 1], [0, 0], Qs)` y de
+    `retardar(Es, [0, 0], [0, 0, 1, 0])`, y comprobarlo. ¿Cuántos estados
+    alcanza `desplazamiento(N)` desde N ceros, y por qué?
+14. **(2)** Spivey señala que los dos transistores del par en paralelo de
+    la XOR son necesarios por efectos eléctricos que el modelo no
+    representa. Escribir las dos variantes de cinco transistores, sin el
+    transistor p y sin el n del par, y verificar que el modelo les da la
+    misma tabla que a `xor_cmos/3`. Explicar qué dice ese resultado sobre lo
+    que el modelo de estados estables puede verificar.
 
 ## Resumen
 
@@ -851,7 +1099,13 @@ tiene de propio, y el [capítulo 49](../capitulo-49-proyecto-diagnostico-abducci
 | `equivalentes/2`, `diferencia/3`, `cuantas/4` | la verificación con `library(clpb)` |
 | `secuencial/3`, `paso/5`, `ejecutar/4` | los circuitos secuenciales |
 | `alcanzable/3`, `grafo/3`, `siempre/3` | el grafo de estados, tabulado, y las propiedades sobre él |
-| **[Patrón 59](../patrones.md#59-interprete-con-conducta-como-parametro)** | intérprete con conducta como parámetro |
+| **vector de signos** | un producto como un signo por variable: `+`, `-` o `0`; la absorción y la combinación se deciden posición por posición |
+| **implicante primo** | un producto que implica la función y que no se puede combinar con otro; se obtiene combinando vectores que difieren en un signo |
+| `vector/3`, `cubre/2`, `combinar/3`, `unos/3`, `implicantes_primos/2` | los productos como vectores y el primer paso de Quine y McCluskey |
+| `retardo/4`, `retardar/3` | N retardos unitarios en cascada, con N la longitud de la lista de estados |
+| **transistor** | la relación de sus estados estables: el p conduce con la compuerta en 0, el n con la compuerta en 1 |
+| `ptran/3`, `ntran/3`, `inversor_cmos/2`, `xor_cmos/3`, `cortocircuito/1` | las compuertas CMOS y un circuito sin estados estables |
+| **[Patrón 60](../patrones.md#60-interprete-con-conducta-como-parametro)** | intérprete con conducta como parámetro |
 
 ## Temas que se retoman
 
@@ -869,18 +1123,49 @@ tiene de propio, y el [capítulo 49](../capitulo-49-proyecto-diagnostico-abducci
   circuitos como conjunciones de metas, la simulación en los dos sentidos,
   la suma de productos y su simplificación, y los circuitos secuenciales de
   ejemplo: el divisor por dos, el verificador de paridad, el registro de
-  desplazamiento y el contador en código Gray.
+  desplazamiento y el contador en código Gray. Del apartado 7.5,
+  «Alternative Representation», toma los productos como vectores de signos
+  de la [sección 48.7](#487-los-productos-como-vectores-de-signos), y del
+  apartado 8.5, «Specification of Cascaded Components», los retardos en
+  cascada de la [sección 48.8](#488-retardos-en-cascada).
+- William F. Clocksin, «Logic programming and digital circuit analysis»,
+  *Journal of Logic Programming* 4 (1), 1987, págs. 59–82. Es el artículo
+  del que Clocksin toma los ejemplos de los dos casos de estudio de
+  *Clause and Effect*: las compuertas como relaciones, la simulación de
+  circuitos combinacionales y secuenciales, y los circuitos de ejemplo. No
+  tiene edición en línea gratuita.
 - Michael Spivey, *An Introduction to Logic Programming through Prolog*,
   Prentice Hall International, 1996 — «Hardware simulation».
   [Edición en línea](https://spivey.oriel.ox.ac.uk/wiki/files/logprog/logic.pdf).
   El capítulo toma la lectura de un circuito como el conjunto de sus estados
   estables, los ejemplos del inversor realimentado y del biestable de dos
-  compuertas NAND, y el modelo de transistores de un ejercicio.
+  compuertas NAND, y, para la
+  [sección 48.9](#489-compuertas-hechas-con-transistores), el modelo de los
+  transistores p y n, el inversor CMOS, el cortocircuito y la compuerta XOR
+  de seis transistores de su ejercicio 12.2.
+- W. V. Quine, «The problem of simplifying truth functions», *The American
+  Mathematical Monthly* 59 (8), 1952, págs. 521–531, y E. J. McCluskey,
+  «Minimization of Boolean functions», *The Bell System Technical Journal*
+  35 (6), 1956, págs. 1417–1444. Son el origen del método que combina
+  productos que difieren en una variable para obtener los implicantes
+  primos, cuyo primer paso escribe la
+  [sección 48.7](#487-los-productos-como-vectores-de-signos) y cuyo segundo
+  paso pide el [ejercicio 12](#ejercicios). No tienen edición en línea
+  gratuita.
 - *SWI-Prolog Reference Manual* —
   «[library(clpb): CLP(B): Constraint Logic Programming over Boolean
   Variables](https://www.swi-prolog.org/pldoc/man?section=clpb)». La
   verificación de equivalencias usa `sat/1`, `taut/2` y `labeling/1`, y los
   operadores de fórmulas, de esa biblioteca.
+- Markus Triska, «The Boolean Constraint Solver of SWI-Prolog: System
+  Description», en *Functional and Logic Programming (FLOPS 2016)*, LNCS
+  9613, Springer, 2016, págs. 45–61
+  ([versión del autor](https://www.metalevel.at/swiclpb.pdf)). Es la
+  descripción de `library(clpb)` que cita su manual: las fórmulas se
+  representan con diagramas de decisión binarios reducidos y ordenados,
+  la forma canónica que la
+  [sección 48.4](#484-verificar-con-libraryclpb) usa para decidir si dos
+  circuitos son equivalentes.
 
 El código del capítulo es propio, escrito para el curso: los programas de
 Clocksin y de Spivey se reescribieron con la representación de este

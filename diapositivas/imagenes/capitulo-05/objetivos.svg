@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" width="960" height="480">
+  <title>Dos árboles para la misma respuesta: abuelo(juan, Quien) tiene dos ramas y una hoja de falla; abuelo_al_reves(juan, Quien) tiene tres ramas y dos hojas de falla</title>
+  <rect x="0" y="0" width="960" height="480" fill="#FFFFFF"/>
+  <line x1="480.0" y1="16.0" x2="480.0" y2="396.0" stroke="#EAF1F8" stroke-width="2"/>
+  <rect x="18.0" y="206.0" width="206.0" height="132.0" rx="12" fill="#FBE4E2" opacity="0.6"/>
+  <path d="M 506 206 L 726 206 Q 738 206 738 218 L 738 262 L 818 262 L 818 326 L 750 326 L 750 376 Q 750 388 738 388 L 506 388 Q 494 388 494 376 L 494 218 Q 494 206 506 206 Z" fill="#FBE4E2" stroke="#FBE4E2" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+  <line x1="240.0" y1="55.0" x2="240.0" y2="89.0" stroke="#1F3A5F" stroke-width="3"/>
+  <text x="252.0" y="79.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">R4</text>
+  <line x1="190.0" y1="151.0" x2="120.0" y2="211.0" stroke="#1F3A5F" stroke-width="3"/>
+  <text x="146.0" y="182.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="end" xml:space="preserve">R1 · P/ana</text>
+  <line x1="290.0" y1="151.0" x2="355.0" y2="211.0" stroke="#1F3A5F" stroke-width="3"/>
+  <text x="334.0" y="182.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">R2 · P/pedro</text>
+  <line x1="120.0" y1="249.0" x2="120.0" y2="296.0" stroke="#B3261E" stroke-width="3"/>
+  <line x1="355.0" y1="249.0" x2="355.0" y2="290.0" stroke="#2E7D32" stroke-width="3"/>
+  <text x="367.0" y="278.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">R3</text>
+  <rect x="133.9" y="16.9" width="212.1" height="38.3" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="240.0" y="42.4" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#1F2933" text-anchor="middle" xml:space="preserve">abuelo(juan, Quien)</text>
+  <rect x="153.8" y="88.7" width="172.5" height="62.6" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <rect x="161.8" y="97.1" width="156.5" height="22.5" rx="5" fill="#FFFFFF" stroke="#D9822B" stroke-width="2"/>
+  <text x="240.0" y="114.2" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#1F2933" text-anchor="middle" xml:space="preserve">padre(juan, P),</text>
+  <text x="240.0" y="138.5" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#1F2933" text-anchor="middle" xml:space="preserve">padre(P, Quien)</text>
+  <rect x="25.8" y="210.8" width="188.3" height="38.3" rx="10" fill="#FBE4E2" stroke="#B3261E" stroke-width="3"/>
+  <text x="120.0" y="236.4" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#1F2933" text-anchor="middle" xml:space="preserve">padre(ana, Quien)</text>
+  <rect x="250.9" y="210.8" width="208.1" height="38.3" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="355.0" y="236.4" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#1F2933" text-anchor="middle" xml:space="preserve">padre(pedro, Quien)</text>
+  <circle cx="120" cy="312" r="14" fill="#B3261E"/>
+  <path d="M 113.7 305.7 L 126.3 318.3 M 126.3 305.7 L 113.7 318.3" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="285.0" y="290.0" width="140.0" height="40.0" rx="10" fill="#E3F1E4" stroke="#2E7D32" stroke-width="3"/>
+  <text x="355.0" y="316.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#1F2933" text-anchor="middle" xml:space="preserve" font-weight="bold">Quien = luis</text>
+  <line x1="720.0" y1="55.0" x2="720.0" y2="89.0" stroke="#1F3A5F" stroke-width="3"/>
+  <text x="732.0" y="79.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">R5</text>
+  <line x1="680.0" y1="151.0" x2="590.0" y2="211.0" stroke="#1F3A5F" stroke-width="3"/>
+  <text x="622.0" y="182.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="end" xml:space="preserve">R1</text>
+  <line x1="720.0" y1="151.0" x2="720.0" y2="281.0" stroke="#1F3A5F" stroke-width="3"/>
+  <text x="730.0" y="194.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">R2</text>
+  <line x1="760.0" y1="151.0" x2="845.0" y2="211.0" stroke="#1F3A5F" stroke-width="3"/>
+  <text x="812.0" y="182.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">R3</text>
+  <rect x="569.4" y="16.9" width="301.2" height="38.3" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="720.0" y="42.4" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#1F2933" text-anchor="middle" xml:space="preserve">abuelo_al_reves(juan, Quien)</text>
+  <rect x="628.8" y="88.7" width="182.4" height="62.6" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <rect x="636.8" y="97.1" width="166.4" height="22.5" rx="5" fill="#FFFFFF" stroke="#D9822B" stroke-width="2"/>
+  <text x="720.0" y="114.2" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#1F2933" text-anchor="middle" xml:space="preserve">padre(P, Quien),</text>
+  <text x="720.0" y="138.5" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#1F2933" text-anchor="middle" xml:space="preserve">padre(juan, P)</text>
+  <rect x="495.9" y="210.8" width="188.3" height="38.3" rx="10" fill="#FBE4E2" stroke="#B3261E" stroke-width="3"/>
+  <text x="590.0" y="236.4" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#1F2933" text-anchor="middle" xml:space="preserve">padre(juan, juan)</text>
+  <rect x="625.9" y="280.9" width="188.3" height="38.3" rx="10" fill="#FBE4E2" stroke="#B3261E" stroke-width="3"/>
+  <text x="720.0" y="306.4" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#1F2933" text-anchor="middle" xml:space="preserve">padre(juan, juan)</text>
+  <rect x="745.9" y="210.8" width="198.2" height="38.3" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="845.0" y="236.4" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#1F2933" text-anchor="middle" xml:space="preserve">padre(juan, pedro)</text>
+  <line x1="590.0" y1="249.0" x2="590.0" y2="276.0" stroke="#B3261E" stroke-width="3"/>
+  <circle cx="590" cy="292" r="14" fill="#B3261E"/>
+  <path d="M 583.7 285.7 L 596.3 298.3 M 596.3 285.7 L 583.7 298.3" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <line x1="720.0" y1="319.0" x2="720.0" y2="352.0" stroke="#B3261E" stroke-width="3"/>
+  <circle cx="720" cy="368" r="14" fill="#B3261E"/>
+  <path d="M 713.7 361.7 L 726.3 374.3 M 726.3 361.7 L 713.7 374.3" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <line x1="845.0" y1="249.0" x2="884.0" y2="330.0" stroke="#2E7D32" stroke-width="3"/>
+  <text x="882.0" y="288.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">R2</text>
+  <rect x="812.0" y="330.0" width="144.0" height="40.0" rx="10" fill="#E3F1E4" stroke="#2E7D32" stroke-width="3"/>
+  <text x="884.0" y="356.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#1F2933" text-anchor="middle" xml:space="preserve" font-weight="bold">Quien = luis</text>
+  <text x="232.0" y="420.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="22" fill="#1F3A5F" text-anchor="end" xml:space="preserve" font-weight="bold">2 ramas</text>
+  <text x="248.0" y="420.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="22" fill="#B3261E" text-anchor="start" xml:space="preserve" font-weight="bold">1 hoja de falla</text>
+  <text x="712.0" y="420.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="22" fill="#1F3A5F" text-anchor="end" xml:space="preserve" font-weight="bold">3 ramas</text>
+  <text x="728.0" y="420.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="22" fill="#B3261E" text-anchor="start" xml:space="preserve" font-weight="bold">2 hojas de falla</text>
+  <text x="480.0" y="462.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="middle" xml:space="preserve" font-style="italic">la misma respuesta, distinto trabajo</text>
+</svg>

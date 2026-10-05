@@ -76,4 +76,52 @@ test(tejer, [true(Ss == [[t, e, j, e, r]])]) :-
 test(escribir, all(E == [[q, u, e, s, o]])) :-
     escribir([k, e, s, o], E).
 
+test(frontal, [true(Fs == [[e], [i], ['é'], [i, a]])]) :-
+    include(reglas:frontal, [[e], [i], [a], ['é'], [], [i, a], [o, e]], Fs).
+
+test(acento_en_la_raiz,
+     [true(Ts == ["o", "as", "en"])]) :-
+    include(reglas:acento_en_la_raiz,
+            ["o", "as", "amos", "é", "aron", "ió", "en", ""], Ts).
+
+test(epentesis, [true(Ss == [[l, u, z, +, e, s], [l, i, b, r, o, +, s],
+                             [l, u, z]])]) :-
+    maplist(reglas:epentesis, [[l, u, z, +, s], [l, i, b, r, o, +, s],
+                               [l, u, z]], Ss).
+
+test(tildes, [true(Ss == [[k, a, m, i, o, n, +, e, s],
+                          [j, 'ó', v, e, n, +, e, s],
+                          [s, o, f, 'á', +, s]])]) :-
+    maplist(reglas:tildes, [[k, a, m, i, 'ó', n, +, e, s],
+                            [j, o, v, e, n, +, e, s],
+                            [s, o, f, 'á', +, s]], Ss).
+
+test(superficie, [true(Es == [[l, u, c, e, s], [c, a, m, i, o, n, e, s],
+                              [t, o, q, u, 'é']])]) :-
+    maplist(una_superficie, [[l, u, z, +, s], [k, a, m, i, 'ó', n, +, s],
+                             [t, o, k, +, 'é']], Es).
+
+% una_superficie(S, E): E es la única forma escrita de S.
+una_superficie(S, E) :-
+    findall(E0, superficie(S, E0), [E]).
+
+test(lexica_regular, all(S == [[k, u, e, n, t, +, o]])) :-
+    lexica(verbo("contar", presente, 1, singular), S).
+
+% Una forma listada bloquea la regular: no hay límite que separar.
+test(lexica_irregular, all(S == [[s, o, y]])) :-
+    lexica(verbo("ser", presente, 1, singular), S).
+
+test(lexica_sin_lema, [fail]) :-
+    lexica(nombre("xyz", masculino, plural), _).
+
+test(raiz_verbal, [true(Rs == [[k, u, e, n, t], [k, o, n, t], [d, u, r, m],
+                               [a, m], [p, i, d]])]) :-
+    reglas:raiz_verbal(o_ue, a, presente, 1, "o", [k, o, n, t], R1),
+    reglas:raiz_verbal(o_ue, a, presente, 1, "amos", [k, o, n, t], R2),
+    reglas:raiz_verbal(o_ue, i, preterito, 3, "ió", [d, o, r, m], R3),
+    reglas:raiz_verbal(regular, a, presente, 1, "o", [a, m], R4),
+    reglas:raiz_verbal(e_i, i, preterito, 3, "ieron", [p, e, d], R5),
+    Rs = [R1, R2, R3, R4, R5].
+
 :- end_tests(reglas).

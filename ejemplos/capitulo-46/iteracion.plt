@@ -42,4 +42,17 @@ mitad(X0, X, X, Cambio) :-
 nada(_, _, _, _) :-
     fail.
 
+test(maximo_de_pasos, [true(N == 100)]) :-
+    maximo_de_pasos(N).
+
+test(iterar_con_limite_suficiente, [true(Xs == [0.5, 0.25, 0.125, 0.0625])]) :-
+    iterar(mitad, 0.1, 4, 1.0, Xs).
+
+% Con tres pasos no se llega al cambio de 0.0625.
+test(iterar_con_limite_insuficiente, [fail]) :-
+    iterar(mitad, 0.1, 3, 1.0, _).
+
+test(iterar_sin_pasos, [fail]) :-
+    iterar(mitad, 0.1, 0, 1.0, _).
+
 :- end_tests(iteracion).

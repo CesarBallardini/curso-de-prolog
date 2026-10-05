@@ -72,4 +72,52 @@ test(sin_errores, [true(E == [])]) :-
     ejemplo(coffman, P),
     errores(P, E).
 
+test(suma_estado, [true(H == 24)]) :-
+    ejemplo(coffman, P),
+    suma(P, e([t1, t4], [0, 0, 0], []), H).
+
+test(sumar, [true(S == 23)]) :-
+    ejemplo(coffman, P),
+    soluciones:sumar(P, t4, 3, S).
+
+test(multiplo_de_5) :-
+    soluciones:multiplo_de_5(10).
+
+test(no_multiplo_de_5, [fail]) :-
+    soluciones:multiplo_de_5(7).
+
+test(marca, [true(L == "abc        4")]) :-
+    soluciones:marca(4, "abc", L).
+
+test(duracion_con, [true(R == 2-35)]) :-
+    ejemplo(coffman, P),
+    soluciones:duracion_con(P, 2, R).
+
+test(fila_voraz, [true(F == 6-voraz(16, 23)-optimo(15, 29))]) :-
+    soluciones:fila_voraz(6, F).
+
+% La regla va sobre el calendario: una línea más que mostrar/2.
+test(mostrar_con_regla, [true(N1 =:= N0 + 1)]) :-
+    ejemplo(coffman, P),
+    calendario_coffman(C),
+    with_output_to(string(S1), mostrar_con_regla(P, C)),
+    with_output_to(string(S0), mostrar(P, C)),
+    split_string(S1, [10], "", L1),
+    split_string(S0, [10], "", L0),
+    length(L1, N1),
+    length(L0, N0).
+
+test(por_colas, [true(Ds == [ base-12, otra_lista-12,
+                              sin_dos_precedencias-12, mas_cortas-10,
+                              cuatro_procesadores-12 ])]) :-
+    findall(N-D, ( variante(N, P, _), por_colas(P, D) ), Ds).
+
+test(por_colas_coffman, [true(D == 33)]) :-
+    ejemplo(coffman, P),
+    por_colas(P, D).
+
+test(por_colas_ciclo, [fail]) :-
+    por_colas(proyecto([tarea(a, 1), tarea(b, 1)],
+                       [antes(a, b), antes(b, a)], 1), _).
+
 :- end_tests(soluciones).

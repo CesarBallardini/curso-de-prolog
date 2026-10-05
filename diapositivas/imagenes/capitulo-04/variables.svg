@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" width="800" height="400">
+  <title>El primer carácter decide: con mayúscula o guion bajo es una variable (Quien, X, Persona, _hijo, _); con minúscula, un átomo</title>
+  <rect x="0" y="0" width="800" height="400" fill="#FFFFFF"/>
+  <line x1="400" y1="30" x2="400" y2="380" stroke="#C9D3DE" stroke-width="2"/>
+  <text x="200" y="45" font-family="Verdana, DejaVu Sans, sans-serif" font-size="22" fill="#6A3D9A" text-anchor="middle" font-weight="bold">variable</text>
+  <text x="200" y="75" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#52606D" text-anchor="middle">comienza con mayúscula o con _</text>
+  <text x="600" y="45" font-family="Verdana, DejaVu Sans, sans-serif" font-size="22" fill="#1F3A5F" text-anchor="middle" font-weight="bold">átomo</text>
+  <text x="600" y="75" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#52606D" text-anchor="middle">comienza con minúscula</text>
+  <rect x="125" y="105" width="150" height="40" rx="6" fill="#EFE7F7" stroke="#6A3D9A" stroke-width="2"/>
+  <text x="167" y="133" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#D9822B" text-anchor="start" font-weight="bold">Q</text>
+  <text x="180.2" y="133" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#1F2933" text-anchor="start">uien</text>
+  <rect x="125" y="161" width="150" height="40" rx="6" fill="#EFE7F7" stroke="#6A3D9A" stroke-width="2"/>
+  <text x="193.4" y="189" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#D9822B" text-anchor="start" font-weight="bold">X</text>
+  <text x="206.6" y="189" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#1F2933" text-anchor="start"></text>
+  <rect x="125" y="217" width="150" height="40" rx="6" fill="#EFE7F7" stroke="#6A3D9A" stroke-width="2"/>
+  <text x="153.8" y="245" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#D9822B" text-anchor="start" font-weight="bold">P</text>
+  <text x="167" y="245" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#1F2933" text-anchor="start">ersona</text>
+  <rect x="125" y="273" width="150" height="40" rx="6" fill="#EFE7F7" stroke="#6A3D9A" stroke-width="2"/>
+  <text x="167" y="301" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#D9822B" text-anchor="start" font-weight="bold">_</text>
+  <text x="180.2" y="301" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#1F2933" text-anchor="start">hijo</text>
+  <rect x="125" y="329" width="150" height="40" rx="6" fill="#EFE7F7" stroke="#6A3D9A" stroke-width="2"/>
+  <text x="193.4" y="357" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#D9822B" text-anchor="start" font-weight="bold">_</text>
+  <text x="206.6" y="357" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#1F2933" text-anchor="start"></text>
+  <rect x="525" y="105" width="150" height="40" rx="20" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="567" y="133" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#D9822B" text-anchor="start" font-weight="bold">q</text>
+  <text x="580.2" y="133" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#1F2933" text-anchor="start">uien</text>
+  <rect x="525" y="161" width="150" height="40" rx="20" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="593.4" y="189" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#D9822B" text-anchor="start" font-weight="bold">x</text>
+  <text x="606.6" y="189" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#1F2933" text-anchor="start"></text>
+  <rect x="525" y="217" width="150" height="40" rx="20" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="553.8" y="245" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#D9822B" text-anchor="start" font-weight="bold">p</text>
+  <text x="567" y="245" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#1F2933" text-anchor="start">ersona</text>
+  <rect x="525" y="273" width="150" height="40" rx="20" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="573.6" y="301" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#D9822B" text-anchor="start" font-weight="bold">j</text>
+  <text x="586.8" y="301" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#1F2933" text-anchor="start">uan</text>
+</svg>

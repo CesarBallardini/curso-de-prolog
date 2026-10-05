@@ -34,4 +34,13 @@ test(lugares_validos, true) :-
 test(un_solo_lugar_inicial, true(N == 1)) :-
     aggregate_all(count, inicio(aqui(_)), N).
 
+test(hechos_del_juego, true(L-K-S-M == linterna-llave-sotano-esta_en(lente, telescopio))) :-
+    luz(L),
+    llave_de(K, puerta_taller),
+    oscura(S),
+    meta(M).
+
+test(final, true(string(T))) :-
+    final(T).
+
 :- end_tests(mundo).

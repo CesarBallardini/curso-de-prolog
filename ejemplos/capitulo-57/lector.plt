@@ -57,4 +57,18 @@ test(infinita, [true(R == inference_limit_exceeded)]) :-
     call_with_inference_limit(ejecutar("tomar 3 (desde 1)", _),
                               1 000 000, R).
 
+test(aplicacion, all(E == [ap(ap(id(f), id(x)), num(2))])) :-
+    phrase(aplicacion(E), [id(f), id(x), num(2)]).
+
+test(aplicacion_un_atomo, all(E == [id(f)])) :-
+    phrase(aplicacion(E), [id(f)]).
+
+test(resto_aplicacion_deja, [true(E-R == ap(id(f), num(1))-[+, num(2)])]) :-
+    phrase(resto_aplicacion(id(f), E), [num(1), +, num(2)], R).
+
+test(preludio_cada_texto, all(N == [])) :-
+    preludio(T),
+    \+ leer_programa(T, [_]),
+    N = T.
+
 :- end_tests(lector).

@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" width="960" height="480">
+  <title>pegar(A, B, [ana, luis, eva]) da las cuatro particiones de la lista en dos partes</title>
+  <rect x="0" y="0" width="960" height="480" fill="#FFFFFF"/>
+  <line x1="54.0" y1="30.0" x2="54.0" y2="100.0" stroke="#1F2933" stroke-width="4"/>
+  <rect x="68.0" y="40.0" width="100.0" height="50.0" rx="4" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="3"/>
+  <text x="118.0" y="72.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">ana</text>
+  <rect x="168.0" y="40.0" width="100.0" height="50.0" rx="4" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="3"/>
+  <text x="218.0" y="72.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">luis</text>
+  <rect x="268.0" y="40.0" width="100.0" height="50.0" rx="4" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="3"/>
+  <text x="318.0" y="72.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">eva</text>
+  <text x="420.0" y="72.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#D9822B" text-anchor="start" xml:space="preserve">A = []</text>
+  <text x="690.0" y="72.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F3A5F" text-anchor="start" xml:space="preserve">B = [ana, luis, eva]</text>
+  <rect x="40.0" y="148.0" width="100.0" height="50.0" rx="4" fill="#FCE8D2" stroke="#D9822B" stroke-width="3"/>
+  <text x="90.0" y="180.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">ana</text>
+  <line x1="154.0" y1="138.0" x2="154.0" y2="208.0" stroke="#1F2933" stroke-width="4"/>
+  <rect x="168.0" y="148.0" width="100.0" height="50.0" rx="4" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="3"/>
+  <text x="218.0" y="180.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">luis</text>
+  <rect x="268.0" y="148.0" width="100.0" height="50.0" rx="4" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="3"/>
+  <text x="318.0" y="180.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">eva</text>
+  <text x="420.0" y="180.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#D9822B" text-anchor="start" xml:space="preserve">A = [ana]</text>
+  <text x="690.0" y="180.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F3A5F" text-anchor="start" xml:space="preserve">B = [luis, eva]</text>
+  <rect x="40.0" y="256.0" width="100.0" height="50.0" rx="4" fill="#FCE8D2" stroke="#D9822B" stroke-width="3"/>
+  <text x="90.0" y="288.4" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">ana</text>
+  <rect x="140.0" y="256.0" width="100.0" height="50.0" rx="4" fill="#FCE8D2" stroke="#D9822B" stroke-width="3"/>
+  <text x="190.0" y="288.4" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">luis</text>
+  <line x1="254.0" y1="246.0" x2="254.0" y2="316.0" stroke="#1F2933" stroke-width="4"/>
+  <rect x="268.0" y="256.0" width="100.0" height="50.0" rx="4" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="3"/>
+  <text x="318.0" y="288.4" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">eva</text>
+  <text x="420.0" y="288.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#D9822B" text-anchor="start" xml:space="preserve">A = [ana, luis]</text>
+  <text x="690.0" y="288.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F3A5F" text-anchor="start" xml:space="preserve">B = [eva]</text>
+  <rect x="40.0" y="364.0" width="100.0" height="50.0" rx="4" fill="#FCE8D2" stroke="#D9822B" stroke-width="3"/>
+  <text x="90.0" y="396.4" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">ana</text>
+  <rect x="140.0" y="364.0" width="100.0" height="50.0" rx="4" fill="#FCE8D2" stroke="#D9822B" stroke-width="3"/>
+  <text x="190.0" y="396.4" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">luis</text>
+  <rect x="240.0" y="364.0" width="100.0" height="50.0" rx="4" fill="#FCE8D2" stroke="#D9822B" stroke-width="3"/>
+  <text x="290.0" y="396.4" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">eva</text>
+  <line x1="354.0" y1="354.0" x2="354.0" y2="424.0" stroke="#1F2933" stroke-width="4"/>
+  <text x="420.0" y="396.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#D9822B" text-anchor="start" xml:space="preserve">A = [ana, luis, eva]</text>
+  <text x="690.0" y="396.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F3A5F" text-anchor="start" xml:space="preserve">B = []</text>
+</svg>

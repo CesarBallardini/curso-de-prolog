@@ -7,8 +7,14 @@ todas las versiones del capítulo: `sintaxis.pl`, `interprete.pl`,
 a predicados de esos archivos: para que dos archivos definan cláusulas del
 mismo predicado, `soluciones.pl` los declara `multifile`, como en el
 [capítulo 24](../capitulo-24-modulos-y-organizacion/index.md), **antes** de cargarlos, y las cláusulas nuevas quedan después
-de las originales. Los ejercicios 1, 8 y 11 se resuelven con los archivos
-del capítulo.
+de las originales. Desde que se agregaron las secciones
+[45.8](index.md#458-la-reduccion-de-fuerza) a
+[45.12](index.md#4512-funciones-y-marcos-de-pila), los archivos del
+capítulo ya declaran `multifile` esos predicados; la declaración de
+`soluciones.pl` se mantiene, porque no depende de que lo hagan. Los
+ejercicios 1, 8 y 11 se resuelven con los archivos del capítulo. Las
+soluciones de los ejercicios 13 y 15 están en `soluciones_extensiones.pl`,
+que carga los archivos de esas secciones, y la del 14 usa `registros.pl`.
 
 <!-- ejemplo: capitulo-45/soluciones.pl fragmento: :- multifile .. :- ensure_loaded(compilador). -->
 ```prolog
@@ -579,3 +585,114 @@ calcula primero `t_1 := a + b` y después `t_2 := t_1 * c`. Compartir es
 correcto porque una expresión de Mini no tiene efectos: calcularla una vez o
 dos da lo mismo. El resultado ya no es un árbol sino un grafo, en el que un
 nodo tiene varios padres; el [capítulo 50](../capitulo-50-proyecto-fft-simbolica/index.md) construye grafos así.
+
+## 13
+
+<!-- ejemplo: capitulo-45/soluciones_extensiones.pl predicado: generar_acumulador_conmutativo/2 codigo_conmutativo//2 -->
+```prolog
+%!  generar_acumulador_conmutativo(+E, -Codigo:list) is det.
+%
+%   Como generar_acumulador/2, pero una operación conmutativa cuyo operando
+%   izquierdo es una hoja y el derecho no lo es se calcula sin temporal:
+%   primero el derecho, y después la operación con la hoja.
+generar_acumulador_conmutativo(E, Codigo) :-
+    phrase(codigo_conmutativo(E, 0), Codigo).
+
+%!  codigo_conmutativo(+E, +K:integer)// is det.
+%
+%   El código de E, que usa las temporales desde t(K).
+codigo_conmutativo(E, _) -->
+    { hoja(E) },
+    !,
+    [cargar(E)].
+codigo_conmutativo(bin(Op, A, B), K) -->
+    (   { hoja(B) }
+    ->  codigo_conmutativo(A, K),
+        [operar(Op, B)]
+    ;   { hoja(A),
+          conmutativa(Op) }
+    ->  codigo_conmutativo(B, K),
+        [operar(Op, A)]
+    ;   { K1 is K + 1 },
+        codigo_conmutativo(B, K),
+        [guardar(t(K))],
+        codigo_conmutativo(A, K1),
+        [operar(Op, t(K))]
+    ).
+```
+
+La cláusula nueva va entre las dos de `codigo_acumulador//2`: si el
+operando derecho es una hoja, la operación lo nombra, como antes; si no lo
+es pero el izquierdo sí, y la operación es conmutativa,
+$a \oplus b = b \oplus a$ permite calcular `b` en el acumulador y operar con `a`. La
+condición de conmutatividad es la de `conmutativa/1` de `optimizador.pl`;
+en la resta, `a - b * c` sigue necesitando la temporal.
+
+```prolog
+?- analizar("escribir a + (b + (c + d))", [escribir(E)]), generar_acumulador_conmutativo(E, C).
+E = bin(+, id(a), bin(+, id(b), bin(+, id(c), id(d)))),
+C = [cargar(id(c)), operar(+, id(d)), operar(+, id(b)), operar(+, id(a))].
+```
+
+## 14
+
+Según Sethi y Ullman: `a + b` necesita 2 (dos hojas, 1 y 1);
+`(a + b) * (c + d)`, 3 (dos operandos de 2); `a - (b - (c - d))`, 2 (en cada
+nivel, una hoja de 1 contra un operando de 2); y la última, 4 (dos
+operandos de 3). El generador ingenuo usa la pila que usaría la máquina:
+2, 3, 4 y 4. Solo la tercera mejora, porque es la única que crece por la
+derecha; en las otras, los dos operandos de cada operación necesitan lo
+mismo, y el orden no cambia nada.
+
+```prolog
+?- findall(N-I, ( member(T, ["a + b", "(a + b) * (c + d)", "a - (b - (c - d))", "((a + b) + (c + d)) * ((a - b) - (c - d))"]), string_concat("escribir ", T, P), analizar(P, [escribir(E)]), registros_necesarios(E, N), generar_ingenuo(E, C), registros_usados(C, I) ), Ps).
+Ps = [2-2, 3-3, 2-4, 4-4].
+```
+
+## 15
+
+<!-- ejemplo: capitulo-45/soluciones_extensiones.pl predicado: correr_con_profundidad/3 ciclo_profundidad//4 -->
+```prolog
+%!  correr_con_profundidad(+Texto, -Salida:list(integer), -Max:integer)
+%!      is semidet.
+%
+%   Como correr_funciones/2; Max es la mayor cantidad de marcos que hubo
+%   en la pila de marcos durante la ejecución.
+correr_con_profundidad(Texto, Salida, Max) :-
+    compilar_funciones(Texto, Objeto),
+    compound_name_arguments(Codigo, codigo, Objeto),
+    empty_assoc(Memoria),
+    phrase(ciclo_profundidad(Codigo, f(s(0, [], Memoria), []), 0, Max),
+           Salida).
+
+%!  ciclo_profundidad(+Codigo, +Estado, +Max0:integer, -Max:integer)//
+%!      is semidet.
+%
+%   Como ciclo_funciones//2; Max es el mayor entre Max0 y la cantidad de
+%   marcos de cada estado que sigue.
+ciclo_profundidad(Codigo, f(s(PC, P, M), Marcos), Max0, Max) -->
+    (   { N is PC + 1,
+          arg(N, Codigo, I) }
+    ->  paso_funciones(I, f(s(PC, P, M), Marcos), Estado),
+        { Estado = f(_, Marcos1),
+          length(Marcos1, D),
+          Max1 is max(Max0, D) },
+        ciclo_profundidad(Codigo, Estado, Max1, Max)
+    ;   { Max = Max0 }
+    ).
+```
+
+`ciclo_profundidad//4` es `ciclo_funciones//2` con un acumulador más, y
+reutiliza `paso_funciones//3` sin cambiarlo: la cantidad de marcos se lee
+del estado después de cada paso. Los programas son los de
+`fuente_funciones/2`, en `funciones.pl`. El factorial recursivo de 5 llega a cinco
+marcos, uno por cada llamada de `fac(5)` a `fac(1)`; el iterativo, a uno; y
+Fibonacci, a siete: la llamada más profunda de `fib(7)` baja por
+`fib(6)`, `fib(5)`, … hasta `fib(1)`. La cantidad de marcos depende de la
+profundidad de la recursión, no de la cantidad de llamadas, que en
+Fibonacci crece mucho más rápido.
+
+```prolog
+?- findall(X-M, ( member(X, [factorial, iterativo, fibonacci]), fuente_funciones(X, T), correr_con_profundidad(T, _, M) ), Ps).
+Ps = [factorial-5, iterativo-1, fibonacci-7].
+```

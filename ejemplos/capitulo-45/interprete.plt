@@ -51,4 +51,31 @@ test(contrarias) :-
                   ;   comparar(No, X, Y)
                   ))).
 
+test(cierta) :-
+    cierta(rel(<, num(1), num(2)), []).
+
+test(falsa, fail) :-
+    falsa(rel(<, num(1), num(2)), []).
+
+test(evaluar, true(V == 5)) :-
+    evaluar(bin(+, id(x), num(2)), [x-3], V).
+
+test(operar_division_entera, true(V == 3)) :-
+    operar(/, 7, 2, V).
+
+test(valor, true(V == 3)) :-
+    valor(x, [x-3, y-4], V).
+
+test(valor_ausente, fail) :-
+    valor(z, [x-3], _).
+
+test(nombre, true(X == x)) :-
+    nombre(id(x), X).
+
+test(ejecutar_sentencia, true(E-S == [x-5]-[])) :-
+    phrase(ejecutar_sentencia(asignar(x, num(5)), [x-0], E), S).
+
+test(ejecutar_bloque, true(S == [1, 2])) :-
+    phrase(ejecutar_bloque([escribir(num(1)), escribir(num(2))], [], _), S).
+
 :- end_tests(interprete).

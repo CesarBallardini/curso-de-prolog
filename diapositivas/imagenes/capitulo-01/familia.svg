@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <title>El árbol de la familia: juan es padre de ana y de pedro; pedro es padre de luis y de eva</title>
+  <rect x="0" y="0" width="400" height="400" fill="#FFFFFF"/>
+  <g stroke="#1F3A5F" stroke-width="3" fill="none">
+    <line x1="200" y1="82" x2="100" y2="178"/>
+    <line x1="200" y1="82" x2="290" y2="178"/>
+    <line x1="290" y1="222" x2="230" y2="318"/>
+    <line x1="290" y1="222" x2="350" y2="318"/>
+  </g>
+  <g font-family="Verdana, DejaVu Sans, sans-serif" font-size="16" fill="#52606D" font-style="italic">
+    <text x="118" y="128">padre</text>
+    <text x="252" y="128">padre</text>
+    <text x="206" y="268">padre</text>
+    <text x="326" y="268">padre</text>
+  </g>
+  <g fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2">
+    <rect x="145" y="38" width="110" height="44" rx="22"/>
+    <rect x="45" y="178" width="110" height="44" rx="22"/>
+    <rect x="235" y="178" width="110" height="44" rx="22"/>
+    <rect x="175" y="318" width="110" height="44" rx="22"/>
+    <rect x="295" y="318" width="100" height="44" rx="22"/>
+  </g>
+  <g font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F2933" text-anchor="middle">
+    <text x="200" y="67">juan</text>
+    <text x="100" y="207">ana</text>
+    <text x="290" y="207">pedro</text>
+    <text x="230" y="347">luis</text>
+    <text x="345" y="347">eva</text>
+  </g>
+</svg>

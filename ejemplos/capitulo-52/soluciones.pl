@@ -11,7 +11,7 @@
 %?- figuras(ceros_unos, inicio, 12, Fs).
 %?- figuras_dn(31332531173113353111731113322531111731111335317, 6, Fs).
 
-:- use_module(numeros).
+:- use_module(universal).
 :- use_module(plana, [fila/5]).
 
 % Ejercicio 2: la sucesión 001001001...
@@ -174,3 +174,10 @@ simbolo_numero(S, J) :-
     ->  S = 1
     ;   S = s(J)
     ).
+
+% Ejercicio 12: imprime 0 en un blanco y después imprime 1 sobre ese 0.
+plana:fila(reimprime, b, blanco, [p(0)], c).
+plana:fila(reimprime, c, simbolo(0), [p(1), r, r], b).
+
+% Ejercicio 13: imprime un 0 y se detiene, porque c no tiene filas.
+plana:fila(corta, b, blanco, [p(0), r], c).

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" width="960" height="480">
+  <title>Resumen del capítulo 7</title>
+  <rect x="0" y="0" width="960" height="480" fill="#FFFFFF"/>
+  <rect x="10.0" y="14.0" width="940.0" height="58.0" rx="6" fill="#EAF1F8"/>
+  <text x="30.0" y="51.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F3A5F" text-anchor="start" xml:space="preserve" font-weight="bold">[]</text>
+  <text x="250.0" y="51.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">la lista vacía: una constante</text>
+  <rect x="10.0" y="80.0" width="940.0" height="58.0" rx="6" fill="#FFFFFF"/>
+  <text x="30.0" y="117.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F3A5F" text-anchor="start" xml:space="preserve" font-weight="bold">[X|Resto]</text>
+  <text x="250.0" y="117.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">primer elemento y resto, que es una lista</text>
+  <rect x="10.0" y="146.0" width="940.0" height="58.0" rx="6" fill="#EAF1F8"/>
+  <text x="30.0" y="183.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F3A5F" text-anchor="start" xml:space="preserve" font-weight="bold">[A, B|Resto]</text>
+  <text x="250.0" y="183.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">los dos primeros elementos y el resto</text>
+  <rect x="10.0" y="212.0" width="940.0" height="58.0" rx="6" fill="#FFFFFF"/>
+  <text x="30.0" y="249.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F3A5F" text-anchor="start" xml:space="preserve" font-weight="bold">9 · 10 · 11</text>
+  <text x="250.0" y="249.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">recorrer · buscar uno · todos cumplen</text>
+  <rect x="10.0" y="278.0" width="940.0" height="58.0" rx="6" fill="#EAF1F8"/>
+  <text x="30.0" y="315.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F3A5F" text-anchor="start" xml:space="preserve" font-weight="bold">12</text>
+  <text x="250.0" y="315.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">construir el resultado en la cabeza</text>
+  <rect x="10.0" y="344.0" width="940.0" height="58.0" rx="6" fill="#FFFFFF"/>
+  <text x="30.0" y="381.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F3A5F" text-anchor="start" xml:space="preserve" font-weight="bold">pegar/3</text>
+  <text x="250.0" y="381.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">una relación: concatena y particiona</text>
+  <rect x="10.0" y="410.0" width="940.0" height="58.0" rx="6" fill="#EAF1F8"/>
+  <text x="30.0" y="447.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F3A5F" text-anchor="start" xml:space="preserve" font-weight="bold">append/3 …</text>
+  <text x="250.0" y="447.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">los predefinidos que usa el resto del curso</text>
+</svg>

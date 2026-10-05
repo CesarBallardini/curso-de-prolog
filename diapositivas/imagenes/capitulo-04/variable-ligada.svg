@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 350" width="400" height="350">
+  <title>La variable Juan: libre al comenzar, ligada a juan después de juan = Juan, y libre otra vez cuando Prolog retrocede</title>
+  <rect x="0" y="0" width="400" height="350" fill="#FFFFFF"/>
+  <text x="55" y="58" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#6A3D9A" text-anchor="middle" font-weight="bold">Juan</text>
+  <rect x="110" y="26" width="120" height="48" rx="6" fill="#EFE7F7" stroke="#6A3D9A" stroke-width="2" stroke-dasharray="6 4"/>
+  <text x="245" y="56" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#52606D" text-anchor="start">libre</text>
+  <text x="55" y="183" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#6A3D9A" text-anchor="middle" font-weight="bold">Juan</text>
+  <rect x="110" y="151" width="120" height="48" rx="6" fill="#EFE7F7" stroke="#6A3D9A" stroke-width="2"/>
+  <rect x="135" y="157" width="70" height="36" rx="18" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="170" y="182" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F2933" text-anchor="middle">juan</text>
+  <text x="245" y="181" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#1F2933" text-anchor="start" font-weight="bold">ligada a juan</text>
+  <text x="55" y="308" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#6A3D9A" text-anchor="middle" font-weight="bold">Juan</text>
+  <rect x="110" y="276" width="120" height="48" rx="6" fill="#EFE7F7" stroke="#6A3D9A" stroke-width="2" stroke-dasharray="6 4"/>
+  <text x="245" y="306" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#52606D" text-anchor="start">libre otra vez</text>
+  <line x1="170" y1="80" x2="170" y2="134" stroke="#D9822B" stroke-width="3"/>
+  <polygon points="170.0,142.0 163.5,130.7 176.5,130.7" fill="#D9822B"/>
+  <text x="185" y="118" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="16" fill="#D9822B" text-anchor="start" font-weight="bold">juan = Juan</text>
+  <line x1="170" y1="205" x2="170" y2="259" stroke="#52606D" stroke-width="2" stroke-dasharray="6 4"/>
+  <polygon points="170.0,267.0 163.5,255.7 176.5,255.7" fill="#52606D"/>
+  <text x="185" y="243" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#52606D" text-anchor="start">al retroceder</text>
+</svg>

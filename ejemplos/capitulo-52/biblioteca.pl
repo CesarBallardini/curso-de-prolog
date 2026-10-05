@@ -33,6 +33,10 @@
 % la encuentra, con el cabezal sobre ella, y -> B si no hay ninguna.
 plana:fila(_, f(C, B, Al), simbolo(schwa), [l], f1(C, B, Al)).
 plana:fila(_, f(C, B, Al), no(schwa), [l], f(C, B, Al)).
+% CORRECCIÓN (Post, nota 11; Petzold, p. 116): la tabla de Turing no
+% tiene fila para el blanco en f; el blanco se trata igual que «no
+% schwa», y sin esa fila la máquina se detiene en la primera casilla
+% vacía que encuentra al retroceder.
 plana:fila(_, f(C, B, Al), blanco, [l], f(C, B, Al)).
 plana:fila(_, f1(C, _, Al), simbolo(Al), [], C).
 plana:fila(_, f1(C, B, Al), no(Al), [r], f1(C, B, Al)).

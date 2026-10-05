@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 340" width="800" height="340">
+  <title>Un objetivo como una caja con cuatro puertas: Call entra, Exit sale con éxito, Fail sale con fracaso y Redo vuelve a entrar para buscar otra alternativa</title>
+  <rect x="0" y="0" width="800" height="340" fill="#FFFFFF"/>
+  <rect x="270" y="100" width="260" height="200" rx="12" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="3"/>
+  <text x="400" y="208" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#1F2933" text-anchor="middle">padre(juan, P)</text>
+  <!-- Call -->
+  <line x1="60" y1="150" x2="258" y2="150" stroke="#1F3A5F" stroke-width="5"/>
+  <polygon points="252,138 272,150 252,162" fill="#1F3A5F"/>
+  <!-- Exit -->
+  <line x1="530" y1="150" x2="728" y2="150" stroke="#2E7D32" stroke-width="5"/>
+  <polygon points="722,138 742,150 722,162" fill="#2E7D32"/>
+  <!-- Fail -->
+  <line x1="270" y1="250" x2="72" y2="250" stroke="#B3261E" stroke-width="5"/>
+  <polygon points="78,238 58,250 78,262" fill="#B3261E"/>
+  <!-- Redo -->
+  <line x1="740" y1="250" x2="542" y2="250" stroke="#D9822B" stroke-width="5"/>
+  <polygon points="548,238 528,250 548,262" fill="#D9822B"/>
+  <g font-family="Verdana, DejaVu Sans, sans-serif">
+    <g font-size="24" font-weight="bold">
+      <text x="70" y="136" fill="#1F3A5F">Call</text>
+      <text x="540" y="136" fill="#2E7D32">Exit</text>
+      <text x="70" y="236" fill="#B3261E">Fail</text>
+      <text x="540" y="236" fill="#D9822B">Redo</text>
+    </g>
+    <g font-size="16" fill="#52606D">
+      <text x="70" y="178">se intenta probar</text>
+      <text x="540" y="178">se probó</text>
+      <text x="70" y="278">no se puede probar</text>
+      <text x="540" y="278">se busca otra alternativa</text>
+    </g>
+    <text x="400" y="80" font-size="18" fill="#52606D" text-anchor="middle">una caja por cada objetivo</text>
+  </g>
+</svg>

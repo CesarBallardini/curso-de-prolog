@@ -14,6 +14,7 @@
 %?- mas_barata([pedido(nucleos, 6), pedido(memoria, 16), pedido(video, no)], C, P).
 
 :- ensure_loaded(costo).
+:- ensure_loaded(facetas).
 
 % Ejercicio 2 -------------------------------------------------------------
 
@@ -371,3 +372,19 @@ explicar(Memoria, Hecho, Arbol) :-
         Arbol = por(Hecho, Regla, Arboles)
     ;   Arbol = inicial(Hecho)
     ).
+
+% Ejercicio 13 ------------------------------------------------------------
+
+% El consumo de una placa de video según su memoria. En placa_de_video
+% no se usa nunca: la misma clase tiene el valor por omisión consumo-200,
+% que se busca antes que el cálculo.
+calculo(placa_de_video, consumo, Ranuras, Consumo) :-
+    memberchk(memoria_gb-Gb, Ranuras),
+    Consumo is 100 + 20 * Gb.
+
+% Una subclase sin valor por omisión para el consumo, con su cálculo: en
+% la cadena de herencia aparece antes que placa_de_video.
+marco(placa_calculada, [placa_de_video], []).
+
+calculo(placa_calculada, consumo, Ranuras, Consumo) :-
+    calculo(placa_de_video, consumo, Ranuras, Consumo).

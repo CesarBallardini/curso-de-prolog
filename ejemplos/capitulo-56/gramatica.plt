@@ -91,4 +91,41 @@ test(ida_y_vuelta) :-
              once(phrase(orden(O2), Ps)),
              O2 == O )).
 
+test(objeto_con_articulo, all(O-N == [archivo("notas.txt")-sg])) :-
+    phrase(objeto(O, N), ["el", "archivo", "notas.txt"]).
+
+test(objeto_de_carpeta, all(O == [archivo("informes/notas.txt")])) :-
+    phrase(objeto(O, _), ["notas.txt", "de", "informes"]).
+
+test(conjunto, all(C-F == ["informes"-patron("*.txt")])) :-
+    phrase(conjunto(C, F), ["todos", "los", "archivos", ".txt", "de",
+                            "informes"]).
+
+test(conjunto_sin_concordancia, fail) :-
+    phrase(conjunto(_, _), ["todas", "los", "archivos"]).
+
+test(cuantificador, all(G == [f])) :-
+    phrase(cuantificador(G), ["todas"]).
+
+test(cuantificador_vacio, [nondet, true(var(G))]) :-
+    phrase(cuantificador(G), []).
+
+test(determinante, all(G-N == [f-pl])) :-
+    phrase(determinante(G, N), ["las"]).
+
+test(sustantivo, all(L-G-N == [carpeta-f-pl])) :-
+    phrase(sustantivo(L, G, N), ["carpetas"]).
+
+test(sustantivo_genera, all(Ps == [["archivos"]])) :-
+    phrase(sustantivo(archivo, m, pl), Ps).
+
+test(nombre, all(N == ["notas.txt"])) :-
+    phrase(nombre(N), ["notas.txt"]).
+
+test(nombre_reservado, fail) :-
+    phrase(nombre(_), ["los"]).
+
+test(nombre_con_asterisco, fail) :-
+    phrase(nombre(_), ["a*b"]).
+
 :- end_tests(gramatica).

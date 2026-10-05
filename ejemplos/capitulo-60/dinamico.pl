@@ -16,11 +16,12 @@
 
 :- dynamic hecho/1.
 
-%!  ejecutar(+Programa, +Hechos0:list, -Hechos:list, -Resultado) is det.
+%!  ejecutar(+Programa, +Hechos0:list, -Hechos:list, -Resultado) is semidet.
 %
 %   Ejecuta el Programa con la memoria inicial Hechos0. Hechos es la
 %   memoria al terminar, y Resultado el término de parar/1, o
 %   nada_aplicable si el ciclo terminó porque ningún módulo se aplicaba.
+%   Falla si falla una acción del módulo elegido.
 ejecutar(Programa, Hechos0, Hechos, Resultado) :-
     programa(Programa, Modulos),
     retractall(hecho(_)),
@@ -28,10 +29,11 @@ ejecutar(Programa, Hechos0, Hechos, Resultado) :-
     ciclo(Modulos, Resultado),
     findall(F, hecho(F), Hechos).
 
-%!  ciclo(+Modulos:list, -Resultado) is det.
+%!  ciclo(+Modulos:list, -Resultado) is semidet.
 %
 %   Aplica el primer módulo de Modulos cuyas condiciones se cumplen, y
-%   repite hasta que un módulo para o ninguno se puede aplicar.
+%   repite hasta que un módulo para o ninguno se puede aplicar. Falla si
+%   falla una acción del módulo elegido.
 ciclo(Modulos, Resultado) :-
     (   member(Modulo, Modulos),
         copy_term(Modulo, _ :: Condiciones ---> Acciones),
@@ -65,11 +67,11 @@ condicion(F) :-
     patron(F),
     hecho(F).
 
-%!  acciones(+Acciones:list, -Fin) is det.
+%!  acciones(+Acciones:list, -Fin) is semidet.
 %
 %   Ejecuta las Acciones en orden. Fin es parar(R) si una de ellas es
 %   parar(R), que deja sin ejecutar las siguientes, o seguir si ninguna lo
-%   es.
+%   es. Falla si falla una acción.
 acciones([], seguir).
 acciones([A|As], Fin) :-
     (   A = parar(R)
@@ -78,9 +80,11 @@ acciones([A|As], Fin) :-
         acciones(As, Fin)
     ).
 
-%!  accion(+Accion) is det.
+%!  accion(+Accion) is semidet.
 %
-%   Ejecuta una acción que no es parar/1 sobre la memoria.
+%   Ejecuta una acción que no es parar/1 sobre la memoria. Falla si
+%   quitar/1 o reemplazar/2 no encuentran el hecho, o si la prueba de
+%   {Meta} falla.
 accion({Meta}) :-
     once(Meta).
 accion(agregar(F)) :-

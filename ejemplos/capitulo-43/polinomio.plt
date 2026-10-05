@@ -72,4 +72,31 @@ test(resolver_polinomio, all(S == [x = 3.0, x = -1.0])) :-
 test(libre, [error(instantiation_error)]) :-
     resolver(_ = 3, x, _).
 
+test(monomios, true(Ms == [2-1, 1-(-1), 0-3])) :-
+    polinomio:monomios(x * (x - 1) + 3, x, Ms).
+
+test(monomios_signo, true(Ms == [2-(-1)])) :-
+    polinomio:monomios(-(x ^ 2), x, Ms).
+
+test(monomios_no_polinomio, [fail]) :-
+    polinomio:monomios(sin(x), x, _).
+
+test(semejantes_directo, true(Ms == [1-1, 0-3])) :-
+    polinomio:semejantes([0-1, 2-3, 0-2, 2-(-3), 1-1], Ms).
+
+test(sumar_grupo, true(Ms == [2-3, 0-1])) :-
+    polinomio:sumar_grupo(2-[1, 2], [0-1], Ms).
+
+test(sumar_grupo_nulo, true(Ms == [0-1])) :-
+    polinomio:sumar_grupo(2-[1, -1], [0-1], Ms).
+
+test(colectar_normal, true(E == (2 ^ (2 * x + 1) = 32))) :-
+    colectar_normal(2 ^ (x + (x + 1)) = 32, x, E).
+
+test(colectar_normal_no_reduce, [fail]) :-
+    colectar_normal((x + 1) ^ 2 = 4, x, _).
+
+test(resolver_, all(S == [x = 2.0, x = 1.0])) :-
+    polinomio:resolver_(x ^ 2 - 3 * x + 2 = 0, x, S).
+
 :- end_tests(polinomio).

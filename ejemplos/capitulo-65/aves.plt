@@ -51,4 +51,7 @@ test(anticipacion_neutra, [true(As == Bs)]) :-
                  respuesta([anticipacion, declarada, especificidad], M, B) ),
             Bs).
 
+test(mamifero, [true(Xs == [rufo, dracula])]) :-
+    findall(X, mamifero(X), Xs).
+
 :- end_tests(aves).

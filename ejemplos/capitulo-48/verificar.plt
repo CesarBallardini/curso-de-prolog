@@ -43,4 +43,20 @@ test(cuantas_sumador3, [true(N == 28)]) :-
 test(salida_desconocida, [fail]) :-
     cuantas(sumador, z, 1, _).
 
+test(restriccion, [nondet, true(S == 0)]) :-
+    restriccion([], nand, [1, 1], S).
+
+test(restriccion_inversa, [nondet, true(A-B == 1-1)]) :-
+    restriccion([], nand, [A, B], 0),
+    clpb:labeling([A, B]).
+
+test(modelo, [true(S-C == 1-0)]) :-
+    verificar:modelo(semisumador, [1, 0], [S, C]).
+
+test(equivalente) :-
+    verificar:equivalente(1, 1).
+
+test(no_equivalente, [fail]) :-
+    verificar:equivalente(_, 1).
+
 :- end_tests(verificar).

@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" width="960" height="480">
+  <title>Cómo reconocer una rama infinita: un nodo repite, salvo los nombres de las variables, una consulta de más arriba en la misma rama sin haber avanzado</title>
+  <rect x="0" y="0" width="960" height="480" fill="#FFFFFF"/>
+  <line x1="500.0" y1="20.0" x2="500.0" y2="460.0" stroke="#EAF1F8" stroke-width="2"/>
+  <text x="240.0" y="40.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#B3261E" text-anchor="middle" xml:space="preserve" font-weight="bold">se repite sin avanzar</text>
+  <text x="735.0" y="40.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#2E7D32" text-anchor="middle" xml:space="preserve" font-weight="bold">avanza en cada paso</text>
+  <rect x="43.2" y="78.8" width="293.7" height="42.4" rx="10" fill="#F0E8F7" stroke="#6A3D9A" stroke-width="3"/>
+  <text x="190.0" y="107.5" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">antepasado(juan, Quien)</text>
+  <line x1="190.0" y1="121.0" x2="190.0" y2="179.0" stroke="#1F3A5F" stroke-width="3"/>
+  <rect x="43.2" y="178.8" width="293.7" height="42.4" rx="10" fill="#F0E8F7" stroke="#6A3D9A" stroke-width="3"/>
+  <text x="190.0" y="207.5" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">antepasado(juan, X1), …</text>
+  <line x1="190.0" y1="221.0" x2="190.0" y2="279.0" stroke="#1F3A5F" stroke-width="3"/>
+  <rect x="43.2" y="278.8" width="293.7" height="42.4" rx="10" fill="#F0E8F7" stroke="#6A3D9A" stroke-width="3"/>
+  <text x="190.0" y="307.5" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">antepasado(juan, X2), …</text>
+  <path d="M 350 100 L 366 100 L 366 300 L 350 300" fill="none" stroke="#6A3D9A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="376.0" y="196.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#6A3D9A" text-anchor="start" xml:space="preserve" font-weight="bold">la misma</text>
+  <text x="376.0" y="222.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#6A3D9A" text-anchor="start" xml:space="preserve" font-weight="bold">consulta</text>
+  <text x="190.0" y="390.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="30" fill="#1F3A5F" text-anchor="middle" xml:space="preserve">⋮</text>
+  <text x="240.0" y="448.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#B3261E" text-anchor="middle" xml:space="preserve" font-weight="bold">rama infinita</text>
+  <rect x="588.2" y="78.8" width="293.7" height="42.4" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="735.0" y="107.5" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">antepasado(juan, Quien)</text>
+  <line x1="735.0" y1="121.0" x2="735.0" y2="179.0" stroke="#2E7D32" stroke-width="3"/>
+  <text x="747.0" y="144.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">una generación</text>
+  <text x="747.0" y="168.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">más abajo</text>
+  <rect x="582.4" y="178.8" width="305.2" height="42.4" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="735.0" y="207.5" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">antepasado(pedro, Quien)</text>
+  <line x1="735.0" y1="221.0" x2="735.0" y2="279.0" stroke="#2E7D32" stroke-width="3"/>
+  <text x="747.0" y="244.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">una generación</text>
+  <text x="747.0" y="268.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">más abajo</text>
+  <rect x="588.2" y="278.8" width="293.7" height="42.4" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="735.0" y="307.5" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">antepasado(luis, Quien)</text>
+  <line x1="735.0" y1="321.0" x2="735.0" y2="362.0" stroke="#B3261E" stroke-width="3"/>
+  <circle cx="735" cy="378" r="16" fill="#B3261E"/>
+  <path d="M 727.8 370.8 L 742.2 385.2 M 742.2 370.8 L 727.8 385.2" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="735.0" y="448.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#2E7D32" text-anchor="middle" xml:space="preserve" font-weight="bold">rama finita</text>
+</svg>

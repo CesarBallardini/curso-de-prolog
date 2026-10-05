@@ -34,4 +34,27 @@ test(aplicar, [nondet, true(D == encima(rombo, circulo))]) :-
 test(cambiar, all(F == [circulo, triangulo, rombo])) :-
     transformacion(cambiar(F), cuadrado, _).
 
+test(partes_separa, all(R-A-B == [encima-circulo-rombo])) :-
+    partes(encima(circulo, rombo), R, A, B).
+
+test(partes_construye, all(D == [dentro(circulo, rombo)])) :-
+    partes(D, dentro, circulo, rombo).
+
+test(partes_figura, fail) :-
+    partes(circulo, _, _, _).
+
+test(otra_relacion, all(Op == [relacion(encima)])) :-
+    transformacion(Op, dentro(cuadrado, triangulo),
+                   encima(cuadrado, triangulo)).
+
+test(analogia, true(X == encima(rombo, circulo))) :-
+    analogia(dentro(cuadrado, triangulo) es_a encima(triangulo, cuadrado),
+             dentro(circulo, rombo) es_a X,
+             [encima(circulo, rombo), dentro(rombo, circulo),
+              encima(rombo, circulo)]).
+
+test(analogia_sin_respuesta, fail) :-
+    analogia(dentro(cuadrado, triangulo) es_a rombo,
+             dentro(circulo, cuadrado) es_a _, [circulo, cuadrado]).
+
 :- end_tests(analogia).

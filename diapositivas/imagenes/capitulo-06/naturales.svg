@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 380" width="400" height="380">
+  <title>El natural tres como términos anidados: s(s(s(cero))); cada s agrega uno</title>
+  <rect x="0" y="0" width="400" height="380" fill="#FFFFFF"/>
+  <rect x="10" y="10" width="380" height="310" rx="14" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="24" y="39" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F3A5F" font-weight="bold">s(</text>
+  <text x="376" y="39" font-family="Verdana, DejaVu Sans, sans-serif" font-size="20" fill="#D9822B" font-weight="bold" text-anchor="end">3</text>
+  <rect x="40" y="55" width="320" height="250" rx="14" fill="#FFFFFF" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="54" y="84" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F3A5F" font-weight="bold">s(</text>
+  <text x="346" y="84" font-family="Verdana, DejaVu Sans, sans-serif" font-size="20" fill="#D9822B" font-weight="bold" text-anchor="end">2</text>
+  <rect x="70" y="100" width="260" height="190" rx="14" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="84" y="129" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F3A5F" font-weight="bold">s(</text>
+  <text x="316" y="129" font-family="Verdana, DejaVu Sans, sans-serif" font-size="20" fill="#D9822B" font-weight="bold" text-anchor="end">1</text>
+  <rect x="100" y="145" width="200" height="130" rx="14" fill="#E3F1E4" stroke="#2E7D32" stroke-width="3"/>
+  <text x="200" y="218" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#2E7D32" font-weight="bold" text-anchor="middle">cero</text>
+  <text x="286" y="174" font-family="Verdana, DejaVu Sans, sans-serif" font-size="20" fill="#D9822B" font-weight="bold" text-anchor="end">0</text>
+  <text x="200" y="360" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#1F2933" font-weight="bold" text-anchor="middle">s(s(s(cero)))</text>
+</svg>

@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" width="800" height="400">
+  <title>Esquema de SWISH: el programa a la izquierda, las respuestas arriba a la derecha y la consulta abajo a la derecha</title>
+  <rect x="0" y="0" width="800" height="400" fill="#FFFFFF"/>
+  <g font-family="Verdana, DejaVu Sans, sans-serif">
+    <!-- browser window -->
+    <rect x="20" y="10" width="760" height="380" rx="10" fill="#F1F3F5" stroke="#9AA5B1" stroke-width="2"/>
+    <rect x="20" y="10" width="760" height="40" rx="10" fill="#DDE3EA"/>
+    <rect x="20" y="36" width="760" height="14" fill="#DDE3EA"/>
+    <circle cx="44" cy="30" r="7" fill="#B3261E"/><circle cx="66" cy="30" r="7" fill="#D9822B"/>
+    <circle cx="88" cy="30" r="7" fill="#2E7D32"/>
+    <rect x="120" y="18" width="360" height="24" rx="12" fill="#FFFFFF" stroke="#9AA5B1"/>
+    <text x="136" y="36" font-size="15" fill="#52606D">swish.swi-prolog.org</text>
+    <!-- program panel -->
+    <rect x="36" y="64" width="360" height="310" rx="6" fill="#FFFFFF" stroke="#1F3A5F" stroke-width="2"/>
+    <g font-family="Consolas, DejaVu Sans Mono, monospace" font-size="17" fill="#1F2933">
+      <text x="52" y="100">padre(juan, ana).</text>
+      <text x="52" y="126">padre(juan, pedro).</text>
+      <text x="52" y="152">padre(pedro, luis).</text>
+      <text x="52" y="178">padre(pedro, eva).</text>
+      <text x="52" y="220">abuelo(A, N) :-</text>
+      <text x="89" y="246">padre(A, P),</text>
+      <text x="89" y="272">padre(P, N).</text>
+    </g>
+    <!-- answers panel -->
+    <rect x="410" y="64" width="354" height="180" rx="6" fill="#FFFFFF" stroke="#2E7D32" stroke-width="2"/>
+    <text x="428" y="100" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#52606D">?- padre(juan, ana).</text>
+    <text x="428" y="132" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" font-weight="bold" fill="#2E7D32">true.</text>
+    <!-- query panel -->
+    <rect x="410" y="258" width="354" height="116" rx="6" fill="#FFFFFF" stroke="#D9822B" stroke-width="2"/>
+    <text x="428" y="298" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#1F2933">?- padre(juan, ana).</text>
+    <rect x="664" y="324" width="84" height="36" rx="6" fill="#D9822B"/>
+    <text x="706" y="348" font-size="17" font-weight="bold" fill="#FFFFFF" text-anchor="middle">Run!</text>
+    <!-- labels -->
+    <g font-size="20" font-weight="bold">
+      <text x="380" y="360" text-anchor="end" fill="#1F3A5F">1 · el programa</text>
+      <text x="748" y="228" text-anchor="end" fill="#2E7D32">3 · la respuesta</text>
+      <text x="428" y="350" fill="#D9822B">2 · la consulta</text>
+    </g>
+  </g>
+</svg>

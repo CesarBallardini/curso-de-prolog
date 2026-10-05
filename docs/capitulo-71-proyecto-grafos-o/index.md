@@ -79,9 +79,9 @@ Al terminar el capítulo, el lector puede:
   comparar su tamaño según la búsqueda.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:35 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:40 h**.
     Resolver los 5 ejercicios marcados con ★: **1:20 h**.
-    Resolver los 12 ejercicios del final: **3:15 h**.
+    Resolver los 13 ejercicios del final: **3:35 h**.
 
 ## 71.1 Problemas que se descomponen
 
@@ -97,6 +97,15 @@ sus arcos lo reducen a otros:
   lado;
 - un **nodo primitivo** se resuelve sin descomponerlo; un nodo que no es
   primitivo y no tiene hijos no tiene solución.
+
+![Un árbol Y/O de seis nodos, P, Q, R, S, T y U](arbol-y-o.png)
+
+Un árbol Y/O con la notación habitual: el arco curvo que une las flechas
+de P a Q y a R indica que esos dos hijos forman un grupo Y. P se resuelve
+si se resuelven Q **y** R, **o** si se resuelve S; Q se resuelve si se
+resuelve T **o** U. Imagen: Saumaun, en la Wikipedia en inglés, dominio
+público, vía
+[Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Andortree.png).
 
 Un **árbol solución** de un nodo N contiene a N; si contiene un nodo O,
 contiene también uno de sus hijos con el árbol de ese hijo; si contiene
@@ -252,7 +261,7 @@ repite uno de ellos no se expande, porque un árbol que pasara por él
 contendría un ciclo. Y en lugar de tener éxito o fallar, cada llamada
 devuelve `si(Arbol)` o `no`, para que la cantidad de nodos expandidos se
 conserve también en las ramas que no llevan a una solución: es el
-[Patrón 60](../patrones.md#60-estado-como-resultado-no-como-falla) del
+[Patrón 63](../patrones.md#63-estado-como-resultado-no-como-falla) del
 [capítulo 61](../capitulo-61-proyecto-maquina-prolog/index.md).
 
 <!-- ejemplo: capitulo-71/profundidad.pl predicado: profundidad/6 reducir/8 alguno/6 todos/6 -->
@@ -491,10 +500,14 @@ expandir(y(N, _, Ts0), Problema, Ancestros, T) :-
 %!  rehacer(+Tipo, +N, +Ts:list, -T) is det.
 %
 %   T es el árbol de búsqueda del nodo N de Tipo o o y con los hijos Ts: su
-%   F se recalcula, y queda hecho o imposible si corresponde.
+%   F se recalcula, y queda hecho o imposible si corresponde. Un nodo O sin
+%   hijos es imposible.
 rehacer(o, N, Ts, T) :-
     maplist(f_arco, Ts, Fs),
-    min_member(F, Fs),
+    (   min_member(F0, Fs)
+    ->  F = F0
+    ;   F = inf
+    ),
     (   F == inf
     ->  T = imposible(N)
     ;   nth1(I, Fs, F),
@@ -519,6 +532,9 @@ momento el costo de ese hijo es exacto, y el de los demás hijos no puede
 ser menor que su F, porque ninguna estimación exagera: el árbol elegido es
 el de menor costo. Es la misma condición de **admisibilidad** que la de
 A\* en la [sección 40.5](../capitulo-40-busqueda-y-planificacion/heuristicas.md#heuristicas-a-e-ida).
+El algoritmo es una variante del que la literatura llama AO\*, como
+señala Bratko; Nilsson lo presenta en su libro de 1980, y Pearl
+(1984) estudia sus propiedades formales, la admisibilidad entre ellas.
 Para el mapa hay dos estimaciones admisibles: `cero`, que no da
 información, y `distancia`, la distancia en línea recta truncada, que no
 supera la longitud de ningún camino. Una prueba de `mapa.plt` lo verifica
@@ -575,6 +591,13 @@ criterio para elegir entre ellas decide la estrategia.
     le alcanzan tan pocas expansiones.
 
 ## 71.7 Versión 5: subproblemas compartidos
+
+![Una torre de Hanoi de madera, con ocho discos en el primer poste](hanoi.jpg)
+
+Una torre de Hanoi de juguete, con todos los discos en el primer poste.
+Imagen: Evanherk, en la Wikipedia en inglés,
+[CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/), vía
+[Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Tower_of_Hanoi.jpeg).
 
 Las torres de Hanoi tienen tres postes, a, b y c, y N discos de tamaños
 distintos apilados en a, el mayor abajo. Se mueve un disco por vez, el de
@@ -653,7 +676,10 @@ Expandidos = 57.
 
 Para N discos se expanden 3N − 3 nodos distintos, y el árbol, con sus
 2^N − 1 movimientos, ocupa en la memoria un nodo por subproblema: los
-subárboles repetidos son el mismo término. La tabla compara las dos
+subárboles repetidos son el mismo término. Martelli y Montanari (1973)
+llaman **aditivo** a un grafo Y/O así, un árbol Y/O «plegado» donde los
+subproblemas iguales se identifican: el costo de un subproblema común se
+suma tantas veces como aparece, pero se calcula una sola vez. La tabla compara las dos
 versiones con la búsqueda en anchura con visitados del
 [capítulo 40](../capitulo-40-busqueda-y-planificacion/visitados.md), que
 recorre el espacio de estados de las torres: `capitulo40.pl` carga
@@ -678,7 +704,7 @@ solución por un camino y no tenerla por otro. La versión 5 es para grafos
 sin ciclos, y por eso no lleva la lista de ancestros; el
 [ejercicio 10](#ejercicios) muestra qué pasa si se la usa en el mapa.
 
-!!! example "Patrón 66 — Resultado recordado, sin copiar"
+!!! example "Patrón 70 — Resultado recordado, sin copiar"
     **Problema.** Una búsqueda que construye un resultado, como un árbol
     solución, encuentra el mismo subproblema muchas veces, y resolverlo
     cada vez multiplica el trabajo y el tamaño del resultado.
@@ -799,7 +825,22 @@ las alternativas de x de todos modos.
     | C2 | representaciones limpias: el árbol solución, el árbol de búsqueda y el problema son términos con un functor por caso; lo imposible es el átomo `inf`, no un número grande |
     | C4 | `expandir/4` recibe el árbol en su primer argumento y las estimaciones despachan por un predicado auxiliar, de modo que la indexación elige la cláusula y las pruebas no encuentran alternativas pendientes |
     | C6 | las búsquedas no conocen los problemas: el mapa, las torres y el ta-te-ti solo agregan cláusulas a `primitivo/2`, `expansion/4` y `estimacion/3` |
-    | C7 | 74 pruebas en doce archivos; las del mapa y de la versión 4 verifican que la estimación es admisible camino por camino y que las dos estimaciones dan el mismo costo en los 169 pares |
+    | C7 | 150 pruebas en catorce archivos; las del mapa y de la versión 4 verifican que la estimación es admisible camino por camino y que las dos estimaciones dan el mismo costo en los 169 pares |
+
+## 71.9 La notación de Bratko y la búsqueda ascendente
+
+Tres partes de las fuentes quedan fuera de las seis versiones, y la página
+[La notación de Bratko y la búsqueda ascendente](extensiones.md) las
+agrega. `bratko.pl` escribe grafos Y/O con el operador `--->` del libro,
+`Nodo ---> or:Hijos`, y los traduce a `expansion/4`, de modo que todas las
+búsquedas del capítulo sirven para ellos; el grafo de la figura 13.4 de
+Bratko da 9 en profundidad y 8 con la búsqueda mejor primero. El mismo
+archivo escribe la ruta con los **puntos clave** de Bratko, una relación
+aparte que dice por dónde tiene que pasar toda ruta entre dos pueblos.
+`ascendente.pl` programa el método **ascendente** de Martelli y
+Montanari, que extiende el algoritmo de Dijkstra: resuelve los nodos desde
+los primitivos hacia arriba, en orden de costo, y en las torres de Hanoi
+cuenta cada subproblema una sola vez.
 
 ## Ejercicios
 
@@ -854,7 +895,8 @@ que cargan los del capítulo, sin modificarlos.
     en el ta-te-ti más nodos que la versión 5. Medir `estrategia/4` con
     las tres búsquedas en las ocho posiciones en que x jugó en 1 y o en
     otra casilla, y explicar en qué casos cada una expande menos.
-12. **(3)** La integración simbólica se reduce a un grafo Y/O: integrar
+12. **(3)** La integración simbólica, como en el programa SAINT de James
+    Slagle (1961), se reduce a un grafo Y/O: integrar
     una suma es integrar cada término (Y), y a una misma expresión se le
     pueden aplicar varias transformaciones (O). Escribir el problema
     `integral`, con nodos `int(E)`, las integrales inmediatas de
@@ -863,6 +905,10 @@ que cargan los del capítulo, sin modificarlos.
     sacar un factor constante y distribuir un producto sobre una suma.
     Escribir `primitiva/2`, que arma la primitiva a partir del árbol, e
     integrar `3*x^2 + 2*(sin(x) + cos(x))`.
+13. **(2)** Con `ascendente/4`, calcular el costo de `ruta(bosque, jardin)`
+    y la cantidad de nodos resueltos para `torre(N, a, c)` con N de 1 a 6.
+    Explicar por qué, a partir de cuatro discos, cada disco más agrega
+    tres nodos.
 
 ## Resumen
 
@@ -873,8 +919,9 @@ que cargan los del capítulo, sin modificarlos.
 | **Prolog como búsqueda Y/O** | las cláusulas de una cabeza son un nodo O, el cuerpo de una cláusula un nodo Y y los hechos nodos primitivos; la búsqueda es en profundidad, sin árbol, sin costos y sin protección contra los ciclos |
 | **ancestros** | un nodo que repite a uno de sus ancestros no se expande: una solución que pasara por él contendría un ciclo |
 | **búsqueda mejor primero en grafos Y/O** | un árbol de búsqueda con costos estimados que se recalculan desde la punta expandida hacia la raíz; con una estimación admisible, el árbol que encuentra es el de menor costo |
+| **puntos clave**, **búsqueda ascendente** | lugares por los que pasa toda ruta, en una relación aparte; resolver los nodos desde los primitivos hacia arriba, en orden de costo, como el algoritmo de Dijkstra |
 | **subproblemas compartidos** | el resultado de un nodo ya resuelto se recuerda y se reutiliza sin copiarlo; correcto solo si no depende del camino por el que se llegó al nodo |
-| **[Patrón 66](../patrones.md#66-resultado-recordado-sin-copiar)** | resultado recordado, sin copiar |
+| **[Patrón 70](../patrones.md#70-resultado-recordado-sin-copiar)** | resultado recordado, sin copiar |
 | **estrategia ganadora** | un árbol solución del juego visto desde un jugador: una jugada en sus posiciones, todas las respuestas en las del rival |
 | `primitivo/2`, `expansion/4`, `estimacion/3` | la interfaz de un problema, multifile |
 | **operaciones sobre árboles solución** | `arboles.pl` suma los costos de los arcos, lista las hojas y escribe el árbol sangrado, un nodo por línea |
@@ -903,7 +950,42 @@ que cargan los del capítulo, sin modificarlos.
   Y según quién mueve; las tres limitaciones de escribir el grafo como
   cláusulas; y la búsqueda mejor primero con el costo estimado de un nodo
   O como el mínimo y el de un nodo Y como la suma, corregido desde las
-  hojas, con la admisibilidad como condición del óptimo.
+  hojas, con la admisibilidad como condición del óptimo. La página
+  [La notación de Bratko y la búsqueda ascendente](extensiones.md) toma
+  además la notación `--->` de «Basic AND/OR search procedures», el grafo
+  de la figura 13.4 y los puntos clave de «Example of problem-defining
+  relations: route finding».
+
+- Alberto Martelli y Ugo Montanari, «Additive AND/OR graphs»,
+  *Proceedings of the Third International Joint Conference on Artificial
+  Intelligence* (IJCAI), 1973, pp. 1–11.
+  [Edición de IJCAI](https://www.ijcai.org/Proceedings/73/Papers/001.pdf).
+  Define los grafos Y/O aditivos, árboles Y/O plegados en los que un
+  subproblema común se resuelve una sola vez y su costo se cuenta en cada
+  aparición, y da dos métodos de búsqueda óptimos para ellos. El capítulo
+  toma esa idea para la versión 5, la de los subproblemas compartidos de
+  las torres de Hanoi, y el método ascendente para `ascendente.pl`, de la
+  página [La notación de Bratko y la búsqueda ascendente](extensiones.md#la-busqueda-ascendente).
+- Nils J. Nilsson, *Problem-Solving Methods in Artificial Intelligence*,
+  McGraw-Hill, 1971, y *Principles of Artificial Intelligence*, Tioga,
+  1980 — los capítulos sobre reducción de problemas y búsqueda en grafos
+  Y/O. Sin edición en línea de acceso libre. Son la presentación general
+  de los grafos Y/O y del algoritmo AO\* a la que remite Bratko.
+- Judea Pearl, *Heuristics: Intelligent Search Strategies for Computer
+  Problem Solving*, Addison-Wesley, 1984 — el capítulo sobre búsqueda en
+  grafos Y/O. Sin edición en línea de acceso libre. Bratko remite a él
+  por las propiedades formales de AO\*, entre ellas la admisibilidad que
+  la [sección 71.6](#716-version-4-busqueda-mejor-primero) usa como
+  condición del óptimo.
+- James R. Slagle, *A Heuristic Program that Solves Symbolic Integration
+  Problems in Freshman Calculus: Symbolic Automatic Integrator (SAINT)*,
+  tesis doctoral, MIT, 1961.
+  [Edición en DSpace@MIT](https://dspace.mit.edu/handle/1721.1/11997).
+  Bratko lo da como uno de los primeros programas que aplicaron la
+  reducción a grafos Y/O: una integral es un nodo O entre las
+  transformaciones posibles, y la integral de una suma, un nodo Y. El
+  [ejercicio 12](#ejercicios) construye una versión pequeña de esa idea;
+  el programa de Slagle, con sus heurísticas, no se implementa.
 
 El código del capítulo es propio, escrito para el curso: ningún programa
 de la fuente se copió. El mapa, la representación de los árboles de

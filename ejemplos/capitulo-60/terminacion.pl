@@ -19,11 +19,12 @@
 :- use_module(library(assoc)).
 
 %!  vigilar(+Programa, +Estrategia, +Limite:integer, +Memoria0:list,
-%!          -Memoria:list, -Resultado) is det.
+%!          -Memoria:list, -Resultado) is semidet.
 %
 %   Como ejecutar/5, con dos resultados más: limite(N) si el programa hizo
 %   Limite ciclos sin terminar, y repetida(K, N) si la memoria después de
 %   N ciclos es la misma, como colección de hechos, que después de K.
+%   Falla si falla una acción de la instancia elegida.
 vigilar(Programa, Estrategia, Limite, Memoria0, Memoria, Resultado) :-
     programa(Programa, Modulos),
     empty_assoc(Vistas),
@@ -31,10 +32,11 @@ vigilar(Programa, Estrategia, Limite, Memoria0, Memoria, Resultado) :-
              Resultado).
 
 %!  vigilado(+Modulos:list, +Estrategia, +Limite:integer, +N:integer,
-%!           +Vistas, +Memoria0:list, -Memoria:list, -Resultado) is det.
+%!           +Vistas, +Memoria0:list, -Memoria:list, -Resultado) is semidet.
 %
 %   Sigue el ciclo después de N ciclos. Vistas asocia cada memoria ya
-%   vista, ordenada con msort/2, con el ciclo en que apareció.
+%   vista, ordenada con msort/2, con el ciclo en que apareció. Falla si
+%   falla una acción de la instancia elegida.
 vigilado(Modulos, Estrategia, Limite, N, Vistas, Memoria0, Memoria,
          Resultado) :-
     msort(Memoria0, Clave),

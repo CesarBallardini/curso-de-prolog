@@ -36,4 +36,22 @@ test(flach_ambas, [true(A-B == [[murcielagos_vuelan(rufo)]]-
     findall(E, explicar_por_defecto(vuela(rufo), E), A),
     findall(E, explicar_por_defecto(no(vuela(rufo)), E), B).
 
+test(dialecto, [true(Xs == [hans])]) :-
+    findall(X, habla_dialecto_aleman(X), Xs).
+
+% literal/2 recorre la conjunción de izquierda a derecha.
+test(literal, [true(Ls == [a, b, c])]) :-
+    findall(L, literal(L, (a, (b, c))), Ls).
+
+test(probar_f, [true(Xs == [dracula, rufo])]) :-
+    findall(X, probar_f(mamifero(X)), Xs).
+
+% Las reglas de este ejercicio no tienen cabezas no(...): ningún supuesto
+% las contradice.
+test(contradice, [fail]) :-
+    contradice(vuela(dracula)).
+
+test(explicar_f, [nondet, true(S == [murcielagos_vuelan(rufo), previo])]) :-
+    explicar_f(vuela(rufo), [previo], S).
+
 :- end_tests(soluciones).

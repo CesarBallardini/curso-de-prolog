@@ -42,4 +42,17 @@ test(ciclo_inconsistente) :-
 test(ciclo_sin_detectar, [fail]) :-
     extension:inconsistente(cubos, [sobre(X, b), sobre(b, X)], []).
 
+test(dado_torre, [all(H == [sobre(a, b), sobre(b, c), sobre(c, mesa),
+                            libre(a)])]) :-
+    dado(torre, H).
+
+test(dado_sussman, [true(N == 5)]) :-
+    aggregate_all(count, dado(sussman, _), N).
+
+test(imposible_ciclo, [nondet]) :-
+    imposible([sobre(a, b), sobre(b, a)]).
+
+test(imposible_heredado, [nondet]) :-
+    imposible([sobre(a, a)]).
+
 :- end_tests(soluciones_cubos).

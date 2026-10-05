@@ -423,3 +423,60 @@ G = entre(27, 28).
 D = 28,
 G = optima(a_estrella).
 ```
+
+## 12
+
+La prioridad de mayor cola primero ordena las tareas por la longitud de
+la cadena que empieza en cada una, el dato que
+[`holguras.pl`](extensiones.md#fechas-tempranas-fechas-tardias-y-holguras)
+traduce en fechas tardías. `soluciones.pl` reexporta `variante/3` de
+`anomalias.pl`:
+
+<!-- ejemplo: capitulo-72/soluciones.pl predicado: por_colas/2 -->
+```prolog
+%!  por_colas(+Proyecto, -D:integer) is semidet.
+%
+%   D es la duración del calendario por lista de Proyecto con la prioridad
+%   de mayor cola primero. Falla si las precedencias forman un ciclo.
+por_colas(Proyecto, D) :-
+    orden_topologico(Proyecto, _),
+    findall(C-T,
+            ( tarea(Proyecto, T, _),
+              cola(Proyecto, T, C) ),
+            Pares0),
+    sort(1, @>=, Pares0, Pares),
+    pairs_values(Pares, Lista),
+    por_lista(Proyecto, ordenadas(Lista), Calendario),
+    duracion(Calendario, D).
+```
+
+<!-- contexto: capitulo-72/soluciones.pl -->
+```prolog
+?- forall(variante(N, P, _), (por_colas(P, D), writeln(N-D))).
+base-12
+otra_lista-12
+sin_dos_precedencias-12
+mas_cortas-10
+cuatro_procesadores-12
+true.
+
+?- forall(ejemplo(coffman, P), (por_colas(P, D), writeln(D))).
+33
+true.
+```
+
+Con esa prioridad, las cinco variantes llegan a su duración óptima. En
+todas ellas la cadena `t1`, `t9` tiene la mayor cola (12, o 10 con las
+tareas más cortas), de modo que `t1` es la primera tarea de la lista y
+`t9` la segunda: `t1` empieza en el momento 0 y `t9` apenas termina
+`t1`, antes que cualquiera de las sucesoras de `t4`. Las demás tareas
+ocupan los otros procesadores mientras corre `t9`, y el calendario dura
+lo mismo que la cadena, que es una cota inferior. Las anomalías del
+ejemplo aparecían porque la lista t1, …, t9 dejaba `t9` para el final, y
+un cambio que adelantaba las sucesoras de `t4` le quitaba el procesador.
+
+La prioridad no evita las anomalías en general. En `coffman` da 33, como
+cualquier otra lista: en el momento 2 las únicas tareas listas son `t6`
+y `t7`, y la planificación por lista no deja un procesador ocioso para
+esperar a `t1`, cualquiera sea el orden de la lista. La cota de Graham
+vale para toda lista, incluida esta.

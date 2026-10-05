@@ -28,6 +28,10 @@
 
 :- table red_de/2.
 
+% Otros archivos agregan clases de pasos: conjuntiva.pl, la negación de una
+% conjunción.
+:- multifile tipo_de/4, agregar_sucesor/4.
+
 %!  red_de(+Programa, -Red) is det.
 %
 %   Red es la red compilada de las reglas del Programa, con un paso por

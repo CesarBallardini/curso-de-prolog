@@ -48,4 +48,40 @@ test(sin_derivable_valores, true(Vs == [])) :-
 test(libre, [error(instantiation_error)]) :-
     resolver(_ = 3, x, _).
 
+test(valor, true(Y == 5)) :-
+    ecuaciones:valor(x ^ 2 + 1, x, 2, Y).
+
+test(valor_no_real, [fail]) :-
+    ecuaciones:valor(log(x), x, -1, _).
+
+test(cerca) :-
+    ecuaciones:cerca(1.0, 1.0000000001).
+
+test(lejos, [fail]) :-
+    ecuaciones:cerca(1.0, 1.001).
+
+test(cumple) :-
+    ecuaciones:cumple(x ^ 2 = 4, x, 2).
+
+test(no_cumple, [fail]) :-
+    ecuaciones:cumple(x ^ 2 = 4, x, 3).
+
+test(cumple_sin_valor_real, [fail]) :-
+    ecuaciones:cumple(log(x) = 0, x, -1).
+
+test(raices, true(cercanos(Rs, [-1.4142135623730951, 1.4142135623730951]))) :-
+    raices(x ^ 2 - 2, 2 * x, x, Rs).
+
+test(raices_ninguna, true(Rs == [])) :-
+    raices(x ^ 2 + 1, 2 * x, x, Rs).
+
+test(resolver_numerico, all(R =:= [2.0945514815423265])) :-
+    ecuaciones:resolver_numerico(x ^ 3 - 2 * x - 5 = 0, x, x = R).
+
+test(resolver_numerico_sin_derivada, [fail]) :-
+    ecuaciones:resolver_numerico(cos(x) = x, x, _).
+
+test(iniciales, all(X0 == [-10, -1, 1, 10])) :-
+    ecuaciones:inicial(X0).
+
 :- end_tests(ecuaciones).

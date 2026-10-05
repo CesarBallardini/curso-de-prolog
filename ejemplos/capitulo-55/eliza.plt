@@ -60,4 +60,58 @@ test(fin_de_entrada, true(Lineas == ["Hola. Cuéntame qué te preocupa.",
     con_entrada("", Salida),
     split_string(Salida, "\n", "", Lineas).
 
+%!  eco(+Frase:string, +N0:integer, -N:integer, -Respuesta:string) is det.
+%
+%   Respuesta numera Frase con el contador N0; N es el contador siguiente.
+eco(Frase, N0, N, Respuesta) :-
+    N is N0 + 1,
+    format(string(Respuesta), "~w: ~w", [N0, Frase]).
+
+test(estado_inicial, true(E == eliza(t, []))) :-
+    estado_inicial(E).
+
+test(elegir_regla_clase, true(Id == maquinas)) :-
+    eliza:elegir_regla([creo, que, eres, una, computadora], Id, _).
+
+test(elegir_regla_rango, true(Id == me_dice)) :-
+    eliza:elegir_regla([mi, hermano, me, dice, que, estoy, loco], Id, _).
+
+test(elegir_regla_ninguna, true(Id == ninguna)) :-
+    eliza:elegir_regla([bueno], Id, _).
+
+test(turno_ciclo, true(Ps == [a, b, a])) :-
+    empty_assoc(T0),
+    eliza:turno(r, [a, b], T0, T1, P1),
+    eliza:turno(r, [a, b], T1, T2, P2),
+    eliza:turno(r, [a, b], T2, _, P3),
+    Ps = [P1, P2, P3].
+
+test(texto, true(T == "¿Por qué estás cansada?")) :-
+    eliza:texto("Estoy cansada", ["¿Por qué estás ", [cansada], "?"], T).
+
+test(recordar, true(R == ["x", "Antes dijiste que tu jefe te grita. \c
+                                ¿Tiene algo que ver con esto?"])) :-
+    eliza:recordar("Mi jefe me grita", [mi, jefe, me, grita], ["x"], R).
+
+test(no_recordar, true(R == ["x"])) :-
+    eliza:recordar("Estoy bien", [estoy, bien], ["x"], R).
+
+test(despedida) :-
+    eliza:despedida("Adiós, hasta mañana").
+
+test(despedida_chau) :-
+    eliza:despedida("chau").
+
+test(no_despedida, fail) :-
+    eliza:despedida("Hola").
+
+test(conversar_otro_responder,
+     true(Lineas == ["> 0: uno", "> 1: dos",
+                     "> Adiós. Gracias por conversar.", ""])) :-
+    setup_call_cleanup(
+        open_string("uno\ndos\nchau\n", In),
+        with_output_to(string(Salida), conversar(In, eco, 0)),
+        close(In)),
+    split_string(Salida, "\n", "", Lineas).
+
 :- end_tests(eliza).

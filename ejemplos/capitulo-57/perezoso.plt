@@ -28,4 +28,28 @@ test(punto_fijo, [true(V == 120)]) :-
 test(forzar_error, [error(type_error(lista_no_vacia, []))]) :-
     ejecutar_perezoso(nombre, "tomar 2 [1, cabeza []]", "", _).
 
+test(valor_perezoso_lambda, [true(V == clausura(x, id(x), [y-p]))]) :-
+    contexto(nombre, [], Ctx),
+    valor_perezoso(lam(x, id(x)), [y-p], Ctx, V).
+
+% El argumento queda como promesa: cons no la fuerza.
+test(valor_perezoso_cons,
+     [true(V == [promesa(num(1), []) | promesa(ap(id(cabeza), id(nil)), [])])]) :-
+    contexto(nombre, [], Ctx),
+    valor_perezoso(ap(ap(id(cons), num(1)), ap(id(cabeza), id(nil))), [],
+                   Ctx, V).
+
+test(prometer, [true(P == promesa(num(1), [x-q]))]) :-
+    prometer(nombre, num(1), [x-q], P).
+
+test(forzar, [true(V == 3)]) :-
+    contexto(nombre, [], Ctx),
+    forzar(promesa(ap(ap(id(+), num(1)), num(2)), []), Ctx, V).
+
+% Una promesa por nombre no guarda su valor: forzarla no la cambia.
+test(forzar_no_recuerda, [true(P == promesa(num(7), []))]) :-
+    contexto(nombre, [], Ctx),
+    P = promesa(num(7), []),
+    forzar(P, Ctx, _).
+
 :- end_tests(perezoso).

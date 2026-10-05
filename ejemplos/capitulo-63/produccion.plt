@@ -63,4 +63,39 @@ test(parar, [F, H] == [parar(listo), [b, a]]) :-
     aplicar_acciones([agregar(b), parar(listo), agregar(c)], M0, M, F),
     hechos(M, H).
 
+% cumple_condicion/4: un patrón agrega el sello del hecho; una prueba y
+% una negación no agregan ninguno.
+test(cumple_patron, all(S == [[1]])) :-
+    memoria_con([padre(juan, ana), padre(ana, luis)], M),
+    cumple_condicion(padre(juan, _), M, S, []).
+
+test(cumple_prueba, all(S == [[]])) :-
+    memoria_con([a], M),
+    cumple_condicion({1 < 2}, M, S, []).
+
+test(cumple_negacion, all(S == [[]])) :-
+    memoria_con([padre(juan, ana)], M),
+    cumple_condicion(no(padre(luis, _)), M, S, []).
+
+test(cumple_negacion_falla, [fail]) :-
+    memoria_con([padre(juan, ana)], M),
+    cumple_condicion(no(padre(juan, _)), M, _, []).
+
+% reconocer_actuar/9 cuenta los ciclos desde N0 y termina cuando no hay
+% instanciaciones nuevas, o con el resultado de parar/1.
+test(reconocer_actuar, [true(N-R-H == 2-nada_aplicable-[ prog(juan, ana),
+                                                         prog(ana, luis),
+                                                         padre(ana, luis),
+                                                         padre(juan, ana)
+                                                       ])]) :-
+    memoria_con([padre(juan, ana), padre(ana, luis)], M),
+    reconocer_actuar([(r1 :: [padre(A, B)] ---> [agregar(prog(A, B))])],
+                     orden, sin_traza, 0, N, [], M, M1, R),
+    hechos(M1, H).
+
+test(reconocer_actuar_parar, [true(N-R == 4-listo)]) :-
+    memoria_con([padre(juan, ana), padre(ana, luis)], M),
+    reconocer_actuar([(r1 :: [padre(_, _)] ---> [parar(listo)])],
+                     orden, sin_traza, 3, N, [], M, _, R).
+
 :- end_tests(produccion).

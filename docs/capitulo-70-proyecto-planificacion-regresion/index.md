@@ -4,16 +4,25 @@ La [sección 40.6](../capitulo-40-busqueda-y-planificacion/planificacion.md#plan
 planifica en el mundo de bloques por análisis de medios y fines: elige una
 meta que el estado no cumple, un operador que la logra, planifica antes sus
 precondiciones y sigue desde el estado al que llega. Ese método logra las
-metas una después de la otra, y la anomalía de Sussman muestra su límite:
+metas una después de la otra, y la anomalía de Sussman (el problema de los
+tres bloques de la tesis de Gerald Sussman, 1973) muestra su límite:
 en el mundo sin pinza, el plan más corto que construye tiene cuatro
 acciones donde alcanzan tres, porque no **intercala** una acción que
 prepara una meta mientras logra otra. Este capítulo construye el
 planificador que la sección nombra al final, WARPLAN, de David Warren
-(1974). Planifica hacia atrás: un hecho vale después de un plan si la
+(memo «WARPLAN: a system for generating plans», 1974). Planifica hacia atrás: un hecho vale después de un plan si la
 última acción lo agrega, o si valía antes y la acción no lo borra, y esa
 **regresión** a través de las acciones permite insertar una acción nueva en
 cualquier punto del plan, no solo al final. Las metas ya logradas quedan
 **protegidas**: ninguna acción nueva puede borrarlas.
+
+![Tres cubos: C sobre A, y A y B sobre la mesa](sussman.svg)
+
+El estado inicial de la anomalía de Sussman: el cubo C está sobre el A, y
+los cubos A y B están sobre la mesa. Las metas son A sobre B y B sobre C,
+una torre con C abajo. Imagen: Eyrian, en la Wikipedia en inglés,
+[CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/), vía
+[Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Sussman-anomaly-1.svg).
 
 El programa terminado resuelve la anomalía con tres movimientos, y en el
 mundo del robot de STRIPS encuentra cómo encender la luz:
@@ -67,9 +76,9 @@ Al terminar el capítulo, el lector puede:
   inferencias que cuestan, sobre el mismo mundo.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:20 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:25 h**.
     Resolver los 5 ejercicios marcados con ★: **1:35 h**.
-    Resolver los 11 ejercicios del final: **3:30 h**.
+    Resolver los 12 ejercicios del final: **3:45 h**.
 
 ## 70.1 El mundo como descripción
 
@@ -397,7 +406,9 @@ false.
 
 ## 70.4 Versión 2: WARPLAN, insertar la acción antes
 
-La segunda versión agrega a `lograr/9` una cláusula. Si la acción no puede
+La segunda versión agrega a `lograr/9` una cláusula, la que Warren llama
+**inserción** frente a la **extensión** de la versión 1; sin ella, dice el
+memo, el planificador es casi STRIPS sin la permutación de las metas. Si la acción no puede
 ir al final del plan, se prueba **antes de la última acción**, y así hacia
 atrás hasta el principio. Para pasar la acción por delante de la última,
 esa última acción no puede borrar la meta: la meta la logra la acción
@@ -489,7 +500,9 @@ un minuto de búsqueda no dio ningún plan, porque se hunde en la cadena de
 más corto: con a sobre b sobre c y las metas `sobre(c, b)` y `sobre(b, a)`,
 da cuatro acciones donde alcanzan tres ([ejercicio 2](soluciones.md#ejercicio-2)).
 Kluźniak y Szpakowicz señalan las dos cosas: los planes de WARPLAN no son
-óptimos, y su costo crece de manera exponencial. La cota con profundización
+óptimos, y su costo crece de manera exponencial; el memo de Warren ya
+anota que la búsqueda en profundidad pura no es completa y que el sistema
+no detecta ciclos. La cota con profundización
 cambia una parte de ese costo por la garantía de terminar y de dar primero
 los planes más cortos.
 
@@ -503,13 +516,36 @@ los planes más cortos.
 
 El mismo planificador sirve para otro mundo: el del robot con el que Fikes
 y Nilsson probaron STRIPS en 1971, y con el que Warren comparó su
-programa. Hay cinco habitaciones; la 5 es un pasillo, unido a cada una de
+programa. STRIPS planificaba las acciones de Shakey, el robot móvil
+del Stanford Research Institute:
+
+![El robot Shakey en una vitrina del Computer History Museum](shakey.jpg)
+
+Shakey (1966–1972), el robot para el que se escribió STRIPS, expuesto en
+el Computer History Museum. Imagen: The wub,
+[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/), vía
+[Wikimedia Commons](https://commons.wikimedia.org/wiki/File:SRI_Shakey_robot,_1969,_Computer_History_Museum.jpg).
+
+El mundo del robot de STRIPS tiene cinco habitaciones; la 5 es un pasillo, unido a cada una de
 las otras por una puerta. En la habitación 1 están los puntos 1 a 5, tres
 cajas en los puntos 1, 2 y 3 y el interruptor de la luz en el punto 4; el
 punto 6 está en la habitación 4. El robot empieza en el punto 5 y actúa
 con siete acciones: ir a un punto, acercarse a algo, empujar una caja
 junto a algo, cruzar una puerta, subir a una caja, bajar y encender el
 interruptor.
+
+```mermaid
+flowchart LR
+    H1["habitación 1<br/>puntos 1 a 5<br/>cajas 1, 2 y 3<br/>interruptor 1<br/>robot en el punto 5"]
+    H2["habitación 2"]
+    H3["habitación 3"]
+    H4["habitación 4<br/>punto 6"]
+    H5["habitación 5<br/>(pasillo)"]
+    H1 ---|puerta 1| H5
+    H2 ---|puerta 2| H5
+    H3 ---|puerta 3| H5
+    H4 ---|puerta 4| H5
+```
 
 `robot.pl` describe ese mundo con los mismos siete predicados. Dos cosas
 son nuevas. Una parte de los hechos no cambia nunca —qué puerta une qué
@@ -625,7 +661,7 @@ La descripción con acciones sin variables cuesta más del doble que la de
 `cubos.pl`, y sin la cota agota la pila. Está en la página
 [El mundo del capítulo 40](comparacion.md#el-mundo-del-capitulo-40).
 
-!!! example "Patrón 65 — Descripción del mundo como parámetro"
+!!! example "Patrón 69 — Descripción del mundo como parámetro"
     **Problema.** Un planificador tiene que servir para más de un mundo
     —los cubos, el robot de STRIPS, el mundo con pinza del
     [capítulo 40](../capitulo-40-busqueda-y-planificacion/index.md)—, y algunos de esos mundos ya están descritos
@@ -650,7 +686,7 @@ La descripción con acciones sin variables cuesta más del doble que la de
     mundo. Se diferencia del
     [Patrón 54](../patrones.md#54-la-frontera-decide-la-estrategia), en el
     que el problema es fijo y la estrategia de búsqueda es el parámetro, y
-    del [Patrón 59](../patrones.md#59-interprete-con-conducta-como-parametro),
+    del [Patrón 60](../patrones.md#60-interprete-con-conducta-como-parametro),
     en el que la estructura es fija y el parámetro da el significado de sus
     piezas: aquí el algoritmo y su significado son fijos, y lo que varía
     son los datos sobre los que razona, una descripción de varias
@@ -673,7 +709,21 @@ La descripción con acciones sin variables cuesta más del doble que la de
     | C1 | cada predicado declara modos y determinación; `planificar/5` es `nondet` y da los planes de menor a mayor longitud, y `preservada/3` e `inconsistente/3` aclaran cómo tratan las variables libres |
     | C3 | el planificador no conoce el mundo: recibe su módulo y solo llama a los siete predicados de la descripción; el mismo código planifica en los cubos, en el robot y en los dos mundos del [capítulo 40](../capitulo-40-busqueda-y-planificacion/index.md) |
     | C4 | `preservada/3`, `inconsistente/3` y `es_prueba/2` trabajan sobre una copia dentro de `\+ \+`: no ligan nada ni dejan alternativas |
-    | C7 | 66 pruebas en siete archivos, y 22 más sobre las soluciones; cada plan que se prueba pasa además por `logra/4`, que lo ejecuta por regresión desde el estado inicial |
+    | C7 | 92 pruebas en siete archivos, y 33 más sobre las soluciones; cada plan que se prueba pasa además por `logra/4`, que lo ejecuta por regresión desde el estado inicial |
+
+## 70.7 Más allá de WARPLAN
+
+Las fuentes del capítulo describen tres cosas que las cuatro versiones no
+hacen, y que la página [Más allá de WARPLAN](extensiones.md) agrega. Los
+**planes condicionales** de Warren (1976) examinan un hecho del mundo y
+siguen por una rama u otra; `condicional.pl` construye una versión simple,
+para un estado inicial que puede ser uno de varios. El **control de
+ciclos** que el memo de 1974 propone entre sus mejoras vuelve finita la
+búsqueda sin cota, pero en el segundo orden de la anomalía no la hace
+practicable: `ciclos.pl` lo mide. Y el **mundo de las llaves y las cajas**
+del apéndice del memo, `llaves.pl`, reproduce el plan de ocho acciones
+que Warren publica, con dos versiones de la acción de llevar, una por cada
+clase de destino.
 
 ## Ejercicios
 
@@ -734,6 +784,12 @@ tiene de propio.
     b), sobre(b, X)], 4, Plan)`, medir sus inferencias, y agregar al mundo
     del ejercicio 2 una combinación imposible que haga fallar la consulta
     sin buscar.
+12. **(2)** Con `condicional.pl` y el mundo `dudoso.pl`, predecir el plan
+    condicional para `[sobre(c, a)]` y para `[sobre(b, c)]` desde los
+    estados `c_sobre_a` y `c_sobre_b`. Comprobarlo con
+    `planificar_casos/5`, obtener con `ejecutar_casos/4` las acciones de
+    cada rama y explicar por qué una de las ramas de la primera meta está
+    vacía.
 
 ## Resumen
 
@@ -751,7 +807,8 @@ tiene de propio.
 | `planificar/5` de `warplan.pl`, `regresar/4`, `planificar_sin_cota/4` | la versión 2, WARPLAN |
 | `robot.pl` | la versión 3: el mundo del robot, con hechos deducidos |
 | `pinza.pl`, `sin_pinza.pl`, `medios_fines/3` | la versión 4: los mundos del [capítulo 40](../capitulo-40-busqueda-y-planificacion/index.md), traducidos |
-| **[Patrón 65](../patrones.md#65-descripcion-del-mundo-como-parametro)** | descripción del mundo como parámetro |
+| `planificar_casos/5`, `planificar_sin_ciclos/4`, `llaves.pl` | más allá de WARPLAN: planes condicionales, control de ciclos y el mundo de las llaves y las cajas |
+| **[Patrón 69](../patrones.md#69-descripcion-del-mundo-como-parametro)** | descripción del mundo como parámetro |
 
 ## Temas que se retoman
 
@@ -775,7 +832,53 @@ tiene de propio.
   publicados como resultados, que el capítulo reproduce. El libro presenta
   una versión revisada del programa de David Warren («WARPLAN: a system
   for generating plans», 1974), y el mundo del robot de Richard Fikes y
-  Nils Nilsson (STRIPS, 1971); el capítulo los conoce a través de él.
+  Nils Nilsson (STRIPS, 1971); el capítulo los conoce a través de él. Sus
+  notas bibliográficas remiten además a Helder Coelho, José Carlos Cotta y
+  Luís Moniz Pereira, *How to Solve It with Prolog* (Laboratório Nacional
+  de Engenharia Civil, Lisboa, 1980), de donde proviene el texto del
+  programa y de los mundos, y a Warren (1976), *Generating Conditional
+  Plans and Programs* (AISB, Edimburgo, 1976), la extensión a planes
+  condicionales; sin edición en línea de acceso libre, el capítulo la
+  conoce por esa nota, y la versión por casos de la página
+  [Más allá de WARPLAN](extensiones.md#planes-condicionales) es propia.
+- David H. D. Warren, *WARPLAN: a system for generating plans*, Memo 76
+  del Department of Computational Logic, Universidad de Edimburgo, 1974 —
+  apartados «The 3 blocks problem», «Specifying a problem»,
+  «Implementation of the system», «Deficiencies of the system» y
+  «Completeness and irredundancy».
+  [Copia del Software Preservation Group](https://www.softwarepreservation.org/projects/prolog/edinburgh/doc/Warren-WARPLAN_A_System_for_Generating_Plans-1974_06.pdf/view).
+  Es el texto original del planificador: la suposición lineal de STRIPS y
+  la falta de intercalación, la anomalía de los tres bloques, el
+  formalismo de `add`, `del`, `can`, `always`, `imposs` y `given`, las
+  dos maneras de lograr una acción (extensión e inserción), la regresión
+  de los protegidos a través de la última acción, la doble prueba de
+  `preserved` antes y después de planificar las precondiciones, y las
+  deficiencias que el memo mismo señala: búsqueda en profundidad sin
+  control de ciclos, planes no óptimos, orden de las metas fijado a mano.
+  La página [Más allá de WARPLAN](extensiones.md) toma de su apartado
+  «Deficiencies of the system» el control de ciclos y de su apéndice el
+  problema de las llaves y las cajas, una simplificación que Warren hace
+  de una prueba de Donald Michie (*On Machine Intelligence*, Edinburgh
+  University Press, 1974), con su plan de ocho acciones.
+  El capítulo toma de él las versiones 1 y 2 como «sin la cláusula de
+  inserción» y «con ella», y la observación de que intercambiar las dos
+  cláusulas de `achieve` da otra versión del planificador.
+- Richard E. Fikes y Nils J. Nilsson, «STRIPS: a new approach to the
+  application of theorem proving to problem solving», *Artificial
+  Intelligence* 2, 1971.
+  [Copia del autor](https://ai.stanford.edu/~nilsson/OnlinePubs-Nils/PublishedPapers/strips.pdf).
+  Origen de los operadores con precondiciones, lista de agregados y lista
+  de borrados, y del mundo del robot con habitaciones, puertas, cajas e
+  interruptor de la [sección 70.5](#705-version-3-el-robot-de-strips); el
+  formalismo es el del [capítulo 40](../capitulo-40-busqueda-y-planificacion/index.md),
+  que la versión 4 traduce.
+- Gerald J. Sussman, *A Computational Model of Skill Acquisition*,
+  informe técnico AI-TR-297 del MIT, 1973 (el sistema HACKER).
+  [Edición en DSpace@MIT](https://dspace.mit.edu/handle/1721.1/6894).
+  Allí aparece, como «situación anómala», el problema de los tres bloques
+  que el capítulo llama anomalía de Sussman; Warren lo cita de esta tesis
+  y atribuye a Austin Tate haberlo señalado primero como un problema que
+  un planificador lineal no resuelve de manera óptima.
 
 El código del capítulo es propio, escrito para el curso: del libro se
 toman las ideas y la estructura del algoritmo, no el código. La cota de

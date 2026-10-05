@@ -2,7 +2,7 @@
 
 Curso de SWI-Prolog en castellano, de estudio autónomo, destinado a estudiantes
 de segundo año sin conocimientos previos de Prolog. Se publica como sitio web
-con MkDocs en **https://katra.ballardini.com.ar/curso-de-prolog/**, con un PDF
+con MkDocs en **<https://katra.ballardini.com.ar/curso-de-prolog/>**, con un PDF
 por capítulo.
 
 **Todos los ejemplos se abren y se ejecutan en el navegador**: cada bloque de
@@ -66,6 +66,8 @@ docs/                     el curso; un directorio por capítulo, con index.md y 
 ejemplos/                 los ejemplos, un directorio por capítulo
   capitulo-01/familia.pl    el programa
   capitulo-01/familia.plt   sus pruebas plunit
+diapositivas/             las diapositivas de cada capítulo: capitulo-01.md (fuente) y capitulo-01.odp
+  imagenes/capitulo-01/     sus ilustraciones; imagenes/CREDITOS.md, las fotografías y sus licencias
 tools/                    las herramientas (en inglés)
 references/               material de consulta: cursos, banco de ejercicios, pares SQL/Prolog
 books/                    las conversiones a Markdown de los libros fuente (los PDF no se versionan)
@@ -217,6 +219,68 @@ make docs        # después el sitio en site/, ya con los enlaces a los PDF
 El orden importa: `make docs` no genera los PDF, y deja sin enlace los que no
 encuentra.
 
+### Generar las diapositivas de un capítulo
+
+```bash
+make slides      # diapositivas/capitulo-NN.odp de cada capitulo-NN.md que cambió
+make slides-pdf  # además, diapositivas/capitulo-NN.pdf exportado de cada .odp
+```
+
+Las diapositivas no repiten el texto del capítulo: llevan lo que es difícil de
+escribir en un pizarrón (ilustraciones, código, ejecuciones, recorridos paso a
+paso), y la explicación va en las notas del orador. La fuente de cada capítulo,
+`diapositivas/capitulo-NN.md`, está escrita en Markdown de Pandoc:
+
+- una diapositiva por cada título `##`; un título `#` inicial es la portada;
+- las notas del orador, un bloque `::: notes` por diapositiva, en castellano
+  para ser leído en voz alta: sin código ni símbolos de Prolog;
+- dos columnas con `:::: columns` y `::: column`;
+- las imágenes, sin texto alternativo (`![](imagenes/capitulo-NN/x.svg)`: con
+  texto, Pandoc lo pone como epígrafe), en `diapositivas/imagenes/capitulo-NN/`.
+  Las ilustraciones son SVG dibujados para el curso; las fotografías se toman
+  de Wikimedia Commons, verificando la licencia en su página, y se registran
+  en `diapositivas/imagenes/CREDITOS.md` y en la diapositiva «Créditos».
+
+El código sale de `ejemplos/` con los mismos marcadores `<!-- ejemplo: … -->`
+del texto, y cada ejecución es una transcripción real: `make check` verifica
+unos y otras en las diapositivas igual que en los capítulos, y
+`uv run --frozen tools/sync-examples.py --write diapositivas/capitulo-NN.md`
+copia el código. El capítulo se toma del nombre del archivo. Un comentario
+`<!-- … -->` nunca va entre un título y un bloque `:::: columns`, porque Pandoc
+parte ahí la diapositiva en dos: va dentro de la primera columna.
+
+El código se ve en Consolas de 16 puntos: entran 15 líneas, de hasta 70
+caracteres a todo el ancho o 35 en una columna. Pandoc genera un `.pptx`
+intermedio con los estilos de `diapositivas/plantilla.pptx` (la produce
+`tools/slides-template.py` a partir de la plantilla de Pandoc),
+`tools/slides-breaks.py` corrige los saltos de línea de los bloques sin
+resaltado, y LibreOffice lo convierte en el `.odp` que se versiona. Requiere
+Pandoc y LibreOffice; si `soffice` no está en el PATH, se toma de
+`C:\Program Files\LibreOffice\program` o de la variable `SOFFICE`. CI no tiene
+LibreOffice, y `make check` no genera las diapositivas.
+
+### Generar el video narrado de un capítulo
+
+```bash
+make video c=01  # diapositivas/capitulo-01.mp4; sin c=, el de cada capítulo con diapositivas
+```
+
+Cada diapositiva del `.odp` se muestra mientras una voz lee sus notas.
+`tools/video.py` extrae las notas del propio `.odp`, adapta la notación de
+Prolog para la lectura en voz alta (`padre/2` se lee «padre de aridad 2»; `:-`,
+«si») y sintetiza la voz con Piper, sin conexión, con la voz argentina
+`es_AR-daniela-high`. LibreOffice exporta las diapositivas a imágenes y ffmpeg
+arma el video. Cada diapositiva permanece 1,5 s en pantalla antes de que empiece
+la voz y 2 s después de que termina, con medio segundo adicional por línea de
+código visible y un mínimo de 6 s. Los parámetros están al comienzo de la
+herramienta.
+
+Requiere LibreOffice y ffmpeg. La primera vez descarga el modelo de la voz
+(unos 110 MB) en `%LOCALAPPDATA%\piper-voices`, o en la carpeta que indique
+`PIPER_VOICES`. Los `.mp4` no se versionan, y ni CI ni `make check` los generan.
+`uv run tools/video.py diapositivas/capitulo-01.odp --text` muestra el texto que
+se envía a la voz, sin generar el video.
+
 ### Publicar el curso
 
 El sitio se publica desde `main`, en
@@ -275,6 +339,9 @@ make clean-pdf   # borrar los PDF generados
 | `make docs-serve` | Sirve el sitio en la máquina propia y lo recarga con cada cambio; `DIRECCION=` cambia la dirección. |
 | `make pdf` | Genera el PDF de cada capítulo y de sus soluciones, solo los que cambiaron. Se ejecuta antes de `make docs` para un sitio con todos los PDF. |
 | `make pldoc` | Regenera las páginas PlDoc de los ejemplos que enlaza el capítulo 14. |
+| `make slides` | Genera las diapositivas de cada capítulo (`diapositivas/capitulo-NN.odp`) desde su fuente Markdown. Requiere Pandoc y LibreOffice; no forma parte de `make check`. |
+| `make slides-pdf` | Exporta cada juego de diapositivas a PDF (`diapositivas/capitulo-NN.pdf`), después de regenerar el `.odp` si hace falta. |
+| `make video` | Genera el video narrado de las diapositivas de cada capítulo (`c=01`: uno solo). Requiere LibreOffice y ffmpeg; no forma parte de `make check`. |
 | **Python** | |
 | `make lint` | Ejecuta ruff (reglas y formato) sobre todo el Python del repositorio, sin modificar nada. |
 | `make format` | Aplica el formato de ruff y las correcciones que ruff hace solo. |

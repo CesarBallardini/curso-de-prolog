@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" width="960" height="480">
+  <title>Árbol de la versión que no termina, paso 2: reaparece el mismo objetivo, antepasado(juan, …), con otra variable</title>
+  <rect x="0" y="0" width="960" height="480" fill="#FFFFFF"/>
+  <line x1="240.0" y1="61.0" x2="240.0" y2="115.0" stroke="#1F3A5F" stroke-width="3"/>
+  <text x="228.0" y="82.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="end" xml:space="preserve">R1. θ₁ =</text>
+  <text x="228.0" y="106.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="end" xml:space="preserve">{ A/juan, D/Quien }</text>
+  <rect x="93.2" y="18.8" width="293.7" height="42.4" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <rect x="103.2" y="27.5" width="273.7" height="26.2" rx="5" fill="#FFFFFF" stroke="#6A3D9A" stroke-width="2"/>
+  <text x="240.0" y="47.5" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">antepasado(juan, Quien)</text>
+  <line x1="387.0" y1="42.0" x2="427.0" y2="64.0" stroke="#1F3A5F" stroke-width="2.5"/>
+  <text x="399.0" y="38.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">R2</text>
+  <circle cx="427" cy="64" r="4" fill="#1F3A5F"/>
+  <line x1="427.0" y1="64.0" x2="452.0" y2="86.0" stroke="#9AA5B1" stroke-width="2" stroke-dasharray="3 5"/>
+  <text x="457.0" y="102.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve" font-style="italic">nunca llega</text>
+  <text x="457.0" y="126.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve" font-style="italic">a pasar por aquí</text>
+  <rect x="104.7" y="114.7" width="270.6" height="70.7" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <rect x="114.7" y="123.3" width="250.6" height="26.2" rx="5" fill="#FFFFFF" stroke="#6A3D9A" stroke-width="2"/>
+  <text x="240.0" y="143.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">antepasado(juan, X1),</text>
+  <text x="240.0" y="171.6" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">padre(X1, Quien)</text>
+  <line x1="376.0" y1="152.0" x2="416.0" y2="174.0" stroke="#1F3A5F" stroke-width="2.5"/>
+  <text x="388.0" y="148.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">R2</text>
+  <circle cx="416" cy="174" r="4" fill="#1F3A5F"/>
+  <line x1="416.0" y1="174.0" x2="441.0" y2="196.0" stroke="#9AA5B1" stroke-width="2" stroke-dasharray="3 5"/>
+  <text x="446.0" y="212.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve" font-style="italic">nunca llega</text>
+  <text x="446.0" y="236.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve" font-style="italic">a pasar por aquí</text>
+  <line x1="240.0" y1="186.0" x2="240.0" y2="250.0" stroke="#1F3A5F" stroke-width="3"/>
+  <text x="228.0" y="210.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="end" xml:space="preserve">R1. θ₂ =</text>
+  <text x="228.0" y="234.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="end" xml:space="preserve">{ A/juan, D/X1 }</text>
+  <rect x="104.7" y="250.5" width="270.6" height="99.1" rx="10" fill="#FCE8D2" stroke="#D9822B" stroke-width="3"/>
+  <rect x="114.7" y="259.2" width="250.6" height="26.2" rx="5" fill="#FFFFFF" stroke="#6A3D9A" stroke-width="2"/>
+  <text x="240.0" y="279.1" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">antepasado(juan, X2),</text>
+  <text x="240.0" y="307.5" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">padre(X2, X1),</text>
+  <text x="240.0" y="335.8" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">padre(X1, Quien)</text>
+  <text x="650.0" y="30.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">programa</text>
+  <rect x="650.0" y="40.0" width="300.0" height="98.0" rx="6" fill="#FCE8D2" stroke="#D9822B" stroke-width="2"/>
+  <rect x="658.0" y="45.0" width="40.0" height="28.0" rx="5" fill="#1F3A5F"/>
+  <text x="678.0" y="66.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#FFFFFF" text-anchor="middle" xml:space="preserve" font-weight="bold">R1</text>
+  <text x="706.0" y="66.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">antepasado(A, D) :-</text>
+  <text x="706.0" y="96.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">    antepasado(A, X),</text>
+  <text x="706.0" y="126.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">    padre(X, D).</text>
+  <rect x="650.0" y="146.0" width="300.0" height="68.0" rx="6" fill="#FFFFFF" stroke="#9AA5B1" stroke-width="2" stroke-dasharray="3 5"/>
+  <rect x="658.0" y="151.0" width="40.0" height="28.0" rx="5" fill="#9AA5B1"/>
+  <text x="678.0" y="172.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#FFFFFF" text-anchor="middle" xml:space="preserve" font-weight="bold">R2</text>
+  <text x="706.0" y="172.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#9AA5B1" text-anchor="start" xml:space="preserve">antepasado(A, D) :-</text>
+  <text x="706.0" y="202.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#9AA5B1" text-anchor="start" xml:space="preserve">    padre(A, D).</text>
+  <rect x="650.0" y="300.0" width="300.0" height="120.0" rx="10" fill="#F0E8F7" stroke="#6A3D9A" stroke-width="2"/>
+  <text x="668.0" y="336.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#6A3D9A" text-anchor="start" xml:space="preserve" font-weight="bold">el mismo objetivo</text>
+  <text x="668.0" y="368.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#6A3D9A" text-anchor="start" xml:space="preserve">antepasado(juan, …)</text>
+  <text x="668.0" y="400.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#6A3D9A" text-anchor="start" xml:space="preserve">con otra variable</text>
+</svg>

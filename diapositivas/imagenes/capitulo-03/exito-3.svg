@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" width="960" height="480">
+  <title>Paso 3: se retrocede al primer objetivo, Que se desliga y el tercer hecho la liga a futbol</title>
+  <defs>
+    <marker id="a-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1F2933"/></marker>
+    <marker id="a-navy" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1F3A5F"/></marker>
+    <marker id="a-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#D9822B"/></marker>
+    <marker id="a-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2E7D32"/></marker>
+    <marker id="a-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#C62828"/></marker>
+    <marker id="a-grey" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#9AA5B1"/></marker>
+  </defs>
+  <rect x="0" y="0" width="960" height="480" fill="#FFFFFF"/>
+  <rect x="77.9" y="26.7" width="224.5" height="31.2" rx="6" fill="#FCE8D2" stroke="#D9822B" stroke-width="3"/>
+  <rect x="321.0" y="26.7" width="238.8" height="31.2" rx="6" fill="#F1F3F5" stroke="#9AA5B1" stroke-width="1.5"/>
+  <text x="40.0" y="48.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="26" fill="#1F2933" text-anchor="start" xml:space="preserve">?- gusta(ana, Que), gusta(luis, Que).</text>
+  <text x="190.2" y="90.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#D9822B" text-anchor="middle" font-weight="bold" xml:space="preserve">Redo</text>
+  <text x="40.0" y="128.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="16" fill="#52606D" text-anchor="start" xml:space="preserve">se busca</text>
+  <text x="130.0" y="128.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#D9822B" text-anchor="start" font-weight="bold" xml:space="preserve">gusta(ana, Que)</text>
+  <rect x="60.0" y="147.0" width="380.0" height="34.0" rx="6" fill="#FFFFFF" stroke="#9AA5B1" stroke-width="1.5"/>
+  <text x="76.0" y="171.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">gusta(juan, futbol).</text>
+  <rect x="60.0" y="187.0" width="380.0" height="34.0" rx="6" fill="#FFFFFF" stroke="#9AA5B1" stroke-width="1.5"/>
+  <text x="76.0" y="211.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">gusta(ana, prolog).</text>
+  <rect x="60.0" y="227.0" width="380.0" height="34.0" rx="6" fill="#E3F1E4" stroke="#2E7D32" stroke-width="3"/>
+  <text x="76.0" y="251.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">gusta(ana, futbol).</text>
+  <path d="M407.9,244.0 L414.2,250.3 L425.0,235.9" fill="none" stroke="#2E7D32" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="60.0" y="267.0" width="380.0" height="34.0" rx="6" fill="#FFFFFF" stroke="#9AA5B1" stroke-width="1.5"/>
+  <text x="76.0" y="291.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">gusta(luis, futbol).</text>
+  <rect x="60.0" y="307.0" width="380.0" height="34.0" rx="6" fill="#FFFFFF" stroke="#9AA5B1" stroke-width="1.5"/>
+  <text x="76.0" y="331.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">gusta(eva, prolog).</text>
+  <rect x="60.0" y="347.0" width="380.0" height="34.0" rx="6" fill="#FFFFFF" stroke="#9AA5B1" stroke-width="1.5"/>
+  <text x="76.0" y="371.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">gusta(sofia, dibujar).</text>
+  <line x1="22.0" y1="244.0" x2="54.0" y2="244.0" stroke="#D9822B" stroke-width="4" marker-end="url(#a-orange)"/>
+  <text x="450.0" y="250.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#D9822B" text-anchor="start" font-weight="bold" xml:space="preserve">← continúa aquí</text>
+  <text x="600.0" y="148.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#1F3A5F" text-anchor="start" font-weight="bold" xml:space="preserve">Que</text>
+  <rect x="670.0" y="121.0" width="170.0" height="38.0" rx="19" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2.5"/>
+  <text x="755.0" y="147.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#1F3A5F" text-anchor="middle" font-weight="bold" xml:space="preserve">futbol</text>
+  <text x="600.0" y="214.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#1F2933" text-anchor="start" xml:space="preserve">Se retrocede al primer objetivo</text>
+  <text x="600.0" y="239.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#1F2933" text-anchor="start" xml:space="preserve">y se continúa donde quedó.</text>
+  <text x="600.0" y="264.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#1F2933" text-anchor="start" xml:space="preserve">Que se desliga y queda ligada</text>
+  <text x="600.0" y="289.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#1F2933" text-anchor="start" xml:space="preserve">a futbol.</text>
+  <text x="40.0" y="418.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#52606D" text-anchor="start" xml:space="preserve">estados de Que</text>
+  <rect x="40.0" y="431.0" width="110.0" height="38.0" rx="19" fill="#FFFFFF" stroke="#1F3A5F" stroke-width="2" stroke-dasharray="6 4"/>
+  <text x="95.0" y="456.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#1F3A5F" text-anchor="middle" font-style="italic" xml:space="preserve">libre</text>
+  <line x1="150.0" y1="450.0" x2="172.0" y2="450.0" stroke="#1F3A5F" stroke-width="2" marker-end="url(#a-navy)"/>
+  <rect x="180.0" y="431.0" width="110.0" height="38.0" rx="19" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2.5"/>
+  <text x="235.0" y="457.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="17" fill="#1F3A5F" text-anchor="middle" font-weight="bold" xml:space="preserve">prolog</text>
+  <line x1="290.0" y1="450.0" x2="312.0" y2="450.0" stroke="#1F3A5F" stroke-width="2" marker-end="url(#a-navy)"/>
+  <rect x="320.0" y="431.0" width="110.0" height="38.0" rx="19" fill="#FFFFFF" stroke="#1F3A5F" stroke-width="2" stroke-dasharray="6 4"/>
+  <text x="375.0" y="456.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#1F3A5F" text-anchor="middle" font-style="italic" xml:space="preserve">libre</text>
+  <line x1="430.0" y1="450.0" x2="452.0" y2="450.0" stroke="#1F3A5F" stroke-width="2" marker-end="url(#a-navy)"/>
+  <rect x="460.0" y="431.0" width="110.0" height="38.0" rx="19" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2.5"/>
+  <text x="515.0" y="457.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="17" fill="#1F3A5F" text-anchor="middle" font-weight="bold" xml:space="preserve">futbol</text>
+</svg>

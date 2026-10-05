@@ -49,4 +49,28 @@ test(armonica, [true(Q == fr(7381, 2520))]) :-
 test(armonica_cero, [true(Q == fr(0, 1))]) :-
     armonica_q(0, Q).
 
+test(q_suma, [true(Q == fr(5, 6))]) :-
+    q_suma(fr(1, 2), fr(1, 3), Q).
+
+test(q_suma_simplifica, [true(Q == fr(1, 1))]) :-
+    q_suma(fr(1, 2), fr(1, 2), Q).
+
+test(q_resta, [true(Q == fr(1, 6))]) :-
+    q_resta(fr(1, 2), fr(1, 3), Q).
+
+test(q_resta_negativa, [true(Q == fr(-1, 6))]) :-
+    q_resta(fr(1, 3), fr(1, 2), Q).
+
+test(q_producto, [true(Q == fr(1, 3))]) :-
+    q_producto(fr(2, 3), fr(1, 2), Q).
+
+test(q_producto_cero, [true(Q == fr(0, 1))]) :-
+    q_producto(fr(0, 1), fr(7, 9), Q).
+
+test(q_cociente, [true(Q == fr(-4, 3))]) :-
+    q_cociente(fr(2, 3), fr(-1, 2), Q).
+
+test(q_cociente_por_cero, [error(evaluation_error(zero_divisor))]) :-
+    q_cociente(fr(1, 2), fr(0, 1), _).
+
 :- end_tests(racional).

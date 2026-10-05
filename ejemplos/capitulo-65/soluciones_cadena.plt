@@ -13,4 +13,15 @@ test(crece, [true(I16 > 16 * I8)]) :-
     medir(8, _, I8),
     medir(16, _, I16).
 
+% cadena/1 reemplaza la base: la segunda llamada no deja reglas de la
+% primera.
+test(cadena, [true(N-K == 3-2)]) :-
+    cadena(5),
+    cadena(2),
+    aggregate_all(count, clause(clase(_, _), _), N),
+    aggregate_all(count, (tiene(_) :~ _), K).
+
+test(cadena_negativa, [error(type_error(_, _))]) :-
+    cadena(-1).
+
 :- end_tests(soluciones_cadena).

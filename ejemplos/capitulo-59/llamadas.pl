@@ -131,10 +131,11 @@ meta_argumento(Meta, G, Extra) :-
     length(Resto, N),
     extra(Nombre, N, Extra).
 
-%!  extra(?Nombre, ?N:integer, ?Extra:integer) is nondet.
+%!  extra(?Nombre, +N:integer, ?Extra:integer) is nondet.
 %
 %   Una metallamada Nombre con N argumentos después del primero llama a su
-%   primer argumento con Extra argumentos más.
+%   primer argumento con Extra argumentos más. N debe llegar instanciado:
+%   las cláusulas de maplist y foldl lo comparan con >=/2.
 extra(call, N, N).
 extra(maplist, N, N) :-
     N >= 1.
@@ -210,9 +211,12 @@ metas_de_lista([C|Cs]) -->
 %!  llamado_por_meta(+Meta, -G) is nondet.
 %
 %   Meta es una metallamada que ejecuta la meta G, ya con los argumentos
-%   que Meta le agrega. No hay respuesta para un argumento libre.
+%   que Meta le agrega. No hay respuesta para un argumento libre. Si dos
+%   cláusulas de meta_argumento/3 dicen lo mismo, como la tabla de esta
+%   versión y la declaración meta_predicate que consulta leer.pl, la meta
+%   aparece una sola vez: distinct/2 descarta las respuestas repetidas.
 llamado_por_meta(Meta, G) :-
-    meta_argumento(Meta, G0, Extra),
+    distinct(G0-Extra, meta_argumento(Meta, G0, Extra)),
     callable(G0),
     length(Agregados, Extra),
     G0 =.. Partes0,

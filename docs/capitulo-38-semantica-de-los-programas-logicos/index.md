@@ -453,7 +453,6 @@ generado(cadena(N), Clausulas) :-
     cadena(N, Clausulas).
 ```
 
-
 ```text
 ?- time(ingenua(cadena(40), [], _, C)).
 % 15,935,580 inferences, 1.609 CPU in 1.612 seconds (100% CPU, 9901720 Lips)

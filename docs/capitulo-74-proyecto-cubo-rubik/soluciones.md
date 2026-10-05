@@ -106,6 +106,10 @@ como indica el dígito:
 
 <!-- ejemplo: capitulo-74/soluciones.pl predicado: grupos//1 grupo//1 veces//1 -->
 ```prolog
+%!  grupos(-Ms:list)// is det.
+%
+%   Ms son los movimientos de una sucesión de grupos separados por
+%   blancos: giros sueltos o secuencias entre paréntesis con repeticiones.
 grupos(Ms) -->
     blancos,
     grupo(G),
@@ -114,6 +118,11 @@ grupos(Ms) -->
     { append(G, Resto, Ms) }.
 grupos([]) --> blancos.
 
+%!  grupo(-Ms:list)// is semidet.
+%
+%   Ms son los movimientos de un grupo: una secuencia entre paréntesis,
+%   repetida tantas veces como dice el dígito que la sigue, o un giro
+%   escrito en la notación de Singmaster.
 grupo(Ms) -->
     "(", grupos(Interior), ")", !,
     veces(N),
@@ -122,6 +131,10 @@ grupo(Ms) -->
       append(Copias, Ms) }.
 grupo(Ms) --> escrito(Ms).
 
+%!  veces(-N:integer)// is det.
+%
+%   N es el dígito, de 1 a 9, que sigue a un paréntesis; 1 si no hay
+%   dígito.
 veces(N) --> [C], { code_type(C, digit(N)), N > 0 }, !.
 veces(1) --> [].
 ```
@@ -485,3 +498,70 @@ de 8 370 a 9 556, porque la búsqueda prefiere un candidato aprendido
 largo a dos o tres candidatos que suman menos giros: cuenta candidatos,
 no giros. Es el equilibrio que Merritt describe entre conocimiento y
 búsqueda: lo aprendido acelera y alarga.
+
+## Ejercicio 12
+
+<!-- contexto: capitulo-74/piezas.pl -->
+```prolog
+?- donde_tras([f], 'DF', L, E).
+L = 'FL',
+E = fuera.
+
+?- donde_tras([d], 'DF', L, E).
+L = 'DR',
+E = fuera.
+
+?- donde_tras([f, f, d, d, -f, -f], 'DF', L, E).
+L = 'DF',
+E = en_su_lugar.
+
+?- pieza_tras([u], 'UF', P).
+P = p(u, r).
+```
+
+Un cuarto de vuelta de F, en el sentido de las agujas del reloj visto de
+frente, lleva la casilla de abajo a la izquierda: la arista DF pasa al
+lugar FL. Uno de D, visto desde abajo, lleva el frente a la derecha: DF
+pasa a DR. En la tercera secuencia, F2 sube la arista a UF, D2 no toca
+la capa de arriba, y F2 la devuelve a su lugar con los colores en el
+mismo orden. La última consulta pregunta qué pieza ocupa el lugar UF
+después de U: es la arista que estaba en UR, con su casilla de arriba
+todavía arriba y la de la derecha ahora adelante, `p(u, r)`.
+
+## Ejercicio 13
+
+<!-- ejemplo: capitulo-74/soluciones_piezas.pl predicado: por_etapa/3 -->
+```prolog
+%!  por_etapa(+Metodo, +Semillas:integer, -Pares:list(pair)) is det.
+%
+%   Pares tiene un par E-N por etapa: N son los cuartos de vuelta que
+%   Metodo usa en la etapa E, sumados sobre las mezclas de 25 giros de
+%   las semillas 1 a Semillas.
+por_etapa(Metodo, Semillas, Pares) :-
+    findall(Pasos, ( between(1, Semillas, S),
+                     mezcla(S, 25, Ms),
+                     resuelto(C),
+                     aplicar(Ms, C, C1),
+                     call(Metodo, C1, Pasos) ),
+            Todas),
+    append(Todas, Pasos),
+    findall(E-N, ( etapa(E, _),
+                   aggregate_all(sum(L), ( member(paso(E, _, G), Pasos),
+                                           length(G, L) ), N) ),
+            Pares).
+```
+
+```prolog
+?- por_etapa(resolver, 50, Sin), por_etapa(resolver_con_ayuda, 50, Con).
+Sin = [1-540, 2-1626, 3-2403, 4-1199, 5-2602],
+Con = [1-617, 2-1738, 3-2352, 4-1303, 5-2466].
+```
+
+La ayuda actúa solo en las etapas 1 y 2, y en las dos agrega giros: 77 y
+112 cuartos de vuelta más en las cincuenta mezclas. Las etapas 3, 4 y 5
+también cambian, unas a mejor y otras a peor, aunque la ayuda no actúa
+en ellas. La razón es que la ayuda cambia el cubo con el que termina la
+etapa 2: la capa de abajo queda igual, pero las piezas de las capas de
+arriba quedan en otros lugares, y las búsquedas siguientes parten de
+otro estado. La suma de esos cambios es aleatoria, y en estas mezclas
+apenas compensa una parte de lo que la ayuda agrega.

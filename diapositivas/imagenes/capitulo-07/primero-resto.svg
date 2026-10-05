@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" width="960" height="480">
+  <title>Primer elemento y resto: [ana, luis, eva] da ana y [luis, eva]; [ana] da ana y la lista vacía; la lista vacía no se descompone</title>
+  <rect x="0" y="0" width="960" height="480" fill="#FFFFFF"/>
+  <text x="40.0" y="40.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">lista</text>
+  <text x="560.0" y="40.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#D9822B" text-anchor="start" xml:space="preserve" font-weight="bold">Primero</text>
+  <text x="720.0" y="40.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#1F3A5F" text-anchor="start" xml:space="preserve" font-weight="bold">Resto</text>
+  <rect x="40.0" y="70.0" width="120.0" height="56.0" rx="4" fill="#FCE8D2" stroke="#D9822B" stroke-width="3"/>
+  <text x="100.0" y="105.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">ana</text>
+  <rect x="160.0" y="70.0" width="120.0" height="56.0" rx="4" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="3"/>
+  <text x="220.0" y="105.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">luis</text>
+  <rect x="280.0" y="70.0" width="120.0" height="56.0" rx="4" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="3"/>
+  <text x="340.0" y="105.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">eva</text>
+  <path d="M 164 132 q 0 12 12 12 L 268.0 144 q 12 0 12 12 q 0 -12 12 -12 L 384 144 q 12 0 12 -12" fill="none" stroke="#1F3A5F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="560.0" y="105.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">ana</text>
+  <text x="720.0" y="105.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">[luis, eva]</text>
+  <rect x="40.0" y="205.0" width="120.0" height="56.0" rx="4" fill="#FCE8D2" stroke="#D9822B" stroke-width="3"/>
+  <text x="100.0" y="240.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">ana</text>
+  <rect x="170.0" y="205.0" width="50.0" height="56.0" rx="4" fill="#FFFFFF" stroke="#1F3A5F" stroke-width="2" stroke-dasharray="6 5"/>
+  <text x="195.0" y="240.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F3A5F" text-anchor="middle" xml:space="preserve">[]</text>
+  <text x="560.0" y="240.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">ana</text>
+  <text x="720.0" y="240.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">[]</text>
+  <rect x="40.0" y="340.0" width="80.0" height="56.0" rx="4" fill="#F1F3F5" stroke="#9AA5B1" stroke-width="3"/>
+  <text x="80.0" y="375.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve" font-weight="bold">[]</text>
+  <circle cx="576" cy="368.0" r="16" fill="#B3261E"/>
+  <path d="M 568.8 360.8 L 583.2 375.2 M 583.2 360.8 L 568.8 375.2" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="605.0" y="375.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#B3261E" text-anchor="start" xml:space="preserve">no tiene primer elemento</text>
+</svg>

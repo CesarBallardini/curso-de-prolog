@@ -314,6 +314,7 @@ tabla_ajustable(Filas) :-
 tenerla escrita en el formato. Después de `set_setting(ancho, 10)`,
 `save_settings/1` escribe:
 
+<!-- markdownlint-disable MD010 MD012 -->
 ```text
 /*  Saved settings
     Date: Fri Sep 25 00:59:56 2026
@@ -323,6 +324,7 @@ tenerla escrita en el formato. Después de `set_setting(ancho, 10)`,
 %	Ancho de la primera columna de tabla_ajustable/1
 setting(user:ancho, 10).
 ```
+<!-- markdownlint-enable MD010 MD012 -->
 
 Solo se guardan los ajustes que cambiaron, con su descripción como
 comentario. El archivo es un archivo de términos: `load_settings/1` lo lee, y

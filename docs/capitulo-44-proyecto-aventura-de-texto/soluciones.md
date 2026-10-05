@@ -4,7 +4,10 @@ El código de esta página está en `ejemplos/capitulo-44/`:
 `soluciones_mundo.pl` para los ejercicios 2 y 3, un archivo de hechos que
 agrega cláusulas a los módulos del capítulo; `soluciones.pl` para los
 ejercicios 4, 5, 6, 7, 9, 11 y 12, un módulo que carga la versión 5; y
-`soluciones_puro.pl` para el 10. Cada uno tiene sus pruebas y ninguno
+`soluciones_puro.pl` para el 10; y `soluciones_colossal.pl` para los
+ejercicios 13, 14 y 15, un módulo que carga los de las secciones
+[44.8](index.md#448-el-puntaje-y-los-turnos) a
+[44.10](index.md#4410-un-laberinto-de-pasadizos-retorcidos). Cada uno tiene sus pruebas y ninguno
 modifica los archivos del capítulo. Los ejercicios 1 y 8 se resuelven con
 los archivos del capítulo. Todos son `% solo-local`, como el capítulo.
 
@@ -549,3 +552,80 @@ después evita tener que saber qué órdenes cambian el estado. La pila está en
 un argumento del bucle y no en la base, porque deshacer no es parte del
 mundo: guardar la partida no guarda la historia, y después de cargarla la
 pila sigue siendo la del bucle.
+
+## 13
+
+`ruta/2` es `multifile`, como los datos del mundo: el perro se agrega con
+un hecho en `soluciones_colossal.pl`, calificado con el módulo, y
+`iniciar_personajes/0` lo pone al principio de su ruta, en el taller.
+
+<!-- ejemplo: capitulo-44/soluciones_colossal.pl fragmento: personajes:ruta(perro, [taller, sotano]). .. personajes:ruta(perro, [taller, sotano]). -->
+```prolog
+personajes:ruta(perro, [taller, sotano]).
+```
+
+Con el jugador en el taller, el primer «mirar» encuentra al perro en la
+sala, y el movimiento posterior lo lleva al sótano: el aviso es
+`se_va(perro)`. En el segundo, el perro vuelve al taller, y el aviso es
+`llega(perro)`. La consulta deja un estado reducido con `restablecer/1`,
+que basta para lo que se quiere observar:
+
+```prolog
+?- iniciar_personajes, restablecer([aqui(taller), esta_en(banco, taller), cerrada(trampilla)]), turno(mirar, R1), turno(mirar, R2).
+R1 = [vista(taller, [banco], [sotano, vestibulo]), se_va(perro)],
+R2 = [vista(taller, [banco], [sotano, vestibulo]), llega(perro)].
+```
+
+El gato no aparece en los avisos porque su ruta no pasa por el taller.
+
+## 14
+
+<!-- ejemplo: capitulo-44/soluciones_colossal.pl predicado: trampa/1 -->
+```prolog
+%!  trampa(?S) is nondet.
+%
+%   S es una sala del laberinto que se alcanza desde la entrada y desde la
+%   cual la entrada no se alcanza.
+trampa(S) :-
+    explorar(entrada, Alcanzables),
+    member(S, Alcanzables),
+    explorar(S, DesdeS),
+    \+ memberchk(entrada, DesdeS).
+```
+
+`explorar/2` se usa dos veces: para generar las salas que se alcanzan desde
+la entrada, y para verificar, desde cada una, si la entrada está entre las
+que se alcanzan. El modo es `?S` porque, con `S` instanciada, `member/2`
+verifica que sea alcanzable y la negación decide el resto; la negación se
+aplica con `S` ya instanciada en los dos modos.
+
+```prolog
+?- trampa(S).
+S = pozo.
+```
+
+El pozo es la única trampa: desde el tesoro se vuelve por `l5`, `l3` y
+`l1`, y desde `l4` por `l2`.
+
+## 15
+
+<!-- ejemplo: capitulo-44/soluciones_colossal.pl predicado: logros_pendientes/1 -->
+```prolog
+%!  logros_pendientes(-Logros:list) is det.
+%
+%   Logros son los pares H-Puntos de los logros que todavía no se
+%   obtuvieron, en el orden de logro/2.
+logros_pendientes(Logros) :-
+    findall(H-N,
+            ( puntaje:logro(H, N),
+              \+ puntaje:logrado(H) ),
+            Logros).
+```
+
+`logrado/1` no se exporta de `puntaje.pl`, porque es parte de su estado: la
+solución lo consulta calificado con el módulo, solo para leer.
+
+```prolog
+?- iniciar_puntaje, jugada(ir(biblioteca), _), jugada(tomar(llave), _), logros_pendientes(Ls).
+Ls = [esta_en(linterna, jugador)-5, aqui(sotano)-10, esta_en(lente, jugador)-10, esta_en(lente, telescopio)-20].
+```

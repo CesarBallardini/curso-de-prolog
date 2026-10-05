@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" width="960" height="480">
+  <title>esta_en(X, [ana, luis, eva]): una respuesta en cada nivel, y sobre la lista vacía ninguna cláusula unifica</title>
+  <rect x="0" y="0" width="960" height="480" fill="#FFFFFF"/>
+  <rect x="40.0" y="26.0" width="420.0" height="56.0" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="3"/>
+  <text x="250.0" y="62.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">esta_en(X, [ana, luis, eva])</text>
+  <line x1="462.0" y1="54.0" x2="548.0" y2="54.0" stroke="#2E7D32" stroke-width="3"/>
+  <polygon points="560.0,54.0 548.0,47.4 548.0,60.6" fill="#2E7D32"/>
+  <text x="574.0" y="62.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">cláusula 1:</text>
+  <text x="720.0" y="62.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#2E7D32" text-anchor="start" xml:space="preserve" font-weight="bold">X = ana</text>
+  <rect x="40.0" y="134.0" width="420.0" height="56.0" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="3"/>
+  <text x="250.0" y="170.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">esta_en(X, [luis, eva])</text>
+  <line x1="250.0" y1="84.0" x2="250.0" y2="120.0" stroke="#1F3A5F" stroke-width="3"/>
+  <polygon points="250.0,132.0 256.6,120.0 243.4,120.0" fill="#1F3A5F"/>
+  <text x="266.0" y="114.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">cláusula 2</text>
+  <line x1="462.0" y1="162.0" x2="548.0" y2="162.0" stroke="#2E7D32" stroke-width="3"/>
+  <polygon points="560.0,162.0 548.0,155.4 548.0,168.6" fill="#2E7D32"/>
+  <text x="574.0" y="170.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">cláusula 1:</text>
+  <text x="720.0" y="170.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#2E7D32" text-anchor="start" xml:space="preserve" font-weight="bold">X = luis</text>
+  <rect x="40.0" y="242.0" width="420.0" height="56.0" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="3"/>
+  <text x="250.0" y="278.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">esta_en(X, [eva])</text>
+  <line x1="250.0" y1="192.0" x2="250.0" y2="228.0" stroke="#1F3A5F" stroke-width="3"/>
+  <polygon points="250.0,240.0 256.6,228.0 243.4,228.0" fill="#1F3A5F"/>
+  <text x="266.0" y="222.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">cláusula 2</text>
+  <line x1="462.0" y1="270.0" x2="548.0" y2="270.0" stroke="#2E7D32" stroke-width="3"/>
+  <polygon points="560.0,270.0 548.0,263.4 548.0,276.6" fill="#2E7D32"/>
+  <text x="574.0" y="278.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">cláusula 1:</text>
+  <text x="720.0" y="278.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#2E7D32" text-anchor="start" xml:space="preserve" font-weight="bold">X = eva</text>
+  <rect x="40.0" y="350.0" width="420.0" height="56.0" rx="10" fill="#F1F3F5" stroke="#9AA5B1" stroke-width="3"/>
+  <text x="250.0" y="386.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">esta_en(X, [])</text>
+  <line x1="250.0" y1="300.0" x2="250.0" y2="336.0" stroke="#1F3A5F" stroke-width="3"/>
+  <polygon points="250.0,348.0 256.6,336.0 243.4,336.0" fill="#1F3A5F"/>
+  <text x="266.0" y="330.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">cláusula 2</text>
+  <circle cx="486" cy="378" r="16" fill="#B3261E"/>
+  <path d="M 478.8 370.8 L 493.2 385.2 M 493.2 370.8 L 478.8 385.2" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="516.0" y="372.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#B3261E" text-anchor="start" xml:space="preserve">ninguna cláusula unifica:</text>
+  <text x="516.0" y="400.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#B3261E" text-anchor="start" xml:space="preserve">la enumeración termina en false.</text>
+</svg>
