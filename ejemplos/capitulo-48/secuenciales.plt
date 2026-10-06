@@ -38,4 +38,10 @@ vacios(N, Ps) :-
     length(Ps, N),
     maplist(=([]), Ps).
 
+test(secuencial, [true(C-K == divisor_c-1)]) :-
+    secuencial(divisor, C, K).
+
+test(pulso, [nondet, true(Ss-E == [1]-[1])]) :-
+    secuenciales:pulso(paridad, [1], Ss, [0], E).
+
 :- end_tests(secuenciales).

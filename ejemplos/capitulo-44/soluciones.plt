@@ -129,4 +129,26 @@ test(deshacer, true(Lineas == ["> Tomas la llave de bronce.",
                 partida_con_deshacer, Salida),
     split_string(Salida, "\n", "", Lineas).
 
+test(segmentos, true(Ss == [[tomar, la, llave], [ir, a, la, cupula]])) :-
+    soluciones:segmentos([tomar, la, llave, y, ir, a, la, cupula], Ss).
+
+test(un_segmento, true(Ss == [[mirar]])) :-
+    soluciones:segmentos([mirar], Ss).
+
+test(inicial, true(I == n)) :-
+    soluciones:inicial(opcion("Nueva", nueva), I).
+
+test(inicial_vacia, fail) :-
+    soluciones:inicial(opcion("", nueva), _).
+
+test(nada_tomable, fail) :-
+    iniciar,
+    soluciones:tomable(_).
+
+test(origen, all(R == [baul])) :-
+    phrase(soluciones:origen(R), [del, baul]).
+
+test(tomar_de, all(O == [lente])) :-
+    phrase(soluciones:tomar_de(O), [sacar, la, lente, del, baul]).
+
 :- end_tests(soluciones).

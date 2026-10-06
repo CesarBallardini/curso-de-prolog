@@ -42,6 +42,9 @@ agrega(junto(robot, X), empujar_por(X, _, _, _)).
 %   Las de robot.pl, y las de empujar_por/4: la caja y el robot dejan la
 %   habitación de la que salen, su punto y lo que tenían al lado, salvo
 %   estar uno junto al otro.
+%   La cláusula de junto/2 compara con ==: el planificador la llama sobre
+%   una copia sin variables, y un hecho junto(X, Y) con X o Y libres no da
+%   respuestas.
 borra(Hecho, Accion) :-
     robot:borra(Hecho, Accion).
 borra(en_habitacion(X, _), empujar_por(X, _, _, _)).

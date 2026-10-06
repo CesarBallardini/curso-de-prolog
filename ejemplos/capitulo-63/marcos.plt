@@ -56,4 +56,24 @@ test(disipadores, all(C == [cpu_b])) :-
                objeto(gpu_a, placa_de_video, [])], M, nada_aplicable),
     member(requiere_disipador(C), M).
 
+% La primera condición sobre un objeto agrega el patrón objeto/3; la
+% segunda sobre el mismo objeto reusa sus variables y agrega solo la
+% prueba.
+test(condicion_con_marcos,
+     [true(T-O =@= [ objeto(X, C, R),
+                     {es_de_clase(C, procesador),
+                      consultar(C, R, [nucleos-N])}
+                   ]-[obj(X, C, R)])]) :-
+    condicion_con_marcos(es(X, procesador, [nucleos-N]), T, [], O).
+
+test(condicion_con_marcos_buscado,
+     [true(T =@= [{es_de_clase(C, componente),
+                   consultar(C, R, [precio-P])}])]) :-
+    condicion_con_marcos(es(X, procesador, [nucleos-_]), _, [], O),
+    O = [obj(_, C, R)],
+    condicion_con_marcos(es(X, componente, [precio-P]), T, O, _).
+
+test(condicion_sin_marcos, [true(T-O == [pedido(a)]-[])]) :-
+    condicion_con_marcos(pedido(a), T, [], O).
+
 :- end_tests(marcos).

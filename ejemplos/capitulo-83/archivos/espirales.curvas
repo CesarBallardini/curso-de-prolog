@@ -1,0 +1,4 @@
+% Espirales logarítmicas de una, dos y tres vueltas.
+curva(espiralchica, espiral(0.1), 0, 2*pi, 36).
+curva(espiralmediana, espiral(0.1), 0, 4*pi, 72).
+curva(espiralgrande, espiral(0.1), 0, 6*pi, 108).

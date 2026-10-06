@@ -115,4 +115,23 @@ test(menu_y_salir, true) :-
     ultima_pantalla(Salida, Pantalla),
     contiene(Pantalla, "Fin de la partida.").
 
+test(completar, true(C == "ab  ")) :-
+    aventura:completar(4, "ab", C).
+
+test(llenar, true(Ls == ["ab c", "d"])) :-
+    aventura:llenar(["c", "d"], "ab", 5, Ls).
+
+test(recuadro, true(Ns == [14, 14, 14])) :-
+    aventura:recuadro(10, "T", ["ab"], Caja),
+    maplist(string_length, Caja, Ns).
+
+test(agregar_mensajes, true(Ms == ["x", "> mirar", "uno dos"])) :-
+    aventura:agregar_mensajes(["x"], "mirar", "uno dos", Ms).
+
+test(agregar_mensajes_recorta, true(N == 8)) :-
+    numlist(1, 10, Is),
+    maplist([I, S]>>format(string(S), "~w", [I]), Is, Ms0),
+    aventura:agregar_mensajes(Ms0, "mirar", "uno", Ms),
+    length(Ms, N).
+
 :- end_tests(aventura).

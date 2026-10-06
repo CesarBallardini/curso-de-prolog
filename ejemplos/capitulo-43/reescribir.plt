@@ -39,4 +39,10 @@ test(libre, [true]) :-
 test(libre_falla, [fail]) :-
     libre(x, x).
 
+test(condicion, true(C == (con(y, a), libre(y, b), c > 1))) :-
+    reescribir:condicion((con(a), libre(b), c > 1), y, C).
+
+test(condicion_otro_objetivo, true(C == (z > 0))) :-
+    reescribir:condicion(z > 0, y, C).
+
 :- end_tests(reescribir).

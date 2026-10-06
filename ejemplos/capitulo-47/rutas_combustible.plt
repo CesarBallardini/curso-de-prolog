@@ -38,4 +38,37 @@ test(no_alcanza, [fail]) :-
 test(autonomia, [error(type_error(positive_integer, 0))]) :-
     ruta_con_carga(pradera_alta, ermita_vieja, 0, _, _).
 
+test(estaciones, [true(length(Es, 5))]) :-
+    findall(E, estacion(E), Es).
+
+test(minutos_de_carga, [true(M == 15)]) :-
+    minutos_de_carga(M).
+
+% Desde Puerto Quieto con 30 km: el tramo de 26 km a Piedra Mora, y la
+% carga.
+test(sucesores, all(S == [en(piedra_mora, 4), en(puerto_quieto, 60)])) :-
+    sucesor_con_carga(60, en(puerto_quieto, 30), S, _).
+
+% Con el tanque lleno no se carga.
+test(sin_carga_lleno, all(S == [en(puerto_quieto, 24), en(arroyo_pinto, 30),
+                                en(campo_lindero, 9),
+                                en(loma_tendida, 21)])) :-
+    sucesor_con_carga(60, en(pradera_alta, 60), S, _).
+
+% Sin estación tampoco.
+test(sin_estacion, all(S == [en(ribera_honda, 0)])) :-
+    sucesor_con_carga(60, en(piedra_mora, 20), S, _).
+
+test(llegada) :-
+    llegada(ermita_vieja, en(ermita_vieja, 3)).
+
+test(llegada_otra, [fail]) :-
+    llegada(ermita_vieja, en(piedra_mora, 3)).
+
+test(pasos_con_carga, [true(H == ['8:00'-a, '8:10'-b, '8:25'-carga(b)])]) :-
+    pasos_con_carga([en(a, 5)-0, en(b, 0)-10, en(b, 5)-25], ninguna, 480, H).
+
+test(pasos_con_carga_vacio, [true(H == [])]) :-
+    pasos_con_carga([], ninguna, 480, H).
+
 :- end_tests(rutas_combustible).

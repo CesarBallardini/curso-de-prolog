@@ -869,6 +869,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | árbol de prueba | `prueba(G, Hijos)`, construido con una gramática |
 | profundización iterativa | `length(_, N)` genera los límites; solo las pruebas de altura N en la iteración N |
 | depuración algorítmica | un oráculo juzga los objetivos: la cláusula falsa de una respuesta incorrecta, el objetivo no cubierto de una que falta |
+| `current_input/1`, `set_input/1` | el stream de la entrada actual, y su cambio; en las pruebas, para responder al sistema experto desde un texto |
 | **Patrones 45, 46** | intérprete que absorbe; extender el intérprete, no el programa |
 
 ## Temas que se retoman

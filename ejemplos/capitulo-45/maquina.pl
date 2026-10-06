@@ -23,6 +23,10 @@
 :- ensure_loaded(interprete).
 :- use_module(library(assoc)).
 
+% paso//3 es multifile: otros archivos agregan instrucciones a la máquina.
+:- multifile
+    paso//3.
+
 %!  correr(+Texto, -Salida:list(integer)) is semidet.
 %
 %   Salida es lo que escribe el programa Mini de Texto, compilado y

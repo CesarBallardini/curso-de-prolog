@@ -72,7 +72,9 @@ G(P) = H(S) - \frac{|S_{si}|}{|S|}\,H(S_{si}) - \frac{|S_{no}|}{|S|}\,H(S_{no}),
 $$
 
 donde $q_h$ es la fracción de los prototipos de $S$ que son de la hipótesis
-$h$.
+$h$. $H$ es la entropía de Shannon; Quinlan, en el apartado «ID3» de su
+artículo, la aplica a elegir el atributo de cada nodo, y presenta ID3 como
+un descendiente del *Concept Learning System* de Hunt, Marin y Stone.
 
 <!-- ejemplo: capitulo-66/arbol.pl predicado: elegir/4 ganancia/3 entropia/2 -->
 ```prolog

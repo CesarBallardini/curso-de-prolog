@@ -30,4 +30,18 @@ test(ampliado, [C, I, Mayor] == [21, 46, true]) :-
 test(identidad, I == r-[3, 1]) :-
     identidad(instanciacion(r, [3, 1], 2, []), I).
 
+% medir_ciclos/7 da una fila por ciclo: el tamaño del conjunto de
+% conflicto y cuántas instanciaciones ya estaban en el ciclo anterior.
+test(medir_ciclos, [true(Fs == [1-1-0, 2-2-1])]) :-
+    memoria_con([a, b], M),
+    medir_ciclos([ (r1 :: [a] ---> [agregar(c)]),
+                   (r2 :: [c] ---> [agregar(d)])
+                 ], orden, 1, [], [], M, Filas),
+    findall(N-T-R, member(ciclo(N, T, R, _), Filas), Fs).
+
+test(medir_ciclos_vacio, [true(Filas == [])]) :-
+    memoria_con([a], M),
+    medir_ciclos([(r1 :: [b] ---> [agregar(c)])], orden, 1, [], [], M,
+                 Filas).
+
 :- end_tests(costo).

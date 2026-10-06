@@ -45,4 +45,35 @@ test(libre, [error(instantiation_error)]) :-
 test(incognita_libre, [error(instantiation_error)]) :-
     resolver(x = 3, _, _).
 
+test(aislar, all(S == [x = asin((1 - 0) / 2), x = pi - asin((1 - 0) / 2)])) :-
+    aislar(1 - 2 * sin(x) = 0, x, S).
+
+test(aislar_dos_apariciones, [fail]) :-
+    aislar(2 * x + 3 * x = 10, x, _).
+
+test(axioma_seno, all(E == [x = asin(1 / 2), x = pi - asin(1 / 2)])) :-
+    aislar:axioma(1, sin(x) = 1 / 2, E).
+
+test(axioma_producto, all(E == [x = 6 / 3])) :-
+    aislar:axioma(2, 3 * x = 6, E).
+
+test(axioma_divisor_nulo, [fail]) :-
+    aislar:axioma(2, 0 * x = 6, _).
+
+test(axioma_raiz, all(E == [x = 8 ^ (1 / 3)])) :-
+    aislar:axioma(1, x ^ 3 = 8, E).
+
+test(orientar_izquierda, true(E == (x + 1 = 3))) :-
+    aislar:orientar(1, x + 1 = 3, E).
+
+test(orientar_derecha, true(E == (x + 1 = 3))) :-
+    aislar:orientar(2, 3 = x + 1, E).
+
+test(aislar_camino,
+     all(E == [x = asin((1 - 0) / 2), x = pi - asin((1 - 0) / 2)])) :-
+    aislar:aislar_camino([2, 2, 1], 1 - 2 * sin(x) = 0, E).
+
+test(aislar_camino_vacio, all(E == [x = 3])) :-
+    aislar:aislar_camino([], x = 3, E).
+
 :- end_tests(aislar).

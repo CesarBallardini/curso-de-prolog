@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" width="960" height="480">
+  <title>Árbol de primero_lejos(juan, Quien), 2 de 3: la rama de R6; primero_lejos(ana, Quien) falla con R6 y con R7; la rama de pedro continúa</title>
+  <rect x="0" y="0" width="960" height="480" fill="#FFFFFF"/>
+  <text x="20" y="30" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="start">la rama de R6, desde θ₁</text>
+  <line x1="381.5" y1="107.3" x2="360.0" y2="188.8" stroke="#1F3A5F" stroke-width="3"/>
+  <line x1="578.5" y1="107.3" x2="760.0" y2="188.8" stroke="#1F3A5F" stroke-width="3"/>
+  <line x1="265.0" y1="231.2" x2="190.0" y2="314.6" stroke="#1F3A5F" stroke-width="3"/>
+  <line x1="455.0" y1="231.2" x2="620.0" y2="318.8" stroke="#1F3A5F" stroke-width="3"/>
+  <line x1="190.0" y1="385.4" x2="190.0" y2="424.0" stroke="#B3261E" stroke-width="3"/>
+  <line x1="620.0" y1="361.2" x2="620.0" y2="424.0" stroke="#B3261E" stroke-width="3"/>
+  <rect x="315.9" y="36.6" width="328.3" height="70.7" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="480.0" y="65.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">padre(juan, Hijo),</text>
+  <text x="480.0" y="93.6" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">primero_lejos(Hijo, Quien)</text>
+  <rect x="201.6" y="188.8" width="316.8" height="42.4" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="360.0" y="217.5" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">primero_lejos(ana, Quien)</text>
+  <rect x="590.1" y="188.8" width="339.9" height="42.4" rx="10" fill="#FFFFFF" stroke="#9AA5B1" stroke-width="2" stroke-dasharray="7 5"/>
+  <text x="760.0" y="217.5" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#9AA5B1" text-anchor="middle" xml:space="preserve">primero_lejos(pedro, Quien)</text>
+  <line x1="760.0" y1="231.2" x2="760.0" y2="253.2" stroke="#9AA5B1" stroke-width="2.5" stroke-dasharray="5 4"/>
+  <text x="760.0" y="277.2" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#9AA5B1" text-anchor="middle" xml:space="preserve" font-style="italic">continúa</text>
+  <rect x="20.1" y="314.6" width="339.9" height="70.7" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="190.0" y="343.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">padre(ana, Hijo₂),</text>
+  <text x="190.0" y="371.6" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">primero_lejos(Hijo₂, Quien)</text>
+  <rect x="507.8" y="318.8" width="224.4" height="42.4" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="620.0" y="347.5" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">padre(ana, Quien)</text>
+  <circle cx="190" cy="440" r="16" fill="#B3261E"/>
+  <path d="M 182.8 432.8 L 197.2 447.2 M 197.2 432.8 L 182.8 447.2" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="620" cy="440" r="16" fill="#B3261E"/>
+  <path d="M 612.8 432.8 L 627.2 447.2 M 627.2 432.8 L 612.8 447.2" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <g class="elabel">
+  <rect x="294.5" y="122.1" width="152.6" height="52.0" rx="4" fill="#FFFFFF" opacity="0.95"/>
+  <text x="370.8" y="142.1" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="middle" xml:space="preserve">R1. θ₂ =</text>
+  <text x="370.8" y="166.1" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="middle" xml:space="preserve">{ Hijo/ana }</text>
+  </g>
+  <g class="elabel">
+  <rect x="581.4" y="122.1" width="175.7" height="52.0" rx="4" fill="#FFFFFF" opacity="0.95"/>
+  <text x="669.2" y="142.1" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="middle" xml:space="preserve">R2. θ₅ =</text>
+  <text x="669.2" y="166.1" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="middle" xml:space="preserve">{ Hijo/pedro }</text>
+  </g>
+  <g class="elabel">
+  <rect x="105.0" y="246.9" width="245.0" height="52.0" rx="4" fill="#FFFFFF" opacity="0.95"/>
+  <text x="227.5" y="266.9" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="middle" xml:space="preserve">R6. θ₃ =</text>
+  <text x="227.5" y="290.9" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="middle" xml:space="preserve">{ A₂/ana, D₂/Quien }</text>
+  </g>
+  <g class="elabel">
+  <rect x="415.0" y="249.0" width="245.0" height="52.0" rx="4" fill="#FFFFFF" opacity="0.95"/>
+  <text x="537.5" y="269.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="middle" xml:space="preserve">R7. θ₄ =</text>
+  <text x="537.5" y="293.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="middle" xml:space="preserve">{ A₂/ana, D₂/Quien }</text>
+  </g>
+</svg>

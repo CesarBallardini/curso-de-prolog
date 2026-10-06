@@ -37,4 +37,29 @@ texto_mini("mientras n <> 0 hacer f := f * n; n := n - 1 fin").
 
 :- load_files(mini:'../capitulo-45/sintaxis', []).
 
+test(vacio, [true(Cs == [])]) :-
+    componentes("", Cs).
+
+test(leer, [true(Cs == [id(x), :=, num(42)])]) :-
+    lexico:leer([x, ' ', :, =, ' ', '4', '2'], Cs).
+
+% Ante un empate gana el primero: la regla escrita antes.
+test(mejor, [true(M == 5-b)]) :-
+    lexico:mejor([3-a, 5-b, 5-c, 2-d], 0-ninguna, M).
+
+test(mejor_vacio, [true(M == 0-ninguna)]) :-
+    lexico:mejor([], 0-ninguna, M).
+
+test(componente_numero, [true(Cs == [num(42), fin])]) :-
+    lexico:componente(numero, ['4', '2'], Cs, [fin]).
+
+test(componente_blanco, [true(Cs == [fin])]) :-
+    lexico:componente(blanco, [' '], Cs, [fin]).
+
+test(componente_identificador, [true(Cs == [id(x1)])]) :-
+    lexico:componente(identificador, [x, '1'], Cs, []).
+
+test(avanzar, [true(N == 1)]) :-
+    lexico:avanzar(er("ab*"), [b, c], [], 1, 1, N).
+
 :- end_tests(lexico).

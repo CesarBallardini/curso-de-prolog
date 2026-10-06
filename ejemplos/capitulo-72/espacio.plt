@@ -61,4 +61,18 @@ test(ver_optimo) :-
     with_output_to(string(S), ver_optimo(coffman, cero)),
     once(sub_string(S, _, _, _, "duración: 24")).
 
+% accion/9 en el momento 2 de coffman: empezar t6 o t7, o esperar hasta 4.
+test(accion, [all(A == [empezar(t6, 2, 13), empezar(t7, 2, 13),
+                        esperar(2, 4)])]) :-
+    ejemplo(coffman, P),
+    espacio:accion(P, [t4, t5, t6, t7], 2, [4, 2], [t1-4, t2-2, t3-2], A, _,
+                   _, _).
+
+test(accion_empezar, [true(Ps-L-Fs == [t4, t5, t7]-13-[t1-4, t2-2, t3-2,
+                                                        t6-13]),
+                      nondet]) :-
+    ejemplo(coffman, P),
+    espacio:accion(P, [t4, t5, t6, t7], 2, [4, 2], [t1-4, t2-2, t3-2],
+                   empezar(t6, 2, 13), Ps, L, Fs).
+
 :- end_tests(espacio).

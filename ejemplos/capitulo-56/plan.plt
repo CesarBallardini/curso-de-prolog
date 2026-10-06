@@ -89,4 +89,66 @@ test(comodin, all(N == ["acta.txt", "nota.txt"])) :-
     member(N, ["acta.txt", "nota.txt", "notas.pdf", "txt"]),
     pasa(patron("*t*.txt"), N).
 
+test(ruta_segura) :-
+    ruta_segura("informes/acta.txt").
+
+test(ruta_segura_punto) :-
+    ruta_segura(".").
+
+test(ruta_insegura, all(R == [])) :-
+    member(R, ["../x", "/etc", "c:/x", "a\\b","a/../../b"]),
+    ruta_segura(R).
+
+test(seleccion_archivo, true(Rs == ["notas.txt"])) :-
+    modelo_ejemplo(M),
+    seleccion(archivo("notas.txt"), M, Rs).
+
+test(seleccion_conjunto, true(Rs == ["informes/acta.txt",
+                                     "informes/notas.txt"])) :-
+    modelo_ejemplo(M),
+    seleccion(archivos("informes", patron("*.txt")), M, Rs).
+
+test(seleccion_no_existe, throws(rechazo(no_existe("otro.txt")))) :-
+    modelo_ejemplo(M),
+    seleccion(archivo("otro.txt"), M, _).
+
+test(seleccion_ninguno,
+     throws(rechazo(ninguno("informes", patron("*.doc"))))) :-
+    modelo_ejemplo(M),
+    seleccion(archivos("informes", patron("*.doc")), M, _).
+
+test(destino_carpeta, true(N == "respaldo/notas.txt")) :-
+    modelo_ejemplo(M),
+    destino(archivo("notas.txt"), "respaldo", M, "notas.txt", N).
+
+test(destino_nombre_nuevo, true(N == "apuntes.txt")) :-
+    modelo_ejemplo(M),
+    destino(archivo("notas.txt"), "apuntes.txt", M, "notas.txt", N).
+
+test(destino_ya_existe, throws(rechazo(ya_existe("notas.txt")))) :-
+    modelo_ejemplo(M),
+    destino(archivo("informes/notas.txt"), ".", M, "informes/notas.txt", _).
+
+test(destino_no_es_carpeta, throws(rechazo(no_es_carpeta("nuevo")))) :-
+    modelo_ejemplo(M),
+    destino(archivos(".", todos), "nuevo", M, "notas.txt", _).
+
+test(pasa_todos) :-
+    pasa(todos, "cualquiera").
+
+test(pasa_no, fail) :-
+    pasa(patron("*.txt"), "resumen.pdf").
+
+test(comodin_varias, all(R == [[a, b], [b], []])) :-
+    comodin(['*'], [a, b]),
+    R = [a, b]
+    ;   comodin(['*', b], [a, b]),
+        R = [b]
+    ;   comodin([a, '*'], [a]),
+        R = [].
+
+test(comodin_demostraciones, all(X == [x, x])) :-
+    comodin(['*', a, '*'], [a, a]),
+    X = x.
+
 :- end_tests(plan).

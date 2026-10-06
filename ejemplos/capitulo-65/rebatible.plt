@@ -28,4 +28,11 @@ test(criterio_desconocido, [error(type_error(_, _))]) :-
 test(meta_libre, [error(instantiation_error)]) :-
     respuesta([], _, _).
 
+test(partes, [true(L == [p-q, r-s, t-u])]) :-
+    findall(C-B, ( member(R, [(p :- q), (r :~ s), (t :^ u)]),
+                   partes(R, C, B) ), L).
+
+test(partes_hecho, [fail]) :-
+    partes(p, _, _).
+
 :- end_tests(rebatible).

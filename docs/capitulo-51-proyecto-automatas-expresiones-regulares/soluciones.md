@@ -1,12 +1,13 @@
 # Soluciones del capítulo 51 — Proyecto: autómatas y expresiones regulares
 
-Las soluciones de los ejercicios 2 a 9 están en
+Las soluciones de los ejercicios 2 a 9, 12 y 13 están en
 `ejemplos/capitulo-51/soluciones.pl`, que carga los módulos del proyecto
 (`lexico.pl` y `secuencial.pl`, que reexportan los demás, entre ellos
 `transductores.pl`) y agrega
 autómatas, construcciones, un operador de las expresiones y dos clases de
 componentes léxicos con cláusulas `multifile`; las de los ejercicios 10 y
-11, en `soluciones_maquinas.pl`, que carga `maquinas.pl`. Cada archivo tiene
+11, en `soluciones_maquinas.pl`, que carga `maquinas.pl`; las de los
+ejercicios 14 a 16, en `soluciones_cintas.pl`. Cada archivo tiene
 sus pruebas en el `.plt` del mismo nombre.
 
 ## Ejercicio 1
@@ -446,3 +447,192 @@ palabra que queda, dos letras más corta que la anterior, dos veces. El
 autómata de pila reconoce los palíndromos de longitud par en una sola
 pasada; la máquina de Turing determinista necesita un tiempo cuadrático en
 la longitud de la palabra.
+
+## Ejercicio 12
+
+`soluciones.pl` carga `kleene.pl`, que reexporta las expresiones, y guarda
+la expresión escrita a mano:
+
+<!-- ejemplo: capitulo-51/soluciones.pl predicado: expresion_corta/1 -->
+```prolog
+%!  expresion_corta(-T:string) is det.
+%
+%   T es una expresión regular del lenguaje de multiplo3 escrita a mano.
+%   Desde el resto 0, un 0 no lo cambia, y 1(01*0)*1 vuelve a él: el
+%   primer 1 lleva al resto 1, cada 01*0 va al resto 2 y vuelve al 1, y
+%   el último 1 vuelve al 0.
+expresion_corta("(0|1(01*0)*1)*").
+```
+
+```prolog
+?- expresion_texto(multiplo3, T), equivalentes(er(T), multiplo3).
+T = "0*|(1|0*1)(10*1)*(1|10*(0|()))|(1|0*1)(10*1)*0(1|()|0(10*1)*0)*0(10*1)*(1|10*(0|()))".
+
+?- expresion_corta(T), equivalentes(er(T), multiplo3).
+T = "(0|1(01*0)*1)*".
+```
+
+Las dos expresiones describen el lenguaje de `multiplo3`. La corta sigue
+los restos: desde el resto 0, un 0 lo deja igual, y 1(01\*0)\*1 sale y
+vuelve a él; el primer 1 lleva al resto 1, cada 01\*0 va al resto 2 —donde
+los unos no cambian el resto— y vuelve al 1, y el último 1 vuelve al 0. La
+estrella exterior repite esas dos maneras de volver al resto 0.
+
+La construcción obtiene una expresión del mismo lenguaje, pero no esa. Sus
+simplificaciones son locales: quitan `nada` y la palabra vacía y absorben
+estrellas, pero no reconocen que (1|0\*1) es lo mismo que 0\*1, ni sacan
+un factor común de dos alternativas. Y la expresión depende del orden en
+que se eliminan los estados: la corta es la que se obtiene pensando en el
+resto 0 como el único estado al que se vuelve, mientras que la construcción
+sigue la numeración de `tabla/2`. Encontrar la expresión más corta de un
+lenguaje es un problema mucho más difícil que encontrar una.
+
+## Ejercicio 13
+
+`soluciones.pl` carga también `moore.pl`, que define `moore/3` y declara
+`salida_estado/3` como `multifile`:
+
+<!-- ejemplo: capitulo-51/soluciones.pl fragmento: automatas:inicial(moore_de(M, S0), Q0-S0) :- .. moore:salida_estado(moore_de(_, _), _-S, S). -->
+```prolog
+automatas:inicial(moore_de(M, S0), Q0-S0) :-
+    inicial(M, Q0).
+automatas:final(moore_de(_, _), _).
+automatas:delta(moore_de(M, _), Q-_, E, Q1-S) :-
+    delta(M, Q, [E]:[S], Q1).
+
+moore:salida_estado(moore_de(_, _), _-S, S).
+```
+
+Un estado `Q-S` recuerda la salida S con la que M llegó a Q, y la escribe:
+esa es su salida de Moore. Las transiciones son las de M, con la salida de
+la transición pasada al estado de llegada. El estado inicial no tiene
+transición de llegada, y por eso su salida, S0, es un argumento de la
+construcción. Todos los estados son finales, como en una máquina de Mealy
+que se ejecuta con `transducir/3`.
+
+```prolog
+?- moore(moore_de(gray, 0), [1, 0, 1, 1], S), transducir(gray, [1, 0, 1, 1], G).
+S = [0, 1, 1, 1, 0],
+G = [1, 1, 1, 0] ;
+false.
+
+?- findall(Q, alcanzable(moore_de(gray, 0), Q), Qs).
+Qs = [b1-1, b1-0, b0-1, b0-0].
+```
+
+Los dos estados de `gray` se desdoblan en cuatro, porque a cada uno se
+llega escribiendo 0 y escribiendo 1: es el desdoblamiento que anuncia el
+final de [Máquinas de Moore](transductores.md#maquinas-de-moore). Con
+`complemento2` se alcanzan tres estados y no cuatro: al estado `copia` solo
+se llega copiando un 0. Las pruebas comparan las dos máquinas para las 63
+entradas de hasta 5 bits.
+
+## Ejercicio 14
+
+`soluciones_cintas.pl` carga `cintas.pl`, `soluciones_maquinas.pl` y
+`reescritura.pl`, y agrega las soluciones de los ejercicios 14 a 16:
+
+<!-- ejemplo: capitulo-51/soluciones_cintas.pl fragmento: inicial(final_de(_), inicio). .. Q \== acepta. -->
+```prolog
+inicial(final_de(_), inicio).
+final(final_de(_), acepta).
+fondo(final_de(_), fondo0).
+pila(final_de(M), inicio, [], fondo0, [Z, fondo0], Q0) :-
+    inicial(M, Q0),
+    fondo(M, Z).
+pila(final_de(M), Q, Lee, X, Apila, Q1) :-
+    X \== fondo0,
+    pila(M, Q, Lee, X, Apila, Q1).
+pila(final_de(_), Q, [], fondo0, [fondo0], acepta) :-
+    Q \== inicio,
+    Q \== acepta.
+```
+
+`final_de(M)` empieza con su propio fondo, `fondo0`, y su primera
+transición, sin leer, apila encima el fondo de M y pasa al estado inicial
+de M. Desde ahí hace lo mismo que M. Cuando M vacía su pila, en el tope
+aparece `fondo0`, que M no conoce, y la última regla pasa al estado
+`acepta`. La condición `X \== fondo0` impide que una transición de M con
+el tope libre, como las de `vacia(M)`, desapile el fondo nuevo.
+
+```prolog
+?- acepta_pila(final_de(anbn), [a, a, b, b]).
+true ;
+false.
+
+?- acepta_pila(final_de(anbn), [a, a, b]).
+false.
+```
+
+Las pruebas comparan `final_de(anbn)` con `anbn` en las 127 palabras de
+longitud hasta 6, y verifican que `vacia(final_de(anbn))`, que vuelve a la
+aceptación por pila vacía, acepta [], [a, b] y [a, a, b, b] entre las de
+longitud hasta 4: las dos construcciones se componen como las de los
+autómatas finitos.
+
+## Ejercicio 15
+
+<!-- ejemplo: capitulo-51/soluciones_cintas.pl predicado: comparar_pasos/3 -->
+```prolog
+%!  comparar_pasos(+N:integer, -P1:integer, -P2:integer) is det.
+%
+%   P1 y P2 son los pasos con los que palindromo_mt, de una cinta, y
+%   palindromo_2c, de dos, aceptan la palabra de N letras a.
+comparar_pasos(N, P1, P2) :-
+    length(W, N),
+    maplist(=(a), W),
+    pasos(palindromo_mt, W, P1),
+    pasos_cintas(palindromo_2c, W, P2).
+```
+
+```prolog
+?- findall(N-P1-P2, (member(N, [2, 4, 8, 16]), comparar_pasos(N, P1, P2)), Ps).
+Ps = [2-6-9, 4-15-15, 8-45-27, 16-153-51].
+```
+
+| n | una cinta | dos cintas |
+|---|---|---|
+| 2 | 6 | 9 |
+| 4 | 15 | 15 |
+| 8 | 45 | 27 |
+| 16 | 153 | 51 |
+
+La máquina de una cinta da (n + 1)(n + 2)/2 pasos, como se vio en el
+ejercicio 11: cada vuelta borra los dos extremos y recorre ida y vuelta la
+palabra que queda, y las vueltas son n/2. Crece con el cuadrado de n: al
+duplicar n, los pasos se multiplican por 2,5, 3 y 3,4, y la razón tiende a
+4. La
+de dos cintas da 3n + 3: recorre la palabra tres veces, una para copiar,
+una para volver y una para comparar, y al duplicar n los pasos se
+duplican. Con palabras cortas la de una cinta es más rápida, porque la de
+dos paga los recorridos completos aunque la palabra sea de dos letras;
+desde n = 4 la de dos cintas no es más lenta, y la diferencia crece sin
+cota. Es
+la diferencia que la simulación de Hartmanis y Stearns permite: a lo sumo
+el cuadrado.
+
+## Ejercicio 16
+
+<!-- ejemplo: capitulo-51/soluciones_cintas.pl fragmento: regla_markov(unario, [i, 0], [0, i, i], sigue). .. regla_markov(unario, [0], [], sigue). -->
+```prolog
+regla_markov(unario, [i, 0], [0, i, i], sigue).
+regla_markov(unario, [1], [0, i], sigue).
+regla_markov(unario, [0], [], sigue).
+```
+
+La segunda regla cambia un 1 por 0i: el 0 conserva la posición y la i es
+la unidad. La primera hace pasar una i hacia la derecha por un 0,
+duplicándola: cada posición hacia la derecha vale la mitad, y una unidad
+de una posición vale dos de la siguiente. Como es la primera, se aplica
+mientras quede una i delante de un 0; la segunda solo actúa cuando ninguna
+i puede avanzar, y la tercera borra los ceros cuando ya no hay ni unos ni
+i delante de ellos. Con 101 la palabra pasa por 0i01, 00ii1, 00ii0i,
+00i0iii, 000iiiii, 00iiiii y 0iiiii, hasta iiiii:
+
+```prolog
+?- markov(unario, [1, 0, 1], 100, R).
+R = fin([i, i, i, i, i]).
+```
+
+Las pruebas convierten los 32 números de 0 a 31, escritos en binario con
+`format/3`, y comparan la cantidad de i con el valor.

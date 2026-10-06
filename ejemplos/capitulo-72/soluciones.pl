@@ -12,6 +12,7 @@
 %?- ejemplo(casa, P0), con_procesadores(P0, 3, P), cota_inferior(P, B).
 %?- ejemplo(coffman, P), mejor_de_todas(P, D).
 %?- ejemplo(coffman, P), criticas(P, Ts).
+%?- forall(variante(N, P, _), (por_colas(P, D), writeln(N-D))).
 
 :- module(soluciones,
           [ con_procesadores/3,
@@ -24,12 +25,14 @@
             optimo_ida/4,
             regla/2,
             mostrar_con_regla/2,
-            errores/2
+            errores/2,
+            por_colas/2
           ]).
 
 :- reexport(planificador).
 :- use_module(lista).
 :- use_module(busqueda).
+:- reexport(anomalias, [variante/3]).
 
 % --- Ejercicios 1 y 7 ---------------------------------------------------------
 
@@ -226,3 +229,20 @@ errores(Proyecto, Errores) :-
     ;   E5 = []
     ),
     append([E1, E2, E3, E4, E5], Errores).
+
+% --- Ejercicio 12 -------------------------------------------------------------
+
+%!  por_colas(+Proyecto, -D:integer) is semidet.
+%
+%   D es la duración del calendario por lista de Proyecto con la prioridad
+%   de mayor cola primero. Falla si las precedencias forman un ciclo.
+por_colas(Proyecto, D) :-
+    orden_topologico(Proyecto, _),
+    findall(C-T,
+            ( tarea(Proyecto, T, _),
+              cola(Proyecto, T, C) ),
+            Pares0),
+    sort(1, @>=, Pares0, Pares),
+    pairs_values(Pares, Lista),
+    por_lista(Proyecto, ordenadas(Lista), Calendario),
+    duracion(Calendario, D).

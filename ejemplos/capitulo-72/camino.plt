@@ -41,4 +41,13 @@ test(colas_nombre, [true(C == [t1-24, t2-22, t3-22, t4-20, t5-20, t6-11,
                                 t7-11])]) :-
     colas(coffman, C).
 
+test(inicio_minimo, [true(I == 4)]) :-
+    ejemplo(coffman, P),
+    camino:inicio_minimo(P, t5, 2, [t1-4, t2-2, t3-2], I).
+
+% Las predecesoras que todavía no empezaron no cuentan.
+test(inicio_minimo_primero, [true(I == 6)]) :-
+    ejemplo(coffman, P),
+    camino:inicio_minimo(P, t5, 6, [t2-2], I).
+
 :- end_tests(camino).

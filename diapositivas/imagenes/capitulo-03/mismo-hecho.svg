@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 460" width="960" height="460">
+  <title>En hermana(ana, Quien) el hecho padre(juan, ana) prueba tanto padre(P, ana) como padre(juan, B), y B queda ligada a ana; la segunda respuesta usa padre(juan, pedro)</title>
+  <defs>
+    <marker id="a-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1F2933"/></marker>
+    <marker id="a-navy" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1F3A5F"/></marker>
+    <marker id="a-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#D9822B"/></marker>
+    <marker id="a-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2E7D32"/></marker>
+    <marker id="a-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#C62828"/></marker>
+    <marker id="a-grey" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#9AA5B1"/></marker>
+  </defs>
+  <rect x="0" y="0" width="960" height="460" fill="#FFFFFF"/>
+  <text x="40.0" y="44.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="26" fill="#1F2933" text-anchor="start" font-weight="bold" xml:space="preserve">?- hermana(ana, Quien).</text>
+  <rect x="40.0" y="90.0" width="300.0" height="52.0" rx="8" fill="#E3F1E4" stroke="#2E7D32" stroke-width="3"/>
+  <text x="60.0" y="124.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#1F2933" text-anchor="start" xml:space="preserve">mujer(ana)</text>
+  <rect x="40.0" y="170.0" width="300.0" height="52.0" rx="8" fill="#E3F1E4" stroke="#2E7D32" stroke-width="3"/>
+  <text x="60.0" y="204.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#1F2933" text-anchor="start" xml:space="preserve">padre(P, ana)</text>
+  <rect x="40.0" y="250.0" width="300.0" height="52.0" rx="8" fill="#E3F1E4" stroke="#2E7D32" stroke-width="3"/>
+  <text x="60.0" y="284.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#1F2933" text-anchor="start" xml:space="preserve">padre(juan, B)</text>
+  <rect x="560.0" y="90.0" width="340.0" height="50.0" rx="8" fill="#FCE8D2" stroke="#D9822B" stroke-width="3"/>
+  <text x="580.0" y="123.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#1F2933" text-anchor="start" xml:space="preserve">padre(juan, ana).</text>
+  <rect x="560.0" y="154.0" width="340.0" height="50.0" rx="8" fill="#FFFFFF" stroke="#9AA5B1" stroke-width="1.5"/>
+  <text x="580.0" y="187.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#1F2933" text-anchor="start" xml:space="preserve">padre(juan, pedro).</text>
+  <rect x="560.0" y="218.0" width="340.0" height="50.0" rx="8" fill="#FFFFFF" stroke="#9AA5B1" stroke-width="1.5"/>
+  <text x="580.0" y="251.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#1F2933" text-anchor="start" xml:space="preserve">padre(pedro, luis).</text>
+  <rect x="560.0" y="282.0" width="340.0" height="50.0" rx="8" fill="#FFFFFF" stroke="#9AA5B1" stroke-width="1.5"/>
+  <text x="580.0" y="315.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#1F2933" text-anchor="start" xml:space="preserve">padre(pedro, eva).</text>
+  <path d="M342,196 C450,196 450,115 552,115" fill="none" stroke="#D9822B" stroke-width="3" marker-end="url(#a-orange)" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M342,276 C460,276 460,125 552,125" fill="none" stroke="#D9822B" stroke-width="3" marker-end="url(#a-orange)" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M342,292 C470,310 470,179 552,179" fill="none" stroke="#9AA5B1" stroke-width="2" marker-end="url(#a-grey)" stroke-dasharray="7 5" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="330.0" y="206.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#D9822B" text-anchor="end" font-weight="bold" xml:space="preserve">P = juan</text>
+  <text x="330.0" y="286.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#D9822B" text-anchor="end" font-weight="bold" xml:space="preserve">B = ana</text>
+  <text x="40.0" y="332.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="17" fill="#52606D" text-anchor="start" xml:space="preserve">después: B = pedro</text>
+  <text x="560.0" y="360.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="18" fill="#1F2933" text-anchor="start" xml:space="preserve">El mismo hecho prueba los dos</text>
+  <text x="560.0" y="386.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="18" fill="#1F2933" text-anchor="start" xml:space="preserve">objetivos padre: B queda ligada</text>
+  <text x="560.0" y="412.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="18" fill="#1F2933" text-anchor="start" xml:space="preserve">a ana, la misma persona que A.</text>
+  <rect x="40.0" y="360.0" width="300.0" height="74.7" rx="8" fill="#1F2933" stroke="#1F2933" stroke-width="2"/>
+  <text x="58.0" y="390.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#E4E7EB" text-anchor="start" font-weight="bold" xml:space="preserve">Quien = ana ;</text>
+  <text x="58.0" y="418.4" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#E4E7EB" text-anchor="start" font-weight="bold" xml:space="preserve">Quien = pedro.</text>
+</svg>

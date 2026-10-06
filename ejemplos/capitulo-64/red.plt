@@ -46,4 +46,30 @@ test(mostrar) :-
     with_output_to(string(S), mostrar_red(mcd)),
     sub_string(S, 0, _, _, "alfa 1: numero(A) -> [2,1]").
 
+% nodo_beta/6 devuelve el hijo de la raíz cuyo prefijo es una variante, sin
+% cambiar la red; con un prefijo nuevo crea el nodo 2.
+test(nodo_beta, [N1, N2, A, B] == [1, 2, 2, 2]) :-
+    compilar_red(pasos, [r :: [p(_)] ---> []], Red0),
+    nodo_beta(alfa(p(Y), []), [alfa(p(Y), [])], 0, Red0, Red1, N1),
+    Red1 == Red0,
+    nodo_beta(alfa(q(Z), []), [alfa(q(Z), [])], 0, Red0, Red2, N2),
+    medidas_red(Red2, A, B, _).
+
+% unir/6 recorre los pasos desde la raíz: la segunda vez, con variantes,
+% llega a la misma hoja sin crear nodos.
+test(unir, [H1, H2, B] == [2, 2, 2]) :-
+    compilar_red(pasos, [], Red0),
+    unir([alfa(p(X), []), alfa(q(X), [])], [], 0, Red0, Red1, H1),
+    unir([alfa(p(Y), []), alfa(q(Y), [])], [], 0, Red1, Red2, H2),
+    medidas_red(Red2, _, B, _).
+
+% mostrar/1 escribe una línea por nodo; la regla cuelga del nodo beta 2.
+test(mostrar_red_compilada,
+     Ls == ["alfa 1: p(A) -> [1]", "alfa 2: q(A) -> [2]",
+            "beta 1 (de 0, union(1)): p(A)",
+            "beta 2 (de 1, union(2)): q(A) => [r]", ""]) :-
+    compilar_red(pasos, [r :: [p(X), q(X)] ---> [agregar(s(X))]], Red),
+    with_output_to(string(S), mostrar(Red)),
+    split_string(S, "\n", "", Ls).
+
 :- end_tests(red).

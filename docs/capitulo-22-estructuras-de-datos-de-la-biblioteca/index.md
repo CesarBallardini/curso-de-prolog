@@ -584,7 +584,7 @@ sola vez, y la búsqueda termina aunque el grafo de estados tenga ciclos
 
 Los capítulos [17](../capitulo-17-todas-las-soluciones/index.md) y [18](../capitulo-18-orden-superior/index.md) representaron el tablero con hechos `mina/2`. Un juego de
 verdad necesita tableros distintos en cada partida, que se construyen durante
-la ejecución, y consulta el valor de una celda muchas veces: es el Patrón 25.
+la ejecución, y consulta el valor de una celda muchas veces: es el [Patrón 25](../patrones.md#25-busqueda-en-un-espacio-de-estados-con-visitados).
 Un tablero es `tablero(Filas, Columnas, Celdas)`, con `Celdas` un assoc de cada
 celda a `mina` o a la cantidad de minas vecinas, calculada una sola vez.
 
@@ -745,7 +745,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 2. **(1)** Aplicar `sort/2`, `msort/2` y `list_to_set/2` a `[c, a, b, a]`.
    ¿Cuál conserva el orden original, y cuáles eliminan los repetidos?
 3. ★ **(2)** Escribir `por_longitud(Listas, Ordenadas)`, que ordena una lista
-   de listas de la más corta a la más larga, con el Patrón 23.
+   de listas de la más corta a la más larga, con el [Patrón 23](../patrones.md#23-decorar-ordenar-desdecorar).
 4. **(2)** Escribir `anagramas(Palabra, Candidatas, Anagramas)`: las candidatas
    con las mismas letras que la palabra, en otro orden.
 5. ★ **(2)** Escribir el registro de una escuela: `agregar_alumno/4` agrega un
@@ -817,6 +817,8 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | `option/3` | una opción de una lista, con valor por omisión |
 | `library(random)`: `randseq/3`, `set_random/1` | azar con semilla; en un solo predicado, con la semilla fija en las pruebas |
 | `string_length/2` | la cantidad de caracteres de una cadena (en las soluciones) |
+| `is_dict/2` | se cumple si el término es un dict, y da su etiqueta; en las pruebas |
+| `same_term/2` | se cumple si los dos argumentos son el mismo término en memoria; en las pruebas de las soluciones |
 | **Patrones 23, 24, 25** | decorar, ordenar, desdecorar; tabla de búsqueda con `assoc`; búsqueda con visitados |
 
 ## Temas que se retoman

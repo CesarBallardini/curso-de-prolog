@@ -112,4 +112,48 @@ test(hecho_invalido, [ error(domain_error(hecho_de_estado, esta_en(dragon,
 test(dos_lugares, error(domain_error(estado_con_un_lugar, _))) :-
     restablecer([aqui(cupula), aqui(taller)]).
 
+test(accesible_jugador, [nondet]) :-
+    iniciar,
+    estado:accesible(jugador).
+
+test(accesible_recipiente_lejano, fail) :-
+    iniciar,
+    estado:accesible(escritorio).
+
+test(a_oscuras_al_empezar, fail) :-
+    iniciar,
+    a_oscuras.
+
+test(impedimentos, all(M == [no_esta(escritorio), fijo(escritorio)])) :-
+    iniciar,
+    impedimento(tomar(escritorio), M).
+
+test(sin_impedimento, fail) :-
+    iniciar,
+    impedimento(ir(biblioteca), _).
+
+test(iniciar_restablece, true(H == H0)) :-
+    iniciar,
+    instantanea(H0),
+    realizar(ir(biblioteca), _),
+    iniciar,
+    instantanea(H).
+
+test(vale, all(H == [aqui(vestibulo)])) :-
+    iniciar,
+    estado:vale(aqui(_)),
+    H = aqui(vestibulo).
+
+test(hecho_valido) :-
+    estado:hecho_valido(esta_en(llave, jugador)).
+
+test(hecho_invalido_lugar, fail) :-
+    estado:hecho_valido(esta_en(llave, nada)).
+
+test(validar_hecho, error(domain_error(hecho_de_estado, aqui(dragon)))) :-
+    estado:validar_hecho(aqui(dragon)).
+
+test(requiere_luz, all(O =@= [examinar(_), tomar(_), poner(_, _), abrir(_)])) :-
+    estado:requiere_luz(O).
+
 :- end_tests(estado).

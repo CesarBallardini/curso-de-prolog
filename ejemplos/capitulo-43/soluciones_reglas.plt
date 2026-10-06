@@ -42,4 +42,17 @@ test(identidad, [fail]) :-
 test(identidad_valores, true(Vs == [])) :-
     ecuaciones:valores(3 ^ (x + 2) / 3 ^ x = 9, x, Vs).
 
+test(expansion_coleccion, true(X \== W)) :-
+    soluciones_reglas:term_expansion(
+        coleccion(si('~>'(W + W, 2 * W), con(W))), C),
+    C = colectar:(regla(X, W + W, 2 * W) :- con(X, W)).
+
+test(expansion_atraccion,
+     true(C =@= atraer:regla(_, log(U) - log(V), log(U / V)))) :-
+    soluciones_reglas:term_expansion(
+        atraccion('~>'(log(U) - log(V), log(U / V))), C).
+
+test(expansion_otro_termino, [fail]) :-
+    soluciones_reglas:term_expansion(otra, _).
+
 :- end_tests(soluciones_reglas).

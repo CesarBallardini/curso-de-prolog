@@ -27,7 +27,8 @@
             medir_caza_k/3,
             soluble/1,
             contar_solubles/2,
-            jugar_humano/2
+            jugar_humano/2,
+            tiene_oro/2
           ]).
 
 :- use_module(library(lists)).
@@ -40,6 +41,7 @@
 :- reexport(enfoques).
 :- reexport(riesgo).
 :- reexport(cazador).
+:- reexport(temporal).
 
 % --- Ejercicio 2 ------------------------------------------------------------
 
@@ -477,3 +479,19 @@ texto_fin(salio(si), 'Sales de la cueva con el oro.').
 texto_fin(salio(no), 'Sales de la cueva sin el oro.').
 texto_fin(murio(pozo), 'Caes en un pozo.').
 texto_fin(murio(wumpus), 'El wumpus te come.').
+
+% --- Ejercicio 12 -------------------------------------------------------------
+
+%!  tiene_oro(+H, +T:integer) is semidet.
+%
+%   En el momento T de la historia H el agente lleva el oro: en un momento
+%   anterior lo tomó mientras percibía el brillo. Ninguna acción lo suelta,
+%   así que una vez tomado se conserva.
+tiene_oro(H, T) :-
+    T > 0,
+    T0 is T - 1,
+    (   hizo(H, tomar, T0),
+        percibio(H, brillo, T0)
+    ->  true
+    ;   tiene_oro(H, T0)
+    ).

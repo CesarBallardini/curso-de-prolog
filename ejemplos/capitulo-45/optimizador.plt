@@ -82,4 +82,54 @@ test(como_el_interprete, [forall(fuente_ejemplo(_, T)),
 test(division_por_cero, [error(evaluation_error(zero_divisor))]) :-
     correr_optimizado("escribir 1 / 0", _).
 
+test(transformar, true(P == [asignar(x, num(3))])) :-
+    transformar(plegar_expresion, [asignar(x, bin(+, num(1), num(2)))], P).
+
+test(transformar_condicion,
+     true(S == mientras(rel(<, id(x), num(6)), [escribir(num(0))]))) :-
+    transformar_sentencia(plegar_expresion,
+                          mientras(rel(<, id(x), bin(*, num(2), num(3))),
+                                   [escribir(bin(-, num(5), num(5)))]),
+                          S).
+
+test(reordenar, true(E-N == bin(+, bin(+, id(b), id(c)), id(a))-2)) :-
+    reordenar(bin(+, id(a), bin(+, id(b), id(c))), E, N).
+
+test(no_reordena_resta, true(E-N == bin(-, id(a), bin(+, id(b), id(c)))-3)) :-
+    reordenar(bin(-, id(a), bin(+, id(b), id(c))), E, N).
+
+test(reescribir, all(C == [[cargar(x), apilar(3)]])) :-
+    reescribir(modismo, [cargar(x), apilar(1), apilar(2), sumar], C).
+
+test(modismo_constante, all(C == [[apilar(6)]])) :-
+    modismo([apilar(2), apilar(3), multiplicar], C).
+
+test(modismo_salto_seguro, true(C == [saltar(L)])) :-
+    modismo([apilar(0), saltar_si_cero(L)], C).
+
+test(modismo_salto_imposible, true(C == [escribir])) :-
+    modismo([apilar(1), saltar_si_cero(_), escribir], C).
+
+test(modismo_codigo_muerto, all(C =@= [[saltar(L), etiqueta(L)]])) :-
+    modismo([saltar(L), escribir, etiqueta(L)], C).
+
+test(modismo_etiquetas_distintas, fail) :-
+    modismo([saltar(_), etiqueta(_)], _).
+
+test(modismo_ingenuo_une, [true(L1 == L2), nondet]) :-
+    modismo_ingenuo([saltar(L1), etiqueta(L2)], _).
+
+test(constante, true(V == 3)) :-
+    constante(dividir, 7, 2, V).
+
+test(constante_division_por_cero, fail) :-
+    constante(dividir, 7, 0, _).
+
+test(constante_no_aritmetica, fail) :-
+    constante(escribir, 1, 2, _).
+
+test(tablas, true(Ops-Cs == [+, -, *, //]-[+, *])) :-
+    findall(P, operador_prolog(_, P), Ops),
+    findall(C, conmutativa(C), Cs).
+
 :- end_tests(optimizador).

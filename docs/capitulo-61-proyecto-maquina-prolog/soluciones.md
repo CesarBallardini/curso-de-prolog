@@ -227,7 +227,7 @@ volver(Tabla, Estado0, Resultado) :-
 ```
 
 `traza` no define la máquina: la envuelve. `ejecutar/5` recibe el nombre
-del módulo, como en el [patrón 59](../patrones.md#59-interprete-con-conducta-como-parametro), y llama a su `paso/5`. Con
+del módulo, como en el [patrón 60](../patrones.md#60-interprete-con-conducta-como-parametro), y llama a su `paso/5`. Con
 `abuelo(juan, N)`, cada línea da la altura de la pila y la meta:
 
 ```text
@@ -464,16 +464,24 @@ paso(Meta, Metas, Tabla, Estado0, Resultado) :-
 %!  evaluar(+Almacen, +Instruccion, +Pila0:list, -Pila:list) is det.
 %
 %   Ejecuta una Instruccion de la máquina de pila. Una celda libre produce
-%   un error de instanciación, como en Prolog.
-evaluar(_, numero(N), Pila, [N|Pila]).
-evaluar(Almacen, celda(C), Pila, [V|Pila]) :-
-    desreferenciar(C, Almacen, V),
-    (   number(V)
-    ->  true
-    ;   instantiation_error(V)
+%   un error de instanciación, como en Prolog. Las tres clases de
+%   instrucción se distinguen con un condicional y no con tres cláusulas:
+%   el primer argumento, el almacén, no sirve para indexarlas, y tres
+%   cláusulas dejarían un punto de elección en cada instrucción.
+evaluar(Almacen, Instruccion, Pila0, Pila) :-
+    (   Instruccion = numero(N)
+    ->  Pila = [N|Pila0]
+    ;   Instruccion = celda(C)
+    ->  desreferenciar(C, Almacen, V),
+        (   number(V)
+        ->  Pila = [V|Pila0]
+        ;   instantiation_error(V)
+        )
+    ;   Instruccion = op(F),
+        Pila0 = [B, A|Resto],
+        operar(F, A, B, V),
+        Pila = [V|Resto]
     ).
-evaluar(_, op(F), [B, A|Pila], [V|Pila]) :-
-    operar(F, A, B, V).
 ```
 
 ```prolog
@@ -508,3 +516,44 @@ La resolvente de `longitud/2` guarda un `N is N0 + 1` por cada elemento,
 como la pila de SWI-Prolog de la [sección 16.2](../capitulo-16-rendimiento/index.md#162-la-pila-y-la-recursion); con acumulador, la
 suma se hace antes de la llamada recursiva, que es la última meta, y la
 resolvente no crece.
+
+## 12
+
+La negación prueba `\+ G` con una segunda ejecución que empieza con la pila
+vacía:
+
+<!-- ejemplo: capitulo-61/negacion.pl predicado: negar/5 -->
+```prolog
+%!  negar(+G, +Metas:list, +Tabla, +Estado0, -Resultado) is det.
+%
+%   Prueba \+ G con una segunda ejecución de la máquina desde el almacén
+%   de Estado0. Resultado es falla(Estado) si G tiene una respuesta, y
+%   sigue(Estado), con Metas y el almacén de Estado0, si no tiene
+%   ninguna. Estado lleva las medidas y las celdas de las dos ejecuciones.
+negar(G, Metas, Tabla, m(Ms, Pila, A, R, L0, M0), Resultado) :-
+    once(almacen:ciclo(negacion, Tabla, m([G], [], A, [], L0, M0), Evento)),
+    arg(1, Evento, m(_, _, _, _, L, M)),
+    (   Evento = fin(_)
+    ->  Resultado = sigue(m(Metas, Pila, A, R, L, M))
+    ;   Resultado = falla(m(Ms, Pila, A, R, L, M))
+    ).
+```
+
+El corte de `(p(_), !, fail)` entra en la resolvente de esa ejecución con
+la altura de su propia pila, y solo puede quitar puntos de elección
+creados en ella. La segunda ejecución termina sin respuestas, la negación
+se cumple, y el punto de elección de `p(X)`, que está en la pila de la
+ejecución principal, queda intacto:
+
+```prolog
+?- almacen:resolver_clausulas(negacion, [(p(a) :- true), (p(b) :- true)], (p(X), \+ (p(_), !, fail))).
+X = a ;
+X = b.
+```
+
+Si la negación compartiera la pila con la ejecución principal, ese `!`,
+que está escrito en la consulta y no en una cláusula, cortaría hasta la
+altura 0, como todo corte de la consulta en la versión 4: quitaría el punto
+de elección de `p(X)`, y la consulta daría solo `X = a`. La meta negada
+dejaría de ser independiente de lo que la rodea; Prolog la trata como
+opaca al corte por esa razón.

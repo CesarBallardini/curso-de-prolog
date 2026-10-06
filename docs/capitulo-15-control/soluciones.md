@@ -156,7 +156,7 @@ primera_aprobada(Legajo, Materia) :-
 respuesta. Dentro de `aprobada/3` cambiaría la relación para todos los que la
 usan: `aprobada(101, M, N)` dejaría de enumerar las materias aprobadas, y
 `inscripcion_posible/3`, que pregunta por una materia en particular, no se vería
-afectada, pero cualquier informe que necesite todas sí. Es el Patrón 6.
+afectada, pero cualquier informe que necesite todas sí. Es el [Patrón 6](../patrones.md#6-una-respuesta-en-el-borde).
 
 ## 7
 

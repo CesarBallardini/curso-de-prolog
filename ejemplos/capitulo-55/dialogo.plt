@@ -53,4 +53,18 @@ test(sesion, true(Lineas ==
                  ¿Dónde estoy el martes a las 10?\n\c
                  Adiós.\n", Lineas).
 
+test(dialogo_inicial, true(E == dialogo(eliza(t, []), []))) :-
+    dialogo_inicial(E).
+
+test(estado_tras_cita, true(A-T == [cita(dia(lunes), hora(9, 0),
+                                         nombre(un, "examen"), nadie,
+                                         ninguno)]-t)) :-
+    dialogo_inicial(E0),
+    responder("Tengo un examen el lunes a las 9", E0,
+              dialogo(eliza(T, _), A), _).
+
+test(estado_tras_eliza, true(A == [])) :-
+    dialogo_inicial(E0),
+    responder("Estoy cansada", E0, dialogo(_, A), _).
+
 :- end_tests(dialogo).

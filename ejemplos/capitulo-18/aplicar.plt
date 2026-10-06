@@ -35,6 +35,7 @@ test(no_todos_mayores, [fail]) :-
 test(todos_mayores_de_ninguno) :-
     todos_mayores([]).
 
+% with_output_to/2, que captura la salida, se presenta en el capítulo 27.
 test(mostrar_edades, true(S == "juan: 68\neva: 8\n")) :-
     with_output_to(string(S), mostrar_edades([juan, eva])).
 
@@ -75,6 +76,7 @@ test(sumar_a_todos, true(R == [11, 12, 13])) :-
 test(mayores_que, true(M == [juan, ana])) :-
     mayores_que(40, [juan, ana, pedro, luis], M).
 
+% var/1, que reconoce una variable libre, se presenta en el capítulo 32.
 % Una variable libre en la lambda y no declarada entre llaves se copia en
 % cada llamada: Y no queda ligada, y la conjunción se cumple con 1 y 2.
 test(lambda_sin_llaves, true(var(Y))) :-

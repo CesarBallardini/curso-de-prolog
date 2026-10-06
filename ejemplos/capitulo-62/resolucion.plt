@@ -54,4 +54,25 @@ test(texto_vacia, [true(T == "□")]) :-
 test(texto_variables, [true(T == "¬hombre(A) ∨ mortal(A)")]) :-
     clausula_texto([-hombre(X), +mortal(X)], T).
 
+% El conjunto de cuatro cláusulas de Hein se refuta en tres pasos.
+test(refutar_hein, [true(P == [r(1, 2, [+q]), r(3, 4, [-q]), r(5, 6, [])])]) :-
+    refutar([[-p, +q], [+p, +q], [-q, +p], [-p, -q]], 5, P).
+
+test(refutar_vacia, [true(P == [])]) :-
+    refutar([[]], 2, P).
+
+test(refutar_satisfacible, [fail]) :-
+    refutar([[+p], [+q]], 3, _).
+
+% derivar/2 enumera todas las derivaciones de la longitud pedida.
+test(derivar, all(P == [ [r(1, 2, [+q]), r(3, 4, [])],
+                         [r(1, 3, [+p]), r(2, 4, [])]
+                       ])) :-
+    length(P, 2),
+    resolucion:derivar(P, [[+p, +q], [-p], [-q]]).
+
+test(derivar_uno, all(P == [[r(1, 2, [])]])) :-
+    length(P, 1),
+    resolucion:derivar(P, [[+p], [-p]]).
+
 :- end_tests(resolucion).

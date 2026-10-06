@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" width="800" height="400">
+  <title>Regla 1: ana unifica con ana, ana no unifica con eva, 12 unifica con 12</title>
+  <rect x="0" y="0" width="800" height="400" fill="#FFFFFF"/>
+  <rect x="45" y="40" width="210" height="320" rx="12" fill="#F1F3F5"/>
+  <rect x="95" y="82" width="110" height="36" rx="18" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="150" y="109.1" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="26" fill="#1F2933" text-anchor="middle">ana</text>
+  <text x="150" y="180" font-family="Verdana, DejaVu Sans, sans-serif" font-size="34" fill="#52606D" text-anchor="middle" font-weight="bold">=</text>
+  <rect x="95" y="222" width="110" height="36" rx="18" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="150" y="249.1" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="26" fill="#1F2933" text-anchor="middle">ana</text>
+  <path d="M136,315 L146,326 L165,302" fill="none" stroke="#2E7D32" stroke-width="6"/>
+  <rect x="295" y="40" width="210" height="320" rx="12" fill="#F1F3F5"/>
+  <rect x="345" y="82" width="110" height="36" rx="18" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="400" y="109.1" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="26" fill="#1F2933" text-anchor="middle">ana</text>
+  <text x="400" y="180" font-family="Verdana, DejaVu Sans, sans-serif" font-size="34" fill="#52606D" text-anchor="middle" font-weight="bold">=</text>
+  <rect x="345" y="222" width="110" height="36" rx="18" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="400" y="249.1" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="26" fill="#1F2933" text-anchor="middle">eva</text>
+  <line x1="388" y1="303" x2="412" y2="327" stroke="#C62828" stroke-width="6"/>
+  <line x1="388" y1="327" x2="412" y2="303" stroke="#C62828" stroke-width="6"/>
+  <rect x="545" y="40" width="210" height="320" rx="12" fill="#F1F3F5"/>
+  <rect x="595" y="82" width="110" height="36" rx="18" fill="#E3F2F1" stroke="#2B7A78" stroke-width="2"/>
+  <text x="650" y="109.1" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="26" fill="#1F2933" text-anchor="middle">12</text>
+  <text x="650" y="180" font-family="Verdana, DejaVu Sans, sans-serif" font-size="34" fill="#52606D" text-anchor="middle" font-weight="bold">=</text>
+  <rect x="595" y="222" width="110" height="36" rx="18" fill="#E3F2F1" stroke="#2B7A78" stroke-width="2"/>
+  <text x="650" y="249.1" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="26" fill="#1F2933" text-anchor="middle">12</text>
+  <path d="M636,315 L646,326 L665,302" fill="none" stroke="#2E7D32" stroke-width="6"/>
+</svg>

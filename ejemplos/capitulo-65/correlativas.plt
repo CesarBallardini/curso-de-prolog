@@ -54,4 +54,21 @@ test(costo, [true(P < R)]) :-
 test(version_desconocida, [error(type_error(_, _))]) :-
     costo(otra, _).
 
+% Cada nota menor que la mínima, una vez.
+test(desaprobada, [true(Ps == [102-alg, 102-am1, 103-alg, 106-log])]) :-
+    findall(L-M, desaprobada(L, M), Ps0),
+    msort(Ps0, Ps).
+
+test(desaprobada_aprobada, [fail]) :-
+    desaprobada(101, am1).
+
+% por_requisitos/3: todos los requisitos por excepción, uno que falta, y
+% una materia sin correlativas pendientes.
+test(por_requisitos, [true([A, B, C] == [condicional([am1, alg]),
+                                         rechazada(falta(ssl)),
+                                         condicional([])])]) :-
+    por_requisitos(105, am2, A),
+    por_requisitos(101, bd, B),
+    por_requisitos(101, pp, C).
+
 :- end_tests(correlativas).

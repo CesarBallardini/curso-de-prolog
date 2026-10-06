@@ -47,4 +47,21 @@ test(cuantas, [true(Ns == [5, mas_de(1000)])]) :-
     cuantas(contador, inicio, [0, 1, schwa], 1000, N2),
     Ns = [N1, N2].
 
+test(expandir_relacion, [true(R == tabla([b, c, e, k],
+                                         [i(b, blanco, [p(0), r], c),
+                                          i(c, blanco, [r], e),
+                                          i(e, blanco, [p(1), r], k),
+                                          i(k, blanco, [r], b)]))]) :-
+    expandir(transicion(i), b, [blanco, 0, 1], 10, R).
+
+test(expandir_limite, [true(R == incompleta([b, c, e]))]) :-
+    expandir(transicion(i), b, [blanco, 0, 1], 2, R).
+
+test(expandir_sin_transiciones, [true(R == tabla([fin], []))]) :-
+    expandir(transicion(ii), fin, [blanco, 0, 1], 10, R).
+
+test(recorrer_cola_vacia, [true(Fin-Is-R == []-[]-completa)]) :-
+    list_to_assoc([], V),
+    completa:recorrer(_, Fin, 0, V, transicion(i), [blanco], 10, Is, R).
+
 :- end_tests(completa).

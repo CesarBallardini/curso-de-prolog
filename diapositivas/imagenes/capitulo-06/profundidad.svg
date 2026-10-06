@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" width="800" height="400">
+  <title>Una regla por profundidad: abuelo recorre dos generaciones, bisabuelo tres, tatarabuelo cuatro; antepasado tendría que recorrer una cantidad cualquiera</title>
+  <rect x="0" y="0" width="800" height="400" fill="#FFFFFF"/>
+  <text x="20" y="57" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F3A5F" font-weight="bold">abuelo/2</text>
+  <line x1="246" y1="50" x2="287" y2="50" stroke="#1F3A5F" stroke-width="3"/>
+  <polygon points="285,42 285,58 299,50" fill="#1F3A5F"/>
+  <line x1="331" y1="50" x2="372" y2="50" stroke="#1F3A5F" stroke-width="3"/>
+  <polygon points="370,42 370,58 384,50" fill="#1F3A5F"/>
+  <circle cx="230" cy="50" r="16" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <circle cx="315" cy="50" r="16" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <circle cx="400" cy="50" r="16" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="440" y="56" font-family="Verdana, DejaVu Sans, sans-serif" font-size="16" fill="#52606D">2 generaciones</text>
+  <text x="20" y="147" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F3A5F" font-weight="bold">bisabuelo/2</text>
+  <line x1="246" y1="140" x2="287" y2="140" stroke="#1F3A5F" stroke-width="3"/>
+  <polygon points="285,132 285,148 299,140" fill="#1F3A5F"/>
+  <line x1="331" y1="140" x2="372" y2="140" stroke="#1F3A5F" stroke-width="3"/>
+  <polygon points="370,132 370,148 384,140" fill="#1F3A5F"/>
+  <line x1="416" y1="140" x2="457" y2="140" stroke="#1F3A5F" stroke-width="3"/>
+  <polygon points="455,132 455,148 469,140" fill="#1F3A5F"/>
+  <circle cx="230" cy="140" r="16" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <circle cx="315" cy="140" r="16" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <circle cx="400" cy="140" r="16" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <circle cx="485" cy="140" r="16" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="525" y="146" font-family="Verdana, DejaVu Sans, sans-serif" font-size="16" fill="#52606D">3 generaciones</text>
+  <text x="20" y="237" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F3A5F" font-weight="bold">tatarabuelo/2</text>
+  <line x1="246" y1="230" x2="287" y2="230" stroke="#1F3A5F" stroke-width="3"/>
+  <polygon points="285,222 285,238 299,230" fill="#1F3A5F"/>
+  <line x1="331" y1="230" x2="372" y2="230" stroke="#1F3A5F" stroke-width="3"/>
+  <polygon points="370,222 370,238 384,230" fill="#1F3A5F"/>
+  <line x1="416" y1="230" x2="457" y2="230" stroke="#1F3A5F" stroke-width="3"/>
+  <polygon points="455,222 455,238 469,230" fill="#1F3A5F"/>
+  <line x1="501" y1="230" x2="542" y2="230" stroke="#1F3A5F" stroke-width="3"/>
+  <polygon points="540,222 540,238 554,230" fill="#1F3A5F"/>
+  <circle cx="230" cy="230" r="16" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <circle cx="315" cy="230" r="16" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <circle cx="400" cy="230" r="16" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <circle cx="485" cy="230" r="16" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <circle cx="570" cy="230" r="16" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="610" y="236" font-family="Verdana, DejaVu Sans, sans-serif" font-size="16" fill="#52606D">4 generaciones</text>
+  <rect x="8" y="278" width="784" height="86" rx="10" fill="#F1F3F5" stroke="#F1F3F5" stroke-width="0"/>
+  <text x="20" y="327" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#D9822B" font-weight="bold">antepasado/2</text>
+  <line x1="246" y1="320" x2="287" y2="320" stroke="#D9822B" stroke-width="3"/>
+  <polygon points="285,312 285,328 299,320" fill="#D9822B"/>
+  <line x1="331" y1="320" x2="372" y2="320" stroke="#D9822B" stroke-width="3"/>
+  <polygon points="370,312 370,328 384,320" fill="#D9822B"/>
+  <line x1="416" y1="320" x2="510" y2="320" stroke="#D9822B" stroke-width="3" stroke-dasharray="9 6"/>
+  <circle cx="230" cy="320" r="16" fill="#FCE8D2" stroke="#D9822B" stroke-width="2"/>
+  <circle cx="315" cy="320" r="16" fill="#FCE8D2" stroke="#D9822B" stroke-width="2"/>
+  <circle cx="400" cy="320" r="16" fill="#FCE8D2" stroke="#D9822B" stroke-width="2"/>
+  <text x="530" y="328" font-family="Verdana, DejaVu Sans, sans-serif" font-size="26" fill="#D9822B" font-weight="bold">…</text>
+  <text x="590" y="326" font-family="Verdana, DejaVu Sans, sans-serif" font-size="18" fill="#D9822B" font-weight="bold">¿cuántas?</text>
+</svg>

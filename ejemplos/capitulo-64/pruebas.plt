@@ -48,4 +48,23 @@ test(ciclos, Distintos == [6, 8]) :-
     findall(N, ( member(ciclo(N, I0), F0), member(ciclo(N, I), F),
                  I =\= I0 ), Distintos).
 
+% solo_del_hecho/3: Y > 2 mira solo q(X, Y); X \== Z mira también a p(Z),
+% un paso anterior que q(X, Y) no contiene.
+test(solo_del_hecho) :-
+    solo_del_hecho(Y > 2, q(X, Y), [alfa(p(X), [])]),
+    \+ solo_del_hecho(X \== Z, q(X, Y), [alfa(p(Z), [])]).
+
+% Una variable que no aparece antes no impide mover la prueba.
+test(solo_del_hecho_nueva) :-
+    solo_del_hecho(W > 0, q(_), [alfa(p(_), [])]),
+    var(W).
+
+% tomar_pruebas/5 se detiene en la primera prueba que no puede mover.
+test(tomar_pruebas, [Ps, R] == [[Y > 2], [{Z > Y}, r(Y)]]) :-
+    tomar_pruebas([{Y > 2}, {Z > Y}, r(Y)], q(X, Y), [alfa(p(X, Z), [])],
+                  Ps, R).
+
+test(tomar_pruebas_ninguna, [Ps, R] == [[], [r(X)]]) :-
+    tomar_pruebas([r(X)], q(X), [], Ps, R).
+
 :- end_tests(pruebas).

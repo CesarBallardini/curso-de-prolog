@@ -20,7 +20,30 @@ cinco versiones: la traducción palabra por palabra y sus fallas; las dos
 gramáticas; la transferencia; la generación, con el lugar donde una
 gramática deja de funcionar al revés; y el traductor completo, que elige el
 sentido de la traducción examinando sus argumentos, como enseña el
-[capítulo 32](../capitulo-32-inspeccion-de-terminos/index.md).
+[capítulo 32](../capitulo-32-inspeccion-de-terminos/index.md). Dos
+versiones más prueban la otra manera de traducir, por una interlingua de
+fórmulas lógicas con cuantificadores, y agregan el trato de tú y de usted.
+
+![Triángulo con el texto de origen y el de destino en la base y la interlingua en el vértice; flechas de análisis, transferencia, generación y traducción directa](piramide-traduccion.png)
+
+El triángulo de la traducción automática: la traducción directa va de un
+texto al otro en la base; el análisis sube hacia una representación más
+abstracta, la transferencia cruza de una lengua a la otra a esa altura, y
+la generación baja hasta el texto de destino; en el vértice, una
+interlingua común hace innecesaria la transferencia. Imagen: Francis
+Tyers, con revisiones de Chris-martin y Marajozkee, basada en W. J.
+Hutchins, [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/), vía
+[Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Direct_translation_and_transfer_translation_pyramid.svg).
+
+El diagrama sigue la oración del comienzo por las tres etapas del
+traductor de este capítulo:
+
+```mermaid
+flowchart LR
+    A["el gato negro<br/>come una manzana"] -- "análisis" --> B["o(sn(el, gato, sg, [negro]),<br/>comer,<br/>sn(un, manzana, sg, []))"]
+    B -- "transferencia" --> C["o(sn(the, [black], cat, sg),<br/>eat,<br/>sn(a, [], apple, sg))"]
+    C -- "generación" --> D["the black cat<br/>eats an apple"]
+```
 
 El proyecto parte de *Natural Language Processing for Prolog Programmers*,
 de Michael A. Covington, que el autor publica en
@@ -57,12 +80,16 @@ Al terminar el capítulo, el lector puede:
   recursión sin límite— y corregirlo;
 - enumerar las traducciones de una oración ambigua y explicar de dónde sale
   cada una;
-- elegir el orden de las etapas según el argumento instanciado.
+- elegir el orden de las etapas según el argumento instanciado;
+- traducir por una interlingua de fórmulas con cuantificadores y explicar
+  la ambigüedad de alcance de «todo alumno lee un libro»;
+- tratar una información que una lengua codifica y la otra no, como el
+  trato de tú y de usted, con un dato del contexto.
 
 !!! info "Tiempo estimado"
     Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:35 h**.
-    Resolver los 5 ejercicios marcados con ★: **1:25 h**.
-    Resolver los 12 ejercicios del final: **3:20 h**.
+    Resolver los 6 ejercicios marcados con ★: **1:30 h**.
+    Resolver los 14 ejercicios del final: **4:05 h**.
 
 ## 54.1 El traductor terminado
 
@@ -725,13 +752,35 @@ texto(Palabras, Texto) :-
     atom_string(Oracion, Texto).
 ```
 
+## 54.8 Versión 6: una interlingua con cuantificadores
+
+Covington traduce por una interlingua: sus gramáticas relacionan cada
+oración con una fórmula lógica, y traducir es analizar con una gramática y
+generar con la otra. La página
+[Interlingua lógica y trato](interlingua.md#una-interlingua-con-cuantificadores)
+desarrolla la versión 6, `cuantificadores.pl`: las fórmulas con
+`todo/3` y `alguno/3`, compuestas por unificación a partir de lo que
+aporta cada palabra; la **ambigüedad de alcance** de «todo alumno lee un
+libro», que tiene dos lecturas con distinto valor de verdad en un mismo
+modelo; y la traducción, que la conserva porque la oración inglesa tiene
+la misma ambigüedad.
+
+## 54.9 Versión 7: tú y usted
+
+El inglés tiene una sola forma, *you*, donde el castellano distingue el
+trato de confianza del de respeto. La versión 7, `tratamiento.pl`, en la
+misma [página](interlingua.md#tu-y-usted), agrega las dos formas al
+traductor de transferencia: del castellano al inglés las dos dan *you*, y
+del inglés al castellano `traducir_con_trato/3` recibe el trato como un
+dato del contexto, porque la oración no lo dice.
+
 !!! success "Criterios de calidad"
     | Criterio | En este capítulo |
     |---|---|
     | C1 | cada predicado declara sus modos; los que se usan en los dos sentidos (`oracion_es//1`, `oracion_en//1`, `transferir/2`) declaran `?` y dicen qué argumento debe llegar instanciado, y `traducir/2` declara sus dos modos por separado |
     | C2 | los árboles son representaciones limpias, un functor por clase de nodo; la transferencia elige la cláusula por la cabeza, sin examinar tipos |
     | C3 | los no terminales y la transferencia no tienen cortes ni efectos: por eso funcionan en los dos sentidos; los cortes de `antes_de/2` y `empieza_con_vocal/1`, y el si-entonces-sino de `numero_es/3`, actúan sobre argumentos que llegan instanciados en los dos sentidos |
-    | C7 | 78 pruebas en siete archivos; cada gramática y la transferencia se prueban en los dos sentidos, y los dos defectos del capítulo están probados: el error de `sn_ingenuo//2` al generar y la búsqueda sin fin de `adjetivos_ingenuo/2` y `traducir_ingenuo/2`, detenida con un límite de inferencias |
+    | C7 | 180 pruebas en diez archivos; cada gramática y la transferencia se prueban en los dos sentidos, y los dos defectos del capítulo están probados: el error de `sn_ingenuo//2` al generar y la búsqueda sin fin de `adjetivos_ingenuo/2` y `traducir_ingenuo/2`, detenida con un límite de inferencias |
 
 ## Ejercicios
 
@@ -792,6 +841,15 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     mujeres» es «the women's book». En castellano, «de el» se contrae en
     «del»; en inglés, el poseedor ocupa el lugar del artículo, y un plural
     terminado en *s* recibe solo el apóstrofo: «the dogs' house».
+13. ★ **(1)** Con `cuantificadores.pl` cargado, predecir las dos lecturas
+    de «un alumno lee todo libro» y su valor en el modelo, y comprobarlo
+    con `lecturas/2`. ¿Cuál de las dos es la que se lee primero en
+    castellano, y por qué la gramática la da primero?
+14. **(3)** Agregar la lectura de usted del sujeto omitido en tercera
+    persona: «Come manzanas.» también puede ser «You eat apples.». Contar
+    las traducciones de «Come manzanas.», y mostrar qué da
+    `traducir_con_trato(tu, Es, "You eat apples.")`. Corregirlo con un
+    predicado que examine también el sujeto inglés.
 
 ## Resumen
 
@@ -803,6 +861,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | **sujeto tácito** | el sujeto que el castellano omite; se traduce por un pronombre inglés, con tantas traducciones como pronombres posibles |
 | **plural genérico** | «los gatos» en general; en inglés, el plural sin artículo |
 | **restricción de selección** | la condición que un verbo impone a su sujeto o a su objeto, como ser animado |
+| **[Patrón 62](../patrones.md#62-informacion-de-contexto-como-parametro)** | información de contexto como parámetro |
 | `palabra_por_palabra/2` | la traducción de cada forma por su equivalente |
 | `oracion_es//1`, `oracion_en//1` | las gramáticas: oración y árbol |
 | `transferir/2`, `sujeto/2`, `sn/2`, `adjetivos/2` | la transferencia entre los árboles |
@@ -810,6 +869,9 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | `es_en/2`, `en_es/2`, `traducir/2`, `traducciones/2` | el traductor en cada sentido y sobre textos |
 | `call_with_inference_limit/3` | ejecuta una meta con un límite de inferencias; `R` dice si lo alcanzó |
 | `split_string/4`, `atomic_list_concat/3` | de un texto a sus palabras, y de las palabras a un texto |
+| **ambigüedad de alcance** | una oración con dos cuantificadores admite los dos órdenes: «todo alumno lee un libro» |
+| `oracion_logica_es//1`, `alcance/2`, `traducciones_logicas/2`, `lecturas/2` | la interlingua con cuantificadores |
+| `traducir_con_trato/3` | la traducción al castellano con el trato como dato del contexto |
 
 ## Temas que se retoman
 
@@ -831,7 +893,28 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
   traducción, entre ellas el sujeto omitido del castellano; el
   [ejercicio 11](#ejercicios) toma la idea de su traductor por interlingua.
   Apartado 8.3, «Word-Sense Disambiguation»: la idea de las restricciones
-  de selección del [ejercicio 5](#ejercicios).
+  de selección del [ejercicio 5](#ejercicios). De «A Simple Technique» y
+  «A Working Translator», la interlingua de fórmulas con cuantificadores y
+  su composición por unificación de términos con `^` (figuras 8.1 y 8.3),
+  que sigue la [sección 54.8](#548-version-6-una-interlingua-con-cuantificadores);
+  de «Why Translation Is Hard», el trato de confianza y de respeto que el
+  inglés no distingue, de la [sección 54.9](#549-version-7-tu-y-usted).
+- W. John Hutchins, *Machine Translation: Past, Present, Future*, Ellis
+  Horwood, 1986. Covington lo recomienda para la historia de la
+  traducción automática; el capítulo toma de allí, a través de él, el
+  esquema de análisis, transferencia y generación y su contraste con la
+  traducción por interlingua.
+- Dominique Estival, «Generating French with a Reversible Unification
+  Grammar», *COLING 1990*, vol. 2, pp. 106–112
+  ([ACL Anthology C90-2019](https://aclanthology.org/C90-2019/)). Covington
+  lo cita como ejemplo de traducción con gramáticas reversibles basadas en
+  unificación; el capítulo toma de allí la idea de que la misma gramática
+  analiza la oración de origen y genera la de destino.
+- Yorick Wilks, «An Intelligent Analyzer and Understander of English»,
+  *Communications of the ACM* 18(5), 1975, pp. 264–274. Covington lo
+  recomienda para la desambiguación por restricciones de selección; el
+  [ejercicio 5](#ejercicios) toma de allí la idea de que un verbo exige
+  ciertas propiedades de sus argumentos.
 
 El código del capítulo es propio del curso: las gramáticas, el vocabulario,
 la transferencia y el traductor se escribieron para él; de la fuente se

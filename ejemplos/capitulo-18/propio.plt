@@ -2,6 +2,7 @@
 
 :- begin_tests(propio).
 
+% var/1, que reconoce una variable libre, se presenta en el capítulo 32.
 % alternativas(G, R): R es pendientes si G termina con alternativas
 % pendientes, o ninguna. El objetivo de limpieza de call_cleanup/2 se ejecuta
 % cuando G ya no tiene alternativas.
@@ -43,6 +44,8 @@ test(cuantos_cumplen, true(N == 2)) :-
 test(cuantos_cumplen_ninguno, true(N == 0)) :-
     cuantos_cumplen(menor_de_edad, [], N).
 
+% predicate_property/2, que consulta las propiedades,
+% se presenta en el capítulo 33.
 test(declaracion, true(M == cada_uno(1, ?))) :-
     predicate_property(cada_uno(_, _), meta_predicate(M)).
 

@@ -52,6 +52,28 @@ test(interactiva_ninguna, [true(H == ninguna)]) :-
     con_entrada("no. no. no.",
                 with_output_to(string(_), consulta_interactiva(H))).
 
+% clausulas//3 de un árbol de una pregunta: tres nodos, el 1 pregunta y
+% el 2 y el 3 son hojas.
+test(clausulas, [true(N-S == 3-4)]) :-
+    phrase(compilado:clausulas(pregunta(p, hoja(si), hoja(no)), 1, S), Cs),
+    length(Cs, N).
+
+% term_expansion/2 solo expande arbol_compilado/1.
+test(term_expansion_otro, [fail]) :-
+    compilado:term_expansion(otro(orden), _).
+
+test(responde_lista) :-
+    compilado:responde(lista([tiene_pelo]), tiene_pelo),
+    \+ compilado:responde(lista([tiene_pelo]), tiene_plumas).
+
+% repetir/3 sin respuestas previas da lo mismo que
+% preguntas_encadenando/2.
+test(repetir) :-
+    caso(1, Os),
+    compilado:repetir(Os, [], Ps),
+    preguntas_encadenando(Os, Ps1),
+    Ps =@= Ps1.
+
 :- end_tests(compilado).
 
 %!  con_entrada(+Texto:string, :G) is semidet.

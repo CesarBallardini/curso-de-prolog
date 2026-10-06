@@ -9,14 +9,17 @@ of the chapter and its solutions, and the `.pl` and `.plt` files under
   - the chapter itself defines is fine;
   - a chapter up to and including this one presents is fine;
   - a later chapter presents is fine only as an announced forward reference: the page
-    links that chapter (`capitulo-NN-`), or the `.pl` file names it («capítulo NN»);
+    links that chapter (`capitulo-NN-`), or the `.pl` or `.plt` file names it («capítulo NN»);
     otherwise it is an error, because the text jumps ahead;
-  - no chapter presents, and SWI-Prolog knows as a predicate, is a warning: the book uses
-    it without ever presenting it (`--strict` turns the warnings into errors).
+  - no chapter presents, and SWI-Prolog knows as a predicate of that arity, is a warning:
+    the book uses it without ever presenting it (`--strict` turns the warnings into errors).
 
 Test files (`.plt`) may use what the book has not taught: their forward uses are reported
-as warnings, never as errors. A name that no chapter presents and SWI-Prolog does not know
-is a data functor (`estado(...)`) or a local helper, and is ignored.
+as warnings, never as errors, and a `.plt` that names the presenting chapter announces
+them as a `.pl` does. A name that no chapter presents and SWI-Prolog does not know with
+that number of arguments is a data functor (`estado(...)`, `date(A, M, D)`), an evaluable
+function (`log(X)` inside `is/2`) or a local helper, and is ignored. A dict method call
+(`D.put(edad, 42)`) is not a call.
 
     ./tools/check-part-2.py [--strict] [capitulo-17 ...]
 """
@@ -42,7 +45,11 @@ IGNORE = {
     # error terms and control that part I already uses in transcripts
     'type_error', 'domain_error', 'existence_error', 'instantiation_error', 'permission_error',
     'evaluation_error', 'representation_error', 'resource_error', 'syntax_error', 'context',
+    'uninstantiation_error',
     'catch', 'throw', 'call', 'not',
+    # library predicates whose names the course uses only as data functors, with the
+    # library's arity: chapter 36's state menu(N, Vista, A), never library(tty)'s menu/3
+    'menu',
 }  # fmt: skip
 CODE_BLOCK = re.compile(r'^```prolog\n(?P<code>.*?)^```', re.M | re.S)
 
@@ -91,8 +98,8 @@ def announced(text: str, chapter: int) -> bool:
     return f'capitulo-{chapter:02d}-' in text or re.search(rf'[Cc]ap[ií]tulo {chapter}\b', text) is not None
 
 
-def used_names(code: str, local: set[str], declared_arities: dict[str, set[int]]) -> list[str]:
-    """The names the code calls that the check is about: not local, not ignored, and called
+def used_names(code: str, local: set[str], declared_arities: dict[str, set[int]]) -> list[tuple[str, int | None]]:
+    """The (name, arity) of the calls the check is about: not local, not ignored, and called
     with an arity the book declares for them (another arity is another functor, such as the
     option functor(alumno))."""
     names = set()
@@ -101,8 +108,8 @@ def used_names(code: str, local: set[str], declared_arities: dict[str, set[int]]
             continue
         if arity is not None and name in declared_arities and arity not in declared_arities[name]:
             continue
-        names.add(name)
-    return sorted(names)
+        names.add((name, arity))
+    return sorted(names, key=lambda c: (c[0], -1 if c[1] is None else c[1]))
 
 
 def main() -> int:
@@ -111,7 +118,7 @@ def main() -> int:
     first = taught.taught_by()
     declared_arities = taught.arities()
     errors, warnings = set(), set()
-    unknown: dict[int, dict[str, set]] = {}
+    unknown: dict[int, dict[tuple[str, int | None], set]] = {}
     for chapter, index in taught.chapter_pages():
         if chapter <= examples.LAST_OF_PART_1:
             continue
@@ -121,20 +128,21 @@ def main() -> int:
         local = set().union(*(defined(code) for _, code, _ in sources)) if sources else set()
         for where, code, text in sources:
             rel = where.relative_to(examples.ROOT).as_posix()
-            for name in used_names(code, local, declared_arities):
+            for name, arity in used_names(code, local, declared_arities):
                 taught_in = first.get(name)
                 if taught_in is None:
-                    unknown.setdefault(chapter, {}).setdefault(name, set()).add(rel)
+                    unknown.setdefault(chapter, {}).setdefault((name, arity), set()).add(rel)
                 elif taught_in > chapter and not announced(text, taught_in):
                     message = f'{rel}: {name} is presented in chapter {taught_in}, after chapter {chapter}'
                     (warnings if where.suffix == '.plt' else errors).add(message)
-    known = taught.in_swi({n for names in unknown.values() for n in names})
+    known = taught.in_swi({c for names in unknown.values() for c in names})
     for chapter, names in sorted(unknown.items()):
-        for name, files in sorted(names.items()):
-            if name in known:
-                warnings.add(
-                    f'chapter {chapter}: {name} is used ({", ".join(sorted(files))}) and no chapter presents it'
-                )
+        files_of: dict[str, set] = {}
+        for call, files in names.items():
+            if call in known:
+                files_of.setdefault(call[0], set()).update(files)
+        for name, files in sorted(files_of.items()):
+            warnings.add(f'chapter {chapter}: {name} is used ({", ".join(sorted(files))}) and no chapter presents it')
     for line in sorted(errors):
         print(f'error: {line}')
     for line in sorted(warnings):

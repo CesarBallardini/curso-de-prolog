@@ -10,8 +10,11 @@ repos:
     rev: v6.0.0
     hooks:
       # The PDFs under books/ are in .gitignore; this is the second barrier, in
-      # case one gets in with `git add -f`.
+      # case one gets in with `git add -f`. The limit is 3 MB because the slide
+      # decks (diapositivas/*.odp, up to 2.3 MB) and the single-file book
+      # conversions under books/ are versioned on purpose.
       - id: check-added-large-files
+        args: ["--maxkb=3000"]
       - id: check-ast
       - id: check-case-conflict
       - id: check-json

@@ -600,3 +600,74 @@ unificación del género falla y la segunda cláusula propone «de la». La
 condición `F \== "el"` excluye «de el», que la contracción reemplaza.
 `posesivo/4` distingue el plural regular, que termina en *s* y recibe solo
 el apóstrofo, de «women», que recibe *'s*.
+
+## Ejercicio 13
+
+```prolog
+?- lecturas(["un", "alumno", "lee", "todo", "libro"], Ls).
+Ls = [alguno(_A, alumno(_A), todo(_B, libro(_B), leer(_A, _B)))-falsa, todo(_C, libro(_C), alguno(_D, alumno(_D), leer(_D, _C)))-verdadera].
+```
+
+`lecturas/2` es de `cuantificadores.pl`. La primera lectura dice que hay un
+alumno que leyó todos los libros, y es falsa: Ana leyó solo el Quijote y
+Beto solo Rayuela. La segunda dice que cada libro tiene algún lector, y es
+verdadera. La gramática da primero la del orden de las palabras, en la que
+el cuantificador del sujeto contiene al del objeto, porque
+`oracion_es_q//1` pasa al sintagma nominal del sujeto el alcance que arma
+el verbo con su objeto; `alcance/2` agrega después la inversa. Es también
+la lectura que se entiende primero en castellano, aunque el contexto puede
+imponer la otra.
+
+## Ejercicio 14
+
+<!-- ejemplo: capitulo-54/soluciones_tratamiento.pl predicado: sujeto/2 traducir_con_trato_ingles/3 trato_ingles/3 -->
+```prolog
+% «Come manzanas» también puede dirigirse a usted.
+sujeto(tacito(sg), pron(you)).
+
+%!  traducir_con_trato_ingles(+Trato, -Es:string, +En:string) is nondet.
+%
+%   Como traducir_con_trato/3, pero el trato solo se exige cuando el
+%   sujeto inglés es you: el sujeto omitido en tercera persona traduce
+%   también he, she e it, que no se dirigen a nadie.
+traducir_con_trato_ingles(Trato, Es, En) :-
+    palabras(En, PalabrasEn),
+    phrase(oracion_en(ArbolEn), PalabrasEn),
+    transferir(ArbolEs, ArbolEn),
+    arg(1, ArbolEs, SujetoEs),
+    arg(1, ArbolEn, SujetoEn),
+    trato_ingles(SujetoEs, SujetoEn, Trato),
+    phrase(oracion_es(ArbolEs), PalabrasEs),
+    texto(PalabrasEs, Es).
+
+%!  trato_ingles(+SujetoEs, +SujetoEn, ?Trato) is semidet.
+%
+%   Con you, el sujeto castellano omitido en singular es usted; con
+%   cualquier otro sujeto inglés, el trato no importa.
+trato_ingles(SujetoEs, SujetoEn, Trato) :-
+    (   SujetoEn == pron(you)
+    ->  (   SujetoEs == tacito(sg)
+        ->  Trato = usted
+        ;   trato(SujetoEs, Trato)
+        )
+    ;   true
+    ).
+```
+
+```prolog
+?- traducciones("Come manzanas.", Ts).
+Ts = ["He eats apples.", "She eats apples.", "It eats apples.", "You eat apples."].
+
+?- findall(Es, traducir_con_trato(tu, Es, "You eat apples."), L).
+L = ["Comes manzanas.", "Tú comes manzanas.", "Come manzanas."].
+
+?- findall(Es, traducir_con_trato_ingles(tu, Es, "You eat apples."), L).
+L = ["Comes manzanas.", "Tú comes manzanas."].
+```
+
+«Come manzanas.» tiene cuatro traducciones. `traducir_con_trato/3`
+examina solo el árbol castellano, y el sujeto omitido en tercera persona
+no fija el trato, porque también traduce *he*, *she* e *it*; por eso
+acepta «Come manzanas.» para *you* con el trato de tú. El trato depende del
+par de sujetos: `trato_ingles/3` lo exige solo cuando el sujeto inglés es
+*you*, y entonces el sujeto omitido en tercera persona es usted.

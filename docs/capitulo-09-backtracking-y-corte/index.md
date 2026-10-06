@@ -435,6 +435,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     | Objetivo que se intenta | Qué hace Prolog | Alternativas que quedan |
     |---|---|---|
     | | | |
+
 13. **(2)** El predicado siguiente usa un corte dentro de una recursión.
     Determinar, con las reglas de la [sección 9.3](#93-que-poda-exactamente), si el corte afecta a las
     llamadas recursivas, y verificarlo ejecutando `primer_par([1, 3, 4, 6], X).`
@@ -449,6 +450,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     primer_par([_|Resto], X) :-
         primer_par(Resto, X).
     ```
+
 14. ★ **(2)** Escribir `clasificar(N, C)` con la plantilla 14, que se cumpla con
     `C = negativo`, `C = cero` o `C = positivo` según corresponda, con el
     encabezado `clasificar(+N, -C) is det`. Después

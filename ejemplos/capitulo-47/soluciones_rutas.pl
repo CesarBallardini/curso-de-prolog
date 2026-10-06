@@ -10,6 +10,11 @@
 
 :- ensure_loaded(rutas).
 
+:- meta_predicate
+    costo_uniforme_t(+, 1, 4, -),
+    costo_uniforme_t(+, +, 1, 4, -),
+    sin_costo(3, +, +, -, -).
+
 % Ejercicio 11
 
 % salida(A, B, Hora, Minutos): una balsa sale de A hacia B a la Hora y

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" width="960" height="480">
+  <title>El modelo de cajas de Byrd: un objetivo es una caja con dos entradas, Call y Redo, y dos salidas, Exit y Fail</title>
+  <rect x="0" y="0" width="960" height="480" fill="#FFFFFF"/>
+  <rect x="300.0" y="110.0" width="360.0" height="220.0" rx="14" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="3"/>
+  <text x="480.0" y="228.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="26" fill="#1F2933" text-anchor="middle" xml:space="preserve">padre(juan, P)</text>
+  <line x1="30.0" y1="170.0" x2="280.0" y2="170.0" stroke="#1F3A5F" stroke-width="7"/>
+  <polygon points="300.0,170.0 280.0,159.0 280.0,181.0" fill="#1F3A5F"/>
+  <line x1="660.0" y1="170.0" x2="900.0" y2="170.0" stroke="#2E7D32" stroke-width="7"/>
+  <polygon points="920.0,170.0 900.0,159.0 900.0,181.0" fill="#2E7D32"/>
+  <line x1="300.0" y1="300.0" x2="42.0" y2="300.0" stroke="#B3261E" stroke-width="3"/>
+  <polygon points="30.0,300.0 42.0,306.6 42.0,293.4" fill="#B3261E"/>
+  <line x1="920.0" y1="300.0" x2="672.0" y2="300.0" stroke="#D9822B" stroke-width="3"/>
+  <polygon points="660.0,300.0 672.0,306.6 672.0,293.4" fill="#D9822B"/>
+  <text x="40.0" y="152.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="26" fill="#1F3A5F" text-anchor="start" xml:space="preserve" font-weight="bold">Call</text>
+  <text x="40.0" y="200.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">intentar satisfacer</text>
+  <text x="40.0" y="226.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">el objetivo</text>
+  <text x="680.0" y="152.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="26" fill="#2E7D32" text-anchor="start" xml:space="preserve" font-weight="bold">Exit</text>
+  <text x="680.0" y="200.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">objetivo satisfecho</text>
+  <text x="40.0" y="334.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="26" fill="#B3261E" text-anchor="start" xml:space="preserve" font-weight="bold">Fail</text>
+  <text x="40.0" y="368.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">no quedan soluciones</text>
+  <text x="680.0" y="334.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="26" fill="#D9822B" text-anchor="start" xml:space="preserve" font-weight="bold">Redo</text>
+  <text x="680.0" y="368.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">buscar otra solución</text>
+  <text x="480.0" y="80.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="22" fill="#52606D" text-anchor="middle" xml:space="preserve">una caja por cada objetivo</text>
+  <text x="480.0" y="440.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="middle" xml:space="preserve">flechas gruesas: el avance · flechas finas: el retroceso</text>
+</svg>

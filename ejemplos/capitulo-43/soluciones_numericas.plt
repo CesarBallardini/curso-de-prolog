@@ -41,4 +41,20 @@ test(pendiente_inicial, true(Xs == [0])) :-
 test(una_raiz, all(R =:= [-1.7692923542386314])) :-
     ecuaciones:resolver(x ^ 3 - 2 * x + 2 = 0, x, x = R).
 
+test(derivada_sin_simplificar, true(D == cos(x) * 1 * x + sin(x) * 1)) :-
+    soluciones_numericas:derivada(sin(x) * x, x, D).
+
+test(derivada_no_derivable,
+     [error(domain_error(expresion_derivable, tan(x)))]) :-
+    soluciones_numericas:derivada(tan(x), x, _).
+
+test(pasos, true(Xs == [1.5, 1.4166666666666667])) :-
+    soluciones_numericas:pasos(x ^ 2 - 2, 2 * x, x, 1, 2, Xs).
+
+test(pasos_cero, true(Xs == [])) :-
+    soluciones_numericas:pasos(x ^ 2 - 2, 2 * x, x, 1, 0, Xs).
+
+test(pasos_pendiente_nula, true(Xs == [])) :-
+    soluciones_numericas:pasos(x ^ 2 - 2, 2 * x, x, 0, 3, Xs).
+
 :- end_tests(soluciones_numericas).

@@ -75,4 +75,22 @@ test(ciclo, [fail]) :-
     orden_topologico(proyecto([tarea(a, 1), tarea(b, 1)],
                               [antes(a, b), antes(b, a)], 1), _).
 
+test(superpuestas) :-
+    tareas:superpuestas([asignada(a, 1, 0, 4), asignada(b, 1, 3, 5)]).
+
+% Una tarea que empieza cuando otra termina, o en otro procesador, no se
+% superpone.
+test(no_superpuestas, [fail]) :-
+    tareas:superpuestas([asignada(a, 1, 0, 4), asignada(b, 1, 4, 5),
+                         asignada(c, 2, 0, 5)]).
+
+test(por_inicio, [true(X == 2-tramo(t1, 2, 6))]) :-
+    tareas:por_inicio(tramo(t1, 2, 6), X).
+
+test(ubicar, [true(A-L == asignada(t4, 1, 4, 24)-[24, 4, 4])]) :-
+    tareas:ubicar(tramo(t4, 4, 24), A, [2, 4, 4], L).
+
+test(ubicar_sin_procesador, [fail]) :-
+    tareas:ubicar(tramo(t4, 1, 24), _, [2, 4, 4], _).
+
 :- end_tests(tareas).

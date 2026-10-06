@@ -30,6 +30,10 @@ transcripts that follow without rendering anything:
 
     <!-- contexto: capitulo-67/subsuncion.pl -->
 
+The slides of a chapter, `diapositivas/capitulo-NN.md`, are checked with it: they
+take the chapter from the file name, and are selected by the same argument.
+`--slides` checks the decks alone, leaving the pages of the text out.
+
 Exits 1 if any transcript disagrees with the interpreter.
 """
 
@@ -165,7 +169,9 @@ def candidates(item: Transcript) -> list[list[Path]]:
     if item.context and item.context.exists():
         tries.append([item.context])
 
-    chapter = examples.CHAPTER_DIR.match(item.page.parent.name)
+    # A page of the text takes its chapter from its directory; a slide file
+    # (diapositivas/capitulo-01.md) from its own name.
+    chapter = examples.CHAPTER_DIR.match(item.page.parent.name) or examples.CHAPTER_DIR.match(item.page.stem)
     if not chapter:
         return tries
     folder = examples.EXAMPLES / f'capitulo-{chapter.group(1)}'
@@ -190,13 +196,24 @@ def candidates(item: Transcript) -> list[list[Path]]:
 #  depends on where the reader is sitting, not on the example file.
 ENVIRONMENT = re.compile(r'^\s*(consult|halt|listing|trace|notrace|edit|make)\b')
 
+#  Loading a module by a bare file name (`use_module(sqlite)`) depends on the
+#  reader's working directory; loading from a library (`library(pldoc)`) does not.
+LOCAL_LOAD = re.compile(r'^\s*(use_module|ensure_loaded)\(\s*[a-z]\w*\s*[,)]')
+
+#  A `$Name` reuses the binding of an earlier answer in the same toplevel session
+#  (chapter 42 reuses an ODBC connection as `$C`); each query is probed on its own,
+#  so such a query cannot be reproduced.
+SESSION_VARIABLE = re.compile(r'\$[A-Z_]')
+
 
 def ask(swipl: str, item: Transcript) -> tuple[str, str]:
     """Run one query against each candidate context until one of them defines it."""
     if item.staged:
         return 'skip', 'shows the state before the program is loaded'
-    if ENVIRONMENT.match(item.query):
+    if ENVIRONMENT.match(item.query) or LOCAL_LOAD.match(item.query):
         return 'skip', 'acts on the session, not on the program'
+    if SESSION_VARIABLE.search(item.query):
+        return 'skip', 'reuses a binding from an earlier query of the session'
     outcome, detail = 'skip', 'no example file for this chapter'
     for files in candidates(item) or [[]]:
         outcome, detail = run_once(swipl, item, files)
@@ -272,9 +289,9 @@ def run_once(swipl: str, item: Transcript, context: list[Path]) -> tuple[str, st
     return 'ok', f'{actual_count} answers'
 
 
-def pages(wanted: list[str]) -> list[Path]:
+def pages(wanted: list[str], slides_only: bool = False) -> list[Path]:
     chosen = []
-    for directory in sorted(examples.DOCS.glob('capitulo-*')):
+    for directory in [] if slides_only else sorted(examples.DOCS.glob('capitulo-*')):
         number = examples.CHAPTER_DIR.match(directory.name)
         if not number:
             continue
@@ -283,6 +300,9 @@ def pages(wanted: list[str]) -> list[Path]:
         if not examples.is_written(directory):
             continue
         chosen.extend(sorted(directory.glob('*.md')))
+    for slides in sorted(examples.SLIDES.glob('capitulo-*.md')):
+        if not wanted or any(name in slides.stem for name in wanted):
+            chosen.append(slides)
     return chosen
 
 
@@ -300,7 +320,7 @@ def main() -> int:
     wanted = [name for name in argv if not name.startswith('-')]
 
     bad, skipped, checked = [], [], 0
-    for page in pages(wanted):
+    for page in pages(wanted, slides_only='--slides' in argv):
         for item in transcripts(page):
             outcome, detail = ask(swipl, item)
             where = f'{page.relative_to(examples.ROOT).as_posix()}:{item.line}'

@@ -1,11 +1,13 @@
 # Soluciones del capítulo 49 — Proyecto: diagnóstico por abducción
 
-Las soluciones de los ejercicios 2 a 4 y 6 a 11 están en
+Las soluciones de los ejercicios 2 a 4, 6 a 11 y 13 están en
 `ejemplos/capitulo-49/soluciones.pl`, que carga los módulos del proyecto
 (`fallas.pl`, `abduccion.pl`, `minimos.pl`, `modelos.pl` y `medicion.pl`) y
 agrega reglas a la teoría y circuitos con cláusulas `multifile`; la del
 ejercicio 5, en `soluciones_copia.pl`, porque cambia el modelo fuerte y,
-cargada junto con las demás, cambiaría sus resultados. Cada archivo tiene
+cargada junto con las demás, cambiaría sus resultados. La del ejercicio
+12, en `soluciones_negacion.pl`, carga `negacion.pl`, que define otra
+teoría. Cada archivo tiene
 sus pruebas en el `.plt` del mismo nombre.
 
 ## Ejercicio 1
@@ -358,6 +360,9 @@ toca_los_conos(Circuito, Entradas-Salidas, Diagnostico) :-
              ord_intersect(Cono, Rutas) )).
 ```
 
+`ord_intersect/2` se cumple si dos conjuntos ordenados tienen al menos un
+elemento en común.
+
 `depende/5` recorre la descripción desde un cable hacia las entradas. Si el
 cable lo produce un subcircuito, baja por la salida correspondiente, y las
 entradas del subcircuito que alcanza se traducen de vuelta a los cables del
@@ -440,3 +445,74 @@ treinta y seis del sumador de tres bits; en los dos circuitos toda falla
 simple es detectable. El criterio voraz no garantiza el conjunto más pequeño.
 En el sumador, tres es el mínimo: recorriendo los 64 pares de entradas con
 `detecta/3`, ninguno detecta las quince fallas.
+
+## Ejercicio 12
+
+Las cláusulas nuevas van en `soluciones_negacion.pl`, porque
+`negacion.pl` declara `multifile` su teoría:
+
+<!-- ejemplo: capitulo-49/soluciones_negacion.pl fragmento: negacion:abducible(herido(_)). .. negacion:regla(anormal(X), herido(X)). -->
+```prolog
+negacion:abducible(herido(_)).
+negacion:regla(anormal(X), herido(X)).
+```
+
+```prolog
+?- suponer(vuela(piolin), S), cerrar(S).
+S = [gorrion(piolin)-verdadero, pinguino(piolin)-falso, muerto(piolin)-falso, herido(piolin)-falso] ;
+false.
+
+?- suponer((no(vuela(piolin)), ave(piolin)), S), cerrar(S).
+S = [pinguino(piolin)-verdadero] ;
+S = [pinguino(piolin)-verdadero, gorrion(piolin)-verdadero] ;
+S = [muerto(piolin)-verdadero, pinguino(piolin)-verdadero] ;
+S = [muerto(piolin)-verdadero, gorrion(piolin)-verdadero] ;
+S = [herido(piolin)-verdadero, pinguino(piolin)-verdadero] ;
+S = [herido(piolin)-verdadero, gorrion(piolin)-verdadero] ;
+false.
+```
+
+La explicación de que vuela suma un supuesto: para refutar `anormal`, cada
+una de sus tres reglas tiene que refutarse, y la nueva pide que Piolín no
+esté herido. La explicación de que no vuela suma dos, una por cada manera
+de ser ave: la regla nueva es una causa más de anormalidad, y se combina
+con cada una. Las explicaciones mínimas pasan de tres a cuatro conjuntos:
+ser pingüino, o ser gorrión y estar muerto, o ser gorrión y estar herido;
+las combinaciones con pingüino y otra causa contienen a la primera.
+
+## Ejercicio 13
+
+<!-- ejemplo: capitulo-49/soluciones.pl predicado: conjunto_fuerte/3 -->
+```prolog
+%!  conjunto_fuerte(+Circuito, +Observaciones:list(pair), +Rutas:list)
+%!      is semidet.
+%
+%   Algún diagnóstico del modelo fuerte tiene en falla exactamente las
+%   compuertas de Rutas, una lista ordenada.
+conjunto_fuerte(Circuito, Observaciones, Rutas) :-
+    diagnostico(fuerte, Circuito, Observaciones, Diagnostico),
+    rutas(Diagnostico, Rutas),
+    !.
+```
+
+```prolog
+?- conjunto_fuerte(sumador, [[0, 0, 1]-[0, 1], [0, 0, 0]-[1, 0]], [[m1, x1]]).
+true.
+
+?- conjunto_fuerte(sumador, [[0, 0, 1]-[0, 1], [0, 0, 0]-[1, 0]], [[m1, x1], [o1]]).
+false.
+```
+
+Con la XOR `[m1, x1]` pegada a 1 o invertida, el cable t vale 1 en las dos
+mediciones, y el circuito las reproduce con la OR sana: con las entradas
+0, 0, 1 la OR recibe 0 y 1 y da el acarreo 1 medido; con 0, 0, 0 recibe 0
+y 0 y da el 0 medido. Si la OR también está en falla, tiene que dar
+esos mismos dos acarreos, y ningún estado de falla lo hace: pegada a 0
+falla la primera medición, pegada a 1 la segunda, e invertida las dos. En
+el modelo fuerte, entonces, un superconjunto de un diagnóstico no es
+siempre un diagnóstico, y `minimos_incrementales/3` pierde las dos razones
+en que se apoya: `reducir/4` supone que, si sacar una compuerta rompe el
+diagnóstico, sacarla de un conjunto más chico también lo rompe, y la poda
+de `excluir/6` supone que lo que no es diagnóstico tampoco lo es con menos
+compuertas. En el modelo débil una compuerta en falla puede comportarse
+como sana, y las dos suposiciones valen siempre.

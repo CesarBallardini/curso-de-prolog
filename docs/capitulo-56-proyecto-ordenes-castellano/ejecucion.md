@@ -62,7 +62,10 @@ que usa `process_create/3`; la opción `-t halt` hace que `swipl` termine
 aunque el programa no lo haga. En modo `simulacion`, ninguna acción
 modifica el disco: cada una se devuelve descrita, `simulada(Accion)`. Es
 la idea del ejercicio de Covington que muestra el comando antes de
-ejecutarlo, llevada a no ejecutarlo:
+ejecutarlo, llevada a no ejecutarlo. Cada cláusula del modo `real` corta
+después de la cabeza: la acción ya eligió la cláusula, y como `realizar/6`
+es `multifile` y otros archivos le agregan cláusulas, sin el corte quedaría
+pendiente la alternativa de probarlas:
 
 <!-- ejemplo: capitulo-56/sistema.pl predicado: realizar/6 -->
 ```prolog
@@ -78,14 +81,17 @@ realizar(_, _, _, _, salir, salir) :-
 realizar(simulacion, _, _, _, Accion, simulada(Accion)) :-
     !.
 realizar(real, Raiz, _, _, copiar(R, D), copiado(R, D)) :-
+    !,
     ruta_real(Raiz, R, De),
     ruta_real(Raiz, D, A),
     copy_file(De, A).
 realizar(real, Raiz, _, _, mover(R, D), movido(R, D)) :-
+    !,
     ruta_real(Raiz, R, De),
     ruta_real(Raiz, D, A),
     rename_file(De, A).
 realizar(real, Raiz, Leer, Out, borrar(R), Resultado) :-
+    !,
     ruta_real(Raiz, R, Abs),
     format(Out, "¿Quieres borrar ~s? (s/n) ", [R]),
     flush_output(Out),
@@ -96,6 +102,7 @@ realizar(real, Raiz, Leer, Out, borrar(R), Resultado) :-
     ;   Resultado = conservado(R)
     ).
 realizar(real, Raiz, _, _, ejecutar(R), salida(R, Estado, Lineas)) :-
+    !,
     ruta_real(Raiz, R, Abs),
     salida_de(swipl, ['-t', halt, Abs], Texto, Estado),
     split_string(Texto, "\n", "\r", Lineas0),

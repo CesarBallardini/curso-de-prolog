@@ -1,0 +1,49 @@
+# The slide decks match their sources: each diapositivas/capitulo-NN.odp has the
+# slides of its .md, in order and with the same titles, its .pdf has one page per
+# slide, and every transcript on a slide agrees with SWI-Prolog 9. Rebuilding the
+# decks needs pandoc and LibreOffice and does not give byte-identical files, so
+# the check compares what the reader sees (tools/check-slides.py).
+#
+# It runs only when something a deck depends on changes: the decks themselves,
+# the examples of the chapters that have decks, or the tools that check them.
+name: Diapositivas
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'diapositivas/**'
+      - 'ejemplos/capitulo-0[1-7]/**'
+      - 'tools/check-slides.py'
+      - 'tools/check-transcripts.py'
+      - 'tools/transcript-probe.pl'
+      - 'tools/examples.py'
+      - '.github/workflows/diapositivas.yml'
+      - '.github/actions/preparar/**'
+  pull_request:
+    paths:
+      - 'diapositivas/**'
+      - 'ejemplos/capitulo-0[1-7]/**'
+      - 'tools/check-slides.py'
+      - 'tools/check-transcripts.py'
+      - 'tools/transcript-probe.pl'
+      - 'tools/examples.py'
+      - '.github/workflows/diapositivas.yml'
+      - '.github/actions/preparar/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diapositivas:
+    runs-on: ubuntu-26.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Prepare
+        uses: ./.github/actions/preparar
+
+      - name: Decks match their sources, and their transcripts agree
+        run: make slides-check

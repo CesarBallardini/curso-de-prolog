@@ -1,0 +1,8 @@
+% Hipocicloides: un disco de radio 3 rueda por dentro de una
+% circunferencia de radio 5; tres vueltas alrededor cierran la curva.
+% El punto en el borde del disco.
+curva(borde, hipocicloide(5, 3, 3), 0, 6*pi, 180).
+% El punto dentro del disco.
+curva(adentro, hipocicloide(5, 3, 1), 0, 6*pi, 180).
+% El punto fuera del disco.
+curva(afuera, hipocicloide(5, 3, 5), 0, 6*pi, 180).

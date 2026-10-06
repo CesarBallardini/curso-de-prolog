@@ -776,6 +776,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | `seguras/2`, `primer_camino/2` | la vuelta del Wumpus ([Aplicaciones](aplicaciones.md#la-vuelta-a-casa-del-wumpus)) |
 | `configuracion/3`, `deducir/3`, `jugar/6`, `visible/5` | el Buscaminas como búsqueda ([Aplicaciones](aplicaciones.md#el-buscaminas-como-busqueda)) |
 | **[Patrón 54](../patrones.md#54-la-frontera-decide-la-estrategia)** | la frontera decide la estrategia |
+| `random_permutation/2` | una permutación al azar de una lista (en las soluciones) |
 
 ## Temas que se retoman
 

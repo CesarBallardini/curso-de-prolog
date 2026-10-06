@@ -72,4 +72,55 @@ test(mostrar_estrategia, [true(N == 10)]) :-
     length(Ls, N0),
     N is N0 - 1.
 
+test(limitado_o, [true(A == o(n, meta(ruta(paso, paso))-3)), nondet]) :-
+    limitado(o, rio(cero), n, [ruta(paso, paso)-3], 0, A).
+
+test(arco_limitado, [true(A == meta(ruta(paso, paso))-4), nondet]) :-
+    arco_limitado(rio(cero), 0, ruta(paso, paso)-4, A).
+
+test(arco_limitado_sin_limite, [fail]) :-
+    arco_limitado(rio(cero), 0, ruta(alamos, cantera)-4, _).
+
+test(contar_ancestro, [true(N == 0)]) :-
+    contar(rio(cero), ruta(a, b), [ruta(a, b)], N).
+
+test(contar_hijo, [true(N == 1)]) :-
+    contar_hijo(rio(cero), [], ruta(paso, paso)-7, N).
+
+test(cobrar, [true(Hs == [cruce(a, barca, b)-15, cruce(a, paso, b)-0])]) :-
+    maplist(cobrar(15), [cruce(a, barca, b)-0, cruce(a, paso, b)-0], Hs).
+
+test(costo_m_memoria, [true(C-Ns == 2-[x, y])]) :-
+    empty_assoc(M0),
+    costo_m(y(x, [meta(y)-1, meta(y)-1]), C, M0, M),
+    assoc_to_keys(M, Ns).
+
+test(costo_nodo_o, [true(C == 5)]) :-
+    empty_assoc(M0),
+    costo_nodo(o(x, meta(y)-5), C, M0, _).
+
+test(costo_arco, [true(S == 10)]) :-
+    empty_assoc(M0),
+    costo_arco(meta(y)-3, 7-M0, S-_).
+
+test(posicion_esquina, [true(P == pos([x, v, o, v, v, v, v, v, v], x))]) :-
+    posicion_esquina(3, P).
+
+test(casilla_esquina, [true(Ms == [x, o, v])]) :-
+    length(Ms, 3),
+    foldl(casilla_esquina(2), Ms, 1, _).
+
+test(inmediata, [true(Fs == [3*x, x^2/2, x^4/4, -cos(x), sin(x), exp(x)])]) :-
+    maplist(inmediata, [3, x, x^3, sin(x), cos(x), exp(x)], Fs).
+
+test(inmediata_inversa, [fail]) :-
+    inmediata(x^(-1), _).
+
+test(transformacion, [all(T == [suma(2*(x+1), x)])]) :-
+    transformacion(2*(x+1)+x, T).
+
+test(transformacion_producto, [all(T == [factor(2, x+1),
+                                         distribuir(2*x+2*1)])]) :-
+    transformacion(2*(x+1), T).
+
 :- end_tests(soluciones).

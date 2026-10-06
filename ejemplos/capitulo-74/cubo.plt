@@ -65,4 +65,31 @@ test(color_tras, [true(C == r)]) :-
 test(cambiadas, [true(N == 24)]) :-
     cambiadas([u, d], N).
 
+% rotar/3: un cuarto de vuelta horario alrededor de z, visto desde la punta
+% del eje, lleva el eje x al eje -y.
+test(rotar, [true(W == p(0, -1, 0))]) :-
+    rotar(p(0, 0, 1), p(1, 0, 0), W).
+
+test(rotar_eje_fijo, [true(W == p(0, 1, 0))]) :-
+    rotar(p(0, 1, 0), p(0, 1, 0), W).
+
+% Un giro mueve 20 casillas: 8 de la cara y 12 de las vecinas.
+test(destino_mueve_20, all(C-N == [u-20, r-20, f-20, d-20, l-20, b-20])) :-
+    member(C, [u, r, f, d, l, b]),
+    aggregate_all(count, ( between(1, 54, I), destino(C, I, J), I \== J ), N).
+
+test(destino_centro, [nondet, true(J == 5)]) :-
+    destino(u, 5, J).
+
+test(destino_permutacion, [true(Js == Is)]) :-
+    numlist(1, 54, Is),
+    findall(J, ( between(1, 54, I), destino(f, I, J) ), Js0),
+    msort(Js0, Js).
+
+test(giro_calculado_igual_al_hecho, all(C == [u, r, f, d, l, b])) :-
+    member(C, [u, r, f, d, l, b]),
+    giro_calculado(C, A, D),
+    giro(C, A1, D1),
+    A-D =@= A1-D1.
+
 :- end_tests(cubo).

@@ -109,16 +109,24 @@ paso(Meta, Metas, Tabla, Estado0, Resultado) :-
 %!  evaluar(+Almacen, +Instruccion, +Pila0:list, -Pila:list) is det.
 %
 %   Ejecuta una Instruccion de la máquina de pila. Una celda libre produce
-%   un error de instanciación, como en Prolog.
-evaluar(_, numero(N), Pila, [N|Pila]).
-evaluar(Almacen, celda(C), Pila, [V|Pila]) :-
-    desreferenciar(C, Almacen, V),
-    (   number(V)
-    ->  true
-    ;   instantiation_error(V)
+%   un error de instanciación, como en Prolog. Las tres clases de
+%   instrucción se distinguen con un condicional y no con tres cláusulas:
+%   el primer argumento, el almacén, no sirve para indexarlas, y tres
+%   cláusulas dejarían un punto de elección en cada instrucción.
+evaluar(Almacen, Instruccion, Pila0, Pila) :-
+    (   Instruccion = numero(N)
+    ->  Pila = [N|Pila0]
+    ;   Instruccion = celda(C)
+    ->  desreferenciar(C, Almacen, V),
+        (   number(V)
+        ->  Pila = [V|Pila0]
+        ;   instantiation_error(V)
+        )
+    ;   Instruccion = op(F),
+        Pila0 = [B, A|Resto],
+        operar(F, A, B, V),
+        Pila = [V|Resto]
     ).
-evaluar(_, op(F), [B, A|Pila], [V|Pila]) :-
-    operar(F, A, B, V).
 
 %!  operar(+F:atom, +A:number, +B:number, -V:number) is det.
 %

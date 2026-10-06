@@ -70,4 +70,50 @@ test(rapido_figuras, [true(Fs == Gs)]) :-
     figuras(rapido, inicio, 30, Fs),
     figuras(ii, b, 30, Gs).
 
+test(cuenta_mas_larga_primero, [all(N-R == [2-"D", 1-"AD", 0-"AAD"])]) :-
+    string_codes("AAD", Cs),
+    phrase(cuenta(0'A, N), Cs, Resto),
+    string_codes(R, Resto).
+
+test(cuenta_ninguna, [true(N == 0)]) :-
+    phrase(cuenta(0'A, N), `D`, `D`).
+
+test(instruccion_sd, [all(I == [i(1, 0, 1, r, 2)])]) :-
+    phrase(instruccion_sd(I), `DADDCRDAA;`).
+
+test(instruccion_sd_mal_formada, [fail]) :-
+    phrase(instruccion_sd(_), `DADDCXDAA;`).
+
+test(instrucciones_sd, [all(Is == [[i(1, 0, 1, r, 2), i(2, 0, 0, l, 1)]])]) :-
+    phrase(instrucciones_sd(Is), `DADDCRDAA;DAADDLDA;`).
+
+test(instrucciones_sd_vacia, [all(Is == [[]])]) :-
+    phrase(instrucciones_sd(Is), []).
+
+test(sd_numero_inverso, [true(N == 3137)]) :-
+    sd_numero("DAD;", N).
+
+test(instruccion_estandar, [true(I == i(1, blanco, e(1, n), s(3)))]) :-
+    instruccion_estandar(i(1, 0, 2, n, s(3)), I).
+
+test(simbolos, [true(Ss == [blanco, 0, 1, s(3), s(7)])]) :-
+    maplist(simbolo_numero, Ss, [0, 1, 2, 3, 7]).
+
+% figuras/4 cuenta cada figura impresa; U, solo las impresas en un blanco.
+test(reimprime, [true(Fs-Us == [0, 1, 0, 1]-[0, 0, 0, 0])]) :-
+    figuras(reimprime, b, 4, Fs),
+    universal(reimprime, b, [0, 1], 4, Us).
+
+test(reimprime_descripcion,
+     [true(SD == "DADDCNDAA;DAADCDCCRDAAA;DAAADDRDA;DAAADCDCRDA;DAAADCCDCCRDA;")]) :-
+    descripcion(reimprime, b, [0, 1], SD).
+
+% U no detecta que la máquina se detuvo: kom sigue buscando hacia la
+% izquierda una instrucción.
+test(corta, [true(Q-T == kom-":DAD:0:DCDAAD")]) :-
+    descripcion(corta, b, [0, 1], SD),
+    cinta_universal(SD, C0),
+    ejecutar(universal, b, C0, 200000, limite(Q, C)),
+    escrito(C, T).
+
 :- end_tests(soluciones).

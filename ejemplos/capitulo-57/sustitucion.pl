@@ -17,13 +17,15 @@
 %?- valor(map@[cuadrado, [1, 2, 3]], V).
 %?- valor(suma@[1]@[2], V).
 %?- valor(plegar_izq@[producto, 1, [1, 2, 3, 4, 5]], V).
+%?- valor(cuadrado_del_siguiente@[4], V).
 
 :- op(200, yfx, @).
 
 %!  valor(+Expresion, -Valor) is semidet.
 %
 %   Valor es el resultado de evaluar Expresion. La evaluación es estricta:
-%   los argumentos se evalúan antes de aplicar la función.
+%   los argumentos se evalúan antes de aplicar la función. G*F, la
+%   composición, es la función que aplica F y después G.
 valor(E, V) :-
     var(E),
     !,
@@ -38,6 +40,9 @@ valor(si@[C, A, B], V) :-
     valor(C, C1),
     elegir(C1, A, B, E),
     valor(E, V).
+valor(G*F, V) :-
+    !,
+    valor(lambda(X, G@[F@[X]]), V).
 valor(F@Args, V) :-
     !,
     valor(F, Fv),
@@ -128,3 +133,7 @@ funcion(plegar_izq@[F, A, L],
         si@[igual@[L, []], A, plegar_izq@[F, F@[A, cabeza@[L]], cola@[L]]]).
 funcion(invertir@[L], plegar_izq@[lambda(A, lambda(X, [X|A])), [], L]).
 funcion(sumar_a_todos@[N, L], map@[lambda(X, suma@[X, N]), L]).
+
+% La composición de funciones: G*F aplica F y después G.
+funcion(cuadrado_del_siguiente, cuadrado*inc).
+funcion(cuadrados_de_siguientes, map@[cuadrado*inc]).

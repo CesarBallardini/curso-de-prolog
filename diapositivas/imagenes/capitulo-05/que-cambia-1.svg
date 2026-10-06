@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" width="960" height="480">
+  <title>Qué cambia el orden de los objetivos: otro árbol, con dos ramas en un caso y tres en el otro; cambia el trabajo</title>
+  <rect x="0" y="0" width="960" height="480" fill="#FFFFFF"/>
+  <line x1="480.0" y1="20.0" x2="480.0" y2="380.0" stroke="#EAF1F8" stroke-width="2"/>
+  <text x="240.0" y="40.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="24" fill="#1F3A5F" text-anchor="middle" xml:space="preserve" font-weight="bold">un orden</text>
+  <text x="720.0" y="40.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="24" fill="#1F3A5F" text-anchor="middle" xml:space="preserve" font-weight="bold">el otro orden</text>
+  <line x1="240.0" y1="86.0" x2="240.0" y2="170.0" stroke="#1F3A5F" stroke-width="2.5"/>
+  <line x1="240.0" y1="170.0" x2="150.0" y2="254.0" stroke="#1F3A5F" stroke-width="2.5"/>
+  <line x1="150.0" y1="254.0" x2="150.0" y2="338.0" stroke="#1F3A5F" stroke-width="2.5"/>
+  <line x1="240.0" y1="170.0" x2="330.0" y2="254.0" stroke="#1F3A5F" stroke-width="2.5"/>
+  <line x1="330.0" y1="254.0" x2="330.0" y2="338.0" stroke="#1F3A5F" stroke-width="2.5"/>
+  <circle cx="240.0" cy="86.0" r="11" fill="#1F3A5F"/>
+  <circle cx="240.0" cy="170.0" r="11" fill="#1F3A5F"/>
+  <circle cx="150.0" cy="254.0" r="11" fill="#1F3A5F"/>
+  <circle cx="150.0" cy="338" r="14" fill="#B3261E"/>
+  <path d="M 143.7 331.7 L 156.3 344.3 M 156.3 331.7 L 143.7 344.3" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="330.0" cy="254.0" r="11" fill="#1F3A5F"/>
+  <circle cx="330.0" cy="338" r="16" fill="#2E7D32"/>
+  <path d="M 322.0 338.8888888888889 L 328.22222222222223 345.1111111111111 L 338.8888888888889 330.8888888888889" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <line x1="720.0" y1="86.0" x2="720.0" y2="170.0" stroke="#1F3A5F" stroke-width="2.5"/>
+  <line x1="720.0" y1="170.0" x2="586.7" y2="254.0" stroke="#1F3A5F" stroke-width="2.5"/>
+  <line x1="586.7" y1="254.0" x2="586.7" y2="338.0" stroke="#1F3A5F" stroke-width="2.5"/>
+  <line x1="720.0" y1="170.0" x2="720.0" y2="254.0" stroke="#1F3A5F" stroke-width="2.5"/>
+  <line x1="720.0" y1="254.0" x2="720.0" y2="338.0" stroke="#1F3A5F" stroke-width="2.5"/>
+  <line x1="720.0" y1="170.0" x2="853.3" y2="254.0" stroke="#1F3A5F" stroke-width="2.5"/>
+  <line x1="853.3" y1="254.0" x2="853.3" y2="338.0" stroke="#1F3A5F" stroke-width="2.5"/>
+  <circle cx="720.0" cy="86.0" r="11" fill="#1F3A5F"/>
+  <circle cx="720.0" cy="170.0" r="11" fill="#1F3A5F"/>
+  <circle cx="586.7" cy="254.0" r="11" fill="#1F3A5F"/>
+  <circle cx="586.6666666666666" cy="338" r="14" fill="#B3261E"/>
+  <path d="M 580.3666666666667 331.7 L 592.9666666666666 344.3 M 592.9666666666666 331.7 L 580.3666666666667 344.3" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="720.0" cy="254.0" r="11" fill="#1F3A5F"/>
+  <circle cx="720.0" cy="338" r="14" fill="#B3261E"/>
+  <path d="M 713.7 331.7 L 726.3 344.3 M 726.3 331.7 L 713.7 344.3" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="853.3" cy="254.0" r="11" fill="#1F3A5F"/>
+  <circle cx="853.3333333333334" cy="338" r="16" fill="#2E7D32"/>
+  <path d="M 845.3333333333334 338.8888888888889 L 851.5555555555555 345.1111111111111 L 862.2222222222223 330.8888888888889" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="240.0" y="384.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="24" fill="#1F2933" text-anchor="middle" xml:space="preserve" font-weight="bold">2 ramas</text>
+  <text x="720.0" y="384.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="24" fill="#1F2933" text-anchor="middle" xml:space="preserve" font-weight="bold">3 ramas</text>
+  <rect x="230.0" y="420.0" width="500.0" height="40.0" rx="20" fill="#FCE8D2" stroke="#D9822B" stroke-width="2"/>
+  <text x="480.0" y="447.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="22" fill="#D9822B" text-anchor="middle" xml:space="preserve" font-weight="bold">otro árbol: cambia el trabajo</text>
+</svg>

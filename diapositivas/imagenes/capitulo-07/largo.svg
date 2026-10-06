@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" width="960" height="480">
+  <title>largo([ana, luis, eva], N): las llamadas bajan hasta la lista vacía, que da 0, y al retorno cada llamada suma uno: 1, 2 y 3</title>
+  <rect x="0" y="0" width="960" height="480" fill="#FFFFFF"/>
+  <text x="250.0" y="30.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#1F3A5F" text-anchor="middle" xml:space="preserve" font-weight="bold">las llamadas bajan</text>
+  <text x="760.0" y="30.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#2E7D32" text-anchor="middle" xml:space="preserve" font-weight="bold">al retorno, + 1</text>
+  <rect x="40.0" y="50.0" width="420.0" height="56.0" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="3"/>
+  <text x="250.0" y="86.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">largo([ana, luis, eva], N)</text>
+  <rect x="610.0" y="50.0" width="300.0" height="56.0" rx="10" fill="#E3F1E4" stroke="#2E7D32" stroke-width="3"/>
+  <text x="760.0" y="86.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve" font-weight="bold">N = 2 + 1 = 3</text>
+  <rect x="40.0" y="154.0" width="420.0" height="56.0" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="3"/>
+  <text x="250.0" y="190.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">largo([luis, eva], F1)</text>
+  <rect x="610.0" y="154.0" width="300.0" height="56.0" rx="10" fill="#E3F1E4" stroke="#2E7D32" stroke-width="3"/>
+  <text x="760.0" y="190.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">F1 = 1 + 1 = 2</text>
+  <line x1="250.0" y1="108.0" x2="250.0" y2="140.0" stroke="#1F3A5F" stroke-width="3"/>
+  <polygon points="250.0,152.0 256.6,140.0 243.4,140.0" fill="#1F3A5F"/>
+  <line x1="760.0" y1="152.0" x2="760.0" y2="120.0" stroke="#2E7D32" stroke-width="3"/>
+  <polygon points="760.0,108.0 753.4,120.0 766.6,120.0" fill="#2E7D32"/>
+  <rect x="40.0" y="258.0" width="420.0" height="56.0" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="3"/>
+  <text x="250.0" y="294.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">largo([eva], F2)</text>
+  <rect x="610.0" y="258.0" width="300.0" height="56.0" rx="10" fill="#E3F1E4" stroke="#2E7D32" stroke-width="3"/>
+  <text x="760.0" y="294.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">F2 = 0 + 1 = 1</text>
+  <line x1="250.0" y1="212.0" x2="250.0" y2="244.0" stroke="#1F3A5F" stroke-width="3"/>
+  <polygon points="250.0,256.0 256.6,244.0 243.4,244.0" fill="#1F3A5F"/>
+  <line x1="760.0" y1="256.0" x2="760.0" y2="224.0" stroke="#2E7D32" stroke-width="3"/>
+  <polygon points="760.0,212.0 753.4,224.0 766.6,224.0" fill="#2E7D32"/>
+  <rect x="40.0" y="362.0" width="420.0" height="56.0" rx="10" fill="#FCE8D2" stroke="#D9822B" stroke-width="3"/>
+  <text x="250.0" y="398.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">largo([], F3)</text>
+  <rect x="610.0" y="362.0" width="300.0" height="56.0" rx="10" fill="#E3F1E4" stroke="#2E7D32" stroke-width="3"/>
+  <text x="760.0" y="398.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">F3 = 0</text>
+  <line x1="250.0" y1="316.0" x2="250.0" y2="348.0" stroke="#1F3A5F" stroke-width="3"/>
+  <polygon points="250.0,360.0 256.6,348.0 243.4,348.0" fill="#1F3A5F"/>
+  <line x1="760.0" y1="360.0" x2="760.0" y2="328.0" stroke="#2E7D32" stroke-width="3"/>
+  <polygon points="760.0,316.0 753.4,328.0 766.6,328.0" fill="#2E7D32"/>
+  <line x1="462.0" y1="390.0" x2="594.0" y2="390.0" stroke="#D9822B" stroke-width="3"/>
+  <polygon points="606.0,390.0 594.0,383.4 594.0,396.6" fill="#D9822B"/>
+  <text x="534.0" y="352.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#D9822B" text-anchor="middle" xml:space="preserve">caso base</text>
+</svg>

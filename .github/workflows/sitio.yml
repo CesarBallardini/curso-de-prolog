@@ -1,0 +1,69 @@
+# Builds the chapter PDFs and the site, and publishes them to GitHub Pages.
+# Because the user site CesarBallardini.github.io carries the custom domain
+# katra.ballardini.com.ar, this project site is served at
+# https://katra.ballardini.com.ar/curso-de-prolog/ -- the same way ley5110 and
+# programacion-drracket already are. No DNS record and no CNAME file are
+# involved; the domain comes from the user site.
+#
+# The site carries the PDF of every chapter and solutions page (make pdf) and the
+# slide decks of diapositivas/ (tools/slides_files.py), both linked from
+# Apéndice B. The checks of the examples, the text and the decks run in their own
+# workflows (ejemplos.yml, texto.yml, diapositivas.yml); a pull request has to
+# pass them before it reaches main, where this one publishes.
+#
+# Requires Settings > Pages > Source = "GitHub Actions".
+name: PDF y sitio
+
+on:
+  push:
+    branches: [main]
+  # On a pull request the PDFs and the site are built, and nothing is published.
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deployment at a time, and never cancel one that is already publishing.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-26.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Prepare
+        uses: ./.github/actions/preparar
+        with:
+          chromium: 'true'
+
+      # Before the site, because each chapter's PDF is copied into it.
+      - name: Build the chapter PDFs
+        run: make pdf
+
+      - name: Build the site
+        run: make docs
+
+      - name: Upload the site
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publish to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

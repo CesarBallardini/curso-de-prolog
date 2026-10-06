@@ -175,7 +175,8 @@ hacia arriba es 27, 91 y 65, es decir `\e[A`. Leer una tecla es entonces leer
 uno, dos o tres códigos. `leer_tecla/2` recibe como argumento el predicado
 que da el código siguiente: en el programa, `get_single_char`; en las
 pruebas, `get_code(In)` sobre un stream abierto con `open_string/2`, que
-contiene las teclas escritas de antemano:
+contiene las teclas escritas de antemano; `get_code/2` da el código del
+carácter siguiente de un stream:
 
 <!-- ejemplo: capitulo-36/texto/pantalla.pl predicado: leer_tecla/2 tecla/3 flecha/3 -->
 ```prolog
@@ -838,6 +839,9 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | `http_redirect/3` | responde con una redirección; `see_other` es la 303 |
 | `http_404/2` | responde que la dirección no existe |
 | **[Patrón 51](../patrones.md#51-modelo-de-pantalla)** | modelo de pantalla: modelo puro, transición pura, un solo bucle que lee y escribe |
+| `get_code/2` | el código del carácter siguiente de un stream; en las pruebas, las teclas desde un texto |
+| `random_between/3` | un entero al azar entre dos límites: la semilla de una partida nueva |
+| `tmp_file_stream/3`, `uri_components/2` | un archivo temporal abierto para escribir; las partes de una dirección; en las pruebas |
 
 ## Temas que se retoman
 

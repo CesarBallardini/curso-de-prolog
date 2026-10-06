@@ -28,4 +28,13 @@ test(factorial, [true(Fs == [1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880,
     muestra(factorial, Cs),
     findall(F, member(corrida(_, fin([F], _)), Cs), Fs).
 
+test(correr_caso, [true(R == fin([1], [i-4, n-4, s-6]))]) :-
+    correr_caso(promedio, [n-4], R).
+
+test(correr_caso_error, [true(R == error(division_por_cero))]) :-
+    correr_caso(promedio, [n-0], R).
+
+test(correr_caso_inexistente, [fail]) :-
+    correr_caso(inexistente, [], _).
+
 :- end_tests(concreto).

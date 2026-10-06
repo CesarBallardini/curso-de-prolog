@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420" width="800" height="420">
+  <title>Plantilla 8: el caso base resuelve el caso mínimo sin invocarse; el caso recursivo primero reduce el problema y después se invoca sobre el caso menor</title>
+  <rect x="0" y="0" width="800" height="420" fill="#FFFFFF"/>
+  <rect x="10" y="16" width="480" height="104" rx="12" fill="#E3F1E4" stroke="#2E7D32" stroke-width="3"/>
+  <text x="30" y="58" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F2933">p(CasoMinimo) :-</text>
+  <text x="74.0" y="92" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F2933">solucion_directa.</text>
+  <rect x="10" y="140" width="480" height="144" rx="12" fill="#FCE8D2" stroke="#D9822B" stroke-width="3"/>
+  <text x="30" y="182" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F2933">p(CasoGeneral) :-</text>
+  <text x="74.0" y="216" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F2933">un_paso(CasoGeneral, CasoMenor),</text>
+  <text x="74.0" y="250" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F2933">p(CasoMenor).</text>
+  <circle cx="510" cy="209" r="14" fill="#D9822B"/>
+  <text x="510" y="215" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#FFFFFF" font-weight="bold" text-anchor="middle">1</text>
+  <circle cx="510" cy="243" r="14" fill="#D9822B"/>
+  <text x="510" y="249" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#FFFFFF" font-weight="bold" text-anchor="middle">2</text>
+  <text x="520" y="50" font-family="Verdana, DejaVu Sans, sans-serif" font-size="18" fill="#2E7D32" font-weight="bold">caso base</text>
+  <text x="520" y="76" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#52606D">la instancia más simple,</text>
+  <text x="520" y="98" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#52606D">sin invocarse</text>
+  <text x="540" y="176" font-family="Verdana, DejaVu Sans, sans-serif" font-size="18" fill="#D9822B" font-weight="bold">caso recursivo</text>
+  <text x="540" y="214" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#52606D">reduce el problema</text>
+  <text x="540" y="248" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#52606D">se invoca sobre</text>
+  <text x="540" y="270" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#52606D">el caso menor</text>
+  <rect x="10" y="310" width="780" height="100" rx="8" fill="#F1F3F5" stroke="#F1F3F5" stroke-width="0"/>
+  <text x="30" y="350" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#1F2933">El caso base se escribe primero.</text>
+  <text x="30" y="388" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#1F2933">En el cuerpo, la reducción va antes que la llamada recursiva.</text>
+</svg>

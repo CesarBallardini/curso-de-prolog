@@ -40,4 +40,32 @@ test(mundo_cerrado, [true]) :-
              length(Negs, N),
              P + N =:= 49 )).
 
+test(de_fondo, all(P == [varon/1, mujer/1, padre/2, madre/2,
+                         progenitor/2])) :-
+    de_fondo(P).
+
+test(esperado_abuela, all(A == [abuela(marta, luis), abuela(marta, eva)])) :-
+    esperado(abuela, A).
+
+% hermano/2 exige un varón y dos personas distintas.
+test(esperado_hermano_distintos, [fail]) :-
+    esperado(hermano, hermano(X, X)).
+
+test(esperado_antepasado, [nondet]) :-
+    esperado(antepasado, antepasado(juan, sofia)).
+
+test(esperado_relacion_desconocida, [fail]) :-
+    esperado(tio, _).
+
+test(modelo_minimo_de,
+     [true(M == [p(a), p(b), q(a)])]) :-
+    modelo_minimo_de([(q(a) :- true), (p(a) :- true), (p(b) :- true)], M).
+
+test(modelo_minimo_de_regla,
+     [true(M == [p(a), q(a), r(a)])]) :-
+    modelo_minimo_de([(q(a) :- true), (p(X) :- q(X)), (r(X) :- p(X))], M).
+
+test(modelo_minimo_de_vacio, [true(M == [])]) :-
+    modelo_minimo_de([], M).
+
 :- end_tests(familia).

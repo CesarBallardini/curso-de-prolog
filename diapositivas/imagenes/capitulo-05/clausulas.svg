@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" width="960" height="480">
+  <title>El programa de la sección 5.2 con sus cláusulas numeradas de R1 a R4, y la consulta abuelo(juan, Quien)</title>
+  <rect x="0" y="0" width="960" height="480" fill="#FFFFFF"/>
+  <rect x="200.0" y="34.0" width="54.0" height="36.0" rx="6" fill="#1F3A5F"/>
+  <text x="227.0" y="60.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="22" fill="#FFFFFF" text-anchor="middle" xml:space="preserve" font-weight="bold">R1</text>
+  <text x="278.0" y="60.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#1F2933" text-anchor="start" xml:space="preserve">padre(juan, ana).</text>
+  <rect x="200.0" y="88.0" width="54.0" height="36.0" rx="6" fill="#1F3A5F"/>
+  <text x="227.0" y="114.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="22" fill="#FFFFFF" text-anchor="middle" xml:space="preserve" font-weight="bold">R2</text>
+  <text x="278.0" y="114.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#1F2933" text-anchor="start" xml:space="preserve">padre(juan, pedro).</text>
+  <rect x="200.0" y="142.0" width="54.0" height="36.0" rx="6" fill="#1F3A5F"/>
+  <text x="227.0" y="168.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="22" fill="#FFFFFF" text-anchor="middle" xml:space="preserve" font-weight="bold">R3</text>
+  <text x="278.0" y="168.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#1F2933" text-anchor="start" xml:space="preserve">padre(pedro, luis).</text>
+  <rect x="200.0" y="196.0" width="54.0" height="36.0" rx="6" fill="#1F3A5F"/>
+  <text x="227.0" y="222.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="22" fill="#FFFFFF" text-anchor="middle" xml:space="preserve" font-weight="bold">R4</text>
+  <text x="278.0" y="222.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#1F2933" text-anchor="start" xml:space="preserve">abuelo(A, N) :-</text>
+  <text x="278.0" y="258.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#1F2933" text-anchor="start" xml:space="preserve">    padre(A, P),</text>
+  <text x="278.0" y="294.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#1F2933" text-anchor="start" xml:space="preserve">    padre(P, N).</text>
+  <text x="200.0" y="356.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">consulta</text>
+  <rect x="200.0" y="370.0" width="400.0" height="52.0" rx="10" fill="#FCE8D2" stroke="#D9822B" stroke-width="2"/>
+  <text x="220.0" y="405.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#1F2933" text-anchor="start" xml:space="preserve">?- abuelo(juan, Quien).</text>
+</svg>

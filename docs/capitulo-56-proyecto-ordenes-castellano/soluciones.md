@@ -507,6 +507,7 @@ plan(ejecutar_con(archivo(R), Args), M, [ejecutar_con(R, Args)]) :-
     plan(ejecutar(archivo(R)), M, _).
 
 realizar(real, Raiz, _, _, ejecutar_con(R, Args), salida(R, Estado, Lineas)) :-
+    !,
     ruta_real(Raiz, R, Abs),
     salida_de(swipl, ['-t', halt, Abs|Args], Texto, Estado),
     split_string(Texto, "\n", "\r", Lineas0),
@@ -524,3 +525,53 @@ programa los argumentos que siguen al nombre del archivo, y el programa los
 lee con `current_prolog_flag(argv, Args)`. La prueba `argumentos_real`
 escribe en una carpeta temporal un programa que escribe esa lista, y
 comprueba que la salida es `[uno,dos]`.
+
+## 13
+
+La pregunta nueva se agrega, como las de `propietarios.pl`, a los
+predicados `multifile` de la gramática, del planificador y de las
+respuestas:
+
+<!-- ejemplo: capitulo-56/soluciones_propietarios.pl fragmento: pedido(compartidos(U1, U2)) .. format(string(T), "~s y ~s comparten ~w.", [P1, P2, Rutas]). -->
+```prolog
+pedido(compartidos(U1, U2)) -->
+    ["que"],
+    sustantivo(archivo, _, pl),
+    ["comparte"],
+    nombre(U1),
+    ["con"],
+    nombre(U2).
+
+plan(compartidos(U1, U2), M, [informar(compartidos(U1, U2, Rs))]) :-
+    usuario(U1, M),
+    usuario(U2, M),
+    findall(R, ( member(archivo(R, _, _), M),
+                 U1 \== U2,
+                 acceso(R, U1, M),
+                 acceso(R, U2, M) ),
+            Rs).
+
+oracion(compartidos(U1, U2, []), T) :-
+    !,
+    persona(U1, P1),
+    persona(U2, P2),
+    format(string(T), "~s y ~s no comparten archivos.", [P1, P2]).
+oracion(compartidos(U1, U2, Rs), T) :-
+    persona(U1, P1),
+    persona(U2, P2),
+    atomic_list_concat(Rs, ', ', Rutas),
+    format(string(T), "~s y ~s comparten ~w.", [P1, P2, Rutas]).
+```
+
+```prolog
+?- responder_modelo("¿Qué archivos comparte Chris con David?", R).
+R = "Chris y David comparten notas.txt.".
+
+?- responder_modelo("¿Qué archivos comparte Bill con Chris?", R).
+R = "Bill y Chris no comparten archivos.".
+```
+
+El plan recorre los archivos del modelo y conserva los que pasan
+`acceso/3` para las dos personas, con la condición `U1 \== U2` para que
+nadie comparta un archivo consigo mismo. Las dos personas tienen que
+aparecer en el modelo: `usuario/2` lanza el rechazo antes de buscar.

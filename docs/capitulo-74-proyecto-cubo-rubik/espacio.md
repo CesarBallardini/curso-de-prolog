@@ -33,9 +33,19 @@ propio con `load_files/2` y les agrega las cláusulas del cubo, declaradas
 :- load_files(anchura40:'../capitulo-40/visitados', []).
 :- load_files(iterativa40:'../capitulo-40/profundizacion', []).
 
+% anchura40:inicial(Problema, C): C es el estado inicial de cubo(C).
 anchura40:inicial(cubo(C), C).
+
+%!  anchura40:meta(+Problema, +C) is semidet.
+%
+%   El cubo C es una meta de Problema: en cubo(_), el cubo resuelto.
 anchura40:meta(cubo(_), C) :-
     user:resuelto(C).
+
+%!  anchura40:sucesor(+Problema, +C, -M, -C1, -Costo:integer) is nondet.
+%
+%   El cubo C1 sigue a C en Problema con el cuarto de vuelta M, que
+%   cuesta 1.
 anchura40:sucesor(cubo(_), C, M, C1, 1) :-
     user:cuarto_de_vuelta(M),
     user:mover(M, C, C1).

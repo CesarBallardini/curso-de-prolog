@@ -4,6 +4,17 @@ El cubo de Rubik tiene seis caras de nueve casillas, y cada cara gira sobre
 su centro arrastrando las casillas de los bordes de las cuatro caras
 vecinas. Mezclarlo es fácil; volver al estado inicial exige conocer
 secuencias de giros que cambian pocas piezas y dejan el resto en su lugar.
+
+![Un cubo de Rubik mezclado, con casillas de seis colores en cada cara](cubo-mezclado.jpg)
+
+Un cubo de Rubik mezclado. Se ven tres de sus caras: cada una tiene
+casillas de varios colores, y el problema es devolverla a un solo color
+con giros de las caras. Las piezas de las esquinas muestran tres
+casillas, las de las aristas dos, y los centros no se mueven.
+Imagen: Imk3nnyma, [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/),
+vía [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Scrumbled_Rubik%27s_Cube.jpg);
+reducida a 758 × 800 píxeles.
+
 Este capítulo construye un programa que lo resuelve. La salida siguiente es
 la de `sesion(7, 20)`, de la versión 7: mezcla el cubo con veinte giros
 elegidos a partir de la semilla 7, lo muestra desplegado y lo arma en cinco
@@ -77,12 +88,14 @@ Al terminar el capítulo, el lector puede:
 - resolver por etapas con metas parciales expresadas como términos con
   variables libres;
 - medir la longitud de las soluciones y el esfuerzo de búsqueda de cada
-  mejora sobre cientos de mezclas reproducibles.
+  mejora sobre cientos de mezclas reproducibles;
+- pasar de una representación a otra con una sola unificación, y decidir
+  con mediciones si una heurística previa a la búsqueda conviene.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:30 h**.
-    Resolver los 5 ejercicios marcados con ★: **1:15 h**.
-    Resolver los 11 ejercicios del final: **3:55 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:35 h**.
+    Resolver los 6 ejercicios marcados con ★: **1:25 h**.
+    Resolver los 13 ejercicios del final: **4:20 h**.
 
 ## 74.1 El programa terminado
 
@@ -95,6 +108,7 @@ Al terminar el capítulo, el lector puede:
 | 5 | `descubrir.pl` | los conmutadores que mueven solo tres esquinas | usarlas para resolver |
 | 6 | `etapas.pl` | la solución por etapas, pieza por pieza | dar soluciones cortas |
 | 7 | `mejoras.pl` | la simplificación y la pieza más cercana | — |
+| 8 | `piezas.pl` | el cubo como lista de piezas; dónde está una pieza; una ayuda previa a la búsqueda, medida | — |
 
 `capitulo40.pl` carga las búsquedas del
 [capítulo 40](../capitulo-40-busqueda-y-planificacion/index.md) en
@@ -457,7 +471,7 @@ capa de abajo; U' devuelve la capa de arriba. El resultado gira dos
 esquinas y no toca nada más. `conmutador/3` y `conjugado/3` construyen
 estas secuencias.
 
-!!! example "Patrón 68 — Transformación como par de términos"
+!!! example "Patrón 74 — Transformación como par de términos"
     **Problema.** Es necesario aplicar muchas veces una transformación que
     reordena las partes de un término de tamaño fijo, como un giro del
     cubo, y también componer transformaciones, invertirlas y saber qué
@@ -561,7 +575,10 @@ resolvedor.
 ## 74.7 Versión 6: la solución por etapas
 
 El resolvedor arma el cubo por capas, de abajo hacia arriba, en cinco
-etapas de cuatro piezas, y coloca las piezas de a una:
+etapas de cuatro piezas, y coloca las piezas de a una. Merritt organiza
+su programa de la misma manera, con un plan de piezas y una lista de
+candidatos por etapa, pero sigue las seis etapas del libro de Black y
+Taylor, que arman el cubo de la cara izquierda a la derecha:
 
 | Etapa | Piezas | Candidatos |
 |---|---|---|
@@ -633,10 +650,22 @@ cláusulas de los dos problemas, el cubo entero y la pieza:
 ```prolog
 iterativa40:inicial(cubo(C), C).
 iterativa40:inicial(pieza(_, C, _), C).
+
+%!  iterativa40:meta(+Problema, +C) is semidet.
+%
+%   El cubo C es una meta de Problema: en cubo(_), el cubo resuelto; en
+%   pieza(_, _, Criterios), un cubo que unifica con alguno de Criterios.
 iterativa40:meta(cubo(_), C) :-
     user:resuelto(C).
 iterativa40:meta(pieza(_, _, Criterios), C) :-
     memberchk(C, Criterios).
+
+%!  iterativa40:sucesor(+Problema, +C, -Ms, -C1, -Costo:integer)
+%!      is nondet.
+%
+%   El cubo C1 sigue a C en Problema, con costo 1: en cubo(_), por el
+%   cuarto de vuelta Ms; en pieza(Etapa, _, _), por el candidato de Etapa
+%   cuya lista de giros es Ms.
 iterativa40:sucesor(cubo(_), C, M, C1, 1) :-
     user:cuarto_de_vuelta(M),
     user:mover(M, C, C1).
@@ -739,6 +768,21 @@ es lo que hace que la búsqueda sea corta, y también lo que alarga la
 solución. Merritt observa lo mismo: más heurísticas y más macros ahorran
 búsqueda solo mientras cuestan menos que la búsqueda que evitan.
 
+## 74.9 Versión 8: piezas y una ayuda para la búsqueda
+
+El programa de Merritt usa una segunda representación del cubo, una
+lista de piezas, y pasa de una a otra con un solo hecho cuyos dos
+argumentos comparten las variables, como los giros ([Patrón 75](../patrones.md#75-dos-representaciones-unidas-por-un-hecho-que-comparte-las-variables)). La
+octava versión genera ese hecho al cargar y escribe con él la búsqueda
+de Merritt de una pieza: recorre a la vez la lista del cubo resuelto y la del cubo dado,
+y responde dónde está la pieza y si está girada. Con esa información
+escribe también la ayuda de las heurísticas `shift_right` de Merritt, que
+sacan de la capa de abajo la pieza que está allí fuera de su lugar antes
+de buscar, y la mide: con los candidatos de este capítulo, la ayuda
+alarga las soluciones y aumenta las inferencias, porque la búsqueda ya
+encuentra esos movimientos cuando le sirven. Está en la página
+[Piezas y una ayuda para la búsqueda](piezas.md#piezas-y-una-ayuda-para-la-busqueda).
+
 !!! success "Criterios de calidad"
     | Criterio | En este capítulo |
     |---|---|
@@ -747,7 +791,7 @@ búsqueda solo mientras cuestan menos que la búsqueda que evitan.
     | C3 | un giro es una relación: el mismo hecho da el giro y su inverso, y `leer_notacion/2` y `escribir_notacion/2` son lecturas inversas probadas una contra la otra |
     | C4 | `simplificar/2` despliega cada grupo con `giros_de/4`, indexado por su primer argumento, y las pruebas no encuentran alternativas pendientes |
     | C6 | `red/2` arma el texto y solo `mostrar/1` y `sesion/2` escriben |
-    | C7 | 71 pruebas en ocho archivos; las mezclas salen de una semilla, así que cada medición del capítulo se repite igual en cualquier instalación |
+    | C7 | 111 pruebas en nueve archivos; las mezclas salen de una semilla, así que cada medición del capítulo se repite igual en cualquier instalación |
 
 ## Ejercicios
 
@@ -806,6 +850,15 @@ que cargan los del capítulo, sin modificarlos.
     compilada como un candidato nuevo de la etapa para las mezclas
     siguientes. Medir, sobre las semillas 1 a 50 resueltas en orden, los
     candidatos aprendidos, los cuartos de vuelta y las inferencias.
+12. ★ **(1)** Predecir, con `piezas.pl` cargado, qué responden
+    `donde_tras([f], 'DF', L, E)`, `donde_tras([d], 'DF', L, E)`,
+    `donde_tras([f, f, d, d, -f, -f], 'DF', L, E)` y
+    `pieza_tras([u], 'UF', P)`, y comprobarlo.
+13. **(2)** Escribir `por_etapa(Metodo, Semillas, Pares)`, los cuartos de
+    vuelta que usa cada etapa de `resolver/2` o de
+    `resolver_con_ayuda/2`, sumados sobre las mezclas de 25 giros de las
+    semillas 1 a Semillas. Compararlos con 50 semillas y explicar por qué
+    la ayuda cambia también las etapas en las que no actúa.
 
 ## Resumen
 
@@ -822,9 +875,13 @@ que cargan los del capítulo, sin modificarlos.
 | `red/2`, `leer_notacion/2`, `escribir_notacion/2`, `mezcla/3` | la vista, la notación y las mezclas |
 | `en_anchura/3`, `profundizando/2`, `colocar_pieza/4`, `capas/2`, `estados/1` | el cubo como espacio de estados |
 | `compilar/2`, `efecto/2`, `pieza/3`, `conmutador/3`, `conjugado/3`, `descubrir/3` | las macros |
-| **[Patrón 68](../patrones.md#68-transformacion-como-par-de-terminos)** | transformación como par de términos |
+| **[Patrón 74](../patrones.md#74-transformacion-como-par-de-terminos)** | transformación como par de términos |
+| **[Patrón 75](../patrones.md#75-dos-representaciones-unidas-por-un-hecho-que-comparte-las-variables)** | dos representaciones unidas por un hecho que comparte las variables |
 | `criterio/2`, `candidato/4`, `orientar/3`, `resolver/2` | la solución por etapas |
 | `resolver_cercana/2`, `sesion/2` | las mejoras y el programa terminado |
+| **dos representaciones** | el término de casillas para girar y la lista de piezas para buscar una pieza, unidas por un hecho que comparte las variables |
+| `piezas/2`, `donde/4`, `en_lugar/3`, `ayuda/5`, `resolver_con_ayuda/2`, `comparar_ayuda/3` | la versión 8 |
+| `nextto/3` | dos elementos consecutivos de una lista; en las pruebas |
 
 ## Temas que se retoman
 
@@ -845,8 +902,23 @@ que cargan los del capítulo, sin modificarlos.
   secuencias precompiladas como un giro más; la solución por etapas, con
   un plan de piezas y candidatos por etapa; el cubo criterio con
   variables libres como meta parcial, y la búsqueda que recalcula los
-  estados en lugar de guardarlos. También los dos ejercicios del final de
+  estados en lugar de guardarlos; la lista de piezas como segunda
+  representación, la búsqueda de una pieza recorriendo dos listas a la
+  vez, y las heurísticas que mueven la pieza antes de buscar. También los
+  dos ejercicios del final de
   su capítulo: más heurísticas y el descubrimiento de secuencias.
+- M. Razid Black y Herbert Taylor, *Unscrambling the Cube*, Zephyr
+  Engineering Design (ZED), Burbank, California, 1980 (impreso en 1981),
+  40 páginas, ISBN 0-940874-03-2; incluye el folleto anterior de Black,
+  *Constructing Patterns on the Cube*. Merritt no da los datos
+  bibliográficos: salen de la reseña de David Singmaster en
+  [*Cubic Circular* 3 y 4](https://www.jaapsch.net/puzzles/cubic3.htm)
+  (1982) y de la bibliografía de cubos de Georges Helm. Sin edición en
+  línea de acceso libre verificada. Es la fuente de Merritt para la solución por etapas,
+  con sus seis etapas de la cara izquierda a la derecha, y para las
+  secuencias que intercambian y giran esquinas; el capítulo conoce el
+  libro a través de él, y usa cinco etapas por capas de abajo hacia
+  arriba.
 - David Singmaster, *Notes on Rubik's «Magic Cube»*, Enslow, 1981. Sin
   edición en línea de acceso libre verificada. El capítulo toma la
   notación de los giros y de las piezas y el recuento de los estados del
@@ -855,4 +927,5 @@ que cargan los del capítulo, sin modificarlos.
 El código del capítulo es propio, escrito para el curso: los giros
 calculados por geometría, las macros compiladas al cargar, la lectura de
 su efecto, la búsqueda de conmutadores, las cinco etapas por capas con
-sus familias de candidatos y las mediciones no provienen de esas fuentes.
+sus familias de candidatos, la ayuda limitada a la capa de abajo y las
+mediciones no provienen de esas fuentes.

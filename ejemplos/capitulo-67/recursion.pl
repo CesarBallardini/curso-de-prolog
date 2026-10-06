@@ -73,20 +73,28 @@ nivel(D, Max, Frontera, E-Pos-Negs-M-L, R, N0, N) :-
         N = N0
     ).
 
-% consistente_con(Negs, M, C): la cláusula C no cubre ningún negativo.
+%!  consistente_con(+Negs:list, +M:list, +C) is semidet.
+%
+%   La cláusula C no cubre ningún ejemplo de Negs.
 consistente_con(Negs, M, C) :-
     \+ cubre_alguno(C, Negs, M).
 
-% cubre_ejemplo(E, M, C): la cláusula C cubre el ejemplo E.
+%!  cubre_ejemplo(+E, +M:list, +C) is semidet.
+%
+%   La cláusula C cubre el ejemplo E en el modelo M.
 cubre_ejemplo(E, M, C) :-
     cubre(C, E, M).
 
-% puntuar(Pos, M, C, K-C): K es la cantidad de positivos que C cubre.
+%!  puntuar(+Pos:list, +M:list, +C, -Par:pair) is det.
+%
+%   Par es K-C, con K la cantidad de ejemplos de Pos que C cubre.
 puntuar(Pos, M, C, K-C) :-
     include(cubierto(C, M), Pos, Cubiertos),
     length(Cubiertos, K).
 
-% cubierto(C, M, E): la cláusula C cubre el ejemplo E.
+%!  cubierto(+C, +M:list, +E) is semidet.
+%
+%   La cláusula C cubre el ejemplo E en el modelo M.
 cubierto(C, M, E) :-
     cubre(C, E, M).
 

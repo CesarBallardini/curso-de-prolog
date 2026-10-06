@@ -10,7 +10,8 @@ pruebas; son módulos, y se ejecutan localmente.
 ## Expresiones regulares
 
 Una expresión regular describe un lenguaje con tres operaciones: la
-concatenación, la unión (|) y la clausura de Kleene (\*). `expresiones.pl`
+concatenación, la unión (|) y la clausura de Kleene (\*), las de los
+eventos regulares que Kleene definió en 1951. `expresiones.pl`
 la lee como texto, con una gramática del
 [capítulo 21](../capitulo-21-gramaticas-dcg/index.md) sobre la lista de
 caracteres, y la convierte en un término limpio: `sim(C)`, `clase(Cs)`,
@@ -279,3 +280,94 @@ verifican que los dos producen la misma lista para tres programas. Allí el
 análisis léxico es una gramática escrita a mano, con un corte después de
 cada componente para quedarse con el más largo; aquí es una tabla de
 expresiones, y agregar una clase de componente es agregar una fila.
+
+## De un autómata a una expresión regular
+
+La construcción de Thompson va de una expresión a un autómata. El camino
+inverso también existe: Kleene probó en 1951 que los lenguajes de los
+autómatas finitos son exactamente los de las expresiones regulares, y
+McNaughton y Yamada dieron en 1960 la construcción que se programa aquí.
+Warren la deja esbozada al final de su capítulo, como una relación
+tabulada. Con los estados numerados de 0 a N − 1, R(I, J, K) es la
+expresión de las palabras que llevan del estado I al J sin pasar por un
+estado intermedio de número K o mayor. Con K = 0 no hay estados
+intermedios: son los símbolos de las transiciones de I a J, y la palabra
+vacía si I = J. Permitir además el estado K agrega los caminos que pasan
+por él, una o más veces:
+
+```text
+R(I, J, K+1) = R(I, J, K) | R(I, K, K) R(K, K, K)* R(K, J, K)
+```
+
+La expresión del autómata es la unión de R(0, F, N) para cada estado
+final F. `kleene.pl` la calcula sobre el autómata mínimo, numerado por
+`tabla/2`, con `r/5` tabulada: cada R(I, J, K) se calcula una vez, y la
+recursión sobre K termina en K = 0:
+
+<!-- ejemplo: capitulo-51/kleene.pl predicado: expresion_de/2 r/5 -->
+```prolog
+%!  expresion_de(+M, -E) is det.
+%
+%   E es una expresión regular, un término de expresiones.pl o nada, del
+%   lenguaje del autómata M. Se construye sobre el autómata mínimo de M,
+%   con sus estados numerados por tabla/2.
+expresion_de(M, E) :-
+    tabla(min(M), A),
+    A = automata(N, Finales, _),
+    foldl(union_final(A, N), Finales, nada, E).
+
+%!  r(+A, +I:integer, +J:integer, +K:integer, -E) is det.
+%
+%   E es R(I, J, K) en el autómata numerado A: las palabras que llevan de
+%   I a J sin pasar por un estado intermedio de número K o mayor.
+r(automata(_, _, Delta), I, J, 0, E) :-
+    !,
+    findall(sim(S), member(I-S-J, Delta), Simbolos),
+    foldl(alt_acumulado, Simbolos, nada, E0),
+    (   I =:= J
+    ->  alt(E0, vacia, E)
+    ;   E = E0
+    ).
+r(A, I, J, K1, E) :-
+    K is K1 - 1,
+    r(A, I, J, K, Directo),
+    r(A, I, K, K, Entrada),
+    r(A, K, K, K, Ciclo),
+    r(A, K, J, K, Salida),
+    estrella(Ciclo, Ciclos),
+    cat(Entrada, Ciclos, E1),
+    cat(E1, Salida, Pasando),
+    alt(Directo, Pasando, E).
+```
+
+`alt/3`, `cat/3` y `estrella/3` construyen la expresión y la simplifican
+al mismo tiempo: `nada`, el lenguaje vacío, desaparece de una unión y anula
+una concatenación; la palabra vacía desaparece de una concatenación; y una
+estrella absorbe lo que ya contiene. Sin esas reglas la expresión puede
+crecer como 4ᴺ, porque cada R usa cuatro del nivel anterior.
+`expresion_texto/2` la escribe con `texto/2`, en la notación de la
+[sección anterior](#expresiones-regulares) y con los paréntesis que hacen
+falta, y así la expresión obtenida se puede volver a convertir en autómata
+y comparar con el original:
+
+```prolog
+?- expresion_de(ciclo, E).
+E = alt(sim(b), cat(estrella(sim(a)), sim(b))).
+
+?- expresion_texto(er("(ab)*"), T).
+T = "()|a(ba)*b".
+
+?- expresion_texto(termina_ab, T), equivalentes(er(T), termina_ab).
+T = "(a|b*a)a*b|(a|b*a)a*b((a|bb*a)a*b)*(()|(a|bb*a)a*b)".
+```
+
+La primera recupera la expresión de `ciclo`: una b, o algunas a seguidas
+de una b. La segunda da a(ba)\*b en lugar de (ab)\*, otra escritura del
+mismo lenguaje, porque la palabra vacía queda aparte. La tercera muestra
+el límite de la construcción: el lenguaje de `termina_ab` es el de
+(a|b)\*ab, y la expresión obtenida es correcta, como verifica
+`equivalentes/2`, pero mucho más larga. Las simplificaciones son locales y
+no la reducen más; encontrar la expresión más corta de un lenguaje es un
+problema mucho más difícil que construir una, y el resultado depende
+además del orden de los estados. `texto/2` falla con `nada`, que la
+notación no puede escribir: el lenguaje vacío no tiene expresión en ella.

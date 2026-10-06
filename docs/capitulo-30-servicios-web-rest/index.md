@@ -344,6 +344,10 @@ ficha_remota(Base, Persona, Ficha) :-
 Url = 'http://localhost:8080/nietos?abuelo=juan%20p%C3%A9rez'.
 ```
 
+`uri_query_components/2` arma la consulta de la dirección con los pares
+`Nombre=Valor`, y `uri_encoded/3` codifica un valor para una parte de la
+dirección, aquí un segmento de la ruta.
+
 La opción `status_code(Codigo)` de `http_open/3` entrega el código en lugar de
 lanzar un error cuando no es 200, y `ficha_remota/3` decide qué hacer con
 cada uno: 404 es una falla, como `edad_de/2` con una persona desconocida;
@@ -613,7 +617,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 6. **(1)** Escribir en `cliente.py` la función `ficha_o_none(base, persona)`,
    que devuelve `None` en lugar de lanzar la excepción.
 7. ★ **(2)** Escribir las pruebas de plunit de los códigos 405 del ejercicio 2,
-   con el Patrón 41.
+   con el [Patrón 41](../patrones.md#41-servidor-bajo-prueba).
 8. **(2)** Habilitar CORS en `/hola`, y escribir una prueba que verifique el
    encabezado `Access-Control-Allow-Origin`.
 9. **(1)** Agregar la ruta `GET /hora`, con la fecha y la hora del servidor en
@@ -651,6 +655,8 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | `library(http/http_cors)`, `library(http/http_log)` | CORS y registro de pedidos |
 | `library(http/http_unix_daemon)` | un demonio, solo en Linux |
 | `library(pengines)` | consultas de Prolog por la red |
+| `uri_query_components/2`, `uri_encoded/3` | la consulta de una dirección, con pares `Nombre=Valor`; un valor codificado para una parte de la dirección |
+| `process_kill/1` | termina un proceso; en las pruebas |
 | **Patrones 40, 41** | un endpoint JSON; servidor bajo prueba |
 
 ## Temas que se retoman

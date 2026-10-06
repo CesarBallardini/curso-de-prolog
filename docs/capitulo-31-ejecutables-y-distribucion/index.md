@@ -241,6 +241,9 @@ texto_del_lanzador(Nombre, Texto) :-
     format(string(Texto), "@swipl -x \"%~~dp0~w.state\" -- %*~n", [Nombre]).
 ```
 
+`make_directory_path/1` crea el directorio de destino, con los directorios
+intermedios que falten, si todavía no existe.
+
 Cada programa se construye en otro proceso de `swipl`, con
 `process_create/3` del [capítulo 28](../capitulo-28-programas-de-linea-de-comandos/index.md): si `construir.pl` cargara los
 programas y los guardara él mismo, el constructor quedaría guardado con
@@ -679,7 +682,11 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | `mayor.menor.corrección` | el versionado semántico |
 | `pack.pl`, `pack_install/2` | una biblioteca como pack |
 | `qcompile/1`, `.qlf` | un archivo fuente ya compilado |
+| `jugar/4` | una jugada del Buscaminas sobre una partida ([el módulo `partida`](buscaminas.md#partida)) |
 | **[Patrón 42](../patrones.md#42-construir-en-un-comando)** | construir en un comando |
+| `make_directory_path/1` | crea un directorio y los intermedios que falten |
+| `make_directory/1`, `delete_directory_and_contents/1`, `exists_directory/1` | crear un directorio, borrarlo con su contenido, saber si existe; en las pruebas |
+| `assoc_to_list/2` | los pares `Clave-Valor` de un assoc, ordenados por clave; en las pruebas |
 
 ## Temas que se retoman
 

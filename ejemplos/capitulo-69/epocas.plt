@@ -51,4 +51,16 @@ test(curva_puntos_tasa_1, [true(length(C, 58))]) :-
 test(costos, [true(U > 2 * E)]) :-
     costos(puntos, 0.25, [0.13, -0.51, -0.35], U, E).
 
+test(maximo_de_epocas, [true(N == 1000)]) :-
+    maximo_de_epocas(N).
+
+test(paso_epoca, [true(P-R-E == [0, 2, 2]-(2-[0, 2, 2])-2)]) :-
+    datos(y, Es),
+    paso_epoca(1, Es, [0, 0, 0], P, R, E).
+
+% Con pesos que ya separan, la época no tiene errores y el cambio es 0.
+test(paso_epoca_sin_errores, [true(P-E == [-3, 2, 2]-0)]) :-
+    datos(y, Es),
+    paso_epoca(1, Es, [-3, 2, 2], P, _, E).
+
 :- end_tests(epocas).

@@ -73,4 +73,25 @@ test(ruido, [true(E == colapso)]) :-
     eliminar(Ruido, EV),
     estado(EV, E).
 
+test(conceptos_entre_inicial, [true(N == 145)]) :-
+    inicial(EV),
+    preguntas:conceptos_entre(EV, Cs),
+    length(Cs, N).
+
+test(conceptos_entre_convergido, [true(Cs =@= [pieza(esfera, rojo, _, _)])]) :-
+    eliminar_de(esfera_roja, 5, EV),
+    preguntas:conceptos_entre(EV, Cs).
+
+test(mejor_pregunta, [true(I == pieza(esfera, rojo, chico, metal))]) :-
+    eliminar([pos(pieza(esfera, rojo, chico, madera))], EV),
+    mejor_pregunta(EV, I).
+
+% Con el espacio convergido, todas las instancias tienen clase conocida.
+test(mejor_pregunta_convergido, [fail]) :-
+    eliminar_de(esfera_roja, 5, EV),
+    mejor_pregunta(EV, _).
+
+test(promedios, [true(A-P-W == 5.0-21.39-(5-36))]) :-
+    promedios(A, P, W).
+
 :- end_tests(preguntas).

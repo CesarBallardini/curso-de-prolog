@@ -45,4 +45,19 @@ test(cabeza_vacia, [error(type_error(lista_no_vacia, []))]) :-
 test(no_booleano, [error(type_error(booleano, 0))]) :-
     evaluar(si(num(0), num(1), num(2)), [], [], _).
 
+test(aplicar_clausura, [true(V == 11)]) :-
+    aplicar(clausura(x, ap(ap(id(+), id(x)), id(n)), [n-10]), 1, [], V).
+
+test(aplicar_primitiva_parcial, [true(V == prim(*, 1, [3]))]) :-
+    aplicar(prim(*, 2, []), 3, [], V).
+
+test(aplicar_primitiva_completa, [true(V == 12)]) :-
+    aplicar(prim(*, 1, [3]), 4, [], V).
+
+test(aplicar_no_funcion, [error(type_error(funcion, [1]))]) :-
+    aplicar([1], 2, [], _).
+
+test(rama, all(E == [a])) :-
+    rama(verdadero, a, b, E).
+
 :- end_tests(entornos).

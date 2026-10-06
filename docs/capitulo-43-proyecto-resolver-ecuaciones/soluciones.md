@@ -725,3 +725,116 @@ reemplazara el despachador de `ecuaciones.pl`. Sin el aislamiento parcial,
 la versión final no resuelve la ecuación aunque la regla de atracción esté
 cargada: después de atraer quedan dos apariciones dentro de la raíz, y
 ninguna regla de colección las reduce.
+
+## 13
+
+La potencia de exponente natural impar es creciente en todos los reales, y
+por eso su axioma conserva la relación. `resolver_desigualdad/3`, de la
+[sección 43.11](press.md#4311-desigualdades), aplica un axioma por nivel:
+
+<!-- ejemplo: capitulo-43/desigualdades.pl predicado: resolver_desigualdad/3 -->
+```prolog
+%!  resolver_desigualdad(+Desigualdad, +X:atom, -Solucion) is semidet.
+%
+%   Solucion es X Rel E, con E sin X, equivalente a la Desigualdad cerrada
+%   en la que X aparece una sola vez. Falla si X no aparece exactamente una
+%   vez, o si un axioma no se aplica: un factor que vale 0, o un
+%   logaritmo de un valor que no es positivo. Cada operación tiene un solo
+%   axioma por argumento, y once/1 descarta las alternativas que la
+%   indexación deja abiertas.
+resolver_desigualdad(Desigualdad, X, Solucion) :-
+    must_be(ground, Desigualdad),
+    must_be(atom, X),
+    Desigualdad =.. [Rel, Izq, Der],
+    relacion(Rel),
+    apariciones(Desigualdad, X, 1),
+    once(posicion(X, Desigualdad, [Lado|Camino])),
+    orientar(Lado, d(Rel, Izq, Der), D),
+    once(aislar_desigualdad(Camino, D, d(Rel1, X, E0))),
+    simplificar(E0, E),
+    Solucion =.. [Rel1, X, E].
+```
+
+El axioma nuevo se agrega desde `soluciones_press.pl` como una cláusula
+`multifile` de `axioma_d/3`:
+
+<!-- ejemplo: capitulo-43/soluciones_press.pl fragmento: desigualdades:axioma_d(1, d(R, U ^ N, W), d(R, U, Raiz)) :- .. raiz_impar(W, N, Raiz). -->
+```prolog
+desigualdades:axioma_d(1, d(R, U ^ N, W), d(R, U, Raiz)) :-
+    integer(N),
+    N > 0,
+    N mod 2 =:= 1,
+    raiz_impar(W, N, Raiz).
+```
+
+<!-- ejemplo: capitulo-43/soluciones_press.pl predicado: raiz_impar/3 -->
+```prolog
+%!  raiz_impar(+W, +N:integer, -Raiz) is det.
+%
+%   Raiz es la expresión de la raíz real N-ésima de W, con N impar: la
+%   potencia 1 / N de un número negativo no tiene valor real en is/2, y
+%   por eso, si W es negativo, se escribe como el opuesto de la raíz del
+%   valor de -W.
+raiz_impar(W, N, Raiz) :-
+    V is W,
+    (   V >= 0
+    ->  Raiz = W ^ (1 / N)
+    ;   A is -V,
+        Raiz = -(A ^ (1 / N))
+    ).
+```
+
+```prolog
+?- desigualdades:resolver_desigualdad(x ^ 3 + 1 > -7, x, S).
+S = (x> -(8^(1/3))).
+
+?- desigualdades:resolver_desigualdad(2 * x ^ 5 =< 64, x, S).
+S = (x=<(64/2)^(1/5)).
+```
+
+`is/2` calcula `A ^ (1 / N)` con números de punto flotante, y la potencia
+de un negativo con exponente no entero no tiene valor real: `(-8) ^ (1 / 3)`
+es un error de evaluación aunque la raíz cúbica de -8 sea -2. Por eso, con
+un lado derecho negativo, la raíz se escribe como el opuesto de la raíz de
+su valor absoluto. Con un exponente par el axioma no se aplica, porque la
+potencia no es monótona: `x ^ 2 < 4` necesita dos extremos.
+
+## 14
+
+<!-- ejemplo: capitulo-43/soluciones_press.pl predicado: valores_en/4 entre/3 -->
+```prolog
+%!  valores_en(+Ecuacion, +X:atom, +I, -Vs:list(number)) is det.
+%
+%   Vs son los valores de valores/3 que están en el intervalo I =
+%   i(Lo, Hi). Si la aritmética de intervalos prueba que la Ecuacion no
+%   tiene raíces en I, Vs es [] sin resolverla.
+valores_en(Ecuacion, X, i(Lo0, Hi0), Vs) :-
+    (   sin_raices(Ecuacion, X, i(Lo0, Hi0))
+    ->  Vs = []
+    ;   Lo is Lo0,
+        Hi is Hi0,
+        valores(Ecuacion, X, Vs0),
+        include(entre(Lo, Hi), Vs0, Vs)
+    ).
+
+%!  entre(+Lo:number, +Hi:number, +V:number) is semidet.
+%
+%   V está entre Lo y Hi.
+entre(Lo, Hi, V) :-
+    Lo =< V,
+    V =< Hi.
+```
+
+```prolog
+?- valores_en(x ^ 2 - 2 = 0, x, i(0, 3), Vs).
+Vs = [1.4142135623730951].
+
+?- valores_en(x ^ 2 + 1 = 0, x, i(-10, 10), Vs).
+Vs = [].
+```
+
+La segunda no llega a resolver la ecuación: el intervalo de `x ^ 2 + 1`
+con `x` entre -10 y 10 es `i(1, 101)`, que no contiene 0. La prueba con
+intervalos es más barata que resolver, pero solo puede responder «no hay
+raíces»: si el intervalo contiene 0, las raíces pueden existir o no, y
+hace falta resolver.

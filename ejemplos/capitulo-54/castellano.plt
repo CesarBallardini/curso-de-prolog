@@ -50,4 +50,54 @@ test(generar_tacito, all(Ps == [["duermen"]])) :-
 test(generar_pronombre, all(Ps == [["él", "corre"]])) :-
     phrase(oracion_es(o(pron(m, sg), correr)), Ps).
 
+test(sujeto_sn, all(S-N == [sn(el, gato, sg, [])-sg])) :-
+    phrase(sujeto_es(S, N), ["el", "gato"]).
+
+% El sujeto tácito comparte el número con el verbo, todavía libre.
+test(sujeto_tacito, [nondet, true(S-N =@= tacito(M)-M)]) :-
+    phrase(sujeto_es(S, N), []).
+
+test(sujeto_sin_articulo_mal, fail) :-
+    phrase(sujeto_es(_, _), ["gatos"]).
+
+% Como objeto, un plural sin artículo es un sintagma nominal.
+test(sn_sin_articulo, all(SN == [sn(sin, gato, pl, [negro])])) :-
+    phrase(sn_es(SN, pl), ["gatos", "negros"]).
+
+test(sn_genera, all(Fs == [["una", "casa", "grande", "blanca"]])) :-
+    phrase(sn_es(sn(un, casa, sg, [grande, blanco]), sg), Fs).
+
+test(articulo, all(A-G-N == [el-f-pl])) :-
+    phrase(articulo_es(A, G, N), ["las"]).
+
+test(nombre, all(L-G-N == [casa-f-pl])) :-
+    phrase(nombre_es(L, G, N), ["casas"]).
+
+test(adjetivo, all(L-G-N == [blanco-f-pl])) :-
+    phrase(adjetivo_es(L, G, N), ["blancas"]).
+
+test(adjetivos, all(As == [[blanco, grande]])) :-
+    phrase(adjetivos_es(As, f, pl), ["blancas", "grandes"]).
+
+test(adjetivos_vacia, all(As == [[]])) :-
+    phrase(adjetivos_es(As, m, sg), []).
+
+test(numero_vocal, all(N == [pl])) :-
+    numero_es(N, "gato", "gatos").
+
+test(numero_consonante, true(F == "mujeres")) :-
+    numero_es(pl, "mujer", F).
+
+test(singular_variable, true(S == "negra")) :-
+    singular_adjetivo(variable, negro, f, S).
+
+test(singular_invariable, true(S == "grande")) :-
+    singular_adjetivo(invariable, grande, f, S).
+
+test(verbo_analiza, all(L-C-N == [dormir-intransitivo-pl])) :-
+    phrase(verbo_es(L, C, N), ["duermen"]).
+
+test(verbo_genera, all(Fs == [["come"]])) :-
+    phrase(verbo_es(comer, transitivo, sg), Fs).
+
 :- end_tests(castellano).

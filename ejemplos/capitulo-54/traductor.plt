@@ -53,4 +53,14 @@ test(ingenuo_inverso, true(R == inference_limit_exceeded)) :-
 test(sin_instanciar, error(instantiation_error)) :-
     traducir(_, _).
 
+test(es_en, all(En == [["the", "cat", "sleeps"]])) :-
+    es_en(["el", "gato", "duerme"], En).
+
+test(en_es, all(Es == [["duermen"], ["ellos", "duermen"],
+                       ["ellas", "duermen"]])) :-
+    en_es(["they", "sleep"], Es).
+
+test(es_en_no_es_oracion, fail) :-
+    es_en(["gato", "el", "duerme"], _).
+
 :- end_tests(traductor).

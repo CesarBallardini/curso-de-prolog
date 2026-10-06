@@ -62,6 +62,7 @@ test(cantidad_en_am1, true(N == 5)) :-
 test(mejor_de_logica, true(L-N == 101-10)) :-
     mejor_de_materia(log, L, N).
 
+% with_output_to/2, que captura la salida, se presenta en el capítulo 27.
 % Ejercicio 13
 test(listar_inscriptos_en_pp, true(S == "101 ana\n104 diego\n")) :-
     with_output_to(string(S), listar_inscriptos(pp)).

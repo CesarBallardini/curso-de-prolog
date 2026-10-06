@@ -33,4 +33,30 @@ test(como_el_interprete, [forall(fuente_ejemplo(_, T)),
 test(division_por_cero, [error(evaluation_error(zero_divisor))]) :-
     correr("x := 0; escribir 1 / x", _).
 
+test(paso_apilar, true(E-S == s(1, [4], t)-[])) :-
+    phrase(paso(apilar(4), s(0, [], t), E), S).
+
+test(paso_escribir, true(E-S == s(3, [], t)-[7])) :-
+    phrase(paso(escribir, s(2, [7], t), E), S).
+
+test(saltar_si_cero, true(E == s(9, [], t))) :-
+    phrase(paso(saltar_si_cero(9), s(0, [0], t), E), _).
+
+test(no_saltar, true(E == s(1, [], t))) :-
+    phrase(paso(saltar_si_cero(9), s(0, [1], t), E), _).
+
+test(operacion_orden, true(E == s(1, [5], t))) :-
+    operacion(-, s(0, [2, 7], t), E).
+
+test(celda_sin_escribir, true(V == 0)) :-
+    empty_assoc(M),
+    celda(3, M, V).
+
+test(celda, true(V == 8)) :-
+    list_to_assoc([3-8], M),
+    celda(3, M, V).
+
+test(ciclo, true(S == [5])) :-
+    phrase(ciclo(codigo(apilar(5), escribir), s(0, [], t)), S).
+
 :- end_tests(maquina).

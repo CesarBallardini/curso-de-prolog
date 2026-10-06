@@ -22,41 +22,44 @@
 :- multifile clave/4.
 
 %!  ejecutar(+Programa, +Estrategia, +Memoria0:list, -Memoria:list,
-%!           -Resultado) is det.
+%!           -Resultado) is semidet.
 %
 %   Ejecuta el Programa desde Memoria0 eligiendo en cada ciclo una
 %   instancia del conjunto de conflicto con la Estrategia: primera,
-%   reciente o especifica.
+%   reciente o especifica. Falla si falla una acción de la instancia
+%   elegida.
 ejecutar(Programa, Estrategia, Memoria0, Memoria, Resultado) :-
     programa(Programa, Modulos),
     ciclo(Modulos, Estrategia, sin_traza, 0, _, Memoria0, Memoria,
           Resultado).
 
 %!  trazar(+Programa, +Estrategia, +Memoria0:list, -Memoria:list,
-%!         -Resultado) is det.
+%!         -Resultado) is semidet.
 %
 %   Como ejecutar/5, y escribe una línea por ciclo: el número del ciclo,
 %   el tamaño del conjunto de conflicto, el módulo elegido y los hechos que
-%   usa.
+%   usa. Falla si falla una acción de la instancia elegida.
 trazar(Programa, Estrategia, Memoria0, Memoria, Resultado) :-
     programa(Programa, Modulos),
     ciclo(Modulos, Estrategia, con_traza, 0, _, Memoria0, Memoria,
           Resultado).
 
-%!  ciclos(+Programa, +Estrategia, +Memoria0:list, -Ciclos:integer) is det.
+%!  ciclos(+Programa, +Estrategia, +Memoria0:list, -Ciclos:integer) is semidet.
 %
 %   Ciclos es la cantidad de ciclos que aplican un módulo en la ejecución
-%   del Programa con la Estrategia desde Memoria0.
+%   del Programa con la Estrategia desde Memoria0. Falla si falla una
+%   acción de la instancia elegida.
 ciclos(Programa, Estrategia, Memoria0, Ciclos) :-
     programa(Programa, Modulos),
     ciclo(Modulos, Estrategia, sin_traza, 0, Ciclos, Memoria0, _, _).
 
 %!  ciclo(+Modulos:list, +Estrategia, +Traza, +N0:integer, -N:integer,
-%!        +Memoria0:list, -Memoria:list, -Resultado) is det.
+%!        +Memoria0:list, -Memoria:list, -Resultado) is semidet.
 %
 %   Repite el ciclo de reconocimiento y acción desde Memoria0. N0 es la
 %   cantidad de ciclos hechos antes, y N la cantidad al terminar. Traza es
-%   con_traza o sin_traza.
+%   con_traza o sin_traza. Falla si falla una acción de la instancia
+%   elegida.
 ciclo(Modulos, Estrategia, Traza, N0, N, Memoria0, Memoria, Resultado) :-
     conflicto(Modulos, Memoria0, Instancias),
     (   Instancias == []

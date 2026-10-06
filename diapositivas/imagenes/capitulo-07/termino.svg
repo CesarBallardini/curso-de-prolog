@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" width="960" height="480">
+  <title>Una lista es un término: [ana, luis, eva] es un primer elemento y una lista con el resto, hasta la lista vacía</title>
+  <rect x="0" y="0" width="960" height="480" fill="#FFFFFF"/>
+  <text x="480.0" y="52.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="28" fill="#1F2933" text-anchor="middle" xml:space="preserve" font-weight="bold">[ana, luis, eva]</text>
+  <rect x="60.0" y="130.0" width="130.0" height="64.0" rx="4" fill="#FCE8D2" stroke="#D9822B" stroke-width="3"/>
+  <text x="125.0" y="170.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">ana</text>
+  <rect x="190.0" y="130.0" width="70.0" height="64.0" rx="4" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="3"/>
+  <circle cx="225" cy="162.0" r="7" fill="#1F3A5F"/>
+  <line x1="225.0" y1="162.0" x2="308.0" y2="162.0" stroke="#1F3A5F" stroke-width="3"/>
+  <polygon points="320.0,162.0 308.0,155.4 308.0,168.6" fill="#1F3A5F"/>
+  <text x="125.0" y="114.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#D9822B" text-anchor="middle" xml:space="preserve">primer elemento</text>
+  <text x="225.0" y="228.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#1F3A5F" text-anchor="middle" xml:space="preserve">resto</text>
+  <rect x="320.0" y="130.0" width="130.0" height="64.0" rx="4" fill="#FCE8D2" stroke="#D9822B" stroke-width="3"/>
+  <text x="385.0" y="170.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">luis</text>
+  <rect x="450.0" y="130.0" width="70.0" height="64.0" rx="4" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="3"/>
+  <circle cx="485" cy="162.0" r="7" fill="#1F3A5F"/>
+  <line x1="485.0" y1="162.0" x2="568.0" y2="162.0" stroke="#1F3A5F" stroke-width="3"/>
+  <polygon points="580.0,162.0 568.0,155.4 568.0,168.6" fill="#1F3A5F"/>
+  <rect x="580.0" y="130.0" width="130.0" height="64.0" rx="4" fill="#FCE8D2" stroke="#D9822B" stroke-width="3"/>
+  <text x="645.0" y="170.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">eva</text>
+  <rect x="710.0" y="130.0" width="70.0" height="64.0" rx="4" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="3"/>
+  <circle cx="745" cy="162.0" r="7" fill="#1F3A5F"/>
+  <line x1="745.0" y1="162.0" x2="828.0" y2="162.0" stroke="#1F3A5F" stroke-width="3"/>
+  <polygon points="840.0,162.0 828.0,155.4 828.0,168.6" fill="#1F3A5F"/>
+  <rect x="840.0" y="130.0" width="80.0" height="64.0" rx="4" fill="#E3F1E4" stroke="#2E7D32" stroke-width="3"/>
+  <text x="880.0" y="170.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve" font-weight="bold">[]</text>
+  <text x="880.0" y="228.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#2E7D32" text-anchor="middle" xml:space="preserve">lista vacía</text>
+  <rect x="60.0" y="300.0" width="840.0" height="140.0" rx="10" fill="#F1F3F5"/>
+  <text x="480.0" y="350.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#1F2933" text-anchor="middle" xml:space="preserve">[ana, luis, eva]  =  [ana|[luis|[eva|[]]]]</text>
+  <text x="480.0" y="400.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="middle" xml:space="preserve">los corchetes evitan escribir la anidación</text>
+</svg>

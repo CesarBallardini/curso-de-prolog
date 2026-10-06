@@ -30,10 +30,11 @@ hechos en otro orden son el mismo estado:
 <!-- ejemplo: capitulo-60/terminacion.pl predicado: vigilado/8 -->
 ```prolog
 %!  vigilado(+Modulos:list, +Estrategia, +Limite:integer, +N:integer,
-%!           +Vistas, +Memoria0:list, -Memoria:list, -Resultado) is det.
+%!           +Vistas, +Memoria0:list, -Memoria:list, -Resultado) is semidet.
 %
 %   Sigue el ciclo después de N ciclos. Vistas asocia cada memoria ya
-%   vista, ordenada con msort/2, con el ciclo en que apareció.
+%   vista, ordenada con msort/2, con el ciclo en que apareció. Falla si
+%   falla una acción de la instancia elegida.
 vigilado(Modulos, Estrategia, Limite, N, Vistas, Memoria0, Memoria,
          Resultado) :-
     msort(Memoria0, Clave),

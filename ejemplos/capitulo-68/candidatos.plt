@@ -79,4 +79,24 @@ test(eliminar_de, [true(EV =@= ev([pieza(esfera, rojo, _, _)],
                                    pieza(_, rojo, _, _)]))]) :-
     eliminar_de(esfera_roja, 3, EV).
 
+% Un negativo que difiere de S solo en la forma deja en G un solo
+% concepto.
+test(actualizar_negativo,
+     [true(EV =@= ev([pieza(esfera, rojo, chico, madera)],
+                     [pieza(esfera, _, _, _)]))]) :-
+    eliminar([pos(pieza(esfera, rojo, chico, madera))], EV0),
+    actualizar(neg(pieza(cubo, rojo, chico, madera)), EV0, EV).
+
+test(actualizar_positivo,
+     [true(EV =@= ev([pieza(esfera, rojo, _, madera)],
+                     [pieza(_, _, _, _)]))]) :-
+    eliminar([pos(pieza(esfera, rojo, chico, madera))], EV0),
+    actualizar(pos(pieza(esfera, rojo, grande, madera)), EV0, EV).
+
+test(actualizar_primer_positivo,
+     [true(EV =@= ev([pieza(cubo, azul, chico, metal)],
+                     [pieza(_, _, _, _)]))]) :-
+    inicial(EV0),
+    actualizar(pos(pieza(cubo, azul, chico, metal)), EV0, EV).
+
 :- end_tests(candidatos).

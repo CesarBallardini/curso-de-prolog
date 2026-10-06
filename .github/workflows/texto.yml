@@ -1,0 +1,58 @@
+# The book is consistent: part I does not jump ahead, parts II to IV use no
+# predicate before the chapter that presents it, every «capítulo N» and «sección
+# N.M» is a link, the pattern catalogue agrees with the boxes, every formula
+# parses, every time estimate agrees with the model, the code blocks agree with
+# ejemplos/, and the site builds with --strict.
+name: Texto
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  texto:
+    runs-on: ubuntu-26.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      # SWI-Prolog is needed too: check-part-2 asks it which names are
+      # predicates, and the site build generates the PlDoc pages.
+      - name: Prepare
+        uses: ./.github/actions/preparar
+        with:
+          chromium: 'true'
+
+      - name: Part I does not use part II
+        run: make part-1
+
+      - name: Nothing used before the chapter that presents it
+        run: uv run --frozen tools/check-part-2.py --strict
+
+      - name: Consulted predicates are shown
+        run: make shown
+
+      - name: Cross-references are links
+        run: make links
+
+      - name: Pattern catalogue
+        run: make patterns
+
+      - name: Formulas
+        run: make math
+
+      - name: Time estimates
+        run: make time
+
+      - name: Code blocks agree with ejemplos/
+        run: uv run --frozen tools/sync-examples.py
+
+      # Without the PDFs, whose links tools/pdf_links.py turns into plain text;
+      # the PDF y sitio workflow builds the site that is published.
+      - name: Site built with --strict
+        run: make docs

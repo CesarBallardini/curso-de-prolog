@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 """Keep docs/patrones.md identical to the `Patrón N` boxes of the Part II chapters.
 
-Every `!!! example "Patrón N — Name"` box in `docs/capitulo-*/index.md` is the source of the
-catalogue entry `## N — Name`. The entry is the dedented box text, with its relative links
-rewritten for `docs/patrones.md`, followed by the line that names the chapter and the section
-the box lives in. The intro of the catalogue and its `## Criterios de calidad` section are
-kept as they are.
+Every `!!! example "Patrón N — Name"` box in a chapter page, `docs/capitulo-*/index.md` or an
+extra page of the chapter, is the source of the catalogue entry `## N — Name`. The entry is the
+dedented box text, with its relative links rewritten for `docs/patrones.md`, followed by the
+line that names the chapter and the section (or, on an extra page without numbered sections,
+the page and the heading) the box lives in. Boxes are numbered in reading order. The intro of
+the catalogue and its `## Criterios de calidad` section are kept as they are.
 
     uv run tools/sync-patterns.py            # report the entries that differ
     uv run tools/sync-patterns.py --write    # rewrite docs/patrones.md
@@ -26,19 +27,36 @@ RESERVED: dict[int, str] = {}
 
 BOX = re.compile(r'^!!! example "Patr[oó]n (\d+) — (.+)"\s*$')
 SECTION = re.compile(r'^## (\d+\.\d+) (.+?)\s*$')
+HEADING = re.compile(r'^## (.+?)\s*$')
+TITLE = re.compile(r'^# (.+?)\s*$')
 CHAPTER_DIR = re.compile(r'capitulo-(\d\d)-')
 
 
 def boxes():
-    """Yield (number, name, body_lines, chapter_dir, section_number, section_title)."""
-    for index in sorted(DOCS.glob('capitulo-*/index.md')):
-        lines = index.read_text(encoding='utf-8').split('\n')
-        section = None
+    """Yield (number, name, body_lines, chapter_dir, section).
+
+    A box may also live on an extra page of the chapter (`capitulo-NN-…/otra.md`); there the
+    section is the last `## ` heading above it, numbered or not. `section` is
+    (page, page_title, number_or_None, heading_title).
+    """
+    for page in sorted(DOCS.glob('capitulo-*/*.md')):
+        lines = page.read_text(encoding='utf-8').split('\n')
+        title, section, fenced = None, None, False
         i = 0
         while i < len(lines):
+            if lines[i].startswith('```'):
+                fenced = not fenced
+            if fenced:
+                i += 1
+                continue
+            match = TITLE.match(lines[i])
+            if match and title is None:
+                title = match.group(1)
             match = SECTION.match(lines[i])
             if match:
-                section = (match.group(1), match.group(2))
+                section = (page.name, title, match.group(1), match.group(2))
+            elif match := HEADING.match(lines[i]):
+                section = (page.name, title, None, match.group(1))
             match = BOX.match(lines[i])
             if match:
                 number, name = int(match.group(1)), match.group(2)
@@ -49,26 +67,36 @@ def boxes():
                     i += 1
                 while body and body[-1] == '':
                     body.pop()
-                yield number, name, body, index.parent.name, section
+                yield number, name, body, page.parent.name, section
                 continue
             i += 1
 
 
-def relink(text, chapter_dir):
-    """Rewrite the links of a box, relative to docs/capitulo-NN/, for docs/patrones.md."""
+def relink(text, chapter_dir, page='index.md'):
+    """Rewrite the links of a box on docs/capitulo-NN/<page>, for docs/patrones.md."""
+    # A sibling page of the chapter (index.md#…, soluciones.md#…, otra.md), before ../ goes.
+    text = re.sub(r'\]\(([\w-]+\.md)', rf']({chapter_dir}/\1', text)
     text = re.sub(r'\]\(\.\./([^)]*)\)', r'](\1)', text)  # ../x -> x
-    text = re.sub(r'\]\(#([^)]*)\)', rf']({chapter_dir}/index.md#\1)', text)  # #slug -> page#slug
-    text = re.sub(r'\]\(index\.md#', rf']({chapter_dir}/index.md#', text)
-    return re.sub(r'\]\(soluciones\.md#', rf']({chapter_dir}/soluciones.md#', text)
+    return re.sub(r'\]\(#([^)]*)\)', rf']({chapter_dir}/{page}#\1)', text)  # #slug -> page#slug
 
 
 def entry(number, name, body, chapter_dir, section):
     chapter = int(CHAPTER_DIR.match(chapter_dir).group(1))
-    text = relink('\n'.join(body), chapter_dir)
     if section is None:
-        raise SystemExit(f'Patrón {number} is not under a numbered section in {chapter_dir}')
-    anchor = slugify(f'{section[0]} {strip_code(section[1])}', '-')
-    where = f'Capítulo {chapter}, [sección {section[0]}]({chapter_dir}/index.md#{anchor}).'
+        raise SystemExit(f'Patrón {number} is not under a `## ` heading in {chapter_dir}')
+    page, page_title, section_number, heading = section
+    text = relink('\n'.join(body), chapter_dir, page)
+    if section_number is not None:
+        anchor = slugify(f'{section_number} {strip_code(heading)}', '-')
+        where = f'Capítulo {chapter}, [sección {section_number}]({chapter_dir}/{page}#{anchor}).'
+    else:
+        if page == 'index.md':
+            raise SystemExit(f'Patrón {number} is not under a numbered section in {chapter_dir}')
+        anchor = slugify(strip_code(heading), '-')
+        where = (
+            f'Capítulo {chapter}, página [«{page_title}»]({chapter_dir}/{page}), '
+            f'apartado [«{heading}»]({chapter_dir}/{page}#{anchor}).'
+        )
     return f'## {number} — {name}\n\n{text}\n\n{where}\n'
 
 

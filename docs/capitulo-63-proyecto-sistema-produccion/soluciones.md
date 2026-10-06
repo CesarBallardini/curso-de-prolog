@@ -552,3 +552,36 @@ explicación por cada uno. Merritt señala la dificultad de fondo: una regla
 puede quitar los hechos que la justificaron, y la explicación se refiere
 entonces a hechos que ya no están en la memoria. Aquí los `origen/3`
 guardan copias de esos hechos, y la explicación sigue siendo posible.
+
+## 13
+
+<!-- ejemplo: capitulo-63/soluciones.pl fragmento: calculo(placa_de_video, consumo, Ranuras, Consumo) :- .. calculo(placa_de_video, consumo, Ranuras, Consumo). -->
+```prolog
+calculo(placa_de_video, consumo, Ranuras, Consumo) :-
+    memberchk(memoria_gb-Gb, Ranuras),
+    Consumo is 100 + 20 * Gb.
+
+% Una subclase sin valor por omisión para el consumo, con su cálculo: en
+% la cadena de herencia aparece antes que placa_de_video.
+marco(placa_calculada, [placa_de_video], []).
+
+calculo(placa_calculada, consumo, Ranuras, Consumo) :-
+    calculo(placa_de_video, consumo, Ranuras, Consumo).
+```
+
+```prolog
+?- valor_con_facetas(placa_de_video, [memoria_gb-8], consumo, C).
+C = 200.
+
+?- valor_con_facetas(placa_calculada, [memoria_gb-8], consumo, C).
+C = 260.
+```
+
+En cada clase de la cadena de herencia, `faceta/4` de `facetas.pl` busca primero el valor
+por omisión y después el cálculo. `placa_de_video` tiene `consumo-200` por
+omisión, y su cálculo no se usa nunca. Una subclase sin valor por omisión
+para el consumo, `placa_calculada`, aparece antes en la cadena, y su
+cálculo rige. Si el objeto no tiene `memoria_gb`, el cálculo falla y la
+búsqueda sigue hasta el valor por omisión de la superclase: 200 otra vez.
+Es el mismo orden que usa Merritt, valor, valor por omisión y cálculo,
+aplicado clase por clase.

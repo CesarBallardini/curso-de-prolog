@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" width="960" height="480">
+  <title>Árbol de abuelo(juan, Quien), paso 6: padre(pedro, Quien) unifica con R3; se llega a la consulta vacía y Quien = luis</title>
+  <rect x="0" y="0" width="960" height="480" fill="#FFFFFF"/>
+  <line x1="320.0" y1="59.0" x2="320.0" y2="132.7" stroke="#2E7D32" stroke-width="4"/>
+  <text x="332.0" y="89.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#2E7D32" text-anchor="start" xml:space="preserve">R4. θ₁ =</text>
+  <text x="332.0" y="115.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#2E7D32" text-anchor="start" xml:space="preserve">{ A/juan, N/Quien }</text>
+  <line x1="270.0" y1="203.3" x2="155.0" y2="289.0" stroke="#9AA5B1" stroke-width="3"/>
+  <text x="212.6" y="233.2" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#9AA5B1" text-anchor="end" xml:space="preserve">R1. θ₂ =</text>
+  <text x="177.7" y="259.2" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#9AA5B1" text-anchor="end" xml:space="preserve">{ P/ana }</text>
+  <line x1="370.0" y1="203.3" x2="485.0" y2="289.0" stroke="#2E7D32" stroke-width="4"/>
+  <text x="427.4" y="233.2" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#2E7D32" text-anchor="start" xml:space="preserve">R2. θ₃ =</text>
+  <text x="462.3" y="259.2" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#2E7D32" text-anchor="start" xml:space="preserve">{ P/pedro }</text>
+  <line x1="135.0" y1="331.0" x2="135.0" y2="366.0" stroke="#9AA5B1" stroke-width="3"/>
+  <line x1="505.0" y1="331.0" x2="505.0" y2="385.0" stroke="#2E7D32" stroke-width="4"/>
+  <text x="493.0" y="353.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#2E7D32" text-anchor="end" xml:space="preserve">R3. θ₄ =</text>
+  <text x="493.0" y="379.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#2E7D32" text-anchor="end" xml:space="preserve">{ Quien/luis }</text>
+  <rect x="196.3" y="16.8" width="247.5" height="42.4" rx="10" fill="#E3F1E4" stroke="#2E7D32" stroke-width="3"/>
+  <text x="320.0" y="45.5" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">abuelo(juan, Quien)</text>
+  <rect x="219.4" y="132.7" width="201.2" height="70.7" rx="10" fill="#E3F1E4" stroke="#2E7D32" stroke-width="3"/>
+  <text x="320.0" y="161.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">padre(juan, P),</text>
+  <text x="320.0" y="189.6" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">padre(P, Quien)</text>
+  <rect x="22.8" y="288.8" width="224.4" height="42.4" rx="10" fill="#F1F3F5" stroke="#9AA5B1" stroke-width="2"/>
+  <text x="135.0" y="317.5" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#9AA5B1" text-anchor="middle" xml:space="preserve">padre(ana, Quien)</text>
+  <rect x="381.3" y="288.8" width="247.5" height="42.4" rx="10" fill="#E3F1E4" stroke="#2E7D32" stroke-width="3"/>
+  <text x="505.0" y="317.5" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">padre(pedro, Quien)</text>
+  <circle cx="135" cy="382" r="16" fill="#F1F3F5" stroke="#9AA5B1" stroke-width="2"/>
+  <path d="M 127.8 374.8 L 142.2 389.2 M 142.2 374.8 L 127.8 389.2" fill="none" stroke="#9AA5B1" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="395.0" y="385.0" width="220.0" height="72.0" rx="12" fill="#E3F1E4" stroke="#2E7D32" stroke-width="3"/>
+  <text x="505.0" y="414.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#2E7D32" text-anchor="middle" xml:space="preserve" font-weight="bold">consulta vacía</text>
+  <text x="505.0" y="443.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve" font-weight="bold">Quien = luis</text>
+  <text x="662.0" y="30.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">programa</text>
+  <rect x="670.0" y="45.0" width="40.0" height="28.0" rx="5" fill="#1F3A5F"/>
+  <text x="690.0" y="66.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#FFFFFF" text-anchor="middle" xml:space="preserve" font-weight="bold">R1</text>
+  <text x="720.0" y="66.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">padre(juan, ana).</text>
+  <rect x="670.0" y="89.0" width="40.0" height="28.0" rx="5" fill="#1F3A5F"/>
+  <text x="690.0" y="110.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#FFFFFF" text-anchor="middle" xml:space="preserve" font-weight="bold">R2</text>
+  <text x="720.0" y="110.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">padre(juan, pedro).</text>
+  <rect x="662.0" y="128.0" width="288.0" height="38.0" rx="6" fill="#E3F1E4" stroke="#2E7D32" stroke-width="2"/>
+  <rect x="670.0" y="133.0" width="40.0" height="28.0" rx="5" fill="#1F3A5F"/>
+  <text x="690.0" y="154.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#FFFFFF" text-anchor="middle" xml:space="preserve" font-weight="bold">R3</text>
+  <text x="720.0" y="154.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">padre(pedro, luis).</text>
+  <rect x="670.0" y="177.0" width="40.0" height="28.0" rx="5" fill="#1F3A5F"/>
+  <text x="690.0" y="198.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#FFFFFF" text-anchor="middle" xml:space="preserve" font-weight="bold">R4</text>
+  <text x="720.0" y="198.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">abuelo(A, N) :-</text>
+  <text x="720.0" y="228.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">    padre(A, P),</text>
+  <text x="720.0" y="258.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">    padre(P, N).</text>
+  <rect x="662.0" y="292.0" width="288.0" height="178.0" rx="8" fill="#F7F9FB" stroke="#2E7D32" stroke-width="2"/>
+  <text x="678.0" y="326.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="22" fill="#2E7D32" text-anchor="start" xml:space="preserve" font-weight="bold">Éxito</text>
+  <text x="678.0" y="360.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">no queda ningún</text>
+  <text x="678.0" y="389.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">objetivo: la</text>
+  <text x="678.0" y="418.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">consulta vacía</text>
+</svg>

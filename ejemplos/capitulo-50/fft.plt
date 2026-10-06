@@ -22,4 +22,26 @@ test(mermaid, [true(Primera == "flowchart TB")]) :-
     with_output_to(string(T), mermaid_grafo(2)),
     split_string(T, "\n", "", [Primera|_]).
 
+test(costos_dos, [true(Cs == [ingenua-4-4, simplificada-2-0, arboles-2-2,
+                               grafo-2-2, mariposa-2-0])]) :-
+    findall(V-S-P, costo(V, 2, S, P), Cs).
+
+test(ejemplo_dos, [true(Ls == ["n1 = a(0)", "n2 = a(1)", "n3 = n1 + n2",
+                               "n4 = n1 - n2", "salida 0: n3",
+                               "salida 1: n4", ""])]) :-
+    with_output_to(string(T), fft_ejemplo(2)),
+    split_string(T, "\n", "", Ls).
+
+test(mermaid_dos, [true(Ls == ["flowchart TB",
+                               "    n1[\"n1 = a(0)\"]",
+                               "    n2[\"n2 = a(1)\"]",
+                               "    n3[\"n3 = n1 + n2\"]",
+                               "    n1 & n2 --> n3",
+                               "    n4[\"n4 = n1 - n2\"]",
+                               "    n1 & n2 --> n4",
+                               "    n3 --> s0([\"salida 0\"])",
+                               "    n4 --> s1([\"salida 1\"])", ""])]) :-
+    with_output_to(string(T), mermaid_grafo(2)),
+    split_string(T, "\n", "", Ls).
+
 :- end_tests(fft).

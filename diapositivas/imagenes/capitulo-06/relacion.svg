@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 380" width="800" height="380">
+  <title>suma/3 como relación entre tres números: con A y B conocidos calcula C, que es sumar; con B y C conocidos calcula A, que es restar</title>
+  <rect x="0" y="0" width="800" height="380" fill="#FFFFFF"/>
+  <text x="175.0" y="34" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#52606D" font-weight="bold" text-anchor="middle">A</text>
+  <text x="345.0" y="34" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#52606D" font-weight="bold" text-anchor="middle">B</text>
+  <text x="530.0" y="34" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#52606D" font-weight="bold" text-anchor="middle">C</text>
+  <text x="20" y="97" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F2933">suma(</text>
+  <rect x="100" y="64" width="150" height="52" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="175.0" y="97" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#1F2933" text-anchor="middle">s(cero)</text>
+  <rect x="270" y="64" width="150" height="52" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="345.0" y="97" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#1F2933" text-anchor="middle">s(s(cero))</text>
+  <rect x="440" y="64" width="180" height="52" rx="10" fill="#FCE8D2" stroke="#D9822B" stroke-width="3" stroke-dasharray="7 5"/>
+  <text x="530.0" y="98" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#D9822B" font-weight="bold" text-anchor="middle">?</text>
+  <text x="530.0" y="146" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="19" fill="#2E7D32" font-weight="bold" text-anchor="middle">s(s(s(cero)))</text>
+  <text x="628" y="97" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F2933">)</text>
+  <text x="660" y="97" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#1F3A5F" font-weight="bold">sumar: 1 + 2</text>
+  <text x="20" y="237" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F2933">suma(</text>
+  <rect x="100" y="204" width="150" height="52" rx="10" fill="#FCE8D2" stroke="#D9822B" stroke-width="3" stroke-dasharray="7 5"/>
+  <text x="175.0" y="238" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#D9822B" font-weight="bold" text-anchor="middle">?</text>
+  <text x="175.0" y="286" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="19" fill="#2E7D32" font-weight="bold" text-anchor="middle">s(cero)</text>
+  <rect x="270" y="204" width="150" height="52" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="345.0" y="237" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#1F2933" text-anchor="middle">s(s(cero))</text>
+  <rect x="440" y="204" width="180" height="52" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="530.0" y="237" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#1F2933" text-anchor="middle">s(s(s(cero)))</text>
+  <text x="628" y="237" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F2933">)</text>
+  <text x="660" y="237" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#1F3A5F" font-weight="bold">restar: 3 − 2</text>
+  <rect x="10" y="318" width="780" height="54" rx="8" fill="#F1F3F5" stroke="#F1F3F5" stroke-width="0"/>
+  <text x="400" y="352" font-family="Verdana, DejaVu Sans, sans-serif" font-size="16" fill="#1F2933" text-anchor="middle">La consulta decide cuáles son los datos y cuál es la incógnita.</text>
+</svg>

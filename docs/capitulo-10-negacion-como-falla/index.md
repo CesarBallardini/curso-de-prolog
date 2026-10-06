@@ -634,6 +634,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
         \+ tiene(P, _),
         persona(P).
     ```
+
 13. **(2)** Escribir `ninguno_es(X, L)`, que se cumple cuando ningún elemento de
     `L` es `X`, de dos maneras: con `\+` sobre la pertenencia, y sin `\+`,
     recorriendo la lista con la plantilla 11. Comparar qué ocurre con cada una

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" width="960" height="480">
+  <title>Árbol de abuelo(juan, Quien), paso 1: la raíz es la consulta inicial</title>
+  <rect x="0" y="0" width="960" height="480" fill="#FFFFFF"/>
+  <rect x="196.3" y="16.8" width="247.5" height="42.4" rx="10" fill="#FCE8D2" stroke="#D9822B" stroke-width="3"/>
+  <text x="320.0" y="45.5" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">abuelo(juan, Quien)</text>
+  <text x="662.0" y="30.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">programa</text>
+  <rect x="670.0" y="45.0" width="40.0" height="28.0" rx="5" fill="#1F3A5F"/>
+  <text x="690.0" y="66.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#FFFFFF" text-anchor="middle" xml:space="preserve" font-weight="bold">R1</text>
+  <text x="720.0" y="66.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">padre(juan, ana).</text>
+  <rect x="670.0" y="89.0" width="40.0" height="28.0" rx="5" fill="#1F3A5F"/>
+  <text x="690.0" y="110.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#FFFFFF" text-anchor="middle" xml:space="preserve" font-weight="bold">R2</text>
+  <text x="720.0" y="110.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">padre(juan, pedro).</text>
+  <rect x="670.0" y="133.0" width="40.0" height="28.0" rx="5" fill="#1F3A5F"/>
+  <text x="690.0" y="154.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#FFFFFF" text-anchor="middle" xml:space="preserve" font-weight="bold">R3</text>
+  <text x="720.0" y="154.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">padre(pedro, luis).</text>
+  <rect x="670.0" y="177.0" width="40.0" height="28.0" rx="5" fill="#1F3A5F"/>
+  <text x="690.0" y="198.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#FFFFFF" text-anchor="middle" xml:space="preserve" font-weight="bold">R4</text>
+  <text x="720.0" y="198.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">abuelo(A, N) :-</text>
+  <text x="720.0" y="228.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">    padre(A, P),</text>
+  <text x="720.0" y="258.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">    padre(P, N).</text>
+  <rect x="662.0" y="292.0" width="288.0" height="178.0" rx="8" fill="#F7F9FB" stroke="#D9822B" stroke-width="2"/>
+  <text x="678.0" y="326.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="22" fill="#D9822B" text-anchor="start" xml:space="preserve" font-weight="bold">La raíz</text>
+  <text x="678.0" y="360.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">la consulta inicial:</text>
+  <text x="678.0" y="389.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">los objetivos</text>
+  <text x="678.0" y="418.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">por probar</text>
+</svg>

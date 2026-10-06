@@ -106,4 +106,46 @@ test(modelo_tres_clases, [true(length(M, 3))]) :-
 test(costo_cola, [true(C < U)]) :-
     costo_cola(C, U).
 
+test(epoca_contada, [true(P-E == [0, 2, 2]-2)]) :-
+    datos(y, Es),
+    epoca_contada(1, Es, 1, [0, 0, 0]-[E|C], P-C).
+
+test(epoca_bolsillo_conserva, [true(B == b([0, 2, 2], [0, 0, 0], 3))]) :-
+    datos(y, Es),
+    epoca_bolsillo(1, Es, 1, b([0, 0, 0], [0, 0, 0], 3), B).
+
+test(epoca_bolsillo_mejora, [true(B == b([0, 2, 2], [0, 2, 2], 3))]) :-
+    datos(y, Es),
+    epoca_bolsillo(1, Es, 1, b([0, 0, 0], [0, 0, 0], 4), B).
+
+test(nand, [true(Cs == [1, 1, 1, -1])]) :-
+    nand(Es),
+    findall(C, member(ej(_, C), Es), Cs).
+
+test(binaria_directa, [true(B0-B1 == 0-1)]) :-
+    binaria(-1, B0),
+    binaria(1, B1).
+
+test(entrenar_clase, [true(P == a-[0, -10, -10])]) :-
+    entrenar_clase([ej([0, 0], a), ej([5, 5], b)], a, P).
+
+test(uno_contra_resto, [true(B1-B2 == ej([1], 1)-ej([2], -1))]) :-
+    uno_contra_resto(a, ej([1], a), B1),
+    uno_contra_resto(a, ej([2], b), B2).
+
+test(suma, [true(S =:= 9)]) :-
+    suma([1, 2, 3], [1, 2.0], S).
+
+test(suma_de, [true(P == 5-a)]) :-
+    suma_de([1, 1], a-[1, 2, 2], P).
+
+test(distancia, [true(abs(D + 1.4) < 1.0e-9)]) :-
+    distancia([0, 3, 4], 5, ej([1, 1], -1), D).
+
+test(cuadrado, [true(C =:= 9)]) :-
+    cuadrado(-3, C).
+
+test(cuadrados, [true(E == ej([4, 0], 1))]) :-
+    cuadrados(ej([-2, 0], 1), E).
+
 :- end_tests(soluciones).

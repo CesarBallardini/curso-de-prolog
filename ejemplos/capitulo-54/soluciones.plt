@@ -79,4 +79,89 @@ test(ej12_al_castellano, true(Ts == ["Ve la casa grande de las mujeres.",
                                     ])) :-
     traducciones("He sees the women's big house.", Ts).
 
+test(auxiliar, all(N == [sg])) :-
+    phrase(auxiliar(N), ["does"]).
+
+test(auxiliar_genera, all(Fs == [["do"]])) :-
+    phrase(auxiliar(pl), Fs).
+
+test(sensata) :-
+    sensata(o(sn(el, gato, sg, []), comer, sn(un, manzana, sg, []))).
+
+test(insensata, fail) :-
+    sensata(o(sn(el, libro, sg, []), comer, sn(un, manzana, sg, []))).
+
+test(sensata_negada) :-
+    sensata(neg(o(sn(el, casa, sg, []), tener, sn(un, libro, sg, [])))).
+
+test(sujeto_tacito) :-
+    sujeto_posible(tacito(sg), comer).
+
+test(sujeto_coordinado) :-
+    sujeto_posible(y(sn(el, gato, sg, []), sn(el, perro, sg, [])), dormir).
+
+test(sujeto_coordinado_insensato, fail) :-
+    sujeto_posible(y(sn(el, gato, sg, []), sn(el, libro, sg, [])), dormir).
+
+test(interlingua_es, all(I == [evento(dormir, persona(f, sg))])) :-
+    interlingua_es(o(pron(f, sg), dormir), I).
+
+% En sentido inverso, el sujeto tácito admite cualquier género.
+test(interlingua_es_inversa,
+     all(A == [o(tacito(sg), comer, sn(un, manzana, sg, [rojo])),
+               o(pron(f, sg), comer, sn(un, manzana, sg, [rojo]))])) :-
+    interlingua_es(A, evento(comer, persona(f, sg),
+                             ent(indefinido, manzana, sg, [rojo]))).
+
+test(agente_es_generico, all(I == [ent(definido, gato, pl, []),
+                                   ent(generico, gato, pl, [])])) :-
+    agente_es(sn(el, gato, pl, []), I).
+
+test(entidad_es, all(I == [ent(ninguna, manzana, pl, [])])) :-
+    entidad_es(sn(sin, manzana, pl, []), I).
+
+test(interlingua_en, all(I == [evento(dormir, persona(f, sg))])) :-
+    interlingua_en(o(pron(she), sleep), I).
+
+test(agente_en_they, [true(I =@= persona(_, pl))]) :-
+    agente_en(pron(they), I).
+
+test(agente_en_generico, all(I == [ent(generico, gato, pl, []),
+                                   ent(generico, gata, pl, [])])) :-
+    agente_en(sn(sin, [], cat, pl), I).
+
+test(entidad_en, all(I == [ent(indefinido, gato, sg, [negro, grande]),
+                           ent(indefinido, gata, sg, [negro, grande])])) :-
+    entidad_en(sn(a, [big, black], cat, sg), I).
+
+test(posesivo, [true(Ms == ["cat's", "cats'", "women's"])]) :-
+    posesivo(sg, "cat", "cats", M1),
+    posesivo(pl, "cat", "cats", M2),
+    posesivo(pl, "woman", "women", M3),
+    Ms = [M1, M2, M3].
+
+test(posesivo_numero, all(N == [pl])) :-
+    posesivo(N, "cat", "cats", "cats'").
+
+test(del, all(G-N == [m-sg])) :-
+    phrase(de_articulo(G, N), ["del"]).
+
+test(de_las, all(G-N == [f-pl])) :-
+    phrase(de_articulo(G, N), ["de", "las"]).
+
+test(de_el_mal, fail) :-
+    phrase(de_articulo(_, _), ["de", "el"]).
+
+test(poseedor_es, all(P == [sn(el, gato, sg, [])])) :-
+    phrase(poseedor_es(P), ["del", "gato"]).
+
+test(poseedor_en, all(P == [sn(the, [], cat, sg)])) :-
+    phrase(poseedor_en(P), ["the", "cat's"]).
+
+test(poseedor_en_plural, all(P == [sn(the, [], dog, pl)])) :-
+    phrase(poseedor_en(P), ["the", "dogs'"]).
+
+test(sn_posesion, all(En == [gen(sn(the, [], cat, sg), [], book, sg)])) :-
+    sn(de(sn(el, libro, sg, []), sn(el, gato, sg, [])), En).
+
 :- end_tests(soluciones).

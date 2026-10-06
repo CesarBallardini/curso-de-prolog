@@ -32,4 +32,8 @@ test(imposible, [nondet]) :-
 test(prueba) :-
     prueba(distinto(a, b)).
 
+% En el mundo de los cubos ninguna acción deja hechos fijos.
+test(siempre, [fail]) :-
+    siempre(_).
+
 :- end_tests(cubos).

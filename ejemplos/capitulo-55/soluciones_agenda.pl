@@ -139,7 +139,7 @@ leer_citas(In, Citas) :-
 %
 %   T es una cita bien formada, sin variables.
 es_cita(cita(D, hora(H, M), A, Con, Lugar)) :-
-    ground(D),
+    ground(cita(D, hora(H, M), A, Con, Lugar)),
     ( D = dia(_) ; D = fecha(_, _) ),
     integer(H),
     integer(M),

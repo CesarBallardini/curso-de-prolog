@@ -30,4 +30,33 @@ test(huella, H == [numero(2), numero(2)]) :-
     ejecutar(mcd, [numero(4), numero(6)], _, _),
     findall(F, hecho(F), H).
 
+% condicion/1 sobre la base: una respuesta por hecho que unifica. La base
+% es hecho/1 del módulo user, no de la unidad de pruebas.
+test(condicion_patron, [true(Xs == [3, 4]), cleanup(retractall(user:hecho(_)))]) :-
+    retractall(user:hecho(_)),
+    assertz(user:hecho(numero(3))),
+    assertz(user:hecho(numero(4))),
+    findall(X, condicion(numero(X)), Xs).
+
+test(condicion_negacion, [nondet, cleanup(retractall(user:hecho(_)))]) :-
+    retractall(user:hecho(_)),
+    assertz(user:hecho(numero(3))),
+    condicion(no(numero(5))),
+    \+ condicion(no(numero(_))).
+
+test(condicion_prueba, [nondet]) :-
+    condicion({3 > 2}).
+
+test(accion_reemplazar, [true(Hs == [numero(1), numero(9)]),
+                         cleanup(retractall(user:hecho(_)))]) :-
+    retractall(user:hecho(_)),
+    assertz(user:hecho(numero(5))),
+    assertz(user:hecho(numero(1))),
+    accion(reemplazar(numero(5), numero(9))),
+    findall(F, user:hecho(F), Hs).
+
+test(accion_quitar_ausente, [fail, cleanup(retractall(user:hecho(_)))]) :-
+    retractall(user:hecho(_)),
+    accion(quitar(numero(5))).
+
 :- end_tests(dinamico).

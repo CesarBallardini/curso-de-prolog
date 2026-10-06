@@ -35,4 +35,16 @@ test(comprueba, [nondet]) :-
 test(libre, [error(instantiation_error)]) :-
     resolver(_ = 3, x, _).
 
+test(regla, all(D == [(2 + 3) * x])) :-
+    colectar:regla(x, 2 * x + 3 * x, D).
+
+test(regla_sin_incognita, [fail]) :-
+    colectar:regla(x, 2 * y + 3 * y, _).
+
+test(resolver_, all(S == [x = 10 / (2 + 3)])) :-
+    colectar:resolver_(2 * x + 3 * x = 10, x, S).
+
+test(resolver_sin_metodo, [fail]) :-
+    colectar:resolver_(log(x + 1) + log(x - 1) = 3, x, _).
+
 :- end_tests(colectar).

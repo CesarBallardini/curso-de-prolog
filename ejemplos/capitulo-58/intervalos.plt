@@ -57,4 +57,22 @@ test(cubre, [forall(caso(N, _, _))]) :-
     muestra(N, Cs),
     forall(member(C, Cs), cubre(F, Os, C)).
 
+% La cota que baja se detiene en el umbral 0 si no lo cruza; si no, inf.
+test(bajar, [true(Es == [0, 0, inf, inf])]) :-
+    maplist(bajar, [5, 0, -1, inf], Es).
+
+test(subir, [true(Fs == [0, 0, sup, sup])]) :-
+    maplist(subir, [-5, 0, 1, sup], Fs).
+
+test(suma_cota, [true(Ss == [7, inf, sup, sup])]) :-
+    suma_cota(3, 4, S1),
+    suma_cota(inf, -1, S2),
+    suma_cota(5, sup, S3),
+    suma_cota(sup, 2, S4),
+    Ss = [S1, S2, S3, S4].
+
+% Sin cambios, el ensanchamiento deja el intervalo como estaba.
+test(ensanchar_estable, [true(V == i(1, 7))]) :-
+    dom_ensanchar(intervalos, i(1, 7), i(2, 7), V).
+
 :- end_tests(intervalos).

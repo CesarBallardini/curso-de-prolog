@@ -87,4 +87,17 @@ test(nunca_muere, [true(Muertes == [])]) :-
               jugar(M, final(murio(_), _, _)) ),
             Muertes).
 
+test(subconjunto, [all(S == [[a, b], [a], [b], []])]) :-
+    agente:subconjunto([a, b], S).
+
+test(explica) :-
+    agente:explica([1-1-[], 2-1-[brisa]], 4, brisa, [3-1]).
+
+% Un pozo en (1, 2) daría brisa en (1, 1).
+test(no_explica, [fail]) :-
+    agente:explica([1-1-[], 2-1-[brisa]], 4, brisa, [1-2]).
+
+test(explica_sin_brisa, [fail]) :-
+    agente:explica([1-1-[], 2-1-[brisa]], 4, brisa, []).
+
 :- end_tests(agente).

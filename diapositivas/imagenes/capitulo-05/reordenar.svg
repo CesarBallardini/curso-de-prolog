@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" width="960" height="480">
+  <title>La diferencia entre las dos versiones: la que no termina llama a antepasado antes de avanzar; la que termina desciende primero una generación con padre</title>
+  <rect x="0" y="0" width="960" height="480" fill="#FFFFFF"/>
+  <rect x="30.0" y="30.0" width="430.0" height="180.0" rx="12" fill="#FBE4E2" stroke="#B3261E" stroke-width="3"/>
+  <text x="50.0" y="64.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="22" fill="#B3261E" text-anchor="start" xml:space="preserve" font-weight="bold">no termina</text>
+  <text x="60.0" y="108.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#1F2933" text-anchor="start" xml:space="preserve">antepasado(A, D) :-</text>
+  <text x="60.0" y="144.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#1F2933" text-anchor="start" xml:space="preserve">    antepasado(A, X),</text>
+  <text x="60.0" y="180.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#1F2933" text-anchor="start" xml:space="preserve">    padre(X, D).</text>
+  <rect x="500.0" y="30.0" width="430.0" height="180.0" rx="12" fill="#E3F1E4" stroke="#2E7D32" stroke-width="3"/>
+  <text x="520.0" y="64.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="22" fill="#2E7D32" text-anchor="start" xml:space="preserve" font-weight="bold">termina</text>
+  <text x="530.0" y="108.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#1F2933" text-anchor="start" xml:space="preserve">antepasado(A, D) :-</text>
+  <text x="530.0" y="144.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#1F2933" text-anchor="start" xml:space="preserve">    padre(A, Hijo),</text>
+  <text x="530.0" y="180.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#1F2933" text-anchor="start" xml:space="preserve">    antepasado(Hijo, D).</text>
+  <path d="M 346 138 C 420 138 420 96 340 96" fill="none" stroke="#B3261E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <polygon points="332.0,98.0 344.5,103.5 343.4,90.4" fill="#B3261E"/>
+  <text x="245.0" y="246.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">la llamada recursiva va primero:</text>
+  <text x="245.0" y="274.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">la misma consulta, otra vez</text>
+  <circle cx="548" cy="138" r="16" fill="#2E7D32"/>
+  <text x="548.0" y="145.6" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#FFFFFF" text-anchor="middle" xml:space="preserve" font-weight="bold">1</text>
+  <circle cx="548" cy="174" r="16" fill="#2E7D32"/>
+  <text x="548.0" y="181.6" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#FFFFFF" text-anchor="middle" xml:space="preserve" font-weight="bold">2</text>
+  <text x="715.0" y="246.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">primero avanza una generación,</text>
+  <text x="715.0" y="274.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">después la llamada recursiva</text>
+  <rect x="110.0" y="330.0" width="740.0" height="40.0" rx="20" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="480.0" y="357.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#1F3A5F" text-anchor="middle" xml:space="preserve" font-weight="bold">el objetivo recursivo no se escribe primero</text>
+  <rect x="110.0" y="390.0" width="740.0" height="40.0" rx="20" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="480.0" y="417.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#1F3A5F" text-anchor="middle" xml:space="preserve" font-weight="bold">el caso base se escribe primero</text>
+</svg>

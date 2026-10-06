@@ -446,3 +446,60 @@ La cabeza pasa de i(0, 0) a i(0, 1), porque 1 es un umbral, y después a
 i(0, 10). Con i < 10 el cuerpo da i(1, 10), que ya está contenido: el punto
 fijo es i(0, 10), y la salida, i(10, 10). La prueba `umbrales_cubre`
 verifica el dominio con los seis casos.
+
+## Ejercicio 12
+
+Los resúmenes ya dicen qué contextos terminan en `error`: basta filtrarlos.
+`cociente_directo/1` arma la variante del caso sin la condición, y
+`contextos_caso/2` y `contextos_directo/1` aplican el filtro a cada uno.
+
+<!-- ejemplo: capitulo-58/soluciones.pl predicado: contextos_con_error/3 cociente_directo/1 contextos_caso/2 contextos_directo/1 -->
+```prolog
+%!  contextos_con_error(+Bloque, +Entradas:list, -Contextos:list) is det.
+%
+%   Contextos son los pares N-Vs, ordenados, de los procedimientos N que el
+%   análisis de signos llama con los signos Vs en sus argumentos y cuyo
+%   resumen incluye error.
+contextos_con_error(Bloque, Entradas, Contextos) :-
+    p_resumenes(Bloque, Entradas, Resumenes),
+    findall(N-Vs, ( member(resumen(N, Vs, _, Salidas), Resumenes),
+                    memberchk(error, Salidas) ),
+            Contextos0),
+    sort(Contextos0, Contextos).
+
+%!  cociente_directo(-Bloque) is det.
+%
+%   Bloque es el de cociente con el bloque principal cambiado por una sola
+%   llamada a dividir con a, sin la condición.
+cociente_directo(bloque(Ds, Ss)) :-
+    bloque_caso(cociente, bloque(Ds, _), _),
+    traducir_sentencias([llamar(dividir, ["a"])], Ss).
+
+%!  contextos_caso(+Nombre, -Contextos:list) is semidet.
+%
+%   Como contextos_con_error/3, sobre el caso Nombre con sus entradas.
+contextos_caso(Nombre, Contextos) :-
+    bloque_caso(Nombre, Bloque, Entradas),
+    contextos_con_error(Bloque, Entradas, Contextos).
+
+%!  contextos_directo(-Contextos:list) is det.
+%
+%   Como contextos_con_error/3, sobre el bloque de cociente_directo/1 con
+%   a de cualquier signo.
+contextos_directo(Contextos) :-
+    cociente_directo(Bloque),
+    contextos_con_error(Bloque, [a-entre(inf, sup)], Contextos).
+```
+
+```prolog
+?- contextos_caso(cociente, Cs).
+Cs = [].
+
+?- contextos_directo(Cs).
+Cs = [dividir-[cero]].
+```
+
+Sin la condición, `dividir/1` se llama con los tres signos de `a`, y con
+`cero` el resumen incluye `error`. Las pruebas `ej12_*` de
+`soluciones.plt` lo verifican, y también que `factorial` no tiene ningún
+contexto con error.

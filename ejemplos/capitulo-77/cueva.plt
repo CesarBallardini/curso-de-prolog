@@ -136,4 +136,16 @@ test(partida_gana, [true(sub_string(S, _, _, _, "Ganas"))]) :-
 test(partida_orden_mal, [true(sub_string(S, _, _, _, "No entiendo"))]) :-
     con_entrada("hola\n", 7, S).
 
+test(despertar_semilla, [true(W-A == 2-12345)]) :-
+    cueva:despertar(1, W, 0, A).
+
+test(vuelo_wumpus, [true(I == wumpus)]) :-
+    cueva:vuelo([4, 3], 5, 5, 3, 0, _, I).
+
+test(vuelo_jugador, [true(I == jugador)]) :-
+    cueva:vuelo([4, 5], 5, 5, 3, 0, _, I).
+
+test(vuelo_vacio, [true(A-I == 0-nada)]) :-
+    cueva:vuelo([], 5, 5, 3, 0, A, I).
+
 :- end_tests(cueva).

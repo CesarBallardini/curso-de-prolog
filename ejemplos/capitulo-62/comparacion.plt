@@ -69,4 +69,17 @@ test(palomar_1, [true(F == no(y(y(at(en(1, 1)), at(en(2, 1))),
 test(tautologia_palomar, [forall(member(M, [quine, clpb, resolucion(12)]))]) :-
     tautologia_palomar(M, 2).
 
+test(quine, [true]) :-
+    comparacion:quine([p, q], si(y(at(p), at(q)), at(p))).
+
+test(quine_no, [fail]) :-
+    comparacion:quine([p, q], si(at(p), at(q))).
+
+% Sin átomos, quine/2 evalúa la fórmula.
+test(quine_sin_atomos, [true]) :-
+    comparacion:quine([], o(no(val(0)), val(0))).
+
+test(expresion, [true(E == '~'(P) * (Q + P))]) :-
+    comparacion:expresion(y(no(at(p)), o(at(q), at(p))), [p-P, q-Q], E).
+
 :- end_tests(comparacion).

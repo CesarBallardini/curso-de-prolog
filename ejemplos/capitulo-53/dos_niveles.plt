@@ -42,4 +42,25 @@ test(siguiente, [true(Ls == [a, o, u])]) :-
 test(forma_lexica, [true(A == nombre("luz", femenino, plural))]) :-
     forma_lexica([l, u, z, +, s], A).
 
+test(reglas, [true(Rs == [limite, k, u, g, z, jota, epentesis,
+                          quitar_tilde, poner_tilde])]) :-
+    reglas(Rs).
+
+test(solo_ante_frontal,
+     [true(Ps == [[c, no(o(limite, frontal))]-medio, [c]-final,
+                  [c, limite, no(frontal)]-medio, [c, limite]-final])]) :-
+    dos_niveles:solo_ante_frontal(c, Ps).
+
+test(no_ante_frontal,
+     [true(Ps == [[c, frontal]-medio, [c, limite, frontal]-medio])]) :-
+    dos_niveles:no_ante_frontal(c, Ps).
+
+% La regla z es la unión de los patrones de las dos funciones.
+test(regla_z, [true(N == 6)]) :-
+    regla(z, Ps),
+    length(Ps, N).
+
+test(regla_inexistente, [fail]) :-
+    regla(ninguna, _).
+
 :- end_tests(dos_niveles).

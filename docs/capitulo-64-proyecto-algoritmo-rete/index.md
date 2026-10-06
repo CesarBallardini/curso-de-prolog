@@ -13,6 +13,18 @@ nodos guardan entre ciclos las comparaciones ya hechas, y en cada ciclo
 hace pasar por la red solo los hechos que entran y salen de la memoria. El
 conjunto de conflicto deja de reunirse: se mantiene.
 
+![Esquema de una red Rete, con la red alfa arriba y la red beta abajo](red-rete.svg)
+
+Esquema de una red Rete. Los hechos que se afirman o se retiran entran por
+la raíz; la red alfa los clasifica por tipo y por pruebas sobre un solo
+hecho, y guarda en cada memoria alfa los que cumplen un patrón. La red beta
+une esos hechos en los nodos de unión, en verde, y guarda en las memorias
+beta las combinaciones que cumplen un prefijo de condiciones; los nodos
+terminales de las reglas llenan la agenda, sobre la que actúa la resolución
+de conflictos. Imagen: Razorbliss,
+[CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/deed.es), vía
+[Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Rete.svg).
+
 El capítulo construye la red en siete versiones, sobre las reglas y la
 memoria del [capítulo 63](../capitulo-63-proyecto-sistema-produccion/index.md),
 que carga sin copiarlas. La primera compila las reglas en nodos alfa, uno
@@ -25,6 +37,11 @@ sexta lo mide, y encuentra que la red, tal como está, cuesta más que el
 intérprete que reemplaza; la séptima mueve a la red alfa las pruebas que
 miran un solo hecho, y el costo de los ciclos deja de depender del
 catálogo.
+[Cinco extensiones de la red](extensiones.md) trata después lo que las
+fuentes discuten y las siete versiones dejan afuera: la herencia de los
+marcos en los patrones, los tokens que guardan referencias a los hechos, la
+negación de una conjunción, las activaciones nulas y el agregado de una
+regla con la red cargada.
 
 El proyecto parte del capítulo «Performance» de *Building Expert Systems in
 Prolog* de Dennis Merritt, que implementa un Rete simplificado para su
@@ -65,7 +82,7 @@ Al terminar el capítulo, el lector puede:
 !!! info "Tiempo estimado"
     Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:15 h**.
     Resolver los 5 ejercicios marcados con ★: **1:35 h**.
-    Resolver los 12 ejercicios del final: **3:20 h**.
+    Resolver los 14 ejercicios del final: **4:15 h**.
 
 ## 64.1 El programa terminado
 
@@ -159,6 +176,9 @@ nodo_beta(Paso, Prefijo, Padre, Red0, Red, Nodo) :-
     Red = red(Indice, Alfas, Betas, Terminales).
 ```
 
+`max_assoc/3` da la clave mayor de un assoc y su valor: el nodo nuevo recibe
+el número siguiente.
+
 Cada condición se traduce primero a un **paso**: un patrón `F` es
 `alfa(F, [])`, y `no(F)` y `{Meta}` quedan como están. La lista vacía del
 paso alfa espera a la [sección 64.8](medicion.md#648-version-7-las-pruebas-de-un-solo-hecho-en-la-red-alfa).
@@ -233,7 +253,10 @@ paso del nodo con el patrón ligado al hecho. Un hecho que entra se compara
 solo con los nodos alfa de su functor, que el índice de la red da con una
 consulta a una tabla; un hecho que ningún patrón usa no se compara con nada.
 Merritt llama a estos nodos **raíces** y observa que actúan como índices de
-la red.
+la red. Forgy habla de nodos de una entrada, que prueban rasgos de un solo
+hecho, y de dos entradas, que unen; los nombres alfa y beta son los de la
+tesis de Doorenbos, que separa así la red de las pruebas sobre un hecho de
+la red de las uniones.
 
 <!-- contexto: capitulo-64/alfa.pl -->
 ```prolog
@@ -375,7 +398,10 @@ lee la misma memoria alfa. Si después el hecho activara por la derecha el
 nodo 5, la pareja del hecho consigo mismo aparecería dos veces. Por eso los
 sucesores de cada nodo alfa quedan del más profundo al menos profundo, y
 `propagar/6` los activa en ese orden: el nodo 5 se activa por la derecha
-antes de que el nodo 4 le entregue el token nuevo.
+antes de que el nodo 4 le entregue el token nuevo. Doorenbos describe este
+problema en el apartado «Join Node Implementation» de su tesis, con la
+misma regla, los descendientes antes que los antepasados, y remite a Lee y
+Schor para la discusión completa.
 
 **El conjunto de conflicto.** Se guarda en una tabla cuya clave es `K-Inversos`:
 el número de la regla y sus sellos cambiados de signo. Recorrer la tabla en
@@ -666,6 +692,18 @@ archivo que carga los del capítulo, sin modificarlos.
     catálogo de 828 hechos para que la red con pruebas alfa costara menos
     que el [capítulo 63](../capitulo-63-proyecto-sistema-produccion/index.md), suponiendo que cada ciclo agregado cuesta lo que el
     promedio de los medidos. Discutir si la suposición es razonable.
+13. **(2)** Escribir el programa `bloques_aux`, que declara libres de rojo
+    los mismos bloques que `bloques` de la
+    [sección 64.11](extensiones.md#6411-la-negacion-de-una-conjuncion) con
+    una regla auxiliar que agrega `rojo_encima(X)` y una negación simple.
+    Comparar los ciclos de las dos versiones, y lo que cada una concluye
+    cuando, después de ejecutarlas, se quita el hecho `color(c, rojo)`.
+14. **(3)** Escribir `quitar_regla/5`, el camino inverso de la
+    [sección 64.13](extensiones.md#6413-una-regla-nueva-con-la-red-en-marcha):
+    quita de una red cargada una regla, sus instanciaciones, los nodos beta
+    que ninguna otra regla usa y los nodos alfa que quedan sin sucesores.
+    Verificar que el resultado coincide con compilar el programa sin esa
+    regla, para cada regla de `familia` y del configurador.
 
 ## Resumen
 
@@ -682,6 +720,11 @@ archivo que carga los del capítulo, sin modificarlos.
 | `red.pl`, `alfa.pl` | la compilación con nodos compartidos y las memorias alfa |
 | `tokens.pl`, `negacion.pl` | la propagación con signo, el conjunto de conflicto y la negación |
 | `rete.pl`, `medida.pl`, `pruebas.pl` | el ciclo, su comparación con el [capítulo 63](../capitulo-63-proyecto-sistema-produccion/index.md), la medición y las pruebas alfa |
+| **negación conjuntiva** | `no_todos([F1, ..., Fn])`: no hay una combinación de hechos que cumpla los patrones a la vez; el nodo cuenta las combinaciones por token |
+| **activación nula** | una activación que no puede producir nada: por la derecha con el padre vacío, por la izquierda con la memoria alfa vacía |
+| `herencia.pl`, `referencias.pl` | la herencia de los marcos evaluada en los nodos alfa, y los tokens reconstruidos a partir de sus sellos |
+| `conjuntiva.pl`, `desconexion.pl`, `en_marcha.pl` | la negación de una conjunción, la cuenta de las activaciones nulas y una regla agregada con la red cargada |
+| `max_assoc/3`, `gen_assoc/3` | la clave mayor de un assoc; sus pares por retroceso, en orden de clave |
 
 ## Temas que se retoman
 
@@ -704,17 +747,56 @@ archivo que carga los del capítulo, sin modificarlos.
   de que la refracción se vuelve innecesaria sin negación, y el intercambio
   entre memoria y velocidad. La licencia de esa edición no permite obras
   derivadas: se toman las ideas, no el código.
+- Dennis Merritt, *Building Expert Systems in Prolog*, apéndice «Rete-Foops»
+  (`retepred.pro` y `retefoop.pro`), en la misma
+  [edición en línea](https://www.amzi.com/ExpertSystemsInProlog/appendix.php). Es el
+  código completo del capítulo «Performance»: allí la negación no es un nodo con
+  cuentas sino una prueba `not(X)` que consulta la memoria de trabajo en un
+  nodo sin memoria, y el comentario del archivo deja pendiente guardar
+  referencias a los hechos en lugar de tokens completos, el ejercicio 8.2 del
+  libro, que la [sección 64.10](extensiones.md#6410-tokens-con-referencias)
+  mide; el ejercicio 8.4, la herencia en los patrones, es la
+  [sección 64.9](extensiones.md#649-la-herencia-en-los-patrones). Se
+  consulta para comparar, no se copia.
 - Charles L. Forgy, «Rete: A Fast Algorithm for the Many Pattern/Many
   Object Pattern Match Problem», *Artificial Intelligence* 19 (1), 1982.
   [DOI 10.1016/0004-3702(82)90020-0](https://doi.org/10.1016/0004-3702(82)90020-0).
-  El artículo que presenta el algoritmo; el capítulo toma de allí el nombre
-  y la idea de guardar entre ciclos el estado de la comparación.
+  El artículo que presenta el algoritmo; el capítulo toma de allí el nombre,
+  la idea de guardar entre ciclos el estado de la comparación, los tokens
+  con las marcas `+` y `-` que los nodos de dos entradas y los terminales
+  usan para agregar o quitar, el nodo de dos entradas para un patrón negado
+  con una cuenta por token, y la división entre los rasgos de un solo
+  elemento, que prueban los nodos de una entrada, y los rasgos entre
+  elementos, que prueban los de dos entradas (apartados «Saving information
+  in the network», «Using the tags» y «Completing the set of node types»).
+- Charles L. Forgy, *On the Efficient Implementation of Production
+  Systems*, tesis doctoral, Carnegie Mellon University, 1979. La descripción
+  completa del algoritmo, que el artículo de 1982 resume y que Doorenbos
+  señala como la más clara de las originales.
 - Robert B. Doorenbos, *Production Matching for Large Learning Systems*,
   tesis doctoral, Carnegie Mellon University, 1995 (informe
-  CMU-CS-95-113). El capítulo toma de allí los nombres de memorias alfa y
-  beta, el orden de los sucesores de una memoria alfa, del más profundo al
-  menos profundo, para no unir dos veces un hecho consigo mismo, y la idea
-  de no activar un nodo cuyo padre no tiene tokens.
+  CMU-CS-95-113).
+  [Edición en línea](http://reports-archive.adm.cs.cmu.edu/anon/1995/CMU-CS-95-113.pdf),
+  del archivo de informes técnicos de la universidad. El capítulo toma del
+  capítulo «The Basic Rete Algorithm» los nombres de memorias alfa y beta y
+  la separación entre la red alfa y la red beta, el orden de los sucesores
+  de una memoria alfa, del más profundo al menos profundo, para no unir dos
+  veces un hecho consigo mismo (apartado «Join Node Implementation»), y los
+  nodos negativos que guardan los tokens del padre (apartado «Negated
+  Conditions»); del capítulo «Adding Right Unlinking to Rete», la idea de no
+  activar por la derecha un nodo cuyo padre no tiene tokens. Las
+  extensiones toman además el apartado «Conjunctive Negations» para la
+  negación de una conjunción, el apartado «Adding and Removing
+  Productions» para agregar una regla con la red cargada, y la medición
+  de las activaciones nulas por la izquierda y por la derecha de los
+  capítulos «Adding Right Unlinking to Rete» y «Adding Left Unlinking to
+  Rete», con la red Rete/UL y la observación de que un nodo no puede
+  quedar desconectado de los dos lados.
+- H. S. Lee y M. I. Schor, «Match Algorithms for Generalized Rete
+  Networks», *Artificial Intelligence* 54, 1992.
+  [DOI 10.1016/0004-3702(92)90047-2](https://doi.org/10.1016/0004-3702(92)90047-2).
+  Doorenbos remite a este artículo para la discusión completa del orden de
+  las activaciones de nodos que leen la misma memoria alfa.
 
 El código del capítulo es propio, escrito para el curso: la compilación, las
 memorias, la propagación, la negación, el ciclo, la medición y las pruebas

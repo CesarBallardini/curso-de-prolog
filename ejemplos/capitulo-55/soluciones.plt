@@ -43,4 +43,10 @@ test(infinitivo_er, [nondet, true(S == comes)]) :-
 test(infinitivo_inversa, [nondet, true(P == escribo)]) :-
     conjugada_inf(P, escribes).
 
+test(primera_respuesta, true(R == "¿Puedes pensar en un ejemplo concreto?")) :-
+    primera_respuesta("Siempre estoy cansado", R).
+
+test(primera_respuesta_ninguna, true(R == "Continúa, por favor.")) :-
+    primera_respuesta("Bueno", R).
+
 :- end_tests(soluciones).

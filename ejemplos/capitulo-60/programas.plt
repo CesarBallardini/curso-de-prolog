@@ -28,4 +28,16 @@ test(ida_y_vuelta, L == [x, y, x]) :-
     posiciones([x, y, x], H),
     valores(H, L).
 
+% Tras no(F), la cláusula del patrón queda por probar: un punto de elección.
+test(condicion_valida, [nondet]) :-
+    condicion_valida({X > 0}),
+    condicion_valida(no(numero(_))),
+    condicion_valida(numero(X)).
+
+test(condicion_valida_variable, [fail]) :-
+    condicion_valida(_).
+
+test(condicion_valida_doble_negacion, [fail]) :-
+    condicion_valida(no(no(a))).
+
 :- end_tests(programas).

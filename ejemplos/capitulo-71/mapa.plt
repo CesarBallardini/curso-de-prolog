@@ -51,4 +51,21 @@ test(pueblos_de_un_arbol, [true(Ps == [alamos, cantera, paso, huerta])]) :-
                    meta(ruta(huerta, huerta))-31)-0])-0),
             Ps).
 
+test(tramo, [all(B-L == [cantera-25, dique-33, bosque-40])]) :-
+    tramo(alamos, B, L).
+
+% Cada camino se recorre en los dos sentidos.
+test(tramo_simetrico, [true(N == 44)]) :-
+    aggregate_all(count, tramo(_, _, _), N).
+
+test(separados) :-
+    separados(alamos, islas).
+
+test(misma_orilla, [fail]) :-
+    separados(alamos, cantera).
+
+% Un pueblo sobre el río no está separado de ninguno.
+test(sobre_el_rio, [fail]) :-
+    separados(paso, islas).
+
 :- end_tests(mapa).

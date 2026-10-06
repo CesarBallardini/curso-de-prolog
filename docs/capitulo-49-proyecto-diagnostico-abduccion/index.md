@@ -25,8 +25,10 @@ explicación mientras prueba la observación. La tercera se queda con los
 diagnósticos mínimos, y poda la búsqueda con un presupuesto de fallas. La
 cuarta compara el modelo de fallas, que dice qué hace una compuerta que
 falla, con una conducta desconocida. La quinta elige la próxima medición:
-la entrada que mejor separa los diagnósticos que quedan. El programa
-terminado carga los cinco módulos:
+la entrada que mejor separa los diagnósticos que quedan. Dos secciones
+más, en una página aparte, agregan la negación al intérprete abductivo y
+obtienen los diagnósticos mínimos sin presupuesto. El programa terminado
+carga los cinco módulos de las versiones:
 
 <!-- ejemplo: capitulo-49/diagnostico.pl archivo -->
 ```prolog
@@ -99,12 +101,15 @@ Al terminar el capítulo, el lector puede:
 - distinguir un modelo de fallas fuerte de uno débil por lo que cada uno
   puede explicar y descartar;
 - elegir la próxima medición como la que mejor separa los diagnósticos
-  posibles, y reconocer los que ninguna medición en las entradas separa.
+  posibles, y reconocer los que ninguna medición en las entradas separa;
+- explicar una teoría con negación suponiendo hechos verdaderos y falsos,
+  y obtener los diagnósticos mínimos del modelo débil reduciendo
+  diagnósticos.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:40 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:45 h**.
     Resolver los 5 ejercicios marcados con ★: **1:20 h**.
-    Resolver los 11 ejercicios del final: **3:30 h**.
+    Resolver los 13 ejercicios del final: **4:05 h**.
 
 ## 49.1 El problema
 
@@ -126,6 +131,14 @@ funcionan es una suposición por defecto, en el sentido que Flach da a la
 expresión en el apartado 8.1: se mantiene mientras nada la contradiga. La
 medición la contradice, y el diagnóstico busca qué suposiciones retirar y
 por cuáles reemplazarlas.
+
+![Sonda lógica de mano con su cable espiralado y dos pinzas de alimentación](sonda-logica.jpg)
+
+Una sonda lógica: su punta se apoya sobre un cable del circuito y las
+luces indican si lleva un 0 o un 1. Las observaciones del capítulo son
+mediciones como esta, en las entradas y las salidas de un circuito.
+Imagen: Plusea, [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/),
+vía [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Elenco_Logic_probe_LP-560.jpg).
 
 Las compuertas se identifican por su **ruta**, la lista de identificadores
 que lleva hasta ellas desde el circuito exterior, que `compuerta_en/3`
@@ -151,6 +164,31 @@ calcula el cable t, que el segundo semisumador combina con el acarreo de
 entrada, y la OR `[o1]` reúne los dos acarreos parciales. Una
 **observación** es un par `Entradas-Salidas`, y un problema de diagnóstico
 es una lista de observaciones del mismo circuito, con las mismas fallas.
+
+El diagrama muestra el problema de la
+[sección 49.2](#492-version-1-una-falla-por-simulacion) sobre el sumador:
+cada compuerta con su ruta, los cables con los valores que tendrían con
+las entradas 0, 0 y 1 si todo funcionara, y debajo de cada salida el
+valor previsto y el medido. La compuerta destacada es la que, pegada a 1,
+explica las dos diferencias a la vez.
+
+```mermaid
+flowchart LR
+    a["a = 0"] --> X1
+    b["b = 0"] --> X1
+    a --> Y1
+    b --> Y1
+    ci["ci = 1"] --> X2
+    ci --> Y2
+    X1["[m1, x1]<br/>XOR"] -- "t = 0" --> X2
+    X1 -- "t = 0" --> Y2
+    Y1["[m1, y1]<br/>AND"] -- "c1 = 0" --> O1
+    X2["[m2, x1]<br/>XOR"] --> s["s: previsto 1<br/>medido 0"]
+    Y2["[m2, y1]<br/>AND"] -- "c2 = 0" --> O1
+    O1["[o1]<br/>OR"] --> co["co: previsto 0<br/>medido 1"]
+    classDef sospechosa stroke-width:3px,stroke-dasharray:5 3
+    class X1 sospechosa
+```
 
 ## 49.2 Versión 1: una falla, por simulación
 
@@ -198,7 +236,7 @@ del [capítulo 48](../capitulo-48-proyecto-circuitos-logicos/index.md), `pegada/
 cualquier estado. La ruta de cada compuerta decide si está en la lista; si
 no está, su estado es `ok`. El intérprete de circuitos no cambia: una
 compuerta falla porque su conducta es otra, como anticipa el
-[Patrón 59](../patrones.md#59-interprete-con-conducta-como-parametro).
+[Patrón 60](../patrones.md#60-interprete-con-conducta-como-parametro).
 
 Un conjunto de fallas **explica** las observaciones si el circuito con esas
 fallas reproduce todas; el diagnóstico por simulación genera candidatos y
@@ -445,7 +483,8 @@ La lista completa no es un diagnóstico útil.
 ## 49.4 Versión 3: diagnósticos mínimos
 
 Un diagnóstico es **mínimo** si ningún otro supone fallas en un subconjunto
-propio de sus compuertas. Si `[[m1, x1]-pegada(1)]` explica la observación,
+propio de sus compuertas, la definición de Reiter (1987) que Kakas,
+Kowalski y Toni retoman. Si `[[m1, x1]-pegada(1)]` explica la observación,
 agregarle otra compuerta en falla no explica nada nuevo. `minimos.pl`
 obtiene los mínimos de dos maneras. La primera es la de Flach: generar
 todos los diagnósticos y descartar los que contienen a otro.
@@ -620,7 +659,9 @@ El modelo fuerte afirma mucho: una compuerta que falla está pegada o
 invertida, y siempre de la misma manera. Flach llama **fuerte** a un modelo
 así, que enumera las conductas posibles de una compuerta que falla. El
 modelo **débil** no dice nada: una compuerta que falla está en el estado
-`desconocida`, y su salida puede ser cualquier bit. `modelos.pl` lo agrega
+`desconocida`, y su salida puede ser cualquier bit. Es el modelo del
+diagnóstico de fallas múltiples de de Kleer y Williams (1987), que solo
+describe la conducta correcta de cada componente. `modelos.pl` lo agrega
 con una regla más de la teoría, sin tocar el intérprete:
 
 <!-- ejemplo: capitulo-49/modelos.pl fragmento: abduccion:regla(salida(debil, .. (estado(Ruta, desconocida), bit(S))). -->
@@ -696,7 +737,9 @@ Un diagnóstico con varios candidatos pide otra medición. En el modelo
 fuerte, cada diagnóstico predice las salidas del circuito para cualquier
 entrada, y una entrada separa los candidatos en grupos, uno por salida
 predicha. Después de medir queda uno de los grupos, y no se sabe cuál: la
-mejor entrada es la que minimiza el tamaño del grupo más grande. `medicion.pl`
+mejor entrada es la que minimiza el tamaño del grupo más grande. De Kleer y
+Williams eligen la medición con un criterio de entropía; el del grupo más
+grande es más simple y no necesita probabilidades. `medicion.pl`
 elige así:
 
 <!-- ejemplo: capitulo-49/medicion.pl predicado: predecir/4 proxima/4 peor_grupo/4 -->
@@ -793,13 +836,40 @@ el [ejercicio 6](#ejercicios). El resultado también muestra el límite de
 elegir entre los mínimos: la avería real está entre los candidatos porque
 es mínima; una avería que contiene a otro diagnóstico no aparecería.
 
+## 49.7 Abducción con negación
+
+El intérprete de la versión 2 solo supone que algo es verdadero. Flach
+completa el suyo, en el mismo apartado 8.3, para teorías con negación: una
+explicación también puede suponer que algo es falso, y no puede suponer
+las dos cosas del mismo hecho. La página
+[Abducción con negación y mínimos sin presupuesto](negacion-y-minimos.md#abduccion-con-negacion)
+escribe `suponer/2` y `refutar/2` en `negacion.pl`, con un diccionario
+incompleto de pares `Abducible-Valor` que hace con una unificación la
+verificación de consistencia que Flach programa aparte. Con la teoría de
+las aves de Flach, explicar que un ave vuela supone que no es un pingüino
+ni está muerta; con una teoría de una lámpara y una radio, una luz apagada
+y una radio que suena dejan como única explicación una lámpara rota.
+
+## 49.8 Diagnósticos mínimos a partir de diagnósticos
+
+Flach remite, para obtener los mínimos sin generar todos los diagnósticos,
+al algoritmo de Mozetič. La página, en
+[Diagnósticos mínimos a partir de diagnósticos](negacion-y-minimos.md#diagnosticos-minimos-a-partir-de-diagnosticos),
+escribe en `incremental.pl` una versión simple de su idea para el modelo
+débil: un diagnóstico se reduce a uno mínimo sacando compuertas de a una,
+con una verificación por compuerta, y cada mínimo nuevo se busca dejando
+fuera una compuerta de cada mínimo conocido. Sobre el sumador de tres bits
+encuentra los 13 mínimos con 264 verificaciones y un millón de
+inferencias, sin presupuesto, donde el filtro con un presupuesto igual a
+la cantidad de compuertas necesita 118 millones.
+
 !!! success "Criterios de calidad"
     | Criterio | En este capítulo |
     |---|---|
     | C1 | cada predicado declara modos y determinación; el intérprete abductivo es `nondet` porque una observación tiene en general muchas explicaciones |
     | C2 | la teoría es de datos: `regla/2`, y los circuitos, los del [capítulo 48](../capitulo-48-proyecto-circuitos-logicos/index.md), sin copiarlos; un modelo de fallas nuevo es una regla más |
     | C6 | el intérprete de circuitos no cambia en ninguna versión: cada una es una conducta nueva para `simular/4` (`con_fallas/5`, `abductiva/6`, `acotada/7`) |
-    | C7 | 36 pruebas en seis archivos; cada versión se compara con la anterior: los diagnósticos abductivos explican en la simulación de la versión 1, `mas_simples/4` coincide con `k_fallas/4`, y el filtro de Flach con el presupuesto |
+    | C7 | 101 pruebas en ocho archivos; cada versión se compara con la anterior: los diagnósticos abductivos explican en la simulación de la versión 1, `mas_simples/4` coincide con `k_fallas/4`, y el filtro de Flach con el presupuesto |
 
 ## Ejercicios
 
@@ -861,6 +931,19 @@ tiene de propio.
     vez la entrada que detecta más fallas todavía no detectadas— y
     aplicarlo al sumador y al sumador de tres bits. Informar qué fallas no
     detecta ninguna entrada.
+12. **(2)** Agregar a la teoría de `negacion.pl`, con cláusulas `multifile`
+    en otro archivo, que un ave herida también es anormal, con `herido/1`
+    abducible. Explicar con `suponer/2` que Piolín vuela, y que es un ave
+    que no vuela, y comparar las explicaciones con las de la
+    [sección 49.7](#497-abduccion-con-negacion).
+13. **(2)** Escribir `conjunto_fuerte(Circuito, Obs, Rutas)`: algún
+    diagnóstico del modelo fuerte tiene en falla exactamente las compuertas
+    de `Rutas`. Con las dos observaciones de la
+    [sección 49.5](#495-version-4-modelos-de-falla-y-conducta-desconocida),
+    mostrar que `[[m1, x1]]` lo es y `[[m1, x1], [o1]]` no, y explicar por
+    qué `minimos_incrementales/3` de la
+    [sección 49.8](#498-diagnosticos-minimos-a-partir-de-diagnosticos) solo
+    vale para el modelo débil.
 
 ## Resumen
 
@@ -879,6 +962,9 @@ tiene de propio.
 | `por_filtro/4`, `acotada/7`, `mas_simples/4`, `minimos/5` | los diagnósticos mínimos |
 | `sospechosas/5` | los conjuntos de compuertas, para comparar modelos |
 | `predecir/4`, `proxima/4`, `localizar/5` | la elección de la próxima medición |
+| `suponer/2`, `refutar/2` | la abducción con negación: supuestos verdaderos y falsos |
+| `es_diagnostico/3`, `reducir/4`, `minimos_incrementales/3` | los mínimos del modelo débil a partir de diagnósticos |
+| `ord_intersect/2` | se cumple si dos conjuntos ordenados tienen un elemento en común (en las soluciones) |
 
 ## Temas que se retoman
 
@@ -898,9 +984,59 @@ tiene de propio.
   idea del intérprete que agrega a la explicación cada abducible que la
   prueba necesita, el sumador completo con su modelo de fallas y su
   observación de ejemplo, y el filtro de los diagnósticos mínimos con su
-  costo.
+  costo; y, para la [sección 49.7](#497-abduccion-con-negacion), la
+  abducción con negación de `abduce/3` y `abduce_not/3`, el ejemplo de las
+  aves y el límite de su ejercicio 8.4.
+
+- Antonis C. Kakas, Robert A. Kowalski y Francesca Toni, «Abductive Logic
+  Programming», *Journal of Logic and Computation* 2 (6), 1992,
+  págs. 719–770, y su versión ampliada «The Role of Abduction in Logic
+  Programming», en *Handbook of Logic in Artificial Intelligence and Logic
+  Programming*, vol. 5, Oxford University Press, 1998 — apartados 1.1 a
+  1.3. [Versión ampliada, en la página de Kowalski](https://www.doc.ic.ac.uk/~rak/papers/mod-survey.pdf).
+  Es el artículo en el que Flach basa su intérprete abductivo. El capítulo
+  toma de él el marco de una teoría, unos abducibles y unas restricciones
+  sobre los supuestos (aquí, que una compuerta tenga un solo estado, que
+  `buscar/3` cumple por unificación), y la lectura del diagnóstico basado
+  en modelos como abducción con explicaciones mínimas.
+- Igor Mozetič, «A polynomial-time algorithm for model-based diagnosis»,
+  *Proceedings of the Tenth European Conference on Artificial Intelligence
+  (ECAI'92)*, John Wiley, 1992, págs. 729–733. Es la obra a la que Flach
+  remite para calcular los diagnósticos mínimos sin generar todos; el
+  presupuesto de fallas de la [sección 49.4](#494-version-3-diagnosticos-minimos)
+  responde a la misma necesidad con una poda más simple, y la
+  [sección 49.8](#498-diagnosticos-minimos-a-partir-de-diagnosticos) toma
+  su idea de calcular los mínimos a partir de diagnósticos. No tiene
+  edición en línea gratuita.
+- Igor Mozetič y Christian Holzbaur, «Controlling the complexity in
+  model-based diagnosis», *Annals of Mathematics and Artificial
+  Intelligence* 11, 1994. Desarrolla el algoritmo anterior con el nombre
+  IDA, que calcula cada diagnóstico mínimo nuevo a partir de diagnósticos
+  y no de conflictos, con una cantidad de verificaciones polinomial en la
+  cantidad de componentes. El capítulo lo conoce por su resumen: la
+  versión de la [sección 49.8](#498-diagnosticos-minimos-a-partir-de-diagnosticos) es propia y no reproduce el algoritmo. No
+  tiene edición en línea gratuita.
+- Raymond Reiter, «A theory of diagnosis from first principles»,
+  *Artificial Intelligence* 32 (1), 1987, págs. 57–95. Citado por Kakas,
+  Kowalski y Toni como el origen del diagnóstico basado en modelos: el
+  diagnóstico como conjunto mínimo de componentes anormales coherente con
+  la observación, la definición que usa la
+  [sección 49.4](#494-version-3-diagnosticos-minimos). No tiene edición en
+  línea gratuita.
+- Johan de Kleer y Brian C. Williams, «Diagnosing multiple faults»,
+  *Artificial Intelligence* 32 (1), 1987, págs. 97–130. Diagnostica fallas
+  múltiples de circuitos digitales con un modelo que solo describe la
+  conducta correcta de cada componente, el modelo débil de la
+  [sección 49.5](#495-version-4-modelos-de-falla-y-conducta-desconocida),
+  y elige la próxima medición como la que mejor separa a los candidatos,
+  la idea de la [sección 49.6](#496-version-5-la-proxima-medicion), con un
+  criterio de entropía en lugar del grupo más grande. No tiene edición en
+  línea gratuita.
 
 El código del capítulo es propio, escrito para el curso sobre los circuitos
 del [capítulo 48](../capitulo-48-proyecto-circuitos-logicos/index.md): de
-Flach se toman ideas y el ejemplo, no código; el modelo de falla invertida,
-el modelo débil y la elección de la próxima medición son del curso.
+las fuentes se toman ideas y los ejemplos de Flach, no código. El modelo de
+falla invertida, el presupuesto de fallas, el criterio de la próxima
+medición por el grupo más grande, los supuestos con valor de verdad en un
+diccionario incompleto y la versión incremental de los mínimos son del
+curso.

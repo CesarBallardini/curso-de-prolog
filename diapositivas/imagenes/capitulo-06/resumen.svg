@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420" width="800" height="420">
+  <title>Resumen del capítulo: caso base, caso recursivo, el sucesor s(N), la terminación, verificar y generar, y el orden dentro del cuerpo</title>
+  <rect x="0" y="0" width="800" height="420" fill="#FFFFFF"/>
+  <rect x="8" y="8" width="256" height="196" rx="10" fill="#F7F9FB" stroke="#1F3A5F" stroke-width="2"/>
+  <rect x="8" y="8" width="256" height="40" rx="10" fill="#1F3A5F" stroke="#1F3A5F" stroke-width="0"/>
+  <text x="22" y="35" font-family="Verdana, DejaVu Sans, sans-serif" font-size="18" fill="#FFFFFF" font-weight="bold">Caso base</text>
+  <text x="22" y="88" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#1F2933">la instancia más simple,</text>
+  <text x="22" y="116" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#1F2933">sin una nueva invocación</text>
+  <rect x="272" y="8" width="256" height="196" rx="10" fill="#F7F9FB" stroke="#D9822B" stroke-width="2"/>
+  <rect x="272" y="8" width="256" height="40" rx="10" fill="#D9822B" stroke="#D9822B" stroke-width="0"/>
+  <text x="286" y="35" font-family="Verdana, DejaVu Sans, sans-serif" font-size="18" fill="#FFFFFF" font-weight="bold">Caso recursivo</text>
+  <text x="286" y="88" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#1F2933">reduce el problema</text>
+  <text x="286" y="116" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#1F2933">y se invoca a sí mismo</text>
+  <rect x="536" y="8" width="256" height="196" rx="10" fill="#F7F9FB" stroke="#2E7D32" stroke-width="2"/>
+  <rect x="536" y="8" width="256" height="40" rx="10" fill="#2E7D32" stroke="#2E7D32" stroke-width="0"/>
+  <text x="550" y="35" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#FFFFFF" font-weight="bold">s(N)</text>
+  <text x="550" y="88" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#1F2933">el sucesor de N:</text>
+  <text x="550" y="116" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#1F2933">un término, no un número</text>
+  <rect x="8" y="216" width="256" height="196" rx="10" fill="#F7F9FB" stroke="#1F3A5F" stroke-width="2"/>
+  <rect x="8" y="216" width="256" height="40" rx="10" fill="#1F3A5F" stroke="#1F3A5F" stroke-width="0"/>
+  <text x="22" y="243" font-family="Verdana, DejaVu Sans, sans-serif" font-size="18" fill="#FFFFFF" font-weight="bold">Terminación</text>
+  <text x="22" y="296" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#1F2933">una magnitud se reduce</text>
+  <text x="22" y="324" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#1F2933">en cada llamada, y el</text>
+  <text x="22" y="352" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#1F2933">caso base es alcanzable</text>
+  <rect x="272" y="216" width="256" height="196" rx="10" fill="#F7F9FB" stroke="#D9822B" stroke-width="2"/>
+  <rect x="272" y="216" width="256" height="40" rx="10" fill="#D9822B" stroke="#D9822B" stroke-width="0"/>
+  <text x="286" y="243" font-family="Verdana, DejaVu Sans, sans-serif" font-size="18" fill="#FFFFFF" font-weight="bold">Verificar y generar</text>
+  <text x="286" y="296" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#1F2933">el mismo predicado,</text>
+  <text x="286" y="324" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#1F2933">según qué argumentos</text>
+  <text x="286" y="352" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#1F2933">lleguen instanciados</text>
+  <rect x="536" y="216" width="256" height="196" rx="10" fill="#F7F9FB" stroke="#2E7D32" stroke-width="2"/>
+  <rect x="536" y="216" width="256" height="40" rx="10" fill="#2E7D32" stroke="#2E7D32" stroke-width="0"/>
+  <text x="550" y="243" font-family="Verdana, DejaVu Sans, sans-serif" font-size="18" fill="#FFFFFF" font-weight="bold">Orden en el cuerpo</text>
+  <text x="550" y="296" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#1F2933">la reducción va antes</text>
+  <text x="550" y="324" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#1F2933">de la llamada recursiva</text>
+</svg>

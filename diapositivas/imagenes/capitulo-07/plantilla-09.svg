@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" width="960" height="480">
+  <title>Plantilla 9, recorrer una lista: el caso base es la lista vacía; el caso recursivo procesa el primer elemento y sigue con el resto</title>
+  <rect x="0" y="0" width="960" height="480" fill="#FFFFFF"/>
+  <rect x="10.0" y="16.0" width="520.0" height="108.0" rx="12" fill="#E3F1E4" stroke="#2E7D32" stroke-width="3"/>
+  <text x="34.0" y="58.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">p([]) :-</text>
+  <text x="34.0" y="92.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">    caso_de_la_lista_vacia.</text>
+  <rect x="10.0" y="146.0" width="520.0" height="142.0" rx="12" fill="#FCE8D2" stroke="#D9822B" stroke-width="3"/>
+  <text x="34.0" y="188.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">p([Primero|Resto]) :-</text>
+  <text x="34.0" y="222.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">    procesar(Primero),</text>
+  <text x="34.0" y="256.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">    p(Resto).</text>
+  <text x="560.0" y="52.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="24" fill="#2E7D32" text-anchor="start" xml:space="preserve" font-weight="bold">caso base</text>
+  <text x="560.0" y="86.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">la lista vacía</text>
+  <text x="560.0" y="182.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="24" fill="#D9822B" text-anchor="start" xml:space="preserve" font-weight="bold">caso recursivo</text>
+  <text x="560.0" y="216.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">procesa el primero</text>
+  <text x="560.0" y="243.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">y sigue con el resto</text>
+  <rect x="10.0" y="310.0" width="940.0" height="98.0" rx="10" fill="#F1F3F5"/>
+  <text x="34.0" y="352.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">A veces el caso base es un hecho; otras veces</text>
+  <text x="34.0" y="386.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">no hace falta escribirlo.</text>
+</svg>

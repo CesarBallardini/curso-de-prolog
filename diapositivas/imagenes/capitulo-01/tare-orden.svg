@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360" width="520" height="360">
+  <title>El orden de las respuestas de antepasado(tare, Quien): primero los tres hijos (1 a 3), después los cuatro nietos (4 a 7)</title>
+  <rect x="0" y="0" width="520" height="360" fill="#FFFFFF"/>
+  <g stroke="#1F3A5F" stroke-width="3">
+    <line x1="260" y1="62" x2="165" y2="138"/>
+    <line x1="260" y1="62" x2="280" y2="138"/>
+    <line x1="260" y1="62" x2="400" y2="138"/>
+    <line x1="165" y1="182" x2="120" y2="258"/>
+    <line x1="400" y1="182" x2="300" y2="258"/>
+    <line x1="400" y1="182" x2="385" y2="258"/>
+    <line x1="400" y1="182" x2="470" y2="258"/>
+  </g>
+  <line x1="50" y1="182" x2="110" y2="258" stroke="#C9D3DE" stroke-width="3" stroke-dasharray="8 6"/>
+  <rect x="215" y="18" width="90" height="44" rx="22" fill="#1F3A5F"/>
+  <rect x="12" y="138" width="76" height="44" rx="22" fill="#F1F3F5" stroke="#C9D3DE" stroke-width="2"/>
+  <g fill="#FCE8D2" stroke="#D9822B" stroke-width="2">
+    <rect x="120" y="138" width="90" height="44" rx="22"/>
+    <rect x="240" y="138" width="80" height="44" rx="22"/>
+    <rect x="360" y="138" width="80" height="44" rx="22"/>
+  </g>
+  <g fill="#E3F1E4" stroke="#2E7D32" stroke-width="2">
+    <rect x="80" y="258" width="80" height="44" rx="22"/>
+    <rect x="262" y="258" width="76" height="44" rx="22"/>
+    <rect x="347" y="258" width="76" height="44" rx="22"/>
+    <rect x="432" y="258" width="76" height="44" rx="22"/>
+  </g>
+  <g font-family="Consolas, DejaVu Sans Mono, monospace" font-size="19" text-anchor="middle" fill="#1F2933">
+    <text x="260" y="46" fill="#FFFFFF" font-weight="bold">tare</text>
+    <text x="50" y="166" fill="#9AA5B1">sara</text>
+    <text x="165" y="166">abraham</text>
+    <text x="280" y="166">nacor</text>
+    <text x="400" y="166">haran</text>
+    <text x="120" y="286">isaac</text>
+    <text x="300" y="286">lot</text>
+    <text x="385" y="286">milca</text>
+    <text x="470" y="286">isca</text>
+  </g>
+  <g fill="#D9822B">
+    <circle cx="206" cy="136" r="14"/><circle cx="316" cy="136" r="14"/><circle cx="436" cy="136" r="14"/>
+  </g>
+  <g fill="#2E7D32">
+    <circle cx="156" cy="256" r="14"/><circle cx="334" cy="256" r="14"/><circle cx="419" cy="256" r="14"/>
+    <circle cx="504" cy="256" r="14"/>
+  </g>
+  <g font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+    <text x="206" y="141">1</text><text x="316" y="141">2</text><text x="436" y="141">3</text>
+    <text x="156" y="261">4</text><text x="334" y="261">5</text><text x="419" y="261">6</text><text x="504" y="261">7</text>
+  </g>
+  <g font-family="Verdana, DejaVu Sans, sans-serif" font-size="19" font-weight="bold">
+    <text x="12" y="112" fill="#D9822B">hijos</text>
+    <text x="12" y="340" fill="#2E7D32">nietos</text>
+  </g>
+</svg>

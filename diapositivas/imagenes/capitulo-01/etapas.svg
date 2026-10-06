@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <title>Las tres cláusulas de etapa/2 como tres casos que no se superponen, examinados de arriba hacia abajo: bebe, chico y adulto</title>
+  <rect x="0" y="0" width="400" height="400" fill="#FFFFFF"/>
+  <line x1="28" y1="24" x2="28" y2="366" stroke="#9AA5B1" stroke-width="4"/>
+  <polygon points="16,362 28,388 40,362" fill="#9AA5B1"/>
+  <text transform="translate(18 205) rotate(-90)" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#52606D" text-anchor="middle">orden de las cláusulas</text>
+  <rect x="50" y="18" width="340" height="110" rx="10" fill="#FCE8D2" stroke="#D9822B" stroke-width="2"/>
+  <rect x="50" y="143" width="340" height="110" rx="10" fill="#E3F1E4" stroke="#2E7D32" stroke-width="2"/>
+  <rect x="50" y="268" width="340" height="110" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <g font-family="Verdana, DejaVu Sans, sans-serif">
+    <text x="68" y="52" font-size="22" font-weight="bold" fill="#D9822B">bebe</text>
+    <text x="68" y="177" font-size="22" font-weight="bold" fill="#2E7D32">chico</text>
+    <text x="68" y="302" font-size="22" font-weight="bold" fill="#1F3A5F">adulto</text>
+    <g font-size="14" fill="#52606D" text-anchor="end">
+      <text x="376" y="50">cláusula 1</text>
+      <text x="376" y="175">cláusula 2</text>
+      <text x="376" y="300">cláusula 3</text>
+    </g>
+    <g font-size="17" fill="#1F2933">
+      <text x="68" y="115">sofia</text>
+      <text x="68" y="240">luis, eva</text>
+      <text x="68" y="365">juan, ana, pedro</text>
+    </g>
+  </g>
+  <g font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#1F2933">
+    <text x="68" y="84">A &lt; 4</text>
+    <text x="68" y="209">A &gt;= 4, A &lt; 18</text>
+    <text x="68" y="334">A &gt;= 18</text>
+  </g>
+</svg>

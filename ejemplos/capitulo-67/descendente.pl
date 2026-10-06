@@ -144,7 +144,9 @@ buscar(D, C, E-Negs-M-L, R, N0, N) :-
         N = N0
     ).
 
-% cubre_ejemplo(E, M, C): la cláusula C cubre el ejemplo E.
+%!  cubre_ejemplo(+E, +M:list, +C) is semidet.
+%
+%   La cláusula C cubre el ejemplo E en el modelo M.
 cubre_ejemplo(E, M, C) :-
     cubre(C, E, M).
 
@@ -184,7 +186,9 @@ cubrir_desc([E|Es], Negs, M, L, Max, [C|H], N0, N) :-
     ),
     cubrir_desc(Resto, Negs, M, L, Max, H, N1, N).
 
-% cubierto_por(C, M, E): la cláusula C cubre el ejemplo E.
+%!  cubierto_por(+C, +M:list, +E) is semidet.
+%
+%   La cláusula C cubre el ejemplo E en el modelo M.
 cubierto_por(C, M, E) :-
     cubre(C, E, M).
 

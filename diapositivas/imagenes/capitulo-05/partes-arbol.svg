@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" width="960" height="480">
+  <title>Partes de un árbol de derivación: los nodos son consultas, los arcos llevan la cláusula y la sustitución, la consulta vacía es un éxito y un objetivo sin cabeza que unifique es una falla</title>
+  <rect x="0" y="0" width="960" height="480" fill="#FFFFFF"/>
+  <rect x="76.3" y="23.8" width="247.5" height="42.4" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="200.0" y="52.5" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">abuelo(juan, Quien)</text>
+  <line x1="200.0" y1="66.0" x2="200.0" y2="150.0" stroke="#1F3A5F" stroke-width="3"/>
+  <text x="212.0" y="98.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">R4. θ₁ =</text>
+  <text x="212.0" y="124.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">{ A/juan, N/Quien }</text>
+  <rect x="99.4" y="150.7" width="201.2" height="70.7" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="200.0" y="179.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">padre(juan, P),</text>
+  <text x="200.0" y="207.6" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">padre(P, Quien)</text>
+  <line x1="150.0" y1="221.0" x2="120.0" y2="298.0" stroke="#9AA5B1" stroke-width="2" stroke-dasharray="3 5"/>
+  <line x1="250.0" y1="221.0" x2="330.0" y2="286.0" stroke="#9AA5B1" stroke-width="2" stroke-dasharray="3 5"/>
+  <rect x="7.8" y="298.8" width="224.4" height="42.4" rx="10" fill="#FBE4E2" stroke="#B3261E" stroke-width="3"/>
+  <text x="120.0" y="327.5" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">padre(ana, Quien)</text>
+  <line x1="120.0" y1="341.0" x2="120.0" y2="378.0" stroke="#B3261E" stroke-width="3"/>
+  <circle cx="120" cy="395" r="16" fill="#B3261E"/>
+  <path d="M 112.8 387.8 L 127.2 402.2 M 127.2 387.8 L 112.8 402.2" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="245.0" y="286.0" width="210.0" height="64.0" rx="12" fill="#E3F1E4" stroke="#2E7D32" stroke-width="3"/>
+  <text x="350.0" y="325.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#2E7D32" text-anchor="middle" xml:space="preserve" font-weight="bold">consulta vacía</text>
+  <line x1="484.0" y1="27.0" x2="336.0" y2="45.0" stroke="#9AA5B1" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <circle cx="332" cy="45" r="4" fill="#9AA5B1"/>
+  <text x="494.0" y="34.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="22" fill="#1F3A5F" text-anchor="start" xml:space="preserve" font-weight="bold">nodo</text>
+  <text x="494.0" y="62.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">los objetivos que faltan probar</text>
+  <line x1="484.0" y1="107.0" x2="322.0" y2="92.0" stroke="#9AA5B1" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <circle cx="318" cy="92" r="4" fill="#9AA5B1"/>
+  <text x="494.0" y="114.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="22" fill="#1F3A5F" text-anchor="start" xml:space="preserve" font-weight="bold">arco</text>
+  <text x="494.0" y="142.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">la cláusula usada y la sustitución</text>
+  <line x1="484.0" y1="187.0" x2="444.0" y2="124.0" stroke="#9AA5B1" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <circle cx="440" cy="124" r="4" fill="#9AA5B1"/>
+  <text x="494.0" y="194.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#1F3A5F" text-anchor="start" xml:space="preserve" font-weight="bold">θ = { Variable/valor }</text>
+  <text x="494.0" y="222.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">la variable toma ese valor</text>
+  <line x1="484.0" y1="297.0" x2="466.0" y2="318.0" stroke="#9AA5B1" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <circle cx="462" cy="318" r="4" fill="#9AA5B1"/>
+  <text x="494.0" y="304.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="22" fill="#1F3A5F" text-anchor="start" xml:space="preserve" font-weight="bold">hoja de éxito</text>
+  <text x="494.0" y="332.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">la consulta vacía: una respuesta</text>
+  <line x1="484.0" y1="387.0" x2="148.0" y2="395.0" stroke="#9AA5B1" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <circle cx="144" cy="395" r="4" fill="#9AA5B1"/>
+  <text x="494.0" y="394.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="22" fill="#1F3A5F" text-anchor="start" xml:space="preserve" font-weight="bold">hoja de falla</text>
+  <text x="494.0" y="422.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">ninguna cabeza unifica</text>
+</svg>

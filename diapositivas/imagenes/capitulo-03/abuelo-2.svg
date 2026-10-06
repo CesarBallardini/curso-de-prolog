@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 490" width="960" height="490">
+  <title>Paso 2: varon(juan) se cumple, y progenitor(juan, P) se prueba con padre(juan, ana): P queda ligada a ana</title>
+  <defs>
+    <marker id="a-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1F2933"/></marker>
+    <marker id="a-navy" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1F3A5F"/></marker>
+    <marker id="a-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#D9822B"/></marker>
+    <marker id="a-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2E7D32"/></marker>
+    <marker id="a-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#C62828"/></marker>
+    <marker id="a-grey" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#9AA5B1"/></marker>
+  </defs>
+  <rect x="0" y="0" width="960" height="490" fill="#FFFFFF"/>
+  <text x="40.0" y="44.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="26" fill="#1F2933" text-anchor="start" font-weight="bold" xml:space="preserve">?- abuelo(juan, Quien).</text>
+  <rect x="30.0" y="70.0" width="470.0" height="196.0" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <rect x="44.0" y="83.0" width="442.0" height="38.0" rx="6" fill="#E3F1E4" stroke="#2E7D32" stroke-width="3"/>
+  <text x="58.0" y="110.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="23" fill="#1F2933" text-anchor="start" xml:space="preserve">abuelo(A, N) :-</text>
+  <path d="M454.8,102.0 L460.4,107.6 L470.0,94.8" fill="none" stroke="#2E7D32" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="44.0" y="125.0" width="442.0" height="38.0" rx="6" fill="#E3F1E4" stroke="#2E7D32" stroke-width="3"/>
+  <text x="108.6" y="152.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="23" fill="#1F2933" text-anchor="start" xml:space="preserve">varon(A),</text>
+  <path d="M454.8,144.0 L460.4,149.6 L470.0,136.8" fill="none" stroke="#2E7D32" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="44.0" y="167.0" width="442.0" height="38.0" rx="6" fill="#FCE8D2" stroke="#D9822B" stroke-width="3"/>
+  <text x="108.6" y="194.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="23" fill="#1F2933" text-anchor="start" xml:space="preserve">progenitor(A, P),</text>
+  <text x="108.6" y="236.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="23" fill="#1F2933" text-anchor="start" xml:space="preserve">progenitor(P, N).</text>
+  <rect x="30.0" y="284.0" width="470.0" height="188.0" rx="8" fill="#F1F3F5" stroke="#F1F3F5" stroke-width="1"/>
+  <text x="46.0" y="310.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#52606D" text-anchor="start" font-weight="bold" xml:space="preserve">subobjetivos</text>
+  <text x="46.0" y="344.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="19" fill="#1F2933" text-anchor="start" xml:space="preserve">progenitor(juan, P)</text>
+  <text x="46.0" y="374.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="19" fill="#1F2933" text-anchor="start" xml:space="preserve">1.ª cláusula: padre(juan, P)</text>
+  <text x="46.0" y="404.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="19" fill="#2E7D32" text-anchor="start" xml:space="preserve">padre(juan, ana)  →  P = ana</text>
+  <text x="560.0" y="96.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="16" fill="#52606D" text-anchor="start" font-weight="bold" xml:space="preserve">variables</text>
+  <text x="580.0" y="139.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="23" fill="#1F3A5F" text-anchor="start" font-weight="bold" xml:space="preserve">A</text>
+  <rect x="680.0" y="112.0" width="140.0" height="38.0" rx="19" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2.5"/>
+  <text x="750.0" y="138.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F3A5F" text-anchor="middle" font-weight="bold" xml:space="preserve">juan</text>
+  <text x="580.0" y="191.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="23" fill="#1F3A5F" text-anchor="start" font-weight="bold" xml:space="preserve">P</text>
+  <rect x="680.0" y="164.0" width="140.0" height="38.0" rx="19" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2.5"/>
+  <text x="750.0" y="190.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F3A5F" text-anchor="middle" font-weight="bold" xml:space="preserve">ana</text>
+  <text x="580.0" y="243.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="23" fill="#1F3A5F" text-anchor="start" font-weight="bold" xml:space="preserve">N</text>
+  <rect x="680.0" y="216.0" width="140.0" height="38.0" rx="19" fill="#FFFFFF" stroke="#1F3A5F" stroke-width="2" stroke-dasharray="6 4"/>
+  <text x="750.0" y="241.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#1F3A5F" text-anchor="middle" font-style="italic" xml:space="preserve">libre</text>
+  <text x="580.0" y="295.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="23" fill="#1F3A5F" text-anchor="start" font-weight="bold" xml:space="preserve">Quien</text>
+  <rect x="680.0" y="268.0" width="140.0" height="38.0" rx="19" fill="#FFFFFF" stroke="#1F3A5F" stroke-width="2" stroke-dasharray="6 4"/>
+  <text x="750.0" y="293.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#1F3A5F" text-anchor="middle" font-style="italic" xml:space="preserve">libre</text>
+  <path d="M832,235 Q852,235 852,261 Q852,287 832,287" fill="none" stroke="#D9822B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="862.0" y="256.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#D9822B" text-anchor="start" font-weight="bold" xml:space="preserve">la misma</text>
+  <text x="862.0" y="276.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#D9822B" text-anchor="start" font-weight="bold" xml:space="preserve">variable</text>
+  <text x="560.0" y="346.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#1F2933" text-anchor="start" xml:space="preserve">varon(juan) se cumple.</text>
+  <text x="560.0" y="371.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#1F2933" text-anchor="start" xml:space="preserve">El primer hijo de juan es ana.</text>
+</svg>

@@ -2,10 +2,14 @@
 
 :- begin_tests(generar_datos).
 
+% aggregate_all/3, que agrega las soluciones de un objetivo,
+% se presenta en el capítulo 17.
 test(cinco_mil_alumnos, true(N == 5000)) :-
     generar(5000),
     aggregate_all(count, alumno(_, _, _, _), N).
 
+% findall/3, que reúne las soluciones en una lista,
+% se presenta en el capítulo 17.
 test(las_dos_versiones_responden_lo_mismo, true(M1 == M2)) :-
     generar(500),
     findall(M, aprobada_lenta(alumno_250, M), M1),

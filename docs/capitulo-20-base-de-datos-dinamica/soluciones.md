@@ -523,4 +523,4 @@ las cambia: ese predicado borra el promedio guardado del alumno. La prueba
 `sin_invalidar` cambia la nota directamente, con `retract/1` y `assertz/1`, y
 `promedio_memo/2` responde el valor viejo, 8.5. La memoria es correcta solo si
 **todo** cambio de los datos pasa por el predicado que la invalida: otra razón
-para el Patrón 19.
+para el [Patrón 19](../patrones.md#19-estado-detras-de-una-interfaz).

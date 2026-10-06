@@ -60,4 +60,16 @@ test(evaluaciones, [true(N1-N2 == 2539-179)]) :-
     evaluaciones(contado_nombre, "nesimo 10 fibs", N1),
     evaluaciones(contado_necesidad, "nesimo 10 fibs", N2).
 
+test(lam_con, [true(V == 120)]) :-
+    lam_con(cond, "fact 5", V).
+
+test(ejecutar_con, [true(V == 120)]) :-
+    ejecutar_con(z, "z f 5", V).
+
+test(suma_cuadrados_pares_vacia, [true(S == 0)]) :-
+    suma_cuadrados_pares(1, S).
+
+test(desazucar_sin_searec, [true(D == ap(id(f), num(1)))]) :-
+    desazucar(ap(id(f), num(1)), D).
+
 :- end_tests(soluciones).

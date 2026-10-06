@@ -74,4 +74,51 @@ test(ganar, [C0, C8] == [nunca, 49]) :-
     ciclos_para_ganar(0, C0),
     ciclos_para_ganar(800, C8).
 
+% cargar_con/5 con el orden de propagar/6 reúne el mismo conjunto que
+% reconocer_rete/3.
+test(cargar_con) :-
+    red_de(pares, Red),
+    cargar_con(@>=, activar_derecha(mas), Red, [p(1), p(2)], Rete),
+    conjunto_rete(Rete, Is),
+    reconocer_rete(pares, [p(1), p(2)], Is1),
+    Is =@= Is1.
+
+% entrar_con/6 da al hecho el sello S0 y devuelve el siguiente.
+test(entrar_con, [S, Is] == [2, [instanciacion(par, [1, 1], 2,
+                                               [agregar(par(1, 1))])]]) :-
+    red_de(pares, Red),
+    rete_vacio(Red, R0),
+    entrar_con(@>=, activar_derecha(mas), Red, p(1), R0-1, R-S),
+    conjunto_rete(R, Is).
+
+% siempre_derecha/5 activa el nodo aunque el padre no tenga tokens; sin
+% tokens en el padre, no produce ninguno.
+test(siempre_derecha, T == []) :-
+    compilar_red(pasos, [r :: [p(X), q(X)] ---> []], Red),
+    rete_vacio(Red, R0),
+    siempre_derecha(1, Red, 2-alfa(q(a), []), R0, R),
+    tokens(2, R, T).
+
+% sin_registro/7 se detiene en el límite.
+test(sin_registro_limite, R == limite(3)) :-
+    red_de(reingreso, Red),
+    cargar(Red, [], Mt, Rete),
+    sin_registro(Red, orden, 3, 0, Mt-Rete, _, R).
+
+% con_cambios/6 escribe una línea por ciclo hasta nada_aplicable.
+test(con_cambios, [R, N] == [nada_aplicable, 2]) :-
+    red_de(familia, Red),
+    cargar(Red, [padre(juan, ana)], Mt, Rete),
+    with_output_to(string(S),
+                   con_cambios(Red, orden, 1, [], Mt-Rete, R)),
+    aggregate_all(count, sub_string(S, _, _, _, "entran"), N).
+
+% forzar/2 lleva cada prueba al patrón anterior, aunque mire otro hecho.
+test(forzar, Ps == [alfa(p(X), []), alfa(q(Y), [X < Y])]) :-
+    forzar([p(X), q(Y), {X < Y}], Ps).
+
+% pasos_forzados/2 separa antes la conjunción.
+test(pasos_forzados, Ps == [alfa(q(X, Y), [Y > 2, X \== Y]), no(r(X))]) :-
+    pasos_forzados([q(X, Y), {Y > 2, X \== Y}, no(r(X))], Ps).
+
 :- end_tests(soluciones).

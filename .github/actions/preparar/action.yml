@@ -1,0 +1,76 @@
+# The setup every workflow of the course shares: uv with the locked
+# dependencies, SWI-Prolog 9 from the runner's own archive, the reif pack, and,
+# when asked, the Chromium that prints the PDFs and checks the formulas.
+name: Preparar el entorno del curso
+description: uv, SWI-Prolog 9.2.9, el pack reif y, opcionalmente, Chromium.
+
+inputs:
+  chromium:
+    description: Install the Chromium that Playwright drives (PDFs and KaTeX).
+    default: 'false'
+
+runs:
+  using: composite
+  steps:
+    - name: Install uv
+      # Pinned to a full version on purpose: setup-uv stopped publishing
+      # floating major tags after v7, so `@v10` does not resolve.
+      uses: astral-sh/setup-uv@v10.1.0
+      with:
+        enable-cache: true
+
+    # --frozen everywhere: the build uses exactly uv.lock, and a lockfile out
+    # of sync with pyproject.toml fails here instead of resolving silently.
+    - name: Install dependencies
+      shell: bash
+      run: uv sync --frozen
+
+    # The examples are loaded and tested with the same swipl the author uses,
+    # 9.2.9, which is what Ubuntu 26.04 carries in universe (the workflows pin
+    # `runs-on: ubuntu-26.04` for that reason).
+    #
+    # The version is not an implementation detail here. SWI-Prolog 10 changed
+    # clause indexing, and with it which queries leave a choice point, which
+    # is exactly what the transcripts of part I show: `abuelo(juan, luis)`
+    # answers `true ; false.` under 9 and `true.` under 10, and
+    # `gusta(Quien, prolog)` does the reverse. The book states in its writing
+    # criteria that it shows the answers of SWI-Prolog 9, so this is the
+    # version that has to run here.
+    #
+    # It no longer comes from ppa:swi-prolog/stable: that PPA publishes only
+    # 10 now, and removed its last 9.2.9 build for noble in February 2026.
+    #
+    # python3-dev is for chapter 29: the janus-swi package builds against the
+    # headers of this Python and of this swipl.
+    #
+    # swi-prolog-odbc and libsqliteodbc are for chapter 42: library(odbc) is
+    # packaged apart from swi-prolog-nox, and libsqliteodbc is the SQLite
+    # driver, registered with unixODBC as SQLite3. Without them the chapter's
+    # ODBC tests are blocked instead of run.
+    - name: Install SWI-Prolog
+      shell: bash
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y swi-prolog-nox swi-prolog-odbc libsqliteodbc python3-dev
+        swipl --version
+
+    # A jump to SWI-Prolog 10 would not break any of the steps that follow: it
+    # would quietly turn six of the book's transcripts into failures, reported
+    # as if the text were the thing that was wrong. Fail here instead, where
+    # the cause is written down.
+    - name: Check that it is SWI-Prolog 9
+      shell: bash
+      run: |
+        swipl -q -t halt -g 'current_prolog_flag(version, V), ( V >= 90000, V < 100000 -> true ; format(user_error, "this book shows the answers of SWI-Prolog 9; this is ~w~n", [V]), halt(1) )'
+
+    # Chapter 15 teaches if_/3 from library(reif), a pack. It has no licence
+    # of its own, so it cannot be copied into the repository: it is installed
+    # here, as each reader installs it (section 15.9).
+    - name: Install the reif pack
+      shell: bash
+      run: swipl -g "pack_install(reif, [interactive(false)])" -t halt
+
+    - name: Chromium for the PDFs and the formulas
+      if: inputs.chromium == 'true'
+      shell: bash
+      run: uv run --frozen playwright install --with-deps chromium

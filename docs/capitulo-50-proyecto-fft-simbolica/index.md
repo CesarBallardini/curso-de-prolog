@@ -6,14 +6,25 @@ $p(x) = a_0 + a_1 x + \cdots + a_{n-1} x^{n-1}$ en las $n$ potencias de una
 raíz $n$-ésima de la unidad. Calculada según la definición, cuesta del
 orden de $n^2$ operaciones; la **transformada rápida** (FFT, por *Fast
 Fourier Transform*) obtiene los mismos valores con del orden de
-$n \log_2 n$. Este capítulo no programa la transformada rápida a partir de
-su descripción habitual, con arreglos y el reordenamiento de sus
-elementos: la **deriva**. El programa trabaja con expresiones simbólicas,
+$n \log_2 n$, como mostraron Cooley y Tukey en 1965. Este capítulo no
+programa la transformada rápida a partir de su descripción habitual, con
+arreglos y el reordenamiento de sus elementos: la **deriva**. El programa trabaja con expresiones simbólicas,
 sin evaluar ningún número: construye la expresión de cada salida, la
 simplifica con las propiedades de las raíces de la unidad, y reúne en un
 solo grafo las subexpresiones que las salidas comparten. El grafo que
 resulta es el de la transformada rápida, con su forma característica de
 mariposa, y la cantidad de operaciones se mide en cada paso.
+
+![Diagrama de flujo de datos: las entradas x[0], x[2], x[4] y x[6] entran a una transformada de N/2 puntos y x[1], x[3], x[5] y x[7] a otra; sus salidas E[0] a E[3] y O[0] a O[3] se cruzan en mariposas, multiplicadas por factores W, y dan las salidas X[0] a X[7]](mariposa-fft.png){ style="background-color: white" }
+
+La transformada rápida de orden 8 en una etapa: los coeficientes de lugar
+par y los de lugar impar pasan por dos transformadas de orden 4, y cada
+salida combina un resultado de cada una, el segundo multiplicado por una
+potencia de la raíz de la unidad. Las líneas que se cruzan forman las
+mariposas. Es el grafo que el capítulo obtiene sin dibujarlo de antemano,
+solo reuniendo las subexpresiones comunes. Imagen: Yangwenbo99,
+[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/), vía
+[Wikimedia Commons](https://commons.wikimedia.org/wiki/File:DIT-FFT-butterfly.svg).
 
 El programa crece en cinco versiones, una por sección. Reutiliza, sin
 copiarlos, el producto de matrices con símbolos del
@@ -349,8 +360,9 @@ una calcula lo aprovecha otra.
 ## 50.4 La recursión sobre las mitades
 
 La descomposición en la que se basa la transformada rápida, que Clocksin
-atribuye a Danielson y Lanczos, separa los coeficientes de lugar par de los
-de lugar impar:
+atribuye a Danielson y Lanczos, y que *Numerical Recipes* presenta como
+punto de partida de la FFT, separa los coeficientes de lugar par de los de
+lugar impar:
 
 $$p(x) = p_{\mathit{par}}(x^2) + x \, p_{\mathit{impar}}(x^2),$$
 
@@ -487,7 +499,9 @@ operacion(E, Op, A, B) :-
 `agregar/3` visita los hijos antes de buscar al padre. Por eso un nodo
 entra al diccionario después de sus hijos, y `numerar/2` le da un número
 mayor: la lista de nodos queda en un orden en el que cada operación viene
-después de sus operandos, el orden en que se pueden calcular. Una vez
+después de sus operandos, el orden en que se pueden calcular. Es la
+construcción del grafo de una expresión que los compiladores usan para
+eliminar subexpresiones comunes, y que Clocksin remite a Aho y Ullman. Una vez
 numerado el diccionario, `nodos/3` lo recorre y reemplaza en cada operación
 las subexpresiones hijas por sus números, que vuelve a pedir a `buscar/3`;
 como ya están, `buscar/3` las encuentra sin agregar nada:
@@ -698,7 +712,7 @@ El [ejercicio 8](#ejercicios) reduce ese precio.
     | C4 | ningún predicado `det` deja alternativas pendientes; `costo/4` es `nondet` solo con la versión libre, y la indexación por el primer argumento lo hace determinista con la versión dada |
     | C5 | `simplificar_raices/3` y `grafo/3` producen un error de instanciación si reciben una expresión con variables, que en `grafo/3` unificaría con cualquier clave de `buscar/3`; `fft_arboles/2` produce un error de dominio si $n$ no es una potencia de 2 |
     | C6 | todo el núcleo es puro: las expresiones, los grafos y los valores son términos; solo `tabla_de_costos/1`, `fft_ejemplo/1`, `listar_grafo/1` y `mermaid_grafo/1` escriben |
-    | C7 | 36 pruebas en seis archivos; cada versión se compara con `definicion/2` con coeficientes reales y complejos, y los costos de orden 8 son los de *Clause and Effect* |
+    | C7 | 85 pruebas en seis archivos; cada versión se compara con `definicion/2` con coeficientes reales y complejos, y los costos de orden 8 son los de *Clause and Effect* |
 
 ## Ejercicios
 
@@ -811,6 +825,30 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
   Es el artículo que el caso de estudio anterior resume: el origen del
   método de derivar la transformada rápida a partir de la ingenua; el
   capítulo lo conoce a través del libro.
+
+- James W. Cooley y John W. Tukey, «An algorithm for the machine
+  calculation of complex Fourier series», *Mathematics of Computation*
+  19 (90), 1965, págs. 297–301.
+  [Edición de la AMS](https://www.ams.org/journals/mcom/1965-19-090/S0025-5718-1965-0178586-1/).
+  Es el artículo que da a conocer la transformada rápida: factoriza la suma
+  cuando el orden es compuesto y obtiene, para un orden potencia de 2,
+  menos de $2n \log_2 n$ operaciones. El capítulo toma de él la cota
+  $n \log_2 n$ con la que compara sus versiones; la descomposición en
+  índices pares e impares es su caso de factor 2.
+- William H. Press, Saul A. Teukolsky, William T. Vetterling y Brian P.
+  Flannery, *Numerical Recipes in C: The Art of Scientific Computing*,
+  Cambridge University Press, 2.ª edición, 1992 — el capítulo «Fast
+  Fourier Transform», apartado «Fast Fourier Transform (FFT)».
+  [Edición en línea de los autores](https://numerical.recipes/). Es la
+  obra a la que Clocksin remite para los métodos habituales de la
+  transformada, con el lema de Danielson y Lanczos y el reordenamiento de
+  los elementos que este capítulo evita.
+- Alfred V. Aho y Jeffrey D. Ullman, *Principles of Compiler Design*,
+  Addison-Wesley, 1977 — la construcción del grafo dirigido acíclico de una
+  expresión para reunir sus subexpresiones comunes. Es la fuente que
+  Clocksin cita para esa técnica, que `grafo/3` aplica en la
+  [sección 50.5](#505-las-subexpresiones-comunes-un-grafo). No tiene
+  edición en línea gratuita.
 
 El código del capítulo es propio, escrito para el curso: el grafo se
 construye con el diccionario incompleto del curso en lugar de la lista

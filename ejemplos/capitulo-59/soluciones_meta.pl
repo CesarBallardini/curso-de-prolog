@@ -132,7 +132,8 @@ tipo(Pares, I, Tipo) :-
 %
 %   Cuerpo llama como meta a la variable V con Extra argumentos más:
 %   directamente, dentro de una construcción de control o como argumento de
-%   una metallamada.
+%   una metallamada. Como en llamado_por_meta/2, distinct/2 descarta lo que
+%   dos cláusulas de meta_argumento/3 repiten.
 variable_llamada(G, V, Extra) :-
     (   var(G)
     ->  V = G,
@@ -140,7 +141,7 @@ variable_llamada(G, V, Extra) :-
     ;   partes_de_control(G, Partes)
     ->  member(P, Partes),
         variable_llamada(P, V, Extra)
-    ;   meta_argumento(G, A, E0),
+    ;   distinct(A-E0, meta_argumento(G, A, E0)),
         (   var(A)
         ->  V = A,
             Extra = E0

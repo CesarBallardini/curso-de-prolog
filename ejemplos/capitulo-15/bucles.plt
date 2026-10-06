@@ -2,6 +2,7 @@
 
 :- begin_tests(bucles).
 
+% with_output_to/2, que captura la salida, se presenta en el capítulo 27.
 test(listar_las_tres_edades, true(S == "juan: 68\nana: 41\nluis: 12\n")) :-
     with_output_to(string(S), listar_edades).
 

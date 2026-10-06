@@ -1,0 +1,958 @@
+server(started, 1790765970).
+/*Wed Sep 30 08:05:33 2026*/ request(1, 1790766333.136, [peer(ip(10,1,0,14)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(1, 0.045528, 98, 200, ok).
+/*Wed Sep 30 08:05:58 2026*/ request(2, 1790766358.902, [peer(ip(10,1,0,14)),method(get),request_uri('/alumnos/114'),path('/alumnos/114'),http_version(1-1),host(localhost),port(8083)]).
+completed(2, 0.002995, 183, 200, ok).
+/*Wed Sep 30 08:06:38 2026*/ request(3, 1790766398.245, [peer(ip(10,1,0,14)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(3, 0.002526, 412, 200, ok).
+/*Wed Sep 30 08:06:49 2026*/ request(4, 1790766409.208, [peer(ip(10,1,0,14)),method(get),request_uri('/materias/fisica/promedio'),path('/materias/fisica/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(4, 0.001338, 43, 200, ok).
+/*Wed Sep 30 08:07:15 2026*/ request(5, 1790766435.064, [peer(ip(10,1,0,14)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(5, 0.002305, 17, 200, ok).
+/*Wed Sep 30 08:07:20 2026*/ request(6, 1790766440.214, [peer(ip(10,1,0,14)),method(get),request_uri('/materias/algebra/promedio'),path('/materias/algebra/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(6, 0.001180, 45, 200, ok).
+/*Wed Sep 30 08:07:36 2026*/ request(7, 1790766456.280, [peer(ip(10,1,0,14)),method(get),request_uri('/alumnos/114'),path('/alumnos/114'),http_version(1-1),host(localhost),port(8083)]).
+completed(7, 0.002176, 180, 200, ok).
+/*Wed Sep 30 08:19:21 2026*/ request(8, 1790767161.858, [peer(ip(10,1,0,55)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(8, 0.045177, 36, 401, ok).
+/*Wed Sep 30 08:19:34 2026*/ request(9, 1790767174.538, [peer(ip(10,1,0,55)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(9, 0.042559, 36, 401, ok).
+/*Wed Sep 30 08:19:39 2026*/ request(10, 1790767179.026, [peer(ip(10,1,0,55)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(10, 0.045402, 98, 200, ok).
+/*Wed Sep 30 08:20:19 2026*/ request(11, 1790767219.902, [peer(ip(10,1,0,55)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(11, 0.002448, 17, 200, ok).
+/*Wed Sep 30 08:20:51 2026*/ request(12, 1790767251.969, [peer(ip(10,1,0,55)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(12, 0.002568, 412, 200, ok).
+/*Wed Sep 30 08:20:54 2026*/ request(13, 1790767254.264, [peer(ip(10,1,0,55)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(13, 0.001985, 41, 409, ok).
+/*Wed Sep 30 08:21:29 2026*/ request(14, 1790767289.706, [peer(ip(10,1,0,55)),method(get),request_uri('/materias/fisica/promedio'),path('/materias/fisica/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(14, 0.001988, 54, 200, ok).
+/*Wed Sep 30 08:21:32 2026*/ request(15, 1790767292.285, [peer(ip(10,1,0,55)),method(get),request_uri('/materias/analisis/promedio'),path('/materias/analisis/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(15, 0.001730, 45, 200, ok).
+/*Wed Sep 30 08:21:54 2026*/ request(16, 1790767314.654, [peer(ip(10,1,0,55)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(16, 0.002202, 41, 409, ok).
+/*Wed Sep 30 08:22:02 2026*/ request(17, 1790767322.238, [peer(ip(10,1,0,55)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(17, 0.001219, 17, 200, ok).
+/*Wed Sep 30 08:33:08 2026*/ request(18, 1790767988.370, [peer(ip(10,1,0,40)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(18, 0.048659, 98, 200, ok).
+/*Wed Sep 30 08:33:37 2026*/ request(19, 1790768017.082, [peer(ip(10,1,0,40)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(19, 0.002024, 412, 200, ok).
+/*Wed Sep 30 08:34:14 2026*/ request(20, 1790768054.900, [peer(ip(10,1,0,40)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(20, 0.001446, 412, 200, ok).
+/*Wed Sep 30 08:34:23 2026*/ request(21, 1790768063.377, [peer(ip(10,1,0,40)),method(get),request_uri('/alumnos/140'),path('/alumnos/140'),http_version(1-1),host(localhost),port(8083)]).
+completed(21, 0.001981, 224, 200, ok).
+/*Wed Sep 30 08:34:30 2026*/ request(22, 1790768070.808, [peer(ip(10,1,0,40)),method(get),request_uri('/materias/algebra/promedio'),path('/materias/algebra/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(22, 0.002025, 58, 200, ok).
+/*Wed Sep 30 08:34:45 2026*/ request(23, 1790768085.298, [peer(ip(10,1,0,40)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(23, 0.001301, 412, 200, ok).
+/*Wed Sep 30 08:35:10 2026*/ request(24, 1790768110.220, [peer(ip(10,1,0,40)),method(get),request_uri('/materias/fisica/promedio'),path('/materias/fisica/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(24, 0.001941, 42, 200, ok).
+/*Wed Sep 30 08:35:40 2026*/ request(25, 1790768140.745, [peer(ip(10,1,0,40)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(25, 0.002783, 412, 200, ok).
+/*Wed Sep 30 08:35:51 2026*/ request(26, 1790768151.161, [peer(ip(10,1,0,40)),method(get),request_uri('/materias/algebra/promedio'),path('/materias/algebra/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(26, 0.001425, 42, 200, ok).
+/*Wed Sep 30 08:36:09 2026*/ request(27, 1790768169.153, [peer(ip(10,1,0,40)),method(get),request_uri('/alumnos/140'),path('/alumnos/140'),http_version(1-1),host(localhost),port(8083)]).
+completed(27, 0.002484, 240, 200, ok).
+/*Wed Sep 30 08:49:57 2026*/ request(28, 1790768997.646, [peer(ip(10,1,0,4)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(28, 0.043735, 36, 401, ok).
+/*Wed Sep 30 08:50:02 2026*/ request(29, 1790769002.655, [peer(ip(10,1,0,4)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(29, 0.045977, 36, 401, ok).
+/*Wed Sep 30 08:50:16 2026*/ request(30, 1790769016.884, [peer(ip(10,1,0,4)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(30, 0.042778, 36, 401, ok).
+/*Wed Sep 30 08:50:26 2026*/ request(31, 1790769026.431, [peer(ip(10,1,0,4)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(31, 0.042862, 98, 200, ok).
+/*Wed Sep 30 08:50:30 2026*/ request(32, 1790769030.437, [peer(ip(10,1,0,4)),method(get),request_uri('/materias/analisis/promedio'),path('/materias/analisis/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(32, 0.001029, 42, 200, ok).
+/*Wed Sep 30 08:50:56 2026*/ request(33, 1790769056.158, [peer(ip(10,1,0,4)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(33, 0.002587, 412, 200, ok).
+/*Wed Sep 30 08:51:06 2026*/ request(34, 1790769066.851, [peer(ip(10,1,0,4)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(34, 0.002897, 17, 200, ok).
+/*Wed Sep 30 08:58:37 2026*/ request(35, 1790769517.782, [peer(ip(10,1,0,20)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(35, 0.047022, 98, 200, ok).
+/*Wed Sep 30 08:58:48 2026*/ request(36, 1790769528.827, [peer(ip(10,1,0,20)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(36, 0.002382, 412, 200, ok).
+/*Wed Sep 30 08:59:02 2026*/ request(37, 1790769542.020, [peer(ip(10,1,0,20)),method(get),request_uri('/alumnos/120'),path('/alumnos/120'),http_version(1-1),host(localhost),port(8083)]).
+completed(37, 0.003176, 207, 200, ok).
+/*Wed Sep 30 08:59:29 2026*/ request(38, 1790769569.007, [peer(ip(10,1,0,20)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(38, 0.002565, 412, 200, ok).
+/*Wed Sep 30 08:59:56 2026*/ request(39, 1790769596.359, [peer(ip(10,1,0,20)),method(get),request_uri('/materias/analisis/promedio'),path('/materias/analisis/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(39, 0.003111, 59, 200, ok).
+/*Wed Sep 30 09:13:54 2026*/ request(40, 1790770434.462, [peer(ip(10,1,0,52)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(40, 0.049173, 36, 401, ok).
+/*Wed Sep 30 09:14:08 2026*/ request(41, 1790770448.557, [peer(ip(10,1,0,52)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(41, 0.045274, 98, 200, ok).
+/*Wed Sep 30 09:14:46 2026*/ request(42, 1790770486.263, [peer(ip(10,1,0,52)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(42, 0.002152, 412, 200, ok).
+/*Wed Sep 30 09:15:17 2026*/ request(43, 1790770517.391, [peer(ip(10,1,0,52)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(43, 0.002054, 412, 200, ok).
+/*Wed Sep 30 09:27:13 2026*/ request(44, 1790771233.342, [peer(ip(10,1,0,51)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(44, 0.048432, 36, 401, ok).
+/*Wed Sep 30 09:27:17 2026*/ request(45, 1790771237.900, [peer(ip(10,1,0,51)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(45, 0.042277, 98, 200, ok).
+/*Wed Sep 30 09:27:48 2026*/ request(46, 1790771268.742, [peer(ip(10,1,0,51)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(46, 0.002485, 412, 200, ok).
+/*Wed Sep 30 09:28:15 2026*/ request(47, 1790771295.360, [peer(ip(10,1,0,51)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(47, 0.001899, 412, 200, ok).
+/*Wed Sep 30 09:28:32 2026*/ request(48, 1790771312.273, [peer(ip(10,1,0,51)),method(get),request_uri('/ranking'),path('/ranking'),http_version(1-1),host(localhost),port(8083)]).
+completed(48, 0.002530, 983, 200, ok).
+/*Wed Sep 30 09:28:35 2026*/ request(49, 1790771315.642, [peer(ip(10,1,0,51)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(49, 0.001226, 412, 200, ok).
+/*Wed Sep 30 09:28:53 2026*/ request(50, 1790771333.769, [peer(ip(10,1,0,51)),method(get),request_uri('/materias/fisica/promedio'),path('/materias/fisica/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(50, 0.001777, 52, 200, ok).
+/*Wed Sep 30 09:29:33 2026*/ request(51, 1790771373.689, [peer(ip(10,1,0,51)),method(get),request_uri('/alumnos/151'),path('/alumnos/151'),http_version(1-1),host(localhost),port(8083)]).
+completed(51, 0.000920, 210, 200, ok).
+/*Wed Sep 30 09:30:02 2026*/ request(52, 1790771402.897, [peer(ip(10,1,0,51)),method(get),request_uri('/alumnos/151'),path('/alumnos/151'),http_version(1-1),host(localhost),port(8083)]).
+completed(52, 0.003023, 205, 200, ok).
+/*Wed Sep 30 09:30:10 2026*/ request(53, 1790771410.518, [peer(ip(10,1,0,51)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(53, 0.002040, 412, 200, ok).
+/*Wed Sep 30 09:30:44 2026*/ request(54, 1790771444.105, [peer(ip(10,1,0,51)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(54, 0.002724, 412, 200, ok).
+/*Wed Sep 30 09:40:36 2026*/ request(55, 1790772036.359, [peer(ip(10,1,0,38)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(55, 0.046537, 98, 200, ok).
+/*Wed Sep 30 09:41:04 2026*/ request(56, 1790772064.460, [peer(ip(10,1,0,38)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(56, 0.003018, 17, 200, ok).
+/*Wed Sep 30 09:41:29 2026*/ request(57, 1790772089.377, [peer(ip(10,1,0,38)),method(get),request_uri('/materias/sistemas/promedio'),path('/materias/sistemas/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(57, 0.002659, 47, 200, ok).
+/*Wed Sep 30 09:41:41 2026*/ request(58, 1790772101.370, [peer(ip(10,1,0,38)),method(get),request_uri('/alumnos/138'),path('/alumnos/138'),http_version(1-1),host(localhost),port(8083)]).
+completed(58, 0.003119, 246, 200, ok).
+/*Wed Sep 30 09:41:56 2026*/ request(59, 1790772116.269, [peer(ip(10,1,0,38)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(59, 0.000953, 17, 200, ok).
+/*Wed Sep 30 10:02:12 2026*/ request(60, 1790773332.850, [peer(ip(10,1,0,10)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(60, 0.042703, 98, 200, ok).
+/*Wed Sep 30 10:02:39 2026*/ request(61, 1790773359.695, [peer(ip(10,1,0,10)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(61, 0.001945, 17, 200, ok).
+/*Wed Sep 30 10:03:00 2026*/ request(62, 1790773380.130, [peer(ip(10,1,0,10)),method(get),request_uri('/ranking'),path('/ranking'),http_version(1-1),host(localhost),port(8083)]).
+completed(62, 0.001432, 944, 200, ok).
+/*Wed Sep 30 10:03:22 2026*/ request(63, 1790773402.406, [peer(ip(10,1,0,10)),method(get),request_uri('/materias/algebra/promedio'),path('/materias/algebra/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(63, 0.001254, 53, 200, ok).
+/*Wed Sep 30 10:03:38 2026*/ request(64, 1790773418.672, [peer(ip(10,1,0,10)),method(get),request_uri('/materias/algebra/promedio'),path('/materias/algebra/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(64, 0.001600, 42, 200, ok).
+/*Wed Sep 30 10:16:52 2026*/ request(65, 1790774212.921, [peer(ip(10,1,0,60)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(65, 0.043534, 98, 200, ok).
+/*Wed Sep 30 10:17:03 2026*/ request(66, 1790774223.095, [peer(ip(10,1,0,60)),method(get),request_uri('/alumnos/160'),path('/alumnos/160'),http_version(1-1),host(localhost),port(8083)]).
+completed(66, 0.001995, 198, 200, ok).
+/*Wed Sep 30 10:17:09 2026*/ request(67, 1790774229.899, [peer(ip(10,1,0,60)),method(get),request_uri('/materias/fisica/promedio'),path('/materias/fisica/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(67, 0.003281, 52, 200, ok).
+/*Wed Sep 30 10:17:34 2026*/ request(68, 1790774254.849, [peer(ip(10,1,0,60)),method(get),request_uri('/materias/sistemas/promedio'),path('/materias/sistemas/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(68, 0.002495, 55, 200, ok).
+/*Wed Sep 30 10:17:52 2026*/ request(69, 1790774272.312, [peer(ip(10,1,0,60)),method(get),request_uri('/ranking'),path('/ranking'),http_version(1-1),host(localhost),port(8083)]).
+completed(69, 0.002610, 966, 200, ok).
+/*Wed Sep 30 10:18:31 2026*/ request(70, 1790774311.659, [peer(ip(10,1,0,60)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(70, 0.001102, 17, 200, ok).
+/*Wed Sep 30 10:18:51 2026*/ request(71, 1790774331.990, [peer(ip(10,1,0,60)),method(get),request_uri('/alumnos/160'),path('/alumnos/160'),http_version(1-1),host(localhost),port(8083)]).
+completed(71, 0.002203, 241, 200, ok).
+/*Wed Sep 30 10:19:19 2026*/ request(72, 1790774359.679, [peer(ip(10,1,0,60)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(72, 0.001953, 17, 200, ok).
+/*Wed Sep 30 10:19:25 2026*/ request(73, 1790774365.724, [peer(ip(10,1,0,60)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(73, 0.001583, 412, 200, ok).
+/*Wed Sep 30 10:19:30 2026*/ request(74, 1790774370.727, [peer(ip(10,1,0,60)),method(get),request_uri('/ranking'),path('/ranking'),http_version(1-1),host(localhost),port(8083)]).
+completed(74, 0.002731, 1083, 200, ok).
+/*Wed Sep 30 10:19:58 2026*/ request(75, 1790774398.128, [peer(ip(10,1,0,60)),method(get),request_uri('/alumnos/160'),path('/alumnos/160'),http_version(1-1),host(localhost),port(8083)]).
+completed(75, 0.001798, 245, 200, ok).
+/*Wed Sep 30 10:27:36 2026*/ request(76, 1790774856.860, [peer(ip(10,1,0,12)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(76, 0.044569, 36, 401, ok).
+/*Wed Sep 30 10:27:40 2026*/ request(77, 1790774860.936, [peer(ip(10,1,0,12)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(77, 0.044456, 98, 200, ok).
+/*Wed Sep 30 10:27:44 2026*/ request(78, 1790774864.442, [peer(ip(10,1,0,12)),method(get),request_uri('/materias/fisica/promedio'),path('/materias/fisica/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(78, 0.001995, 54, 200, ok).
+/*Wed Sep 30 10:27:48 2026*/ request(79, 1790774868.024, [peer(ip(10,1,0,12)),method(get),request_uri('/alumnos/112'),path('/alumnos/112'),http_version(1-1),host(localhost),port(8083)]).
+completed(79, 0.001064, 236, 200, ok).
+/*Wed Sep 30 10:28:04 2026*/ request(80, 1790774884.559, [peer(ip(10,1,0,12)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(80, 0.001274, 412, 200, ok).
+/*Wed Sep 30 10:28:19 2026*/ request(81, 1790774899.708, [peer(ip(10,1,0,12)),method(get),request_uri('/alumnos/112'),path('/alumnos/112'),http_version(1-1),host(localhost),port(8083)]).
+completed(81, 0.000876, 206, 200, ok).
+/*Wed Sep 30 10:28:38 2026*/ request(82, 1790774918.472, [peer(ip(10,1,0,12)),method(get),request_uri('/ranking'),path('/ranking'),http_version(1-1),host(localhost),port(8083)]).
+completed(82, 0.001545, 919, 200, ok).
+/*Wed Sep 30 10:28:42 2026*/ request(83, 1790774922.226, [peer(ip(10,1,0,12)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(83, 0.002748, 412, 200, ok).
+/*Wed Sep 30 10:29:05 2026*/ request(84, 1790774945.287, [peer(ip(10,1,0,12)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(84, 0.001712, 17, 200, ok).
+/*Wed Sep 30 10:30:00 2026*/ request(85, 1790775000.327, [peer(ip(10,1,0,8)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(85, 0.042085, 36, 401, ok).
+/*Wed Sep 30 10:30:14 2026*/ request(86, 1790775014.018, [peer(ip(10,1,0,8)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(86, 0.047987, 36, 401, ok).
+/*Wed Sep 30 10:30:28 2026*/ request(87, 1790775028.097, [peer(ip(10,1,0,8)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(87, 0.045446, 36, 401, ok).
+/*Wed Sep 30 10:30:32 2026*/ request(88, 1790775032.231, [peer(ip(10,1,0,8)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(88, 0.048457, 36, 401, ok).
+/*Wed Sep 30 10:30:45 2026*/ request(89, 1790775045.380, [peer(ip(10,1,0,8)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(89, 0.043406, 36, 401, ok).
+/*Wed Sep 30 10:30:57 2026*/ request(90, 1790775057.070, [peer(ip(10,1,0,8)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(90, 0.044255, 36, 401, ok).
+/*Wed Sep 30 10:31:02 2026*/ request(91, 1790775062.560, [peer(ip(10,1,0,8)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(91, 0.046154, 36, 401, ok).
+/*Wed Sep 30 10:31:17 2026*/ request(92, 1790775077.648, [peer(ip(10,1,0,8)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(92, 0.049142, 98, 200, ok).
+/*Wed Sep 30 10:31:40 2026*/ request(93, 1790775100.666, [peer(ip(10,1,0,8)),method(get),request_uri('/ranking'),path('/ranking'),http_version(1-1),host(localhost),port(8083)]).
+completed(93, 0.001982, 1041, 200, ok).
+/*Wed Sep 30 10:32:20 2026*/ request(94, 1790775140.566, [peer(ip(10,1,0,8)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(94, 0.002682, 412, 200, ok).
+/*Wed Sep 30 10:32:39 2026*/ request(95, 1790775159.392, [peer(ip(10,1,0,8)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(95, 0.002165, 412, 200, ok).
+/*Wed Sep 30 10:32:42 2026*/ request(96, 1790775162.047, [peer(ip(10,1,0,8)),method(get),request_uri('/ranking'),path('/ranking'),http_version(1-1),host(localhost),port(8083)]).
+completed(96, 0.001712, 1003, 200, ok).
+/*Wed Sep 30 10:33:06 2026*/ request(97, 1790775186.117, [peer(ip(10,1,0,8)),method(get),request_uri('/ranking'),path('/ranking'),http_version(1-1),host(localhost),port(8083)]).
+completed(97, 0.000891, 910, 200, ok).
+/*Wed Sep 30 10:33:11 2026*/ request(98, 1790775191.274, [peer(ip(10,1,0,8)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(98, 0.002636, 412, 200, ok).
+/*Wed Sep 30 10:33:26 2026*/ request(99, 1790775206.380, [peer(ip(10,1,0,8)),method(get),request_uri('/materias/logica/promedio'),path('/materias/logica/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(99, 0.002017, 52, 200, ok).
+/*Wed Sep 30 10:33:50 2026*/ request(100, 1790775230.636, [peer(ip(10,1,0,8)),method(get),request_uri('/alumnos/108'),path('/alumnos/108'),http_version(1-1),host(localhost),port(8083)]).
+completed(100, 0.001600, 184, 200, ok).
+/*Wed Sep 30 10:33:53 2026*/ request(101, 1790775233.404, [peer(ip(10,1,0,8)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(101, 0.002988, 17, 200, ok).
+/*Wed Sep 30 10:34:06 2026*/ request(102, 1790775246.159, [peer(ip(10,1,0,8)),method(get),request_uri('/alumnos/108'),path('/alumnos/108'),http_version(1-1),host(localhost),port(8083)]).
+completed(102, 0.001696, 196, 200, ok).
+/*Wed Sep 30 10:34:38 2026*/ request(103, 1790775278.285, [peer(ip(10,1,0,8)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(103, 0.000925, 17, 200, ok).
+/*Wed Sep 30 10:34:46 2026*/ request(104, 1790775286.896, [peer(ip(10,1,0,8)),method(get),request_uri('/ranking'),path('/ranking'),http_version(1-1),host(localhost),port(8083)]).
+completed(104, 0.002197, 962, 200, ok).
+/*Wed Sep 30 10:35:22 2026*/ request(105, 1790775322.336, [peer(ip(10,1,0,8)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(105, 0.001265, 412, 200, ok).
+/*Wed Sep 30 10:35:56 2026*/ request(106, 1790775356.489, [peer(ip(10,1,0,8)),method(get),request_uri('/alumnos/108'),path('/alumnos/108'),http_version(1-1),host(localhost),port(8083)]).
+completed(106, 0.001716, 248, 200, ok).
+/*Wed Sep 30 10:36:32 2026*/ request(107, 1790775392.939, [peer(ip(10,1,0,8)),method(get),request_uri('/ranking'),path('/ranking'),http_version(1-1),host(localhost),port(8083)]).
+completed(107, 0.002002, 1029, 200, ok).
+/*Wed Sep 30 10:36:38 2026*/ request(108, 1790775398.669, [peer(ip(10,1,0,8)),method(get),request_uri('/alumnos/108'),path('/alumnos/108'),http_version(1-1),host(localhost),port(8083)]).
+completed(108, 0.003070, 229, 200, ok).
+/*Wed Sep 30 10:39:42 2026*/ request(109, 1790775582.260, [peer(ip(10,1,0,54)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(109, 0.042554, 36, 401, ok).
+/*Wed Sep 30 10:39:46 2026*/ request(110, 1790775586.598, [peer(ip(10,1,0,54)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(110, 0.047556, 98, 200, ok).
+/*Wed Sep 30 10:40:25 2026*/ request(111, 1790775625.710, [peer(ip(10,1,0,54)),method(get),request_uri('/materias/algebra/promedio'),path('/materias/algebra/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(111, 0.002893, 45, 200, ok).
+/*Wed Sep 30 10:40:35 2026*/ request(112, 1790775635.534, [peer(ip(10,1,0,54)),method(get),request_uri('/ranking'),path('/ranking'),http_version(1-1),host(localhost),port(8083)]).
+completed(112, 0.001416, 977, 200, ok).
+/*Wed Sep 30 10:40:55 2026*/ request(113, 1790775655.742, [peer(ip(10,1,0,54)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(113, 0.001247, 17, 200, ok).
+/*Wed Sep 30 10:41:12 2026*/ request(114, 1790775672.496, [peer(ip(10,1,0,54)),method(get),request_uri('/materias/fisica/promedio'),path('/materias/fisica/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(114, 0.002650, 54, 200, ok).
+/*Wed Sep 30 10:51:58 2026*/ request(115, 1790776318.454, [peer(ip(10,1,0,3)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(115, 0.042734, 98, 200, ok).
+/*Wed Sep 30 10:52:08 2026*/ request(116, 1790776328.993, [peer(ip(10,1,0,3)),method(get),request_uri('/materias/logica/promedio'),path('/materias/logica/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(116, 0.002881, 52, 200, ok).
+/*Wed Sep 30 10:52:27 2026*/ request(117, 1790776347.714, [peer(ip(10,1,0,3)),method(get),request_uri('/alumnos/103'),path('/alumnos/103'),http_version(1-1),host(localhost),port(8083)]).
+completed(117, 0.001197, 211, 200, ok).
+/*Wed Sep 30 10:52:42 2026*/ request(118, 1790776362.038, [peer(ip(10,1,0,3)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(118, 0.002304, 412, 200, ok).
+/*Wed Sep 30 10:53:18 2026*/ request(119, 1790776398.985, [peer(ip(10,1,0,3)),method(get),request_uri('/alumnos/103'),path('/alumnos/103'),http_version(1-1),host(localhost),port(8083)]).
+completed(119, 0.001755, 185, 200, ok).
+/*Wed Sep 30 10:53:50 2026*/ request(120, 1790776430.879, [peer(ip(10,1,0,3)),method(get),request_uri('/materias/sistemas/promedio'),path('/materias/sistemas/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(120, 0.001971, 45, 200, ok).
+/*Wed Sep 30 10:54:09 2026*/ request(121, 1790776449.071, [peer(ip(10,1,0,3)),method(get),request_uri('/materias/analisis/promedio'),path('/materias/analisis/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(121, 0.001589, 46, 200, ok).
+/*Wed Sep 30 10:54:18 2026*/ request(122, 1790776458.922, [peer(ip(10,1,0,3)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(122, 0.002329, 412, 200, ok).
+/*Wed Sep 30 10:54:40 2026*/ request(123, 1790776480.557, [peer(ip(10,1,0,3)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(123, 0.002830, 41, 409, ok).
+/*Wed Sep 30 10:55:09 2026*/ request(124, 1790776509.355, [peer(ip(10,1,0,3)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(124, 0.001608, 17, 200, ok).
+/*Wed Sep 30 10:55:48 2026*/ request(125, 1790776548.036, [peer(ip(10,1,0,3)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(125, 0.001001, 412, 200, ok).
+/*Wed Sep 30 11:05:00 2026*/ request(126, 1790777100.002, [peer(ip(203,0,113,50)),method(get),request_uri('/admin'),path('/admin'),http_version(1-1),host(localhost),port(8083)]).
+completed(126, 0.001764, 361, 404, error(404,'/admin')).
+/*Wed Sep 30 11:05:03 2026*/ request(127, 1790777103.356, [peer(ip(203,0,113,50)),method(get),request_uri('/wp-login.php'),path('/wp-login.php'),http_version(1-1),host(localhost),port(8083)]).
+completed(127, 0.001787, 361, 404, error(404,'/wp-login.php')).
+/*Wed Sep 30 11:05:06 2026*/ request(128, 1790777106.683, [peer(ip(203,0,113,50)),method(get),request_uri('/.env'),path('/.env'),http_version(1-1),host(localhost),port(8083)]).
+completed(128, 0.001180, 361, 404, error(404,'/.env')).
+/*Wed Sep 30 11:05:09 2026*/ request(129, 1790777109.746, [peer(ip(203,0,113,50)),method(get),request_uri('/phpmyadmin'),path('/phpmyadmin'),http_version(1-1),host(localhost),port(8083)]).
+completed(129, 0.000989, 361, 404, error(404,'/phpmyadmin')).
+/*Wed Sep 30 11:05:11 2026*/ request(130, 1790777111.278, [peer(ip(203,0,113,50)),method(get),request_uri('/config.php'),path('/config.php'),http_version(1-1),host(localhost),port(8083)]).
+completed(130, 0.002057, 361, 404, error(404,'/config.php')).
+/*Wed Sep 30 11:05:13 2026*/ request(131, 1790777113.217, [peer(ip(203,0,113,50)),method(get),request_uri('/backup.zip'),path('/backup.zip'),http_version(1-1),host(localhost),port(8083)]).
+completed(131, 0.002268, 361, 404, error(404,'/backup.zip')).
+/*Wed Sep 30 11:05:15 2026*/ request(132, 1790777115.528, [peer(ip(203,0,113,50)),method(get),request_uri('/.git/config'),path('/.git/config'),http_version(1-1),host(localhost),port(8083)]).
+completed(132, 0.000855, 361, 404, error(404,'/.git/config')).
+/*Wed Sep 30 11:05:18 2026*/ request(133, 1790777118.088, [peer(ip(203,0,113,50)),method(get),request_uri('/login'),path('/login'),http_version(1-1),host(localhost),port(8083)]).
+completed(133, 0.001489, 361, 404, error(404,'/login')).
+/*Wed Sep 30 11:05:21 2026*/ request(134, 1790777121.849, [peer(ip(203,0,113,50)),method(get),request_uri('/admin.php'),path('/admin.php'),http_version(1-1),host(localhost),port(8083)]).
+completed(134, 0.002983, 361, 404, error(404,'/admin.php')).
+/*Wed Sep 30 11:05:22 2026*/ request(135, 1790777122.777, [peer(ip(203,0,113,50)),method(get),request_uri('/server-status'),path('/server-status'),http_version(1-1),host(localhost),port(8083)]).
+completed(135, 0.003085, 361, 404, error(404,'/server-status')).
+/*Wed Sep 30 11:08:03 2026*/ request(136, 1790777283.800, [peer(ip(10,1,0,52)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(136, 0.042490, 36, 401, ok).
+/*Wed Sep 30 11:08:11 2026*/ request(137, 1790777291.737, [peer(ip(10,1,0,52)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(137, 0.049506, 36, 401, ok).
+/*Wed Sep 30 11:08:18 2026*/ request(138, 1790777298.348, [peer(ip(10,1,0,52)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(138, 0.042948, 36, 401, ok).
+/*Wed Sep 30 11:08:24 2026*/ request(139, 1790777304.099, [peer(ip(10,1,0,52)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(139, 0.042643, 98, 200, ok).
+/*Wed Sep 30 11:08:59 2026*/ request(140, 1790777339.928, [peer(ip(10,1,0,52)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(140, 0.002036, 17, 200, ok).
+/*Wed Sep 30 11:09:26 2026*/ request(141, 1790777366.175, [peer(ip(10,1,0,52)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(141, 0.002201, 17, 200, ok).
+/*Wed Sep 30 11:09:44 2026*/ request(142, 1790777384.272, [peer(ip(10,1,0,52)),method(get),request_uri('/materias/sistemas/promedio'),path('/materias/sistemas/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(142, 0.002982, 58, 200, ok).
+/*Wed Sep 30 11:10:07 2026*/ request(143, 1790777407.529, [peer(ip(10,1,0,52)),method(get),request_uri('/materias/sistemas/promedio'),path('/materias/sistemas/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(143, 0.001023, 50, 200, ok).
+/*Wed Sep 30 11:10:36 2026*/ request(144, 1790777436.539, [peer(ip(10,1,0,52)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(144, 0.000995, 17, 200, ok).
+/*Wed Sep 30 11:11:09 2026*/ request(145, 1790777469.439, [peer(ip(10,1,0,52)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(145, 0.002637, 412, 200, ok).
+/*Wed Sep 30 11:19:42 2026*/ request(146, 1790777982.415, [peer(ip(10,1,0,10)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(146, 0.048260, 98, 200, ok).
+/*Wed Sep 30 11:19:58 2026*/ request(147, 1790777998.861, [peer(ip(10,1,0,10)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(147, 0.001007, 412, 200, ok).
+/*Wed Sep 30 11:20:38 2026*/ request(148, 1790778038.080, [peer(ip(10,1,0,10)),method(get),request_uri('/alumnos/110'),path('/alumnos/110'),http_version(1-1),host(localhost),port(8083)]).
+completed(148, 0.001508, 231, 200, ok).
+/*Wed Sep 30 11:21:15 2026*/ request(149, 1790778075.641, [peer(ip(10,1,0,10)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(149, 0.000919, 412, 200, ok).
+/*Wed Sep 30 11:21:36 2026*/ request(150, 1790778096.274, [peer(ip(10,1,0,10)),method(get),request_uri('/materias/analisis/promedio'),path('/materias/analisis/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(150, 0.003114, 55, 200, ok).
+/*Wed Sep 30 11:39:16 2026*/ request(151, 1790779156.955, [peer(ip(10,1,0,55)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(151, 0.049126, 98, 200, ok).
+/*Wed Sep 30 11:39:21 2026*/ request(152, 1790779161.873, [peer(ip(10,1,0,55)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(152, 0.002712, 412, 200, ok).
+/*Wed Sep 30 11:39:46 2026*/ request(153, 1790779186.016, [peer(ip(10,1,0,55)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(153, 0.003291, 412, 200, ok).
+/*Wed Sep 30 11:39:59 2026*/ request(154, 1790779199.607, [peer(ip(10,1,0,55)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(154, 0.002073, 412, 200, ok).
+/*Wed Sep 30 11:40:18 2026*/ request(155, 1790779218.218, [peer(ip(10,1,0,55)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(155, 0.001164, 412, 200, ok).
+/*Wed Sep 30 11:40:24 2026*/ request(156, 1790779224.652, [peer(ip(10,1,0,55)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(156, 0.002393, 41, 409, ok).
+/*Wed Sep 30 11:40:31 2026*/ request(157, 1790779231.621, [peer(ip(10,1,0,55)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(157, 0.002332, 41, 409, ok).
+/*Wed Sep 30 11:40:41 2026*/ request(158, 1790779241.560, [peer(ip(10,1,0,55)),method(get),request_uri('/alumnos/155'),path('/alumnos/155'),http_version(1-1),host(localhost),port(8083)]).
+completed(158, 0.002874, 206, 200, ok).
+/*Wed Sep 30 11:40:46 2026*/ request(159, 1790779246.754, [peer(ip(10,1,0,55)),method(get),request_uri('/alumnos/155'),path('/alumnos/155'),http_version(1-1),host(localhost),port(8083)]).
+completed(159, 0.001318, 204, 200, ok).
+/*Wed Sep 30 11:41:18 2026*/ request(160, 1790779278.137, [peer(ip(10,1,0,55)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(160, 0.000875, 412, 200, ok).
+/*Wed Sep 30 11:41:29 2026*/ request(161, 1790779289.798, [peer(ip(10,1,0,55)),method(get),request_uri('/materias/fisica/promedio'),path('/materias/fisica/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(161, 0.003051, 48, 200, ok).
+/*Wed Sep 30 11:49:46 2026*/ request(162, 1790779786.606, [peer(ip(10,1,0,17)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(162, 0.044082, 98, 200, ok).
+/*Wed Sep 30 11:49:54 2026*/ request(163, 1790779794.451, [peer(ip(10,1,0,17)),method(get),request_uri('/alumnos/117'),path('/alumnos/117'),http_version(1-1),host(localhost),port(8083)]).
+completed(163, 0.001987, 219, 200, ok).
+/*Wed Sep 30 11:50:10 2026*/ request(164, 1790779810.470, [peer(ip(10,1,0,17)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(164, 0.003059, 41, 409, ok).
+/*Wed Sep 30 12:05:13 2026*/ request(165, 1790780713.089, [peer(ip(10,1,0,43)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(165, 0.048967, 36, 401, ok).
+/*Wed Sep 30 12:05:20 2026*/ request(166, 1790780720.370, [peer(ip(10,1,0,43)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(166, 0.044450, 98, 200, ok).
+/*Wed Sep 30 12:05:34 2026*/ request(167, 1790780734.369, [peer(ip(10,1,0,43)),method(get),request_uri('/alumnos/143'),path('/alumnos/143'),http_version(1-1),host(localhost),port(8083)]).
+completed(167, 0.002276, 227, 200, ok).
+/*Wed Sep 30 12:06:08 2026*/ request(168, 1790780768.403, [peer(ip(10,1,0,43)),method(get),request_uri('/alumnos/143'),path('/alumnos/143'),http_version(1-1),host(localhost),port(8083)]).
+completed(168, 0.002136, 187, 200, ok).
+/*Wed Sep 30 12:06:21 2026*/ request(169, 1790780781.328, [peer(ip(10,1,0,43)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(169, 0.002925, 412, 200, ok).
+/*Wed Sep 30 12:06:34 2026*/ request(170, 1790780794.259, [peer(ip(10,1,0,43)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(170, 0.002186, 17, 200, ok).
+/*Wed Sep 30 12:06:51 2026*/ request(171, 1790780811.651, [peer(ip(10,1,0,43)),method(get),request_uri('/alumnos/143'),path('/alumnos/143'),http_version(1-1),host(localhost),port(8083)]).
+completed(171, 0.003041, 184, 200, ok).
+/*Wed Sep 30 12:25:33 2026*/ request(172, 1790781933.349, [peer(ip(10,1,0,20)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(172, 0.044999, 98, 200, ok).
+/*Wed Sep 30 12:25:43 2026*/ request(173, 1790781943.673, [peer(ip(10,1,0,20)),method(get),request_uri('/materias/analisis/promedio'),path('/materias/analisis/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(173, 0.003228, 48, 200, ok).
+/*Wed Sep 30 12:26:02 2026*/ request(174, 1790781962.649, [peer(ip(10,1,0,20)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(174, 0.002763, 17, 200, ok).
+/*Wed Sep 30 12:32:02 2026*/ request(175, 1790782322.694, [peer(ip(10,1,0,14)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(175, 0.046229, 36, 401, ok).
+/*Wed Sep 30 12:32:09 2026*/ request(176, 1790782329.039, [peer(ip(10,1,0,14)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(176, 0.049456, 98, 200, ok).
+/*Wed Sep 30 12:32:29 2026*/ request(177, 1790782349.401, [peer(ip(10,1,0,14)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(177, 0.003181, 17, 200, ok).
+/*Wed Sep 30 12:32:52 2026*/ request(178, 1790782372.101, [peer(ip(10,1,0,14)),method(get),request_uri('/alumnos/114'),path('/alumnos/114'),http_version(1-1),host(localhost),port(8083)]).
+completed(178, 0.002856, 216, 200, ok).
+/*Wed Sep 30 12:33:20 2026*/ request(179, 1790782400.400, [peer(ip(10,1,0,14)),method(get),request_uri('/alumnos/114'),path('/alumnos/114'),http_version(1-1),host(localhost),port(8083)]).
+completed(179, 0.001631, 196, 200, ok).
+/*Wed Sep 30 12:33:46 2026*/ request(180, 1790782426.554, [peer(ip(10,1,0,14)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(180, 0.001080, 412, 200, ok).
+/*Wed Sep 30 12:34:04 2026*/ request(181, 1790782444.269, [peer(ip(10,1,0,14)),method(get),request_uri('/materias/algebra/promedio'),path('/materias/algebra/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(181, 0.000872, 40, 200, ok).
+/*Wed Sep 30 12:34:38 2026*/ request(182, 1790782478.628, [peer(ip(10,1,0,14)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(182, 0.003234, 412, 200, ok).
+/*Wed Sep 30 12:34:41 2026*/ request(183, 1790782481.635, [peer(ip(10,1,0,14)),method(get),request_uri('/alumnos/114'),path('/alumnos/114'),http_version(1-1),host(localhost),port(8083)]).
+completed(183, 0.002762, 200, 200, ok).
+/*Wed Sep 30 12:35:07 2026*/ request(184, 1790782507.970, [peer(ip(10,1,0,14)),method(get),request_uri('/materias/algebra/promedio'),path('/materias/algebra/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(184, 0.002620, 49, 200, ok).
+/*Wed Sep 30 12:35:41 2026*/ request(185, 1790782541.909, [peer(ip(10,1,0,14)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(185, 0.001848, 412, 200, ok).
+/*Wed Sep 30 12:51:56 2026*/ request(186, 1790783516.049, [peer(ip(10,1,0,13)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(186, 0.046975, 98, 200, ok).
+/*Wed Sep 30 12:52:09 2026*/ request(187, 1790783529.770, [peer(ip(10,1,0,13)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(187, 0.003067, 412, 200, ok).
+/*Wed Sep 30 12:52:49 2026*/ request(188, 1790783569.767, [peer(ip(10,1,0,13)),method(get),request_uri('/materias/logica/promedio'),path('/materias/logica/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(188, 0.002102, 50, 200, ok).
+/*Wed Sep 30 12:53:07 2026*/ request(189, 1790783587.602, [peer(ip(10,1,0,13)),method(get),request_uri('/materias/fisica/promedio'),path('/materias/fisica/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(189, 0.001904, 43, 200, ok).
+/*Wed Sep 30 12:53:47 2026*/ request(190, 1790783627.446, [peer(ip(10,1,0,13)),method(get),request_uri('/materias/fisica/promedio'),path('/materias/fisica/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(190, 0.002610, 45, 200, ok).
+/*Wed Sep 30 12:54:20 2026*/ request(191, 1790783660.183, [peer(ip(10,1,0,13)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(191, 0.001773, 41, 409, ok).
+/*Wed Sep 30 12:54:48 2026*/ request(192, 1790783688.539, [peer(ip(10,1,0,13)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(192, 0.002196, 412, 200, ok).
+/*Wed Sep 30 13:02:36 2026*/ request(193, 1790784156.507, [peer(ip(10,1,0,21)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(193, 0.043031, 98, 200, ok).
+/*Wed Sep 30 13:03:08 2026*/ request(194, 1790784188.789, [peer(ip(10,1,0,21)),method(get),request_uri('/ranking'),path('/ranking'),http_version(1-1),host(localhost),port(8083)]).
+completed(194, 0.001199, 1084, 200, ok).
+/*Wed Sep 30 13:03:21 2026*/ request(195, 1790784201.417, [peer(ip(10,1,0,21)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(195, 0.003087, 412, 200, ok).
+/*Wed Sep 30 13:03:42 2026*/ request(196, 1790784222.321, [peer(ip(10,1,0,21)),method(get),request_uri('/ranking'),path('/ranking'),http_version(1-1),host(localhost),port(8083)]).
+completed(196, 0.002063, 902, 200, ok).
+/*Wed Sep 30 13:04:11 2026*/ request(197, 1790784251.077, [peer(ip(10,1,0,21)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(197, 0.001868, 41, 409, ok).
+/*Wed Sep 30 13:04:21 2026*/ request(198, 1790784261.353, [peer(ip(10,1,0,21)),method(get),request_uri('/alumnos/121'),path('/alumnos/121'),http_version(1-1),host(localhost),port(8083)]).
+completed(198, 0.002098, 259, 200, ok).
+/*Wed Sep 30 13:04:24 2026*/ request(199, 1790784264.343, [peer(ip(10,1,0,21)),method(get),request_uri('/alumnos/121'),path('/alumnos/121'),http_version(1-1),host(localhost),port(8083)]).
+completed(199, 0.000911, 242, 200, ok).
+/*Wed Sep 30 13:04:53 2026*/ request(200, 1790784293.702, [peer(ip(10,1,0,21)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(200, 0.001524, 17, 200, ok).
+/*Wed Sep 30 13:05:23 2026*/ request(201, 1790784323.894, [peer(ip(10,1,0,21)),method(get),request_uri('/ranking'),path('/ranking'),http_version(1-1),host(localhost),port(8083)]).
+completed(201, 0.001284, 933, 200, ok).
+/*Wed Sep 30 13:15:26 2026*/ request(202, 1790784926.613, [peer(ip(10,1,0,43)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(202, 0.045399, 98, 200, ok).
+/*Wed Sep 30 13:15:29 2026*/ request(203, 1790784929.846, [peer(ip(10,1,0,43)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(203, 0.002436, 17, 200, ok).
+/*Wed Sep 30 13:15:59 2026*/ request(204, 1790784959.363, [peer(ip(10,1,0,43)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(204, 0.002670, 17, 200, ok).
+/*Wed Sep 30 13:16:12 2026*/ request(205, 1790784972.359, [peer(ip(10,1,0,43)),method(get),request_uri('/materias/analisis/promedio'),path('/materias/analisis/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(205, 0.000923, 52, 200, ok).
+/*Wed Sep 30 13:16:16 2026*/ request(206, 1790784976.761, [peer(ip(10,1,0,43)),method(get),request_uri('/materias/fisica/promedio'),path('/materias/fisica/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(206, 0.002920, 59, 200, ok).
+/*Wed Sep 30 13:16:21 2026*/ request(207, 1790784981.656, [peer(ip(10,1,0,43)),method(get),request_uri('/alumnos/143'),path('/alumnos/143'),http_version(1-1),host(localhost),port(8083)]).
+completed(207, 0.002862, 236, 200, ok).
+/*Wed Sep 30 13:16:26 2026*/ request(208, 1790784986.471, [peer(ip(10,1,0,43)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(208, 0.002111, 412, 200, ok).
+/*Wed Sep 30 13:16:48 2026*/ request(209, 1790785008.481, [peer(ip(10,1,0,43)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(209, 0.001001, 17, 200, ok).
+/*Wed Sep 30 13:17:08 2026*/ request(210, 1790785028.299, [peer(ip(10,1,0,43)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(210, 0.001796, 41, 409, ok).
+/*Wed Sep 30 13:17:34 2026*/ request(211, 1790785054.078, [peer(ip(10,1,0,43)),method(get),request_uri('/materias/algebra/promedio'),path('/materias/algebra/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(211, 0.002733, 53, 200, ok).
+/*Wed Sep 30 13:17:54 2026*/ request(212, 1790785074.910, [peer(ip(10,1,0,43)),method(get),request_uri('/ranking'),path('/ranking'),http_version(1-1),host(localhost),port(8083)]).
+completed(212, 0.002192, 915, 200, ok).
+/*Wed Sep 30 13:33:26 2026*/ request(213, 1790786006.954, [peer(ip(10,1,0,38)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(213, 0.049999, 36, 401, ok).
+/*Wed Sep 30 13:33:40 2026*/ request(214, 1790786020.702, [peer(ip(10,1,0,38)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(214, 0.049878, 98, 200, ok).
+/*Wed Sep 30 13:33:48 2026*/ request(215, 1790786028.560, [peer(ip(10,1,0,38)),method(get),request_uri('/materias/algebra/promedio'),path('/materias/algebra/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(215, 0.003033, 40, 200, ok).
+/*Wed Sep 30 13:34:12 2026*/ request(216, 1790786052.054, [peer(ip(10,1,0,38)),method(get),request_uri('/alumnos/138'),path('/alumnos/138'),http_version(1-1),host(localhost),port(8083)]).
+completed(216, 0.001166, 202, 200, ok).
+/*Wed Sep 30 13:34:52 2026*/ request(217, 1790786092.085, [peer(ip(10,1,0,38)),method(get),request_uri('/materias/analisis/promedio'),path('/materias/analisis/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(217, 0.001834, 48, 200, ok).
+/*Wed Sep 30 13:35:00 2026*/ request(218, 1790786100.464, [peer(ip(10,1,0,38)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(218, 0.003132, 412, 200, ok).
+/*Wed Sep 30 13:35:35 2026*/ request(219, 1790786135.731, [peer(ip(10,1,0,38)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(219, 0.003023, 41, 409, ok).
+/*Wed Sep 30 13:36:10 2026*/ request(220, 1790786170.091, [peer(ip(10,1,0,38)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(220, 0.000957, 41, 409, ok).
+/*Wed Sep 30 13:36:22 2026*/ request(221, 1790786182.543, [peer(ip(10,1,0,38)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(221, 0.003044, 412, 200, ok).
+/*Wed Sep 30 13:36:36 2026*/ request(222, 1790786196.336, [peer(ip(10,1,0,38)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(222, 0.001828, 17, 200, ok).
+/*Wed Sep 30 13:36:49 2026*/ request(223, 1790786209.068, [peer(ip(10,1,0,38)),method(get),request_uri('/materias/algebra/promedio'),path('/materias/algebra/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(223, 0.002542, 40, 200, ok).
+/*Wed Sep 30 13:37:54 2026*/ request(224, 1790786274.116, [peer(ip(10,1,0,8)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(224, 0.045255, 98, 200, ok).
+/*Wed Sep 30 13:38:30 2026*/ request(225, 1790786310.070, [peer(ip(10,1,0,8)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(225, 0.001608, 412, 200, ok).
+/*Wed Sep 30 13:38:41 2026*/ request(226, 1790786321.045, [peer(ip(10,1,0,8)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(226, 0.002286, 17, 200, ok).
+/*Wed Sep 30 13:54:38 2026*/ request(227, 1790787278.020, [peer(ip(10,1,0,4)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(227, 0.044520, 98, 200, ok).
+/*Wed Sep 30 13:54:41 2026*/ request(228, 1790787281.323, [peer(ip(10,1,0,4)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(228, 0.002392, 412, 200, ok).
+/*Wed Sep 30 13:54:55 2026*/ request(229, 1790787295.663, [peer(ip(10,1,0,4)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(229, 0.001371, 412, 200, ok).
+/*Wed Sep 30 14:07:22 2026*/ request(230, 1790788042.801, [peer(ip(10,1,0,24)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(230, 0.043061, 98, 200, ok).
+/*Wed Sep 30 14:07:56 2026*/ request(231, 1790788076.824, [peer(ip(10,1,0,24)),method(get),request_uri('/alumnos/124'),path('/alumnos/124'),http_version(1-1),host(localhost),port(8083)]).
+completed(231, 0.002974, 219, 200, ok).
+/*Wed Sep 30 14:08:32 2026*/ request(232, 1790788112.967, [peer(ip(10,1,0,24)),method(get),request_uri('/alumnos/124'),path('/alumnos/124'),http_version(1-1),host(localhost),port(8083)]).
+completed(232, 0.001117, 215, 200, ok).
+/*Wed Sep 30 14:08:58 2026*/ request(233, 1790788138.533, [peer(ip(10,1,0,24)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(233, 0.001225, 412, 200, ok).
+/*Wed Sep 30 14:09:16 2026*/ request(234, 1790788156.793, [peer(ip(10,1,0,24)),method(get),request_uri('/alumnos/124'),path('/alumnos/124'),http_version(1-1),host(localhost),port(8083)]).
+completed(234, 0.001341, 185, 200, ok).
+/*Wed Sep 30 14:09:51 2026*/ request(235, 1790788191.524, [peer(ip(10,1,0,24)),method(get),request_uri('/ranking'),path('/ranking'),http_version(1-1),host(localhost),port(8083)]).
+completed(235, 0.001380, 922, 200, ok).
+/*Wed Sep 30 14:10:14 2026*/ request(236, 1790788214.907, [peer(ip(10,1,0,24)),method(get),request_uri('/ranking'),path('/ranking'),http_version(1-1),host(localhost),port(8083)]).
+completed(236, 0.002958, 1063, 200, ok).
+/*Wed Sep 30 14:10:22 2026*/ request(237, 1790788222.304, [peer(ip(10,1,0,24)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(237, 0.002253, 412, 200, ok).
+/*Wed Sep 30 14:10:40 2026*/ request(238, 1790788240.249, [peer(ip(10,1,0,24)),method(get),request_uri('/materias/fisica/promedio'),path('/materias/fisica/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(238, 0.001294, 42, 200, ok).
+/*Wed Sep 30 14:11:00 2026*/ request(239, 1790788260.753, [peer(ip(10,1,0,24)),method(get),request_uri('/ranking'),path('/ranking'),http_version(1-1),host(localhost),port(8083)]).
+completed(239, 0.001929, 1010, 200, ok).
+/*Wed Sep 30 14:11:29 2026*/ request(240, 1790788289.344, [peer(ip(10,1,0,24)),method(get),request_uri('/materias/logica/promedio'),path('/materias/logica/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(240, 0.001537, 52, 200, ok).
+/*Wed Sep 30 14:19:30 2026*/ request(241, 1790788770.185, [peer(ip(10,1,0,47)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(241, 0.044834, 98, 200, ok).
+/*Wed Sep 30 14:19:53 2026*/ request(242, 1790788793.756, [peer(ip(10,1,0,47)),method(get),request_uri('/materias/fisica/promedio'),path('/materias/fisica/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(242, 0.003225, 54, 200, ok).
+/*Wed Sep 30 14:20:01 2026*/ request(243, 1790788801.159, [peer(ip(10,1,0,47)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(243, 0.000814, 17, 200, ok).
+/*Wed Sep 30 14:20:26 2026*/ request(244, 1790788826.694, [peer(ip(10,1,0,47)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(244, 0.002120, 412, 200, ok).
+/*Wed Sep 30 14:32:32 2026*/ request(245, 1790789552.892, [peer(ip(10,1,0,28)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(245, 0.046937, 98, 200, ok).
+/*Wed Sep 30 14:32:53 2026*/ request(246, 1790789573.777, [peer(ip(10,1,0,28)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(246, 0.001922, 412, 200, ok).
+/*Wed Sep 30 14:33:13 2026*/ request(247, 1790789593.806, [peer(ip(10,1,0,28)),method(get),request_uri('/ranking'),path('/ranking'),http_version(1-1),host(localhost),port(8083)]).
+completed(247, 0.001987, 944, 200, ok).
+/*Wed Sep 30 14:33:42 2026*/ request(248, 1790789622.747, [peer(ip(10,1,0,28)),method(get),request_uri('/alumnos/128'),path('/alumnos/128'),http_version(1-1),host(localhost),port(8083)]).
+completed(248, 0.000809, 192, 200, ok).
+/*Wed Sep 30 14:34:05 2026*/ request(249, 1790789645.781, [peer(ip(10,1,0,28)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(249, 0.002617, 17, 200, ok).
+/*Wed Sep 30 14:34:25 2026*/ request(250, 1790789665.534, [peer(ip(10,1,0,28)),method(get),request_uri('/alumnos/128'),path('/alumnos/128'),http_version(1-1),host(localhost),port(8083)]).
+completed(250, 0.002382, 205, 200, ok).
+/*Wed Sep 30 14:34:56 2026*/ request(251, 1790789696.127, [peer(ip(10,1,0,28)),method(get),request_uri('/materias/logica/promedio'),path('/materias/logica/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(251, 0.001532, 54, 200, ok).
+/*Wed Sep 30 14:35:06 2026*/ request(252, 1790789706.669, [peer(ip(10,1,0,28)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(252, 0.001880, 412, 200, ok).
+/*Wed Sep 30 14:35:15 2026*/ request(253, 1790789715.332, [peer(ip(10,1,0,28)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(253, 0.003223, 412, 200, ok).
+/*Wed Sep 30 14:51:29 2026*/ request(254, 1790790689.596, [peer(ip(10,1,0,49)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(254, 0.043834, 36, 401, ok).
+/*Wed Sep 30 14:51:33 2026*/ request(255, 1790790693.958, [peer(ip(10,1,0,49)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(255, 0.042537, 98, 200, ok).
+/*Wed Sep 30 14:51:49 2026*/ request(256, 1790790709.578, [peer(ip(10,1,0,49)),method(get),request_uri('/ranking'),path('/ranking'),http_version(1-1),host(localhost),port(8083)]).
+completed(256, 0.002027, 910, 200, ok).
+/*Wed Sep 30 14:52:24 2026*/ request(257, 1790790744.392, [peer(ip(10,1,0,49)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(257, 0.001941, 41, 409, ok).
+/*Wed Sep 30 14:52:51 2026*/ request(258, 1790790771.763, [peer(ip(10,1,0,49)),method(get),request_uri('/materias/logica/promedio'),path('/materias/logica/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(258, 0.001079, 52, 200, ok).
+/*Wed Sep 30 14:53:07 2026*/ request(259, 1790790787.699, [peer(ip(10,1,0,49)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(259, 0.002531, 412, 200, ok).
+/*Wed Sep 30 14:53:22 2026*/ request(260, 1790790802.782, [peer(ip(10,1,0,49)),method(get),request_uri('/materias/analisis/promedio'),path('/materias/analisis/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(260, 0.001252, 48, 200, ok).
+/*Wed Sep 30 14:53:43 2026*/ request(261, 1790790823.894, [peer(ip(10,1,0,49)),method(get),request_uri('/materias/logica/promedio'),path('/materias/logica/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(261, 0.001648, 51, 200, ok).
+/*Wed Sep 30 14:54:07 2026*/ request(262, 1790790847.984, [peer(ip(10,1,0,49)),method(get),request_uri('/alumnos/149'),path('/alumnos/149'),http_version(1-1),host(localhost),port(8083)]).
+completed(262, 0.001768, 244, 200, ok).
+/*Wed Sep 30 14:54:32 2026*/ request(263, 1790790872.637, [peer(ip(10,1,0,49)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(263, 0.001327, 17, 200, ok).
+/*Wed Sep 30 14:55:06 2026*/ request(264, 1790790906.172, [peer(ip(10,1,0,49)),method(get),request_uri('/alumnos/149'),path('/alumnos/149'),http_version(1-1),host(localhost),port(8083)]).
+completed(264, 0.001701, 223, 200, ok).
+/*Wed Sep 30 14:55:43 2026*/ request(265, 1790790943.125, [peer(ip(10,1,0,49)),method(get),request_uri('/alumnos/149'),path('/alumnos/149'),http_version(1-1),host(localhost),port(8083)]).
+completed(265, 0.001360, 225, 200, ok).
+/*Wed Sep 30 15:13:35 2026*/ request(266, 1790792015.700, [peer(ip(10,1,0,39)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(266, 0.042450, 98, 200, ok).
+/*Wed Sep 30 15:13:43 2026*/ request(267, 1790792023.671, [peer(ip(10,1,0,39)),method(get),request_uri('/materias/algebra/promedio'),path('/materias/algebra/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(267, 0.002884, 40, 200, ok).
+/*Wed Sep 30 15:13:47 2026*/ request(268, 1790792027.287, [peer(ip(10,1,0,39)),method(get),request_uri('/alumnos/139'),path('/alumnos/139'),http_version(1-1),host(localhost),port(8083)]).
+completed(268, 0.002562, 233, 200, ok).
+/*Wed Sep 30 15:14:03 2026*/ request(269, 1790792043.057, [peer(ip(10,1,0,39)),method(get),request_uri('/alumnos/139'),path('/alumnos/139'),http_version(1-1),host(localhost),port(8083)]).
+completed(269, 0.002510, 185, 200, ok).
+/*Wed Sep 30 15:14:08 2026*/ request(270, 1790792048.038, [peer(ip(10,1,0,39)),method(get),request_uri('/materias/logica/promedio'),path('/materias/logica/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(270, 0.001593, 58, 200, ok).
+/*Wed Sep 30 15:14:40 2026*/ request(271, 1790792080.976, [peer(ip(10,1,0,39)),method(get),request_uri('/materias/logica/promedio'),path('/materias/logica/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(271, 0.001651, 45, 200, ok).
+/*Wed Sep 30 15:22:42 2026*/ request(272, 1790792562.039, [peer(ip(10,1,0,12)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(272, 0.047089, 36, 401, ok).
+/*Wed Sep 30 15:22:53 2026*/ request(273, 1790792573.533, [peer(ip(10,1,0,12)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(273, 0.043961, 36, 401, ok).
+/*Wed Sep 30 15:23:08 2026*/ request(274, 1790792588.389, [peer(ip(10,1,0,12)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(274, 0.044629, 98, 200, ok).
+/*Wed Sep 30 15:23:41 2026*/ request(275, 1790792621.762, [peer(ip(10,1,0,12)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(275, 0.002886, 17, 200, ok).
+/*Wed Sep 30 15:24:08 2026*/ request(276, 1790792648.469, [peer(ip(10,1,0,12)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(276, 0.000879, 412, 200, ok).
+/*Wed Sep 30 15:24:14 2026*/ request(277, 1790792654.428, [peer(ip(10,1,0,12)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(277, 0.002549, 17, 200, ok).
+/*Wed Sep 30 15:24:46 2026*/ request(278, 1790792686.214, [peer(ip(10,1,0,12)),method(get),request_uri('/ranking'),path('/ranking'),http_version(1-1),host(localhost),port(8083)]).
+completed(278, 0.002383, 1035, 200, ok).
+/*Wed Sep 30 15:25:08 2026*/ request(279, 1790792708.831, [peer(ip(10,1,0,12)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(279, 0.002431, 412, 200, ok).
+/*Wed Sep 30 15:25:26 2026*/ request(280, 1790792726.890, [peer(ip(10,1,0,12)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(280, 0.002553, 412, 200, ok).
+/*Wed Sep 30 15:25:41 2026*/ request(281, 1790792741.993, [peer(ip(10,1,0,12)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(281, 0.002519, 17, 200, ok).
+/*Wed Sep 30 15:25:54 2026*/ request(282, 1790792754.520, [peer(ip(10,1,0,12)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(282, 0.001359, 17, 200, ok).
+/*Wed Sep 30 15:26:07 2026*/ request(283, 1790792767.149, [peer(ip(10,1,0,12)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(283, 0.002853, 17, 200, ok).
+/*Wed Sep 30 15:38:10 2026*/ request(284, 1790793490.977, [peer(ip(10,1,0,53)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(284, 0.043164, 36, 401, ok).
+/*Wed Sep 30 15:38:24 2026*/ request(285, 1790793504.892, [peer(ip(10,1,0,53)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(285, 0.042141, 36, 401, ok).
+/*Wed Sep 30 15:38:28 2026*/ request(286, 1790793508.100, [peer(ip(10,1,0,53)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(286, 0.045265, 98, 200, ok).
+/*Wed Sep 30 15:38:48 2026*/ request(287, 1790793528.362, [peer(ip(10,1,0,53)),method(get),request_uri('/alumnos/153'),path('/alumnos/153'),http_version(1-1),host(localhost),port(8083)]).
+completed(287, 0.000979, 231, 200, ok).
+/*Wed Sep 30 15:39:03 2026*/ request(288, 1790793543.162, [peer(ip(10,1,0,53)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(288, 0.001389, 412, 200, ok).
+/*Wed Sep 30 15:39:32 2026*/ request(289, 1790793572.543, [peer(ip(10,1,0,53)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(289, 0.001768, 41, 409, ok).
+/*Wed Sep 30 15:39:53 2026*/ request(290, 1790793593.941, [peer(ip(10,1,0,53)),method(get),request_uri('/ranking'),path('/ranking'),http_version(1-1),host(localhost),port(8083)]).
+completed(290, 0.001269, 969, 200, ok).
+/*Wed Sep 30 15:40:02 2026*/ request(291, 1790793602.336, [peer(ip(10,1,0,53)),method(get),request_uri('/materias/sistemas/promedio'),path('/materias/sistemas/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(291, 0.002641, 52, 200, ok).
+/*Wed Sep 30 15:40:12 2026*/ request(292, 1790793612.377, [peer(ip(10,1,0,53)),method(get),request_uri('/materias/analisis/promedio'),path('/materias/analisis/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(292, 0.002597, 40, 200, ok).
+/*Wed Sep 30 15:40:44 2026*/ request(293, 1790793644.891, [peer(ip(10,1,0,53)),method(get),request_uri('/alumnos/153'),path('/alumnos/153'),http_version(1-1),host(localhost),port(8083)]).
+completed(293, 0.001337, 188, 200, ok).
+/*Wed Sep 30 15:41:08 2026*/ request(294, 1790793668.279, [peer(ip(10,1,0,53)),method(get),request_uri('/materias/fisica/promedio'),path('/materias/fisica/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(294, 0.001324, 53, 200, ok).
+/*Wed Sep 30 15:45:34 2026*/ request(295, 1790793934.317, [peer(ip(10,1,0,31)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(295, 0.043465, 36, 401, ok).
+/*Wed Sep 30 15:45:43 2026*/ request(296, 1790793943.279, [peer(ip(10,1,0,31)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(296, 0.048483, 98, 200, ok).
+/*Wed Sep 30 15:45:53 2026*/ request(297, 1790793953.886, [peer(ip(10,1,0,31)),method(get),request_uri('/ranking'),path('/ranking'),http_version(1-1),host(localhost),port(8083)]).
+completed(297, 0.002291, 906, 200, ok).
+/*Wed Sep 30 15:46:26 2026*/ request(298, 1790793986.857, [peer(ip(10,1,0,31)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(298, 0.002211, 412, 200, ok).
+/*Wed Sep 30 15:46:54 2026*/ request(299, 1790794014.544, [peer(ip(10,1,0,31)),method(get),request_uri('/ranking'),path('/ranking'),http_version(1-1),host(localhost),port(8083)]).
+completed(299, 0.001475, 932, 200, ok).
+/*Wed Sep 30 15:46:59 2026*/ request(300, 1790794019.923, [peer(ip(10,1,0,31)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(300, 0.003255, 17, 200, ok).
+/*Wed Sep 30 15:47:22 2026*/ request(301, 1790794042.509, [peer(ip(10,1,0,31)),method(get),request_uri('/materias/sistemas/promedio'),path('/materias/sistemas/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(301, 0.002120, 45, 200, ok).
+/*Wed Sep 30 15:47:41 2026*/ request(302, 1790794061.185, [peer(ip(10,1,0,31)),method(get),request_uri('/materias/fisica/promedio'),path('/materias/fisica/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(302, 0.001361, 49, 200, ok).
+/*Wed Sep 30 15:47:56 2026*/ request(303, 1790794076.813, [peer(ip(10,1,0,31)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(303, 0.002187, 17, 200, ok).
+/*Wed Sep 30 15:48:23 2026*/ request(304, 1790794103.772, [peer(ip(10,1,0,31)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(304, 0.001869, 17, 200, ok).
+/*Wed Sep 30 16:02:43 2026*/ request(305, 1790794963.659, [peer(ip(10,1,0,6)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(305, 0.044945, 98, 200, ok).
+/*Wed Sep 30 16:03:16 2026*/ request(306, 1790794996.639, [peer(ip(10,1,0,6)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(306, 0.002163, 412, 200, ok).
+/*Wed Sep 30 16:03:50 2026*/ request(307, 1790795030.604, [peer(ip(10,1,0,6)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(307, 0.001385, 412, 200, ok).
+/*Wed Sep 30 16:04:23 2026*/ request(308, 1790795063.125, [peer(ip(10,1,0,6)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(308, 0.001029, 412, 200, ok).
+/*Wed Sep 30 16:04:45 2026*/ request(309, 1790795085.999, [peer(ip(10,1,0,6)),method(get),request_uri('/ranking'),path('/ranking'),http_version(1-1),host(localhost),port(8083)]).
+completed(309, 0.002201, 1048, 200, ok).
+/*Wed Sep 30 16:05:20 2026*/ request(310, 1790795120.186, [peer(ip(10,1,0,6)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(310, 0.001539, 412, 200, ok).
+/*Wed Sep 30 16:11:34 2026*/ request(311, 1790795494.938, [peer(ip(10,1,0,17)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(311, 0.048773, 98, 200, ok).
+/*Wed Sep 30 16:11:40 2026*/ request(312, 1790795500.303, [peer(ip(10,1,0,17)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(312, 0.003143, 41, 409, ok).
+/*Wed Sep 30 16:12:14 2026*/ request(313, 1790795534.961, [peer(ip(10,1,0,17)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(313, 0.001780, 412, 200, ok).
+/*Wed Sep 30 16:12:49 2026*/ request(314, 1790795569.035, [peer(ip(10,1,0,17)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(314, 0.001443, 412, 200, ok).
+/*Wed Sep 30 16:12:53 2026*/ request(315, 1790795573.339, [peer(ip(10,1,0,17)),method(get),request_uri('/alumnos/117'),path('/alumnos/117'),http_version(1-1),host(localhost),port(8083)]).
+completed(315, 0.001048, 213, 200, ok).
+/*Wed Sep 30 16:13:21 2026*/ request(316, 1790795601.005, [peer(ip(10,1,0,17)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(316, 0.002219, 17, 200, ok).
+/*Wed Sep 30 16:13:27 2026*/ request(317, 1790795607.774, [peer(ip(10,1,0,17)),method(get),request_uri('/materias/logica/promedio'),path('/materias/logica/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(317, 0.001696, 44, 200, ok).
+/*Wed Sep 30 16:13:30 2026*/ request(318, 1790795610.095, [peer(ip(10,1,0,17)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(318, 0.001769, 412, 200, ok).
+/*Wed Sep 30 16:13:47 2026*/ request(319, 1790795627.082, [peer(ip(10,1,0,17)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(319, 0.002557, 412, 200, ok).
+/*Wed Sep 30 16:21:40 2026*/ request(320, 1790796100.132, [peer(ip(10,1,0,52)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(320, 0.044722, 36, 401, ok).
+/*Wed Sep 30 16:21:50 2026*/ request(321, 1790796110.839, [peer(ip(10,1,0,52)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(321, 0.044326, 36, 401, ok).
+/*Wed Sep 30 16:22:03 2026*/ request(322, 1790796123.245, [peer(ip(10,1,0,52)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(322, 0.049164, 36, 401, ok).
+/*Wed Sep 30 16:22:07 2026*/ request(323, 1790796127.286, [peer(ip(10,1,0,52)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(323, 0.042181, 36, 401, ok).
+/*Wed Sep 30 16:22:18 2026*/ request(324, 1790796138.694, [peer(ip(10,1,0,52)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(324, 0.049863, 36, 401, ok).
+/*Wed Sep 30 16:22:33 2026*/ request(325, 1790796153.585, [peer(ip(10,1,0,52)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(325, 0.049883, 98, 200, ok).
+/*Wed Sep 30 16:23:05 2026*/ request(326, 1790796185.143, [peer(ip(10,1,0,52)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(326, 0.001727, 17, 200, ok).
+/*Wed Sep 30 16:23:43 2026*/ request(327, 1790796223.489, [peer(ip(10,1,0,52)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(327, 0.002622, 412, 200, ok).
+/*Wed Sep 30 16:23:46 2026*/ request(328, 1790796226.067, [peer(ip(10,1,0,52)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(328, 0.001238, 412, 200, ok).
+/*Wed Sep 30 16:24:24 2026*/ request(329, 1790796264.412, [peer(ip(10,1,0,52)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(329, 0.003164, 41, 409, ok).
+/*Wed Sep 30 16:24:47 2026*/ request(330, 1790796287.367, [peer(ip(10,1,0,52)),method(get),request_uri('/materias/analisis/promedio'),path('/materias/analisis/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(330, 0.000915, 58, 200, ok).
+/*Wed Sep 30 16:24:55 2026*/ request(331, 1790796295.959, [peer(ip(10,1,0,52)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(331, 0.000887, 412, 200, ok).
+/*Wed Sep 30 16:25:26 2026*/ request(332, 1790796326.791, [peer(ip(10,1,0,52)),method(get),request_uri('/materias/algebra/promedio'),path('/materias/algebra/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(332, 0.003157, 50, 200, ok).
+/*Wed Sep 30 16:25:39 2026*/ request(333, 1790796339.573, [peer(ip(10,1,0,52)),method(get),request_uri('/materias/algebra/promedio'),path('/materias/algebra/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(333, 0.000808, 51, 200, ok).
+/*Wed Sep 30 16:25:46 2026*/ request(334, 1790796346.450, [peer(ip(10,1,0,52)),method(get),request_uri('/ranking'),path('/ranking'),http_version(1-1),host(localhost),port(8083)]).
+completed(334, 0.001622, 915, 200, ok).
+/*Wed Sep 30 16:25:48 2026*/ request(335, 1790796348.567, [peer(ip(10,1,0,51)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(335, 0.042067, 98, 200, ok).
+/*Wed Sep 30 16:26:05 2026*/ request(336, 1790796365.266, [peer(ip(10,1,0,51)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(336, 0.002616, 412, 200, ok).
+/*Wed Sep 30 16:26:22 2026*/ request(337, 1790796382.014, [peer(ip(10,1,0,52)),method(get),request_uri('/alumnos/152'),path('/alumnos/152'),http_version(1-1),host(localhost),port(8083)]).
+completed(337, 0.002330, 249, 200, ok).
+/*Wed Sep 30 16:26:25 2026*/ request(338, 1790796385.302, [peer(ip(10,1,0,51)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(338, 0.001834, 412, 200, ok).
+/*Wed Sep 30 16:26:36 2026*/ request(339, 1790796396.393, [peer(ip(10,1,0,51)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(339, 0.002813, 412, 200, ok).
+/*Wed Sep 30 16:26:59 2026*/ request(340, 1790796419.184, [peer(ip(10,1,0,52)),method(get),request_uri('/alumnos/152'),path('/alumnos/152'),http_version(1-1),host(localhost),port(8083)]).
+completed(340, 0.002044, 193, 200, ok).
+/*Wed Sep 30 16:27:02 2026*/ request(341, 1790796422.470, [peer(ip(10,1,0,51)),method(get),request_uri('/ranking'),path('/ranking'),http_version(1-1),host(localhost),port(8083)]).
+completed(341, 0.001904, 1080, 200, ok).
+/*Wed Sep 30 16:27:36 2026*/ request(342, 1790796456.880, [peer(ip(10,1,0,52)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(342, 0.002832, 17, 200, ok).
+/*Wed Sep 30 16:27:40 2026*/ request(343, 1790796460.307, [peer(ip(10,1,0,51)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(343, 0.002028, 412, 200, ok).
+/*Wed Sep 30 16:28:11 2026*/ request(344, 1790796491.489, [peer(ip(10,1,0,51)),method(get),request_uri('/alumnos/151'),path('/alumnos/151'),http_version(1-1),host(localhost),port(8083)]).
+completed(344, 0.000932, 182, 200, ok).
+/*Wed Sep 30 16:28:34 2026*/ request(345, 1790796514.476, [peer(ip(10,1,0,51)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(345, 0.002880, 412, 200, ok).
+/*Wed Sep 30 16:28:41 2026*/ request(346, 1790796521.826, [peer(ip(10,1,0,51)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(346, 0.001028, 412, 200, ok).
+/*Wed Sep 30 16:36:40 2026*/ request(347, 1790797000.698, [peer(ip(198,51,100,40)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(347, 0.048812, 36, 401, ok).
+/*Wed Sep 30 16:41:10 2026*/ request(348, 1790797270.219, [peer(ip(198,51,100,40)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(348, 0.049340, 36, 401, ok).
+/*Wed Sep 30 16:44:33 2026*/ request(349, 1790797473.005, [peer(ip(10,1,0,18)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(349, 0.045089, 98, 200, ok).
+/*Wed Sep 30 16:44:46 2026*/ request(350, 1790797486.547, [peer(ip(10,1,0,18)),method(get),request_uri('/alumnos/118'),path('/alumnos/118'),http_version(1-1),host(localhost),port(8083)]).
+completed(350, 0.002391, 198, 200, ok).
+/*Wed Sep 30 16:45:15 2026*/ request(351, 1790797515.038, [peer(ip(198,51,100,40)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(351, 0.044902, 36, 401, ok).
+/*Wed Sep 30 16:45:26 2026*/ request(352, 1790797526.066, [peer(ip(10,1,0,18)),method(get),request_uri('/alumnos/118'),path('/alumnos/118'),http_version(1-1),host(localhost),port(8083)]).
+completed(352, 0.003041, 256, 200, ok).
+/*Wed Sep 30 16:45:29 2026*/ request(353, 1790797529.474, [peer(ip(10,1,0,18)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(353, 0.002922, 412, 200, ok).
+/*Wed Sep 30 16:46:08 2026*/ request(354, 1790797568.233, [peer(ip(10,1,0,18)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(354, 0.001882, 412, 200, ok).
+/*Wed Sep 30 16:46:44 2026*/ request(355, 1790797604.029, [peer(ip(10,1,0,18)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(355, 0.001521, 412, 200, ok).
+/*Wed Sep 30 16:47:21 2026*/ request(356, 1790797641.049, [peer(ip(10,1,0,18)),method(get),request_uri('/materias/algebra/promedio'),path('/materias/algebra/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(356, 0.001955, 47, 200, ok).
+/*Wed Sep 30 16:47:41 2026*/ request(357, 1790797661.654, [peer(ip(10,1,0,18)),method(get),request_uri('/materias/algebra/promedio'),path('/materias/algebra/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(357, 0.002865, 48, 200, ok).
+/*Wed Sep 30 16:47:57 2026*/ request(358, 1790797677.876, [peer(ip(10,1,0,18)),method(get),request_uri('/ranking'),path('/ranking'),http_version(1-1),host(localhost),port(8083)]).
+completed(358, 0.002043, 915, 200, ok).
+/*Wed Sep 30 16:51:23 2026*/ request(359, 1790797883.413, [peer(ip(198,51,100,40)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(359, 0.047517, 36, 401, ok).
+/*Wed Sep 30 16:55:13 2026*/ request(360, 1790798113.562, [peer(ip(198,51,100,40)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(360, 0.042880, 36, 401, ok).
+/*Wed Sep 30 17:00:25 2026*/ request(361, 1790798425.494, [peer(ip(198,51,100,40)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(361, 0.047142, 36, 401, ok).
+/*Wed Sep 30 17:00:35 2026*/ request(362, 1790798435.487, [peer(ip(10,1,0,37)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(362, 0.045932, 36, 401, ok).
+/*Wed Sep 30 17:00:46 2026*/ request(363, 1790798446.187, [peer(ip(10,1,0,37)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(363, 0.047404, 98, 200, ok).
+/*Wed Sep 30 17:00:57 2026*/ request(364, 1790798457.613, [peer(ip(10,1,0,37)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(364, 0.000902, 412, 200, ok).
+/*Wed Sep 30 17:01:30 2026*/ request(365, 1790798490.057, [peer(ip(10,1,0,37)),method(get),request_uri('/alumnos/137'),path('/alumnos/137'),http_version(1-1),host(localhost),port(8083)]).
+completed(365, 0.001856, 213, 200, ok).
+/*Wed Sep 30 17:01:56 2026*/ request(366, 1790798516.366, [peer(ip(10,1,0,37)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(366, 0.001191, 17, 200, ok).
+/*Wed Sep 30 17:02:12 2026*/ request(367, 1790798532.504, [peer(ip(10,1,0,37)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(367, 0.001012, 17, 200, ok).
+/*Wed Sep 30 17:02:16 2026*/ request(368, 1790798536.055, [peer(ip(10,1,0,37)),method(get),request_uri('/materias/analisis/promedio'),path('/materias/analisis/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(368, 0.003068, 43, 200, ok).
+/*Wed Sep 30 17:02:43 2026*/ request(369, 1790798563.360, [peer(ip(10,1,0,37)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(369, 0.002110, 412, 200, ok).
+/*Wed Sep 30 17:05:30 2026*/ request(370, 1790798730.067, [peer(ip(198,51,100,40)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(370, 0.049595, 36, 401, ok).
+/*Wed Sep 30 17:06:15 2026*/ request(371, 1790798775.615, [peer(ip(10,1,0,41)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(371, 0.049071, 36, 401, ok).
+/*Wed Sep 30 17:06:23 2026*/ request(372, 1790798783.228, [peer(ip(10,1,0,41)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(372, 0.042554, 98, 200, ok).
+/*Wed Sep 30 17:06:30 2026*/ request(373, 1790798790.032, [peer(ip(10,1,0,41)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(373, 0.003129, 17, 200, ok).
+/*Wed Sep 30 17:06:40 2026*/ request(374, 1790798800.217, [peer(ip(10,1,0,41)),method(get),request_uri('/ranking'),path('/ranking'),http_version(1-1),host(localhost),port(8083)]).
+completed(374, 0.002516, 976, 200, ok).
+/*Wed Sep 30 17:06:59 2026*/ request(375, 1790798819.874, [peer(ip(10,1,0,41)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(375, 0.001222, 412, 200, ok).
+/*Wed Sep 30 17:07:05 2026*/ request(376, 1790798825.768, [peer(ip(10,1,0,41)),method(get),request_uri('/materias/fisica/promedio'),path('/materias/fisica/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(376, 0.002964, 43, 200, ok).
+/*Wed Sep 30 17:07:39 2026*/ request(377, 1790798859.506, [peer(ip(10,1,0,41)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(377, 0.002527, 412, 200, ok).
+/*Wed Sep 30 17:11:45 2026*/ request(378, 1790799105.517, [peer(ip(198,51,100,40)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(378, 0.042650, 36, 401, ok).
+/*Wed Sep 30 17:27:40 2026*/ request(379, 1790800060.426, [peer(ip(10,1,0,16)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(379, 0.049409, 36, 401, ok).
+/*Wed Sep 30 17:27:50 2026*/ request(380, 1790800070.474, [peer(ip(10,1,0,16)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(380, 0.042339, 36, 401, ok).
+/*Wed Sep 30 17:27:58 2026*/ request(381, 1790800078.987, [peer(ip(10,1,0,16)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(381, 0.042657, 98, 200, ok).
+/*Wed Sep 30 17:28:05 2026*/ request(382, 1790800085.507, [peer(ip(10,1,0,16)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(382, 0.002592, 412, 200, ok).
+/*Wed Sep 30 17:28:33 2026*/ request(383, 1790800113.087, [peer(ip(10,1,0,16)),method(get),request_uri('/materias/fisica/promedio'),path('/materias/fisica/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(383, 0.001340, 53, 200, ok).
+/*Wed Sep 30 17:28:53 2026*/ request(384, 1790800133.600, [peer(ip(10,1,0,16)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(384, 0.003129, 412, 200, ok).
+/*Wed Sep 30 17:29:03 2026*/ request(385, 1790800143.467, [peer(ip(10,1,0,16)),method(get),request_uri('/materias/analisis/promedio'),path('/materias/analisis/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(385, 0.002476, 54, 200, ok).
+/*Wed Sep 30 17:29:25 2026*/ request(386, 1790800165.063, [peer(ip(10,1,0,16)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(386, 0.002372, 412, 200, ok).
+/*Wed Sep 30 17:29:45 2026*/ request(387, 1790800185.242, [peer(ip(10,1,0,16)),method(get),request_uri('/materias/analisis/promedio'),path('/materias/analisis/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(387, 0.001315, 44, 200, ok).
+/*Wed Sep 30 17:30:03 2026*/ request(388, 1790800203.608, [peer(ip(10,1,0,16)),method(get),request_uri('/materias/logica/promedio'),path('/materias/logica/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(388, 0.003096, 53, 200, ok).
+/*Wed Sep 30 17:30:38 2026*/ request(389, 1790800238.962, [peer(ip(10,1,0,16)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(389, 0.001847, 412, 200, ok).
+/*Wed Sep 30 17:30:51 2026*/ request(390, 1790800251.689, [peer(ip(10,1,0,16)),method(get),request_uri('/alumnos/116'),path('/alumnos/116'),http_version(1-1),host(localhost),port(8083)]).
+completed(390, 0.002758, 245, 200, ok).
+/*Wed Sep 30 17:31:13 2026*/ request(391, 1790800273.263, [peer(ip(10,1,0,16)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(391, 0.001648, 412, 200, ok).
+/*Wed Sep 30 17:34:21 2026*/ request(392, 1790800461.130, [peer(ip(10,1,0,21)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(392, 0.048162, 36, 401, ok).
+/*Wed Sep 30 17:34:27 2026*/ request(393, 1790800467.592, [peer(ip(10,1,0,21)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(393, 0.044836, 36, 401, ok).
+/*Wed Sep 30 17:34:37 2026*/ request(394, 1790800477.739, [peer(ip(10,1,0,21)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(394, 0.045749, 98, 200, ok).
+/*Wed Sep 30 17:34:48 2026*/ request(395, 1790800488.859, [peer(ip(10,1,0,21)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(395, 0.002594, 412, 200, ok).
+/*Wed Sep 30 17:35:01 2026*/ request(396, 1790800501.510, [peer(ip(10,1,0,21)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(396, 0.002467, 412, 200, ok).
+/*Wed Sep 30 17:35:36 2026*/ request(397, 1790800536.204, [peer(ip(10,1,0,21)),method(get),request_uri('/materias/algebra/promedio'),path('/materias/algebra/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(397, 0.002166, 58, 200, ok).
+/*Wed Sep 30 17:35:42 2026*/ request(398, 1790800542.215, [peer(ip(10,1,0,21)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(398, 0.001939, 17, 200, ok).
+/*Wed Sep 30 17:36:18 2026*/ request(399, 1790800578.738, [peer(ip(10,1,0,21)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(399, 0.001316, 412, 200, ok).
+/*Wed Sep 30 17:36:36 2026*/ request(400, 1790800596.885, [peer(ip(10,1,0,21)),method(get),request_uri('/alumnos/121'),path('/alumnos/121'),http_version(1-1),host(localhost),port(8083)]).
+completed(400, 0.001311, 220, 200, ok).
+/*Wed Sep 30 17:36:42 2026*/ request(401, 1790800602.939, [peer(ip(10,1,0,21)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(401, 0.002130, 412, 200, ok).
+/*Wed Sep 30 17:36:55 2026*/ request(402, 1790800615.263, [peer(ip(10,1,0,21)),method(get),request_uri('/ranking'),path('/ranking'),http_version(1-1),host(localhost),port(8083)]).
+completed(402, 0.001667, 965, 200, ok).
+/*Wed Sep 30 17:52:24 2026*/ request(403, 1790801544.219, [peer(ip(10,1,0,22)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(403, 0.043116, 36, 401, ok).
+/*Wed Sep 30 17:52:38 2026*/ request(404, 1790801558.300, [peer(ip(10,1,0,22)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(404, 0.047092, 98, 200, ok).
+/*Wed Sep 30 17:53:00 2026*/ request(405, 1790801580.160, [peer(ip(10,1,0,22)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(405, 0.002003, 412, 200, ok).
+/*Wed Sep 30 17:53:07 2026*/ request(406, 1790801587.346, [peer(ip(10,1,0,22)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(406, 0.001253, 17, 200, ok).
+/*Wed Sep 30 17:53:20 2026*/ request(407, 1790801600.273, [peer(ip(10,1,0,22)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(407, 0.000961, 17, 200, ok).
+/*Wed Sep 30 17:53:44 2026*/ request(408, 1790801624.921, [peer(ip(10,1,0,22)),method(get),request_uri('/ranking'),path('/ranking'),http_version(1-1),host(localhost),port(8083)]).
+completed(408, 0.001453, 947, 200, ok).
+/*Wed Sep 30 17:53:50 2026*/ request(409, 1790801630.795, [peer(ip(10,1,0,22)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(409, 0.001074, 17, 200, ok).
+/*Wed Sep 30 17:54:30 2026*/ request(410, 1790801670.652, [peer(ip(10,1,0,22)),method(get),request_uri('/materias/logica/promedio'),path('/materias/logica/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(410, 0.001801, 54, 200, ok).
+/*Wed Sep 30 17:54:38 2026*/ request(411, 1790801678.674, [peer(ip(10,1,0,22)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(411, 0.001405, 412, 200, ok).
+/*Wed Sep 30 17:54:46 2026*/ request(412, 1790801686.403, [peer(ip(10,1,0,22)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(412, 0.002293, 412, 200, ok).
+/*Wed Sep 30 17:55:10 2026*/ request(413, 1790801710.009, [peer(ip(10,1,0,22)),method(get),request_uri('/alumnos/122'),path('/alumnos/122'),http_version(1-1),host(localhost),port(8083)]).
+completed(413, 0.001252, 249, 200, ok).
+/*Wed Sep 30 18:13:21 2026*/ request(414, 1790802801.959, [peer(ip(10,1,0,42)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(414, 0.044764, 36, 401, ok).
+/*Wed Sep 30 18:13:28 2026*/ request(415, 1790802808.988, [peer(ip(10,1,0,42)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(415, 0.045727, 36, 401, ok).
+/*Wed Sep 30 18:13:37 2026*/ request(416, 1790802817.078, [peer(ip(10,1,0,42)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(416, 0.048694, 98, 200, ok).
+/*Wed Sep 30 18:14:10 2026*/ request(417, 1790802850.129, [peer(ip(10,1,0,42)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(417, 0.000896, 412, 200, ok).
+/*Wed Sep 30 18:14:34 2026*/ request(418, 1790802874.416, [peer(ip(10,1,0,42)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(418, 0.000968, 17, 200, ok).
+/*Wed Sep 30 18:15:13 2026*/ request(419, 1790802913.738, [peer(ip(10,1,0,42)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(419, 0.002103, 412, 200, ok).
+/*Wed Sep 30 18:15:42 2026*/ request(420, 1790802942.264, [peer(ip(10,1,0,42)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(420, 0.002074, 17, 200, ok).
+/*Wed Sep 30 18:16:19 2026*/ request(421, 1790802979.015, [peer(ip(10,1,0,42)),method(get),request_uri('/ranking'),path('/ranking'),http_version(1-1),host(localhost),port(8083)]).
+completed(421, 0.001875, 996, 200, ok).
+/*Wed Sep 30 18:29:21 2026*/ request(422, 1790803761.108, [peer(ip(10,1,0,10)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(422, 0.047483, 36, 401, ok).
+/*Wed Sep 30 18:29:29 2026*/ request(423, 1790803769.021, [peer(ip(10,1,0,10)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(423, 0.048747, 36, 401, ok).
+/*Wed Sep 30 18:29:39 2026*/ request(424, 1790803779.046, [peer(ip(10,1,0,10)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(424, 0.043270, 98, 200, ok).
+/*Wed Sep 30 18:29:59 2026*/ request(425, 1790803799.683, [peer(ip(10,1,0,10)),method(get),request_uri('/alumnos/110'),path('/alumnos/110'),http_version(1-1),host(localhost),port(8083)]).
+completed(425, 0.002276, 219, 200, ok).
+/*Wed Sep 30 18:30:22 2026*/ request(426, 1790803822.866, [peer(ip(10,1,0,10)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(426, 0.002306, 412, 200, ok).
+/*Wed Sep 30 18:30:46 2026*/ request(427, 1790803846.089, [peer(ip(10,1,0,10)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(427, 0.001276, 412, 200, ok).
+/*Wed Sep 30 18:35:25 2026*/ request(428, 1790804125.393, [peer(ip(10,1,0,11)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(428, 0.048034, 98, 200, ok).
+/*Wed Sep 30 18:35:44 2026*/ request(429, 1790804144.011, [peer(ip(10,1,0,11)),method(get),request_uri('/materias/fisica/promedio'),path('/materias/fisica/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(429, 0.001259, 53, 200, ok).
+/*Wed Sep 30 18:35:48 2026*/ request(430, 1790804148.094, [peer(ip(10,1,0,11)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(430, 0.000808, 412, 200, ok).
+/*Wed Sep 30 18:36:17 2026*/ request(431, 1790804177.234, [peer(ip(10,1,0,11)),method(get),request_uri('/materias/logica/promedio'),path('/materias/logica/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(431, 0.002957, 47, 200, ok).
+/*Wed Sep 30 18:36:27 2026*/ request(432, 1790804187.785, [peer(ip(10,1,0,11)),method(get),request_uri('/materias/algebra/promedio'),path('/materias/algebra/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(432, 0.001665, 56, 200, ok).
+/*Wed Sep 30 18:37:04 2026*/ request(433, 1790804224.087, [peer(ip(10,1,0,11)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(433, 0.002827, 17, 200, ok).
+/*Wed Sep 30 18:37:25 2026*/ request(434, 1790804245.979, [peer(ip(10,1,0,11)),method(get),request_uri('/alumnos/111'),path('/alumnos/111'),http_version(1-1),host(localhost),port(8083)]).
+completed(434, 0.003156, 229, 200, ok).
+/*Wed Sep 30 18:37:55 2026*/ request(435, 1790804275.348, [peer(ip(10,1,0,11)),method(get),request_uri('/ranking'),path('/ranking'),http_version(1-1),host(localhost),port(8083)]).
+completed(435, 0.002706, 945, 200, ok).
+/*Wed Sep 30 18:38:05 2026*/ request(436, 1790804285.450, [peer(ip(10,1,0,11)),method(get),request_uri('/alumnos/111'),path('/alumnos/111'),http_version(1-1),host(localhost),port(8083)]).
+completed(436, 0.001622, 215, 200, ok).
+/*Wed Sep 30 18:51:46 2026*/ request(437, 1790805106.355, [peer(ip(10,1,0,28)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(437, 0.045535, 98, 200, ok).
+/*Wed Sep 30 18:51:53 2026*/ request(438, 1790805113.171, [peer(ip(10,1,0,28)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(438, 0.001095, 412, 200, ok).
+/*Wed Sep 30 18:52:29 2026*/ request(439, 1790805149.132, [peer(ip(10,1,0,28)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(439, 0.001569, 17, 200, ok).
+/*Wed Sep 30 18:52:35 2026*/ request(440, 1790805155.057, [peer(ip(10,1,0,28)),method(get),request_uri('/materias/algebra/promedio'),path('/materias/algebra/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(440, 0.003225, 42, 200, ok).
+/*Wed Sep 30 18:52:47 2026*/ request(441, 1790805167.628, [peer(ip(10,1,0,28)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(441, 0.002475, 412, 200, ok).
+/*Wed Sep 30 18:53:01 2026*/ request(442, 1790805181.571, [peer(ip(10,1,0,28)),method(get),request_uri('/alumnos/128'),path('/alumnos/128'),http_version(1-1),host(localhost),port(8083)]).
+completed(442, 0.003067, 258, 200, ok).
+/*Wed Sep 30 18:53:40 2026*/ request(443, 1790805220.875, [peer(ip(10,1,0,28)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(443, 0.002107, 412, 200, ok).
+/*Wed Sep 30 18:53:50 2026*/ request(444, 1790805230.517, [peer(ip(10,1,0,28)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(444, 0.002151, 17, 200, ok).
+/*Wed Sep 30 18:53:55 2026*/ request(445, 1790805235.184, [peer(ip(10,1,0,28)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(445, 0.002341, 412, 200, ok).
+/*Wed Sep 30 18:54:18 2026*/ request(446, 1790805258.238, [peer(ip(10,1,0,28)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(446, 0.001779, 412, 200, ok).
+/*Wed Sep 30 19:04:00 2026*/ request(447, 1790805840.853, [peer(ip(10,1,0,60)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(447, 0.044833, 98, 200, ok).
+/*Wed Sep 30 19:04:36 2026*/ request(448, 1790805876.943, [peer(ip(10,1,0,60)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(448, 0.003078, 17, 200, ok).
+/*Wed Sep 30 19:04:45 2026*/ request(449, 1790805885.201, [peer(ip(10,1,0,60)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(449, 0.002265, 41, 409, ok).
+/*Wed Sep 30 19:05:09 2026*/ request(450, 1790805909.581, [peer(ip(10,1,0,60)),method(get),request_uri('/ranking'),path('/ranking'),http_version(1-1),host(localhost),port(8083)]).
+completed(450, 0.002201, 934, 200, ok).
+/*Wed Sep 30 19:05:43 2026*/ request(451, 1790805943.596, [peer(ip(10,1,0,60)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(451, 0.001029, 17, 200, ok).
+/*Wed Sep 30 19:05:52 2026*/ request(452, 1790805952.430, [peer(ip(10,1,0,60)),method(get),request_uri('/ranking'),path('/ranking'),http_version(1-1),host(localhost),port(8083)]).
+completed(452, 0.002642, 974, 200, ok).
+/*Wed Sep 30 19:06:29 2026*/ request(453, 1790805989.893, [peer(ip(10,1,0,60)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(453, 0.001494, 17, 200, ok).
+/*Wed Sep 30 19:06:48 2026*/ request(454, 1790806008.049, [peer(ip(10,1,0,60)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(454, 0.002632, 17, 200, ok).
+/*Wed Sep 30 19:07:11 2026*/ request(455, 1790806031.286, [peer(ip(10,1,0,60)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(455, 0.002305, 412, 200, ok).
+/*Wed Sep 30 19:07:26 2026*/ request(456, 1790806046.864, [peer(ip(10,1,0,60)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(456, 0.001259, 41, 409, ok).
+/*Wed Sep 30 19:08:05 2026*/ request(457, 1790806085.614, [peer(ip(10,1,0,60)),method(get),request_uri('/alumnos/160'),path('/alumnos/160'),http_version(1-1),host(localhost),port(8083)]).
+completed(457, 0.002799, 182, 200, ok).
+/*Wed Sep 30 19:19:57 2026*/ request(458, 1790806797.943, [peer(ip(10,1,0,28)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(458, 0.042402, 36, 401, ok).
+/*Wed Sep 30 19:20:03 2026*/ request(459, 1790806803.489, [peer(ip(10,1,0,28)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(459, 0.048969, 98, 200, ok).
+/*Wed Sep 30 19:20:31 2026*/ request(460, 1790806831.702, [peer(ip(10,1,0,28)),method(get),request_uri('/alumnos/128'),path('/alumnos/128'),http_version(1-1),host(localhost),port(8083)]).
+completed(460, 0.001196, 251, 200, ok).
+/*Wed Sep 30 19:20:44 2026*/ request(461, 1790806844.470, [peer(ip(10,1,0,28)),method(get),request_uri('/alumnos/128'),path('/alumnos/128'),http_version(1-1),host(localhost),port(8083)]).
+completed(461, 0.001984, 214, 200, ok).
+/*Wed Sep 30 19:21:01 2026*/ request(462, 1790806861.470, [peer(ip(10,1,0,28)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(462, 0.002034, 41, 409, ok).
+/*Wed Sep 30 19:21:19 2026*/ request(463, 1790806879.019, [peer(ip(10,1,0,28)),method(get),request_uri('/ranking'),path('/ranking'),http_version(1-1),host(localhost),port(8083)]).
+completed(463, 0.003143, 940, 200, ok).
+/*Wed Sep 30 19:21:37 2026*/ request(464, 1790806897.226, [peer(ip(10,1,0,28)),method(get),request_uri('/materias/algebra/promedio'),path('/materias/algebra/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(464, 0.001685, 56, 200, ok).
+/*Wed Sep 30 19:22:11 2026*/ request(465, 1790806931.064, [peer(ip(10,1,0,28)),method(get),request_uri('/alumnos/128'),path('/alumnos/128'),http_version(1-1),host(localhost),port(8083)]).
+completed(465, 0.001315, 190, 200, ok).
+/*Wed Sep 30 19:22:40 2026*/ request(466, 1790806960.696, [peer(ip(10,1,0,28)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(466, 0.002716, 412, 200, ok).
+/*Wed Sep 30 19:30:36 2026*/ request(467, 1790807436.279, [peer(ip(10,1,0,48)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(467, 0.042699, 36, 401, ok).
+/*Wed Sep 30 19:30:50 2026*/ request(468, 1790807450.279, [peer(ip(10,1,0,48)),method(post),request_uri('/sesion'),path('/sesion'),http_version(1-1),host(localhost),port(8083)]).
+completed(468, 0.049246, 98, 200, ok).
+/*Wed Sep 30 19:31:26 2026*/ request(469, 1790807486.374, [peer(ip(10,1,0,48)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(469, 0.002657, 412, 200, ok).
+/*Wed Sep 30 19:31:46 2026*/ request(470, 1790807506.779, [peer(ip(10,1,0,48)),method(get),request_uri('/alumnos/148'),path('/alumnos/148'),http_version(1-1),host(localhost),port(8083)]).
+completed(470, 0.000819, 196, 200, ok).
+/*Wed Sep 30 19:32:05 2026*/ request(471, 1790807525.859, [peer(ip(10,1,0,48)),method(get),request_uri('/alumnos/148'),path('/alumnos/148'),http_version(1-1),host(localhost),port(8083)]).
+completed(471, 0.002007, 206, 200, ok).
+/*Wed Sep 30 19:32:41 2026*/ request(472, 1790807561.113, [peer(ip(10,1,0,48)),method(get),request_uri('/materias/algebra/promedio'),path('/materias/algebra/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(472, 0.001995, 49, 200, ok).
+/*Wed Sep 30 19:32:55 2026*/ request(473, 1790807575.154, [peer(ip(10,1,0,48)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(473, 0.003126, 41, 409, ok).
+/*Wed Sep 30 19:33:16 2026*/ request(474, 1790807596.323, [peer(ip(10,1,0,48)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(474, 0.001288, 412, 200, ok).
+/*Wed Sep 30 19:33:23 2026*/ request(475, 1790807603.263, [peer(ip(10,1,0,48)),method(get),request_uri('/materias/algebra/promedio'),path('/materias/algebra/promedio'),http_version(1-1),host(localhost),port(8083)]).
+completed(475, 0.000867, 54, 200, ok).
+/*Wed Sep 30 19:33:30 2026*/ request(476, 1790807610.486, [peer(ip(10,1,0,48)),method(get),request_uri('/ranking'),path('/ranking'),http_version(1-1),host(localhost),port(8083)]).
+completed(476, 0.002913, 1077, 200, ok).
+/*Wed Sep 30 19:34:05 2026*/ request(477, 1790807645.674, [peer(ip(10,1,0,48)),method(post),request_uri('/mis-inscripciones'),path('/mis-inscripciones'),http_version(1-1),host(localhost),port(8083)]).
+completed(477, 0.002215, 17, 200, ok).
+/*Wed Sep 30 19:34:17 2026*/ request(478, 1790807657.605, [peer(ip(10,1,0,48)),method(get),request_uri('/materias'),path('/materias'),http_version(1-1),host(localhost),port(8083)]).
+completed(478, 0.002205, 412, 200, ok).
+server(stopped, 1790809500).

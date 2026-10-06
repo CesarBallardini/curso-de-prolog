@@ -60,4 +60,14 @@ test(ver_lista) :-
     with_output_to(string(S), ver_lista(coffman, orden)),
     once(sub_string(S, _, _, _, "duración: 33")).
 
+test(armar, [true(Ts == [tramo(t1, 0, 4), tramo(t2, 0, 2), tramo(t3, 0, 2),
+                         tramo(t6, 2, 13), tramo(t7, 2, 13),
+                         tramo(t4, 4, 24), tramo(t5, 13, 33)])]) :-
+    ejemplo(coffman, P),
+    lista:armar(P, [t1, t2, t3, t4, t5, t6, t7], [0, 0, 0], [], Ts).
+
+test(prioridad_larga, [true(L == [t4, t5, t6, t7, t1, t2, t3])]) :-
+    ejemplo(coffman, P),
+    lista:prioridad(larga, P, L).
+
 :- end_tests(lista).

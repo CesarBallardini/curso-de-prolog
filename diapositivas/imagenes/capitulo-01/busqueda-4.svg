@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 470" width="400" height="470">
+  <title>Búsqueda de abuelo(juan, eva), paso 4: con P = pedro, padre(pedro, eva) se prueba y la consulta responde true</title>
+  <rect x="0" y="0" width="400" height="470" fill="#FFFFFF"/>
+  <!-- arcs -->
+  <line x1="200" y1="54" x2="200" y2="92" stroke="#1F3A5F" stroke-width="3"/>
+  <line x1="150" y1="158" x2="100" y2="228" stroke="#9AA5B1" stroke-width="3"/>
+  <line x1="250" y1="158" x2="300" y2="228" stroke="#2E7D32" stroke-width="4"/>
+  <line x1="100" y1="272" x2="100" y2="292" stroke="#9AA5B1" stroke-width="3"/>
+  <line x1="300" y1="272" x2="300" y2="292" stroke="#2E7D32" stroke-width="4"/>
+  <!-- nodes -->
+  <rect x="70" y="10" width="260" height="44" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <rect x="40" y="92" width="320" height="66" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <rect x="10" y="228" width="180" height="44" rx="10" fill="#F1F3F5" stroke="#9AA5B1" stroke-width="2"/>
+  <rect x="202" y="228" width="196" height="44" rx="10" fill="#E3F1E4" stroke="#2E7D32" stroke-width="3"/>
+  <circle cx="100" cy="310" r="18" fill="#F1F3F5" stroke="#9AA5B1" stroke-width="2"/>
+  <circle cx="300" cy="310" r="18" fill="#2E7D32"/>
+  <path d="M 92 302 L 108 318 M 108 302 L 92 318" stroke="#9AA5B1" stroke-width="4" stroke-linecap="round"/>
+  <path d="M 291 311 L 298 318 L 310 302" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <g font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" text-anchor="middle" fill="#1F2933">
+    <text x="200" y="38">abuelo(juan, eva)</text>
+    <text x="200" y="119">padre(juan, P),</text>
+    <text x="200" y="146">padre(P, eva)</text>
+    <text x="100" y="256" fill="#9AA5B1">padre(ana, eva)</text>
+    <text x="300" y="256">padre(pedro, eva)</text>
+    <text x="300" y="352" font-weight="bold" fill="#2E7D32">true</text>
+  </g>
+  <g font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18">
+    <text x="118" y="200" text-anchor="end" fill="#9AA5B1">P = ana</text>
+    <text x="284" y="200" fill="#2E7D32" font-weight="bold">P = pedro</text>
+  </g>
+  <text x="210" y="80" font-family="Verdana, DejaVu Sans, sans-serif" font-size="16" fill="#52606D">regla</text>
+  <!-- trace -->
+  <rect x="10" y="378" width="380" height="88" rx="6" fill="#F1F3F5"/>
+  <g font-family="Consolas, DejaVu Sans Mono, monospace" font-size="17" fill="#1F2933">
+    <text x="22" y="398">Exit: (11) padre(juan, pedro)</text>
+    <text x="22" y="418">Call: (11) padre(pedro, eva)</text>
+    <text x="22" y="438">Exit: (11) padre(pedro, eva)</text>
+    <text x="22" y="458">Exit: (10) abuelo(juan, eva)</text>
+  </g>
+</svg>

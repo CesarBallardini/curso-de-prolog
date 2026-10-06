@@ -12,6 +12,9 @@ docs/**/*.pdf
 # and rebuilt by the publishing workflow like the PDFs.
 docs/*/pldoc/
 
+# The narrated video of each slide deck is built by `make video` from the deck.
+diapositivas/*.mp4
+
 # Environment and build artefacts
 .venv/
 site/

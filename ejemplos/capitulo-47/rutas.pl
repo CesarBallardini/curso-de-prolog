@@ -23,6 +23,10 @@
 :- use_module(library(lists)).
 :- use_module(library(ordsets)).
 
+:- meta_predicate
+    costo_uniforme(+, 1, 3, -),
+    costo_uniforme(+, +, 1, 3, -).
+
 % tramo(A, B, Km, Calzada, Transito, Pendiente): un camino de Km
 % kilómetros une A y B, en los dos sentidos.
 tramo(pradera_alta, puerto_quieto, 36, autopista, alto, llano).

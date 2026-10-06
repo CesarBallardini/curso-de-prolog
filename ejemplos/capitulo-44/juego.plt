@@ -87,4 +87,14 @@ test(jugar_salir, true(Ultima == "Elige una opción, de 1 a 3: ")) :-
     split_string(Salida, "\n", "", Lineas),
     last(Lineas, Ultima).
 
+test(opciones, true(Vs == [nueva, guardada, salir])) :-
+    juego:opciones_de_inicio(Os),
+    findall(V, member(opcion(_, V), Os), Vs).
+
+test(preparar_salir, fail) :-
+    juego:preparar(salir, _).
+
+test(preparar_nueva, true(sub_string(T, 0, _, _, "Estás en el vestíbulo"))) :-
+    juego:preparar(nueva, T).
+
 :- end_tests(juego).

@@ -71,4 +71,29 @@ test(profundidad, [true(P1-P2 == [1, 2, 4, 5]-[1, 2, 4, 4])]) :-
     once(simular(profundidad, sumador3, [0, 0, 0, 0, 0, 0], P1)),
     once(simular(profundidad, sumador3_anticipado, [0, 0, 0, 0, 0, 0], P2)).
 
+test(pegada_falla, [true(S == 1)]) :-
+    pegada([g1], 1, [g1], and, [0, 0], S).
+
+test(pegada_otra, [nondet, true(S == 0)]) :-
+    pegada([g1], 1, [g2], and, [0, 1], S).
+
+test(literal, [nondet, true(L1-L0 == a-(~a))]) :-
+    literal(a, 1, L1),
+    literal(a, 0, L0).
+
+test(consenso, [nondet, true(C == [b, c])]) :-
+    consenso([a, b], [c, ~a], C).
+
+test(consenso_contradictorio, [fail]) :-
+    consenso([a, b], [~a, ~b], _).
+
+test(consenso_sin_par, [fail]) :-
+    consenso([a, b], [c], _).
+
+test(cerrar, [true(Ps == [[a, b], [b, c], [c, ~a]])]) :-
+    cerrar([[a, b], [c, ~a]], Ps).
+
+test(profundidad, [true(P == 3)]) :-
+    profundidad([g], and, [0, 2], P).
+
 :- end_tests(soluciones).

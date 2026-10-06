@@ -123,16 +123,17 @@ resolvente_fo(U, C1, C2, R) :-
     copy_term(C2, D2),
     select(L1, D1, R1),
     select(L2, D2, R2),
-    opuestos(U, L1, L2),
+    opuestos(L1, L2, U),
     append(R1, R2, R0),
     sort(R0, R).
 
-%!  opuestos(+Unificar, +L1, +L2) is semidet.
+%!  opuestos(+L1, +L2, +Unificar) is semidet.
 %
-%   L1 y L2 tienen signos opuestos y Unificar unifica sus fórmulas.
-opuestos(U, +A, -B) :-
+%   L1 y L2 tienen signos opuestos y Unificar unifica sus fórmulas. L1 va
+%   primero para que la indexación por su signo elija una sola cláusula.
+opuestos(+A, -B, U) :-
     call(U, A, B).
-opuestos(U, -A, +B) :-
+opuestos(-A, +B, U) :-
     call(U, A, B).
 
 %!  factor(+Unificar, +C:list, -R:list) is nondet.

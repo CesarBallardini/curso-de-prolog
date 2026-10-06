@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 320" width="800" height="320">
+  <title>La lista [ana, luis, eva, sofia] como cuatro celdas; la notación [Primero|Resto] separa la primera celda de la lista de las restantes</title>
+  <rect x="0" y="0" width="800" height="320" fill="#FFFFFF"/>
+  <text x="400" y="46" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="30" fill="#1F2933" text-anchor="middle">[ana, luis, eva, sofia]</text>
+  <rect x="100" y="84" width="150" height="70" fill="#FCE8D2" stroke="#D9822B" stroke-width="3"/>
+  <g fill="#EAF1F8" stroke="#1F3A5F" stroke-width="3">
+    <rect x="262" y="84" width="146" height="70"/>
+    <rect x="408" y="84" width="146" height="70"/>
+    <rect x="554" y="84" width="146" height="70"/>
+  </g>
+  <g font-family="Consolas, DejaVu Sans Mono, monospace" font-size="28" fill="#1F2933" text-anchor="middle">
+    <text x="175" y="128">ana</text>
+    <text x="335" y="128">luis</text>
+    <text x="481" y="128">eva</text>
+    <text x="627" y="128">sofia</text>
+  </g>
+  <g fill="none" stroke-width="3">
+    <path d="M 104 172 Q 104 186 120 186 H 160 Q 175 186 175 200 Q 175 186 190 186 H 230 Q 246 186 246 172" stroke="#D9822B"/>
+    <path d="M 266 172 Q 266 186 282 186 H 465 Q 481 186 481 200 Q 481 186 497 186 H 680 Q 696 186 696 172" stroke="#1F3A5F"/>
+  </g>
+  <g font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" text-anchor="middle">
+    <text x="175" y="232" fill="#D9822B" font-weight="bold">Primero = ana</text>
+    <text x="481" y="232" fill="#1F3A5F" font-weight="bold">Resto = [luis, eva, sofia]</text>
+    <text x="400" y="296" font-size="30" fill="#1F2933">[<tspan fill="#D9822B" font-weight="bold">Primero</tspan>|<tspan fill="#1F3A5F" font-weight="bold">Resto</tspan>]</text>
+  </g>
+</svg>

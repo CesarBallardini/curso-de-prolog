@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 480" width="800" height="480">
+  <title>generaciones(juan, eva, N): las llamadas bajan por la cadena juan, ana, luis, eva; el caso base da 1, y al retorno cada llamada suma una generación: 2 y después 3</title>
+  <rect x="0" y="0" width="800" height="480" fill="#FFFFFF"/>
+  <rect x="35.0" y="12" width="110" height="44" rx="22" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="90" y="41" font-family="Verdana, DejaVu Sans, sans-serif" font-size="20" fill="#1F2933" text-anchor="middle">juan</text>
+  <line x1="145" y1="34" x2="223" y2="34" stroke="#1F3A5F" stroke-width="3"/>
+  <polygon points="221,26 221,42 235,34" fill="#1F3A5F"/>
+  <text x="190" y="24" font-family="Verdana, DejaVu Sans, sans-serif" font-size="13" fill="#52606D" text-anchor="middle">padre</text>
+  <rect x="235.0" y="12" width="110" height="44" rx="22" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="290" y="41" font-family="Verdana, DejaVu Sans, sans-serif" font-size="20" fill="#1F2933" text-anchor="middle">ana</text>
+  <line x1="345" y1="34" x2="423" y2="34" stroke="#1F3A5F" stroke-width="3"/>
+  <polygon points="421,26 421,42 435,34" fill="#1F3A5F"/>
+  <text x="390" y="24" font-family="Verdana, DejaVu Sans, sans-serif" font-size="13" fill="#52606D" text-anchor="middle">padre</text>
+  <rect x="435.0" y="12" width="110" height="44" rx="22" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="490" y="41" font-family="Verdana, DejaVu Sans, sans-serif" font-size="20" fill="#1F2933" text-anchor="middle">luis</text>
+  <line x1="545" y1="34" x2="623" y2="34" stroke="#1F3A5F" stroke-width="3"/>
+  <polygon points="621,26 621,42 635,34" fill="#1F3A5F"/>
+  <text x="590" y="24" font-family="Verdana, DejaVu Sans, sans-serif" font-size="13" fill="#52606D" text-anchor="middle">padre</text>
+  <rect x="635.0" y="12" width="110" height="44" rx="22" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="690" y="41" font-family="Verdana, DejaVu Sans, sans-serif" font-size="20" fill="#1F2933" text-anchor="middle">eva</text>
+  <rect x="20" y="86" width="320" height="56" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="34" y="121" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="17" fill="#1F2933">generaciones(juan, eva, N)</text>
+  <rect x="560" y="90" width="230" height="48" rx="10" fill="#E3F1E4" stroke="#2E7D32" stroke-width="2"/>
+  <text x="575" y="121" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="17" fill="#2E7D32" font-weight="bold">N = F1 + 1 = 3</text>
+  <line x1="60" y1="142" x2="60" y2="154" stroke="#D9822B" stroke-width="3"/>
+  <polygon points="52,152 68,152 60,166" fill="#D9822B"/>
+  <circle cx="90" cy="154" r="11" fill="#D9822B"/>
+  <text x="90" y="160" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#FFFFFF" font-weight="bold" text-anchor="middle">1</text>
+  <text x="110" y="160" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="14" fill="#D9822B">padre(juan, ana)</text>
+  <line x1="700" y1="170" x2="700" y2="150" stroke="#2E7D32" stroke-width="3"/>
+  <polygon points="692,152 708,152 700,138" fill="#2E7D32"/>
+  <circle cx="730" cy="154" r="11" fill="#2E7D32"/>
+  <text x="730" y="160" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#FFFFFF" font-weight="bold" text-anchor="middle">3</text>
+  <rect x="80" y="166" width="320" height="56" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="94" y="201" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="17" fill="#1F2933">generaciones(ana, eva, F1)</text>
+  <rect x="560" y="170" width="230" height="48" rx="10" fill="#E3F1E4" stroke="#2E7D32" stroke-width="2"/>
+  <text x="575" y="201" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="17" fill="#2E7D32" font-weight="bold">F1 = F2 + 1 = 2</text>
+  <line x1="120" y1="222" x2="120" y2="234" stroke="#D9822B" stroke-width="3"/>
+  <polygon points="112,232 128,232 120,246" fill="#D9822B"/>
+  <circle cx="150" cy="234" r="11" fill="#D9822B"/>
+  <text x="150" y="240" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#FFFFFF" font-weight="bold" text-anchor="middle">1</text>
+  <text x="170" y="240" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="14" fill="#D9822B">padre(ana, luis)</text>
+  <line x1="700" y1="250" x2="700" y2="230" stroke="#2E7D32" stroke-width="3"/>
+  <polygon points="692,232 708,232 700,218" fill="#2E7D32"/>
+  <circle cx="730" cy="234" r="11" fill="#2E7D32"/>
+  <text x="730" y="240" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#FFFFFF" font-weight="bold" text-anchor="middle">3</text>
+  <rect x="140" y="246" width="320" height="56" rx="10" fill="#E3F1E4" stroke="#2E7D32" stroke-width="3"/>
+  <text x="154" y="281" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="17" fill="#1F2933">generaciones(luis, eva, F2)</text>
+  <rect x="560" y="250" width="230" height="48" rx="10" fill="#E3F1E4" stroke="#2E7D32" stroke-width="2"/>
+  <text x="575" y="281" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="17" fill="#2E7D32" font-weight="bold">F2 = 1</text>
+  <text x="154" y="328" font-family="Verdana, DejaVu Sans, sans-serif" font-size="14" fill="#2E7D32" font-weight="bold">caso base: padre(luis, eva)</text>
+  <rect x="8" y="344" width="784" height="130" rx="8" fill="#F1F3F5" stroke="#F1F3F5" stroke-width="0"/>
+  <circle cx="34" cy="374" r="12" fill="#D9822B"/>
+  <text x="34" y="380" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#FFFFFF" font-weight="bold" text-anchor="middle">1</text>
+  <text x="56" y="380" font-family="Verdana, DejaVu Sans, sans-serif" font-size="16" fill="#1F2933">padre(A, Hijo) avanza una generación</text>
+  <circle cx="34" cy="410" r="12" fill="#1F3A5F"/>
+  <text x="34" y="416" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#FFFFFF" font-weight="bold" text-anchor="middle">2</text>
+  <text x="56" y="416" font-family="Verdana, DejaVu Sans, sans-serif" font-size="16" fill="#1F2933">la llamada recursiva resuelve el resto y da Faltan</text>
+  <circle cx="34" cy="446" r="12" fill="#2E7D32"/>
+  <text x="34" y="452" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#FFFFFF" font-weight="bold" text-anchor="middle">3</text>
+  <text x="56" y="452" font-family="Verdana, DejaVu Sans, sans-serif" font-size="16" fill="#1F2933">N is Faltan + 1 suma esta generación, al retorno</text>
+</svg>

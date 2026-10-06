@@ -189,21 +189,25 @@ resolvente_fo(U, C1, C2, R) :-
     copy_term(C2, D2),
     select(L1, D1, R1),
     select(L2, D2, R2),
-    opuestos(U, L1, L2),
+    opuestos(L1, L2, U),
     append(R1, R2, R0),
     sort(R0, R).
 
-%!  opuestos(+Unificar, +L1, +L2) is semidet.
+%!  opuestos(+L1, +L2, +Unificar) is semidet.
 %
-%   L1 y L2 tienen signos opuestos y Unificar unifica sus fórmulas.
-opuestos(U, +A, -B) :-
+%   L1 y L2 tienen signos opuestos y Unificar unifica sus fórmulas. L1 va
+%   primero para que la indexación por su signo elija una sola cláusula.
+opuestos(+A, -B, U) :-
     call(U, A, B).
-opuestos(U, -A, +B) :-
+opuestos(-A, +B, U) :-
     call(U, A, B).
 ```
 
-El primer argumento es el predicado que unifica, para poder medir qué
-pasa sin la comprobación de ocurrencia. `demostrar_fo/3` usa
+El primer argumento de `resolvente_fo/4` es el predicado que unifica, para
+poder medir qué pasa sin la comprobación de ocurrencia. `opuestos/3` lo
+recibe en el último lugar: su primer argumento es el literal, y la
+indexación por el signo elige una sola cláusula, sin dejar alternativas
+pendientes. `demostrar_fo/3` usa
 `unify_with_occurs_check/2`:
 
 ```prolog
@@ -352,7 +356,9 @@ independientes se pueden hacer en cualquier orden. La **estrategia
 lineal** exige que, desde el segundo paso, cada uno use la cláusula que
 agregó el anterior, el **centro**; la otra puede ser cualquier cláusula
 anterior, una de las iniciales o un centro de antes. La resolución lineal
-sigue siendo completa, y cada prueba tiene menos órdenes posibles.
+sigue siendo completa, como demostró Loveland
+([Referencias](index.md#referencias)), y cada prueba tiene menos órdenes
+posibles.
 `derivar/4` lleva el número del centro, y `centro/3` decide qué cláusula
 debe usar el paso:
 

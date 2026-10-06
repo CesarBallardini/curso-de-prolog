@@ -30,4 +30,11 @@ test(logra, [true]) :-
     once(planificar(pinza, sussman, Metas, 6, P)),
     regresion:logra(pinza, sussman, P, Metas).
 
+test(puede, [true(Pre == [sostiene(a), libre(b)])]) :-
+    puede(apilar(a, b), Pre).
+
+test(puede_todas, [true(N == 18)]) :-
+    findall(A, puede(A, _), As),
+    length(As, N).
+
 :- end_tests(pinza).

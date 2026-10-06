@@ -7,7 +7,6 @@ reglas tabuladas. Los ejemplos están en `recursion.pl`, en
 
 ## Consultas recursivas
 
-
 Los superiores de un empleado son su jefe, el jefe de su jefe, y así hasta
 la directora. `recursion.pl` guarda las tablas `empleados` y `vuelos`, y
 define la relación con una regla recursiva:

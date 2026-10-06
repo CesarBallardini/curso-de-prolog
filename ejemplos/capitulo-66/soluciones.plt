@@ -93,4 +93,35 @@ test(fuerza_estimada, [true(Fs == [0.4-0.022, 0.5-0.013, 0.35-0.107,
                    fuerza_estimada(X, N, F, E) ),
             Fs).
 
+test(con_grado_pred, [true(P == tiene_pelo-0.8)]) :-
+    soluciones:con_grado(0.8, tiene_pelo, P).
+
+% con_alguna/2: la regla tiene alguna de las preguntas.
+test(con_alguna) :-
+    soluciones:con_alguna([c, a], x-[a, b]),
+    \+ soluciones:con_alguna([c], x-[a, b]).
+
+% construir_excl/4 sin preguntas excluyentes construye lo mismo que
+% construir/4.
+test(construir_excl) :-
+    R = [x-[a, b], y-[a, c], z-[d]],
+    soluciones:construir_excl(frecuente, R, [], A1),
+    arbol:construir(frecuente, R, [], A2),
+    A1 == A2.
+
+% costo/3: una hoja solo se alcanza sin preguntas pendientes, así que una
+% regla de una pregunta cuesta 1 por prototipo; con dos reglas, la primera
+% pregunta llega a los dos prototipos y la segunda a uno: 3.
+test(costo, [true(C1-C2 == 1-3)]) :-
+    soluciones:costo([cebra-[tiene_pelo]], [cebra-[tiene_pelo]], C1),
+    soluciones:costo([cebra-[tiene_pelo], ave-[tiene_plumas]],
+                     [cebra-[tiene_pelo], ave-[tiene_plumas]], C2).
+
+test(sumar_pesado, [true(A == 5-23)]) :-
+    foldl(soluciones:sumar_pesado, [2-4, 3-5], 0-0, A).
+
+test(supera) :-
+    soluciones:supera(0.5, a-0.5),
+    \+ soluciones:supera(0.5, a-0.4).
+
 :- end_tests(soluciones).

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 470" width="400" height="470">
+  <title>Las dos cláusulas de antepasado: el caso base recorre una generación; el caso recursivo recorre una y plantea la misma pregunta desde el hijo</title>
+  <rect x="0" y="0" width="400" height="470" fill="#FFFFFF"/>
+  <rect x="6" y="6" width="388" height="180" rx="14" fill="#E3F1E4" stroke="#2E7D32" stroke-width="3"/>
+  <text x="22" y="36" font-family="Verdana, DejaVu Sans, sans-serif" font-size="18" fill="#2E7D32" font-weight="bold">caso base</text>
+  <rect x="30.0" y="54" width="120" height="44" rx="22" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="90" y="83" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F2933" text-anchor="middle">A</text>
+  <line x1="90" y1="98" x2="90" y2="120" stroke="#1F3A5F" stroke-width="3"/>
+  <polygon points="82,118 98,118 90,132" fill="#1F3A5F"/>
+  <rect x="30.0" y="132" width="120" height="44" rx="22" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="90" y="161" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F2933" text-anchor="middle">D</text>
+  <text x="170" y="120" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="17" fill="#1F3A5F">progenitor</text>
+  <text x="170" y="144" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#52606D">una generación</text>
+  <rect x="6" y="200" width="388" height="264" rx="14" fill="#FCE8D2" stroke="#D9822B" stroke-width="3"/>
+  <text x="22" y="230" font-family="Verdana, DejaVu Sans, sans-serif" font-size="18" fill="#D9822B" font-weight="bold">caso recursivo</text>
+  <rect x="30.0" y="248" width="120" height="44" rx="22" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="90" y="277" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F2933" text-anchor="middle">A</text>
+  <line x1="90" y1="292" x2="90" y2="314" stroke="#1F3A5F" stroke-width="3"/>
+  <polygon points="82,312 98,312 90,326" fill="#1F3A5F"/>
+  <rect x="30.0" y="326" width="120" height="44" rx="22" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="90" y="355" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F2933" text-anchor="middle">Hijo</text>
+  <line x1="90" y1="370" x2="90" y2="398" stroke="#D9822B" stroke-width="3" stroke-dasharray="8 6"/>
+  <polygon points="82,396 98,396 90,410" fill="#D9822B"/>
+  <rect x="30.0" y="410" width="120" height="44" rx="22" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="90" y="439" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F2933" text-anchor="middle">D</text>
+  <text x="170" y="316" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="17" fill="#1F3A5F">progenitor</text>
+  <text x="170" y="394" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="17" fill="#D9822B" font-weight="bold">antepasado</text>
+  <text x="170" y="418" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#52606D">la misma pregunta</text>
+</svg>

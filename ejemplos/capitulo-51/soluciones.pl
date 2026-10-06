@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 51 - Soluciones de los ejercicios 2 a 9.
+% Capítulo 51 - Soluciones de los ejercicios 2 a 9, 12 y 13.
 %
 % Carga los módulos del proyecto y agrega autómatas, construcciones, un
 % operador de las expresiones regulares y dos clases de componentes
@@ -12,11 +12,14 @@
 %?- equivalentes(ciclo, sin_epsilon(ciclo)).
 %?- numero_estados(min(enesima(3)), N).
 %?- transducir(complemento2, [0, 1, 1, 0], S).
+%?- moore(moore_de(gray, 0), [1, 0, 1, 1], S).
 
 :- use_module(library(lists)).
 :- use_module(library(ordsets)).
 :- use_module(lexico).
 :- use_module(secuencial).
+:- use_module(kleene).
+:- use_module(moore).
 
 :- multifile automatas:alfabeto/2, automatas:inicial/2, automatas:final/2,
              automatas:delta/4, automatas:epsilon/3.
@@ -179,3 +182,27 @@ secuenciales:secuencial(par2, par2_c, 2).
 circuitos:circuito(par2_c, [b0, b1], [n0, n0, n1]).
 circuitos:componente(par2_c, i1, inv, [b0], [n0]).
 circuitos:componente(par2_c, x1, xor, [b1, b0], [n1]).
+
+% Ejercicio 12: la expresión de multiplo3 por la construcción de Kleene,
+% y una más corta escrita a mano.
+
+%!  expresion_corta(-T:string) is det.
+%
+%   T es una expresión regular del lenguaje de multiplo3 escrita a mano.
+%   Desde el resto 0, un 0 no lo cambia, y 1(01*0)*1 vuelve a él: el
+%   primer 1 lleva al resto 1, cada 01*0 va al resto 2 y vuelve al 1, y
+%   el último 1 vuelve al 0.
+expresion_corta("(0|1(01*0)*1)*").
+
+% Ejercicio 13: la máquina de Moore de una máquina de Mealy. Sus estados
+% son pares Q-S: el estado de la máquina de Mealy y la salida que escribió
+% al llegar. El estado inicial escribe S0, que no viene de ninguna
+% transición.
+
+automatas:inicial(moore_de(M, S0), Q0-S0) :-
+    inicial(M, Q0).
+automatas:final(moore_de(_, _), _).
+automatas:delta(moore_de(M, _), Q-_, E, Q1-S) :-
+    delta(M, Q, [E]:[S], Q1).
+
+moore:salida_estado(moore_de(_, _), _-S, S).

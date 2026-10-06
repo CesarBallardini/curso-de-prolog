@@ -261,6 +261,7 @@ plan(ejecutar_con(archivo(R), Args), M, [ejecutar_con(R, Args)]) :-
     plan(ejecutar(archivo(R)), M, _).
 
 realizar(real, Raiz, _, _, ejecutar_con(R, Args), salida(R, Estado, Lineas)) :-
+    !,
     ruta_real(Raiz, R, Abs),
     salida_de(swipl, ['-t', halt, Abs|Args], Texto, Estado),
     split_string(Texto, "\n", "\r", Lineas0),

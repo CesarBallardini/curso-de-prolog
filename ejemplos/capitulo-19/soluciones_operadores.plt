@@ -2,6 +2,7 @@
 
 :- begin_tests(soluciones_operadores).
 
+% with_output_to/2, que captura la salida, se presenta en el capítulo 27.
 % leer(Texto, Canonico): Canonico es la forma canónica del término Texto,
 % leído con los operadores de este archivo.
 leer(Texto, Canonico) :-

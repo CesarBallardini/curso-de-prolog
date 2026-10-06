@@ -96,8 +96,9 @@ Dado que estos mensajes aparecen desde los primeros programas, a continuación s
 muestran los tres más frecuentes, tal como los emite SWI-Prolog 9. Conviene
 conocerlos de antemano para reconocerlos cuando aparezcan.
 
-**Falta el punto.** El número de línea informado corresponde a la línea
-*siguiente*, porque la lectura continuó hasta ese punto:
+**Falta el punto.** La posición informada es donde se detuvo la lectura: el
+final de la línea sin punto, o la línea siguiente si entre ambas hay una línea
+en blanco:
 
 ```text
 ERROR: familia.pl:2:17: Syntax error: Operator expected

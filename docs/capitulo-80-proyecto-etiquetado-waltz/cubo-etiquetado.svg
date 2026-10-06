@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 440" width="380" height="440" role="img" aria-labelledby="t">
+  <title id="t">El cubo con su interpretación</title>
+  <rect width="380" height="440" fill="#ffffff"/>
+  <line x1="190.0" y1="220.0" x2="40.0" y2="130.0" stroke="#222222" stroke-width="2" stroke-linecap="round"/>
+  <text x="120.7" y="170.6" font-family="sans-serif" font-size="16" font-weight="bold" fill="#b03020" text-anchor="middle">+</text>
+  <line x1="190.0" y1="220.0" x2="340.0" y2="130.0" stroke="#222222" stroke-width="2" stroke-linecap="round"/>
+  <text x="270.7" y="189.4" font-family="sans-serif" font-size="16" font-weight="bold" fill="#b03020" text-anchor="middle">+</text>
+  <line x1="190.0" y1="220.0" x2="190.0" y2="400.0" stroke="#222222" stroke-width="2" stroke-linecap="round"/>
+  <text x="179.0" y="315.0" font-family="sans-serif" font-size="16" font-weight="bold" fill="#b03020" text-anchor="middle">+</text>
+  <line x1="40.0" y1="130.0" x2="190.0" y2="40.0" stroke="#222222" stroke-width="2" stroke-linecap="round"/>
+  <polygon points="121.0,81.4 113.3,91.9 108.1,83.3" fill="#1f5fa8"/>
+  <line x1="40.0" y1="130.0" x2="40.0" y2="310.0" stroke="#222222" stroke-width="2" stroke-linecap="round"/>
+  <polygon points="40.0,213.0 45.0,225.0 35.0,225.0" fill="#1f5fa8"/>
+  <line x1="340.0" y1="130.0" x2="190.0" y2="40.0" stroke="#222222" stroke-width="2" stroke-linecap="round"/>
+  <polygon points="271.0,88.6 258.1,86.7 263.3,78.1" fill="#1f5fa8"/>
+  <line x1="340.0" y1="130.0" x2="340.0" y2="310.0" stroke="#222222" stroke-width="2" stroke-linecap="round"/>
+  <polygon points="340.0,227.0 335.0,215.0 345.0,215.0" fill="#1f5fa8"/>
+  <line x1="190.0" y1="400.0" x2="340.0" y2="310.0" stroke="#222222" stroke-width="2" stroke-linecap="round"/>
+  <polygon points="259.0,358.6 266.7,348.1 271.9,356.7" fill="#1f5fa8"/>
+  <line x1="190.0" y1="400.0" x2="40.0" y2="310.0" stroke="#222222" stroke-width="2" stroke-linecap="round"/>
+  <polygon points="109.0,351.4 121.9,353.3 116.7,361.9" fill="#1f5fa8"/>
+  <text x="196.0" y="214.0" font-family="sans-serif" font-size="13" fill="#555555">a</text>
+  <text x="46.0" y="124.0" font-family="sans-serif" font-size="13" fill="#555555">b</text>
+  <text x="346.0" y="124.0" font-family="sans-serif" font-size="13" fill="#555555">c</text>
+  <text x="196.0" y="394.0" font-family="sans-serif" font-size="13" fill="#555555">d</text>
+  <text x="196.0" y="34.0" font-family="sans-serif" font-size="13" fill="#555555">e</text>
+  <text x="346.0" y="304.0" font-family="sans-serif" font-size="13" fill="#555555">f</text>
+  <text x="46.0" y="304.0" font-family="sans-serif" font-size="13" fill="#555555">g</text>
+</svg>

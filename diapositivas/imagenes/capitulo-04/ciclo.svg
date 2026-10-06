@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 350" width="400" height="350">
+  <title>X = mascota(gato, X): el segundo argumento del árbol es la raíz del mismo árbol, un término que se contiene a sí mismo</title>
+  <rect x="0" y="0" width="400" height="350" fill="#FFFFFF"/>
+  <text x="200" y="40" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#1F2933" text-anchor="middle">X = mascota(gato, X)</text>
+  <line x1="190" y1="130" x2="120" y2="235" stroke="#1F3A5F" stroke-width="2"/>
+  <line x1="190" y1="130" x2="270" y2="235" stroke="#1F3A5F" stroke-width="2"/>
+  <ellipse cx="190" cy="130" rx="56.5" ry="20" fill="#1F3A5F" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="190" y="137" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#FFFFFF" text-anchor="middle" font-weight="bold">mascota</text>
+  <rect x="85" y="217" width="70" height="36" rx="18" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="120" y="242" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F2933" text-anchor="middle">gato</text>
+  <rect x="250" y="217" width="40" height="36" rx="6" fill="#EFE7F7" stroke="#D9822B" stroke-width="4"/>
+  <text x="270" y="242" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F2933" text-anchor="middle">X</text>
+  <path d="M300,235 C370,235 370,130 272,130" fill="none" stroke="#D9822B" stroke-width="3"/>
+  <polygon points="262.0,130.0 273.3,123.5 273.3,136.5" fill="#D9822B"/>
+  <text x="200" y="300" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#52606D" text-anchor="middle">un término que se contiene</text>
+  <text x="200" y="322" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#52606D" text-anchor="middle">a sí mismo</text>
+</svg>

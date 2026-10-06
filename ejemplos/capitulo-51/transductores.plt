@@ -61,4 +61,14 @@ bits(N, Bs) :-
 diferencias(Xs, Ys, D) :-
     foldl([X, Y, D0, D1]>>(X == Y -> D1 = D0 ; D1 is D0 + 1), Xs, Ys, 0, D).
 
+test(traducir_letra, set(S-Q == [[e]-vocal, [e, s]-fin])) :-
+    transductores:traducir(plural, inicio, [e], S, Q).
+
+test(letras, [true(N == 26)]) :-
+    aggregate_all(count, letra(_), N).
+
+test(letra_con_tilde, [fail]) :-
+    atom_codes(L, [241]),
+    letra(L).
+
 :- end_tests(transductores).

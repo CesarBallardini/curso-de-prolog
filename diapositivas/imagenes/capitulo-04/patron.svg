@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" width="800" height="400">
+  <title>El patrón ficha(_, fecha(A, _, _), _) de nacio_en/2 sobre la ficha de felix: A toma el año 2021 y el resto se ignora</title>
+  <rect x="0" y="0" width="800" height="400" fill="#FFFFFF"/>
+  <rect x="50" y="222" width="175" height="112" rx="14" fill="#FFFFFF" stroke="#9AA5B1" stroke-width="2" stroke-dasharray="6 5"/>
+  <line x1="130" y1="136" x2="130" y2="222" stroke="#9AA5B1" stroke-width="3" stroke-dasharray="6 5"/>
+  <line x1="500" y1="136" x2="500" y2="290" stroke="#9AA5B1" stroke-width="3" stroke-dasharray="6 5"/>
+  <line x1="331" y1="136" x2="331" y2="290" stroke="#9AA5B1" stroke-width="3" stroke-dasharray="6 5"/>
+  <line x1="266" y1="200" x2="266" y2="229" stroke="#D9822B" stroke-width="4"/>
+  <line x1="396" y1="200" x2="396" y2="229" stroke="#9AA5B1" stroke-width="3" stroke-dasharray="6 5"/>
+  <line x1="300" y1="38" x2="130" y2="118" stroke="#9AA5B1" stroke-width="2"/>
+  <line x1="300" y1="38" x2="331" y2="118" stroke="#9AA5B1" stroke-width="2"/>
+  <line x1="331" y1="118" x2="266" y2="182" stroke="#9AA5B1" stroke-width="2"/>
+  <line x1="331" y1="118" x2="331" y2="182" stroke="#9AA5B1" stroke-width="2"/>
+  <line x1="331" y1="118" x2="396" y2="182" stroke="#9AA5B1" stroke-width="2"/>
+  <line x1="300" y1="38" x2="500" y2="118" stroke="#9AA5B1" stroke-width="2"/>
+  <ellipse cx="300" cy="38" rx="42.75" ry="20" fill="#1F3A5F" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="300" y="44.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#FFFFFF" text-anchor="middle" font-weight="bold">ficha</text>
+  <rect x="110" y="100" width="40" height="36" rx="18" fill="#FFFFFF" stroke="#9AA5B1" stroke-width="2" stroke-dasharray="6 4"/>
+  <text x="130" y="124.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#52606D" text-anchor="middle">_</text>
+  <ellipse cx="331" cy="118" rx="42.75" ry="20" fill="#1F3A5F" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="331" y="124.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#FFFFFF" text-anchor="middle" font-weight="bold">fecha</text>
+  <rect x="246" y="164" width="40" height="36" rx="6" fill="#EFE7F7" stroke="#D9822B" stroke-width="4"/>
+  <text x="266" y="188.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#1F2933" text-anchor="middle">A</text>
+  <rect x="311" y="164" width="40" height="36" rx="18" fill="#FFFFFF" stroke="#9AA5B1" stroke-width="2" stroke-dasharray="6 4"/>
+  <text x="331" y="188.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#52606D" text-anchor="middle">_</text>
+  <rect x="376" y="164" width="40" height="36" rx="18" fill="#FFFFFF" stroke="#9AA5B1" stroke-width="2" stroke-dasharray="6 4"/>
+  <text x="396" y="188.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#52606D" text-anchor="middle">_</text>
+  <rect x="480" y="100" width="40" height="36" rx="18" fill="#FFFFFF" stroke="#9AA5B1" stroke-width="2" stroke-dasharray="6 4"/>
+  <text x="500" y="124.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#52606D" text-anchor="middle">_</text>
+  <line x1="300" y1="372" x2="130" y2="308" stroke="#1F3A5F" stroke-width="2"/>
+  <line x1="130" y1="308" x2="85" y2="247" stroke="#1F3A5F" stroke-width="2"/>
+  <line x1="130" y1="308" x2="180" y2="247" stroke="#1F3A5F" stroke-width="2"/>
+  <line x1="300" y1="372" x2="331" y2="308" stroke="#1F3A5F" stroke-width="2"/>
+  <line x1="331" y1="308" x2="266" y2="247" stroke="#1F3A5F" stroke-width="2"/>
+  <line x1="331" y1="308" x2="331" y2="247" stroke="#1F3A5F" stroke-width="2"/>
+  <line x1="331" y1="308" x2="396" y2="247" stroke="#1F3A5F" stroke-width="2"/>
+  <line x1="300" y1="372" x2="500" y2="308" stroke="#1F3A5F" stroke-width="2"/>
+  <ellipse cx="300" cy="372" rx="42.75" ry="20" fill="#1F3A5F" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="300" y="378.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#FFFFFF" text-anchor="middle" font-weight="bold">ficha</text>
+  <ellipse cx="130" cy="308" rx="52.65" ry="20" fill="#1F3A5F" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="130" y="314.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#FFFFFF" text-anchor="middle" font-weight="bold">mascota</text>
+  <rect x="52.2" y="229" width="65.6" height="36" rx="18" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="85" y="253.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#1F2933" text-anchor="middle">gato</text>
+  <rect x="142.25" y="229" width="75.5" height="36" rx="18" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="180" y="253.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#1F2933" text-anchor="middle">felix</text>
+  <ellipse cx="331" cy="308" rx="42.75" ry="20" fill="#1F3A5F" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="331" y="314.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#FFFFFF" text-anchor="middle" font-weight="bold">fecha</text>
+  <rect x="233.2" y="229" width="65.6" height="36" rx="18" fill="#E3F2F1" stroke="#D9822B" stroke-width="4"/>
+  <text x="266" y="253.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#1F2933" text-anchor="middle">2021</text>
+  <rect x="311" y="229" width="40" height="36" rx="18" fill="#E3F2F1" stroke="#2B7A78" stroke-width="2"/>
+  <text x="331" y="253.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#1F2933" text-anchor="middle">5</text>
+  <rect x="376" y="229" width="40" height="36" rx="18" fill="#E3F2F1" stroke="#2B7A78" stroke-width="2"/>
+  <text x="396" y="253.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#1F2933" text-anchor="middle">3</text>
+  <rect x="472.15" y="290" width="55.7" height="36" rx="18" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="500" y="314.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#1F2933" text-anchor="middle">ana</text>
+  <text x="215" y="44" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#52606D" text-anchor="end" font-weight="bold">patrón</text>
+  <text x="215" y="384" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#52606D" text-anchor="end" font-weight="bold">ficha</text>
+  <rect x="565" y="30" width="220" height="340" rx="12" fill="#F1F3F5"/>
+  <text x="580" y="60" font-family="Verdana, DejaVu Sans, sans-serif" font-size="16" fill="#1F3A5F" text-anchor="start" font-weight="bold">sustitución</text>
+  <text x="580" y="104" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#D9822B" text-anchor="start" font-weight="bold">A = 2021</text>
+  <line x1="580" y1="140" x2="769" y2="140" stroke="#C9D3DE" stroke-width="2"/>
+  <text x="580" y="178" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#1F2933" text-anchor="start">cada _ unifica</text>
+  <text x="580" y="202" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#1F2933" text-anchor="start">con cualquier</text>
+  <text x="580" y="226" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#1F2933" text-anchor="start">término y no se</text>
+  <text x="580" y="250" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#1F2933" text-anchor="start">informa</text>
+</svg>

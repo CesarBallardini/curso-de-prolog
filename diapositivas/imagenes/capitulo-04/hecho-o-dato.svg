@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" width="800" height="400">
+  <title>El mismo término mascota(gato, felix): como cláusula terminada en punto es un hecho; como argumento de otro término es un dato</title>
+  <rect x="0" y="0" width="800" height="400" fill="#FFFFFF"/>
+  <rect x="15" y="15" width="370" height="370" rx="12" fill="#F1F3F5"/>
+  <rect x="415" y="15" width="370" height="370" rx="12" fill="#F1F3F5"/>
+  <text x="200" y="50" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#1F3A5F" text-anchor="middle" font-weight="bold">cláusula del programa</text>
+  <text x="600" y="50" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#1F3A5F" text-anchor="middle" font-weight="bold">argumento de otro término</text>
+  <text x="200" y="100" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#1F2933" text-anchor="middle">mascota(gato, felix).</text>
+  <text x="443.25" y="100" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="19" fill="#1F2933" text-anchor="start">ficha(</text>
+  <text x="505.95" y="100" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="19" fill="#D9822B" text-anchor="start" font-weight="bold">mascota(gato, felix)</text>
+  <text x="714.95" y="100" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="19" fill="#1F2933" text-anchor="start">, …)</text>
+  <line x1="200" y1="175" x2="135" y2="270" stroke="#1F3A5F" stroke-width="2"/>
+  <line x1="200" y1="175" x2="265" y2="270" stroke="#1F3A5F" stroke-width="2"/>
+  <ellipse cx="200" cy="175" rx="56.5" ry="20" fill="#1F3A5F" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="200" y="182" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#FFFFFF" text-anchor="middle" font-weight="bold">mascota</text>
+  <rect x="100" y="252" width="70" height="36" rx="18" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="135" y="277" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F2933" text-anchor="middle">gato</text>
+  <rect x="224.5" y="252" width="81" height="36" rx="18" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="265" y="277" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F2933" text-anchor="middle">felix</text>
+  <line x1="600" y1="150" x2="530" y2="222" stroke="#1F3A5F" stroke-width="2"/>
+  <line x1="600" y1="150" x2="690" y2="222" stroke="#1F3A5F" stroke-width="2"/>
+  <ellipse cx="600" cy="150" rx="45.5" ry="20" fill="#1F3A5F" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="600" y="157" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#FFFFFF" text-anchor="middle" font-weight="bold">ficha</text>
+  <text x="690" y="230" font-family="Verdana, DejaVu Sans, sans-serif" font-size="22" fill="#52606D" text-anchor="middle">…</text>
+  <line x1="530" y1="222" x2="475" y2="300" stroke="#1F3A5F" stroke-width="2"/>
+  <line x1="530" y1="222" x2="590" y2="300" stroke="#1F3A5F" stroke-width="2"/>
+  <ellipse cx="530" cy="222" rx="56.5" ry="20" fill="#1F3A5F" stroke="#D9822B" stroke-width="4"/>
+  <text x="530" y="229" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#FFFFFF" text-anchor="middle" font-weight="bold">mascota</text>
+  <rect x="440" y="282" width="70" height="36" rx="18" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="475" y="307" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F2933" text-anchor="middle">gato</text>
+  <rect x="549.5" y="282" width="81" height="36" rx="18" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="590" y="307" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F2933" text-anchor="middle">felix</text>
+  <text x="200" y="335" font-family="Verdana, DejaVu Sans, sans-serif" font-size="20" fill="#1F3A5F" text-anchor="middle" font-weight="bold">hecho</text>
+  <text x="200" y="362" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#52606D" text-anchor="middle">afirma una relación</text>
+  <text x="600" y="350" font-family="Verdana, DejaVu Sans, sans-serif" font-size="20" fill="#D9822B" text-anchor="middle" font-weight="bold">dato</text>
+  <text x="600" y="374" font-family="Verdana, DejaVu Sans, sans-serif" font-size="14" fill="#52606D" text-anchor="middle">un valor dentro de la estructura</text>
+</svg>

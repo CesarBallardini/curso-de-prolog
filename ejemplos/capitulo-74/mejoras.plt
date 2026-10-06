@@ -60,4 +60,20 @@ test(largo, [true(N == 195)]) :-
 test(medir, [true(M-X == 146.1-195)]) :-
     medir(cercana_simplificada, 20, M, X).
 
+test(apilar_suma, [true(P == [r-1])]) :-
+    apilar(u, [u-3, r-1], P).
+
+test(apilar_media, [true(P == [u-1])]) :-
+    apilar(-u, [u-2], P).
+
+test(apilar_otra_cara, [true(P == [f-3, u-1])]) :-
+    apilar(-f, [u-1], P).
+
+test(apilar_vacia, [true(P == [u-1])]) :-
+    apilar(u, [], P).
+
+test(giros_de, all(K-M == [1-[f], 2-[f, f], 3-[-f]])) :-
+    member(K, [1, 2, 3]),
+    giros_de(K, f, M, []).
+
 :- end_tests(mejoras).

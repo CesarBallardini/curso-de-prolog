@@ -33,6 +33,7 @@ test(con_n_ligado_acepta_otro_multiplo) :-
 test(variables_distintas_no_son_el_mismo_termino, [fail]) :-
     mismo_termino(_, _).
 
+% var/1, que reconoce una variable libre, se presenta en el capítulo 32.
 test(no_liga_variables) :-
     mismo_termino(f(X), f(X)),
     var(X).

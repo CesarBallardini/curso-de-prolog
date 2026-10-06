@@ -34,4 +34,22 @@ test(evitando_ripio, [true(Cs1 == Cs2)]) :-
 test(evitando_todo, [fail]) :-
     ruta_evitando(pradera_alta, ermita_vieja, [autopista, ripio], _, _).
 
+test(salidas, [true(length(Ss, 3))]) :-
+    findall(H, salida(puerto_quieto, ribera_honda, H, _), Ss).
+
+test(sin_costo, [true(M == 360r11)]) :-
+    once(sin_costo(minutos_tramo, pradera_alta, 99, puerto_quieto, M)).
+
+% Puerto Quieto no tiene tramo directo a Ribera Honda: llegando 50 minutos
+% después de las 8:00, la balsa de las 8:45 ya salió, y quedan las de las
+% 9:45 y las 10:45, con 20 minutos de viaje.
+test(sucesor_con_balsa, all(P == [75, 135])) :-
+    sucesor_con_balsa(480, puerto_quieto, 50, ribera_honda, P).
+
+test(minutos_evitando, all(B == [ribera_honda, puerto_quieto])) :-
+    minutos_evitando([ripio], piedra_mora, B, _).
+
+test(minutos_evitando_excluye, [fail]) :-
+    minutos_evitando([ripio], arroyo_pinto, alto_del_cardo, _).
+
 :- end_tests(soluciones_rutas).

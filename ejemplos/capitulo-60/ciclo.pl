@@ -16,19 +16,22 @@
 
 :- ensure_loaded(programas).
 
-%!  ejecutar(+Programa, +Memoria0:list, -Memoria:list, -Resultado) is det.
+%!  ejecutar(+Programa, +Memoria0:list, -Memoria:list, -Resultado) is semidet.
 %
 %   Ejecuta el Programa desde Memoria0 aplicando en cada ciclo el primer
 %   módulo que se puede aplicar. Memoria es la memoria al terminar, y
-%   Resultado el término de parar/1, o nada_aplicable.
+%   Resultado el término de parar/1, o nada_aplicable. Falla si falla una
+%   acción del módulo elegido: quitar/1 o reemplazar/2 sin el hecho, o
+%   una prueba {Meta} que no se cumple.
 ejecutar(Programa, Memoria0, Memoria, Resultado) :-
     programa(Programa, Modulos),
     ciclo(Modulos, Memoria0, Memoria, Resultado).
 
-%!  ciclo(+Modulos:list, +Memoria0:list, -Memoria:list, -Resultado) is det.
+%!  ciclo(+Modulos:list, +Memoria0:list, -Memoria:list, -Resultado) is semidet.
 %
 %   Aplica el primer módulo de Modulos que se puede aplicar a Memoria0, y
-%   repite con la memoria que resulta.
+%   repite con la memoria que resulta. Falla si falla una acción del
+%   módulo elegido.
 ciclo(Modulos, Memoria0, Memoria, Resultado) :-
     (   member(Modulo, Modulos),
         copy_term(Modulo, _ :: Condiciones ---> Acciones),
@@ -40,10 +43,10 @@ ciclo(Modulos, Memoria0, Memoria, Resultado) :-
     ).
 
 %!  seguir(+Fin, +Modulos:list, +Memoria0:list, -Memoria:list, -Resultado)
-%!      is det.
+%!      is semidet.
 %
 %   Termina con el resultado R si Fin es parar(R), o sigue el ciclo si Fin
-%   es seguir.
+%   es seguir. Falla si falla el ciclo que sigue.
 seguir(parar(R), _, Memoria, Memoria, R).
 seguir(seguir, Modulos, Memoria0, Memoria, Resultado) :-
     ciclo(Modulos, Memoria0, Memoria, Resultado).
@@ -111,10 +114,12 @@ condicion(F, Memoria, [I|Resto], Resto) :-
     patron(F),
     nth0(I, Memoria, F).
 
-%!  acciones(+Acciones:list, +Memoria0:list, -Memoria:list, -Fin) is det.
+%!  acciones(+Acciones:list, +Memoria0:list, -Memoria:list, -Fin)
+%!      is semidet.
 %
 %   Ejecuta las Acciones en orden sobre Memoria0. Fin es parar(R) si una
 %   de ellas es parar(R), que deja sin ejecutar las siguientes, o seguir.
+%   Falla si falla una acción.
 acciones([], Memoria, Memoria, seguir).
 acciones([A|As], Memoria0, Memoria, Fin) :-
     (   A = parar(R)
@@ -124,11 +129,12 @@ acciones([A|As], Memoria0, Memoria, Fin) :-
         acciones(As, Memoria1, Memoria, Fin)
     ).
 
-%!  accion(+Accion, +Memoria0:list, -Memoria:list) is det.
+%!  accion(+Accion, +Memoria0:list, -Memoria:list) is semidet.
 %
 %   Memoria es Memoria0 después de una acción que no es parar/1. Un hecho
 %   agregado va al principio, como el más reciente; quitar un hecho quita
-%   la primera aparición que unifica con él.
+%   la primera aparición que unifica con él. Falla si quitar/1 o
+%   reemplazar/2 no encuentran el hecho, o si la prueba de {Meta} falla.
 accion({Meta}, Memoria, Memoria) :-
     once(Meta).
 accion(agregar(F), Memoria, [F|Memoria]).

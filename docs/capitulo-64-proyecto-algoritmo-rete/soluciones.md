@@ -122,6 +122,9 @@ I = instanciacion(progenitor_p, [1], 1, [agregar(progenitor(juan, ana))]).
 I = instanciacion(progenitor_p, [3], 1, [agregar(progenitor(juan, pedro))]).
 ```
 
+`gen_assoc/3` enumera por retroceso los pares de un assoc, en orden de
+clave: aquí da la clave de la regla que tiene ese nombre.
+
 ## 4
 
 `propagar/6` ordena las activaciones con `sort/4` antes de ejecutarlas, así
@@ -504,3 +507,141 @@ cuántos objetos examinan; en la red cada fase examina su clase una vez, y en
 el [capítulo 63](../capitulo-63-proyecto-sistema-produccion/index.md) cada ciclo examina toda la memoria, de modo que el promedio
 favorece al [capítulo 63](../capitulo-63-proyecto-sistema-produccion/index.md) si las fases nuevas miran clases grandes, y a la red
 si no las miran.
+
+## 13
+
+La solución está en `soluciones_extensiones.pl`, que carga
+`conjuntiva.pl` y `en_marcha.pl`, con sus pruebas en
+`soluciones_extensiones.plt`. La regla auxiliar marca cada bloque que tiene
+encima uno rojo, y `libre` pide que el bloque no esté marcado:
+
+<!-- ejemplo: capitulo-64/soluciones_extensiones.pl fragmento: programa(bloques_aux, .. ]). -->
+```prolog
+programa(bloques_aux,
+    [ marcar :: [sobre(Y, X), color(Y, rojo)]
+                ---> [agregar(rojo_encima(X))],
+      libre :: [bloque(X), no(rojo_encima(X))]
+               ---> [agregar(libre_de_rojo(X))]
+    ]).
+```
+
+<!-- ejemplo: capitulo-64/soluciones_extensiones.pl predicado: comparar_bloques/2 despues_de_quitar_con/4 -->
+```prolog
+%!  comparar_bloques(+Hechos:list, -Fila) is det.
+%
+%   Fila es f(Ciclos, Libres, CiclosAux, LibresAux): los ciclos de cada
+%   versión desde los Hechos y los bloques que cada una declara libres.
+comparar_bloques(Hechos, f(C, L, CA, LA)) :-
+    red_conj(bloques, Red),
+    ejecutar_red(Red, orden, sin_traza, Hechos, C, M, _),
+    libres(M, L),
+    ejecutar_rete(bloques_aux, orden, sin_traza, Hechos, CA, MA, _),
+    libres(MA, LA).
+
+%!  despues_de_quitar_con(+Red, +Hechos:list, +Quitado,
+%!                        -Instanciaciones:list) is det.
+%
+%   Como despues_de_quitar/4, con una Red ya compilada; solo cuenta las
+%   instanciaciones de la regla libre.
+despues_de_quitar_con(Red, Hechos, Quitado, Instanciaciones) :-
+    cargar(Red, Hechos, M0, R0),
+    ciclo_rete(Red, orden, sin_traza, 0, _, [], M0-R0, M1-R1, _),
+    retirar_rete(Red, Quitado, M1-R1, _-R),
+    conjunto_rete(R, Todas),
+    include(de_libre, Todas, Instanciaciones).
+```
+
+```prolog
+?- comparar_bloques([bloque(a), bloque(b), sobre(c, a), color(c, rojo)], F).
+F = f(1, [b], 2, [b]).
+
+?- despues_de_quitar(bloques, [bloque(a), bloque(b), sobre(c, a), color(c, rojo)], color(c, rojo), Is).
+Is = [instanciacion(libre, [1], 2, [agregar(libre_de_rojo(a))])].
+
+?- despues_de_quitar(bloques_aux, [bloque(a), bloque(b), sobre(c, a), color(c, rojo)], color(c, rojo), Is).
+Is = [].
+```
+
+Las dos versiones declaran libre el bloque `b`, y la auxiliar necesita un
+ciclo más, el que marca `a`. La diferencia aparece al quitar el color: la
+negación conjuntiva vuelve a contar las combinaciones y libera `a`; el
+hecho `rojo_encima(a)` quedó en la memoria de trabajo y nada lo quita, así
+que `a` sigue bloqueado. Para obtener el mismo resultado, la versión
+auxiliar necesita otra regla que quite la marca cuando la combinación deja
+de existir, y esa regla necesita a su vez la negación de la conjunción.
+
+## 14
+
+`quitar_regla/5` borra el terminal de la regla y sus instanciaciones del
+conjunto, y poda desde el nodo del que colgaba hacia la raíz: un nodo sin
+hijos y sin reglas se borra con sus memorias, sale de la lista de hijos de
+su padre y de los sucesores de sus nodos alfa. Al final se borran los
+nodos alfa sin sucesores, también del índice de su functor:
+
+<!-- ejemplo: capitulo-64/soluciones_extensiones.pl predicado: quitar_regla/5 podar/3 podar_alfas/4 -->
+```prolog
+%!  quitar_regla(+K:integer, +Red0, +Rete0, -Red, -Rete) is det.
+%
+%   Red y Rete son Red0 y Rete0 sin la regla número K: sin sus
+%   instanciaciones, sin los nodos beta que ninguna otra regla usa y sin
+%   los nodos alfa que quedan sin sucesores, con sus memorias.
+quitar_regla(K, red(I0, A0, B0, T0), rete(MA0, MB0, C0),
+             Red, rete(MA, MB, C)) :-
+    del_assoc(K, T0, _, T),
+    assoc_to_list(C0, Pares0),
+    exclude(de_regla(K), Pares0, Pares),
+    list_to_assoc(Pares, C),
+    once(( gen_assoc(Hoja, B0, beta(Tipo, Padre, Pr, Hijos, Ks)),
+           memberchk(K, Ks) )),
+    subtract(Ks, [K], Ks1),
+    put_assoc(Hoja, B0, beta(Tipo, Padre, Pr, Hijos, Ks1), B1),
+    podar(Hoja, red(I0, A0, B1, T)-MB0, Red1-MB),
+    podar_alfas(Red1, MA0, Red, MA).
+
+%!  podar(+B:integer, +Estado0, -Estado) is det.
+%
+%   Estado0 y Estado son pares Red-MemoriasBeta. Si el nodo B no es la
+%   raíz y no tiene hijos ni reglas, se borra con sus memorias, sale de la
+%   lista de hijos de su padre y de los sucesores de sus nodos alfa, y se
+%   poda el padre.
+podar(B, red(I, A0, B0, T)-M0, Estado) :-
+    get_assoc(B, B0, beta(Tipo, Padre, _, Hijos, Ks)),
+    (   B =\= 0, Hijos == [], Ks == []
+    ->  del_assoc(B, B0, _, B1),
+        get_assoc(Padre, B1, beta(TP, PP, PrP, HP, KP)),
+        subtract(HP, [B], HP1),
+        put_assoc(Padre, B1, beta(TP, PP, PrP, HP1, KP), B2),
+        alfas_del_tipo(Tipo, As),
+        foldl(sin_sucesor(B), As, A0, A1),
+        borrar_clave(B, M0, M1),
+        borrar_clave(cuentas(B), M1, M2),
+        podar(Padre, red(I, A1, B2, T)-M2, Estado)
+    ;   Estado = red(I, A0, B0, T)-M0
+    ).
+
+%!  podar_alfas(+Red0, +Memorias0, -Red, -Memorias) is det.
+%
+%   Red y Memorias son Red0 y Memorias0 sin los nodos alfa que no tienen
+%   sucesores, también borrados del índice de su functor.
+podar_alfas(red(I0, A0, B, T), M0, red(I, A, B, T), M) :-
+    findall(X, gen_assoc(X, A0, a(_, [])), Vacios),
+    foldl(borrar_clave, Vacios, A0, A),
+    foldl(borrar_clave, Vacios, M0, M),
+    assoc_to_list(I0, Indices0),
+    findall(F-Ns,
+            ( member(F-Ns0, Indices0),
+              subtract(Ns0, Vacios, Ns),
+              Ns \== [] ),
+            Indices),
+    list_to_assoc(Indices, I).
+```
+
+```prolog
+?- igual_sin_regla(familia, 2, [padre(juan, ana), padre(ana, sofia)]).
+true.
+```
+
+Las pruebas lo verifican para cada regla de `familia` y del configurador.
+Quitar es más simple que agregar porque no hay que llenar nada: las
+memorias de los nodos que quedan no cambian, ya que cada nodo depende solo
+de su padre y de sus nodos alfa, nunca de sus hijos.

@@ -1,5 +1,5 @@
 # Configuration of the web book. Built with `make docs` and published to
-# GitHub Pages by the .github/workflows/deploy-book.yml workflow.
+# GitHub Pages by the .github/workflows/sitio.yml workflow.
 #
 # The three URLs below are the only thing to touch if the repository changes
 # its name or its account.
@@ -81,6 +81,7 @@ plugins:
 hooks:
   - tools/swish_links.py
   - tools/pdf_links.py
+  - tools/slides_files.py
 
 extra_css:
   - estilos/swish.css
@@ -294,18 +295,22 @@ nav:
           - Soluciones: capitulo-43-proyecto-resolver-ecuaciones/soluciones.md
           - La forma normal de un polinomio: capitulo-43-proyecto-resolver-ecuaciones/forma-normal.md
           - El método de Newton y la comprobación: capitulo-43-proyecto-resolver-ecuaciones/newton.md
+          - Más métodos de PRESS: capitulo-43-proyecto-resolver-ecuaciones/press.md
       - "Capítulo 44 — Proyecto: una aventura de texto":
           - capitulo-44-proyecto-aventura-de-texto/index.md
           - Soluciones: capitulo-44-proyecto-aventura-de-texto/soluciones.md
           - Órdenes y respuestas en castellano: capitulo-44-proyecto-aventura-de-texto/lenguaje.md
+          - Más elementos de Colossal Cave: capitulo-44-proyecto-aventura-de-texto/colossal-cave.md
       - "Capítulo 45 — Proyecto: un compilador":
           - capitulo-45-proyecto-compilador/index.md
           - Soluciones: capitulo-45-proyecto-compilador/soluciones.md
           - Optimización: capitulo-45-proyecto-compilador/optimizacion.md
           - El intérprete especializado: capitulo-45-proyecto-compilador/especializacion.md
+          - Otras máquinas y extensiones de Mini: capitulo-45-proyecto-compilador/extensiones.md
       - "Capítulo 46 — Proyecto: métodos numéricos":
           - capitulo-46-proyecto-metodos-numericos/index.md
           - Soluciones: capitulo-46-proyecto-metodos-numericos/soluciones.md
+          - La incógnita como variable de Prolog: capitulo-46-proyecto-metodos-numericos/covington.md
       - "Capítulo 47 — Proyecto: aritmética racional y matrices":
           - capitulo-47-proyecto-aritmetica-racional-matrices/index.md
           - Soluciones: capitulo-47-proyecto-aritmetica-racional-matrices/soluciones.md
@@ -314,9 +319,11 @@ nav:
           - Soluciones: capitulo-48-proyecto-circuitos-logicos/soluciones.md
           - Verificar con library(clpb): capitulo-48-proyecto-circuitos-logicos/verificacion.md
           - Circuitos secuenciales: capitulo-48-proyecto-circuitos-logicos/secuenciales.md
+          - Compuertas hechas con transistores: capitulo-48-proyecto-circuitos-logicos/transistores.md
       - "Capítulo 49 — Proyecto: diagnóstico por abducción":
           - capitulo-49-proyecto-diagnostico-abduccion/index.md
           - Soluciones: capitulo-49-proyecto-diagnostico-abduccion/soluciones.md
+          - Abducción con negación y mínimos sin presupuesto: capitulo-49-proyecto-diagnostico-abduccion/negacion-y-minimos.md
       - "Capítulo 50 — Proyecto: la FFT simbólica":
           - capitulo-50-proyecto-fft-simbolica/index.md
           - Soluciones: capitulo-50-proyecto-fft-simbolica/soluciones.md
@@ -334,9 +341,11 @@ nav:
           - capitulo-53-proyecto-morfologia-castellano/index.md
           - Soluciones: capitulo-53-proyecto-morfologia-castellano/soluciones.md
           - Dos niveles con transductores: capitulo-53-proyecto-morfologia-castellano/dos-niveles.md
+          - Notación de dos niveles y derivación: capitulo-53-proyecto-morfologia-castellano/derivacion.md
       - "Capítulo 54 — Proyecto: traducción castellano–inglés":
           - capitulo-54-proyecto-traduccion-castellanoingles/index.md
           - Soluciones: capitulo-54-proyecto-traduccion-castellanoingles/soluciones.md
+          - Interlingua lógica y trato: capitulo-54-proyecto-traduccion-castellanoingles/interlingua.md
       - "Capítulo 55 — Proyecto: diálogos por plantillas":
           - capitulo-55-proyecto-dialogos-plantillas/index.md
           - Soluciones: capitulo-55-proyecto-dialogos-plantillas/soluciones.md
@@ -358,11 +367,13 @@ nav:
           - Soluciones: capitulo-59-proyecto-analisis-programas/soluciones.md
           - Un intérprete que cuenta: capitulo-59-proyecto-analisis-programas/perfil.md
           - Comparación con prolog_xref: capitulo-59-proyecto-analisis-programas/xref.md
+          - Un editor de cláusulas: capitulo-59-proyecto-analisis-programas/editor.md
       - "Capítulo 60 — Proyecto: un intérprete dirigido por patrones":
           - capitulo-60-proyecto-interprete-dirigido-patrones/index.md
           - Soluciones: capitulo-60-proyecto-interprete-dirigido-patrones/soluciones.md
           - Un demostrador por resolución: capitulo-60-proyecto-interprete-dirigido-patrones/resolucion.md
           - La terminación: capitulo-60-proyecto-interprete-dirigido-patrones/terminacion.md
+          - Índices y metarreglas: capitulo-60-proyecto-interprete-dirigido-patrones/indices.md
       - "Capítulo 61 — Proyecto: una máquina de Prolog":
           - capitulo-61-proyecto-maquina-prolog/index.md
           - Soluciones: capitulo-61-proyecto-maquina-prolog/soluciones.md
@@ -381,84 +392,117 @@ nav:
           - capitulo-64-proyecto-algoritmo-rete/index.md
           - Soluciones: capitulo-64-proyecto-algoritmo-rete/soluciones.md
           - La medición y las pruebas alfa: capitulo-64-proyecto-algoritmo-rete/medicion.md
+          - Cinco extensiones de la red: capitulo-64-proyecto-algoritmo-rete/extensiones.md
       - "Capítulo 65 — Proyecto: razonamiento rebatible":
           - capitulo-65-proyecto-razonamiento-rebatible/index.md
           - Soluciones: capitulo-65-proyecto-razonamiento-rebatible/soluciones.md
           - Por qué sí y por qué no: capitulo-65-proyecto-razonamiento-rebatible/explicaciones.md
           - La anticipación de los rivales: capitulo-65-proyecto-razonamiento-rebatible/anticipacion.md
           - Tres lecturas de una regla con excepciones: capitulo-65-proyecto-razonamiento-rebatible/comparacion.md
+          - Cuatro ampliaciones del intérprete: capitulo-65-proyecto-razonamiento-rebatible/ampliaciones.md
       - "Capítulo 66 — Proyecto: evidencia y árboles de decisión":
           - capitulo-66-proyecto-evidencia-arboles-decision/index.md
           - Soluciones: capitulo-66-proyecto-evidencia-arboles-decision/soluciones.md
           - El árbol de preguntas y su compilación: capitulo-66-proyecto-evidencia-arboles-decision/arbol.md
+          - "Cinco ampliaciones: probabilidades, certezas y aprendizaje": capitulo-66-proyecto-evidencia-arboles-decision/ampliaciones.md
       - "Capítulo 67 — Proyecto: aprender reglas de ejemplos":
           - capitulo-67-proyecto-aprender-reglas-ejemplos/index.md
           - Soluciones: capitulo-67-proyecto-aprender-reglas-ejemplos/soluciones.md
           - La mejor cláusula y la recursión: capitulo-67-proyecto-aprender-reglas-ejemplos/recursion.md
+          - Otras formas de inducir: capitulo-67-proyecto-aprender-reglas-ejemplos/otras-formas.md
       - "Capítulo 68 — Proyecto: espacios de versiones y generalización por explicación":
           - capitulo-68-proyecto-espacios-versiones-generalizacion-explicacion/index.md
           - Soluciones: capitulo-68-proyecto-espacios-versiones-generalizacion-explicacion/soluciones.md
           - Explicar un ejemplo y generalizar la explicación: capitulo-68-proyecto-espacios-versiones-generalizacion-explicacion/explicacion.md
+          - Otras generalizaciones e incorporar las reglas: capitulo-68-proyecto-espacios-versiones-generalizacion-explicacion/otras-generalizaciones.md
       - "Capítulo 69 — Proyecto: un perceptrón":
           - capitulo-69-proyecto-perceptron/index.md
           - Soluciones: capitulo-69-proyecto-perceptron/soluciones.md
+          - Vectores y el esquema del acumulador: capitulo-69-proyecto-perceptron/vectores.md
       - "Capítulo 70 — Proyecto: planificación por regresión":
           - capitulo-70-proyecto-planificacion-regresion/index.md
           - Soluciones: capitulo-70-proyecto-planificacion-regresion/soluciones.md
           - "El mundo del capítulo 40": capitulo-70-proyecto-planificacion-regresion/comparacion.md
+          - "Más allá de WARPLAN": capitulo-70-proyecto-planificacion-regresion/extensiones.md
       - "Capítulo 71 — Proyecto: grafos Y/O":
           - capitulo-71-proyecto-grafos-o/index.md
           - Soluciones: capitulo-71-proyecto-grafos-o/soluciones.md
+          - "La notación de Bratko y la búsqueda ascendente": capitulo-71-proyecto-grafos-o/extensiones.md
       - "Capítulo 72 — Proyecto: planificación de tareas":
           - capitulo-72-proyecto-planificacion-tareas/index.md
           - Soluciones: capitulo-72-proyecto-planificacion-tareas/soluciones.md
           - El camino crítico: capitulo-72-proyecto-planificacion-tareas/camino.md
+          - "Anomalías, consistencia y holguras": capitulo-72-proyecto-planificacion-tareas/extensiones.md
       - "Capítulo 73 — Proyecto: horarios para Inscripciones":
           - capitulo-73-proyecto-horarios-inscripciones/index.md
           - Soluciones: capitulo-73-proyecto-horarios-inscripciones/soluciones.md
+          - El mejor horario: capitulo-73-proyecto-horarios-inscripciones/optimo.md
+          - El llamado a examen: capitulo-73-proyecto-horarios-inscripciones/examenes.md
       - "Capítulo 74 — Proyecto: el cubo de Rubik":
           - capitulo-74-proyecto-cubo-rubik/index.md
           - Soluciones: capitulo-74-proyecto-cubo-rubik/soluciones.md
           - El cubo como espacio de estados: capitulo-74-proyecto-cubo-rubik/espacio.md
+          - Piezas y una ayuda para la búsqueda: capitulo-74-proyecto-cubo-rubik/piezas.md
       - "Capítulo 75 — Proyecto: rompecabezas con simetrías":
           - capitulo-75-proyecto-rompecabezas-simetrias/index.md
           - Soluciones: capitulo-75-proyecto-rompecabezas-simetrias/soluciones.md
+          - Enigma 1225: capitulo-75-proyecto-rompecabezas-simetrias/enigma.md
+          - La cobertura del tablero: capitulo-75-proyecto-rompecabezas-simetrias/cobertura.md
       - "Capítulo 76 — Proyecto: robots, laberintos y el caballo":
           - capitulo-76-proyecto-robots-laberintos-caballo/index.md
           - Soluciones: capitulo-76-proyecto-robots-laberintos-caballo/soluciones.md
+          - El laberinto de compuertas: capitulo-76-proyecto-robots-laberintos-caballo/laberinto.md
+          - El recorrido del caballo: capitulo-76-proyecto-robots-laberintos-caballo/recorrido.md
       - "Capítulo 77 — Proyecto: el mundo del Wumpus":
           - capitulo-77-proyecto-mundo-wumpus/index.md
           - Soluciones: capitulo-77-proyecto-mundo-wumpus/soluciones.md
           - Los enfoques comparados: capitulo-77-proyecto-mundo-wumpus/enfoques.md
+          - "El agente con historia": capitulo-77-proyecto-mundo-wumpus/temporal.md
       - "Capítulo 78 — Proyecto: Kalah, Mastermind y Nim":
           - capitulo-78-proyecto-kalah-mastermind-nim/index.md
           - Soluciones: capitulo-78-proyecto-kalah-mastermind-nim/soluciones.md
+          - Mastermind: capitulo-78-proyecto-kalah-mastermind-nim/mastermind.md
+          - Kalah: capitulo-78-proyecto-kalah-mastermind-nim/kalah.md
       - "Capítulo 79 — Proyecto: un lenguaje de consejos para el ajedrez":
           - capitulo-79-proyecto-lenguaje-consejos-ajedrez/index.md
           - Soluciones: capitulo-79-proyecto-lenguaje-consejos-ajedrez/soluciones.md
+          - Verificar la tabla: capitulo-79-proyecto-lenguaje-consejos-ajedrez/verificacion.md
       - "Capítulo 80 — Proyecto: el etiquetado de Waltz":
           - capitulo-80-proyecto-etiquetado-waltz/index.md
           - Soluciones: capitulo-80-proyecto-etiquetado-waltz/soluciones.md
       - "Capítulo 81 — Proyecto: una colección de problemas":
           - capitulo-81-proyecto-coleccion-problemas/index.md
           - Soluciones: capitulo-81-proyecto-coleccion-problemas/soluciones.md
+          - Moléculas: capitulo-81-proyecto-coleccion-problemas/moleculas.md
+          - Una colección de estampillas: capitulo-81-proyecto-coleccion-problemas/estampillas.md
+          - Reglas de tránsito y marcos: capitulo-81-proyecto-coleccion-problemas/transito-y-marcos.md
+          - Rimas: capitulo-81-proyecto-coleccion-problemas/rimas.md
       - "Capítulo 82 — Proyecto: criptografía":
           - capitulo-82-proyecto-criptografia/index.md
           - Soluciones: capitulo-82-proyecto-criptografia/soluciones.md
+          - Firmas: capitulo-82-proyecto-criptografia/firmas.md
+          - El canal cifrado: capitulo-82-proyecto-criptografia/canal.md
       - "Capítulo 83 — Proyecto: procesamiento de textos":
           - capitulo-83-proyecto-procesamiento-textos/index.md
           - Soluciones: capitulo-83-proyecto-procesamiento-textos/soluciones.md
+          - Curvas: capitulo-83-proyecto-procesamiento-textos/curvas.md
       - "Capítulo 84 — Proyecto: análisis de registros":
           - capitulo-84-proyecto-analisis-registros/index.md
           - Soluciones: capitulo-84-proyecto-analisis-registros/soluciones.md
+          - Lectura de los registros: capitulo-84-proyecto-analisis-registros/lectura.md
+          - Un umbral aprendido: capitulo-84-proyecto-analisis-registros/aprendido.md
+          - Muchos días en paralelo: capitulo-84-proyecto-analisis-registros/paralelo.md
       - "Capítulo 85 — Proyecto: un motor Datalog":
           - capitulo-85-proyecto-motor-datalog/index.md
           - Soluciones: capitulo-85-proyecto-motor-datalog/soluciones.md
+          - La transformación mágica: capitulo-85-proyecto-motor-datalog/magia.md
+          - "Aplicaciones: el Wumpus, los marcos y los registros": capitulo-85-proyecto-motor-datalog/aplicaciones.md
+          - La tabla de un juego: capitulo-85-proyecto-motor-datalog/finales.md
       - "Capítulo 86 — Proyecto: un mini-SQL en Prolog":
           - capitulo-86-proyecto-mini-sql-prolog/index.md
           - Soluciones: capitulo-86-proyecto-mini-sql-prolog/soluciones.md
       - "Capítulo 87 — Proyecto: preguntas en castellano":
           - capitulo-87-proyecto-preguntas-en-castellano/index.md
           - Soluciones: capitulo-87-proyecto-preguntas-en-castellano/soluciones.md
-  - Apéndice B — Los capítulos en PDF: pdf.md
+  - Apéndice B — Los capítulos en PDF y las diapositivas: pdf.md
   - Licencia: licencia.md

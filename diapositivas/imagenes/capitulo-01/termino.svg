@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" width="800" height="400">
+  <title>El hecho tiene(ana, mascota(gato, felix)) dibujado como un árbol: tiene en la raíz, con ana y el término compuesto mascota(gato, felix) como argumentos</title>
+  <rect x="0" y="0" width="800" height="400" fill="#FFFFFF"/>
+  <text x="400" y="40" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="28" fill="#1F2933" text-anchor="middle">tiene(ana, mascota(gato, felix)).</text>
+  <g stroke="#1F3A5F" stroke-width="3">
+    <line x1="400" y1="130" x2="240" y2="202"/>
+    <line x1="400" y1="130" x2="570" y2="198"/>
+    <line x1="570" y1="242" x2="470" y2="312"/>
+    <line x1="570" y1="242" x2="670" y2="312"/>
+  </g>
+  <ellipse cx="400" cy="108" rx="80" ry="24" fill="#1F3A5F"/>
+  <ellipse cx="570" cy="220" rx="96" ry="24" fill="#D9822B"/>
+  <g fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2">
+    <rect x="180" y="200" width="120" height="44" rx="22"/>
+    <rect x="410" y="310" width="120" height="44" rx="22"/>
+    <rect x="610" y="310" width="120" height="44" rx="22"/>
+  </g>
+  <g font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" text-anchor="middle">
+    <text x="400" y="116" fill="#FFFFFF" font-weight="bold">tiene</text>
+    <text x="570" y="228" fill="#FFFFFF" font-weight="bold">mascota</text>
+    <text x="240" y="230" fill="#1F2933">ana</text>
+    <text x="470" y="340" fill="#1F2933">gato</text>
+    <text x="670" y="340" fill="#1F2933">felix</text>
+  </g>
+  <g font-family="Verdana, DejaVu Sans, sans-serif" font-size="18">
+    <text x="498" y="100" fill="#1F3A5F" font-weight="bold">predicado</text>
+    <text x="498" y="124" fill="#52606D">afirma una relación</text>
+    <text x="70" y="330" fill="#D9822B" font-weight="bold">término compuesto</text>
+    <text x="70" y="354" fill="#52606D">en un argumento es un dato,</text>
+    <text x="70" y="378" fill="#52606D">igual que ana o felix</text>
+  </g>
+</svg>

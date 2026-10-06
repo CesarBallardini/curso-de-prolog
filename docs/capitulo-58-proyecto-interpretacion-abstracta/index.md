@@ -10,16 +10,29 @@ de valores concretos: `pos` representa todos los enteros positivos, y el
 intervalo de 0 a 10 representa once enteros. Una sola ejecución abstracta
 cubre así infinitas ejecuciones concretas.
 
+![Dos reticulados unidos por flechas: a la izquierda, conjuntos de enteros; a la derecha, conjuntos de signos](signos-reticulado.png)
+
+A la izquierda, en rojo, algunos conjuntos de enteros ordenados por
+inclusión, desde el conjunto vacío hasta todos los enteros; a la derecha, en
+verde, los conjuntos de signos (−, 0, +) con el mismo orden. Las flechas α
+llevan cada conjunto de enteros al menor conjunto de signos que lo
+representa: {1, 3} y {1, 2, …} van a {+}. Es la abstracción por signos de la
+[sección 58.4](#584-signos-un-interprete-abstracto-tabulado). Imagen: Jochen
+Burghardt, [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0),
+vía [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Abstract_interpretation_of_integers_by_signs_svg.svg).
+
 El proyecto es un analizador de los programas **Mini** del
 [capítulo 45](../capitulo-45-proyecto-compilador/index.md). Carga su análisis
-sintáctico y su intérprete, sin copiarlos, y crece en cinco versiones: el
+sintáctico y su intérprete, sin copiarlos, y crece en seis versiones: el
 intérprete concreto como referencia; la ejecución sobre valores
 simbólicos; un intérprete abstracto sobre signos, tabulado, que sigue cada
 combinación de signos por separado; otro que guarda un solo estado por
 punto del programa y une los estados con la subsunción de respuestas del
 [capítulo 39](../capitulo-39-tabulacion/index.md); y el dominio de los
-intervalos, que necesita **ensanchamiento** para terminar. Cada versión se
-compara con las ejecuciones concretas de una muestra.
+intervalos, que necesita **ensanchamiento** para terminar. La sexta amplía
+Mini con procedimientos y analiza cada procedimiento en cada contexto de
+llamada. Cada versión se compara con las ejecuciones concretas de una
+muestra.
 
 El capítulo parte de *Programming in Tabled Prolog* de David S. Warren
 ([copia de archivo de la página del autor](https://web.archive.org/web/20240628211257/https://www3.cs.stonybrook.edu/~warren/xsbbook/book.html)),
@@ -31,8 +44,9 @@ no se decide, de modo que el programa determinista se vuelve no
 determinista y sigue las dos ramas; y obtener el menor punto fijo de los
 estados alcanzables tabulando el intérprete, porque sin tablas cualquier
 bucle abstracto se repite sin fin. El programa de Warren está escrito para
-XSB y analiza otro lenguaje; aquí el lenguaje es Mini, la tabulación es la
-de SWI-Prolog, y el código es propio. La teoría, con los reticulados, los
+XSB y analiza un lenguaje con procedimientos anidados; aquí el lenguaje es
+Mini, ampliado con esos procedimientos en la última versión, la tabulación
+es la de SWI-Prolog, y el código es propio. La teoría, con los reticulados, los
 puntos fijos y el ensanchamiento, es la del artículo de Patrick y Radhia
 Cousot de 1977. El capítulo cumple los anuncios de los capítulos
 [39](../capitulo-39-tabulacion/index.md) (el análisis estático con tablas),
@@ -57,13 +71,16 @@ Al terminar el capítulo, el lector puede:
   los estados de un punto con la subsunción de respuestas `lattice`;
 - escribir un dominio de altura infinita con ensanchamiento, y medir lo
   que el análisis pierde con él;
+- ejecutar procedimientos anidados con alcance estático sobre una pila de
+  registros de activación, y analizarlos con un resumen tabulado por
+  contexto de llamada;
 - distinguir lo que un análisis prueba de lo que no puede probar, y
   comprobar sus resultados contra una muestra de ejecuciones.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:30 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:45 h**.
     Resolver los 5 ejercicios marcados con ★: **1:10 h**.
-    Resolver los 11 ejercicios del final: **3:30 h**.
+    Resolver los 12 ejercicios del final: **3:50 h**.
 
 ## 58.1 El analizador terminado
 
@@ -282,7 +299,9 @@ cambiar.
 ## 58.4 Signos: un intérprete abstracto tabulado
 
 El dominio de los **signos** tiene tres valores: `neg`, `cero` y `pos`, que
-representan los enteros negativos, el cero y los positivos. Lo que cada
+representan los enteros negativos, el cero y los positivos; es el ejemplo
+con que Cousot y Cousot abren su artículo de 1977, la «regla de los
+signos» que toman de Michel Sintzoff. Lo que cada
 valor representa es su **concretización**; el signo de un entero, o los
 signos de un rango, su **abstracción**. Una operación abstracta tiene que
 ser **correcta**: si x tiene signo A e y tiene signo B, el signo de x + y
@@ -456,7 +475,7 @@ cada par tiene una unión, la menor cota superior. `reticulado.pl` escribe el
 intérprete con el dominio como parámetro, como el intérprete de
 circuitos del [capítulo 48](../capitulo-48-proyecto-circuitos-logicos/index.md)
 recibe la conducta de las compuertas
-([Patrón 59](../patrones.md#59-interprete-con-conducta-como-parametro)):
+([Patrón 60](../patrones.md#60-interprete-con-conducta-como-parametro)):
 cada dominio agrega cláusulas a las operaciones `dom_constante/3`,
 `dom_operar/5`, `dom_refinar/5`, `dom_unir/4`, `dom_ensanchar/4` y las
 demás, declaradas `multifile`. El dominio de signos con `top` se escribe
@@ -574,7 +593,8 @@ i(0, 2)… En `i := 0; mientras i < 10 hacer i := i + 1 fin` la unión en la
 cabeza crece de uno en uno hasta i(0, 10), y en un bucle sin cota crecería
 sin fin, y la tabla de `cabeza/3` no se completaría. El **ensanchamiento**
 fuerza la estabilización: si una cota crece entre la respuesta vieja y la
-nueva, salta a infinito. Antes de infinito prueba con 0, el único
+nueva, salta a infinito. Es el operador que Cousot y Cousot definen para los
+intervalos en la sección 9.1.3 de su artículo. Antes de infinito prueba con 0, el único
 **umbral**, porque muchos bucles bajan una variable hasta 0:
 
 <!-- ejemplo: capitulo-58/intervalos.pl predicado: dom_ensanchar/4 bajar/2 -->
@@ -639,7 +659,155 @@ la salida del bucle deja i(10, sup), cuando la ejecución concreta escribe
     salida. Compararlo con el valor que escribe `interpretar/2`, y con el
     resultado del análisis de signos.
 
-## 58.7 Lo que el análisis prueba y lo que no
+## 58.7 Procedimientos: un análisis interprocedural
+
+El lenguaje que analiza Warren tiene lo que a Mini le falta:
+**procedimientos** anidados, con **alcance estático** y paso de parámetros
+**por valor**. `procedimientos.pl` agrega a Mini esas tres cosas. Un
+bloque es `bloque(Declaraciones, Sentencias)`; una declaración es `var(X)`
+o `proc(Nombre, Parametros, Bloque)`, y la sentencia nueva es
+`llamar(Nombre, Argumentos)`. Las expresiones, las condiciones y las
+sentencias simples se escriben como texto de Mini y se leen con el
+analizador del [capítulo 45](../capitulo-45-proyecto-compilador/index.md):
+
+<!-- ejemplo: capitulo-58/procedimientos.pl fragmento: caso_p(alcance, .. llamar(probar, []) ])). -->
+```prolog
+caso_p(alcance, [],
+       bloque([ var(x),
+                proc(mostrar, [], bloque([], ["escribir x"])),
+                proc(probar, [],
+                     bloque([var(x)],
+                            [ "x := 2",
+                              llamar(mostrar, []) ])) ],
+              [ "x := 1",
+                llamar(probar, []) ])).
+```
+
+El estado de la ejecución es, como en Warren, una **pila de registros de
+activación**: listas de pares `Nombre-Valor`, la primera del bloque que se
+ejecuta y las siguientes de los bloques que lo encierran **en el texto**.
+Un nombre se busca del registro más interior al más exterior, y el número
+del registro donde aparece es su **nivel**: Warren lo calcula al analizar
+el programa y lo guarda en cada referencia, `var(Nivel, Nombre)`; aquí se
+calcula al buscar.
+
+<!-- ejemplo: capitulo-58/procedimientos.pl predicado: p_buscar/4 -->
+```prolog
+%!  p_buscar(+X:atom, +Pila:list, -I:integer, -V) is semidet.
+%
+%   V es el valor del nombre X en el primer registro de Pila que lo
+%   declara, el registro I, contado desde 0. Falla si ninguno lo declara.
+p_buscar(X, [Registro|Pila], I, V) :-
+    (   memberchk(X-V0, Registro)
+    ->  I = 0,
+        V = V0
+    ;   p_buscar(X, Pila, I0, V),
+        I is I0 + 1
+    ).
+```
+
+Llamar a un procedimiento declarado en el registro I es ejecutar su bloque
+sobre la pila sin los I primeros registros, la del bloque que lo declaró,
+con un registro nuevo al frente para los parámetros y las declaraciones
+propias, y volver a poner al retornar los registros que se quitaron. Es lo
+que hacen `remFirst` y `addFirst` en el intérprete de Warren, y lo que da
+el alcance estático:
+
+<!-- ejemplo: capitulo-58/procedimientos.pl fragmento: p_sentencia(llamar(N, Args), Pila0, Pila) .. append(Interiores, Definidor, Pila) }. -->
+```prolog
+p_sentencia(llamar(N, Args), Pila0, Pila) -->
+    { p_buscar(N, Pila0, I, proc(Ps, B)),
+      maplist(p_evaluar_en(Pila0), Args, Vs),
+      pairs_keys_values(Params, Ps, Vs),
+      p_partir(I, Pila0, Interiores, Definidor0) },
+    p_bloque(B, Params, Definidor0, _, Definidor),
+    { append(Interiores, Definidor, Pila) }.
+```
+
+```prolog
+?- p_correr_caso(alcance, [], R).
+R = fin([1], [x-1]).
+
+?- p_correr_caso(factorial, [n-5], R).
+R = fin([120], [n-5, r-120]).
+```
+
+`mostrar/0` escribe la `x` del bloque principal, que vale 1, aunque la
+llame `probar/0`, que declara otra `x` con el valor 2: con alcance
+dinámico escribiría 2. `factorial` es recursivo: `fact/1` multiplica `r`,
+global, y se llama con `k - 1`.
+
+El análisis de signos sigue la forma de la
+[sección 58.4](#584-signos-un-interprete-abstracto-tabulado): `a_efecto/3`
+es `efecto/3` con la pila de signos en lugar del entorno, tabulado. La
+llamada evalúa los argumentos sobre signos, una combinación por vez, y
+ejecuta el procedimiento con `a_procedimiento/5`, que también se tabula:
+
+<!-- ejemplo: capitulo-58/procedimientos.pl fragmento: :- table a_procedimiento/5. .. R = error -->
+```prolog
+:- table a_procedimiento/5.
+
+%!  a_procedimiento(+N, +Definicion, +Vs:list, +Definidor0:list, -R)
+%!      is nondet.
+%
+%   Llamar al procedimiento N, con Definicion Parametros-Bloque, con los
+%   signos Vs en sus parámetros, sobre la pila Definidor0 del bloque que
+%   lo declaró, puede terminar en R: pila(Definidor), esa pila con los
+%   cambios del procedimiento, o error. Tabulado, guarda el resumen de N
+%   para cada contexto de llamada.
+a_procedimiento(_, Ps-bloque(Ds, Ss), Vs, Definidor0, R) :-
+    pairs_keys_values(Params, Ps, Vs),
+    p_registro(Ds, cero, Params, Registro),
+    a_efecto_lista(Ss, pila([Registro|Definidor0]), R0),
+    (   R0 = pila([_|Definidor])
+    ->  R = pila(Definidor)
+    ;   R = error
+```
+
+Cada llamada de la tabla de `a_procedimiento/5` es un procedimiento con
+los signos de sus argumentos y de las variables que ve: un **contexto de
+llamada**. Sus respuestas son el **resumen** del procedimiento en ese
+contexto, y un análisis que calcula los resúmenes de todos los contextos
+alcanzables es **interprocedural** y **sensible al contexto**. Como los
+contextos son finitos, una llamada recursiva con un contexto ya visto es
+una variante de una llamada de la tabla, y la recursión del análisis
+termina igual que los bucles. `p_resumenes/3` lee los resúmenes de la
+tabla:
+
+```prolog
+?- p_finales_caso(factorial, Fs).
+Fs = [estado([n-cero, r-pos]), estado([n-pos, r-pos])].
+
+?- p_resumenes_caso(factorial, Rs).
+Rs = [resumen(fact, [cero], [n-cero, r-pos], [[n-cero, r-pos]]), resumen(fact, [cero], [n-pos, r-pos], [[n-pos, r-pos]]), resumen(fact, [neg], [n-pos, r-pos], [[n-pos, r-pos]]), resumen(fact, [pos], [n-pos, r-pos], [[n-pos, r-pos]])].
+```
+
+El análisis prueba que `factorial` escribe un positivo con cualquier n no
+negativo, y termina con cuatro contextos de `fact/1`. El de `[neg]` es
+una imprecisión ya conocida: para los signos, `k - 1` con k positivo puede
+ser negativo. `cociente` llama a `dividir/1` desde las dos ramas de un
+`si`, con `a` cuando a > 0 y con `1 - a` en los demás casos:
+
+```prolog
+?- p_finales_caso(cociente, Fs).
+Fs = [estado([a-cero, q-cero]), estado([a-cero, q-pos]), estado([a-neg, q-cero]), estado([a-neg, q-pos]), estado([a-pos, q-cero]), estado([a-pos, q-pos])].
+```
+
+Ningún estado final es `error`: el análisis prueba que `100 / d` nunca
+divide por cero, porque en los tres contextos de la tabla `dividir/1`
+recibe un argumento positivo. Un análisis que diera a `dividir/1` un solo
+resumen para todas las llamadas, uniendo sus argumentos, vería `d` como
+`top` y daría una falsa alarma; separar los contextos es lo que la evita,
+a costa de analizar el procedimiento una vez por contexto. El
+[ejercicio 12](#ejercicios) busca los contextos que terminan en error.
+
+!!! question "Actividad"
+    Predecir los resúmenes de `dividir/1` si `cociente` llamara a
+    `dividir(a - 1)` en la rama del `si` en lugar de `dividir(a)`: con qué
+    signos se llama y si alguno puede terminar en `error`. Comprobarlo
+    cambiando el caso en una copia de `procedimientos.pl`.
+
+## 58.8 Lo que el análisis prueba y lo que no
 
 Los tres análisis, sobre los seis casos, con las entradas de cada caso:
 
@@ -682,7 +850,7 @@ crece como $3^K$, mientras que el unido es lineal y pierde correlaciones.
     | C2 | el intérprete abstracto elige la cláusula por el functor del nodo, como el del [capítulo 45](../capitulo-45-proyecto-compilador/index.md); un estado es `estado(…)`, `error` o `nada`, y cada dominio es un nombre con cláusulas propias en las operaciones `multifile` |
     | C4 | el análisis unido no deja alternativas pendientes: las cotas infinitas y los extremos se comparan con si-entonces-sino, y las pruebas lo verifican |
     | C6 | ningún análisis escribe ni guarda estado propio; las tablas son el único estado, y `muertas_signos/3` las borra antes de leerlas |
-    | C7 | 45 pruebas en seis archivos, y 16 más de las soluciones; los resultados de los análisis se comparan con la muestra concreta en todos los casos, y las imprecisiones conocidas (`diez`, `cuadrado`, `mcd`) están probadas como tales |
+    | C7 | 116 pruebas en siete archivos, y 37 más de las soluciones; los resultados de los análisis se comparan con la muestra concreta en todos los casos, y las imprecisiones conocidas (`diez`, `cuadrado`, `mcd`) están probadas como tales |
 
 ## Ejercicios
 
@@ -740,6 +908,11 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     después a infinito. Escribir el dominio `umbrales(Ts)`, un intervalo que
     lleva en su nombre la lista de umbrales, y comprobar que en `diez` da
     i(10, 10) sin estrechar.
+12. **(2)** Escribir `contextos_con_error(Bloque, Entradas, Cs)`: los pares
+    `N-Vs` de los procedimientos que el análisis de `procedimientos.pl`
+    llama con los signos `Vs` y cuyo resumen incluye `error`. Comprobar que
+    en `cociente` no hay ninguno, y que aparece `dividir-[cero]` si el
+    bloque principal llama a `dividir(a)` sin la condición.
 
 ## Resumen
 
@@ -759,6 +932,9 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | `op_signos/4`, `efecto/3`, `finales_signos/3`, `muertas_signos/3` | los signos, por conjuntos de estados, tabulados |
 | `analisis/5`, `cabeza/3`, `partir//4`, `dom_*` | el intérprete con el dominio como parámetro y la cabeza de los bucles con `lattice` |
 | `dom_ensanchar/4`, `cubre/3`, `informe/1` | los intervalos, la comparación con la muestra y el analizador terminado |
+| **alcance estático, registro de activación** | un nombre se busca en los bloques que encierran al que se ejecuta en el texto, no en los de quien lo llamó; cada bloque en ejecución tiene un registro con sus nombres |
+| **análisis interprocedural, contexto de llamada** | el que analiza cada procedimiento con los valores abstractos de cada llamada; su resultado en un contexto es un resumen |
+| `p_correr/3`, `p_buscar/4`, `a_procedimiento/5`, `p_resumenes/3` | los procedimientos, concretos y sobre signos |
 
 ## Temas que se retoman
 
@@ -778,8 +954,11 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
   se deciden como no determinismo, y la tabulación del intérprete de
   sentencias para obtener el menor punto fijo de los estados alcanzables;
   también la idea del análisis de variables no inicializadas, que es el
-  ejercicio 4. El programa de Warren, para XSB y para un lenguaje con
-  procedimientos anidados, no se copió.
+  ejercicio 4, y el lenguaje de su intérprete, con procedimientos anidados,
+  alcance estático y paso por valor, la pila de registros de activación y
+  el análisis interprocedural por tabulación de la
+  [sección 58.7](#587-procedimientos-un-analisis-interprocedural). El
+  programa de Warren, para XSB, no se copió.
 - Patrick Cousot y Radhia Cousot, «Abstract interpretation: a unified
   lattice model for static analysis of programs by construction or
   approximation of fixpoints», *Proceedings of the 4th ACM Symposium on
@@ -787,12 +966,35 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
   238–252. DOI [10.1145/512950.512973](https://doi.org/10.1145/512950.512973).
   El capítulo toma los conceptos: dominio abstracto como reticulado,
   corrección respecto de la semántica concreta, el análisis como menor
-  punto fijo, y el ensanchamiento para los dominios de altura infinita.
+  punto fijo, y el ensanchamiento para los dominios de altura infinita
+  (sección 9.1.3, «Widening», con el ejemplo de los intervalos); también el
+  estrechamiento de la sección 9.3.4, que es el ejercicio 5. Los autores
+  ofrecen una
+  [copia escaneada](https://www.di.ens.fr/~cousot/publications.www/CousotCousot-POPL-77-ACM-p238--252-1977.pdf).
+- Michel Sintzoff, «Calculating properties of programs by valuations on
+  specific models», *Proceedings of the ACM Conference on Proving
+  Assertions about Programs*, *SIGPLAN Notices* 7(1), 1972, págs.
+  203–207. DOI [10.1145/800235.807086](https://doi.org/10.1145/800235.807086).
+  Es la fuente que Cousot y Cousot citan para la regla de los signos; el
+  capítulo toma de allí el dominio de los signos de la
+  [sección 58.4](#584-signos-un-interprete-abstracto-tabulado).
+- Alfred Tarski, «A lattice-theoretical fixpoint theorem and its
+  applications», *Pacific Journal of Mathematics* 5(2), 1955, págs.
+  285–309. [Edición en línea de la revista](https://msp.org/pjm/1955/5-2/p11.xhtml).
+  Cousot y Cousot lo citan como fundamento del menor punto fijo de un
+  reticulado, el que calculan las tablas de las secciones
+  [58.4](#584-signos-un-interprete-abstracto-tabulado) y
+  [58.5](#585-un-estado-por-punto-la-union-con-lattice).
 - William F. Clocksin, *Clause and Effect: Prolog Programming for the
   Working Programmer*, Springer, 1997 — «Case Study: The Fast Fourier
   Transform in Prolog». El capítulo toma de allí el sentido amplio de
   interpretación abstracta como ejecución sobre valores simbólicos, el
-  punto de partida de la [sección 58.3](#583-valores-simbolicos).
+  punto de partida de la [sección 58.3](#583-valores-simbolicos). Las notas
+  bibliográficas del capítulo remiten a la publicación original del método:
+  W. F. Clocksin, «A technique for translating clausal specifications of
+  numerical methods into efficient programs», *The Journal of Logic
+  Programming* 5(3), 1988, págs. 231–242,
+  DOI [10.1016/0743-1066(88)90011-8](https://doi.org/10.1016/0743-1066(88)90011-8).
 
 El lenguaje Mini, su analizador sintáctico y su intérprete son los del
 [capítulo 45](../capitulo-45-proyecto-compilador/index.md), cargados sin

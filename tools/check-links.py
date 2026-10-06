@@ -40,7 +40,9 @@ SECTIONS = re.compile(rf'{NOT_IN_LINK}(secciones )((?:\d+\.\d+)(?:(?:, | y | e )
 CHAPTER = re.compile(rf'{NOT_IN_LINK}(cap[ií]tulo) (\d+){NOT_A_NUMBER_TAIL}')
 CHAPTERS = re.compile(rf'{NOT_IN_LINK}(cap[ií]tulos )((?:\d+)(?:(?:, | y | e )\d+)+)')
 CHAPTERS_ONE = re.compile(rf'{NOT_IN_LINK}(cap[ií]tulos )(\d+){NOT_A_NUMBER_TAIL}')
-PATTERN = re.compile(rf'{NOT_IN_LINK}(Patr[oó]n) (\d+){NOT_A_NUMBER_TAIL}')
+# Patterns have no sub-numbers, so a full stop after the number ends the sentence
+# («el Patrón 12.») unless a digit follows it.
+PATTERN = re.compile(rf'{NOT_IN_LINK}(Patr[oó]n) (\d+)(?!\d|\.\d)')
 ONE_SECTION = re.compile(r'(?<!\[)(\d+)\.(\d+)(?![\d.\]])')
 ONE_NUMBER = re.compile(r'(?<![\[\d.])(\d+)(?![\d.\]])')
 # "capítulo" at the end of a line, or a plural list whose last number is on the next line.

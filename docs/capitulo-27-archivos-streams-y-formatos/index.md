@@ -185,8 +185,9 @@ archivos de las dos procedencias tiene que aceptar las dos.
 !!! question "Actividad"
     Escribir `nombre('Ana María')` en un archivo con `open/3`, sin opciones,
     y después con `open/4` y `encoding(utf8)`. Leer los bytes de cada archivo
-    con `read_file_to_codes(Archivo, Bytes, [type(binary)])`. ¿Con cuántos
-    bytes queda la `í` en cada caso? ¿Qué ocurre al leer con `encoding(utf8)`
+    con `read_file_to_codes(Archivo, Bytes, [type(binary)])`, que da el
+    contenido del archivo como una lista de códigos. ¿Con cuántos bytes queda
+    la `í` en cada caso? ¿Qué ocurre al leer con `encoding(utf8)`
     el archivo escrito sin la opción?
 
 ## 27.3 Escribir
@@ -854,7 +855,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 2. **(1)** Escribir `agregar_termino/2`, que agrega un término al final de un
    archivo sin borrar lo que tiene.
 3. ★ **(2)** Escribir `copiar_en_mayusculas/2`, que copia un archivo de texto
-   con cada línea en mayúsculas, con el Patrón 36.
+   con cada línea en mayúsculas, con el [Patrón 36](../patrones.md#36-leer-procesar-escribir).
 4. **(2)** Escribir `linea_mas_larga/2`: la línea más larga de un archivo.
 5. ★ **(2)** Escribir `frecuencias/2`: los pares `Palabra-Cantidad` de las
    palabras de un archivo, de la más frecuente a la menos frecuente.
@@ -902,6 +903,10 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | `yaml_read/2`, `yaml_write/2` | YAML, con la misma representación |
 | `setting/4`, `set_setting/2`, `load_settings/1`, `restore_setting/1` | ajustes con tipo y valor por omisión; volver al valor por omisión |
 | `persistent/1`, `db_attach/2` | hechos que se guardan solos |
+| `directory_files/2` | los nombres de las entradas de un directorio, incluidos `.` y `..` |
+| `read_file_to_codes/3` | el contenido de un archivo como lista de códigos; con `type(binary)`, sus bytes |
+| `save_settings/1` | escribe los ajustes en un archivo |
+| `string_upper/2` | una cadena en mayúsculas (en las soluciones) |
 | **Patrones 36, 37** | leer, procesar, escribir; convertir en el borde |
 
 ## Temas que se retoman

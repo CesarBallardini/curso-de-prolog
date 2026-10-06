@@ -142,7 +142,7 @@ hilos necesita más cuidado, y el [capítulo 37](../capitulo-37-concurrencia-y-p
 
 Los cambios no forman parte del archivo: al terminar la sesión se pierden, y
 recargar el archivo con `make.` restituye los hechos que tiene escritos, como
-advertía el Patrón 1. El [capítulo 16](../capitulo-16-rendimiento/index.md) ya usó `assertz/1` para generar datos
+advertía el [Patrón 1](../patrones.md#1-editar-recargar-probar). El [capítulo 16](../capitulo-16-rendimiento/index.md) ya usó `assertz/1` para generar datos
 de prueba: 5 000 alumnos que no estaban en ningún archivo.
 
 ## 20.3 La vista lógica de actualización

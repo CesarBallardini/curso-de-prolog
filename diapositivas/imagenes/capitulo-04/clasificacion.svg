@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" width="800" height="400">
+  <title>Clasificación de los términos: constantes (átomos y números), variables y términos compuestos, con ejemplos de cada clase</title>
+  <rect x="0" y="0" width="800" height="400" fill="#FFFFFF"/>
+  <line x1="400" y1="55" x2="210" y2="90" stroke="#52606D" stroke-width="2"/>
+  <line x1="400" y1="55" x2="470" y2="90" stroke="#52606D" stroke-width="2"/>
+  <line x1="400" y1="55" x2="670" y2="90" stroke="#52606D" stroke-width="2"/>
+  <line x1="210" y1="130" x2="110" y2="170" stroke="#52606D" stroke-width="2"/>
+  <line x1="210" y1="130" x2="300" y2="170" stroke="#52606D" stroke-width="2"/>
+  <line x1="110" y1="210" x2="110" y2="232" stroke="#52606D" stroke-width="2"/>
+  <line x1="300" y1="210" x2="300" y2="232" stroke="#52606D" stroke-width="2"/>
+  <line x1="470" y1="130" x2="470" y2="172" stroke="#52606D" stroke-width="2"/>
+  <line x1="670" y1="130" x2="670" y2="172" stroke="#52606D" stroke-width="2"/>
+  <rect x="325" y="15" width="150" height="40" rx="8" fill="#FFFFFF" stroke="#52606D" stroke-width="2"/>
+  <text x="400" y="41" font-family="Verdana, DejaVu Sans, sans-serif" font-size="18" fill="#1F2933" text-anchor="middle" font-weight="bold">término</text>
+  <rect x="135" y="90" width="150" height="40" rx="8" fill="#FFFFFF" stroke="#52606D" stroke-width="2"/>
+  <text x="210" y="116" font-family="Verdana, DejaVu Sans, sans-serif" font-size="18" fill="#1F2933" text-anchor="middle" font-weight="bold">constante</text>
+  <rect x="405" y="90" width="130" height="40" rx="8" fill="#FFFFFF" stroke="#52606D" stroke-width="2"/>
+  <text x="470" y="116" font-family="Verdana, DejaVu Sans, sans-serif" font-size="18" fill="#1F2933" text-anchor="middle" font-weight="bold">variable</text>
+  <rect x="560" y="90" width="220" height="40" rx="8" fill="#FFFFFF" stroke="#52606D" stroke-width="2"/>
+  <text x="670" y="116" font-family="Verdana, DejaVu Sans, sans-serif" font-size="18" fill="#1F2933" text-anchor="middle" font-weight="bold">término compuesto</text>
+  <rect x="55" y="170" width="110" height="40" rx="8" fill="#FFFFFF" stroke="#52606D" stroke-width="2"/>
+  <text x="110" y="196" font-family="Verdana, DejaVu Sans, sans-serif" font-size="18" fill="#1F2933" text-anchor="middle" font-weight="bold">átomo</text>
+  <rect x="240" y="170" width="120" height="40" rx="8" fill="#FFFFFF" stroke="#52606D" stroke-width="2"/>
+  <text x="300" y="196" font-family="Verdana, DejaVu Sans, sans-serif" font-size="18" fill="#1F2933" text-anchor="middle" font-weight="bold">número</text>
+  <rect x="80.5" y="232" width="59" height="36" rx="18" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="110" y="257" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F2933" text-anchor="middle">ana</text>
+  <rect x="64" y="282" width="92" height="36" rx="18" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="110" y="307" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F2933" text-anchor="middle">prolog</text>
+  <rect x="80.5" y="332" width="59" height="36" rx="18" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="110" y="357" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F2933" text-anchor="middle">'+'</text>
+  <rect x="276" y="232" width="48" height="36" rx="18" fill="#E3F2F1" stroke="#2B7A78" stroke-width="2"/>
+  <text x="300" y="257" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F2933" text-anchor="middle">12</text>
+  <rect x="270.5" y="282" width="59" height="36" rx="18" fill="#E3F2F1" stroke="#2B7A78" stroke-width="2"/>
+  <text x="300" y="307" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F2933" text-anchor="middle">3.5</text>
+  <rect x="276" y="332" width="48" height="36" rx="18" fill="#E3F2F1" stroke="#2B7A78" stroke-width="2"/>
+  <text x="300" y="357" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F2933" text-anchor="middle">-7</text>
+  <rect x="425" y="172" width="90" height="36" rx="6" fill="#EFE7F7" stroke="#6A3D9A" stroke-width="2"/>
+  <text x="470" y="197" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F2933" text-anchor="middle">Quien</text>
+  <rect x="425" y="222" width="90" height="36" rx="6" fill="#EFE7F7" stroke="#6A3D9A" stroke-width="2"/>
+  <text x="470" y="247" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F2933" text-anchor="middle">X</text>
+  <rect x="425" y="272" width="90" height="36" rx="6" fill="#EFE7F7" stroke="#6A3D9A" stroke-width="2"/>
+  <text x="470" y="297" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F2933" text-anchor="middle">_hijo</text>
+  <rect x="425" y="322" width="90" height="36" rx="6" fill="#EFE7F7" stroke="#6A3D9A" stroke-width="2"/>
+  <text x="470" y="347" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F2933" text-anchor="middle">_</text>
+  <rect x="555" y="172" width="230" height="36" rx="8" fill="#1F3A5F"/>
+  <text x="670" y="196" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#FFFFFF" text-anchor="middle" font-weight="bold">mascota(gato, felix)</text>
+  <rect x="555" y="222" width="230" height="36" rx="8" fill="#1F3A5F"/>
+  <text x="670" y="246" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#FFFFFF" text-anchor="middle" font-weight="bold">fecha(2021, 5, 3)</text>
+  <rect x="555" y="272" width="230" height="36" rx="8" fill="#1F3A5F"/>
+  <text x="670" y="296" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="18" fill="#FFFFFF" text-anchor="middle" font-weight="bold">2 + 3</text>
+</svg>

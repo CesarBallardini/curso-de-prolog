@@ -40,6 +40,7 @@ test(sin_repetidos_la_primera, true(R == [a, b, c])) :-
 test(el_primer_mayor, true(P == juan)) :-
     primer_mayor_de_edad(P).
 
+% with_output_to/2, que captura la salida, se presenta en el capítulo 27.
 test(presentar_con_edad, true(S == "ana (41 años)\n")) :-
     with_output_to(string(S), presentar(ana)).
 

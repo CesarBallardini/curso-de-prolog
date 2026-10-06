@@ -838,6 +838,8 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | bandera `abi_version` | las versiones de los formatos de los que dependen los `.qlf` |
 | desplegar y plegar | reemplazar un objetivo por los cuerpos de sus cláusulas, y una parte de un cuerpo por la cabeza de una definición; plegar sin haber desplegado puede crear una recursión que no avanza |
 | evaluación parcial | ejecutar de antemano lo que no depende de los datos; un control decide qué se despliega y dónde se detiene |
+| `findnsols/4` | como `findall/3`, hasta una cantidad de soluciones; en las pruebas |
+| `unload_file/1` | descarga las cláusulas de un archivo; en las pruebas |
 | **Patrones 49, 50** | expandir al cargar; especializar el intérprete |
 
 ## Temas que se retoman

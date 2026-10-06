@@ -25,4 +25,18 @@ test(limite_corto, R == limite(3)) :-
 test(misma_coleccion, R == repetida(0, 2)) :-
     vigilar(luz, primera, 100, [luz(encendida), otro], _, R).
 
+% vigilado/8 directamente: una memoria ya vista en el ciclo 4 se reconoce
+% como repetida en el ciclo 7, antes de ejecutar nada.
+test(vigilado_vista, [true(M-R == [b, a]-repetida(4, 7))]) :-
+    list_to_assoc([[a, b]-4], Vistas),
+    vigilado([], primera, 10, 7, Vistas, [b, a], M, R).
+
+test(vigilado_limite, [true(R == limite(10))]) :-
+    empty_assoc(Vistas),
+    vigilado([], primera, 10, 10, Vistas, [a], _, R).
+
+test(vigilado_nada, [true(R == nada_aplicable)]) :-
+    empty_assoc(Vistas),
+    vigilado([], primera, 10, 0, Vistas, [a], _, R).
+
 :- end_tests(terminacion).

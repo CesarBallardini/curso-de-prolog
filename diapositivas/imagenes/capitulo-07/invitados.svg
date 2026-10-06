@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" width="960" height="480">
+  <title>La lista de invitados en orden de llegada, con su posición contando desde 1: nth1 da a luis en la posición 2, y last da a sofia</title>
+  <rect x="0" y="0" width="960" height="480" fill="#FFFFFF"/>
+  <text x="480.0" y="46.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#1F2933" text-anchor="middle" xml:space="preserve">invitados([ana, luis, eva, sofia]).</text>
+  <rect x="105.0" y="150.0" width="170.0" height="64.0" rx="4" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="3"/>
+  <text x="190.0" y="189.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">ana</text>
+  <text x="190.0" y="132.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="24" fill="#52606D" text-anchor="middle" xml:space="preserve" font-weight="bold">1</text>
+  <rect x="295.0" y="150.0" width="170.0" height="64.0" rx="4" fill="#FCE8D2" stroke="#D9822B" stroke-width="3"/>
+  <text x="380.0" y="189.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">luis</text>
+  <text x="380.0" y="132.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="24" fill="#52606D" text-anchor="middle" xml:space="preserve" font-weight="bold">2</text>
+  <rect x="485.0" y="150.0" width="170.0" height="64.0" rx="4" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="3"/>
+  <text x="570.0" y="189.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">eva</text>
+  <text x="570.0" y="132.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="24" fill="#52606D" text-anchor="middle" xml:space="preserve" font-weight="bold">3</text>
+  <rect x="675.0" y="150.0" width="170.0" height="64.0" rx="4" fill="#E3F1E4" stroke="#2E7D32" stroke-width="3"/>
+  <text x="760.0" y="189.3" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">sofia</text>
+  <text x="760.0" y="132.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="24" fill="#52606D" text-anchor="middle" xml:space="preserve" font-weight="bold">4</text>
+  <text x="105.0" y="90.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">posición</text>
+  <line x1="380.0" y1="300.0" x2="380.0" y2="230.0" stroke="#D9822B" stroke-width="3"/>
+  <polygon points="380.0,218.0 373.4,230.0 386.6,230.0" fill="#D9822B"/>
+  <text x="380.0" y="334.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#D9822B" text-anchor="middle" xml:space="preserve">nth1(2, Lista, P)</text>
+  <text x="380.0" y="364.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#D9822B" text-anchor="middle" xml:space="preserve" font-weight="bold">P = luis</text>
+  <line x1="760.0" y1="300.0" x2="760.0" y2="230.0" stroke="#2E7D32" stroke-width="3"/>
+  <polygon points="760.0,218.0 753.4,230.0 766.6,230.0" fill="#2E7D32"/>
+  <text x="720.0" y="334.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#2E7D32" text-anchor="middle" xml:space="preserve">last(Lista, P)</text>
+  <text x="720.0" y="364.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#2E7D32" text-anchor="middle" xml:space="preserve" font-weight="bold">P = sofia</text>
+  <text x="480.0" y="440.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="middle" xml:space="preserve">las posiciones se cuentan desde 1</text>
+</svg>

@@ -335,7 +335,8 @@ metaargumentos(Clausulas, Nombre/Aridad, Declaracion) :-
 %
 %   Cuerpo llama como meta a la variable V con Extra argumentos más:
 %   directamente, dentro de una construcción de control o como argumento de
-%   una metallamada.
+%   una metallamada. Como en llamado_por_meta/2, distinct/2 descarta lo que
+%   dos cláusulas de meta_argumento/3 repiten.
 variable_llamada(G, V, Extra) :-
     (   var(G)
     ->  V = G,
@@ -343,7 +344,7 @@ variable_llamada(G, V, Extra) :-
     ;   partes_de_control(G, Partes)
     ->  member(P, Partes),
         variable_llamada(P, V, Extra)
-    ;   meta_argumento(G, A, E0),
+    ;   distinct(A-E0, meta_argumento(G, A, E0)),
         (   var(A)
         ->  V = A,
             Extra = E0
@@ -557,3 +558,39 @@ dos, `longitud_impar/1` y `longitud_par/1`, que queda entre las últimas.
 que no llama a otro predicado del programa, va al final. El grafo sin
 condensar hace fallar a `top_sort/2`, como verifica la prueba
 `ejercicio_11_ciclos`: `suma/2` es su propio sucesor.
+
+## Ejercicio 12
+
+`insertar_archivo/3` lee las cláusulas con `leer_clausulas/2` del editor,
+que se detiene en `end` o en el fin del archivo, y las inserta con el mismo
+comando que `i`:
+
+<!-- ejemplo: capitulo-59/soluciones_editor.pl predicado: insertar_archivo/3 -->
+```prolog
+%!  insertar_archivo(+Archivo, +Estado0, -Estado) is det.
+%
+%   Estado es Estado0 con las cláusulas de Archivo insertadas después del
+%   cursor, como con el comando i, y guardadas en la base. Las cláusulas se
+%   leen hasta end o hasta el fin del archivo.
+insertar_archivo(Archivo, Estado0, Estado) :-
+    setup_call_cleanup(open(Archivo, read, In, [encoding(utf8)]),
+                       leer_clausulas(In, Clausulas),
+                       close(In)),
+    comando(i(Clausulas), Estado0, Estado),
+    grabar(Estado).
+```
+
+Para usarlo en la sesión basta una cláusula más de `ejecutar_comando/4`,
+antes de la última, que es la que trata los comandos de `comando/3`:
+
+```prolog
+ejecutar_comando(f(Archivo), _, Estado0, Estado) :-
+    !,
+    insertar_archivo(Archivo, Estado0, Estado).
+```
+
+Como en el libro, el nombre del archivo no se verifica antes de abrirlo: un
+archivo que no existe produce el error de `open/4`. Las pruebas de
+`soluciones_editor.plt` insertan dos cláusulas desde un archivo temporal,
+con el cursor en la primera cláusula, y verifican el orden resultante y que
+un archivo vacío no cambia nada.

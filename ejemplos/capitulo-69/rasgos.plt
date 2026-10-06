@@ -36,4 +36,16 @@ test(separables_producto, [true(N == 16)]) :-
 test(conjunto_desconocido, [fail]) :-
     aprender(nand, entradas, _).
 
+test(multiplicar, [true(P =:= 6)]) :-
+    multiplicar(3, 2, P).
+
+test(entrenar_ampliados_producto,
+     [true(R == separa([-2, 2, 2, -6], [3, 3, 4, 3, 1, 2, 1, 0]))]) :-
+    datos(o_exclusivo, Es),
+    entrenar_ampliados(producto, Es, R).
+
+test(entrenar_ampliados_entradas, [true(R == ciclo(1, [3, 3, 4]))]) :-
+    datos(o_exclusivo, Es),
+    entrenar_ampliados(entradas, Es, R).
+
 :- end_tests(rasgos).

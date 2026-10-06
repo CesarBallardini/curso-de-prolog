@@ -116,6 +116,13 @@ un contraejemplo justifica un no, una refutación justifica un sí. El
 
 ## El principio del palomar
 
+![Diez palomas blancas en un casillero de madera de nueve compartimentos; uno de ellos tiene dos palomas](palomas.jpg)
+
+Diez palomas en nueve casilleros: alguno tiene que alojar a dos.
+Imagen: BenFrantzDale y McKay,
+[CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/), vía
+[Wikimedia Commons](https://commons.wikimedia.org/wiki/File:TooManyPigeons.jpg).
+
 La familia de fórmulas con que se mide es el **principio del palomar**:
 n + 1 palomas no caben en n agujeros, uno por paloma. `palomar/2` la
 construye con los átomos `en(I, J)`, «la paloma I está en el agujero J»:
@@ -153,7 +160,8 @@ palomar(N, no(y(Todas, Ninguno))) :-
 
 La fórmula es una tautología para todo n, y es conocida por ser difícil
 para la resolución: toda refutación de su negación tiene una longitud que
-crece en forma exponencial con n. La tabla da las inferencias de
+crece en forma exponencial con n, como demostró Haken
+([Referencias](index.md#referencias)). La tabla da las inferencias de
 `tautologia/2` con cada método; «más de» indica que la búsqueda se
 interrumpió con `call_with_inference_limit/3` en esa cantidad:
 
@@ -184,7 +192,8 @@ El segundo argumento de `tautologia_palomar/2` es la cantidad de
 agujeros. El método de Quine recorre todas las asignaciones: con cada
 átomo nuevo el trabajo se duplica, y de 12 a 20 átomos se multiplica por
 538. `library(clpb)` crece mucho más despacio en esta familia, porque el
-diagrama de decisión comparte las subfórmulas iguales; para otras
+diagrama de decisión binario de Bryant, sobre el que está construida,
+comparte las subfórmulas iguales; para otras
 fórmulas el diagrama también crece en forma exponencial, y el orden de las
 variables decide su tamaño. La resolución es la más lenta de las tres:
 con 3 palomas, la refutación lineal más corta tiene 11 pasos, y la

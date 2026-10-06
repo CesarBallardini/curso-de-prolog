@@ -611,6 +611,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
         madre(M, A),
         madre(M, B).
     ```
+
 14. **(2)** Representar como regla, y no como hechos, cada uno de estos
     enunciados, usando los predicados de `reglas.pl`: "una persona es tía de
     otra si es hermana de alguno de sus progenitores" y "dos personas son

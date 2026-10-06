@@ -1,0 +1,53 @@
+# The course's main promise: every example runs, and prints what the text says
+# it prints. The plunit tests of every example, every transcript of the book
+# against SWI-Prolog 9, the SWISH sandbox (the «▶ Abrir en SWISH» links), the
+# Python side of chapters 29 to 31, and the lint of the tooling.
+name: Ejemplos
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ejemplos:
+    # Pinned, and not `ubuntu-latest`: the swipl that runs the book's
+    # transcripts comes from this image's own archive, so which image it is
+    # forms part of what the build checks.
+    runs-on: ubuntu-26.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      # Chromium too: the web pages of chapter 36 are tested in a browser, by
+      # the make appendix step below.
+      - name: Prepare
+        uses: ./.github/actions/preparar
+        with:
+          chromium: 'true'
+
+      - name: Tests of every example
+        run: make test
+
+      - name: Transcripts against SWI-Prolog 9
+        run: make transcripts
+
+      - name: SWISH sandbox
+        run: make swish
+
+      - name: Lint the tooling
+        run: make lint
+
+      # The Python side of chapters 29 to 31: Prolog from Python through Janus,
+      # and the Python clients of the services. janus-swi 1.5.3 passes its
+      # foreign functions with a pointer type that the 9.2.9 headers do not
+      # declare; GCC 15 makes that an error, older compilers a warning, and it
+      # works at run time. The flag turns that one error back into a warning.
+      - name: Python examples (chapters 29 to 31)
+        env:
+          CFLAGS: -Wno-error=incompatible-pointer-types
+        run: make appendix

@@ -28,6 +28,7 @@ test(tanque_lleno, all(D == [])) :-
 test(animales, all(A == [ave, avestruz])) :-
     diagnosticar(regla, [tiene_plumas, peso(90)], A).
 
+% with_output_to/2, que captura la salida, se presenta en el capítulo 27.
 % Ejercicio 7
 test(como_avestruz,
      true(S == "avestruz: por r12\n  ave: por r3\n    tiene_plumas: \c

@@ -51,4 +51,48 @@ test(ida_y_vuelta, [forall(member(T, ["p ∧ (q ∧ r)", "(p → q) → r",
     formula_texto(F1, T1),
     leer_formula(T1, F2).
 
+% simbolo//1 reconoce los símbolos ASCII y los de la lógica, y las
+% palabras clave de los cuantificadores, sin dejar alternativas pendientes.
+test(simbolo, [true(Ss == [no, si, sii, todo, todo, id(padre), '('])]) :-
+    maplist(simbolo_de, ["¬", "->", "<->", "∀", "todo", "padre", "("], Ss).
+
+test(simbolo_resto, all(S-R == [si-` q`])) :-
+    phrase(lector:simbolo(S), `-> q`, R).
+
+test(simbolo_determinista, [true(S-R == y-` p`)]) :-
+    phrase(lector:simbolo(S), `& p`, R).
+
+test(simbolo_nombre_determinista, [true(S-R == id(p)-`(x)`)]) :-
+    phrase(lector:simbolo(S), `p(x)`, R).
+
+% Con el símbolo instanciado, simbolo//1 lo comprueba.
+test(simbolo_instanciado, [fail]) :-
+    phrase(lector:simbolo(o), `&`, _).
+
+test(implicacion, all(F == [si(at(p), si(at(q), at(r)))])) :-
+    phrase(lector:implicacion([], F), [id(p), si, id(q), si, id(r)]).
+
+test(conjuncion_resto, all(F == [y(y(at(p), at(q)), at(r))])) :-
+    phrase(lector:conjuncion_resto([], at(p), F), [y, id(q), y, id(r)]).
+
+test(conjuncion_resto_vacia, all(F == [at(p)])) :-
+    phrase(lector:conjuncion_resto([], at(p), F), []).
+
+test(unaria_negacion, all(F == [no(no(at(p)))])) :-
+    phrase(lector:unaria([], F), [no, no, id(p)]).
+
+% El cuantificador liga la variable de Prolog que el entorno asocia al
+% nombre; un nombre que el entorno no tiene es una constante.
+test(unaria_cuantificador, [true(Fs =@= [todo(X, at(p(X, y)))])]) :-
+    findall(F, phrase(lector:unaria([], F),
+                      [todo, id(x), id(p), '(', id(x), ',', id(y), ')']),
+            Fs).
+
+test(unaria_entorno, [true(F == at(p(V)))]) :-
+    phrase(lector:unaria([x-V], F), [id(p), '(', id(x), ')']).
+
+simbolo_de(Texto, S) :-
+    string_codes(Texto, Cs),
+    phrase(lector:simbolo(S), Cs).
+
 :- end_tests(lector).

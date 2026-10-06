@@ -31,4 +31,16 @@ test(raiz_lejana, [true(abs(R - 213.6383006107801) =< 1.0e-9)]) :-
 test(otro_atomo, [error(existence_error(incognita, y))]) :-
     secante(x = y, x, 1-2, _).
 
+% Secante por (1, -1) y (2, 2): corta el eje en 4/3.
+test(paso, [true(X2-C == 1.3333333333333335-0.6666666666666665)]) :-
+    paso_secante(x ^ 2 - 2, x, secante(1.0, -1.0, 2.0, 2.0),
+                 secante(2.0, 2.0, X2, _), X2, C).
+
+test(paso_horizontal, [fail]) :-
+    paso_secante(x * x - x * 3, x, secante(1.0, -2.0, 2.0, -2.0), _, _, _).
+
+test(secante_primeros,
+     [true(Xs == [1.3333333333333335, 1.4000000000000001])]) :-
+    secante(x ^ 2 = 2, x, 1-2, 0.1, Xs).
+
 :- end_tests(secante).

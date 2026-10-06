@@ -117,8 +117,11 @@ M = [].
 ```
 
 La última respuesta distingue otro silencio: de `nadie` ninguna regla
-tiene el cuerpo derivable, y no hay nada que derrotar. Sobre el automóvil
-que no arranca, las dos preguntas juntas dan lo que la abducción necesita:
+tiene el cuerpo derivable, y no hay nada que derrotar. Son los tres casos
+del predicado `whynot/1` de d-Prolog, que Covington presenta en el apartado
+«A Special Explanatory Facility»: la meta se deriva, ninguna regla tiene el
+cuerpo satisfecho, o una regla satisfecha tiene un rival que la derrota.
+Sobre el automóvil que no arranca, las dos preguntas juntas dan lo que la abducción necesita:
 
 ```prolog
 ?- derivacion([especificidad], arranca(auto1), A), supuestos(A, S).

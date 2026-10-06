@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 430" width="480" height="430">
+  <title>Cada hecho de padre prueba es_padre una vez: juan aparece dos veces porque es padre de ana y de pedro, y pedro dos veces porque es padre de luis y de eva</title>
+  <defs>
+    <marker id="a-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1F2933"/></marker>
+    <marker id="a-navy" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1F3A5F"/></marker>
+    <marker id="a-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#D9822B"/></marker>
+    <marker id="a-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2E7D32"/></marker>
+    <marker id="a-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#C62828"/></marker>
+    <marker id="a-grey" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#9AA5B1"/></marker>
+  </defs>
+  <rect x="0" y="0" width="480" height="430" fill="#FFFFFF"/>
+  <rect x="10.0" y="20.0" width="230.0" height="48.0" rx="6" fill="#FFFFFF" stroke="#9AA5B1" stroke-width="1.5"/>
+  <text x="24.0" y="51.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="19" fill="#1F2933" text-anchor="start" xml:space="preserve">padre(juan, ana).</text>
+  <line x1="244.0" y1="44.0" x2="290.0" y2="44.0" stroke="#1F3A5F" stroke-width="3" marker-end="url(#a-navy)"/>
+  <rect x="296.0" y="20.0" width="150.0" height="48.0" rx="24" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2.5"/>
+  <text x="371.0" y="51.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F3A5F" text-anchor="middle" font-weight="bold" xml:space="preserve">juan</text>
+  <rect x="10.0" y="100.0" width="230.0" height="48.0" rx="6" fill="#FFFFFF" stroke="#9AA5B1" stroke-width="1.5"/>
+  <text x="24.0" y="131.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="19" fill="#1F2933" text-anchor="start" xml:space="preserve">padre(juan, pedro).</text>
+  <line x1="244.0" y1="124.0" x2="290.0" y2="124.0" stroke="#1F3A5F" stroke-width="3" marker-end="url(#a-navy)"/>
+  <rect x="296.0" y="100.0" width="150.0" height="48.0" rx="24" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2.5"/>
+  <text x="371.0" y="131.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F3A5F" text-anchor="middle" font-weight="bold" xml:space="preserve">juan</text>
+  <rect x="10.0" y="200.0" width="230.0" height="48.0" rx="6" fill="#FFFFFF" stroke="#9AA5B1" stroke-width="1.5"/>
+  <text x="24.0" y="231.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="19" fill="#1F2933" text-anchor="start" xml:space="preserve">padre(pedro, luis).</text>
+  <line x1="244.0" y1="224.0" x2="290.0" y2="224.0" stroke="#D9822B" stroke-width="3" marker-end="url(#a-orange)"/>
+  <rect x="296.0" y="200.0" width="150.0" height="48.0" rx="24" fill="#FCE8D2" stroke="#D9822B" stroke-width="2.5"/>
+  <text x="371.0" y="231.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#D9822B" text-anchor="middle" font-weight="bold" xml:space="preserve">pedro</text>
+  <rect x="10.0" y="280.0" width="230.0" height="48.0" rx="6" fill="#FFFFFF" stroke="#9AA5B1" stroke-width="1.5"/>
+  <text x="24.0" y="311.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="19" fill="#1F2933" text-anchor="start" xml:space="preserve">padre(pedro, eva).</text>
+  <line x1="244.0" y1="304.0" x2="290.0" y2="304.0" stroke="#D9822B" stroke-width="3" marker-end="url(#a-orange)"/>
+  <rect x="296.0" y="280.0" width="150.0" height="48.0" rx="24" fill="#FCE8D2" stroke="#D9822B" stroke-width="2.5"/>
+  <text x="371.0" y="311.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#D9822B" text-anchor="middle" font-weight="bold" xml:space="preserve">pedro</text>
+  <text x="10.0" y="390.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#1F2933" text-anchor="start" xml:space="preserve">Una respuesta por cada demostración:</text>
+  <text x="10.0" y="415.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#1F2933" text-anchor="start" xml:space="preserve">juan es padre de ana y de pedro.</text>
+</svg>

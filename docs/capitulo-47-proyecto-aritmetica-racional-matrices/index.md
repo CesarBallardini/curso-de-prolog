@@ -31,7 +31,7 @@ aritmética del [capítulo 8](../capitulo-08-aritmetica/index.md), las estructur
 carga sin copiarlo, y la búsqueda de costo uniforme del
 [capítulo 40](../capitulo-40-busqueda-y-planificacion/index.md#402-una-sola-busqueda-varias-estrategias).
 
-### El programa terminado
+## El programa terminado
 
 `proyecto.pl` carga las versiones finales de las tres partes:
 
@@ -84,7 +84,7 @@ Al terminar el capítulo, el lector puede:
   crece cuando el problema agrega una restricción.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:35 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:40 h**.
     Resolver los 5 ejercicios marcados con ★: **1:35 h**.
     Resolver los 12 ejercicios del final: **3:15 h**.
 
@@ -321,6 +321,14 @@ de B, y las columnas de B son las filas de su **traspuesta**. `transpuesta/2`
 separa de cada fila su primer elemento con `maplist/4`: los primeros
 elementos forman una columna, y los restos, la matriz que queda.
 
+![Una matriz A de cuatro filas y dos columnas, una matriz B de dos filas y tres columnas y su producto de cuatro filas y tres columnas; dos flechas señalan que el elemento de la fila 1 y la columna 2 del producto sale de la fila 1 de A y la columna 2 de B, y el de la fila 3 y la columna 3, de la fila 3 de A y la columna 3 de B](producto-matrices.png){ style="background-color: white" }
+
+El producto de una matriz A de 4 × 2 por una matriz B de 2 × 3: cada
+elemento del resultado es el producto interno de una fila de A por una
+columna de B. Imagen: Lakeworks,
+[CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/), vía
+[Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Matrix_multiplication_diagram_2.svg).
+
 <!-- ejemplo: capitulo-47/matriz.pl predicado: transpuesta/2 columnas/3 -->
 ```prolog
 %!  transpuesta(+M:list(list), -T:list(list)) is det.
@@ -343,7 +351,9 @@ columnas([_|Guia], M, [C|Cs]) :-
 
 La primera fila sirve de guía: tiene un elemento por columna, y
 `columnas/3` la consume de a uno, así que la recursión termina cuando se
-acaban las columnas y no cuando se vacía una lista de filas. La
+acaban las columnas y no cuando se vacía una lista de filas. Separar en un
+solo recorrido la primera columna del resto es el ejercicio que propone
+Clocksin en la hoja de trabajo 16 de *Clause and Effect*. La
 biblioteca `clpfd` del [capítulo 23](../capitulo-23-programacion-con-restricciones/index.md) tiene un `transpose/2` equivalente.
 
 El producto se escribe en dos niveles, y el nivel de afuera no hace
@@ -590,7 +600,26 @@ un horario de viaje a partir de un mapa con distancias, estado de los
 caminos, tránsito y pendientes. `rutas.pl` escribe ese mapa como hechos:
 cada tramo tiene su longitud, el tipo de calzada, el tránsito y la
 pendiente. El mapa es inventado, con sus ciudades y sus datos: ni las
-ciudades ni las distancias corresponden a ningún lugar real.
+ciudades ni las distancias corresponden a ningún lugar real. El grafo muestra
+sus once tramos con la longitud de cada uno; el problema es ir de Pradera
+Alta a Ermita Vieja en el menor tiempo, que no es el camino de menos
+kilómetros, porque la velocidad depende de la calzada, el tránsito y la
+pendiente:
+
+```mermaid
+flowchart LR
+    PA["pradera_alta"] ---|"36 km"| PQ["puerto_quieto"]
+    PA ---|"30 km"| AP["arroyo_pinto"]
+    PA ---|"51 km"| CL["campo_lindero"]
+    PA ---|"39 km"| LT["loma_tendida"]
+    PQ ---|"26 km"| PM["piedra_mora"]
+    PQ ---|"38 km"| LT
+    AP ---|"40 km"| AC["alto_del_cardo"]
+    PM ---|"20 km"| RH["ribera_honda"]
+    RH ---|"10 km"| AC
+    AC ---|"17 km"| EV["ermita_vieja"]
+    CL ---|"75 km"| EV
+```
 
 <!-- ejemplo: capitulo-47/rutas.pl predicado: tramo/6 -->
 ```prolog
@@ -885,7 +914,12 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
   Symbolic Algebra», del caso de estudio «Term Rewriting». El capítulo toma
   la observación de que el producto de matrices recorre los datos igual sea
   numérico o simbólico, de modo que basta cambiar el producto interno, y la
-  necesidad de simplificar el resultado simbólico.
+  necesidad de simplificar el resultado simbólico. Del mismo libro, las
+  hojas de trabajo 7, «Inner Product», y 16, «Multiple Disjoint Partial
+  Maps», presentan el producto interno y la traspuesta de una matriz como
+  lista de listas; la segunda propone separar en un solo recorrido la
+  primera columna del resto, que es lo que hace `primero_y_resto/3` en la
+  [sección 47.3](#473-version-3-matrices-como-listas-de-listas).
 - *SWI-Prolog Reference Manual* — apartados
   «[Arithmetic types](https://www.swi-prolog.org/pldoc/man?section=artypes)»,
   «[Rational number examples](https://www.swi-prolog.org/pldoc/man?section=rational)»

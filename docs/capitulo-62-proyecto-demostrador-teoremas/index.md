@@ -11,6 +11,24 @@ lee una fórmula escrita como texto, la lleva a forma clausal, busca por
 resolución la refutación más corta de su negación y la devuelve como un dato
 que un segundo programa, pequeño e independiente, verifica paso por paso.
 
+```mermaid
+flowchart LR
+    T["texto de<br/>la fórmula"] -- "lector" --> F["fórmula<br/>(término)"]
+    F -- "negación,<br/>forma clausal" --> C["cláusulas"]
+    C -- "resolución con<br/>profundización iterativa" --> P["refutación:<br/>pasos hasta □"]
+    P -- "verificador" --> V["la prueba<br/>es correcta"]
+    C -. "sin refutación<br/>en Max pasos" .-> N["no se decide"]
+```
+
+![John Alan Robinson durante una conferencia](robinson.jpg)
+
+John Alan Robinson, que en 1965 publicó el principio de resolución, la
+regla de inferencia única sobre la que trabaja este demostrador (ver
+[Referencias](#referencias)).
+Imagen: David Monniaux,
+[CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/), vía
+[Wikimedia Commons](https://commons.wikimedia.org/wiki/File:John_Alan_Robinson_IMG_0493.jpg).
+
 El proyecto crece en siete versiones. La primera es el lector de fórmulas;
 la segunda, la forma clausal de la lógica proposicional; la tercera, el
 demostrador por resolución con profundización iterativa; la cuarta, el
@@ -18,7 +36,9 @@ verificador de refutaciones. La quinta y la sexta extienden la forma
 clausal y la resolución a la lógica de predicados, con skolemización,
 factorización y la comprobación de ocurrencia. La séptima compara el
 demostrador con dos procedimientos que deciden la lógica proposicional: la
-separación de casos de Quine y `library(clpb)`.
+separación de casos de Quine y `library(clpb)`. Dos secciones finales
+construyen un modelo cuando no hay refutación y agregan la estrategia de
+conjunto de soporte.
 
 ```prolog
 ?- demostrar_fo("¬∃x ∀y (afeita(x, y) ↔ ¬afeita(y, y))", 5, P), escribir_prueba(P).
@@ -99,9 +119,9 @@ Al terminar el capítulo, el lector puede:
   decir qué produce cada uno: un veredicto, un contraejemplo o una prueba.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:25 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:40 h**.
     Resolver los 5 ejercicios marcados con ★: **1:20 h**.
-    Resolver los 11 ejercicios del final: **3:55 h**.
+    Resolver los 12 ejercicios del final: **4:15 h**.
 
 ## 62.1 El programa terminado
 
@@ -139,31 +159,50 @@ fórmula recibió.
 La lectura tiene dos etapas, como la del compilador del
 [capítulo 45](../capitulo-45-proyecto-compilador/index.md). El analizador
 léxico pasa los códigos del texto a una lista de símbolos: `no`, `y`, `o`,
-`si`, `sii`, `todo`, `existe`, los paréntesis, la coma e `id(Nombre)`:
+`si`, `sii`, `todo`, `existe`, los paréntesis, la coma e `id(Nombre)`. El
+primer carácter decide la clase del símbolo: si empieza un nombre, se lee
+el nombre, y si no, `signo//2` elige la cláusula por ese carácter, que es
+su primer argumento. La indexación encuentra la única cláusula que
+corresponde, y el analizador no deja alternativas pendientes:
 
-<!-- ejemplo: capitulo-62/lector.pl predicado: simbolo//1 -->
+<!-- ejemplo: capitulo-62/lector.pl predicado: simbolo//1 signo//2 -->
 ```prolog
 %!  simbolo(-S)// is semidet.
 %
 %   S es el símbolo que empieza en el texto: un conectivo, un
-%   cuantificador, un paréntesis, una coma o id(Nombre).
-simbolo(no)     --> ( "¬" ; "~" ).
-simbolo(y)      --> ( "∧" ; "&" ).
-simbolo(o)      --> ( "∨" ; "|" ).
-simbolo(si)     --> ( "→" ; "->" ).
-simbolo(sii)    --> ( "↔" ; "<->" ).
-simbolo(todo)   --> "∀".
-simbolo(existe) --> "∃".
-simbolo('(')    --> "(".
-simbolo(')')    --> ")".
-simbolo(',')    --> ",".
+%   cuantificador, un paréntesis, una coma o id(Nombre). El primer
+%   carácter decide la clase del símbolo, de modo que no queda ninguna
+%   alternativa pendiente.
 simbolo(S) -->
     [C],
-    { code_type(C, csymf) },
-    resto_nombre(Cs),
-    { atom_codes(Nombre, [C|Cs]),
-      palabra(Nombre, S)
-    }.
+    (   { code_type(C, csymf) }
+    ->  resto_nombre(Cs),
+        { atom_codes(Nombre, [C|Cs]),
+          palabra(Nombre, S)
+        }
+    ;   signo(C, S)
+    ).
+
+%!  signo(+C, -S)// is semidet.
+%
+%   S es el símbolo que empieza con el carácter C, que no es el de un
+%   nombre; el resto del símbolo sigue en el texto. La indexación por el
+%   primer argumento elige la única cláusula que corresponde a C.
+signo(0'¬, no)      --> [].
+signo(0'~, no)      --> [].
+signo(0'∧, y)       --> [].
+signo(0'&, y)       --> [].
+signo(0'∨, o)       --> [].
+signo(0'|, o)       --> [].
+signo(0'→, si)      --> [].
+signo(0'-, si)      --> ">".
+signo(0'↔, sii)     --> [].
+signo(0'<, sii)     --> "->".
+signo(0'∀, todo)    --> [].
+signo(0'∃, existe)  --> [].
+signo(0'(, '(')     --> [].
+signo(0'), ')')     --> [].
+signo(0',, ',')     --> [].
 ```
 
 La gramática tiene un no terminal por nivel de precedencia, del que liga
@@ -386,7 +425,7 @@ Cs = [[+a1, +a2, +a3], [+a1, +a2, +b3], [+a1, +a3, +b2], [+a1, +b2, +b3], [+a2, 
 N = 8.
 ```
 
-Con n = 12 son 4 096 cláusulas y 1 374 837 inferencias. El
+Con n = 12 son 4 096 cláusulas y 1 375 513 inferencias. El
 [ejercicio 4](#ejercicios) construye una forma clausal que crece en forma
 lineal, a cambio de agregar átomos nuevos.
 
@@ -647,14 +686,147 @@ Cada método produce algo distinto: `clpb` da un veredicto y, si la
 fórmula no es un teorema, un contraejemplo; la resolución da una prueba
 que se puede verificar.
 
+## 62.9 Construir un modelo
+
+Cuando una fórmula no es un teorema, la resolución no termina sin un
+máximo, y `clpb` da el contraejemplo sin decir cómo lo obtuvo. Flach
+construye el contraejemplo con un programa de encadenamiento hacia
+adelante, adaptado del demostrador SATCHMO de Manthey y Bry: un **modelo**
+de un conjunto de cláusulas es un conjunto de fórmulas atómicas sin
+variables, las verdaderas, que hace verdadera cada cláusula. Una cláusula
+está **violada** cuando todos sus literales negativos son verdaderos y
+ninguno de los positivos lo es; el programa busca una, agrega al modelo
+uno de sus literales positivos, y repite hasta que no queda ninguna. Si la
+cláusula violada no tiene literales positivos, vuelve atrás y elige otro.
+`modelos.pl` lo escribe sobre las cláusulas del capítulo:
+
+<!-- ejemplo: capitulo-62/modelos.pl predicado: modelo/3 violada/3 -->
+```prolog
+%!  modelo(+Clausulas:list, +Modelo0:list, -Modelo:list) is nondet.
+%
+%   Modelo extiende Modelo0 hasta que ninguna de las Clausulas está
+%   violada.
+modelo(Clausulas, Modelo0, Modelo) :-
+    (   member(C, Clausulas),
+        violada(C, Modelo0, Positivos)
+    ->  member(A, Positivos),
+        ord_add_element(Modelo0, A, Modelo1),
+        modelo(Clausulas, Modelo1, Modelo)
+    ;   Modelo = Modelo0
+    ).
+
+%!  violada(+C:list, +Modelo:list, -Positivos:list) is semidet.
+%
+%   Una copia de la cláusula C está violada en Modelo: sus literales
+%   negativos son verdaderos, con las variables ligadas por el modelo, y
+%   ninguno de sus Positivos, ya sin variables, lo es. Una variable que
+%   queda libre en un literal positivo produce un error de dominio: la
+%   cláusula no es de rango restringido.
+violada(C, Modelo, Positivos) :-
+    copy_term(C, D),
+    signos(D, Negativos, Positivos),
+    maplist(verdadera(Modelo), Negativos),
+    (   ground(Positivos)
+    ->  true
+    ;   domain_error(clausula_de_rango_restringido, C)
+    ),
+    \+ ( member(A, Positivos),
+         ord_memberchk(A, Modelo)
+       ),
+    !.
+```
+
+Las cláusulas pueden tener variables, siempre que sean de **rango
+restringido**: cada variable de un literal positivo aparece en uno
+negativo. Al hacer verdaderos los negativos con fórmulas del modelo, que
+no tienen variables, los positivos quedan sin variables también. Una
+cláusula como `hombre(X) ∨ mujer(X)` no lo es, y `violada/3` lo señala con
+un error de dominio; Flach la corrige con un predicado `persona/1` que
+enumera los valores de `X`. El ejemplo de Flach da sus dos modelos
+mínimos:
+
+```prolog
+?- modelo([[+casado(X), +soltero(X), -hombre(X), -adulto(X)], [+tiene_esposa(Y), -casado(Y), -hombre(Y)], [+hombre(pablo)], [+adulto(pablo)]], M).
+M = [adulto(pablo), casado(pablo), hombre(pablo), tiene_esposa(pablo)] ;
+M = [adulto(pablo), hombre(pablo), soltero(pablo)].
+```
+
+No todo modelo que el programa construye es mínimo: el orden en que se
+satisfacen las cláusulas puede agregar una fórmula que otra elección hace
+innecesaria. Un conjunto de cláusulas tiene un modelo si y solo si no
+tiene refutación, así que un modelo de la negación de una fórmula es un
+contraejemplo. `contramodelo/2` lo busca para una fórmula escrita como
+texto; los átomos del modelo son los verdaderos, y los demás, falsos:
+
+```prolog
+?- contramodelo("(p → q) → (q → p)", M).
+M = [q].
+
+?- contramodelo("p ∨ ¬p", M).
+false.
+```
+
+Con q verdadera y p falsa, `p → q` es verdadera y `q → p` es falsa. El
+programa no termina si todo modelo de las cláusulas es infinito; Flach
+propone para ese caso un recorrido por niveles con una profundidad
+máxima, que el capítulo no escribe.
+
+## 62.10 El conjunto de soporte
+
+Rowe describe la estrategia de **conjunto de soporte**: las cláusulas se
+separan en las hipótesis, que se suponen consistentes, y el soporte, la
+negación de lo que se quiere probar. Cada paso usa al menos una cláusula
+del soporte, y cada resolvente pasa a formar parte de él; dos hipótesis
+nunca se resuelven entre sí, porque de hipótesis consistentes no se deriva
+la cláusula vacía. `soporte.pl` numera las hipótesis primero, y como cada
+paso `r(I, J, R)` tiene `I =< J`, le basta con exigir que `J` sea del
+soporte:
+
+<!-- ejemplo: capitulo-62/soporte.pl predicado: paso_soporte/4 -->
+```prolog
+%!  paso_soporte(+NH:integer, +Clausulas:list, -Paso, -R:list) is nondet.
+%
+%   Paso es un paso de resolución o de factorización sobre las Clausulas
+%   cuya cláusula de número mayor es del soporte, de número mayor que NH;
+%   R es la cláusula que agrega.
+paso_soporte(NH, Clausulas, r(I, J, R), R) :-
+    nth1(J, Clausulas, C2),
+    J > NH,
+    nth1(I, Clausulas, C1),
+    I =< J,
+    resolvente_fo(unify_with_occurs_check, C1, C2, R).
+paso_soporte(NH, Clausulas, f(I, R), R) :-
+    nth1(I, Clausulas, C),
+    I > NH,
+    factor(unify_with_occurs_check, C, R).
+```
+
+`comparar_estrategias/3` mide las tres estrategias sobre un problema con
+una cadena de implicaciones útil, de `a` a `e`, y otra que no interviene en
+la prueba, de `x` a `z`:
+
+```prolog
+?- comparar_estrategias([[-a, +b], [-b, +c], [-c, +d], [-d, +e], [+a], [-x, +y], [-y, +z], [+x]], [[-e]], I).
+I = [general-1544090, lineal-18840, soporte-6162].
+```
+
+La estrategia general resuelve también la cadena que no interviene; la
+lineal la evita una vez elegido el centro, pero puede empezar por
+cualquier par de cláusulas; el soporte empieza siempre por `¬e`. El
+precio es la completitud: si las hipótesis son inconsistentes, la
+estrategia no lo descubre, y `refutar_soporte([[+p], [-p]], [], 3, P)`
+falla aunque las dos cláusulas tengan una refutación de un paso. La
+búsqueda **en anchura**, la tercera estrategia de Rowe, es la saturación
+por niveles del [ejercicio 11](#ejercicios).
+
 !!! success "Criterios de calidad"
     | Criterio | En este capítulo |
     |---|---|
     | C1 | cada predicado declara modos y determinación: `demostrar/3` y `refutar_fo/3` son `semidet` porque devuelven solo la refutación más corta, y los generadores de pasos, `resolvente/3` y `factor/3`, son `nondet` |
     | C2 | la representación es limpia: fórmulas con un functor por conectivo, literales `+A` y `-A`, y la prueba como un término, que el verificador recibe sin conocer al demostrador |
-    | C4 | las cláusulas de `fnn/2`, `sustituir/4` y la escritura empiezan por el functor de la fórmula, de modo que la indexación no deja alternativas; las pruebas lo confirman |
+    | C4 | las cláusulas de `fnn/2`, `sustituir/4` y la escritura empiezan por el functor de la fórmula, `signo//2` por el carácter y `opuestos/3` por el literal, de modo que la indexación no deja alternativas; las pruebas lo confirman |
     | C5 | un texto que no es una fórmula produce un error de sintaxis, y una fórmula con cuantificadores en la forma clausal proposicional, un error de tipo, en lugar de una falla silenciosa |
-    | C7 | 76 pruebas en siete archivos; cada refutación que el demostrador encuentra, con cada combinación de opciones, pasa por el verificador, y los tres métodos de decisión dan el mismo veredicto sobre ocho fórmulas |
+    | C7 | 143 pruebas en nueve archivos; cada refutación que el demostrador encuentra, con cada combinación de opciones, pasa por el verificador, y los tres métodos de decisión dan el mismo veredicto sobre ocho fórmulas |
 
 ## Ejercicios
 
@@ -723,6 +895,11 @@ que cargan los del capítulo, sin modificarlos.
     `resolvente/3`, donde Resultado es `refutada` o `saturada`, y medir
     con `time/1` las inferencias para el principio del palomar con 3
     palomas, comparadas con las de `refutar_fo/3`.
+12. **(2)** El primer modelo que `modelo/2` construye para el segundo
+    ejemplo de Flach no es mínimo. Escribir `modelo_minimo(Cs, M)`, que da
+    solo los modelos de `modelo/2` de los que ningún subconjunto propio es
+    un modelo, y comprobarlo con ese ejemplo. Explicar por qué no alcanza
+    con quitar una fórmula por vez.
 
 ## Resumen
 
@@ -738,11 +915,16 @@ que cargan los del capítulo, sin modificarlos.
 | **comprobación de ocurrencia** | sin ella, la unificación crea términos cíclicos y el demostrador «prueba» fórmulas que no son teoremas |
 | **estrategia lineal** | desde el segundo paso, cada uno usa la cláusula que agregó el anterior |
 | **verificador** | un programa independiente que rehace cada paso; para confiar en una prueba alcanza con confiar en él |
+| **modelo** | un conjunto de fórmulas atómicas sin variables que hace verdadera cada cláusula; existe si y solo si no hay refutación |
+| **rango restringido** | cada variable de un literal positivo aparece en uno negativo, de modo que el modelo la liga |
+| **conjunto de soporte** | la negación de lo que se prueba y sus descendientes; cada paso usa uno, y dos hipótesis no se resuelven entre sí |
 | `leer_formula/2`, `formula_texto/2` | la lectura y la escritura |
 | `fnn/2`, `fnc/2`, `clausulas/2`, `clausulas_fo/2` | la forma clausal |
 | `demostrar/3`, `demostrar_fo/3`, `refutar_con/4`, `escribir_prueba/1` | el demostrador |
 | `verificar/1` | el verificador |
 | `tautologia/2`, `contraejemplo/2`, `palomar/2` | la comparación |
+| `modelo/2`, `contramodelo/2` | la construcción de un modelo |
+| `refutar_soporte/4`, `comparar_estrategias/3` | la estrategia de conjunto de soporte |
 
 ## Temas que se retoman
 
@@ -781,15 +963,21 @@ que cargan los del capítulo, sin modificarlos.
   [Edición en línea](https://book.simply-logical.space/src/text/2_part_ii/5.4.html).
   El capítulo toma la búsqueda de un modelo de cláusulas indefinidas como
   la contracara de la refutación, que en la comparación es el
-  contraejemplo de `library(clpb)`.
+  contraejemplo de `library(clpb)`, y, en la
+  [sección 62.9](#629-construir-un-modelo), el algoritmo de construcción:
+  satisfacer una cláusula violada con uno de sus literales positivos, las
+  cláusulas de rango restringido con un predicado de dominio, y sus
+  ejemplos de modelos mínimos y no mínimos. El programa de Flach se
+  escribe aquí de nuevo, sobre las cláusulas como listas de literales.
 - Neil C. Rowe, *Artificial Intelligence through Prolog*, Prentice-Hall,
   1988 — capítulo «A more general logic programming», apartados
   «Resolution with variables», «Resolution search strategies» e
   «Implementing resolution without variables».
   [Edición en línea](https://faculty.nps.edu/ncrowe/book/chap14.html).
   El capítulo toma la resolución con variables y el renombrado de las
-  cláusulas antes de cada paso, las estrategias de conjunto de soporte y
-  de preferencia unitaria, y los filtros de redundancia: tautologías,
+  cláusulas antes de cada paso, la estrategia de conjunto de soporte de
+  la [sección 62.10](#6210-el-conjunto-de-soporte), la de preferencia
+  unitaria y la búsqueda en anchura de los ejercicios 9 y 11, y los filtros de redundancia: tautologías,
   cláusulas repetidas y subsumidas. Rowe afirma que esos filtros son
   difíciles de programar en Prolog con variables; `subsume/2` los
   resuelve con `numbervars/3` dentro de una doble negación.
@@ -798,6 +986,42 @@ que cargan los del capítulo, sin modificarlos.
   El capítulo toma el principio de resolución por refutación, la fórmula
   (a → b) ∧ (b → c) → (a → c) que recorre la versión 3, y la observación
   de que el mecanismo se extiende a la lógica de predicados.
+- John Alan Robinson, «A Machine-Oriented Logic Based on the Resolution
+  Principle», *Journal of the ACM* 12(1), 1965. El artículo que Clocksin y
+  Mellish, Bratko y Rowe citan como origen de la resolución: la regla única
+  de inferencia, la unificación más general con la comprobación de
+  ocurrencia y la refutación de la forma clausal de la negación, que son
+  las versiones 3 y 6 del capítulo.
+- Richard E. Korf, «Depth-First Iterative-Deepening: An Optimal
+  Admissible Tree Search», *Artificial Intelligence* 27, 1985. Flach lo
+  cita como el origen de la profundización iterativa, y Triska la usa
+  por la misma propiedad que Korf demuestra: encuentra la prueba más corta
+  con la memoria de una búsqueda en profundidad.
+- Rainer Manthey y François Bry, «SATCHMO: A Theorem Prover Implemented in
+  Prolog», *9th International Conference on Automated Deduction*,
+  Springer, 1988. El programa de construcción de modelos de Flach está
+  adaptado de este demostrador; el capítulo toma de ahí la idea de un
+  modelo como respuesta cuando no hay refutación, que la
+  [sección 62.9](#629-construir-un-modelo) construye.
+- Donald W. Loveland, «A Linear Format for Resolution», *Symposium on
+  Automatic Demonstration*, Springer, 1970. La resolución lineal y su
+  completitud, en las que se apoya la estrategia lineal de la versión 6.
+- Armin Haken, «The Intractability of Resolution», *Theoretical Computer
+  Science* 39, 1985. La demostración de que toda refutación por
+  resolución del principio del palomar crece en forma exponencial, el
+  resultado que la comparación de la versión 7 mide.
+- Randal E. Bryant, «Graph-Based Algorithms for Boolean Function
+  Manipulation», *IEEE Transactions on Computers* C-35(8), 1986.
+  [Copia del autor](https://www.cs.cmu.edu/~bryant/pubdir/ieeetc86.pdf).
+  Los diagramas de decisión binarios ordenados sobre los que está
+  construida `library(clpb)`; el capítulo toma de ahí la explicación de
+  por qué `clpb` crece despacio con el palomar y por qué el orden de las
+  variables decide el tamaño del diagrama.
+- G. S. Tseitin, «On the Complexity of Derivation in Propositional
+  Calculus», 1968, y David A. Plaisted y Steven Greenbaum, «A
+  Structure-Preserving Clause Form Translation», *Journal of Symbolic
+  Computation* 2(3), 1986. La forma clausal con átomos nuevos que crece en
+  forma lineal, del ejercicio 4, con las definiciones en un solo sentido.
 
 El código del capítulo es propio, escrito para el curso: ninguno de los
 programas de esos libros se copió, y la verificación independiente, la

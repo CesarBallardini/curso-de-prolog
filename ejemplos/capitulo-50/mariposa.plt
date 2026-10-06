@@ -35,4 +35,18 @@ test(como_definicion, [forall(member(N, [1, 2, 4, 8, 16, 32]))]) :-
     fft_numerica(Cs, Vs0),
     cercanos(Vs, Vs0).
 
+test(orden_uno, [true(Ns-Ss == [nodo(1, a(0))]-[1])]) :-
+    fft_grafo(1, Ns, Ss).
+
+test(orden_dos, [true(Ns-Ss == [nodo(1, a(0)), nodo(2, a(1)),
+                                nodo(3, op(+, 1, 2)),
+                                nodo(4, op(-, 1, 2))]-[3, 4])]) :-
+    fft_grafo(2, Ns, Ss).
+
+test(un_coeficiente, [true(Vs == [c(5, 0)])]) :-
+    fft_numerica([5], Vs).
+
+test(no_potencia, [error(domain_error(potencia_de_dos, 3))]) :-
+    fft_numerica([1, 2, 3], _).
+
 :- end_tests(mariposa).

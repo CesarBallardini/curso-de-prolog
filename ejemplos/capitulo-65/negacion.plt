@@ -16,4 +16,16 @@ test(nadie, [fail]) :-
 test(dracula_no_termina, [true(R == inference_limit_exceeded)]) :-
     call_with_inference_limit(vuela(dracula), 100000, R).
 
+test(anormal) :-
+    anormal(opus),
+    \+ anormal(tweety).
+
+% no_vuela/1 pide un individuo muerto: Opus no vuela, pero no por esta
+% regla.
+test(no_vuela_vivo, [fail]) :-
+    no_vuela(opus).
+
+test(no_vuela_dracula, [true(R == inference_limit_exceeded)]) :-
+    call_with_inference_limit(no_vuela(dracula), 100000, R).
+
 :- end_tests(negacion).

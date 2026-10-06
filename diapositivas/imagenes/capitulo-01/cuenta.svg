@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 380" width="800" height="380">
+  <title>La cadena de llamadas de cuenta(1, 5): cada llamada escribe un número y llama con el siguiente, hasta cuenta(6, 5), que es el caso base</title>
+  <rect x="0" y="0" width="800" height="380" fill="#FFFFFF"/>
+  <g fill="none" stroke="#9AA5B1" stroke-width="3">
+    <path d="M 60 64 V 110 H 145"/>
+    <path d="M 185 122 V 168 H 270"/>
+    <path d="M 310 180 V 226 H 395"/>
+    <path d="M 435 238 V 284 H 520"/>
+    <path d="M 560 296 V 342 H 645"/>
+  </g>
+  <g fill="#9AA5B1">
+    <polygon points="139,102 153,110 139,118"/>
+    <polygon points="264,160 278,168 264,176"/>
+    <polygon points="389,218 403,226 389,234"/>
+    <polygon points="514,276 528,284 514,292"/>
+    <polygon points="639,334 653,342 639,350"/>
+  </g>
+  <g fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2">
+    <rect x="20" y="20" width="150" height="44" rx="8"/>
+    <rect x="145" y="78" width="150" height="44" rx="8"/>
+    <rect x="270" y="136" width="150" height="44" rx="8"/>
+    <rect x="395" y="194" width="150" height="44" rx="8"/>
+    <rect x="520" y="252" width="150" height="44" rx="8"/>
+  </g>
+  <rect x="645" y="310" width="150" height="44" rx="8" fill="#E3F1E4" stroke="#2E7D32" stroke-width="3"/>
+  <g font-family="Consolas, DejaVu Sans Mono, monospace" font-size="20" fill="#1F2933" text-anchor="middle">
+    <text x="95" y="49">cuenta(1, 5)</text>
+    <text x="220" y="107">cuenta(2, 5)</text>
+    <text x="345" y="165">cuenta(3, 5)</text>
+    <text x="470" y="223">cuenta(4, 5)</text>
+    <text x="595" y="281">cuenta(5, 5)</text>
+    <text x="720" y="339">cuenta(6, 5)</text>
+  </g>
+  <g fill="#D9822B">
+    <circle cx="192" cy="42" r="16"/><circle cx="317" cy="100" r="16"/><circle cx="442" cy="158" r="16"/>
+    <circle cx="567" cy="216" r="16"/><circle cx="692" cy="274" r="16"/>
+  </g>
+  <g font-family="Consolas, DejaVu Sans Mono, monospace" font-size="19" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+    <text x="192" y="49">1</text><text x="317" y="107">2</text><text x="442" y="165">3</text>
+    <text x="567" y="223">4</text><text x="692" y="281">5</text>
+  </g>
+  <g font-family="Verdana, DejaVu Sans, sans-serif" font-size="17">
+    <circle cx="36" cy="330" r="12" fill="#D9822B"/>
+    <text x="56" y="336" fill="#52606D">lo que escribe cada llamada</text>
+    <text x="630" y="372" fill="#2E7D32" font-weight="bold" text-anchor="end">6 &gt; 5: caso base</text>
+  </g>
+</svg>

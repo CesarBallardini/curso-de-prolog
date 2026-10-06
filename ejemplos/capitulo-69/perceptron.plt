@@ -56,4 +56,13 @@ test(inferencias, [true(I > 0)]) :-
 test(pasos_y, [true(P-N == [-6, 4, 2]-18)]) :-
     pasos(y, 1, [0, 0, 0], P, N).
 
+test(ajustar, [true(W =:= 1.5)]) :-
+    ajustar(0.25, 1, 2, W).
+
+test(ajustar_negativo, [true(W =:= -1)]) :-
+    ajustar(-2, 1, 1, W).
+
+test(sumar_producto, [true(S =:= 7)]) :-
+    sumar_producto(2, 3, 1, S).
+
 :- end_tests(perceptron).

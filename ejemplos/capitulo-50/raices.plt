@@ -42,4 +42,57 @@ test(valor_como_definicion, [forall(member(N, [1, 2, 4, 8, 6]))]) :-
     maplist(valor(N, Cs), Es, Vs1),
     cercanos(Vs, Vs1).
 
+test(regla_modulo, all(E == [w(1)])) :-
+    regla_raices(4, w(5), E).
+
+test(regla_uno, all(E == [1])) :-
+    regla_raices(4, w(0), E).
+
+% Sin regla de las raíces, se aplica una del capítulo 32.
+test(regla_del_simplificador, all(E == [x])) :-
+    regla_raices(4, x + 0, E).
+
+% Un exponente menor que N/2 no cambia el signo.
+test(raiz_sin_signo, [fail]) :-
+    raiz(8, a(0) + w(3) * a(1), _).
+
+test(raiz_reducida, [fail]) :-
+    raiz(8, w(3), _).
+
+test(simp_raices, [true(E == a(0) - a(1))]) :-
+    simp_raices(4, a(0) + w(2) * a(1), E).
+
+test(valor, [true(V == c(2.0, 1.0))]) :-
+    valor(4, [1, 2], a(1) + w(1) * a(0), V).
+
+test(valor_complejo, [true(V == c(3, 3))]) :-
+    valor(4, [c(1, 1)], 3 * a(0), V).
+
+test(complejo_numero, [true(V == c(3, 0))]) :-
+    complejo(3, V).
+
+test(complejo_par, [true(V == c(1, 2))]) :-
+    complejo(c(1, 2), V).
+
+test(raiz_numerica, [true(cercano(V, c(0, 1)))]) :-
+    raiz_numerica(4, 1, V).
+
+test(operar_producto, [true(V == c(-1, 0))]) :-
+    operar(*, c(0, 1), c(0, 1), V).
+
+test(operar_resta, [true(V == c(2, 0))]) :-
+    operar(-, c(3, 1), c(1, 1), V).
+
+test(salida_definicion, [true(cercano(V, c(-2, 0)))]) :-
+    salida_definicion([1, 2, 3, 4], 4, 2, V).
+
+test(cercano, [true]) :-
+    cercano(c(1, 0), c(1.0000000001, 0)).
+
+test(lejano, [fail]) :-
+    cercano(c(1, 0), c(1.001, 0)).
+
+test(cercanos_longitud, [fail]) :-
+    cercanos([c(1, 0)], [c(1, 0), c(2, 0)]).
+
 :- end_tests(raices).

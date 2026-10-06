@@ -12,6 +12,7 @@ test(abuelo_de_eva, all(A == [juan])) :-
 test(misma_estructura, true(T == es_padre_de(juan, ana))) :-
     T = (juan es_padre_de ana).
 
+% with_output_to/2, que captura la salida, se presenta en el capítulo 27.
 test(forma_canonica, true(S == "es_padre_de(juan,ana)")) :-
     with_output_to(string(S), write_canonical(juan es_padre_de ana)).
 

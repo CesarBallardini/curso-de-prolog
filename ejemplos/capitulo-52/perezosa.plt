@@ -42,4 +42,11 @@ test(sucesion, [true(S == '0101010101')]) :-
 
 cinta_vacia_local(c([], blanco, [])).
 
+test(paso_alias, [true(Q1-Fs == b-[0])]) :-
+    cinta_vacia_local(C0),
+    paso(alterna, a, C0, Q1, _, Fs).
+
+test(paso_sin_fila, [fail]) :-
+    paso(ii, o, c([], blanco, []), _, _, _).
+
 :- end_tests(perezosa).

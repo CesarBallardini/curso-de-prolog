@@ -60,4 +60,18 @@ test(robot_logra, [true]) :-
     length(P, 10),
     regresion:logra(robot, strips1, P, Metas).
 
+% lograr/9, segunda cláusula: mover(b, mesa, c) no puede ir al final de
+% [mover(c, a, mesa), mover(a, mesa, b)] y se inserta antes de la última.
+test(lograr_inserta, [true(H == [mover(a, mesa, b), mover(b, mesa, c),
+                                 mover(c, a, mesa)])]) :-
+    once(warplan:lograr(cubos, sussman, sobre(b, c), mover(b, mesa, c),
+                        [sobre(a, b)], [mover(a, mesa, b), mover(c, a, mesa)],
+                        H, 2, _)).
+
+% regresar/4 con un protegido que la acción agrega: solo quedan las
+% precondiciones.
+test(regresar_agregado, [true(Ps == [sobre(c, a), distinto(a, mesa),
+                                     libre(c)])]) :-
+    regresar(cubos, [sobre(c, mesa)], mover(c, a, mesa), Ps).
+
 :- end_tests(warplan).

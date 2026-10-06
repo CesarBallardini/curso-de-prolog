@@ -80,15 +80,29 @@ leer_notacion(Texto, Movimientos) :-
     phrase(escritos(Grupos), Codigos),
     append(Grupos, Movimientos).
 
+%!  escritos(-Gs:list)// is det.
+%
+%   Gs son los grupos de movimientos de los giros escritos, separados por
+%   blancos.
 escritos([G|Gs]) --> blancos, escrito(G), !, escritos(Gs).
 escritos([]) --> blancos.
 
+%!  escrito(-Ms:list)// is semidet.
+%
+%   Ms son los movimientos de un giro: la letra de una cara y su sufijo.
 escrito(Ms) --> [C], { letra_cara(C, Cara) }, sufijo(Cara, Ms).
 
+%!  sufijo(+Cara, -Ms:list)// is det.
+%
+%   Ms son los movimientos de Cara según el sufijo: apóstrofo, el giro
+%   inverso; 2, dos giros; sin sufijo, uno.
 sufijo(Cara, [-Cara]) --> "'", !.
 sufijo(Cara, [Cara, Cara]) --> "2", !.
 sufijo(Cara, [Cara]) --> [].
 
+%!  blancos// is det.
+%
+%   Consume los blancos que siguen.
 blancos --> " ", !, blancos.
 blancos --> [].
 

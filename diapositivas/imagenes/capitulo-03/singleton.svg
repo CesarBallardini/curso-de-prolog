@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 460" width="960" height="460">
+  <title>Con Q en lugar de la segunda P, cada una aparece una sola vez y Prolog advierte Singleton variables [P,Q]; los remedios son corregir el nombre, usar _ o un nombre que empiece con _</title>
+  <defs>
+    <marker id="a-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1F2933"/></marker>
+    <marker id="a-navy" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1F3A5F"/></marker>
+    <marker id="a-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#D9822B"/></marker>
+    <marker id="a-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2E7D32"/></marker>
+    <marker id="a-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#C62828"/></marker>
+    <marker id="a-grey" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#9AA5B1"/></marker>
+  </defs>
+  <rect x="0" y="0" width="960" height="460" fill="#FFFFFF"/>
+  <rect x="30.0" y="20.0" width="520.0" height="196.0" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="56.0" y="64.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="23" fill="#1F2933" text-anchor="start" xml:space="preserve">abuelo(A, N) :-</text>
+  <text x="106.6" y="108.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="23" fill="#1F2933" text-anchor="start" xml:space="preserve">varon(A),</text>
+  <rect x="280.7" y="133.1" width="18.6" height="27.6" rx="6" fill="#FCE8D2" stroke="#D9822B" stroke-width="3"/>
+  <text x="106.6" y="152.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="23" fill="#1F2933" text-anchor="start" xml:space="preserve">progenitor(A, P),</text>
+  <rect x="242.8" y="177.1" width="18.6" height="27.6" rx="6" fill="#FDECEA" stroke="#C62828" stroke-width="3"/>
+  <text x="106.6" y="196.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="23" fill="#1F2933" text-anchor="start" xml:space="preserve">progenitor(Q, N).</text>
+  <text x="580.0" y="150.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="18" fill="#D9822B" text-anchor="start" font-weight="bold" xml:space="preserve">P aparece una vez</text>
+  <text x="580.0" y="196.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="18" fill="#C62828" text-anchor="start" font-weight="bold" xml:space="preserve">Q aparece una vez</text>
+  <text x="580.0" y="80.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="18" fill="#1F2933" text-anchor="start" xml:space="preserve">nada une los dos</text>
+  <text x="580.0" y="104.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="18" fill="#1F2933" text-anchor="start" xml:space="preserve">objetivos progenitor</text>
+  <rect x="30.0" y="236.0" width="520.0" height="69.3" rx="8" fill="#1F2933" stroke="#1F2933" stroke-width="2"/>
+  <text x="48.0" y="264.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="19" fill="#E4E7EB" text-anchor="start" font-weight="bold" xml:space="preserve">Warning: reglas.pl:54:</text>
+  <text x="48.0" y="289.6" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="19" fill="#E4E7EB" text-anchor="start" font-weight="bold" xml:space="preserve">Warning:    Singleton variables: [P,Q]</text>
+  <rect x="30.0" y="350.0" width="290.0" height="90.0" rx="10" fill="#FFFFFF" stroke="#C62828" stroke-width="2.5"/>
+  <text x="44.0" y="382.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="14" fill="#1F2933" text-anchor="start" xml:space="preserve">el nombre está mal escrito</text>
+  <text x="46.0" y="420.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="22" fill="#C62828" text-anchor="start" font-weight="bold" xml:space="preserve">corregirlo</text>
+  <rect x="340.0" y="350.0" width="290.0" height="90.0" rx="10" fill="#FFFFFF" stroke="#2E7D32" stroke-width="2.5"/>
+  <text x="354.0" y="382.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="14" fill="#1F2933" text-anchor="start" xml:space="preserve">el valor no interesa</text>
+  <text x="356.0" y="420.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#2E7D32" text-anchor="start" font-weight="bold" xml:space="preserve">_</text>
+  <rect x="650.0" y="350.0" width="290.0" height="90.0" rx="10" fill="#FFFFFF" stroke="#2E7D32" stroke-width="2.5"/>
+  <text x="664.0" y="382.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="14" fill="#1F2933" text-anchor="start" xml:space="preserve">no interesa, y el nombre informa</text>
+  <text x="666.0" y="420.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#2E7D32" text-anchor="start" font-weight="bold" xml:space="preserve">_Hijo</text>
+</svg>

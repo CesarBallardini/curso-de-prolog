@@ -14,6 +14,7 @@ test(fuera, [fail]) :-
     tablero(3, 4, [1-1, 2-3], T),
     valor(T, 4-1, _).
 
+% with_output_to/2, que captura la salida, se presenta en el capítulo 27.
 test(mostrar, true(S == "*211\n12*1\n0111\n")) :-
     tablero(3, 4, [1-1, 2-3], T),
     with_output_to(string(S), mostrar(T)).

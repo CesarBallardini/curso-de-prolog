@@ -77,7 +77,9 @@ reducida_de(Relacion, I, J, Orden, C) :-
     modelo_fondo(M),
     reducir((H :- B), Negs, M, C).
 
-% ordenar(Orden, B0, B): B es B0 en el orden pedido.
+%!  ordenar(+Orden, +B0:list, -B:list) is semidet.
+%
+%   B es B0 en el orden pedido: directo o inverso.
 ordenar(directo, B, B).
 ordenar(inverso, B0, B) :-
     reverse(B0, B).
@@ -210,11 +212,15 @@ candidatas(Pos, Negs, M, Candidatas, K) :-
               length(Cs, Cubiertos) ),
             Candidatas).
 
-% cubierto(C, M, E): la cláusula C cubre el ejemplo E en el modelo M.
+%!  cubierto(+C, +M:list, +E) is semidet.
+%
+%   La cláusula C cubre el ejemplo E en el modelo M.
 cubierto(C, M, E) :-
     cubre(C, E, M).
 
-% hecho(E, E :- []): un ejemplo sin cubrir queda como hecho.
+%!  hecho(+E, -C) is det.
+%
+%   C es la cláusula E :- []: un ejemplo sin cubrir queda como hecho.
 hecho(E, (E :- [])).
 
 %!  aprender_asc(+Relacion, -H:list, -N:integer) is det.
@@ -240,7 +246,9 @@ extension(Relacion, H, Atomos) :-
     modelo_minimo_de(Programa, Modelo),
     include(de_relacion(Relacion), Modelo, Atomos).
 
-% de_relacion(R, A): el átomo A es de la relación R.
+%!  de_relacion(+R, +A) is semidet.
+%
+%   El átomo A es de la relación R.
 de_relacion(Relacion, Atomo) :-
     functor(Atomo, Relacion, _).
 

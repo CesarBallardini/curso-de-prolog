@@ -65,4 +65,65 @@ test(saturar_no_teorema, [true(R == saturada)]) :-
     clausulas_texto("¬((p → q) → (q → p))", Cs),
     saturar(Cs, _, R).
 
+test(clasificar, [true(Cs == [tautologia, contradiccion, contingente])]) :-
+    maplist(clasificar, ["p ∨ ¬p", "p ∧ ¬p", "p → q"], Cs).
+
+% definir/5 da un átomo d(N) a cada conjunción y disyunción.
+test(definir, [true(N-L-Cs == 2-(+d(0))-[ [-d(0), +d(1), -c],
+                                         [-d(1), +a],
+                                         [-d(1), +b]
+                                       ])]) :-
+    definir(o(y(at(a), at(b)), no(at(c))), 0, N, L, Cs).
+
+test(definir_literal, [true(N-L-Cs == 3-(-a)-[])]) :-
+    definir(no(at(a)), 3, N, L, Cs).
+
+% La variable existencial depende de la universal que la rodea.
+test(skolemizar_fnn, [true(N-H =@= 1-todo(X, at(p(X, sk0(X)))))]) :-
+    skolemizar_fnn(todo(X0, existe(Y, at(p(X0, Y)))), [], 0, N, H).
+
+test(skolemizar_fnn_afuera, [true(H =@= y(at(p(sk0)), todo(X, at(q(X)))))]) :-
+    skolemizar_fnn(y(existe(Y, at(p(Y))), todo(X0, at(q(X0)))), [], 0, _, H).
+
+% Con los dos padres unitarios, la derivación aparece una sola vez.
+test(derivar_unitaria, all(P == [[r(1, 2, [])]])) :-
+    length(P, 1),
+    derivar_unitaria(P, [[+p], [-p]]).
+
+test(derivar_unitaria_sin_unitarias, [fail]) :-
+    length(P, 1),
+    derivar_unitaria(P, [[+p, +q], [-p, -q]]).
+
+test(subsumida, [true]) :-
+    subsumida([+p, +q], [[+q], [+r]]).
+
+test(no_subsumida, [fail]) :-
+    subsumida([+p], [[+p, +q]]).
+
+% El modelo no mínimo de Flach se descarta.
+test(modelo_minimo, all(M == [[amable(maria), estudiante(maria),
+                               gusta(pedro, maria)]])) :-
+    modelo_minimo([ [+gusta(pedro, maria)],
+                    [+estudiante(maria)],
+                    [+docente(X), +amable(Y), -gusta(X, Y), -estudiante(Y)],
+                    [+amable(Y1), -docente(X1), -gusta(X1, Y1)]
+                  ], M).
+
+test(es_modelo, [true]) :-
+    es_modelo([[+p, -q], [+q]], [p, q]).
+
+test(no_es_modelo, [fail]) :-
+    es_modelo([[+p, -q], [+q]], [q]).
+
+test(subconjunto_propio, all(S == [[a], [b], []])) :-
+    subconjunto_propio([a, b], S).
+
+test(subconjunto, all(S == [[a, b], [a], [b], []])) :-
+    subconjunto([a, b], S).
+
+% Quitar una fórmula por vez no alcanza: de [a, b, c] no se puede quitar
+% ninguna sola, pero [c] es un modelo.
+test(de_a_una, all(M == [[c]])) :-
+    modelo_minimo([[+a, +c], [-a, +b], [-b, +a], [+c, -b]], M).
+
 :- end_tests(soluciones).

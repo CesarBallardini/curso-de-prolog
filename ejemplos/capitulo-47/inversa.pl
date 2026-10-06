@@ -104,7 +104,7 @@ mitad_derecha(N, Fila, Derecha) :-
 %   racional y de punto flotante si Tipo es flotante.
 hilbert(N, Tipo, H) :-
     must_be(oneof([racional, flotante]), Tipo),
-    numlist(1, N, Is),
+    findall(K, between(1, N, K), Is),
     maplist(fila_hilbert(Tipo, Is), Is, H).
 
 %!  fila_hilbert(+Tipo:atom, +Js:list(integer), +I:integer, -Fila:list) is det.

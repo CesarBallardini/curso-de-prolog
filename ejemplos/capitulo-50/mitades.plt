@@ -35,4 +35,28 @@ test(como_definicion, [forall(member(N, [1, 2, 4, 8, 16]))]) :-
 test(no_potencia, [error(domain_error(potencia_de_dos, 6))]) :-
     fft_arboles(6, _).
 
+% El primer índice va aparte; el resto se alterna.
+test(evaluar_5, [true(E == a(0) + w(2) * a(2)
+                         + w(1) * (a(1) + w(2) * a(3)))]) :-
+    evaluar([1, 2, 3], 0, 1, 4, E).
+
+test(alternar_vacia, [true(P-I == []-[])]) :-
+    alternar([], P, I).
+
+% Las dos mitades tienen la misma longitud.
+test(alternar_desparejas, [fail]) :-
+    alternar(_, [a], []).
+
+test(potencia_de_dos, [true]) :-
+    potencia_de_dos(8).
+
+test(potencia_cero, [error(type_error(positive_integer, 0))]) :-
+    potencia_de_dos(0).
+
+test(orden_uno, [true(Es == [a(0)])]) :-
+    fft_arboles(1, Es).
+
+test(orden_dos, [true(Es == [a(0) + w(0) * a(1), a(0) + w(1) * a(1)])]) :-
+    fft_arboles(2, Es).
+
 :- end_tests(mitades).

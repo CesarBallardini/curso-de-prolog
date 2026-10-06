@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" width="800" height="400">
+  <title>El recorrido del capítulo: trece paradas, del programa a las listas</title>
+  <rect x="0" y="0" width="800" height="400" fill="#FFFFFF"/>
+  <path d="M 60 80 L 700 80 C 770 80 770 200 700 200 L 110 200 C 40 200 40 320 110 320 L 740 320"
+        fill="none" stroke="#C9D3DE" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+  <polygon points="740,304 772,320 740,336" fill="#C9D3DE"/>
+  <g font-family="Verdana, DejaVu Sans, sans-serif" text-anchor="middle">
+    <g fill="#1F3A5F" stroke="#FFFFFF" stroke-width="3">
+      <circle cx="90" cy="80" r="22"/><circle cx="235" cy="80" r="22"/><circle cx="380" cy="80" r="22"/>
+      <circle cx="525" cy="80" r="22"/><circle cx="670" cy="80" r="22"/>
+      <circle cx="650" cy="200" r="22"/><circle cx="480" cy="200" r="22"/><circle cx="310" cy="200" r="22"/>
+      <circle cx="140" cy="200" r="22"/>
+      <circle cx="160" cy="320" r="22"/><circle cx="330" cy="320" r="22"/><circle cx="500" cy="320" r="22"/>
+      <circle cx="670" cy="320" r="22"/>
+    </g>
+    <g fill="#FFFFFF" font-size="17" font-weight="bold">
+      <text x="90" y="86">1</text><text x="235" y="86">2</text><text x="380" y="86">3</text>
+      <text x="525" y="86">4</text><text x="670" y="86">5</text>
+      <text x="650" y="206">6</text><text x="480" y="206">7</text><text x="310" y="206">8</text>
+      <text x="140" y="206">9</text>
+      <text x="160" y="326">10</text><text x="330" y="326">11</text><text x="500" y="326">12</text>
+      <text x="670" y="326">13</text>
+    </g>
+    <g fill="#1F2933" font-size="20">
+      <text x="90" y="134">Programa</text><text x="235" y="134">Hechos</text><text x="380" y="134">Reglas</text>
+      <text x="525" y="134">Variables</text><text x="670" y="134">Casos</text>
+      <text x="650" y="254">Términos</text><text x="480" y="254">Igualdad</text><text x="310" y="254">Búsqueda</text>
+      <text x="140" y="254">Recursión</text>
+      <text x="160" y="374">Aritmética</text><text x="330" y="374">Salida</text><text x="500" y="374">Números</text>
+      <text x="670" y="374">Listas</text>
+    </g>
+  </g>
+</svg>

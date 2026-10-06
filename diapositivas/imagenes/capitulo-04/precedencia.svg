@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 350" width="400" height="350">
+  <title>El árbol de 1 + 2 * 3: + en la raíz, con 1 y el subárbol * de 2 y 3; en notación prefija, +(1, *(2, 3))</title>
+  <rect x="0" y="0" width="400" height="350" fill="#FFFFFF"/>
+  <text x="200" y="42" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="28" fill="#1F2933" text-anchor="middle">1 + 2 * 3</text>
+  <line x1="200" y1="100" x2="110" y2="190" stroke="#1F3A5F" stroke-width="2"/>
+  <line x1="200" y1="100" x2="290" y2="190" stroke="#1F3A5F" stroke-width="2"/>
+  <line x1="290" y1="190" x2="230" y2="280" stroke="#1F3A5F" stroke-width="2"/>
+  <line x1="290" y1="190" x2="350" y2="280" stroke="#1F3A5F" stroke-width="2"/>
+  <circle cx="200" cy="100" r="22" fill="#1F3A5F" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="200" y="108.4" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#FFFFFF" text-anchor="middle" font-weight="bold">+</text>
+  <rect x="90" y="172" width="40" height="36" rx="18" fill="#E3F2F1" stroke="#2B7A78" stroke-width="2"/>
+  <text x="110" y="198.4" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#1F2933" text-anchor="middle">1</text>
+  <circle cx="290" cy="190" r="22" fill="#1F3A5F" stroke="#1F3A5F" stroke-width="2"/>
+  <text x="290" y="198.4" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#FFFFFF" text-anchor="middle" font-weight="bold">*</text>
+  <rect x="210" y="262" width="40" height="36" rx="18" fill="#E3F2F1" stroke="#2B7A78" stroke-width="2"/>
+  <text x="230" y="288.4" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#1F2933" text-anchor="middle">2</text>
+  <rect x="330" y="262" width="40" height="36" rx="18" fill="#E3F2F1" stroke="#2B7A78" stroke-width="2"/>
+  <text x="350" y="288.4" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#1F2933" text-anchor="middle">3</text>
+  <text x="200" y="336" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="24" fill="#1F3A5F" text-anchor="middle" font-weight="bold">+(1, *(2, 3))</text>
+</svg>

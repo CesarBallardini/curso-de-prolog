@@ -81,7 +81,7 @@ anticipado(Cr, Base, Rival) :-
 ```
 
 La anticipación es un elemento más de la lista del criterio, como indica
-el [Patrón 61](../patrones.md#61-superioridad-como-parametro): la base no cambia, y la misma consulta se hace con
+el [Patrón 64](../patrones.md#64-superioridad-como-parametro): la base no cambia, y la misma consulta se hace con
 los dos criterios. `medir/3` cuenta las inferencias de una respuesta, después
 de una primera llamada que carga lo necesario:
 

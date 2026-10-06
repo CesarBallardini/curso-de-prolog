@@ -22,6 +22,8 @@ test(aplanar_igual, true(L1 == L2)) :-
     aplanar_izq([[a, b], [c], [], [d, e]], L1),
     aplanar_der([[a, b], [c], [], [d, e]], L2).
 
+% maplist/2, que aplica un predicado a cada elemento,
+% se presenta en el capítulo 18.
 test(aplanar_izq_cuesta_mas, true(Izq > 100 * Der)) :-
     length(Listas, 1000),
     maplist(diez, Listas),

@@ -2,6 +2,7 @@
 
 :- begin_tests(soluciones_inscripciones).
 
+% with_output_to/2, que captura la salida, se presenta en el capítulo 27.
 % Ejercicio 10: una prueba por motivo, con la negación explicada.
 test(por_que_bruno_no_cursa_am2,
      true(S == "rechazada(falta(am1)): por v3\n  requisito(am1): \c

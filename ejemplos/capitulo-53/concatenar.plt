@@ -32,4 +32,23 @@ test(contar, all(P == ["conto"])) :-
 test(toque, [fail]) :-
     forma("toqué", _).
 
+% partes/3 en sus dos sentidos: de las partes al análisis y al revés.
+test(partes_analiza, all(A == [verbo("hablar", preterito, 3, singular)])) :-
+    partes(A, "habl", "ó").
+
+test(partes_plural_vocal, all(R-T == ["libro"-"s"])) :-
+    partes(nombre("libro", masculino, plural), R, T).
+
+test(partes_plural_consonante, all(R-T == ["luz"-"es"])) :-
+    partes(nombre("luz", femenino, plural), R, T).
+
+test(partes_femenino, all(R-T == ["roj"-"a"])) :-
+    partes(adjetivo("rojo", femenino, singular), R, T).
+
+test(partes_invariable, all(G == [masculino, femenino])) :-
+    partes(adjetivo("verde", G, plural), "verde", "s").
+
+test(partes_raiz_desconocida, [fail]) :-
+    partes(_, "xyz", "o").
+
 :- end_tests(concatenar).

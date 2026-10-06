@@ -44,4 +44,28 @@ test(sin_reglas, [true(M == [])]) :-
 test(meta_libre, [error(instantiation_error)]) :-
     por_que_no([especificidad], vuela(_), _).
 
+% arbol/3 y arboles/3 no se exportan: se llaman con el módulo.
+test(arbol_estricta, [nondet, true(A == estricta(ave(opus)))]) :-
+    explicaciones:arbol([especificidad], ave(opus), A).
+
+test(arbol_derrotada, [fail]) :-
+    explicaciones:arbol([especificidad], vuela(opus), _).
+
+test(arboles, [nondet, true(As == [estricta(ave(opus)),
+                                   predefinido(1 < 2)])]) :-
+    explicaciones:arboles([especificidad], (ave(opus), 1 < 2), As).
+
+test(arboles_true, [true(As == [])]) :-
+    explicaciones:arboles([], true, As).
+
+% rebatibles//1 recoge las reglas rebatibles de la raíz a las hojas, con
+% repetidos; supuestos/2 los quita.
+test(rebatibles, [true(L == [(p :~ q), (q :~ true), (q :~ true)])]) :-
+    A = regla((p :~ q), [regla((q :~ true), []), regla((q :~ true), [])]),
+    phrase(explicaciones:rebatibles(A), L).
+
+test(lista_rebatibles, [true(L == [])]) :-
+    phrase(explicaciones:lista_rebatibles([estricta(a), predefinido(b)]),
+           L).
+
 :- end_tests(explicar).

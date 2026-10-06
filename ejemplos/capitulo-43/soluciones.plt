@@ -16,4 +16,10 @@ test(cuadratico, all(S == [[x = 3.0, y = 2.0], [x = 2.0, y = 3.0]])) :-
 test(otro_orden, [fail]) :-
     sistema(x * y = 6, x + y = 5, x, y, _).
 
+test(reemplazo, true(T == y + 1)) :-
+    soluciones:reemplazo(x, y + 1, x, T).
+
+test(reemplazo_otro, [fail]) :-
+    soluciones:reemplazo(x, y + 1, z, _).
+
 :- end_tests(soluciones).

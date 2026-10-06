@@ -473,7 +473,7 @@ con los primeros, y `findall/3` para entregar la lista.
 El Buscaminas es el ejemplo de la parte II en el que se aplican los patrones de
 varios capítulos, y su versión completa está en el [capítulo 31](../capitulo-31-ejecutables-y-distribucion/index.md). El número que
 el juego muestra en una celda es la cantidad de minas en sus ocho vecinas: una
-cuenta sobre las respuestas de un objetivo, el Patrón 12.
+cuenta sobre las respuestas de un objetivo, el [Patrón 12](../patrones.md#12-contar-y-agregar-sin-recorrer).
 
 <!-- ejemplo: capitulo-17/buscaminas.pl predicado: tamanio/2 mina/2 vecina/4 minas_alrededor/3 consulta: minas_alrededor(2, 2, N). -->
 ```prolog

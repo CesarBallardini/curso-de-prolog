@@ -560,3 +560,150 @@ plano original es una recta en las nuevas coordenadas. Los pesos
 cuatro puntos interiores y deja fuera los cinco exteriores. Para la o
 exclusiva el rasgo no sirve: con entradas 0 y 1, el cuadrado de cada
 entrada es la misma entrada, y los ejemplos no cambian.
+
+## Ejercicio 13
+
+<!-- ejemplo: capitulo-69/soluciones_vectores.pl predicado: suma_rec/2 suma_acc/2 suma_acc/3 costos_suma/2 con_pila/4 -->
+```prolog
+%!  suma_rec(+Xs:list(number), -S:number) is det.
+%
+%   S es la suma de los elementos de Xs, por recursión simple.
+suma_rec([], 0).
+suma_rec([X|Xs], S) :-
+    suma_rec(Xs, S0),
+    S is S0 + X.
+
+%!  suma_acc(+Xs:list(number), -S:number) is det.
+%
+%   Como suma_rec/2, con un acumulador.
+suma_acc(Xs, S) :-
+    suma_acc(Xs, 0, S).
+
+%!  suma_acc(+Xs:list(number), +S0:number, -S:number) is det.
+%
+%   S es S0 más la suma de los elementos de Xs.
+suma_acc([], S, S).
+suma_acc([X|Xs], S0, S) :-
+    S1 is S0 + X,
+    suma_acc(Xs, S1, S).
+
+%!  costos_suma(+N:integer, -Costos:list(pair)) is det.
+%
+%   Costos son las inferencias que usa sumar los números de 1 a N con
+%   cada forma: rec-I y acc-I.
+costos_suma(N, [rec-I1, acc-I2]) :-
+    numlist(1, N, Xs),
+    inferencias(suma_rec(Xs, _), I1),
+    inferencias(suma_acc(Xs, _), I2).
+
+%!  con_pila(+Limite:integer, +Suma:atom, +N:integer, -Resultado) is det.
+%
+%   Resultado es suma(S) si el predicado Suma, suma_rec o suma_acc, suma
+%   los números de 1 a N con un límite de Limite bytes para las pilas, y
+%   sin_pila si las pilas se agotan. El límite anterior se restituye.
+con_pila(Limite, Suma, N, Resultado) :-
+    numlist(1, N, Xs),
+    current_prolog_flag(stack_limit, Anterior),
+    setup_call_cleanup(
+        set_prolog_flag(stack_limit, Limite),
+        catch(( call(Suma, Xs, S),
+                Resultado = suma(S) ),
+              error(resource_error(_), _),
+              Resultado = sin_pila),
+        set_prolog_flag(stack_limit, Anterior)).
+```
+
+```prolog
+?- costos_suma(1000, Costos).
+Costos = [rec-2003, acc-2004].
+
+?- con_pila(12000000, suma_rec, 200000, R).
+R = sin_pila.
+
+?- con_pila(12000000, suma_acc, 200000, R).
+R = suma(20000100000).
+```
+
+Las dos formas usan las mismas inferencias: una llamada y una suma por
+elemento. La diferencia está en la memoria. En `suma_rec/2` la suma
+`S is S0 + X` va después de la llamada recursiva, que no es la última
+meta del cuerpo: cada llamada conserva su marco hasta que la siguiente
+retorna, y con 200 000 elementos los marcos agotan las pilas. En
+`suma_acc/3` la llamada recursiva es la última meta, la optimización de
+la última llamada reutiliza el marco, y la suma corre en espacio
+constante. `escalar_rec/3` no tiene ese problema porque su resultado es
+una lista: la celda `[Y|Ys]` se construye en la cabeza, con su resto
+libre, antes de la llamada recursiva, que es la última meta. El
+acumulador conviene cuando el resultado es un valor que se calcula al
+retorno de la llamada recursiva; cuando es una lista, la recursión simple
+ya es de cola y el acumulador solo agrega la inversión.
+
+`con_pila/4` cambia el indicador `stack_limit` y lo restituye con
+`setup_call_cleanup/3`, aunque la suma termine con un error de recursos.
+
+## Ejercicio 14
+
+<!-- ejemplo: capitulo-69/soluciones_vectores.pl predicado: esquema_general/5 entrenar_general/5 minimo/2 resto_vacio/1 menor/2 avanzar/2 -->
+```prolog
+%!  esquema_general(:Parada, :Extraer, :Transformar, +Argumento,
+%!                  -Resultado) is det.
+%
+%   Transforma Argumento con call(Transformar, A0, A) hasta que se cumple
+%   call(Parada, A), y da Resultado con call(Extraer, A, Resultado).
+esquema_general(Parada, Extraer, Transformar, Arg, Res) :-
+    (   call(Parada, Arg)
+    ->  call(Extraer, Arg, Res)
+    ;   call(Transformar, Arg, Arg1),
+        esquema_general(Parada, Extraer, Transformar, Arg1, Res)
+    ).
+
+%!  entrenar_general(+Nombre:atom, +Tasa:number, +Pesos0:list,
+%!                   -Pesos:list, -Pasos:integer) is det.
+%
+%   Como entrenar_esquema/5, con esquema_general/5 y las tres partes de
+%   vectores.pl.
+entrenar_general(Nombre, Tasa, Pesos0, Pesos, Pasos) :-
+    datos(Nombre, Ejemplos),
+    esquema_general(parada, extraer, transformar,
+                    en(Tasa, Ejemplos, Pesos0, 0), sal(Pesos, Pasos)).
+
+%!  minimo(+Xs:list(number), -M:number) is semidet.
+%
+%   M es el menor elemento de Xs, que no es vacía, con esquema_general/5:
+%   el argumento es el par Resto-Menor. Falla si Xs es vacía.
+minimo([X|Xs], M) :-
+    esquema_general(resto_vacio, menor, avanzar, Xs-X, M).
+
+%!  resto_vacio(+Argumento) is semidet.
+%
+%   No quedan elementos por examinar.
+resto_vacio([]-_).
+
+%!  menor(+Argumento, -M:number) is det.
+%
+%   M es el menor de Argumento.
+menor(_-M, M).
+
+%!  avanzar(+Argumento0, -Argumento) is det.
+%
+%   Argumento examina el primer elemento restante de Argumento0.
+avanzar([X|Xs]-M0, Xs-M) :-
+    M is min(M0, X).
+```
+
+```prolog
+?- entrenar_general(puntos, 0.25, [0.13, -0.51, -0.35], Pesos, Pasos).
+Pesos = [-39.870000000000005, 3.0180000000000176, 4.193500000000006],
+Pasos = 801.
+
+?- minimo([7, -3, 2, 5], M).
+M = -3.
+```
+
+`esquema_general/5` es `esquema/2` con las tres partes como metas. El
+entrenamiento usa las de `vectores.pl` sin cambios. El mínimo es el
+ejemplo con el que Csenki presenta los acumuladores: el argumento es el
+par formado por los elementos que faltan examinar y el menor de los ya
+examinados, que empieza con el primero de la lista; la parada es que no
+quede ninguno, y la transformación examina el siguiente. Con una lista
+vacía no hay primer elemento con el que empezar, y `minimo/2` falla.

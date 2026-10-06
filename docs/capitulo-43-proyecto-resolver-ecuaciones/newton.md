@@ -18,7 +18,8 @@ corta el eje,
 
 $$x_{n+1} = x_n - \frac{f(x_n)}{f'(x_n)}$$
 
-hasta que dos valores sucesivos quedan cerca. La derivada la da `derivar/3`
+hasta que dos valores sucesivos quedan cerca; *Numerical Recipes*, de Press,
+Teukolsky, Vetterling y Flannery, lo presenta en el apartado 9.4. La derivada la da `derivar/3`
 del [capítulo 32](../capitulo-32-inspeccion-de-terminos/index.md), una sola vez, y los valores `evaluar/3`, en cada paso:
 
 <!-- ejemplo: capitulo-43/ecuaciones.pl predicado: newton/6 valor/4 cerca/2 -->

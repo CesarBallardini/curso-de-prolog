@@ -747,6 +747,7 @@ o con `recursion.pl` cargado.
 | `insertar/1`, `borrar/1`, `poner_nota/3` | `INSERT`, `DELETE` y `UPDATE` que respetan el esquema |
 | `superior/2`, `destino/2`, `tarifa/3`, `iteraciones/2` | la recursión con regla, con tabla, con tabla y mínimo, y paso a paso como SQL |
 | `base.pl`, `sqlite.pl` | la base como módulo, y su copia en SQLite con ODBC |
+| `nb_current/2` | el valor de una variable global, si existe; en las pruebas |
 
 ## Temas que se retoman
 

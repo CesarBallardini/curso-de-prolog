@@ -42,4 +42,31 @@ test(me_dice, true(R == "¿Qué piensas de que tu madre te diga que yo no \c
 test(tildes, true(R == "¿Qué te hace pensar que soy una máquina?")) :-
     responder("Eres una máquina", R).
 
+test(palabra_pronombre, true(Q == "te")) :-
+    persona:palabra(me, Q).
+
+test(palabra_verbo_primera, true(Q == "estás")) :-
+    persona:palabra(estoy, Q).
+
+test(palabra_verbo_segunda, true(Q == quiero)) :-
+    persona:palabra(quieres, Q).
+
+test(palabra_sin_cambio, true(Q == mesa)) :-
+    persona:palabra(mesa, Q).
+
+test(tras_tu_pronombre, nondet) :-
+    persona:tras_tu(me).
+
+test(tras_tu_verbo) :-
+    persona:tras_tu(entiendes).
+
+test(tras_tu_sustantivo, fail) :-
+    persona:tras_tu(mesa).
+
+test(persona_determinante, all(Q == [["tu", trabajo, "te", cansa]])) :-
+    phrase(persona(Q), [mi, trabajo, me, cansa]).
+
+test(persona_vacia, all(Q == [[]])) :-
+    phrase(persona(Q), []).
+
 :- end_tests(persona).

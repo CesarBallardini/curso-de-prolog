@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" width="960" height="480">
+  <title>esta_en(luis, [ana, luis, eva]) paso a paso: la primera cláusula falla con ana, la segunda sigue con el resto, y en el resto la primera cláusula tiene éxito</title>
+  <rect x="0" y="0" width="960" height="480" fill="#FFFFFF"/>
+  <rect x="40.0" y="60.0" width="440.0" height="56.0" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="3"/>
+  <text x="260.0" y="96.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">esta_en(luis, [ana, luis, eva])</text>
+  <rect x="40.0" y="230.0" width="440.0" height="56.0" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="3"/>
+  <text x="260.0" y="266.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="middle" xml:space="preserve">esta_en(luis, [luis, eva])</text>
+  <line x1="260.0" y1="118.0" x2="260.0" y2="216.0" stroke="#1F3A5F" stroke-width="3"/>
+  <polygon points="260.0,228.0 266.6,216.0 253.4,216.0" fill="#1F3A5F"/>
+  <circle cx="536" cy="78" r="16" fill="#B3261E"/>
+  <path d="M 528.8 70.8 L 543.2 85.2 M 543.2 70.8 L 528.8 85.2" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="564.0" y="86.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">cláusula 1: luis no es ana</text>
+  <circle cx="536" cy="128" r="16" fill="#1F3A5F"/>
+  <text x="536.0" y="135.6" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#FFFFFF" text-anchor="middle" xml:space="preserve" font-weight="bold">2</text>
+  <text x="564.0" y="136.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">cláusula 2: sigue con el resto</text>
+  <text x="276.0" y="172.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">una lista más corta</text>
+  <circle cx="536" cy="258" r="16" fill="#2E7D32"/>
+  <path d="M 528.0 258.8888888888889 L 534.2222222222222 265.1111111111111 L 544.8888888888889 250.88888888888889" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="564.0" y="266.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">cláusula 1: luis es el primero</text>
+  <rect x="40.0" y="360.0" width="880.0" height="90.0" rx="10" fill="#E3F1E4" stroke="#2E7D32" stroke-width="3"/>
+  <text x="70.0" y="400.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">esta_en(X, [X|_]).</text>
+  <text x="70.0" y="432.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#52606D" text-anchor="start" xml:space="preserve">la misma variable dos veces: la unificación impone la igualdad</text>
+</svg>

@@ -16,4 +16,11 @@ test(mismo_plan, [true(P1 == P2)]) :-
     once(planificar(pinza, sussman, [sobre(b, a)], 6, P1)),
     once(planificar(pinza2, sussman, [sobre(b, a)], 6, P2)).
 
+test(imposible, [true(N == 5)]) :-
+    aggregate_all(count, imposible(_), N).
+
+test(imposible_dos_lugares, [nondet]) :-
+    imposible([sobre(X, Y), sobre(X, Z), distinto(Y, Z)]),
+    var(X), var(Y), var(Z).
+
 :- end_tests(soluciones_pinza).

@@ -93,4 +93,10 @@ test(limite, [true(F == final(limite, -2, [tomar, tomar]))]) :-
     mundo(figura_7_2, M),
     simular(M, guion, [tomar, tomar, tomar], 2, F).
 
+test(percibe_hedor) :-
+    grilla:percibe(hedor, 4, 1-2, [], 1-3, 4-4, no).
+
+test(percibe_sin_brisa, [fail]) :-
+    grilla:percibe(brisa, 4, 1-2, [3-1], 1-3, 4-4, no).
+
 :- end_tests(grilla).

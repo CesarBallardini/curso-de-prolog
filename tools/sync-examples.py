@@ -28,6 +28,9 @@ as a comment. It is for code shown in order to criticise it:
     ./tools/sync-examples.py             report where text and files differ
     ./tools/sync-examples.py --write     rewrite the blocks from the files
 
+The slides of each chapter, `diapositivas/capitulo-NN.md`, carry the same
+markers and are processed with the pages of `docs/`.
+
 Exits 1 when they differ (with --write, when something could not be resolved).
 """
 
@@ -100,7 +103,7 @@ def process(path, write):
             state += f', {rewritten} rewritten'
         if trouble:
             state += f', {len(trouble)} with trouble'
-        where = path.relative_to(examples.DOCS).as_posix()
+        where = path.relative_to(examples.DOCS if path.is_relative_to(examples.DOCS) else examples.ROOT).as_posix()
         print(f'{where:<40} {state}')
     for problem in trouble:
         print(f'    {problem}')
@@ -117,7 +120,7 @@ def wanted(argv):
     """
     named = [Path(a).resolve() for a in argv if not a.startswith('-')]
     if not named:
-        return sorted(examples.DOCS.rglob('*.md'))
+        return sorted(examples.DOCS.rglob('*.md')) + sorted(examples.SLIDES.glob('capitulo-*.md'))
     pages = []
     for path in named:
         if path.is_dir():

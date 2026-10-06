@@ -49,6 +49,7 @@ test(arbol_de_la_cebra,
     caso(2, Obs),
     prueba(cebra, Obs, T).
 
+% with_output_to/2, que captura la salida, se presenta en el capítulo 27.
 test(como_avestruz,
      true(S == "avestruz: por r12\n  ave: por r3\n    tiene_plumas: \c
                 observado\n  no_vuela: observado\n  peso(90): observado\n  \c

@@ -220,41 +220,47 @@ baja(s(N), Cero) :-
 
 ## 11
 
-a. ```prolog
-   ?- suma(s(cero), s(s(cero)), R).
-   R = s(s(s(cero))).
-   ```
+**a.**
 
-   El caso recursivo quita un `s` del primer argumento y agrega uno al tercero,
-   hasta que el primero es `cero`; ahí el caso base establece que el resultado es
-   el segundo argumento. Los `s` que se fueron agregando quedan por encima.
+```prolog
+?- suma(s(cero), s(s(cero)), R).
+R = s(s(s(cero))).
+```
 
-b. ```prolog
-   ?- suma(s(cero), B, s(s(s(cero)))).
-   B = s(s(cero)).
-   ```
+El caso recursivo quita un `s` del primer argumento y agrega uno al tercero,
+hasta que el primero es `cero`; ahí el caso base establece que el resultado es
+el segundo argumento. Los `s` que se fueron agregando quedan por encima.
 
-   El mismo recorrido, con los datos en otras posiciones. La cabeza
-   `suma(s(A), B, s(C))` exige que el primer y el tercer argumento tengan un
-   `s`, y los quita de los dos a la vez; cuando el primero llega a `cero`, el caso
-   base unifica `B` con lo que quedó del tercero. Nada en el programa distingue
-   "entrada" de "salida": la unificación trabaja en las dos direcciones.
+**b.**
 
-c. ```prolog
-   ?- suma(A, B, s(s(cero))).
-   A = cero,
-   B = s(s(cero)) ;
-   A = s(cero),
-   B = s(cero) ;
-   A = s(s(cero)),
-   B = cero ;
-   false.
-   ```
+```prolog
+?- suma(s(cero), B, s(s(s(cero)))).
+B = s(s(cero)).
+```
 
-   Tres respuestas: todas las maneras de partir el dos en dos sumandos. Termina
-   porque el tercer argumento **está instanciado** y cada llamada le quita un
-   `s`: la cantidad de llamadas posibles es finita, y está acotada por esa
-   cantidad de `s`.
+El mismo recorrido, con los datos en otras posiciones. La cabeza
+`suma(s(A), B, s(C))` exige que el primer y el tercer argumento tengan un
+`s`, y los quita de los dos a la vez; cuando el primero llega a `cero`, el caso
+base unifica `B` con lo que quedó del tercero. Nada en el programa distingue
+"entrada" de "salida": la unificación trabaja en las dos direcciones.
+
+**c.**
+
+```prolog
+?- suma(A, B, s(s(cero))).
+A = cero,
+B = s(s(cero)) ;
+A = s(cero),
+B = s(cero) ;
+A = s(s(cero)),
+B = cero ;
+false.
+```
+
+Tres respuestas: todas las maneras de partir el dos en dos sumandos. Termina
+porque el tercer argumento **está instanciado** y cada llamada le quita un
+`s`: la cantidad de llamadas posibles es finita, y está acotada por esa
+cantidad de `s`.
 
 ## 12
 

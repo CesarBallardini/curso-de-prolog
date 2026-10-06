@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 440" width="800" height="440">
+  <title>desarma, llamada por llamada: cada una quita una babushka_hueca, hasta desarma(babushka_maciza), que resuelve el caso base</title>
+  <rect x="0" y="0" width="800" height="440" fill="#FFFFFF"/>
+  <rect x="28.0" y="23.0" width="84" height="64" rx="8" fill="#FBE9E7" stroke="#C8342B" stroke-width="2"/>
+  <rect x="37.0" y="30.0" width="66" height="50" rx="8" fill="#FFFFFF" stroke="#C8342B" stroke-width="2"/>
+  <rect x="46.0" y="37.0" width="48" height="36" rx="8" fill="#FBE9E7" stroke="#C8342B" stroke-width="2"/>
+  <rect x="55.0" y="44.0" width="30" height="22" rx="8" fill="#C8342B" stroke="#C8342B" stroke-width="2"/>
+  <line x1="70" y1="89" x2="70" y2="99" stroke="#9AA5B1" stroke-width="3"/>
+  <polygon points="62,97 78,97 70,111" fill="#9AA5B1"/>
+  <text x="140" y="53" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="15" fill="#1F2933">desarma(babushka_hueca(babushka_hueca(babushka_hueca(babushka_maciza))))</text>
+  <text x="140" y="79" font-family="Verdana, DejaVu Sans, sans-serif" font-size="14" fill="#D9822B" font-weight="bold">caso recursivo: se quita la muñeca exterior</text>
+  <rect x="28.0" y="113.0" width="84" height="64" rx="8" fill="#FBE9E7" stroke="#C8342B" stroke-width="2"/>
+  <rect x="37.0" y="120.0" width="66" height="50" rx="8" fill="#FFFFFF" stroke="#C8342B" stroke-width="2"/>
+  <rect x="46.0" y="127.0" width="48" height="36" rx="8" fill="#C8342B" stroke="#C8342B" stroke-width="2"/>
+  <line x1="70" y1="179" x2="70" y2="189" stroke="#9AA5B1" stroke-width="3"/>
+  <polygon points="62,187 78,187 70,201" fill="#9AA5B1"/>
+  <text x="140" y="143" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="15" fill="#1F2933">desarma(babushka_hueca(babushka_hueca(babushka_maciza)))</text>
+  <text x="140" y="169" font-family="Verdana, DejaVu Sans, sans-serif" font-size="14" fill="#D9822B" font-weight="bold">caso recursivo: se quita la muñeca exterior</text>
+  <rect x="28.0" y="203.0" width="84" height="64" rx="8" fill="#FBE9E7" stroke="#C8342B" stroke-width="2"/>
+  <rect x="37.0" y="210.0" width="66" height="50" rx="8" fill="#C8342B" stroke="#C8342B" stroke-width="2"/>
+  <line x1="70" y1="269" x2="70" y2="279" stroke="#9AA5B1" stroke-width="3"/>
+  <polygon points="62,277 78,277 70,291" fill="#9AA5B1"/>
+  <text x="140" y="233" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="15" fill="#1F2933">desarma(babushka_hueca(babushka_maciza))</text>
+  <text x="140" y="259" font-family="Verdana, DejaVu Sans, sans-serif" font-size="14" fill="#D9822B" font-weight="bold">caso recursivo: se quita la muñeca exterior</text>
+  <rect x="28.0" y="293.0" width="84" height="64" rx="8" fill="#C8342B" stroke="#C8342B" stroke-width="2"/>
+  <text x="140" y="323" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="15" fill="#1F2933">desarma(babushka_maciza)</text>
+  <text x="140" y="349" font-family="Verdana, DejaVu Sans, sans-serif" font-size="14" fill="#2E7D32" font-weight="bold">caso base: la muñeca maciza no se abre</text>
+  <circle cx="155" cy="412" r="15" fill="#2E7D32"/>
+  <path d="M 147 413 L 153 419 L 164 405" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="185" y="419" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="22" fill="#2E7D32" font-weight="bold">true.</text>
+</svg>

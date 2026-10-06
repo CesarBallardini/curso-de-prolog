@@ -84,6 +84,10 @@ Dos decisiones de la versión 3 son parte de estas cifras. Un nodo cuyo padre
 no tiene tokens no se activa por la derecha, porque no tiene con qué unir el
 hecho: sin ese control, cargar el catálogo costaría una activación por cada
 objeto y cada uno de los doce nodos que leen `objeto/3` ([ejercicio 7](index.md#ejercicios)).
+Doorenbos llama a esas activaciones inútiles *null right activations* y
+dedica un capítulo de su tesis, «Adding Right Unlinking to Rete», a
+evitarlas desconectando el nodo de su memoria alfa mientras el padre está
+vacío; el control de la versión 3 obtiene el mismo efecto con una consulta.
 Y las memorias están indexadas, alfa por el primer argumento y beta por los
 sellos: con listas, quitar un token era recorrer la memoria, y la red crecía
 con el cuadrado del catálogo.
@@ -98,7 +102,11 @@ unión, y entonces la memoria alfa guarda solo los procesadores. Una prueba
 aparece en las condiciones anteriores aparece también en `F`, que el hecho
 liga; si no, `G` se ejecutaría con una variable libre que en la regla ya
 estaba ligada. Antes de agrupar, cada `{A, B}` se separa en `{A}` y `{B}`,
-para mover la parte que se puede mover.
+para mover la parte que se puede mover. Es la división del artículo de
+Forgy entre rasgos internos de un elemento, que prueban los nodos de una
+entrada, y rasgos entre elementos, que prueban los de dos entradas; en
+Merritt, cuya red indexa por el patrón completo, las pruebas quedan en
+nodos propios sin memoria.
 
 <!-- ejemplo: capitulo-64/pruebas.pl predicado: tomar_pruebas/5 solo_del_hecho/3 -->
 ```prolog
