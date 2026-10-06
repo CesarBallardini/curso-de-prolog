@@ -195,13 +195,24 @@ def candidates(item: Transcript) -> list[list[Path]]:
 #  depends on where the reader is sitting, not on the example file.
 ENVIRONMENT = re.compile(r'^\s*(consult|halt|listing|trace|notrace|edit|make)\b')
 
+#  Loading a module by a bare file name (`use_module(sqlite)`) depends on the
+#  reader's working directory; loading from a library (`library(pldoc)`) does not.
+LOCAL_LOAD = re.compile(r'^\s*(use_module|ensure_loaded)\(\s*[a-z]\w*\s*[,)]')
+
+#  A `$Name` reuses the binding of an earlier answer in the same toplevel session
+#  (chapter 42 reuses an ODBC connection as `$C`); each query is probed on its own,
+#  so such a query cannot be reproduced.
+SESSION_VARIABLE = re.compile(r'\$[A-Z_]')
+
 
 def ask(swipl: str, item: Transcript) -> tuple[str, str]:
     """Run one query against each candidate context until one of them defines it."""
     if item.staged:
         return 'skip', 'shows the state before the program is loaded'
-    if ENVIRONMENT.match(item.query):
+    if ENVIRONMENT.match(item.query) or LOCAL_LOAD.match(item.query):
         return 'skip', 'acts on the session, not on the program'
+    if SESSION_VARIABLE.search(item.query):
+        return 'skip', 'reuses a binding from an earlier query of the session'
     outcome, detail = 'skip', 'no example file for this chapter'
     for files in candidates(item) or [[]]:
         outcome, detail = run_once(swipl, item, files)

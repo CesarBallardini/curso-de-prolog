@@ -40,8 +40,9 @@ navegador**: cada bloque de código incluye un enlace "▶ Abrir en SWISH".
   hasta sistemas expertos, planificación, juegos, procesamiento del lenguaje y
   un mini-SQL; el último responde preguntas en castellano sobre los datos del
   proyecto *Inscripciones*.
-- **[Apéndice B — Los capítulos en PDF](pdf.md)**. Cada capítulo y sus
-  soluciones, en PDF, para leer o imprimir.
+- **[Apéndice B — Los capítulos en PDF y las diapositivas](pdf.md)**. Cada
+  capítulo y sus soluciones, en PDF, para leer o imprimir, y las diapositivas
+  de los capítulos que las tienen.
 
 Cada capítulo tiene la misma estructura: objetivos, desarrollo con ejemplos
 ejecutables, actividades intercaladas, ejercicios con nivel de dificultad,

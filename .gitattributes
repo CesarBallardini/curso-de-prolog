@@ -6,3 +6,8 @@
 # The PDFs under books/ are in .gitignore, but should one get in with
 # `git add -f`, let it get in as a binary.
 *.pdf binary
+
+# The slide decks (diapositivas/) are versioned and published with the site:
+# never let a line-ending conversion touch them.
+*.odp binary
+*.pptx binary

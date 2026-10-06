@@ -1,10 +1,13 @@
-# Apéndice B — Los capítulos en PDF
+# Apéndice B — Los capítulos en PDF y las diapositivas
 
 Cada capítulo y cada página de soluciones se publican también en PDF, con
 el mismo contenido que las páginas del sitio y los mismos enlaces: los de
 "▶ Abrir en SWISH" y las referencias a otros capítulos siguen funcionando
 desde el PDF. Los enlaces de esta página se abren en una solapa nueva del
 navegador.
+
+Al final, la sección [Diapositivas](#diapositivas) reúne las presentaciones
+para clase de los primeros capítulos.
 
 ## Parte I — Introducción
 
@@ -112,3 +115,20 @@ navegador.
 | Capítulo 85 — Proyecto: un motor Datalog | [PDF](capitulo-85-proyecto-motor-datalog/capitulo-85-proyecto-motor-datalog.pdf){ target=_blank } | [PDF](capitulo-85-proyecto-motor-datalog/capitulo-85-proyecto-motor-datalog-soluciones.pdf){ target=_blank } |
 | Capítulo 86 — Proyecto: un mini-SQL en Prolog | [PDF](capitulo-86-proyecto-mini-sql-prolog/capitulo-86-proyecto-mini-sql-prolog.pdf){ target=_blank } | [PDF](capitulo-86-proyecto-mini-sql-prolog/capitulo-86-proyecto-mini-sql-prolog-soluciones.pdf){ target=_blank } |
 | Capítulo 87 — Proyecto: preguntas en castellano | [PDF](capitulo-87-proyecto-preguntas-en-castellano/capitulo-87-proyecto-preguntas-en-castellano.pdf){ target=_blank } | [PDF](capitulo-87-proyecto-preguntas-en-castellano/capitulo-87-proyecto-preguntas-en-castellano-soluciones.pdf){ target=_blank } |
+
+## Diapositivas
+
+Las presentaciones para dar los capítulos en clase, cada una con las notas
+del expositor. El archivo ODP se abre y se edita con LibreOffice Impress; el
+PDF es la misma presentación para verla o imprimirla. Hay diapositivas de los
+capítulos 1 a 7.
+
+| | Presentación (LibreOffice Impress) | PDF |
+|---|---|---|
+| Capítulo 1 — La primera hora | [ODP](diapositivas/capitulo-01.odp) | [PDF](diapositivas/capitulo-01.pdf){ target=_blank } |
+| Capítulo 2 — Hechos, consultas y variables | [ODP](diapositivas/capitulo-02.odp) | [PDF](diapositivas/capitulo-02.pdf){ target=_blank } |
+| Capítulo 3 — Reglas y conjunciones | [ODP](diapositivas/capitulo-03.odp) | [PDF](diapositivas/capitulo-03.pdf){ target=_blank } |
+| Capítulo 4 — Términos y unificación | [ODP](diapositivas/capitulo-04.odp) | [PDF](diapositivas/capitulo-04.pdf){ target=_blank } |
+| Capítulo 5 — Cómo responde Prolog | [ODP](diapositivas/capitulo-05.odp) | [PDF](diapositivas/capitulo-05.pdf){ target=_blank } |
+| Capítulo 6 — Recursión | [ODP](diapositivas/capitulo-06.odp) | [PDF](diapositivas/capitulo-06.pdf){ target=_blank } |
+| Capítulo 7 — Listas | [ODP](diapositivas/capitulo-07.odp) | [PDF](diapositivas/capitulo-07.pdf){ target=_blank } |

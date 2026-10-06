@@ -81,6 +81,7 @@ plugins:
 hooks:
   - tools/swish_links.py
   - tools/pdf_links.py
+  - tools/slides_files.py
 
 extra_css:
   - estilos/swish.css
@@ -503,5 +504,5 @@ nav:
       - "Capítulo 87 — Proyecto: preguntas en castellano":
           - capitulo-87-proyecto-preguntas-en-castellano/index.md
           - Soluciones: capitulo-87-proyecto-preguntas-en-castellano/soluciones.md
-  - Apéndice B — Los capítulos en PDF: pdf.md
+  - Apéndice B — Los capítulos en PDF y las diapositivas: pdf.md
   - Licencia: licencia.md
