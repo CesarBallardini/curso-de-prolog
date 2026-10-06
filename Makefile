@@ -28,7 +28,7 @@ PDFS      := $(PDFS_CAP) $(PDFS_SOL)
 SWI_HOME_DIR ?= $(shell swipl --dump-runtime-variables 2>/dev/null | sed -n 's/^PLBASE="\(.*\)";/\1/p')
 
 .PHONY: help install browser test swish part-1 transcripts math time sync sql appendix windows \
-        docs docs-serve pdf pldoc clean-pldoc slides slides-pdf video lint format check clean clean-pdf
+        docs docs-serve pdf pldoc clean-pldoc slides slides-pdf slides-check video lint format check clean clean-pdf
 
 help: ## List the available targets
 	@echo "Curso de Prolog"
@@ -225,6 +225,10 @@ diapositivas/%.odp: diapositivas/%.md diapositivas/plantilla.pptx tools/slides-b
 SLIDES_PDF := $(SLIDES_MD:.md=.pdf)
 
 slides-pdf: $(SLIDES_PDF) ## Export every deck to PDF (diapositivas/capitulo-NN.pdf), rebuilding the .odp first if needed
+
+slides-check: ## Check that each deck's .odp and .pdf match its source, and the decks' transcripts
+	$(UV) tools/check-slides.py $(e)
+	$(UV) tools/check-transcripts.py --slides $(e)
 
 diapositivas/%.pdf: diapositivas/%.odp
 	@tmp=$$(mktemp -d) && \

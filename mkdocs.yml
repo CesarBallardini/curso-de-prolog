@@ -1,5 +1,5 @@
 # Configuration of the web book. Built with `make docs` and published to
-# GitHub Pages by the .github/workflows/deploy-book.yml workflow.
+# GitHub Pages by the .github/workflows/sitio.yml workflow.
 #
 # The three URLs below are the only thing to touch if the repository changes
 # its name or its account.

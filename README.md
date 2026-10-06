@@ -1,5 +1,13 @@
 # Curso de Prolog
 
+[![Ejemplos](https://github.com/CesarBallardini/curso-de-prolog/actions/workflows/ejemplos.yml/badge.svg?branch=main)](https://github.com/CesarBallardini/curso-de-prolog/actions/workflows/ejemplos.yml)
+[![Texto](https://github.com/CesarBallardini/curso-de-prolog/actions/workflows/texto.yml/badge.svg?branch=main)](https://github.com/CesarBallardini/curso-de-prolog/actions/workflows/texto.yml)
+[![PDF y sitio](https://github.com/CesarBallardini/curso-de-prolog/actions/workflows/sitio.yml/badge.svg?branch=main)](https://github.com/CesarBallardini/curso-de-prolog/actions/workflows/sitio.yml)
+[![Diapositivas](https://github.com/CesarBallardini/curso-de-prolog/actions/workflows/diapositivas.yml/badge.svg?branch=main)](https://github.com/CesarBallardini/curso-de-prolog/actions/workflows/diapositivas.yml)
+[![Sitio](https://img.shields.io/badge/sitio-katra.ballardini.com.ar-blue)](https://katra.ballardini.com.ar/curso-de-prolog/)
+[![SWI-Prolog 9.2.9](https://img.shields.io/badge/SWI--Prolog-9.2.9-orange)](https://www.swi-prolog.org/)
+[![Licencia: MIT](https://img.shields.io/badge/licencia-MIT-green)](LICENSE)
+
 Curso de SWI-Prolog en castellano, de estudio autónomo, destinado a estudiantes
 de segundo año sin conocimientos previos de Prolog. Se publica como sitio web
 con MkDocs en **<https://katra.ballardini.com.ar/curso-de-prolog/>**, con un PDF
@@ -341,6 +349,7 @@ make clean-pdf   # borrar los PDF generados
 | `make pldoc` | Regenera las páginas PlDoc de los ejemplos que enlaza el capítulo 14. |
 | `make slides` | Genera las diapositivas de cada capítulo (`diapositivas/capitulo-NN.odp`) desde su fuente Markdown. Requiere Pandoc y LibreOffice; no forma parte de `make check`. |
 | `make slides-pdf` | Exporta cada juego de diapositivas a PDF (`diapositivas/capitulo-NN.pdf`), después de regenerar el `.odp` si hace falta. |
+| `make slides-check` | Verifica que el `.odp` y el `.pdf` de cada mazo coincidan con su fuente (las mismas diapositivas, con los mismos títulos, y una página por diapositiva) y que sus transcripciones coincidan con SWI-Prolog. No requiere Pandoc ni LibreOffice. |
 | `make video` | Genera el video narrado de las diapositivas de cada capítulo (`c=01`: uno solo). Requiere LibreOffice y ffmpeg; no forma parte de `make check`. |
 | **Python** | |
 | `make lint` | Ejecuta ruff (reglas y formato) sobre todo el Python del repositorio, sin modificar nada. |
@@ -380,9 +389,17 @@ make transcripts e=capitulo-07
 ejecutan aparte, cuando se tocó Python, un capítulo con Python o las ventanas.
 Los PDF no se versionan: CI los regenera y los publica junto con el sitio.
 
-En cada pull request, CI instala SWI-Prolog 9, el pack `reif` y Chromium, y
-ejecuta `make pdf`, `make check`, `make lint` y `make appendix`; la publicación
-en GitHub Pages se realiza solo desde `main`.
+La integración continua se divide en cuatro flujos, cada uno con su insignia
+al comienzo de este archivo. Los cuatro corren en cada pull request y en
+`main`, con SWI-Prolog 9 y el pack `reif`; la publicación en GitHub Pages se
+realiza solo desde `main`.
+
+| Flujo | Qué verifica |
+|---|---|
+| **Ejemplos** | `make test`, `make transcripts`, `make swish`, `make lint` y `make appendix` |
+| **Texto** | `make part-1`, `check-part-2 --strict`, `make shown`, `make links`, `make patterns`, `make math`, `make time`, la comparación de bloques y `make docs` |
+| **PDF y sitio** | `make pdf` y el sitio, con los PDF de cada capítulo y las diapositivas; en `main`, la publicación |
+| **Diapositivas** | `make slides-check`; solo cuando cambia algo de lo que dependen los mazos |
 
 ## Flujo de trabajo con git
 

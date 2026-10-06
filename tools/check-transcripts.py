@@ -32,6 +32,7 @@ transcripts that follow without rendering anything:
 
 The slides of a chapter, `diapositivas/capitulo-NN.md`, are checked with it: they
 take the chapter from the file name, and are selected by the same argument.
+`--slides` checks the decks alone, leaving the pages of the text out.
 
 Exits 1 if any transcript disagrees with the interpreter.
 """
@@ -288,9 +289,9 @@ def run_once(swipl: str, item: Transcript, context: list[Path]) -> tuple[str, st
     return 'ok', f'{actual_count} answers'
 
 
-def pages(wanted: list[str]) -> list[Path]:
+def pages(wanted: list[str], slides_only: bool = False) -> list[Path]:
     chosen = []
-    for directory in sorted(examples.DOCS.glob('capitulo-*')):
+    for directory in [] if slides_only else sorted(examples.DOCS.glob('capitulo-*')):
         number = examples.CHAPTER_DIR.match(directory.name)
         if not number:
             continue
@@ -319,7 +320,7 @@ def main() -> int:
     wanted = [name for name in argv if not name.startswith('-')]
 
     bad, skipped, checked = [], [], 0
-    for page in pages(wanted):
+    for page in pages(wanted, slides_only='--slides' in argv):
         for item in transcripts(page):
             outcome, detail = ask(swipl, item)
             where = f'{page.relative_to(examples.ROOT).as_posix()}:{item.line}'
