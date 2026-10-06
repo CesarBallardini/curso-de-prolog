@@ -960,8 +960,12 @@ que cargan los del capítulo, sin modificarlos.
   2009 — capítulo «Informed Search», apartados «The Network Search Problem
   with Costs» (el algoritmo A, la admisibilidad, IDA\* e IDA\*-ε),
   «Project: Robot Navigation», «Project: The Shortest Route in a Maze» y
-  «Project: Moving a Knight». Sin edición en línea de acceso libre
-  verificada. El capítulo toma los tres proyectos; el costo como largo
+  «Project: Moving a Knight».
+  [Página de la editorial, copia de archivo](https://web.archive.org/web/20260216182045/https://bookboon.com/en/applications-of-prolog-ebook).
+  La editorial ya no ofrece el libro;
+  [Google Libros](https://books.google.com/books?id=copBGLD4LKwC) muestra
+  páginas seleccionadas.
+  El capítulo toma los tres proyectos; el costo como largo
   más 0,1 por giro y la observación de que sin él la agenda de A\* crece
   sin límite; la idea de generar las celdas libres antes de buscar; el
   laberinto de la figura 3.10, su costo por corredor y sus heurísticas

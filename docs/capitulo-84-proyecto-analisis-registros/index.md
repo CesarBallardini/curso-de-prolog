@@ -957,11 +957,18 @@ que cargan los del capítulo, sin modificarlos.
   y el límite de 3,5, que el manual atribuye a Boris Iglewicz y David
   Hoaglin, *How to Detect and Handle Outliers*, ASQC Quality Press, 1993,
   sin edición en línea de acceso libre.
-- Attila Csenki, *Prolog Techniques*, Bookboon, 2009, apartado 1.6,
-  «Case Study: The Perceptron Training Algorithm», a través del
+- Attila Csenki, *Prolog Techniques*, Ventus Publishing (Bookboon), 2009
+  — apartado 1.6, «Case Study: The Perceptron Training Algorithm».
+  [Página de la editorial, copia de archivo](https://web.archive.org/web/20220123025207/https://bookboon.com/en/prolog-techniques-applications-of-prolog-ebook?mediaType=ebook).
+  El capítulo lo toma a través del
   [capítulo 69](../capitulo-69-proyecto-perceptron/index.md), cuyo
-  programa la versión 5 carga sin cambios; y *Applications of Prolog*,
-  Bookboon, 2009, capítulo «Text Processing», a través del
+  programa la versión 5 carga sin cambios.
+- Attila Csenki, *Applications of Prolog*, Ventus Publishing (Bookboon),
+  2009 — capítulo «Text Processing».
+  [Página de la editorial, copia de archivo](https://web.archive.org/web/20260216182045/https://bookboon.com/en/applications-of-prolog-ebook).
+  La editorial ya no ofrece el libro;
+  [Google Libros](https://books.google.com/books?id=copBGLD4LKwC) muestra
+  páginas seleccionadas. El capítulo lo toma a través del
   [capítulo 83](../capitulo-83-proyecto-procesamiento-textos/index.md),
   del que viene la forma del paso por línea.
 - W3C, «Logging in W3C httpd», sección «Common Logfile Format»:

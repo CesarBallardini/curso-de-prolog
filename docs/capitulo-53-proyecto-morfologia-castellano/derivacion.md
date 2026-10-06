@@ -176,13 +176,19 @@ léxico y verifican que no cambian.
     aplica sin cambios. Una regla escrita en las dos formas, `z_k` y `z`,
     prueba el compilador: las pruebas verifican que da exactamente los
     mismos patrones. Cuándo se compila es una decisión aparte: `kimmo.pl`
-    compila en cada llamada a `regla/2`, 3 516 veces al generar
+    compila en cada llamada a `regla/2`, 4 263 veces al generar
     «imposible», que cuesta 2 535 280 inferencias; con las reglas
     compiladas al cargar, con `term_expansion/2` como en el
     [Patrón 49](../patrones.md#49-expandir-al-cargar), la misma
-    generación cuesta 1 006 022. Aquel patrón describe el momento de la
-    traducción; este, la separación entre la notación en que se escriben
-    las reglas y la forma en que se ejecutan.
+    generación cuesta 1 006 077. `kimmo_contado.pl` mide la primera
+    forma y `kimmo_al_cargar.pl` la segunda, que carga `kimmo.pl` sin
+    la cláusula de `regla/2` que compila en cada llamada: esa cláusula
+    se probaría, sin éxito, también en las llamadas a las demás reglas.
+    Las pruebas `kimmo_contado:compilaciones`, `kimmo_contado:costo` y
+    `kimmo_al_cargar:costo` verifican las compilaciones con su valor
+    exacto y las inferencias dentro de un 10 %. Aquel patrón describe el
+    momento de la traducción; este, la separación entre la notación en
+    que se escriben las reglas y la forma en que se ejecutan.
 
     **Cuándo no usarlo.** Cuando las reglas son pocas y su forma
     ejecutable se lee tan bien como la notación: el compilador es un

@@ -727,7 +727,7 @@ con la regla `nasal` de la versión 5.
     | C2 | las reglas son datos: listas de patrones de clases de pares, con un functor por clase; agregar una regla es agregar una cláusula de `regla/2`, y ningún otro predicado cambia |
     | C3 | `escribir/2` evalúa cada condición después de la llamada recursiva y por eso funciona en los dos sentidos; los si-entonces-sino de `tildes/2` y `lexica/2` actúan sobre argumentos que llegan instanciados |
     | C5 | las formas irregulares se listan y bloquean la regular; lo regular no se lista |
-    | C7 | 109 pruebas en ocho archivos, y 36 en los de las soluciones; la versión 4 se compara con la 2 en las 328 formas del léxico y en sus análisis, y los defectos de la versión 1 están probados |
+    | C7 | 119 pruebas en diez archivos, y 36 en los de las soluciones; la versión 4 se compara con la 2 en las 328 formas del léxico y en sus análisis, y los defectos de la versión 1 están probados |
 
 ## Ejercicios
 

@@ -30,9 +30,22 @@ test(casa_consistentes) :-
     consistente(P, camino),
     consistente(P, combinada).
 
+% en_banda(Medido, Impreso): Medido difiere de Impreso en menos del 10 %.
+% Las inferencias cambian de una versión de SWI-Prolog a otra.
+en_banda(Medido, Impreso) :-
+    abs(Medido - Impreso) =< 0.1 * Impreso.
+
+% El Patrón 72: verificar combinada/3 en coffman cuesta unos 8,5 millones
+% de inferencias.
 test(coffman_combinada) :-
     ejemplo(coffman, P),
-    consistente(P, combinada).
+    statistics(inferences, I0),
+    consistente(P, combinada),
+    statistics(inferences, I1),
+    en_banda(I1 - I0, 8500000).
+
+test(en_banda, [fail]) :-
+    en_banda(111, 100).
 
 test(salteada_no_consistente, [fail]) :-
     ejemplo(casa, P),
@@ -62,6 +75,16 @@ test(salteada_optima, [true(D-K == 24-52)]) :-
     optimo(P, salteada, C, K),
     valido(P, C),
     duracion(C, D).
+
+% Con camino/3, A* expande en coffman la mitad de los estados.
+test(camino_optima, [true(D-K == 24-26)]) :-
+    ejemplo(coffman, P),
+    optimo(P, camino, C, K),
+    duracion(C, D).
+
+test(salteada_coffman, [true(N == 1017)]) :-
+    ejemplo(coffman, P),
+    inconsistentes(P, salteada, N).
 
 test(recorrer, [true(N == 3)]) :-
     minimo(P),

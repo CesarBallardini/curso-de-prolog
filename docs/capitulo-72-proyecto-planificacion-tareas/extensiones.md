@@ -255,10 +255,12 @@ no cuesta nada y solo aumenta R. En los dos casos la estimación no baja
 más que el costo. La verificación exhaustiva de `camino/3` no es una
 prueba: cubre los proyectos de ejemplo, no todos.
 
-`salteada/3` viola la condición en 1 017 transiciones de `coffman`, y
-A\* con ella sigue dando 24, porque `buscar/5` reabre los estados; expande
-52 estados, el doble de los 26 que expande con `camino/3`, que en cada
-estado estima al menos lo mismo. Una heurística admisible da el óptimo con esta búsqueda;
+`salteada/3` viola la condición en 1 017 transiciones de `coffman`
+(prueba `consistencia:salteada_coffman`), y A\* con ella sigue dando 24,
+porque `buscar/5` reabre los estados; expande 52 estados, el doble de los
+26 que expande con `camino/3`, que en cada estado estima al menos lo mismo
+(pruebas `consistencia:salteada_optima` y `consistencia:camino_optima`).
+Una heurística admisible da el óptimo con esta búsqueda;
 la consistencia asegura además que ningún estado se expande dos veces.
 
 !!! example "Patrón 72 — Verificar una propiedad en todo el espacio de estados de un caso chico"
@@ -286,7 +288,8 @@ la consistencia asegura además que ningún estado se expande dos veces.
     «Cuándo no usarlo»: el generador nombra la transición que falla, y
     una prueba de `consistencia.plt` la muestra. El recorrido cubre
     1 017 estados en `casa` y 22 685 en `coffman`, y verificar
-    `combinada/3` en `coffman` cuesta unos 8,5 millones de inferencias.
+    `combinada/3` en `coffman` cuesta unos 8,5 millones de inferencias
+    (prueba `consistencia:coffman_combinada`, dentro de un 10 %).
     Son las pruebas de una propiedad sobre muchos datos que el
     [Patrón 33](../patrones.md#33-una-prueba-por-modo-y-por-caso-limite)
     deja fuera de sus casos.

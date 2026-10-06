@@ -19,7 +19,9 @@ solo en una instalación local, y necesitan el controlador:
   `swi-prolog-nox`. El controlador se registra con el nombre `SQLite3`.
 - **Windows**: el controlador de Christian Werner, `sqliteodbc_w64.exe`,
   de [www.ch-werner.de/sqliteodbc](http://www.ch-werner.de/sqliteodbc/), que se registra como
-  `SQLite3 ODBC Driver`. `library(odbc)` viene con SWI-Prolog.
+  `SQLite3 ODBC Driver`. `library(odbc)` viene con SWI-Prolog. Los pasos
+  de la instalación están en [El controlador ODBC en
+  Windows](#el-controlador-odbc-en-windows).
 
 Las pruebas de esta sección se ejecutaron el 2026-09-28 en Linux, con la
 imagen `swipl:9.2.9` y esos paquetes; en Windows, sin el controlador, se
@@ -244,3 +246,61 @@ Hay otra forma de tener una base SQL junto a Prolog sin ODBC: la del
 [capítulo 29](../capitulo-29-prolog-desde-python/index.md). Un programa en Python abre la base con el módulo
 `sqlite3` de su biblioteca estándar y consulta las reglas con Janus; cada
 lenguaje cumple su parte, y los datos cruzan la frontera como listas.
+
+## El controlador ODBC en Windows
+
+Los pasos siguientes instalan el controlador ODBC de SQLite en Windows 11,
+en cualquiera de sus ediciones (Home incluida), para una instalación de
+SWI-Prolog de 64 bits. La instalación requiere una cuenta con permisos de
+administrador. No hace falta crear un origen de datos (DSN): `sqlite.pl`
+nombra el controlador en la cadena de conexión.
+
+1. **Verificar la arquitectura de SWI-Prolog.** La consulta
+   `current_prolog_flag(arch, A)` responde `A = 'x64-win64'` en una
+   instalación de 64 bits, que necesita el controlador de 64 bits. Un
+   SWI-Prolog de 32 bits no puede cargar un controlador de 64 bits, ni a la
+   inversa.
+2. **Descargar el instalador.** En la [página del
+   controlador](http://www.ch-werner.de/sqliteodbc/), en «Current version»,
+   el archivo es `sqliteodbc_w64.exe` (versión 0.99991, de 2023-10-23).
+   `sqliteodbc.exe` es el de 32 bits, y las variantes `_dl` y `_msvcr100`
+   dependen de bibliotecas que no vienen con Windows. La página se sirve
+   solo por HTTP y no publica sumas de verificación, por lo que el
+   navegador puede advertir que la descarga no es segura; para conservar el
+   archivo, en Edge se elige «…» y luego «Conservar».
+3. **Ejecutar el instalador.** El instalador no está firmado:
+    - SmartScreen muestra «Windows protegió su PC»; «Más información» y
+      luego «Ejecutar de todas formas» continúan.
+    - Si el «Control inteligente de aplicaciones» de Seguridad de Windows
+      está activado, bloquea el instalador sin ofrecer cómo continuar.
+      Desactivarlo (Seguridad de Windows, «Control de aplicaciones y
+      navegador») no tiene vuelta atrás sin reinstalar Windows; en ese caso
+      conviene usar Linux o WSL, como en la lista anterior.
+    - El Control de cuentas de usuario pide permiso para hacer cambios en el
+      dispositivo; se responde «Sí».
+    - En el asistente se acepta la licencia (de tipo BSD) y se dejan la
+      carpeta (`C:\Program Files\SQLite ODBC Driver for Win64`) y los
+      componentes que propone.
+4. **Verificar que el controlador quedó registrado.** En PowerShell:
+
+    ```text
+    Get-OdbcDriver -Name "SQLite3*" -Platform 64-bit
+    ```
+
+    La respuesta incluye `Name : SQLite3 ODBC Driver`. El mismo nombre
+    aparece en la pestaña «Controladores» de «Orígenes de datos ODBC (64
+    bits)», en el menú Inicio.
+5. **Verificar la conexión desde Prolog.** En `ejemplos/capitulo-42/`:
+
+    ```text
+    swipl -g "consult(['sqlite.pl','sqlite.plt']),run_tests" -t halt
+    ```
+
+    Con el controlador instalado no queda ninguna prueba bloqueada y pasan
+    las trece de la sección. El mensaje «No se encuentra el nombre del
+    origen de datos y no se especificó ningún controlador predeterminado»
+    indica que el controlador no está registrado con ese nombre o que su
+    arquitectura no coincide con la de SWI-Prolog.
+
+El controlador se desinstala desde Configuración, «Aplicaciones»,
+«Aplicaciones instaladas», con la entrada «SQLite ODBC Driver for Win64».

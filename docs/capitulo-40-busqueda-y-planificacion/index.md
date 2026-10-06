@@ -797,8 +797,12 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
   «Breadth First Search», «Bounded Depth First Search», «Iterative
   Deepening» y «Application: The Eight Puzzle») e «Informed Search» (con
   «Iterative Deepening A\* and its ε-Admissible Version» y «Case Study:
-  The Eight Puzzle Revisited»). Sin edición en línea de acceso libre
-  verificada. El capítulo toma la escalera de búsquedas a ciegas e
+  The Eight Puzzle Revisited»).
+  [Página de la editorial, copia de archivo](https://web.archive.org/web/20260216182045/https://bookboon.com/en/applications-of-prolog-ebook).
+  La editorial ya no ofrece el libro;
+  [Google Libros](https://books.google.com/books?id=copBGLD4LKwC) muestra
+  páginas seleccionadas.
+  El capítulo toma la escalera de búsquedas a ciegas e
   informadas, el rompecabezas de 8 como caso de estudio, IDA\* y la
   observación de que la profundización iterativa no termina sin solución.
 - Ivan Bratko, *Prolog Programming for Artificial Intelligence*,
