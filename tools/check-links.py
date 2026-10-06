@@ -33,7 +33,7 @@ SECTION_RE = re.compile(r'^## (\d+)\.(\d+) (.+?)\s*$')
 PATTERN_RE = re.compile(r'^## (\d+) — (.+?)\s*$')
 
 NOT_IN_LINK = r'(?<![\[\w])'
-NOT_A_NUMBER_TAIL = r'(?![\d.])'
+NOT_A_NUMBER_TAIL = r'(?!\d|\.\d)'
 SOLUTION = re.compile(rf'(?<!\[)\b((?:soluci[oó]n|ejercicio) (\d+) del cap[ií]tulo (\d+)){NOT_A_NUMBER_TAIL}')
 SECTION = re.compile(rf'{NOT_IN_LINK}(secci[oó]n) (\d+)\.(\d+){NOT_A_NUMBER_TAIL}')
 SECTIONS = re.compile(rf'{NOT_IN_LINK}(secciones )((?:\d+\.\d+)(?:(?:, | y | e )\d+\.\d+)+)')

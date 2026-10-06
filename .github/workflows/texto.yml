@@ -2,7 +2,7 @@
 # predicate before the chapter that presents it, every «capítulo N» and «sección
 # N.M» is a link, the pattern catalogue agrees with the boxes, every formula
 # parses, every time estimate agrees with the model, the code blocks agree with
-# ejemplos/, and the site builds with --strict.
+# ejemplos/, the site builds with --strict, and every mermaid diagram draws.
 name: Texto
 
 on:
@@ -56,3 +56,9 @@ jobs:
       # the PDF y sitio workflow builds the site that is published.
       - name: Site built with --strict
         run: make docs
+
+      # Every mermaid diagram of the site just built, drawn in Chromium: a
+      # block that mermaid rejects, an empty drawing or a label shown as raw
+      # HTML fails. Mermaid itself comes from its CDN, as on the published site.
+      - name: Mermaid diagrams draw
+        run: uv run --frozen tools/check-mermaid.py
