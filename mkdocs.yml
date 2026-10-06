@@ -501,8 +501,20 @@ nav:
       - "Capítulo 86 — Proyecto: un mini-SQL en Prolog":
           - capitulo-86-proyecto-mini-sql-prolog/index.md
           - Soluciones: capitulo-86-proyecto-mini-sql-prolog/soluciones.md
+          - El analizador léxico: capitulo-86-proyecto-mini-sql-prolog/lexico.md
+          - Los errores de sintaxis y de tipos: capitulo-86-proyecto-mini-sql-prolog/errores.md
+          - Las subconsultas: capitulo-86-proyecto-mini-sql-prolog/subconsultas.md
+          - El resultado entero: capitulo-86-proyecto-mini-sql-prolog/resultado.md
+          - Las sentencias que cambian las tablas: capitulo-86-proyecto-mini-sql-prolog/modificaciones.md
+          - Las vistas: capitulo-86-proyecto-mini-sql-prolog/vistas.md
+          - El mini-SQL frente a SQLite: capitulo-86-proyecto-mini-sql-prolog/sqlite.md
       - "Capítulo 87 — Proyecto: preguntas en castellano":
           - capitulo-87-proyecto-preguntas-en-castellano/index.md
           - Soluciones: capitulo-87-proyecto-preguntas-en-castellano/soluciones.md
+          - Las palabras de la pregunta: capitulo-87-proyecto-preguntas-en-castellano/palabras.md
+          - Las correlativas, con una tabla: capitulo-87-proyecto-preguntas-en-castellano/correlativas.md
+          - La forma lógica en SQL: capitulo-87-proyecto-preguntas-en-castellano/sql.md
+          - Las preguntas como servicio: capitulo-87-proyecto-preguntas-en-castellano/servicio.md
+          - El horario de una materia: capitulo-87-proyecto-preguntas-en-castellano/horario.md
   - Apéndice B — Los capítulos en PDF y las diapositivas: pdf.md
   - Licencia: licencia.md

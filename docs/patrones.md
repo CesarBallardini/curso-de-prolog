@@ -1402,13 +1402,19 @@ compiladas se agregan como cláusulas de `regla/2`, y la versión 4 las
 aplica sin cambios. Una regla escrita en las dos formas, `z_k` y `z`,
 prueba el compilador: las pruebas verifican que da exactamente los
 mismos patrones. Cuándo se compila es una decisión aparte: `kimmo.pl`
-compila en cada llamada a `regla/2`, 3 516 veces al generar
+compila en cada llamada a `regla/2`, 4 263 veces al generar
 «imposible», que cuesta 2 535 280 inferencias; con las reglas
 compiladas al cargar, con `term_expansion/2` como en el
 [Patrón 49](patrones.md#49-expandir-al-cargar), la misma
-generación cuesta 1 006 022. Aquel patrón describe el momento de la
-traducción; este, la separación entre la notación en que se escriben
-las reglas y la forma en que se ejecutan.
+generación cuesta 1 006 077. `kimmo_contado.pl` mide la primera
+forma y `kimmo_al_cargar.pl` la segunda, que carga `kimmo.pl` sin
+la cláusula de `regla/2` que compila en cada llamada: esa cláusula
+se probaría, sin éxito, también en las llamadas a las demás reglas.
+Las pruebas `kimmo_contado:compilaciones`, `kimmo_contado:costo` y
+`kimmo_al_cargar:costo` verifican las compilaciones con su valor
+exacto y las inferencias dentro de un 10 %. Aquel patrón describe el
+momento de la traducción; este, la separación entre la notación en
+que se escriben las reglas y la forma en que se ejecutan.
 
 **Cuándo no usarlo.** Cuando las reglas son pocas y su forma
 ejecutable se lee tan bien como la notación: el compilador es un
@@ -1801,7 +1807,8 @@ espacio que el programa genera, en la forma que recomienda su
 «Cuándo no usarlo»: el generador nombra la transición que falla, y
 una prueba de `consistencia.plt` la muestra. El recorrido cubre
 1 017 estados en `casa` y 22 685 en `coffman`, y verificar
-`combinada/3` en `coffman` cuesta unos 8,5 millones de inferencias.
+`combinada/3` en `coffman` cuesta unos 8,5 millones de inferencias
+(prueba `consistencia:coffman_combinada`, dentro de un 10 %).
 Son las pruebas de una propiedad sobre muchos datos que el
 [Patrón 33](patrones.md#33-una-prueba-por-modo-y-por-caso-limite)
 deja fuera de sus casos.
@@ -2675,3 +2682,256 @@ relación entera: en el Wumpus y en los marcos, la ganancia es pequeña
 o nula.
 
 Capítulo 85, página [«La transformación mágica»](capitulo-85-proyecto-motor-datalog/magia.md), apartado [«Los predicados mágicos»](capitulo-85-proyecto-motor-datalog/magia.md#los-predicados-magicos).
+
+## 97 — Una condición, dos metas
+
+**Problema.** Una condición se compila en una meta de Prolog, pero
+tiene más resultados que la meta: en SQL es verdadera, falsa o
+desconocida, y la falla de una meta no distingue la falsa de la
+desconocida.
+
+**Versión ingenua.** Compilar cada condición en una sola meta y la
+negación en `\+` de esa meta, como `filtro/3` de la
+[versión 4](capitulo-86-proyecto-mini-sql-prolog/index.md#866-version-4-el-compilador-de-toy-sequel). `\+` cuenta
+como falsa toda condición que no se prueba: `NOT (nota >= 6)` deja
+pasar también las inscripciones sin nota, y la versión escrita a mano
+de la
+[sección 42.4](capitulo-42-prolog-y-sql/index.md#424-donde-difieren-bolsas-conjuntos-y-null)
+da siete inscripciones en lugar de cuatro.
+
+**Patrón.** Compilar cada condición con una **polaridad**, `verdadera`
+o `falsa`, en la meta que se cumple cuando la condición tiene ese
+valor (`condicion/5`). La negación no genera meta: compila su
+argumento con la polaridad opuesta (`opuesta/2`). La conjunción falsa
+es la disyunción de las falsas, y la disyunción falsa, la conjunción;
+una comparación falsa usa el operador contrario (`negar/2`) y exige,
+como la verdadera, que sus valores no sean `NULL`. El tercer valor no
+necesita meta propia: es el que no cumple ninguna de las dos. La
+negación queda empujada hasta las comparaciones, y solo las
+subconsultas falsas, `NOT EXISTS` y `NOT IN`, conservan un `\+`. Como el
+[Patrón 63](patrones.md#63-estado-como-resultado-no-como-falla),
+la falsedad pasa a ser algo que se prueba, y no la falla de una meta.
+
+**Cuándo no usarlo.** Cuando la lógica tiene dos valores y el mundo
+es cerrado, como en un lenguaje de consultas sobre hechos sin `NULL`:
+`\+` de la meta verdadera ya es la falsa, y la segunda polaridad
+duplica el compilador sin cambiar ninguna respuesta.
+
+Capítulo 86, [sección 86.7](capitulo-86-proyecto-mini-sql-prolog/index.md#867-version-5-condiciones-de-tres-valores).
+
+## 98 — La igualdad se unifica solo en la conjunción positiva
+
+**Problema.** Un compilador de consultas traduce las igualdades entre
+columnas, o entre una columna y una constante. Compilarlas como
+comparaciones que se ejecutan después de los generadores recorre el
+producto de las tablas; unificarlas al compilar liga los argumentos
+de los generadores, y el índice encuentra las filas sin recorrerlas.
+
+**Versión ingenua.** Unificar toda igualdad, en cualquier lugar de la
+condición, como `filtro/3` de Toy-Sequel. Bajo `OR`, la segunda
+igualdad sobre la misma columna ya no unifica y se compila como
+`fail`: `carrera = 'civil' OR carrera = 'industrial'` pierde a los
+alumnos de industrial. Bajo `NOT`, el generador queda restringido a
+las filas que la negación rechaza, y `NOT carrera = 'civil'` no da
+ninguna fila.
+
+**Patrón.** Resolver al compilar solo las igualdades de la conjunción
+de primer nivel de la condición (`igualdades/3`), que toda fila de la
+respuesta tiene que cumplir, entre valores del mismo tipo y con una
+columna de la consulta que se compila (`unificable/2`). Las que están
+bajo `OR` o bajo `NOT` se compilan como comparaciones. Si una de las
+columnas unificadas admite `NULL`, queda en la condición el control
+`V \== null`. Es la evaluación parcial del
+[Patrón 50](patrones.md#50-especializar-el-interprete) restringida
+al contexto en que es correcta: la reunión de `numeros(300)` consigo
+misma cuesta 910 inferencias en lugar de 270 610.
+
+**Cuándo no usarlo.** Cuando la igualdad del lenguaje no es la
+unificación: un entero y un real, `1` y `1.0`, son iguales en SQL y
+no unifican, y dos textos comparados sin distinguir mayúsculas
+tampoco; unificar daría menos filas. Por eso `igualdad/3` exige el
+mismo tipo en las dos columnas. Y cuando las dos columnas son de una
+consulta de afuera: la unificación, hecha al compilar la
+subconsulta, valdría para toda la consulta de afuera, también donde
+la subconsulta está negada; `unificable/2` exige por eso una columna
+de la consulta actual.
+
+Capítulo 86, [sección 86.7](capitulo-86-proyecto-mini-sql-prolog/index.md#867-version-5-condiciones-de-tres-valores).
+
+## 99 — El error en el punto más lejano
+
+**Problema.** Una gramática que no reconoce la entrada falla, y la
+falla no dice dónde. La vuelta atrás prueba todas las alternativas, y
+cuando la última falla, `phrase/2` falla sin ninguna información.
+
+**Versión ingenua.** Informar sobre la entrada entera («sentencia
+incorrecta»), o lanzar el error en la primera alternativa que no
+reconoce un token. Lo primero no ayuda a corregir; lo segundo lo
+lanza demasiado pronto: una alternativa que falla es lo normal en una
+gramática con vuelta atrás, y otra alternativa podía reconocer la
+entrada.
+
+**Patrón.** Pasar todos los tokens por un único terminal, `t//1`,
+que antes de examinar el próximo token anota el resto de la entrada
+si es el más corto alcanzado hasta ahora (`anotar/1`), en una
+variable global que sobrevive a la vuelta atrás. Si el análisis
+entero falla, el resto anotado es el **punto más lejano** al que llegó
+alguna alternativa, y el error nombra los tokens que empiezan ahí
+(`analizar_tokens/2`). La gramática no cambia: solo su terminal. El
+error es un término, `error(sql(sintaxis(Cerca)), _)`, que quien lo
+captura examina como en el
+[Patrón 30](patrones.md#30-capturar-lo-justo-y-relanzar).
+
+**Cuándo no usarlo.** Cuando la gramática es determinista y no vuelve
+atrás, como un analizador que lee la entrada de izquierda a derecha
+con un token de anticipación: el punto en que falla ya es el más
+lejano, y basta con lanzar el error allí. Y cuando una alternativa
+avanza mucho por un camino equivocado antes de fallar: el punto más
+lejano es el de ese camino, y el mensaje señala un lugar que no es el
+error que quien escribió la sentencia cometió.
+
+Capítulo 86, página [«Los errores de sintaxis y de tipos»](capitulo-86-proyecto-mini-sql-prolog/errores.md), apartado [«Los errores de sintaxis»](capitulo-86-proyecto-mini-sql-prolog/errores.md#los-errores-de-sintaxis).
+
+## 100 — Calcular el estado nuevo antes de cambiar
+
+**Problema.** Una operación cambia muchos hechos de una base dinámica.
+Tiene que leer el estado como estaba antes de empezar, aunque sus
+condiciones consulten los mismos hechos que cambia, y tiene que
+cambiarlos todos o ninguno, aunque un hecho a mitad del recorrido no
+cumpla una restricción.
+
+**Versión ingenua.** Retirar y agregar cada hecho dentro del
+recorrido, `retract(Viejo), assertz(Nuevo), fail`, como Toy-Sequel. La
+vista lógica de actualización protege al recorrido, pero no a una
+subconsulta que se vuelve a ejecutar en cada fila y ve la tabla a
+medio cambiar; y un error en la fila diez deja cambiadas las nueve
+anteriores.
+
+**Patrón.** Calcular primero, con `findall/3` sobre el estado
+anterior, todas las filas que la tabla tendrá después (`actualizar/4`);
+verificar sobre ese resultado los tipos, `NOT NULL`, los rangos y la
+clave (`verificar/4`); y solo entonces reemplazar las filas de la
+tabla en un solo paso (`reemplazar/2`). Una restricción violada lanza
+el error antes de tocar la base. Es el
+[Patrón 86](patrones.md#86-el-estado-como-valor-la-base-de-datos-como-capa)
+aplicado a una tabla: la relación entre el estado viejo y el nuevo es
+pura, y la base cambia en una sola meta al final.
+
+**Cuándo no usarlo.** Cuando la tabla es grande y la operación cambia
+pocas filas: reemplazar la tabla entera cuesta un recorrido por
+sentencia, y conviene cambiar solo esas filas y llevar un registro de
+los cambios para deshacerlos. Y cuando ninguna condición lee lo que la
+operación cambia y un error a mitad del camino no deja la base
+inconsistente, como al agregar hechos que no tienen restricciones
+entre sí: el bucle de falla es más simple y basta.
+
+Capítulo 86, página [«Las sentencias que cambian las tablas»](capitulo-86-proyecto-mini-sql-prolog/modificaciones.md), apartado [«Las sentencias que cambian las tablas»](capitulo-86-proyecto-mini-sql-prolog/modificaciones.md#las-sentencias-que-cambian-las-tablas).
+
+## 101 — Construir la propiedad antes de aplicarla
+
+**Problema.** En una gramática que construye la forma lógica mientras
+analiza, el significado de un sintagma depende de otro: el
+cuantificador del sujeto necesita la propiedad que el predicado dice
+de él, y el objeto, el átomo del verbo del que es argumento.
+
+**Versión ingenua.** Analizar primero y construir la forma lógica
+después, en una segunda pasada sobre el árbol sintáctico que
+reordena los cuantificadores; o hacer que cada sintagma nominal dé
+solo su variable, y agregar su cuantificador desde afuera, donde ya
+no se sabe cuál es su alcance.
+
+**Patrón.** Representar lo que falta como una **propiedad**, el
+término `X^P`, y pasarla al sintagma que la aplica: un sintagma
+nominal es `(X^P)^F`, y aplicarlo es unificar. Un nombre propio pone
+su constante en lugar de X; un determinante pone P como alcance de
+su cuantificador. `sv//3` arma el átomo del verbo con `=..` **antes**
+de analizar el objeto, que recibe `(Y^A)^F` con la propiedad ya
+construida. Construida antes, la propiedad es un término que el
+sintagma puede examinar y copiar: la coordinación del
+[ejercicio 11](capitulo-87-proyecto-preguntas-en-castellano/soluciones.md#11) la aplica una vez a cada nombre, lo
+que no se puede hacer con una variable. Como en el
+[Patrón 75](patrones.md#75-dos-representaciones-unidas-por-un-hecho-que-comparte-las-variables),
+las variables compartidas unen las dos partes sin ningún paso de
+conversión.
+
+**Cuándo no usarlo.** Cuando la propiedad no se puede construir
+antes de que se aplique: en `oracion//1` el sujeto se analiza antes
+que el verbo, y recibe `X^P` con P todavía libre. La aplicación por
+unificación sigue funcionando, pero nada que examine la propiedad:
+«¿Ana y diego cursan lógica?» no se analiza. Ahí hace falta un
+término que represente la aplicación pendiente, como los árboles de
+cuantificadores del apartado 4.1.6 de Pereira y Shieber. Y cuando el
+significado de un sintagma no depende de ningún otro, como en las
+plantillas de la [versión 1](capitulo-87-proyecto-preguntas-en-castellano/index.md#873-version-1-palabras-clave).
+
+Capítulo 87, [sección 87.5](capitulo-87-proyecto-preguntas-en-castellano/index.md#875-version-2-la-gramatica-y-la-forma-logica).
+
+## 102 — Tabla para lo que la gramática prueba varias veces
+
+**Problema.** Una gramática con vuelta atrás vuelve a examinar las
+mismas palabras: cada regla que podría empezar por una palabra la
+prueba, como verbo, como nombre, como nombre propio. Si examinar una
+palabra es caro, como el análisis morfológico del
+[capítulo 53](capitulo-53-proyecto-morfologia-castellano/index.md),
+el costo se multiplica por las alternativas.
+
+**Versión ingenua.** Llamar al analizador desde cada regla de la
+gramática, o analizar de antemano todas las palabras de la oración en
+todas sus lecturas posibles, aunque la gramática use pocas.
+
+**Patrón.** Envolver el cálculo caro en un predicado que solo lo
+llama, `analisis/2`, y declararlo `:- table`. La primera llamada con
+una palabra la analiza y guarda todas sus respuestas; las siguientes,
+en la misma pregunta o en otra de la sesión, las leen de la tabla. La
+gramática no cambia. Una pregunta cuesta unas 279 000 inferencias la
+primera vez y unas 500 la segunda. Es el
+[Patrón 53](patrones.md#53-tabular-la-relacion-recursiva) con otro
+motivo: aquí la relación no es recursiva, y la tabla no hace falta
+para terminar sino para no repetir, como la memorización del
+[Patrón 17](patrones.md#17-memorizacion-con-assertz) sin escribirla
+a mano.
+
+**Cuándo no usarlo.** Cuando lo que se repite es barato, como una
+búsqueda indexada en un hecho: la tabla cuesta más que la llamada.
+Y cuando lo que el cálculo consulta cambia durante la sesión, como un
+léxico al que se agregan palabras: la tabla conserva el análisis
+viejo hasta que se la vacía, o hasta que los predicados de los que
+depende se declaran incrementales.
+
+Capítulo 87, página [«Las palabras de la pregunta»](capitulo-87-proyecto-preguntas-en-castellano/palabras.md), apartado [«Las palabras, los lemas y los nombres»](capitulo-87-proyecto-preguntas-en-castellano/palabras.md#las-palabras-los-lemas-y-los-nombres).
+
+## 103 — Una forma lógica, dos evaluadores
+
+**Problema.** Una pregunta se responde de dos maneras: en Prolog, que
+además explica la respuesta con los hechos que la prueban, y en un
+sistema de bases de datos, que planifica la consulta. Dos
+traducciones escritas por separado pueden dar respuestas distintas
+sin que nada lo advierta.
+
+**Versión ingenua.** Escribir dos programas a partir del texto: una
+gramática que produce metas de Prolog y otra que produce SQL, o un
+traductor de SQL a Prolog para la explicación. Cada uno tiene sus
+propios errores, y comparar sus resultados exige comparar dos
+análisis de la misma pregunta.
+
+**Patrón.** Analizar una sola vez, en una **forma lógica**: un
+término con su propio lenguaje pequeño, `cual/2`, `cuantos/2`,
+`si_no/1`, `todo/3`, `alguno/3`, `no/1`, `y/2` y los predicados de la
+base. Dos evaluadores la leen: `evaluar/2` la interpreta en Prolog, y
+`sql/2` la compila a una sentencia que `ejecutar_sql/3` ejecuta y
+`respuesta_filas/3` convierte en una respuesta de la misma forma que
+la de `evaluar/2`. Lo que depende de la base está en un solo hecho
+por predicado en cada evaluador, `definicion/2` y `sql_atomo/4`. Las
+pruebas comparan las dos respuestas pregunta por pregunta, y cada
+evaluador verifica al otro. Es la
+[especificación como dato del Patrón 91](patrones.md#91-especificacion-como-dato)
+con más de un intérprete.
+
+**Cuándo no usarlo.** Cuando los dos evaluadores no pueden dar la
+misma semántica y la diferencia no se documenta: una presuposición
+que no se cumple da en Prolog una advertencia y en SQL «sí», y las
+pruebas tienen que separar ese caso en lugar de esconderlo. Y cuando
+hay un solo destino: la forma lógica agrega un lenguaje intermedio
+que nadie más lee.
+
+Capítulo 87, página [«La forma lógica en SQL»](capitulo-87-proyecto-preguntas-en-castellano/sql.md), apartado [«La sentencia en SQLite»](capitulo-87-proyecto-preguntas-en-castellano/sql.md#la-sentencia-en-sqlite).

@@ -1049,7 +1049,12 @@ que cargan los del capítulo, sin modificarlos.
   2009 — capítulo «Enigma 1225: Rows are Columns» (apartados «A Puzzle»,
   «Symbolic Solutions», «Implementation Details» y «Enhanced
   Implementation») y apartado «Application: A Loop Puzzle» del capítulo
-  «Blind Search». Sin edición en línea de acceso libre verificada. El
+  «Blind Search».
+  [Página de la editorial, copia de archivo](https://web.archive.org/web/20260216182045/https://bookboon.com/en/applications-of-prolog-ebook).
+  La editorial ya no ofrece el libro;
+  [Google Libros](https://books.google.com/books?id=copBGLD4LKwC) muestra
+  páginas seleccionadas.
+  El
   capítulo toma del primero el enunciado, el método de la matriz de
   variables libres más general construida por unificación, la prueba de
   filas distintas con `==/2`, la evaluación por frecuencias, la
@@ -1067,8 +1072,10 @@ que cargan los del capítulo, sin modificarlos.
   de Csenki y reformula.
 - Attila Csenki, «Enigma 1225: Prolog-assisted solution of a puzzle
   using discrete mathematics», *Computers and Mathematics with
-  Applications* 52 (2006) 383–400. Sin edición en línea de acceso libre
-  verificada. Es el artículo del que Csenki adapta su capítulo.
+  Applications* 52 (2006) 383–400,
+  [doi:10.1016/j.camwa.2006.03.020](https://doi.org/10.1016/j.camwa.2006.03.020)
+  (archivo abierto de la revista). Es el artículo del que Csenki adapta
+  su capítulo.
 - Hadrien Cambazard, Barry O'Sullivan y Barbara M. Smith, «A
   constraint-based approach to Enigma 1225», *Computers and Mathematics
   with Applications* 58 (2009) 1487–1497,

@@ -665,7 +665,12 @@ que cargan los del capítulo, sin modificarlos.
   «Using a Linux Shell Script» y «Application: Removing Model
   Solutions», «Text Generation and Drawing with LaTeX» y los ejercicios
   4.1 a 4.7) y sus soluciones en el apéndice «Solutions of Selected
-  Exercises». Sin edición en línea de acceso libre verificada. El
+  Exercises».
+  [Página de la editorial, copia de archivo](https://web.archive.org/web/20260216182045/https://bookboon.com/en/applications-of-prolog-ebook).
+  La editorial ya no ofrece el libro;
+  [Google Libros](https://books.google.com/books?id=copBGLD4LKwC) muestra
+  páginas seleccionadas.
+  El
   capítulo toma de allí los dos problemas y su contexto: quitar las
   soluciones de un examen escrito en LaTeX, y dibujar curvas
   paramétricas en LaTeX con `\drawline` del paquete epic; la regla de
