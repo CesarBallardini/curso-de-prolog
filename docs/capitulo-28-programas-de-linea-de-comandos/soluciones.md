@@ -401,7 +401,7 @@ bucle_contando(In, Hasta, N) :-
     ).
 ```
 
-La cantidad es un acumulador, como los del [capítulo 7](../capitulo-07-listas/index.md): pasa de una llamada
+La cantidad es un acumulador, como los del [capítulo 8](../capitulo-08-aritmetica/index.md): pasa de una llamada
 a la siguiente, y al terminar se unifica con el resultado. Un contador en la
 base dinámica, como el del [capítulo 20](../capitulo-20-base-de-datos-dinamica/index.md#204-contadores-y-estado-global), también funcionaría, pero
 habría que reiniciarlo en cada ejecución y en cada prueba.

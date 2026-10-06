@@ -6,7 +6,8 @@ seleccionar la forma adecuada y completarla con las relaciones del problema.
 
 Esta página las reúne. Cada plantilla se presenta por primera vez en el capítulo
 donde se la necesita, con un ejemplo concreto; aquí figuran sin el ejemplo, para
-consultarlas y compararlas. La página se amplía a medida que avanza el curso.
+consultarlas y compararlas. Son quince, todas de la parte I: las partes
+siguientes no agregan plantillas, sino los [patrones](patrones.md).
 
 Cada plantilla es un **esquema**: un programa en el que las partes que cambian
 de un uso a otro —el nombre del predicado, la condición, el caso base— se
@@ -43,7 +44,7 @@ La primera respuesta se obtiene de manera directa; las siguientes se solicitan
 con `;`. Si solo interesa saber si existe alguna respuesta, y no cuál es, se usa
 `_` en lugar de la variable.
 
-Capítulo 2, sección 2.6.
+Capítulo 2, [sección 2.6](capitulo-02-hechos-consultas-y-variables/index.md#26-variables).
 
 ## 2 — Derivar una relación de otra
 
@@ -55,7 +56,7 @@ nueva(X) :-
     vieja(X, _).
 ```
 
-Capítulo 3, sección 3.3.
+Capítulo 3, [sección 3.3](capitulo-03-reglas-y-conjunciones/index.md#33-reglas).
 
 ## 3 — Encadenar dos relaciones
 
@@ -71,7 +72,7 @@ nueva(A, C) :-
 El elemento central es `B`: aparece dos veces, y por eso debe tener el mismo
 valor en los dos objetivos.
 
-Capítulo 3, sección 3.3.
+Capítulo 3, [sección 3.3](capitulo-03-reglas-y-conjunciones/index.md#33-reglas).
 
 ## 4 — Definir por casos
 
@@ -87,7 +88,7 @@ p(X) :-
 Cada cláusula es una alternativa completa. Si se cumple más de una, se obtiene
 más de una respuesta.
 
-Capítulo 3, sección 3.3.
+Capítulo 3, [sección 3.3](capitulo-03-reglas-y-conjunciones/index.md#33-reglas).
 
 ## 5 — Filtrar: generar y después comprobar
 
@@ -119,7 +120,7 @@ nueva(A, B) :-
 
 Se ubica al final, cuando `A` y `B` ya tienen valor.
 
-Capítulo 3, sección 3.5.
+Capítulo 3, [sección 3.5](capitulo-03-reglas-y-conjunciones/index.md#35-una-regla-que-produce-respuestas-de-mas).
 
 ## 7 — Extraer un componente de un término
 
@@ -134,7 +135,7 @@ Es un hecho, sin cuerpo. En la cabeza se escribe el patrón: variables en las
 posiciones de interés, `_` en todas las demás. El trabajo lo realiza la
 unificación.
 
-Capítulo 4, sección 4.10.
+Capítulo 4, [sección 4.10](capitulo-04-terminos-y-unificacion/index.md#410-extraer-los-componentes-de-un-termino).
 
 ## 8 — Caso base y caso recursivo
 
@@ -155,7 +156,7 @@ siguientes, o al usarlo para generar. En el caso recursivo, el objetivo que
 reduce el problema se escribe **antes** de la llamada recursiva; de lo
 contrario, el programa no termina.
 
-Capítulo 6, sección 6.2.
+Capítulo 6, [sección 6.2](capitulo-06-recursion/index.md#62-caso-base-y-caso-recursivo).
 
 ## 9 — Recorrer una lista
 
@@ -177,7 +178,7 @@ continúa con el resto. En algunos predicados el caso base se escribe como hecho
 en otros no es necesario escribirlo: si ninguna cláusula unifica con `[]`, el
 recorrido termina por falta de cláusulas aplicables.
 
-Capítulo 7, sección 7.3.
+Capítulo 7, [sección 7.3](capitulo-07-listas/index.md#73-recorrer-una-lista).
 
 ## 10 — Buscar un elemento que cumple una condición
 
@@ -202,7 +203,7 @@ la lista, que es lo correcto: ninguno cumplió.
 
 Produce una respuesta por cada elemento que cumple la condición.
 
-Capítulo 7, sección 7.3.
+Capítulo 7, [sección 7.3](capitulo-07-listas/index.md#73-recorrer-una-lista).
 
 ## 11 — Todos los elementos cumplen
 
@@ -225,7 +226,7 @@ cumplen" es cierto—, y el fracaso se produce en cuanto un elemento no cumple.
 Se distingue de la plantilla 9 en que no procesa cada elemento: lo somete a una
 prueba, y no produce ningún resultado más allá de cumplirse o no.
 
-Capítulo 7, sección 7.3.
+Capítulo 7, [sección 7.3](capitulo-07-listas/index.md#73-recorrer-una-lista).
 
 ## 12 — Construir una lista durante el recorrido de otra
 
@@ -248,7 +249,7 @@ resultado corresponde a la lista vacía— y la relación entre cada elemento y 
 que ocupa su lugar en el resultado. En `pegar/3`, el caso más simple, cada
 elemento pasa sin modificarse y el caso base entrega la segunda lista.
 
-Capítulo 7, sección 7.5.
+Capítulo 7, [sección 7.5](capitulo-07-listas/index.md#75-construir-una-lista-durante-el-recorrido-de-otra).
 
 ## 13 — Acumulador
 
@@ -306,7 +307,7 @@ hacia abajo: si la última cláusula afirma algo que no es cierto por sí solo, 
 predicado responde mal en cuanto se lo consulta con el segundo argumento ya
 instanciado, porque entonces el corte no llega a ejecutarse.
 
-Capítulo 9, sección 9.4.
+Capítulo 9, [sección 9.4](capitulo-09-backtracking-y-corte/index.md#94-el-uso-mas-frecuente-casos-que-no-se-superponen).
 
 ## 15 — Generar y probar
 
@@ -340,4 +341,4 @@ nada que podar, de modo que el predicado acepta un valor que no es el primero.
 Por eso la descripción del encabezado aclara que `X` debe llegar libre: el `-X`
 solo no lo dice.
 
-Capítulo 9, sección 9.6.
+Capítulo 9, [sección 9.6](capitulo-09-backtracking-y-corte/index.md#96-generar-y-probar).

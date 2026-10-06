@@ -531,7 +531,7 @@ pueden hacer.
 
 ## 30.9 El proyecto: *Inscripciones* como servicio
 
-*Inscripciones* recibe su décimo módulo, `api`, con seis rutas:
+*Inscripciones* recibe su noveno módulo, `api`, con seis rutas:
 
 | Pedido | Respuesta |
 |---|---|

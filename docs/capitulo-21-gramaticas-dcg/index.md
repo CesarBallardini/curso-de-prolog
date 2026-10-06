@@ -110,7 +110,7 @@ false.
 `phrase/2` es la forma de llamar a una gramática: se podría llamar
 `oracion(H, Lista, [])` directamente, pero `phrase/2` no depende de cómo se
 traduce la regla, y acepta también un cuerpo de gramática compuesto, como se
-verá en la sección 20.8.
+verá en la [sección 21.8](#218-secuencias-cualesquiera-seq1).
 
 ## 21.3 Terminales y `double_quotes`
 

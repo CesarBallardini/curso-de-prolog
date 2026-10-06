@@ -7,7 +7,10 @@ llamar, cómo se reúnen respuestas, cómo se aísla el estado, cómo se prueba 
 entrega un programa. Los de la parte III, desde el 43, son las técnicas de
 un programador avanzado: los términos y los programas como datos, las
 estructuras incompletas, la transformación de programas, las interfaces, la
-concurrencia, la tabulación y la búsqueda.
+concurrencia, la tabulación y la búsqueda. Los de la parte IV, del 56 al 103,
+son las decisiones de diseño que aparecen al construir programas completos: la
+representación del problema, la forma del intérprete, la búsqueda y su
+verificación.
 
 La idea de enseñar Prolog a través de técnicas con nombre tiene un antecedente
 en P. Brna, A. Bundy, T. Dodd, M. Eisenstadt, C. K. Looi, H. Pain, D.
@@ -21,12 +24,11 @@ ingenua» y «Cuándo no usarlo» de cada recuadro de esta página.
 
 Cada patrón se presenta en el capítulo donde se lo necesita, con el ejemplo que
 lo motiva. Aquí figura el texto completo de cada recuadro, copiado del capítulo,
-para consultarlos y compararlos; la página se amplía a medida que avanza la
-parte III.
+para consultarlos y compararlos.
 
 ## Criterios de calidad
 
-Todo el código de las partes II y III se revisa con estos siete criterios. El
+Todo el código de las partes II a IV se revisa con estos siete criterios. El
 [capítulo 14](capitulo-14-estilo-y-documentacion/index.md) los presenta en detalle; cada capítulo posterior indica, en un
 recuadro, cuáles ejercita su código y cómo se comprueba cada uno.
 
@@ -73,7 +75,7 @@ texto menciona, con el resultado que corresponde: `[fail]`, `error(...)`, o
 la respuesta equivocada que el signo advierte. Un modo `semidet` cuya
 implementación deja una alternativa pendiente lleva `[nondet]` en la prueba,
 con un comentario que lo explica, hasta que se la quite (capítulos [15](capitulo-15-control/index.md) y
-16).
+[16](capitulo-16-rendimiento/index.md)).
 
 **Cuándo no usarlo.** En los hechos: una tabla de hechos no tiene modos
 que verificar, y se prueba con pruebas de coherencia de los datos, como
@@ -123,7 +125,7 @@ Capítulo 14, [sección 14.6](capitulo-14-estilo-y-documentacion/index.md#146-re
 versión con corte depende del orden de las cláusulas y no es estable.
 
 **Versión ingenua.** Una cláusula por caso, con un corte después de la
-condición y la salida en la cabeza, como `categoria/2` del capítulo 9.
+condición y la salida en la cabeza, como `categoria/2` del [capítulo 9](capitulo-09-backtracking-y-corte/index.md).
 
 **Patrón.** Una cláusula con un condicional encadenado: cada condición
 elige su rama, y cada rama liga la salida.
@@ -291,7 +293,7 @@ ligadas en ella y usadas en `Accion`.
 
 **Cuándo no usarlo.** Cuando se necesita saber **cuál** no cumple:
 `forall/2` solo responde sí o no. En ese caso, se busca el contraejemplo con
-un objetivo que lo genere, como las pruebas de datos del capítulo 13.
+un objetivo que lo genere, como las pruebas de datos del [capítulo 13](capitulo-13-el-entorno-de-trabajo/index.md).
 
 Capítulo 17, [sección 17.6](capitulo-17-todas-las-soluciones/index.md#176-forall2).
 

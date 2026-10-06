@@ -430,7 +430,7 @@ ERROR:   [16] throw(error(type_error(integer,ana),_52536))
 R = rechazada(alumno_inexistente).
 ```
 
-La diferencia entre las dos consultas es la del criterio de la sección 24.5.
+La diferencia entre las dos consultas es la del criterio de la [sección 25.5](#255-fallo-o-error).
 Un legajo que no es un entero es un error del que llama: el encabezado pide un
 entero. Un legajo que no existe es una respuesta del dominio: el programa sabe
 qué contestar, y lo hace con `rechazada(Motivo)`.
@@ -481,7 +481,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
    produce un error: `X is 1/0.` · `atom_length(X, L).` · `atom_length(123, L).`
    · `atom_length(f(x), L).` · `X is a + 1.`
 2. **(1)** Identificar la parte formal y la pila de llamadas en el mensaje de la
-   sección 24.8. ¿Qué término produjo `throw/1`?
+   [sección 25.8](#258-leer-un-mensaje-de-swi-prolog). ¿Qué término produjo `throw/1`?
 3. ★ **(2)** Escribir `leer_nota(Texto, Nota)`: la nota de 1 a 10 escrita en un
    texto, con `domain_error(nota, Texto)` si no lo es, y un error de tipo si
    `Texto` no es un texto.

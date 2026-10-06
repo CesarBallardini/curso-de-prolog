@@ -2,7 +2,7 @@
 
 Esta página contiene la sección
 [55.7](index.md#557-analogy-analogias-geometricas) del
-[capítulo 54](index.md): el programa que resuelve analogías geométricas,
+[capítulo 55](index.md): el programa que resuelve analogías geométricas,
 `analogia.pl`. El archivo está en `ejemplos/capitulo-55/`, con sus pruebas;
 no es un módulo ni carga otros archivos, y corre en SWISH.
 

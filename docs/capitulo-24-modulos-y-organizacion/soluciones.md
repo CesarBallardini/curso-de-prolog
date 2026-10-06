@@ -251,7 +251,7 @@ desde cualquier lugar: mientras se carga un archivo,
 :- use_module(tablero, [vecina/4]).
 ```
 
-Los predicados son los de los capítulos [22](../capitulo-22-estructuras-de-datos-de-la-biblioteca/index.md) y [22](../capitulo-22-estructuras-de-datos-de-la-biblioteca/index.md). `resolver` importa de
+Los predicados son los de los capítulos [22](../capitulo-22-estructuras-de-datos-de-la-biblioteca/index.md) y [23](../capitulo-23-programacion-con-restricciones/index.md). `resolver` importa de
 `tablero` solo `vecina/4`, que antes estaba repetida en los dos archivos. La
 prueba `coherente` une los dos módulos: construye el tablero con las minas
 deducidas y verifica un número visible. Es el primer paso hacia el Buscaminas

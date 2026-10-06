@@ -8,6 +8,16 @@ cuáles son recursivos, solos o en grupo, y dónde el código se aparta de las
 convenciones del curso. Ejecutado por un intérprete propio, responde además
 cuántas veces se llama cada predicado en una ejecución concreta.
 
+![Grafo dirigido de diez funciones de un módulo, dibujadas como óvalos de colores dentro de un recuadro: a:main llama a a:branch, a:c y a:util; a:branch llama a a:branch2, que llama a a:util; a:c llama a a:d y a:util; a:d llama a a:recursive, a:leaf y a:util; a:recursive tiene un arco hacia sí misma y llama a a:leaf; a:never-called llama a a:leaf y nadie la llama, y a:orphan no tiene arcos](grafo-de-llamadas.png)
+
+Un grafo de llamadas trazado por una herramienta para las funciones de un
+módulo XQuery: cada óvalo es una función, y cada flecha, una llamada. Las
+preguntas del capítulo se leen en él: `a:recursive` se llama a sí misma, y
+`a:orphan` y `a:never-called` no se alcanzan desde `a:main`, el punto de
+entrada. Imagen: Dmccreary,
+[CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/deed.es), vía
+[Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Sample-single-module-call-graph.png).
+
 ```mermaid
 flowchart LR
     informe["informe/0"] --> alumnos["alumnos/1"]
@@ -958,6 +968,8 @@ tiene de propio.
   forma automática de algunas de sus pautas: un comentario de presentación
   para cada predicado, las cláusulas juntas y las variables con nombre que
   aparecen una vez.
+- Dmccreary, imagen «Sample-single-module-call-graph.png», Wikimedia
+  Commons, CC BY-SA 3.0.
 
 El código del capítulo es propio, escrito para el curso: los programas del
 apéndice dependen de primitivas del intérprete Toy-Prolog del libro, y se

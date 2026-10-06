@@ -216,7 +216,7 @@ Warning:     test v:esta: Test succeeded with choicepoint
     la respuesta equivocada que el signo advierte. Un modo `semidet` cuya
     implementación deja una alternativa pendiente lleva `[nondet]` en la prueba,
     con un comentario que lo explica, hasta que se la quite (capítulos [15](../capitulo-15-control/index.md) y
-    16).
+    [16](../capitulo-16-rendimiento/index.md)).
 
     **Cuándo no usarlo.** En los hechos: una tabla de hechos no tiene modos
     que verificar, y se prueba con pruebas de coherencia de los datos, como

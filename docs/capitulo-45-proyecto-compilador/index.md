@@ -33,11 +33,11 @@ abstracta. Imagen: Jochen Burghardt,
 
 El capítulo recorre el camino completo para Mini. Cada flecha es un
 predicado del capítulo, y cada caja, la estructura que relaciona con la
-siguiente; los dos caminos de abajo ejecutan el programa sin compilarlo a
+siguiente; los dos caminos de la derecha ejecutan el programa sin compilarlo a
 la máquina:
 
 ```mermaid
-flowchart LR
+flowchart TD
     T["texto"] -- "lexico/2" --> C["componentes"]
     C -- "programa//1" --> A["sintaxis abstracta"]
     A -- "generar/2" --> S["código simbólico<br/>(etiquetas libres)"]
