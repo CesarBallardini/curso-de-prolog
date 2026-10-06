@@ -176,6 +176,9 @@ nodo_beta(Paso, Prefijo, Padre, Red0, Red, Nodo) :-
     Red = red(Indice, Alfas, Betas, Terminales).
 ```
 
+`max_assoc/3` da la clave mayor de un assoc y su valor: el nodo nuevo recibe
+el número siguiente.
+
 Cada condición se traduce primero a un **paso**: un patrón `F` es
 `alfa(F, [])`, y `no(F)` y `{Meta}` quedan como están. La lista vacía del
 paso alfa espera a la [sección 64.8](medicion.md#648-version-7-las-pruebas-de-un-solo-hecho-en-la-red-alfa).
@@ -721,6 +724,7 @@ archivo que carga los del capítulo, sin modificarlos.
 | **activación nula** | una activación que no puede producir nada: por la derecha con el padre vacío, por la izquierda con la memoria alfa vacía |
 | `herencia.pl`, `referencias.pl` | la herencia de los marcos evaluada en los nodos alfa, y los tokens reconstruidos a partir de sus sellos |
 | `conjuntiva.pl`, `desconexion.pl`, `en_marcha.pl` | la negación de una conjunción, la cuenta de las activaciones nulas y una regla agregada con la red cargada |
+| `max_assoc/3`, `gen_assoc/3` | la clave mayor de un assoc; sus pares por retroceso, en orden de clave |
 
 ## Temas que se retoman
 

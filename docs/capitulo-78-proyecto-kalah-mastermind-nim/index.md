@@ -992,6 +992,7 @@ que cargan los del capítulo, sin modificarlos.
 | `xor` | el o exclusivo bit a bit de dos enteros, en `is/2` |
 | **[Patrón 79](../patrones.md#79-clausulas-para-un-modulo-cargado)** | cláusulas para un módulo cargado |
 | **[Patrón 80](../patrones.md#80-estrategia-como-argumento)** | estrategia como argumento |
+| `strip_module/3` | separa un objetivo calificado en su módulo y el objetivo |
 
 ## Temas que se retoman
 

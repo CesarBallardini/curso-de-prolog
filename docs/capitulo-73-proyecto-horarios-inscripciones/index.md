@@ -985,6 +985,7 @@ que cargan los del capítulo, sin modificarlos.
 | **[Patrón 73](../patrones.md#73-restriccion-redundante-que-cuenta)** | restricción redundante que cuenta |
 | `cota_inferior/2`, `mejor_con_limite/4`, `carrera/3` | la versión 5 |
 | `cuerpo_anio/4` | la grilla web |
+| `nb_delete/1` | borra una variable global |
 
 ## Temas que se retoman
 

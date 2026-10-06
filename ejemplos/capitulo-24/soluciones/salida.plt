@@ -4,6 +4,7 @@
 
 :- begin_tests(salida).
 
+% with_output_to/2, que captura la salida, se presenta en el capítulo 27.
 test(mostrar, true(S == "aprobadas\n  101 ana: 4\n")) :-
     with_output_to(string(S), mostrar_informe(aprobadas, [101-4])).
 

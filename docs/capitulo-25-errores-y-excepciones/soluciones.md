@@ -56,9 +56,10 @@ ERROR:   [14] throw(error(domain_error(nota,"11"),_19070))
 ```
 
 `must_be(text, Texto)` rechaza un número: `leer_nota(7, N)` produce un error
-de tipo, porque el encabezado pide un texto. `number_string/2` falla con un
-texto que no es un número, y esa falla, como un número fuera de rango, lleva al
-`domain_error/2`.
+de tipo, porque el encabezado pide un texto. `text_to_string/2` lleva ese
+texto, sea un átomo, una cadena o una lista, a una cadena.
+`number_string/2` falla con un texto que no es un número, y esa falla, como un
+número fuera de rango, lleva al `domain_error/2`.
 
 ## 4
 
@@ -227,6 +228,9 @@ ERROR: Domain error: `telefono' expected, found `codigo_de_area('1')'
 ERROR: In:
 ERROR:   [14] throw(error(domain_error(telefono,...),_27536))
 ```
+
+`char_type(C, Tipo)` se cumple si el carácter `C` es del tipo indicado:
+`alpha` para una letra, `digit(Peso)` para un dígito.
 
 El segundo argumento de `domain_error/2` dice **por qué** el valor está fuera del
 dominio: `letras`, `cantidad_de_digitos(9)`, `codigo_de_area('1')`. Quien llama

@@ -72,8 +72,8 @@ copiar_lineas(In, Out) :-
 ```
 
 Es el [Patrón 36](../patrones.md#36-leer-procesar-escribir): dos `setup_call_cleanup/3` anidados, el recorrido de las
-líneas en `copiar_lineas/2`, y la transformación en `string_upper/2`, que no
-usa streams. Aplicado a `texto.txt`, escribe:
+líneas en `copiar_lineas/2`, y la transformación en `string_upper/2`, que pasa
+una cadena a mayúsculas y no usa streams. Aplicado a `texto.txt`, escribe:
 
 ```text
 HOLA MUNDO

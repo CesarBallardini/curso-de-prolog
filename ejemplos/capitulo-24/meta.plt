@@ -7,6 +7,8 @@ test(predefinido) :-
     cada_uno_sin_declarar(integer, [1, 2]),
     cada_uno_meta(integer, [1, 2]).
 
+% predicate_property/2, que consulta las propiedades,
+% se presenta en el capítulo 33.
 test(declaracion, true(M == cada_uno_meta(1, ?))) :-
     predicate_property(meta:cada_uno_meta(_, _), meta_predicate(M)).
 

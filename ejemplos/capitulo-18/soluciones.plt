@@ -89,6 +89,7 @@ test(informe_de_materias,
     materias(M),
     informe(promedio_de_materia, M, F).
 
+% with_output_to/2, que captura la salida, se presenta en el capítulo 27.
 test(mostrar_informe_de_materias,
      true(S == "Promedios\n  log logica: 7\n  pp paradigmas: 8\n")) :-
     with_output_to(string(S),
@@ -119,6 +120,7 @@ test(a_lo_ancho,
                 3-3, 1-2, 2-2])) :-
     descubrir_a_lo_ancho(1-6, D).
 
+% msort/2, que ordena sin eliminar repetidos, se presenta en el capítulo 22.
 test(mismas_celdas, true(S1 == S2)) :-
     descubrir_a_lo_ancho(1-6, D1),
     descubrir(1-6, [], D2),

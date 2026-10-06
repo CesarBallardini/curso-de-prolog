@@ -964,6 +964,7 @@ tiene de propio.
 | `predecir/4`, `proxima/4`, `localizar/5` | la elección de la próxima medición |
 | `suponer/2`, `refutar/2` | la abducción con negación: supuestos verdaderos y falsos |
 | `es_diagnostico/3`, `reducir/4`, `minimos_incrementales/3` | los mínimos del modelo débil a partir de diagnósticos |
+| `ord_intersect/2` | se cumple si dos conjuntos ordenados tienen un elemento en común (en las soluciones) |
 
 ## Temas que se retoman
 

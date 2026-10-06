@@ -881,6 +881,7 @@ que cargan los del capítulo, sin modificarlos.
 | `resolver_cercana/2`, `sesion/2` | las mejoras y el programa terminado |
 | **dos representaciones** | el término de casillas para girar y la lista de piezas para buscar una pieza, unidas por un hecho que comparte las variables |
 | `piezas/2`, `donde/4`, `en_lugar/3`, `ayuda/5`, `resolver_con_ayuda/2`, `comparar_ayuda/3` | la versión 8 |
+| `nextto/3` | dos elementos consecutivos de una lista; en las pruebas |
 
 ## Temas que se retoman
 

@@ -232,8 +232,9 @@ ERROR: In:
 ERROR:   [14] throw(error(domain_error(edad,"cuarenta"),_19284))
 ```
 
-`number_string/2` falla con un texto que no es un número; `number_codes/2`, con
-el mismo texto, produce un error de sintaxis. `leer_edad/2` captura el error de
+`number_string/2`, que convierte entre un número y su texto, falla con un
+texto que no es un número; `number_codes/2`, con el mismo texto, produce un
+error de sintaxis. `leer_edad/2` captura el error de
 sintaxis y lo reemplaza por uno del dominio del programa: quien la llama no
 necesita saber qué predicado usó para convertir.
 
@@ -527,6 +528,8 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | `setup_call_cleanup/3` | la limpieza se ejecuta siempre |
 | `open/3`, `read_line_to_string/2`, `close/1` | abrir un archivo, leer una línea, cerrar el stream: lo mínimo para la limpieza; el [capítulo 27](../capitulo-27-archivos-streams-y-formatos/index.md) los trata a fondo |
 | `print_message/2`, `prolog:message//1` | mensajes con nivel, con el texto separado del término |
+| `number_string/2` | convierte entre un número y su texto; falla con un texto que no es un número |
+| `text_to_string/2`, `char_type/2` | un texto como cadena; el tipo de un carácter (en las soluciones) |
 | **Patrones 30, 31, 32** | capturar lo justo y relanzar; validar al entrar; recurso con limpieza garantizada |
 
 ## Temas que se retoman

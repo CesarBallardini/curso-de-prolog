@@ -40,9 +40,9 @@ test(directo, [true(Ps == Qs)]) :-
     findall(P-Q, ( distinguible(det(multiplo3), P, Q), P @< Q ), Qs0),
     sort(Qs0, Qs).
 
-test(arcos, [true(As == [[q0, q1]-a-[q0, q1], [q0, q1]-b-[q0, q2],
-                         [q0, q2]-a-[q0, q1], [q0, q2]-b-[q0],
-                         [q0]-a-[q0, q1], [q0]-b-[q0]])]) :-
+test(arcos, [true(As == [[q0]-a-[q0, q1], [q0]-b-[q0],
+                         [q0, q1]-a-[q0, q1], [q0, q1]-b-[q0, q2],
+                         [q0, q2]-a-[q0, q1], [q0, q2]-b-[q0]])]) :-
     minimizar:arcos(det(termina_ab), As).
 
 test(predecesor, set(S-P == [a-[q0], a-[q0, q1], a-[q0, q2]])) :-

@@ -498,6 +498,9 @@ Texto = "viernes 25 de septiembre de 2026".
 F = date(2026, 9, 25).
 ```
 
+`day_of_the_week/2` da el número del día de la semana de una fecha, desde
+1, el lunes, hasta 7, el domingo.
+
 `hoy/1` es el único predicado de `fecha.pl` que depende del reloj; los demás
 dan siempre el mismo resultado, y se prueban con fechas fijas. Su prueba solo
 verifica la forma de la respuesta.
@@ -752,6 +755,8 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | `ord_del_element/3` | quitar un elemento de un conjunto ordenado (solución 14) |
 | `current_prolog_flag(windows, true)` | distinguir el sistema, en un solo lugar |
 | **[Patrón 38](../patrones.md#38-programa-de-linea-de-comandos)** | programa de línea de comandos |
+| `day_of_the_week/2`, `parse_time/3` | el día de la semana de una fecha, de 1 a 7; leer una fecha escrita en ISO 8601 |
+| `getenv/2`, `prolog_to_os_filename/2` | el valor de una variable de entorno; convertir una ruta entre la forma de Prolog y la del sistema (solución 11) |
 
 ## Temas que se retoman
 

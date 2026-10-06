@@ -17,6 +17,7 @@ test(sacar_con_x_libre, all(X-R == [a-[b], b-[a]])) :-
 test(iguales_ligado, true(L == [a, a])) :-
     iguales_a(a, [a, b, a], L).
 
+% var/1, que reconoce una variable libre, se presenta en el capítulo 32.
 % Con un elemento libre en la lista, las dos posibilidades: que sea a o que
 % no lo sea.
 test(iguales_con_un_elemento_libre, all(Y-L == [a-[a, a], z-[a]])) :-

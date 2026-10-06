@@ -5,6 +5,7 @@
 test(sin_repetidos_ligado, true(R == [a, b, c])) :-
     sin_repetidos_puro([a, b, a, c, b], R).
 
+% var/1, que reconoce una variable libre, se presenta en el capítulo 32.
 % Con un elemento libre, los dos casos: que X sea a, y que sea distinto.
 test(sin_repetidos_con_un_elemento_libre, all(X-R == [a-[a], z-[a, z]])) :-
     sin_repetidos_puro([a, X], R),

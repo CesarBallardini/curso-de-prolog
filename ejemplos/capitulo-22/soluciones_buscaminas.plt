@@ -12,6 +12,7 @@ test(descubrir_numero, true(D == [1-2])) :-
     tablero(3, 4, [1-1, 2-3], T),
     descubrir(T, 1-2, [], D).
 
+% with_output_to/2, que captura la salida, se presenta en el capítulo 27.
 % Ejercicio 13: ida y vuelta con mostrar/1.
 test(desde_texto, true(S == "*211\n12*1\n0111\n")) :-
     tablero_desde_texto(["*211", "12*1", "0111"], T),

@@ -374,6 +374,9 @@ B = 8,
 M = 9.
 ```
 
+`ord_selectchk/3` quita un elemento de un conjunto ordenado y falla si no
+está: el tramo tiene que llegar a una marca pendiente.
+
 La primera versión de este archivo guardaba las casillas usadas en un
 conjunto ordenado de `library(ordsets)` y llamaba a `tramo/4` en cada
 paso. Sobre `csenki2`, desde la marca `2-7`, costaba 1 497 millones de
@@ -1032,6 +1035,7 @@ que cargan los del capítulo, sin modificarlos.
 | `desarreglo/2`, `matriz_patron/2`, `filas_distintas/1`, `evaluar/2`, `maximo/3` | Enigma 1225 por generación y prueba |
 | `conjugada/3`, `maximo_por_tipo/3` | una evaluación por tipo |
 | `particion/2`, `representante/2`, `maximo_representantes/3` | los representantes generados |
+| `ord_selectchk/3` | quita un elemento de un conjunto ordenado; falla si no está |
 
 ## Temas que se retoman
 

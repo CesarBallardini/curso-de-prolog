@@ -954,6 +954,8 @@ archivo que carga los del capítulo, sin modificarlos.
 | **laberinto** | pasadizos por dirección sin sentido inverso; camino más corto por profundización iterativa acotada; exploración con una lista de salas marcadas |
 | **menú de una tecla** | la tecla se lee sin esperar Intro en la terminal y carácter a carácter en los demás streams, que es como se prueba |
 | `puntaje.pl`, `personajes.pl`, `laberinto.pl`, `teclas.pl` | el puntaje, los personajes, el laberinto y los menús de una tecla |
+| `get_char/2` | el carácter siguiente de un stream: la tecla de un menú fuera de la terminal |
+| `working_directory/2` | el directorio de trabajo, y su cambio; en las pruebas |
 
 ## Temas que se retoman
 

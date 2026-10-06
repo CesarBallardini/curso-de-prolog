@@ -855,6 +855,7 @@ los da por hechos.
 | `transducir/3`, `inversa/1`, `compuesta/2`, `identidad/1`, `moore/3` | los transductores y las máquinas de Moore |
 | `acepta_pila/2`, `acepta_vacia/2`, `turing/4`, `turing_cintas/4` | los autómatas de pila y las máquinas de Turing |
 | `markov/4`, `post/4` | los algoritmos de Markov y los sistemas de Post |
+| `number_chars/2` | convierte entre un número y la lista de sus caracteres: el valor de un lexema |
 
 ## Temas que se retoman
 

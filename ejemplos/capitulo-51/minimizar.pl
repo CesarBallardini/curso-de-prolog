@@ -73,9 +73,11 @@ distinguible(A, P, Q) :-
 %!  arcos(+A, -Arcos:list) is det.
 %
 %   Arcos son las transiciones P-S-P1 que salen de los estados
-%   alcanzables de A.
+%   alcanzables de A, ordenadas: alcanzable/2 es tabulada, y el orden de
+%   las respuestas de una tabla puede cambiar de una plataforma a otra.
 arcos(A, Arcos) :-
-    findall(P-S-P1, ( alcanzable(A, P), delta(A, P, S, P1) ), Arcos).
+    findall(P-S-P1, ( alcanzable(A, P), delta(A, P, S, P1) ), Arcos0),
+    sort(Arcos0, Arcos).
 
 %!  predecesor(+A, +P1, ?S, ?P) is nondet.
 %

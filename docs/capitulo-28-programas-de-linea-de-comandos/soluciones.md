@@ -335,6 +335,7 @@ directorio_de_datos(Programa, Directorio) :-
     directory_file_path(Base, Programa, Directorio).
 ```
 
+`getenv/2` da el valor de una variable de entorno del sistema operativo.
 En Windows, `APPDATA` es una ruta con `\`; `prolog_to_os_filename/2` la
 convierte a la forma de Prolog, con `/`, para que `directory_file_path/3` no
 mezcle los dos separadores. La comparación con `current_prolog_flag/2` está en

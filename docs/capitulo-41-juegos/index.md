@@ -838,6 +838,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | `min_list/2` | el menor elemento de una lista de números ([Tablas de transposición](transposicion.md#tablas-de-transposicion-con-tabulacion)) |
 | `jugar/2`, `paso/3`, `pantalla/2`, `bucle/3` | el ta-te-ti en la terminal ([El ta-te-ti en la terminal](terminal.md#el-ta-te-ti-completo-en-la-terminal)) |
 | **[Patrón 55](../patrones.md#55-poda-alfa-beta)** | poda alfa-beta |
+| `expand_file_name/2` | los archivos que cumplen un patrón con comodines, como `*.pl` |
 
 ## Temas que se retoman
 

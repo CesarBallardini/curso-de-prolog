@@ -650,6 +650,7 @@ que cargan los del capítulo, sin modificarlos.
 | `same_file/2` | si dos nombres designan el mismo archivo |
 | `open_string/2` | un stream de lectura sobre una cadena |
 | `format(codes(Codigos), …)` | escribe con formato en una lista de códigos |
+| `print_message_lines/3` | escribe en un stream las líneas de un mensaje; en las pruebas |
 
 ## Temas que se retoman
 

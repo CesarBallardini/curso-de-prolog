@@ -15,6 +15,8 @@ test(incompleta, [fail]) :-
 test(resta_derecha, true(V == 9)) :-
     phrase(resta_derecha(V), `10-3-2`).
 
+% call_with_inference_limit/3, que acota las inferencias,
+% se presenta en el capítulo 26.
 % La recursión a izquierda no termina: con un límite de un millón de
 % inferencias, la consulta lo agota sin dar ninguna respuesta.
 test(recursion_a_izquierda, true(R == inference_limit_exceeded)) :-

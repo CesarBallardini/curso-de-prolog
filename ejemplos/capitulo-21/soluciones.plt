@@ -22,6 +22,8 @@ test(ab_genera, true(L == [a, a, b, b])) :-
 test(ab_invertida_analiza, [nondet]) :-
     phrase(ab_invertida, [a, a, b, b]).
 
+% call_with_inference_limit/3, que acota las inferencias,
+% se presenta en el capítulo 26.
 test(ab_invertida_no_genera, true(R == inference_limit_exceeded)) :-
     call_with_inference_limit(phrase(ab_invertida, _), 1000000, R).
 

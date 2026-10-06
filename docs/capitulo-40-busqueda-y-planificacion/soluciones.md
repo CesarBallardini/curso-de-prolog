@@ -656,4 +656,5 @@ primera jugada. El Buscaminas de los programas de escritorio garantiza que
 la primera celda descubierta tiene un 0, y así la partida arranca con una
 región abierta. `once/1` elige la celda de partida dentro de
 `aggregate_all/3`: un corte en ese lugar cortaría también el `between/3` de
-las semillas, y la cuenta daría 0.
+las semillas, y la cuenta daría 0. `random_permutation/2` mezcla al azar la
+lista de celdas, y las primeras `Cantidad` celdas de la mezcla son las minas.

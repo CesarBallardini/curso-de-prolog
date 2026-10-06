@@ -9,6 +9,7 @@ test(minas_alrededor_de_2_2, true(N == 2)) :-
 test(una_celda_con_numero, true(D == [1-2])) :-
     descubrir(1-2, [], D).
 
+% msort/2, que ordena sin eliminar repetidos, se presenta en el capítulo 22.
 % Desde (1, 6), sin minas vecinas, se descubre toda la región.
 test(region_de_la_esquina,
      true(S == [1-2, 1-3, 1-4, 1-5, 1-6, 2-2, 2-3, 2-4, 2-5, 2-6,
@@ -31,6 +32,7 @@ test(region_de_abajo, true(S == [4-1, 4-2, 5-1, 5-2, 6-1, 6-2])) :-
     descubrir(6-1, [], D),
     msort(D, S).
 
+% with_output_to/2, que captura la salida, se presenta en el capítulo 27.
 test(mostrar, true(S == "#10000\n#21000\n##1111\n######\n######\n######\n")) :-
     descubrir(1-6, [], D),
     with_output_to(string(S), mostrar(D)).

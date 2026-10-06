@@ -30,6 +30,7 @@ test(igual_que_aggregate_all, true(N1 == N2)) :-
 test(sin_asignar, [error(existence_error(variable, nunca), _)]) :-
     b_getval(nunca, _).
 
+% var/1, que reconoce una variable libre, se presenta en el capítulo 32.
 % nb_setval/2 guarda una copia: la variable del valor guardado no es la X.
 test(nb_setval_copia, true(var(Y))) :-
     nb_setval(k, f(X)),

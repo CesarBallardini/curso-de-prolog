@@ -869,6 +869,8 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | `http_workers/2` | la cantidad de trabajadores de un servidor HTTP; con un número, la cambia |
 | bandera `cpu_count` | la cantidad de núcleos que ve SWI-Prolog |
 | **[Patrón 52](../patrones.md#52-estado-compartido-detras-de-un-mutex)** | estado compartido detrás de un mutex |
+| `random_member/2` | un elemento al azar de una lista (en las soluciones) |
+| `subset/2` | se cumple si todos los elementos de la primera lista están en la segunda; en las pruebas |
 
 ## Temas que se retoman
 

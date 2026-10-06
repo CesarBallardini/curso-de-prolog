@@ -4,6 +4,8 @@
 
 :- begin_tests(comprobar).
 
+% with_output_to/2, que captura la salida, se presenta en el capítulo 27.
+% setup_call_cleanup/3, que asegura la limpieza, se presenta en el capítulo 25.
 % La advertencia va a la salida de errores, que with_output_to/2 no captura.
 % Las pruebas dan a la salida capturada el alias user_error mientras se
 % ejecuta el objetivo, y después lo devuelven a la salida de errores original.

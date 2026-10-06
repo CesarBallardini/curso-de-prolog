@@ -786,6 +786,7 @@ tiene de propio.
 | `bayes/4`, `posterior/3`, `y_maxima_entropia/3` | la regla de Bayes, la probabilidad de cada animal, y la conjunción de entropía máxima |
 | `balance/4`, `factor/4`, `cf_combinar/3` | la evidencia a favor menos la en contra, y los factores de certeza con signo |
 | `id3/4`, `ventana/5`, `reticulado/3` | el árbol aprendido de ejemplos, el esquema de la ventana, y el reticulado |
+| `transpose_pairs/2` | invierte cada par `Clave-Valor` y ordena por la clave nueva |
 
 ## Temas que se retoman
 

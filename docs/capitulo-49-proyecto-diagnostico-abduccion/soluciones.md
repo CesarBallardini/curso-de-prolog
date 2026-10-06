@@ -360,6 +360,9 @@ toca_los_conos(Circuito, Entradas-Salidas, Diagnostico) :-
              ord_intersect(Cono, Rutas) )).
 ```
 
+`ord_intersect/2` se cumple si dos conjuntos ordenados tienen al menos un
+elemento en común.
+
 `depende/5` recorre la descripción desde un cable hacia las entradas. Si el
 cable lo produce un subcircuito, baja por la salida correspondiente, y las
 entradas del subcircuito que alcanza se traducen de vuelta a los cables del

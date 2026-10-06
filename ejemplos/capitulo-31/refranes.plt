@@ -9,6 +9,7 @@
 
 :- begin_tests(refranes).
 
+% copy_file/2, que copia un archivo, se presenta en el capítulo 56.
 %!  construir_sin_datos(+Directorio:atom, -Programa) is det.
 %
 %   Copia refranes.pl y sus datos a Directorio, lo construye allí con

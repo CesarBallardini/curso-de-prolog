@@ -2,6 +2,7 @@
 
 :- begin_tests(menu).
 
+% with_output_to/2, que captura la salida, se presenta en el capítulo 27.
 test(dos_ordenes_y_salir,
      true(S == "ana tiene 41 años\nsofia no está en la base\nFin\n")) :-
     open_string("edad(ana). edad(sofia). salir.", In),

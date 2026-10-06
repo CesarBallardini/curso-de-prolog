@@ -122,6 +122,9 @@ I = instanciacion(progenitor_p, [1], 1, [agregar(progenitor(juan, ana))]).
 I = instanciacion(progenitor_p, [3], 1, [agregar(progenitor(juan, pedro))]).
 ```
 
+`gen_assoc/3` enumera por retroceso los pares de un assoc, en orden de
+clave: aquí da la clave de la regla que tiene ese nombre.
+
 ## 4
 
 `propagar/6` ordena las activaciones con `sort/4` antes de ejecutarlas, así

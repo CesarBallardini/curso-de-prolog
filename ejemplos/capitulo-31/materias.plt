@@ -9,6 +9,7 @@
 
 :- begin_tests(materias).
 
+% copy_file/2, que copia un archivo, se presenta en el capítulo 56.
 %!  construir_sin_datos(+Directorio:atom, -Programa) is det.
 %
 %   Copia materias.pl y su archivo JSON a Directorio, lo construye allí y

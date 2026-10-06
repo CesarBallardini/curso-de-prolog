@@ -464,7 +464,9 @@ En la curva, el papel de G^X lo cumple X·G, el generador sumado X veces
 consigo mismo, y despejar X de X·G es el logaritmo discreto de la curva.
 Con 256 bits da una seguridad comparable a la del grupo de 3072 bits, y
 los valores que se intercambian son mucho más cortos. Las claves cambian
-en cada ejecución.
+en cada ejecución. `crypto_name_curve/2` da la curva de un nombre;
+`crypto_curve_generator/2` y `crypto_curve_order/2`, su generador y su orden;
+`crypto_curve_scalar_mult/4` multiplica un punto de la curva por un escalar.
 
 ## 11
 

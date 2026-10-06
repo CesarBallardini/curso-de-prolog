@@ -928,6 +928,7 @@ que cargan los del capítulo, sin modificarlos.
 | **búsquedas de las versiones 2 a 5** | en profundidad, exhaustiva, mejor primero y con subproblemas compartidos, cada una en su archivo |
 | **resultados de las búsquedas** | `mapa.pl`, `compartidos.pl` y `juego.pl` resumen el recorrido, la cantidad de movimientos o la estrategia, con los nodos expandidos |
 | `call_with_inference_limit/3` | ejecuta una meta hasta un número de inferencias, y responde `inference_limit_exceeded` si lo alcanza |
+| `call_time/2` | el tiempo y las inferencias que consume un objetivo (en las soluciones) |
 
 ## Temas que se retoman
 

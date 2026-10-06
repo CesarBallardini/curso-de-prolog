@@ -906,6 +906,7 @@ tiene de propio.
 | `read_term/3`, `stream_position_data/3`, `dcg_translate_rule/2`, `open_string/2`, `set_module/1` | leer un programa sin cargarlo, y el módulo `externo` |
 | `xref_source/2`, `xref_defined/3`, `xref_exported/2`, `xref_called/3` | `library(prolog_xref)` |
 | `comando/3`, `grabar/1`, `editar/1` | el editor de cláusulas: el estado y sus comandos, la base y la sesión |
+| `xref_clean/1` | descarta lo que `xref_source/2` registró de un archivo; en las pruebas |
 
 ## Temas que se retoman
 

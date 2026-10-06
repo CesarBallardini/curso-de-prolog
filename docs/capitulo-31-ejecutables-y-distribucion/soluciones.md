@@ -195,6 +195,8 @@ test(sin_el_archivo, [ setup(( tmp_file(construido, D), make_directory(D) )),
     correr(Programa, [log], S, E).
 ```
 
+`make_directory/1` crea el directorio temporal de la prueba, y
+`delete_directory_and_contents/1` lo borra con todo lo que contiene.
 `construir_sin_datos/2`, en `materias.plt`, copia `materias.pl` y su archivo
 JSON a un directorio temporal, construye allí y borra la copia del JSON:
 el archivo original queda en su lugar, y las demás pruebas lo siguen usando.

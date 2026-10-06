@@ -817,6 +817,8 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | `option/3` | una opción de una lista, con valor por omisión |
 | `library(random)`: `randseq/3`, `set_random/1` | azar con semilla; en un solo predicado, con la semilla fija en las pruebas |
 | `string_length/2` | la cantidad de caracteres de una cadena (en las soluciones) |
+| `is_dict/2` | se cumple si el término es un dict, y da su etiqueta; en las pruebas |
+| `same_term/2` | se cumple si los dos argumentos son el mismo término en memoria; en las pruebas de las soluciones |
 | **Patrones 23, 24, 25** | decorar, ordenar, desdecorar; tabla de búsqueda con `assoc`; búsqueda con visitados |
 
 ## Temas que se retoman

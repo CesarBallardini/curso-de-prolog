@@ -163,6 +163,7 @@ test(informe_de_aprobadas, true(F == [101-4, 105-0])) :-
 test(informe_vacio, true(F == [])) :-
     informe(aprobadas, [], F).
 
+% with_output_to/2, que captura la salida, se presenta en el capítulo 27.
 test(mostrar_informe,
      true(S == "Aprobadas
   101 ana: 4

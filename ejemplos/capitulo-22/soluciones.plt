@@ -74,6 +74,7 @@ test(sorteo_sin_repetidos, true(N == 6)) :-
 test(insertar_mal_pierde_la_raiz, [nondet, true(A == n(vacio, 5, vacio))]) :-
     insertar_mal(5, n(vacio, 7, vacio), A).
 
+% var/1, que reconoce una variable libre, se presenta en el capítulo 32.
 test(insertar_mal_deja_libre, true(var(A))) :-
     insertar_mal(7, n(vacio, 7, vacio), A).
 

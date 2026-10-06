@@ -1010,6 +1010,9 @@ que cargan los del capítulo, sin modificarlos.
 | `crypto_n_random_bytes/2`, `hex_bytes/2` | bytes aleatorios criptográficos; la conversión entre bytes y hexadecimal |
 | `crypto_generate_prime/3`, `rsa_sign/4`, `rsa_verify/4` | los primos de una clave RSA, la firma y su verificación |
 | `crypto_data_hkdf/4` | la derivación de claves a partir de un secreto |
+| `utf8_codes//1` | con `phrase/2`, los bytes UTF-8 de los códigos de un texto, y al revés |
+| `crypto_name_curve/2`, `crypto_curve_generator/2`, `crypto_curve_order/2`, `crypto_curve_scalar_mult/4` | una curva elíptica por su nombre, su generador, su orden y el producto de un punto por un escalar (solución 10) |
+| `copy_directory/2` | copia un directorio con su contenido; en las pruebas |
 | `powm`, `popcount`, `lsb`, `msb` | la potencia modular y tres funciones de bits, en `is/2` |
 | `resumen/2`, `bits_distintos/3`, `manifiesto/2`, `verificar/3`, `intacto/2` | la versión 1 |
 | `tabla_simple/1`, `atacar_diccionario/2`, `fuerza_bruta/3`, `registrar/3`, `comprobar/2` | la versión 2 |

@@ -519,7 +519,8 @@ trae. `formula/3` pasa los nombres de las entradas como sus valores, y
 términos cada vez más grandes, construidos por unificación. Si el circuito
 tiene realimentación, el término sería cíclico —en el biestable, la fórmula
 de q contiene la de qn, que contiene la de q—, y `formula/3` lo rechaza con
-un error de dominio.
+un error de dominio: `acyclic_term/1` se cumple solo si el término no es
+cíclico.
 
 ```prolog
 ?- formula(sumador, S, F).
@@ -1106,6 +1107,7 @@ tiene de propio, y el [capítulo 49](../capitulo-49-proyecto-diagnostico-abducci
 | **transistor** | la relación de sus estados estables: el p conduce con la compuerta en 0, el n con la compuerta en 1 |
 | `ptran/3`, `ntran/3`, `inversor_cmos/2`, `xor_cmos/3`, `cortocircuito/1` | las compuertas CMOS y un circuito sin estados estables |
 | **[Patrón 60](../patrones.md#60-interprete-con-conducta-como-parametro)** | intérprete con conducta como parámetro |
+| `acyclic_term/1` | se cumple si el término no es cíclico: un circuito sin realimentación |
 
 ## Temas que se retoman
 

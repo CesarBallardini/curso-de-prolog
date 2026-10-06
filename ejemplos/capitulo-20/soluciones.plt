@@ -2,6 +2,8 @@
 
 :- begin_tests(soluciones).
 
+% clause/2, que obtiene las cláusulas de un predicado,
+% se presenta en el capítulo 33.
 % Ejercicio 1: la secuencia del enunciado, desde una base vacía. Las pruebas
 % corren en su propio módulo, y por eso los hechos llevan user:.
 test(ejercicio_1, [ setup(( retractall(user:q(_, _)),
@@ -77,6 +79,7 @@ test(suma_guardada, [ setup(olvidar_sumas), cleanup(olvidar_sumas),
     suma_hasta(100, _),
     aggregate_all(count, suma_guardada(_, _), N).
 
+% with_output_to/2, que captura la salida, se presenta en el capítulo 27.
 % Ejercicio 8
 test(como, [ setup((reiniciar, encadenar)), cleanup(reiniciar),
              true(L == ["abuelo(juan,sofia): por abuelo",
@@ -108,6 +111,7 @@ test(rondas, [ setup(reiniciar), cleanup(reiniciar), true(R-N == 3-41) ]) :-
     encadenar_por_rondas(R),
     aggregate_all(count, hecho(_), N).
 
+% msort/2, que ordena sin eliminar repetidos, se presenta en el capítulo 22.
 test(mismos_hechos, [ cleanup(reiniciar), true(L1 == L2) ]) :-
     reiniciar,
     encadenar,

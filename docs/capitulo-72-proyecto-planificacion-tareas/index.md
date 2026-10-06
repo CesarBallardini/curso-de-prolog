@@ -877,6 +877,7 @@ que cargan los del capítulo, sin modificarlos.
 | `fechas/3`, `holguras/2`, `camino_critico/2` | las holguras |
 | **[Patrón 71](../patrones.md#71-resultado-con-garantia)** | resultado con garantía |
 | **[Patrón 72](../patrones.md#72-verificar-una-propiedad-en-todo-el-espacio-de-estados-de-un-caso-chico)** | verificar una propiedad en todo el espacio de estados de un caso chico |
+| `empty_nb_set/1`, `add_nb_set/2,3`, `nb_set_to_list/2`, `size_nb_set/2` | un conjunto de términos que no se deshace al retroceder: crearlo, agregar un elemento, la lista y la cantidad de elementos |
 
 ## Temas que se retoman
 

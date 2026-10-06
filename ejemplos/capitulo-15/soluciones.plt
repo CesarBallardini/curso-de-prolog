@@ -46,6 +46,7 @@ test(tres_es_impar, true(P == impar)) :-
 test(primera_aprobada_de_ana, true(M == am1)) :-
     primera_aprobada(101, M).
 
+% with_output_to/2, que captura la salida, se presenta en el capítulo 27.
 % Ejercicio 7
 test(aprobadas_de_diego, true(S == "log: 9\nalg: 7\npp: 8\n")) :-
     with_output_to(string(S), listar_aprobadas(104)).
@@ -101,6 +102,8 @@ test(tomada_con_dos_clausulas,
                    103-am1-1, 104-log-1, 104-alg-1, 104-pp-2, 106-am1-1])) :-
     tomada_en_dos(L, M, A).
 
+% call_with_inference_limit/3, que acota las inferencias,
+% se presenta en el capítulo 26.
 % Ejercicio 17: eco/1 no termina por sí mismo; el límite de inferencias lo
 % detiene. La versión corregida termina al final del stream, sin alternativas.
 test(eco_no_termina, true(R == inference_limit_exceeded)) :-

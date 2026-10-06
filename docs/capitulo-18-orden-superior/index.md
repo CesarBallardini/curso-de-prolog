@@ -763,6 +763,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | `{Libres}/[Parametros]>>Objetivo` | una lambda de `yall`; las variables compartidas, entre llaves |
 | `:- meta_predicate` | qué argumentos se llaman, y con cuántos argumentos agregados |
 | cuándo no usarlo | una lambda larga, un recorrido que se detiene, varios recorridos sobre la misma lista |
+| `call_cleanup/2` | ejecuta un objetivo de limpieza cuando otro termina sin alternativas; en las pruebas |
 | **Patrones 14, 15** | recorrido con `maplist`; plegado con `foldl` |
 
 ## Temas que se retoman

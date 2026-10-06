@@ -978,6 +978,8 @@ los predicados que el capítulo declara `multifile`.
 | `modelo_con_usuarios/1`, `acceso/3`, `responder_modelo/2` | los propietarios y los archivos compartidos |
 | `sub_term/2` | cada subtérmino de un término, por retroceso |
 | `copy_file/2`, `set_time_file/3` | de `library(filesex)`: copiar un archivo, cambiar su fecha de modificación |
+| `size_file/2`, `time_file/2`, `rename_file/2` | el tamaño y la fecha de modificación de un archivo; cambiar su nombre |
+| `flush_output/1` | escribe lo que un stream tiene pendiente, antes de esperar una respuesta |
 
 ## Temas que se retoman
 

@@ -426,6 +426,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | `file_search_path/2`, `prolog_load_context/2` | alias de directorios, como `library`; el directorio del archivo que se carga (solución 10) |
 | `current_output/1` | el stream de la salida actual, en las pruebas de la solución 6 |
 | packs | `pack_install/1`, `pack_list/1`, `pack_info/1`, `pack_remove/1` |
+| `stream_property/2`, `set_stream/2` | consultar y cambiar las propiedades de un stream, como su alias; en las pruebas de las soluciones |
 | **Patrones 28, 29** | interfaz del módulo; núcleo puro, bordes impuros |
 
 ## Temas que se retoman
