@@ -23,8 +23,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
+      # Chromium too: the web pages of chapter 36 are tested in a browser, by
+      # the make appendix step below.
       - name: Prepare
         uses: ./.github/actions/preparar
+        with:
+          chromium: 'true'
 
       - name: Tests of every example
         run: make test
