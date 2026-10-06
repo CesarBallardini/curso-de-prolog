@@ -514,8 +514,8 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
    cuáles no? ¿Por qué las pruebas comparan inferencias?
 2. **(1)** ¿Cuáles de estas recursiones corren en espacio constante? `largo/2`
    y `largo_acc/2` de este capítulo · `suma_lista/2` y `suma_con_acumulador/2`
-   del [capítulo 8](../capitulo-08-aritmetica/index.md) · `pegar/3` del capítulo 7. Justificar con la regla de la
-   sección 16.2.
+   del [capítulo 8](../capitulo-08-aritmetica/index.md) · `pegar/3` del [capítulo 7](../capitulo-07-listas/index.md). Justificar con la regla de la
+   [sección 16.2](#162-la-pila-y-la-recursion).
 3. ★ **(2)** Escribir `suma_lista_acc/2` y comparar su comportamiento con
    `suma_lista/2` del [capítulo 8](../capitulo-08-aritmetica/index.md) sobre una lista de un millón de números, con
    `swipl --stack-limit=64m`.

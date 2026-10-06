@@ -118,7 +118,7 @@ búsqueda en profundidad recorre la cueva de lado a lado: doce pasos donde
 alcanzan cuatro. A\* expande solo las cuatro celdas del camino, porque la
 heurística es exacta cuando el camino recto está libre; la búsqueda en
 anchura expande 11 nodos y la de costo uniforme 9, y las dos devuelven un
-camino de cuatro pasos. En una cueva de 4 × 4 la diferencia es de
+camino de cuatro pasos. En una cueva de 5 × 5 la diferencia es de
 milisegundos; en las grillas de cientos de celdas del
 [capítulo 76](../capitulo-76-proyecto-robots-laberintos-caballo/index.md) es lo que separa una búsqueda
 posible de una que no lo es.

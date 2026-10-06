@@ -245,7 +245,7 @@ T = [c-gana(1), d-pierde(0)],
 N = 2.
 ```
 
-El segundo es el juego j2 del capítulo 38. `c` gana, porque pasa a `d`,
+El segundo es el juego j2 del [capítulo 38](../capitulo-38-semantica-de-los-programas-logicos/index.md). `c` gana, porque pasa a `d`,
 que no tiene jugadas; `a` y `b` no reciben valor: la cuenta de `b` baja
 de 2 a 1 cuando `c` gana, y nunca llega a 0, porque su otra jugada lleva a
 `a`, que tampoco se decide. Son las dos posiciones que el modelo bien

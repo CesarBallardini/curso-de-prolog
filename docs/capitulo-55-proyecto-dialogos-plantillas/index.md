@@ -138,7 +138,7 @@ línea, con lo que escribe el programa.
 El recorrido de una frase por el programa terminado:
 
 ```mermaid
-flowchart LR
+flowchart TD
     F["frase del usuario"] --> P["palabras/2"]
     P --> A{"¿la agenda<br/>la reconoce?"}
     A -- "sí" --> AG["atender/4:<br/>anotar o responder"]

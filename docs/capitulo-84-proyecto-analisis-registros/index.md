@@ -66,7 +66,7 @@ la lectura de términos y de líneas del
 [capítulo 27](../capitulo-27-archivos-streams-y-formatos/index.md) y los
 hilos del [capítulo 37](../capitulo-37-concurrencia-y-paralelismo/index.md).
 Todos los archivos son `% solo-local`: leen archivos, y la versión 5 carga
-los programas del capítulo 69.
+los programas del [capítulo 69](../capitulo-69-proyecto-perceptron/index.md).
 
 ## Objetivos del capítulo
 

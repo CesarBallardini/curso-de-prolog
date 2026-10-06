@@ -2,7 +2,7 @@
 
 Esta página contiene la sección
 [55.8](index.md#558-guiones-completar-una-historia) del
-[capítulo 54](index.md): el aplicador de guiones al estilo de McSAM,
+[capítulo 55](index.md): el aplicador de guiones al estilo de McSAM,
 `guiones.pl`. El archivo está en `ejemplos/capitulo-55/`, con sus pruebas;
 no es un módulo ni carga otros archivos, y corre en SWISH.
 

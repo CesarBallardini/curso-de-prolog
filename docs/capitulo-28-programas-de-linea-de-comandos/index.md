@@ -176,7 +176,7 @@ avisos, y los avisos siguen apareciendo en la terminal.
 | `silent` | nada | no |
 
 El texto de un mensaje propio se define con `prolog:message//1`, como en el
-proyecto desde el capítulo 24. `contar.pl` define el de su error de uso:
+proyecto desde el [capítulo 25](../capitulo-25-errores-y-excepciones/index.md). `contar.pl` define el de su error de uso:
 
 <!-- ejemplo: capitulo-28/contar.pl fragmento: :- multifile prolog:message//1. .. [ 'Falta el nombre de un archivo (-h para ver la ayuda)' ]. consulta: contar_texto("uno dos\ntres\n", Lineas, Palabras). -->
 ```prolog

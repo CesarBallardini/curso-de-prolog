@@ -28,7 +28,7 @@ PDFS      := $(PDFS_CAP) $(PDFS_SOL)
 SWI_HOME_DIR ?= $(shell swipl --dump-runtime-variables 2>/dev/null | sed -n 's/^PLBASE="\(.*\)";/\1/p')
 
 .PHONY: help install browser test swish part-1 transcripts math time sync sql appendix windows \
-        docs docs-serve pdf pldoc clean-pldoc slides slides-pdf slides-check video lint format check clean clean-pdf
+        docs docs-serve mermaid pdf pldoc clean-pldoc slides slides-pdf slides-check video lint format check clean clean-pdf
 
 help: ## List the available targets
 	@echo "Curso de Prolog"
@@ -132,21 +132,35 @@ PLDOC      := $(addsuffix /index.html,$(PLDOC_DIRS))
 docs: $(PLDOC) ## Build the site into site/ (a warning is an error; no PDFs, see make pdf)
 	$(UV) mkdocs build --strict
 
+# Needs the network: Material fetches mermaid from its CDN, as a reader's browser does.
+mermaid: docs ## Build the site and draw every mermaid diagram in Chromium (one chapter: make mermaid e=capitulo-05)
+	$(UV) tools/check-mermaid.py $(e)
+
 docs-serve: ## Serve the site locally with live reload
 	$(UV) mkdocs serve --dev-addr $(DIRECCION)
 
 DIRECCION ?= 0.0.0.0:8000
 
-pdf: $(PDFS) ## Build the PDF of every chapter (only the ones that changed)
+# e= keeps the PDFs of the chapters named, full two-digit names: CI builds only
+# those of the chapters a pull request touches.
+pdf: $(if $(e),$(filter $(patsubst %,docs/%-%,$(e)),$(PDFS)),$(PDFS)) ## Build the PDF of every chapter (only the ones that changed; some: make pdf e="capitulo-05 capitulo-07")
 
 # The PDF machinery, which every page rebuild depends on.
 PDF_DEPS := tools/md2pdf.py tools/pdf-style.css tools/katex_pdf.py tools/swish_links.py tools/examples.py
 
+# A chapter's PDF also carries the pages the nav lists after «Soluciones»;
+# tools/md2pdf.py takes them from mkdocs.yml, and so does this list, so a new
+# page is picked up with no further edit. The images of the folder go inside
+# the PDF too.
+PAGINAS_NAV := $(shell sed -n 's|.*[ "]\(capitulo-[^ "]*/[^ /"]*\.md\)"\{0,1\}[[:space:]]*$$|docs/\1|p' mkdocs.yml)
+pdf_paginas  = $(filter-out $(1)/index.md $(1)/soluciones.md,$(filter $(1)/%,$(PAGINAS_NAV)))
+pdf_imagenes = $(wildcard $(addprefix $(1)/*.,svg png jpg jpeg gif))
+
 define REGLA_PDF
-$(1)/$(notdir $(1)).pdf: $(1)/index.md $$(PDF_DEPS)
+$(1)/$(notdir $(1)).pdf: $(1)/index.md $(call pdf_paginas,$(1)) $(call pdf_imagenes,$(1)) $$(PDF_DEPS)
 	$$(UV) tools/md2pdf.py $$< -o $$@
 
-$(1)/$(notdir $(1))-soluciones.pdf: $(1)/soluciones.md $$(PDF_DEPS)
+$(1)/$(notdir $(1))-soluciones.pdf: $(1)/soluciones.md $(call pdf_imagenes,$(1)) $$(PDF_DEPS)
 	$$(UV) tools/md2pdf.py $$< -o $$@
 endef
 $(foreach d,$(CAPITULOS),$(eval $(call REGLA_PDF,$(d))))

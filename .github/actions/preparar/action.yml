@@ -66,9 +66,25 @@ runs:
     # Chapter 15 teaches if_/3 from library(reif), a pack. It has no licence
     # of its own, so it cannot be copied into the repository: it is installed
     # here, as each reader installs it (section 15.9).
+    #
+    # Not with pack_install/2: that asks www.swi-prolog.org/pack/query first,
+    # and a 503 from that server failed whole runs. The pack is its git
+    # repository, so it is cloned at a fixed commit into the user pack
+    # directory, which swipl attaches at startup; the last line fails the step
+    # if library(reif) does not load.
     - name: Install the reif pack
       shell: bash
-      run: swipl -g "pack_install(reif, [interactive(false)])" -t halt
+      env:
+        REIF_COMMIT: 37019e9f1a33a550ddbf9cbe2a6b97ecbd0570b4
+      run: |
+        dir="$HOME/.local/share/swi-prolog/pack/reif"
+        for intento in 1 2 3; do
+          rm -rf "$dir"
+          git clone --quiet https://github.com/meditans/reif.git "$dir" && break
+          sleep 10
+        done
+        git -C "$dir" -c advice.detachedHead=false checkout --quiet "$REIF_COMMIT"
+        swipl -g "use_module(library(reif)), if_(a = a, true, fail)" -t halt
 
     - name: Chromium for the PDFs and the formulas
       if: inputs.chromium == 'true'

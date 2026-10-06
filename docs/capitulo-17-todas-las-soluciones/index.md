@@ -325,7 +325,7 @@ las edades, y se cumple al terminar.
 
     **Cuándo no usarlo.** Cuando se necesita saber **cuál** no cumple:
     `forall/2` solo responde sí o no. En ese caso, se busca el contraejemplo con
-    un objetivo que lo genere, como las pruebas de datos del capítulo 13.
+    un objetivo que lo genere, como las pruebas de datos del [capítulo 13](../capitulo-13-el-entorno-de-trabajo/index.md).
 
 ## 17.7 `library(solution_sequences)`
 
@@ -551,7 +551,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     materia con la cantidad de inscriptos, con `aggregate/3`.
 11. ★ **(2)** Escribir `mejor_de_materia(Materia, Legajo, Nota)`: el alumno con
     la nota más alta de la materia. Compararlo con `mejor_de/2` del ejercicio 16
-    del capítulo 10.
+    del [capítulo 10](../capitulo-10-negacion-como-falla/index.md).
 12. **(1)** ¿Qué responde `forall(member(X, []), X > 0).`? ¿Y
     `forall(member(X, [1, -1]), X > 0).`?
 13. **(2)** Escribir `listar_inscriptos(Materia)`, que escribe una línea por
@@ -564,7 +564,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     del capítulo hace falta?
 16. **(3)** `mejores/2` usa `order_by/2`. Escribir la misma consulta con
     `findall/3`, `sort/4` y un predicado que tome los primeros `N` elementos, y
-    comparar las dos con 5 000 alumnos generados como en el capítulo 16.
+    comparar las dos con 5 000 alumnos generados como en el [capítulo 16](../capitulo-16-rendimiento/index.md).
 
 ## Resumen
 

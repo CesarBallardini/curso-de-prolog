@@ -146,7 +146,7 @@ la primera persona que encuentra, y `mayor_edad_2/2` responde marta.
 `max_member/2` compara los pares `Edad-Persona` en el orden estándar, y entre
 `68-juan` y `68-marta` es mayor el segundo, por el nombre. Ninguno de los dos da
 los dos empatados; para eso, `findall/3` con la edad máxima ya calculada, o la
-forma de la sección 10.7.
+forma de la [sección 10.7](../capitulo-10-negacion-como-falla/index.md#107-obtener-una-respuesta-por-negacion).
 
 ## 8
 

@@ -609,7 +609,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 8. **(3)** Escribir `solo_en_la_primera(L1, L2, R)`: `R` contiene los elementos
    de `L1` que no pertenecen a `L2`.
 9. **(3)** Escribir `no_tiene_hijos/1` sin usar `\+`, de las dos maneras de la
-   [sección 10.8](#108-prescindir-de), y comparar su extensión con la de la sección 10.4.
+   [sección 10.8](#108-prescindir-de), y comparar su extensión con la de la [sección 10.4](#104-donde-ubicar).
    ¿Qué no se puede hacer con los elementos de la parte I? Indicar qué
    elemento falta.
 10. ★ **(1)** Predecir qué responde cada consulta, con los seis operadores de la

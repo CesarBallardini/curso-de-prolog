@@ -13,11 +13,14 @@ de segundo año sin conocimientos previos de Prolog. Se publica como sitio web
 con MkDocs en **<https://katra.ballardini.com.ar/curso-de-prolog/>**, con un PDF
 por capítulo.
 
-**Todos los ejemplos se abren y se ejecutan en el navegador**: cada bloque de
-código del texto proviene de un archivo de `ejemplos/`, tiene sus pruebas
-plunit, e incluye un enlace «▶ Abrir en SWISH» que transporta el código fuente
-completo dentro de la URL. No se requiere ninguna instalación para seguir el
-curso, ni ningún servicio propio para que los ejemplos funcionen.
+Cada bloque de código del texto proviene de un archivo de `ejemplos/` y tiene
+sus pruebas plunit. El que SWISH puede ejecutar incluye un enlace «▶ Abrir en
+SWISH» que transporta el código fuente completo dentro de la URL, sin ningún
+servicio propio; el que no, muestra en su lugar el motivo. La parte I y la
+mayor parte de la II se siguen en el navegador, sin ninguna instalación. Desde
+el capítulo 24, que presenta los módulos, muchos ejemplos requieren una
+instalación local de SWI-Prolog, y también la mayor parte de los de la parte
+IV, cuyos proyectos cargan módulos y archivos de otros capítulos.
 
 El curso se distribuye bajo la licencia MIT. Los libros, cursos y colecciones de
 ejercicios que se citan conservan su propia licencia: se los enlaza y se los
@@ -25,14 +28,12 @@ cita, y no se los reproduce.
 
 ## Estado
 
-**Las partes I y II (capítulos 1 a 31) están completas**: texto, ejercicios,
-soluciones, ejemplos con sus pruebas y PDF de cada capítulo. Los capítulos 7 a
-31 están en revisión.
-
-Las partes III (capítulos 32 a 42, con Prolog y SQL en el 42) y IV (proyectos,
-capítulos 43 a 87) se están escribiendo, un capítulo por vez: los capítulos
-ya escritos tienen texto, ejercicios, soluciones y pruebas; los demás tienen
-una página inicial sin contenido.
+**El curso está completo**: 87 capítulos en cuatro partes —I, Introducción
+(1 a 12); II, Prolog para programadores (13 a 31); III, Lo avanzado (32 a 42,
+con Prolog y SQL en el 42); IV, Proyectos (43 a 87)—, cada uno con texto,
+ejercicios, soluciones, ejemplos con sus pruebas y PDF. El catálogo reúne 103
+patrones, y hay diapositivas de los capítulos 1 a 7. El autor revisó los
+capítulos 1 a 7; los demás están en revisión.
 
 ## Requisitos
 
@@ -50,9 +51,20 @@ una página inicial sin contenido.
 - El pack `reif` de SWI-Prolog, que usa el capítulo 15 (`if_/3`). Se instala
   una vez, como lo instala cada lector (sección 15.9 del curso) y como lo hace
   CI.
-- Opcionales: Docker (capítulo 31, la imagen del servicio) y `swipl-win` con
-  XPCE (capítulo 36, las ventanas; viene con la instalación de SWI-Prolog en
-  Windows).
+- El Chromium headless que descarga `make browser`: genera los PDF y, con
+  Playwright, ejecuta las pruebas de las páginas web del capítulo 36.
+- Opcionales:
+  - Docker (capítulo 31, la imagen del servicio);
+  - `swipl-win` con XPCE (las ventanas del capítulo 36, `make windows`, y las
+    herramientas gráficas de los capítulos 16 y 26; viene con la instalación
+    de SWI-Prolog en Windows, no con el paquete `swi-prolog-nox` de Linux);
+  - una terminal que interprete las secuencias ANSI, para los programas a
+    pantalla completa de los capítulos 36, 41 y 44;
+  - el controlador ODBC de SQLite, para las pruebas que ejecutan SQL de los
+    capítulos 42 y 87: en Linux, `unixodbc`, `libsqliteodbc` y
+    `swi-prolog-odbc`; en Windows, el instalador que describe la sección «El
+    controlador ODBC en Windows» del capítulo 42. Sin él, esas pruebas quedan
+    bloqueadas con un aviso.
 
 La preparación, una sola vez después de clonar el repositorio:
 
@@ -68,7 +80,7 @@ make                # la lista de objetivos, con una línea cada uno
 ```text
 docs/                     el curso; un directorio por capítulo, con index.md y soluciones.md
   plantillas.md             las formas de programa de la parte I, reunidas
-  patrones.md               los patrones de las partes II y III (se regenera con make patterns w=1)
+  patrones.md               los patrones de las partes II a IV (se regenera con make patterns w=1)
   lecturas.md               las lecturas complementarias
   pdf.md                    el apéndice B: los enlaces a los PDF de cada capítulo
 ejemplos/                 los ejemplos, un directorio por capítulo
@@ -103,8 +115,10 @@ padre(juan, ana).
 - `%?- <consulta>` declara una consulta del ejemplo. La primera se usa en el
   enlace a SWISH; todas se verifican contra el sandbox.
 - `% solo-local: <motivo>` identifica un ejemplo que no se puede ejecutar en
-  SWISH (archivos, hilos, interfaz, compilación). El texto muestra el motivo en
-  lugar del enlace.
+  SWISH: usa archivos, hilos o motores, una interfaz (la terminal, las
+  ventanas de XPCE) o puertos, compila o modifica el programa, define o carga
+  módulos propios, carga otro archivo, o necesita ODBC. El texto muestra el
+  motivo en lugar del enlace.
 
 ### Un bloque de código del texto
 
@@ -156,7 +170,8 @@ registro descriptivo y técnico:
 
 Todos los capítulos tienen la misma estructura: objetivos, secciones numeradas
 con actividades intercaladas, ejercicios con nivel de dificultad, resumen y una
-tabla de los temas que se retoman.
+tabla de los temas que se retoman. Desde el capítulo 32 cada capítulo termina
+con sus «Referencias», y el 87 reemplaza la tabla por el cierre del curso.
 
 ## Tareas frecuentes
 
@@ -302,10 +317,11 @@ git commit -m "docs: …"               # formato Conventional Commits
 git push -u origin docs/<descripcion>
 ```
 
-Después se abre el pull request, con un título en el mismo formato. CI ejecuta
-la verificación completa (ver «Verificación»); al hacer el merge en `main`, el
-mismo workflow genera los PDF, construye el sitio y lo publica en GitHub Pages.
-También se puede ejecutar a mano desde la pestaña *Actions* del repositorio
+Después se abre el pull request, con un título en el mismo formato. CI verifica
+los capítulos que el cambio puede afectar, y el libro completo cuando cambian
+las herramientas (ver «Verificación»); al hacer el merge en `main`, el flujo
+PDF y sitio genera todos los PDF, construye el sitio y lo publica en GitHub
+Pages. También se puede ejecutar a mano desde la pestaña *Actions* del repositorio
 (`workflow_dispatch`).
 
 ### Otras tareas
@@ -338,12 +354,13 @@ make clean-pdf   # borrar los PDF generados
 | `make sql` | Ejecuta los pares de consultas SQL y Prolog del banco (`references/ejercicios/sql-prolog/`) y compara los resultados. |
 | **Reglas del curso** | |
 | `make part-1` | Verifica que los capítulos 1 a 12 no usan ningún predicado de la parte II. |
-| `make part-2` | Verifica que las partes II y III no usan un predicado antes del capítulo que lo presenta (lo declara su tabla «Resumen»). |
+| `make part-2` | Verifica que los capítulos 13 a 87 no usan un predicado antes del capítulo que lo presenta (lo declara su tabla «Resumen»). |
 | `make shown` | Verifica que cada predicado que consulta una transcripción se muestra en su página, o que la página nombra su archivo. |
 | `make links` | Verifica que cada mención de un capítulo, una sección o un patrón en el texto es un enlace. |
 | `make patterns` | Verifica que `docs/patrones.md` coincide con los recuadros «Patrón» de los capítulos; `make patterns w=1` lo regenera. |
 | **Sitio y PDF** | |
 | `make docs` | Construye el sitio en `site/` con `--strict`: una advertencia es un error. No genera los PDF: enlaza solo los que ya existen. |
+| `make mermaid` | Construye el sitio y dibuja cada diagrama mermaid en Chromium, como lo ve un lector: falla si un diagrama no se dibuja, sale vacío o muestra `<br/>` o una entidad HTML como texto, y avisa si un rótulo queda cortado, dos nodos se superponen o el diagrama se achica tanto que no se lee. `e=capitulo-05` limita la corrida; `--shots DIR`, por línea de comandos, guarda una imagen de cada diagrama. Requiere red (mermaid viene de su CDN). |
 | `make docs-serve` | Sirve el sitio en la máquina propia y lo recarga con cada cambio; `DIRECCION=` cambia la dirección. |
 | `make pdf` | Genera el PDF de cada capítulo y de sus soluciones, solo los que cambiaron. Se ejecuta antes de `make docs` para un sitio con todos los PDF. |
 | `make pldoc` | Regenera las páginas PlDoc de los ejemplos que enlaza el capítulo 14. |
@@ -394,11 +411,27 @@ al comienzo de este archivo. Los cuatro corren en cada pull request y en
 `main`, con SWI-Prolog 9 y el pack `reif`; la publicación en GitHub Pages se
 realiza solo desde `main`.
 
+Ejemplos y la construcción de los PDF de un pull request verifican solo los
+capítulos que un cambio puede afectar. `tools/ci-parts.py` asigna cada archivo
+modificado a su capítulo y agrega los capítulos cuyos ejemplos o páginas cargan
+archivos de uno modificado; esas dependencias se leen de las fuentes en cada
+ejecución. Un cambio en `tools/`, `.github/`, el `Makefile`, `pyproject.toml`,
+`uv.lock` o `ruff.toml` selecciona todos los capítulos, y uno que no pertenece a
+ningún capítulo (`docs/licencia.md`, `mkdocs.yml`, este archivo) no selecciona
+ninguno. Ejemplos corre un trabajo por parte del libro, en paralelo, y el
+trabajo `resultado` resume todos en una sola verificación. Los lunes, y a mano
+desde la pestaña *Actions*, Ejemplos verifica el libro completo.
+
+```bash
+uv run tools/ci-parts.py --files ejemplos/capitulo-42/base.pl   # qué se verificaría
+make pdf e="capitulo-05 capitulo-07"                            # los PDF de dos capítulos
+```
+
 | Flujo | Qué verifica |
 |---|---|
-| **Ejemplos** | `make test`, `make transcripts`, `make swish`, `make lint` y `make appendix` |
-| **Texto** | `make part-1`, `check-part-2 --strict`, `make shown`, `make links`, `make patterns`, `make math`, `make time`, la comparación de bloques y `make docs` |
-| **PDF y sitio** | `make pdf` y el sitio, con los PDF de cada capítulo y las diapositivas; en `main`, la publicación |
+| **Ejemplos** | `make test`, `make transcripts` y `make swish` de los capítulos seleccionados, un trabajo por parte; `make appendix` cuando se selecciona el capítulo 29, 30, 31 o 36; `make lint` siempre |
+| **Texto** | `make part-1`, `check-part-2 --strict`, `make shown`, `make links`, `make patterns`, `make math`, `make time`, la comparación de bloques, `make docs` y el dibujo de cada diagrama mermaid (`tools/check-mermaid.py`) |
+| **PDF y sitio** | `make pdf` y el sitio, con los PDF de cada capítulo y las diapositivas; en un pull request, solo los PDF de los capítulos seleccionados; en `main`, todos y la publicación |
 | **Diapositivas** | `make slides-check`; solo cuando cambia algo de lo que dependen los mazos |
 
 ## Flujo de trabajo con git

@@ -319,7 +319,7 @@ productos(V, V) -->
 V = 11.
 ```
 
-Dos niveles, uno por precedencia, cada uno con el [Patrón 20](../patrones.md#20-una-gramatica-para-analizar-y-generar). `expresion//1`
+Dos niveles, uno por precedencia, cada uno con el [Patrón 22](../patrones.md#22-gramatica-con-argumento-acumulador). `expresion//1`
 suma y resta términos; `termino//1` multiplica y divide enteros. Como un
 término se reconoce completo antes de volver a `sumas//2`, `3*4` se calcula
 antes de sumarse. `/` da un resultado de punto flotante cuando la división no
@@ -506,7 +506,7 @@ T = 'dar de baja a 105 en analisis_1'.
 
 La prueba `ida_y_vuelta` genera el texto de `listar(M)` para cada materia, lo
 separa en palabras con `palabras//1` y lo vuelve a analizar con
-`comando//1`: debe dar el mismo comando. Es la prueba del [Patrón 21](../patrones.md#21-secuencia-con-separadores).
+`comando//1`: debe dar el mismo comando. Es la prueba del [Patrón 20](../patrones.md#20-una-gramatica-para-analizar-y-generar).
 
 ## 16
 

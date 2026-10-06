@@ -51,7 +51,7 @@ sumando([X|Resto], Hasta, S) :-
 Con `swipl --stack-limit=64m` y una lista de un millón de números,
 `suma_lista_acc/2` responde, y `suma_lista/2` del [capítulo 8](../capitulo-08-aritmetica/index.md) se detiene con
 *Stack limit (64.0Mb) exceeded* y `last-call: 0%` en el mensaje, como `largo/2`
-en la sección 16.2.
+en la [sección 16.2](index.md#162-la-pila-y-la-recursion).
 
 ## 4
 

@@ -22,6 +22,7 @@ from pathlib import Path
 
 import katex_pdf
 import swish_links
+from markdown.extensions.toc import slugify, unique
 from markdown_it import MarkdownIt
 from mdit_py_plugins.admon import admon_plugin
 from mdit_py_plugins.attrs import attrs_plugin
@@ -68,20 +69,44 @@ def escape_pipes_in_table_code(text):
     return ROW.sub(row, text)
 
 
-SITE_URL = re.search(
-    r'^site_url:\s*(\S+)', (swish_links.examples.ROOT / 'mkdocs.yml').read_text(encoding='utf-8'), re.M
-).group(1)
+MKDOCS = (swish_links.examples.ROOT / 'mkdocs.yml').read_text(encoding='utf-8')
+SITE_URL = re.search(r'^site_url:\s*(\S+)', MKDOCS, re.M).group(1)
 
 
-def site_links(body, source):
+def chapter_pages(source):
+    """The pages of the chapter whose index.md is `source`, in the order of the nav.
+
+    A long chapter moves some sections out of index.md into pages of their own,
+    which the nav lists after «Soluciones». They are part of the chapter, so its
+    PDF carries them after index.md. The solutions page has its own PDF, and any
+    other source is a PDF of one page.
+    """
+    if source.name != 'index.md':
+        return [source]
+    docs = swish_links.examples.DOCS.resolve()
+    folder = source.resolve().parent.relative_to(docs).as_posix() + '/'
+    nav = MKDOCS[MKDOCS.index('\nnav:') :]
+    entries = re.findall(r'^\s*-\s(?:.*\s)?"?(\S+?\.md)"?\s*$', nav, re.M)
+    extra = [e for e in entries if e.startswith(folder) and e[len(folder) :] not in ('index.md', 'soluciones.md')]
+    return [source] + [docs / e for e in extra]
+
+
+def site_links(body, source, inside=None, anchors=frozenset()):
     """Send the links between chapters and sections to the published site.
 
-    A PDF holds one chapter, so `../capitulo-02-.../index.md#28-...` and even
-    `#56-ramas-infinitas` lead nowhere inside it. Each becomes the absolute URL
-    of the same page and anchor on the site, which is where the reader can
-    follow it. Links that already point outside are left alone.
+    A PDF holds one chapter, so `../capitulo-02-.../index.md#28-...` leads
+    nowhere inside it. It becomes the absolute URL of the same page and anchor
+    on the site, which is where the reader can follow it. Links that already
+    point outside are left alone.
+
+    `inside` maps each page this PDF holds to the prefix its ids carry and the
+    id of its first heading, and `anchors` is every id of the PDF: a link to one
+    of those pages whose anchor is there stays inside the PDF, and one without
+    an anchor goes to the page's first heading. Any other link goes to the site,
+    so none is left dead.
     """
     docs = swish_links.examples.DOCS
+    inside = inside or {}
 
     def page_url(page):
         relative = page.resolve().relative_to(docs.resolve()).as_posix()
@@ -107,6 +132,11 @@ def site_links(body, source):
             page = source.parent / path
         else:
             return published_file(source.parent / path, match.group(0))
+        if page.resolve() in inside:
+            prefix, top = inside[page.resolve()]
+            target = prefix + fragment if fragment else top
+            if target in anchors:
+                return f'href="#{target}"'
         try:
             url = page_url(page)
         except ValueError:  # outside docs/: not a page of the site
@@ -116,7 +146,7 @@ def site_links(body, source):
     return re.sub(r'href="([^"]*)"', fix, body)
 
 
-MIME = {'.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg'}
+MIME = {'.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.gif': 'image/gif'}
 
 
 def embed_images(body, source):
@@ -138,6 +168,23 @@ def embed_images(body, source):
     return re.sub(r'src="([^"]*)"', fix, body)
 
 
+def heading_ids(state):
+    """Give each heading the id the site gives it, so links to its anchors work.
+
+    Python-Markdown's toc extension names the anchors on the site, and its own
+    slugify and unique compute them here from the heading's text.
+    """
+    used = set()
+    for heading, inline in zip(state.tokens, state.tokens[1:], strict=False):
+        if heading.type == 'heading_open':
+            text = ''.join(
+                child.content if child.type in ('text', 'code_inline') else ' '
+                for child in inline.children or []
+                if child.type in ('text', 'code_inline', 'softbreak')
+            )
+            heading.attrSet('id', unique(slugify(text, '-'), used))
+
+
 def to_html(text):
     """The Markdown of a chapter, as the body of an HTML document."""
     text = escape_pipes_in_table_code(text)
@@ -147,6 +194,7 @@ def to_html(text):
     # the smarty extension, so the PDF turns them on here and both agree.
     md.enable(['replacements', 'smartquotes'])
     md.use(admon_plugin).use(attrs_plugin).use(deflist_plugin).use(footnote_plugin)
+    md.core.ruler.push('heading_ids', heading_ids)
     # $…$ and $$…$$ become the same \(…\) and \[…\] that arithmatex emits on
     # the site, so one KaTeX configuration serves both. The plugin also keeps
     # the contents away from the Markdown parser, which would otherwise read the
@@ -249,6 +297,47 @@ def to_pdf(html_text, output):
         browser.close()
 
 
+ID = re.compile(r'\bid="([^"]*)"')
+
+
+def page_html(page, prefix):
+    """One page as HTML, with `prefix` in front of each of its ids."""
+    text = page.read_text(encoding='utf-8')
+    # The same links the site gets, from the same place, including each
+    # marker's own `consulta:` when it has one.
+    text = swish_links.examples.MARKER.sub(
+        lambda m: (
+            m.group(0)
+            + swish_links.footer(m.group('file'), swish_links.examples.marker_parts(m.group('piece'))['consulta'])
+        ),
+        text,
+    )
+    return ID.sub(lambda m: f'id="{prefix}{m.group(1)}"', to_html(text))
+
+
+def chapter_body(source):
+    """The body of the PDF: `source` and, after it, the other pages of its chapter.
+
+    Each page is rendered on its own, as the site renders it, and the next one
+    starts on a new sheet because it opens with its own h1. The ids of each page
+    other than the first get the page's name in front, `odbc--la-base-en-sqlite`,
+    so that two pages may share a heading or a footnote number; a link between
+    them is then a link inside the PDF.
+    """
+    pages = chapter_pages(source.resolve())
+    missing = [page for page in pages if not page.exists()]
+    if missing:
+        raise SystemExit(f'mkdocs.yml lists pages that do not exist: {", ".join(map(str, missing))}')
+    prefixes = {page: '' if page == pages[0] else page.stem + '--' for page in pages}
+    bodies = {page: page_html(page, prefixes[page]) for page in pages}
+    anchors = {anchor for body in bodies.values() for anchor in ID.findall(body)}
+    inside = {}
+    for page, body in bodies.items():
+        heading = re.search(r'<h[1-6][^>]*\bid="([^"]*)"', body)
+        inside[page] = (prefixes[page], heading.group(1) if heading else None)
+    return '\n'.join(embed_images(site_links(body, page, inside, anchors), page) for page, body in bodies.items())
+
+
 def main():
     parser = argparse.ArgumentParser(description='Turn one chapter into a PDF')
     parser.add_argument('input', help='the chapter Markdown file')
@@ -261,18 +350,8 @@ def main():
         print(f'There is no {source}', file=sys.stderr)
         return 1
     css = Path(args.css)
-    text = source.read_text(encoding='utf-8')
-    # The same links the site gets, from the same place, including each
-    # marker's own `consulta:` when it has one.
-    text = swish_links.examples.MARKER.sub(
-        lambda m: (
-            m.group(0)
-            + swish_links.footer(m.group('file'), swish_links.examples.marker_parts(m.group('piece'))['consulta'])
-        ),
-        text,
-    )
     output = args.output or str(source.with_suffix('.pdf'))
-    body = embed_images(site_links(to_html(text), source.resolve()), source.resolve())
+    body = chapter_body(source)
     to_pdf(document(body, css.read_text(encoding='utf-8') if css.exists() else ''), output)
     print(f'PDF written: {output}')
     return 0

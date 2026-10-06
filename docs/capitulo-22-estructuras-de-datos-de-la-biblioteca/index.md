@@ -584,7 +584,7 @@ sola vez, y la búsqueda termina aunque el grafo de estados tenga ciclos
 
 Los capítulos [17](../capitulo-17-todas-las-soluciones/index.md) y [18](../capitulo-18-orden-superior/index.md) representaron el tablero con hechos `mina/2`. Un juego de
 verdad necesita tableros distintos en cada partida, que se construyen durante
-la ejecución, y consulta el valor de una celda muchas veces: es el [Patrón 25](../patrones.md#25-busqueda-en-un-espacio-de-estados-con-visitados).
+la ejecución, y consulta el valor de una celda muchas veces: es el [Patrón 24](../patrones.md#24-tabla-de-busqueda-con-assoc).
 Un tablero es `tablero(Filas, Columnas, Celdas)`, con `Celdas` un assoc de cada
 celda a `mina` o a la cantidad de minas vecinas, calculada una sola vez.
 

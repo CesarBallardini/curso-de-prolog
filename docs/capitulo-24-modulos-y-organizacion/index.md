@@ -38,7 +38,7 @@ Hasta aquí, cada programa del curso cargó todos sus predicados en un mismo
 espacio de nombres, el módulo `user`. Eso tiene tres consecuencias, que el
 curso ya encontró:
 
-- dos archivos que definen un predicado con el mismo nombre se pisan: el que
+- dos archivos que definen un predicado con el mismo nombre se superponen: el que
   se carga después reemplaza al otro, o SWI-Prolog advierte que las cláusulas
   no están juntas;
 - un predicado auxiliar, como `contar_y_sumar/3` de los informes, queda al
@@ -404,7 +404,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
    sobre la protección de los datos?
 10. **(2)** Definir un alias `proyecto` para el directorio de los módulos del
     proyecto, y cargar `datos` como `proyecto(datos)` desde otro directorio.
-11. ★ **(3)** Dividir el Buscaminas de los capítulos [22](../capitulo-22-estructuras-de-datos-de-la-biblioteca/index.md) y [22](../capitulo-22-estructuras-de-datos-de-la-biblioteca/index.md) en dos módulos:
+11. ★ **(3)** Dividir el Buscaminas de los capítulos [22](../capitulo-22-estructuras-de-datos-de-la-biblioteca/index.md) y [23](../capitulo-23-programacion-con-restricciones/index.md) en dos módulos:
     `tablero`, con el tablero como assoc, y `resolver`, con la deducción.
 12. **(2)** Importar `append/3` con el nombre `pegar/3`.
 13. **(2)** Escribir un módulo `consultas` que reúna, con `reexport/1`, los

@@ -159,7 +159,7 @@ condicional; la condición `X == Y` elige la rama, y la otra no queda pendiente.
     versión con corte depende del orden de las cláusulas y no es estable.
 
     **Versión ingenua.** Una cláusula por caso, con un corte después de la
-    condición y la salida en la cabeza, como `categoria/2` del capítulo 9.
+    condición y la salida en la cabeza, como `categoria/2` del [capítulo 9](../capitulo-09-backtracking-y-corte/index.md).
 
     **Patrón.** Una cláusula con un condicional encadenado: cada condición
     elige su rama, y cada rama liga la salida.
@@ -180,7 +180,7 @@ condicional; la condición `X == Y` elige la rama, y la otra no queda pendiente.
 
 !!! question "Actividad"
     Reescribir con el condicional la `clasificar/2` de la solución 14 del
-    capítulo 9. La versión con corte responde `true.` a `clasificar(-3,
+    [capítulo 9](../capitulo-09-backtracking-y-corte/soluciones.md#14). La versión con corte responde `true.` a `clasificar(-3,
     positivo).`; comprobar que la versión nueva responde `false.`
 
 ## 15.4 `once/1` e `ignore/1`
@@ -628,7 +628,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
    nombres `no/1`, `una_vez/1` e `ignorar/1`. Los tres reciben un objetivo: usar
    `call/1` para ejecutarlo.
 3. ★ **(2)** Reescribir con el condicional `maximo/3` del [capítulo 14](../capitulo-14-estilo-y-documentacion/index.md) y
-   `descuento/2` de la solución 9 del capítulo 9. Verificar que las dos
+   `descuento/2` de la solución 9 del [capítulo 9](../capitulo-09-backtracking-y-corte/soluciones.md#9). Verificar que las dos
    versiones nuevas son estables.
 4. **(2)** Escribir `valor_absoluto(X, A)` con el condicional, con su
    encabezado y una prueba por modo.

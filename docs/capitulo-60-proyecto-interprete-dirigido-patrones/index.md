@@ -11,13 +11,22 @@ quitarlo no obliga a cambiar los demás: el programa sigue funcionando, quizá
 por otro camino.
 
 ```mermaid
-flowchart LR
+flowchart TB
     M[("memoria de trabajo<br/>numero(25), numero(10),<br/>numero(15), numero(30)")]
-    M --> E["1. emparejar:<br/>las condiciones de cada<br/>módulo con la memoria"]
-    E --> C["conjunto de conflicto:<br/>resta con 25 y 10,<br/>resta con 25 y 15, …,<br/>resultado con 25, …"]
-    C --> R["2. resolver el conflicto:<br/>elegir una instancia<br/>con una estrategia"]
-    R --> X["3. ejecutar sus acciones:<br/>reemplazar numero(25)<br/>por numero(15)"]
-    X -- "seguir" --> M
+    subgraph P["módulos del programa mcd"]
+        direction TB
+        resta["resta<br/>condición: numero(X),<br/>numero(Y), X > Y<br/>acción: numero(X)<br/>pasa a numero(X − Y)"]
+        resultado["resultado<br/>condición: numero(X)<br/>acción: parar(X)"]
+    end
+    M --> E
+    P -- "condiciones" --> E
+    E["1. emparejar:<br/>el conjunto de conflicto<br/>resta con 25 y 10,<br/>resta con 25 y 15, …,<br/>resultado con 25, …"]
+    R["2. resolver el conflicto:<br/>elegir una instancia<br/>con una estrategia"]
+    X["3. ejecutar sus acciones:<br/>reemplazar numero(25)<br/>por numero(15)"]
+    E --> R
+    R --> X
+    X -- "seguir" --> E
+    M -. "las acciones la cambian" .- X
     X -- "parar(R)" --> F(["resultado"])
     R -- "conjunto vacío" --> N(["nada_aplicable"])
 ```
@@ -26,9 +35,10 @@ El ciclo de reconocimiento y acción, con los tres pasos con que lo describe
 Bratko, sobre la memoria del máximo común divisor de la
 [sección 60.2](#602-modulos-dirigidos-por-patrones): `resta` reemplaza el
 mayor de dos números por su diferencia, y `resultado` devuelve un número.
-Varias instancias se pueden aplicar a la vez; cuál se ejecuta lo decide la
-estrategia, y el ciclo termina cuando un módulo ejecuta `parar` o cuando
-ninguno se puede aplicar.
+Ninguno de los dos llama al otro: el intérprete compara sus condiciones con
+la memoria que comparten. Varias instancias se pueden aplicar a la vez;
+cuál se ejecuta lo decide la estrategia, y el ciclo termina cuando un módulo
+ejecuta `parar` o cuando ninguno se puede aplicar.
 
 Este capítulo construye ese intérprete en seis versiones. La primera guarda
 la memoria en la base de datos dinámica; la segunda la pasa como argumento,
@@ -166,6 +176,16 @@ programa(mcd,
            ---> [parar(X)]
     ]).
 ```
+
+![Bajo el título «Algoritmo de Euclides», dos segmentos negros, AB largo y CD corto; debajo, AB acompañado de un segmento con CD dos veces, en azul y en rojo, y un resto EF en negro; abajo, CD acompañado de EF tres veces, en azul, rojo y azul; al pie, «EF es la mayor medida común»](algoritmo-de-euclides.png){ style="background-color: white" }
+
+El algoritmo de Euclides en su forma original, la de los *Elementos*
+(libro VII, proposición 2): CD se resta de AB mientras cabe, y lo que sobra,
+EF, se resta de CD; EF cabe exactamente en CD, y es la mayor medida común
+de los dos segmentos. El módulo `resta` hace lo mismo con números: reemplaza
+el mayor por la diferencia. Imagen: Drini,
+[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/deed.es), vía
+[Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Algoritmo_de_Euclides_geom%C3%A9trico.svg).
 
 Las condiciones se comparan con la memoria de trabajo, una lista de hechos
 sin variables, y las acciones la cambian:
@@ -1009,6 +1029,8 @@ archivo que carga los del capítulo, sin modificarlos.
   y apéndice «Clausal Form Program Listings», que Bratko cita para el paso
   a forma clausal; `clausulas/2` hace la misma transformación, restringida
   a la lógica proposicional, con código propio.
+- Drini, imagen «Algoritmo de Euclides geométrico.svg», Wikimedia Commons,
+  CC BY-SA 4.0.
 
 El código del capítulo es propio, escrito para el curso: el lenguaje de los
 módulos, los intérpretes, las estrategias, el ordenamiento, la vigilancia de

@@ -2,7 +2,7 @@
 
 Esta página contiene la sección
 [55.5](index.md#555-version-4-una-agenda-en-castellano) del
-[capítulo 54](index.md): la versión 4 de los diálogos, `agenda.pl`, que
+[capítulo 55](index.md): la versión 4 de los diálogos, `agenda.pl`, que
 anota citas dictadas en castellano y responde preguntas sobre ellas. El
 archivo está en `ejemplos/capitulo-55/`, con sus pruebas, y carga
 `persona.pl` y archivos de los capítulos

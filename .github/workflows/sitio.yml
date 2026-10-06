@@ -11,6 +11,11 @@
 # workflows (ejemplos.yml, texto.yml, diapositivas.yml); a pull request has to
 # pass them before it reaches main, where this one publishes.
 #
+# A pull request builds only the PDFs of the chapters it can affect, chosen by
+# tools/ci-parts.py the same way the Ejemplos workflow chooses what to test;
+# tools/pdf_links.py turns the links to the PDFs not built into plain text, so
+# the strict build still passes. On main every PDF is built, as is published.
+#
 # Requires Settings > Pages > Source = "GitHub Actions".
 name: PDF y sitio
 
@@ -32,7 +37,39 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # Which chapters a pull request can affect; anything else builds them all.
+  # It runs on every event, and not only on pull requests: a skipped job skips
+  # every job that needs it, directly or not, and the deploy job is one of them.
+  partes:
+    runs-on: ubuntu-latest
+    outputs:
+      capitulos: ${{ steps.partes.outputs.capitulos }}
+    steps:
+      # The whole history, so that the base of the pull request is there.
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      # Pinned to a full version, like in .github/actions/preparar: setup-uv
+      # stopped publishing floating major tags after v7.
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10.1.0
+
+      - name: Chapters a change can affect
+        id: partes
+        env:
+          EVENTO: ${{ github.event_name }}
+          BASE_PR: ${{ github.event.pull_request.base.sha }}
+        run: |
+          if [ "$EVENTO" = pull_request ]; then
+            uv run tools/ci-parts.py "$BASE_PR"
+          else
+            uv run tools/ci-parts.py --all
+          fi
+
   build:
+    needs: partes
     runs-on: ubuntu-26.04
     steps:
       - name: Checkout
@@ -43,9 +80,21 @@ jobs:
         with:
           chromium: 'true'
 
-      # Before the site, because each chapter's PDF is copied into it.
+      # Before the site, because each chapter's PDF is copied into it. An empty
+      # e= would mean every PDF, hence the separate case of a pull request that
+      # touches no chapter.
       - name: Build the chapter PDFs
-        run: make pdf
+        env:
+          EVENTO: ${{ github.event_name }}
+          CAPITULOS: ${{ needs.partes.outputs.capitulos }}
+        run: |
+          if [ "$EVENTO" != pull_request ]; then
+            make pdf
+          elif [ -n "$CAPITULOS" ]; then
+            make pdf e="$CAPITULOS"
+          else
+            echo "This pull request touches no chapter: the site is built without PDFs."
+          fi
 
       - name: Build the site
         run: make docs
