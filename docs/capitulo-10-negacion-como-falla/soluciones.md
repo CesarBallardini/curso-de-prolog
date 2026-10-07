@@ -666,6 +666,54 @@ sugeriría:
 Los dos comportamientos tienen la misma causa: `\+` y `\==` consultan el estado
 actual de los términos, no todos los valores posibles.
 
+```prolog
+?- ninguno_es(X, [ana, luis]).
+false.
+
+?- ninguno_es_recorriendo(X, [ana, luis]).
+true.
+```
+
+Los dos árboles, con `ninguno_es/2` numerada R1, las cláusulas de
+`esta_en_lista/2` R2 y R3 y las de `ninguno_es_recorriendo/2` R4 y R5, lo
+muestran. Las variables de las cláusulas llevan el número del uso —`X₁`, `X₂`—,
+porque la consulta también tiene una `X`. En el primero, el árbol subordinado
+liga `X` a `ana` con R2 y llega a la consulta vacía; esa hoja hace fallar al
+`\+`, y la ligadura no sale del recuadro:
+
+```mermaid
+flowchart TD
+    A["ninguno_es(X, [ana, luis])"] -- "R1. θ₁ = {&nbsp;X₁/X, L/[ana, luis]&nbsp;}" --> B["\+ esta_en_lista(X, [ana, luis])"]
+    B === s
+    subgraph s ["árbol subordinado de esta_en_lista(X, [ana, luis])"]
+        direction TB
+        C["esta_en_lista(X, [ana, luis])"] -- "R2. θ₂ = {&nbsp;X₂/ana, X/ana&nbsp;}" --> S(["consulta vacía"])
+        C -- "R3" --- p@{ shape: sm-circ } -.- n["podada por el \+"]
+    end
+    s --> F(["falla"])
+    classDef abierto fill:none,stroke:none;
+    class n abierto;
+```
+
+En el segundo no hay ningún árbol subordinado: `X \== ana` es un objetivo
+predefinido que se cumple con `X` libre y desaparece, igual que `X \== luis`,
+y la rama llega a la consulta vacía sin haber ligado `X` en ningún arco:
+
+```mermaid
+%%{init: {"flowchart": {"rankSpacing": 30}}}%%
+flowchart TD
+    A["ninguno_es_recorriendo(X, [ana, luis])"] -- "R5. θ₁ = {&nbsp;X₁/X, Otro₁/ana, Resto₁/[luis]&nbsp;}" --> B["X \== ana,<br/>ninguno_es_recorriendo(X, [luis])"]
+    B --> C["ninguno_es_recorriendo(X, [luis])"]
+    C -- "R5. θ₂ = {&nbsp;X₂/X, Otro₂/luis, Resto₂/[]&nbsp;}" --> D["X \== luis,<br/>ninguno_es_recorriendo(X, [])"]
+    D --> E["ninguno_es_recorriendo(X, [])"]
+    E -- "R4. θ₃ = {&nbsp;_/X&nbsp;}" --> S(["consulta vacía<br/>true"])
+```
+
+R4, `ninguno_es_recorriendo(_, [])`, no abre ninguna rama en los dos primeros
+nodos, porque `[]` no unifica con una lista que tiene elementos; solo lo hace
+al final, cuando la lista se agotó. La respuesta es `true.` con `X` sin valor,
+que es lo que el predicado afirma sin sostén.
+
 **Con corte y falla.** La versión sin negación es `ninguno_es_recorriendo/2`. La
 tercera, con corte y falla, se comporta como la de `\+`, también con `X` libre:
 
@@ -702,6 +750,34 @@ El objetivo interno `padre(juan, H)` se prueba y liga `H` a `ana`. El primer
 El segundo `\+` ve fallar al primero, y por lo tanto se cumple. El resultado es
 un objetivo que tiene éxito exactamente cuando el original lo tenía, pero que
 no deja ninguna ligadura.
+
+En el árbol, el `\+` exterior abre un árbol subordinado cuyo único objetivo es
+otro `\+`, que abre el suyo. Con la numeración de la
+[sección 10.2](index.md#102-no-se-puede-probar) —`padre(juan, ana).` es R6 y
+`padre(juan, pedro).` R7—:
+
+```mermaid
+%%{init: {"flowchart": {"rankSpacing": 25}}}%%
+flowchart TD
+    A["\+ \+ padre(juan, H)"] === s1
+    subgraph s1 ["árbol subordinado de \+ padre(juan, H)"]
+        direction TB
+        B["\+ padre(juan, H)"] === s2
+        subgraph s2 ["árbol subordinado de padre(juan, H)"]
+            direction TB
+            C["padre(juan, H)"] -- "R6. θ₁ = {&nbsp;H/ana&nbsp;}" --> S2(["consulta vacía"])
+            C -- "R7" --- p@{ shape: sm-circ } -.- n["podada por el \+"]
+        end
+        s2 --> F(["falla"])
+    end
+    s1 --> S(["consulta vacía<br/>true"])
+    classDef abierto fill:none,stroke:none;
+    class n abierto;
+```
+
+La ligadura `H/ana` está en el recuadro interior, y no sale de él. El recuadro
+exterior termina en «falla», de modo que el `\+` exterior se cumple y la rama
+principal llega a la consulta vacía con `H` libre: `true.`, sin ningún valor.
 
 Es la manera más directa de comprobar lo que dice la [sección 10.4](index.md#104-donde-ubicar): `\+` es una
 prueba, y una prueba no produce valores. La doble negación se usa justamente
@@ -746,6 +822,59 @@ ningún caso el resultado contiene una variable: el predicado afirma que el
 elemento pertenece a la otra lista cuando solo **podría** pertenecer. Es la
 situación de la [sección 10.4](index.md#104-donde-ubicar), aunque el `\+` esté bien ubicado: `X` llega
 con valor, y lo que carece de valor está dentro de `L2`.
+
+El árbol de esa consulta, con las tres cláusulas de `solo_en_la_primera/3`
+numeradas R1 a R3 y dibujado en dos partes por su altura, muestra las dos
+ligaduras de `Y`: la que el árbol subordinado hace y descarta, y la que
+`member/2` hace en la rama de R3 y queda. `member/2` es predefinido y liga sin
+número de cláusula, como en la
+[sección 9.6](../capitulo-09-backtracking-y-corte/index.md#96-generar-y-probar);
+las variables de las cláusulas llevan el número del uso, porque la consulta
+también tiene una `R`:
+
+```mermaid
+flowchart TD
+    A["solo_en_la_primera([a, b], [Y], R)"] -- "R2. θ₁ = {&nbsp;X₁/a, Resto₁/[b], L2₁/[Y], R/[a|RestoR₁]&nbsp;}" --> B["\+ member(a, [Y]),<br/>solo_en_la_primera([b], [Y], RestoR₁)"]
+    B === s1
+    subgraph s1 ["árbol subordinado de member(a, [Y])"]
+        direction TB
+        C["member(a, [Y])"] -- "θ₂ = {&nbsp;Y/a&nbsp;}" --> S1(["consulta vacía"])
+    end
+    s1 --> F1(["falla"])
+    A -- "R3. θ₃ = {&nbsp;X₁/a, Resto₁/[b], L2₁/[Y], R₁/R&nbsp;}" --> D["member(a, [Y]),<br/>!,<br/>solo_en_la_primera([b], [Y], R)"]
+    D --> V["⋮<br/>sigue en el árbol siguiente"]
+    classDef abierto fill:none,stroke:none;
+    class V abierto;
+```
+
+La rama de R2 falla por el árbol subordinado, que liga `Y` a `a` en `θ₂` y
+llega a la consulta vacía; esa ligadura queda en el recuadro. La rama de R3
+continúa en el segundo árbol, que empieza en su primer nodo:
+
+```mermaid
+%%{init: {"flowchart": {"rankSpacing": 30}}}%%
+flowchart TD
+    D["member(a, [Y]),<br/>!,<br/>solo_en_la_primera([b], [Y], R)"]
+    D -- "θ₄ = {&nbsp;Y/a&nbsp;}" --> E["!,<br/>solo_en_la_primera([b], [a], R)"]
+    E --> G["solo_en_la_primera([b], [a], R)"]
+    G -- "R2. θ₅ = {&nbsp;X₂/b, Resto₂/[], L2₂/[a], R/[b|RestoR₂]&nbsp;}" --> H["\+ member(b, [a]),<br/>solo_en_la_primera([], [a], RestoR₂)"]
+    H === s2
+    subgraph s2 ["árbol subordinado de member(b, [a])"]
+        direction TB
+        I["member(b, [a])"] --> F2(["falla"])
+    end
+    s2 --> J["solo_en_la_primera([], [a], RestoR₂)"]
+    J -- "R1. θ₆ = {&nbsp;RestoR₂/[]&nbsp;}" --> S(["consulta vacía<br/>Y = a, R = [b]"])
+    G -- "R3. θ₇ = {&nbsp;X₂/b, Resto₂/[], L2₂/[a], R₂/R&nbsp;}" --> K["member(b, [a]),<br/>!,<br/>solo_en_la_primera([], [a], R)"]
+    K --> F3(["falla"])
+```
+
+Aquí `member(a, [Y])` se prueba otra vez, ahora como objetivo de la consulta,
+y `θ₄` liga `Y` a `a` de manera definitiva: a partir de allí la segunda lista
+es `[a]`. En el nodo siguiente, `b` sí se conserva, porque el árbol
+subordinado de `member(b, [a])` falla, y la hoja de éxito es `Y = a, R = [b]`.
+La rama de R3 de ese nodo queda pendiente, y por eso la respuesta termina en
+`;`: al pedir otra, `member(b, [a])` falla y Prolog responde `false.`.
 
 Al invertir los argumentos se invierte cuál de las dos listas queda bajo el
 `\+`, pero la condición es la misma para los dos predicados: los elementos de

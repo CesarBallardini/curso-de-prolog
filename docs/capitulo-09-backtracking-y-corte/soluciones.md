@@ -129,6 +129,32 @@ por eso el encabezado dice `nondet`; con un corte al final sería `semidet`. Las
 dos versiones responden igual a la pregunta de si existe alguno, y agregarlo es
 opcional.
 
+El árbol de `hay_algun_menor([41, 12, 68])`, con la regla numerada R1, muestra
+las dos cosas a la vez. `member/2` es predefinido y abre una rama por cada
+elemento, como `between/3` en la [sección 9.6](index.md#96-generar-y-probar):
+
+```mermaid
+flowchart TD
+    A["hay_algun_menor([41, 12, 68])"] -- "R1. θ₁ = {&nbsp;L/[41, 12, 68]&nbsp;}" --> B["member(X, [41, 12, 68]),<br/>X < 18"]
+    B -- "θ₂ = {&nbsp;X/41&nbsp;}" --> C["41 < 18"]
+    C --> F1(["falla"])
+    B -- "θ₃ = {&nbsp;X/12&nbsp;}" --> D["12 < 18"]
+    D --> S(["consulta vacía<br/>true"])
+    B -- "θ₄ = {&nbsp;X/68&nbsp;}" --> E["68 < 18"]
+    E --> F2(["falla"])
+```
+
+```prolog
+?- hay_algun_menor([41, 12, 68]).
+true ;
+false.
+```
+
+La respuesta está en la segunda rama; la tercera queda pendiente, y por eso la
+respuesta termina en `;`: al pedir otra, Prolog la recorre, falla, y responde
+`false.`. Un corte después de `X < 18` la podaría, y la respuesta terminaría en
+punto.
+
 ## 7
 
 Produce dos respuestas, `ana-eva` y `eva-ana`, porque la regla no establece el
@@ -315,6 +341,26 @@ tercera cláusula de `categoria/2`, que habría respondido `adulto`, y la
 posibilidad de volver a `edad(luis, A)` para buscar otra edad. Por eso la
 respuesta termina en punto y no en `;`.
 
+El árbol, con la numeración de la [sección 9.2](index.md#92-el-corte-poda-el-arbol)
+—`edad(luis, 12).` es R4—, muestra los mismos siete pasos:
+
+```mermaid
+flowchart TD
+    A["categoria(luis, C)"] -- "R7. θ₁ = {&nbsp;P/luis, C/bebe&nbsp;}" --> B["edad(luis, A),<br/>A < 4,<br/>!"]
+    B -- "R4. θ₂ = {&nbsp;A/12&nbsp;}" --> B2["12 < 4,<br/>!"]
+    B2 --> F(["falla"])
+    A -- "R8. θ₃ = {&nbsp;P/luis, C/chico&nbsp;}" --> C["edad(luis, A),<br/>A < 13,<br/>!"]
+    C -- "R4. θ₄ = {&nbsp;A/12&nbsp;}" --> C2["12 < 13,<br/>!"]
+    C2 --> C3["!"]
+    C3 --> S(["consulta vacía<br/>C = chico"])
+    A -- "R9" --- p@{ shape: sm-circ } -.- n["podada por el corte"]
+    classDef abierto fill:none,stroke:none;
+    class n abierto;
+```
+
+El `!` de la primera rama no llega a ejecutarse, porque `12 < 4` falla antes;
+el de la segunda sí, y poda la rama de R9.
+
 ## 13
 
 El corte **no** afecta a las llamadas recursivas. Según la primera regla de la
@@ -335,6 +381,32 @@ llamadas externas no se ven afectadas: reciben la respuesta.
 
 El efecto útil es exactamente ese: sin el corte, el predicado respondería
 también `X = 6`.
+
+El árbol lo muestra con las dos cláusulas del enunciado numeradas R1 y R2. Las
+variables de cada cláusula llevan el número del uso desde el primero —`X₁`,
+`Resto₁`—, porque la consulta también tiene una `X`:
+
+```mermaid
+flowchart TD
+    A["primer_par([1, 3, 4, 6], X)"] -- "R1. θ₁ = {&nbsp;X₁/1, X/1&nbsp;}" --> A1["0 =:= 1 mod 2,<br/>!"]
+    A1 --> F1(["falla"])
+    A -- "R2. θ₂ = {&nbsp;Resto₁/[3, 4, 6], X₁/X&nbsp;}" --> B["primer_par([3, 4, 6], X)"]
+    B -- "R1. θ₃ = {&nbsp;X₂/3, X/3&nbsp;}" --> B1["0 =:= 3 mod 2,<br/>!"]
+    B1 --> F2(["falla"])
+    B -- "R2. θ₄ = {&nbsp;Resto₂/[4, 6], X₂/X&nbsp;}" --> C["primer_par([4, 6], X)"]
+    C -- "R1. θ₅ = {&nbsp;X₃/4, X/4&nbsp;}" --> C1["0 =:= 4 mod 2,<br/>!"]
+    C1 --> C2["!"]
+    C2 --> S(["consulta vacía<br/>X = 4"])
+    C -- "R2" --- p@{ shape: sm-circ } -.- n["podada por el corte"]
+    classDef abierto fill:none,stroke:none;
+    class n abierto;
+```
+
+Cada nodo `primer_par(…)` es una invocación distinta, con sus dos cláusulas
+como alternativas. El `!` de la tercera poda solamente la rama de R2 que sale
+de su propio nodo, la que habría buscado en `[6]`; las ramas de R2 de los dos
+nodos superiores ya se habían recorrido, y por ellas llegó la ejecución hasta
+allí.
 
 ## 14
 
@@ -369,6 +441,33 @@ true.
 El programa afirma que −2 es positivo. Las dos primeras cláusulas se descartan
 por la cabeza —`positivo` no unifica con `negativo` ni con `cero`—, de modo que
 ningún `!` llega a ejecutarse, y la tercera cláusula unifica sin verificar nada.
+
+Los dos árboles, con las cláusulas de `clasificar/2` numeradas R1 a R3, lo
+muestran. Con `C` libre, R1 llega al corte y poda la rama de R3; R2 no aparece,
+porque su cabeza, `clasificar(0, cero)`, no unifica con `-2`:
+
+```prolog
+?- clasificar(-2, C).
+C = negativo.
+```
+
+```mermaid
+flowchart TD
+    A["clasificar(-2, C)"] -- "R1. θ₁ = {&nbsp;N/-2, C/negativo&nbsp;}" --> B["-2 < 0,<br/>!"]
+    B --> B2["!"]
+    B2 --> S(["consulta vacía<br/>C = negativo"])
+    A -- "R3" --- p@{ shape: sm-circ } -.- n["podada por el corte"]
+    classDef abierto fill:none,stroke:none;
+    class n abierto;
+```
+
+Con `C` instanciado en `positivo`, tampoco unifican las cabezas de R1 ni de R2,
+y queda únicamente la rama que antes estaba podada:
+
+```mermaid
+flowchart TD
+    A["clasificar(-2, positivo)"] -- "R3. θ₁ = {&nbsp;_/-2&nbsp;}" --> S(["consulta vacía<br/>true"])
+```
 
 No toda consulta con el segundo argumento instanciado responde de manera
 incorrecta: `clasificar(5, negativo)` responde `false.`, como corresponde,

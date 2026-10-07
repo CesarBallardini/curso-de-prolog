@@ -25,7 +25,7 @@ Al terminar el capítulo, el lector puede:
   respuesta.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **0:50 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:00 h**.
     Resolver los 7 ejercicios marcados con ★: **2:00 h**.
     Resolver los 16 ejercicios del final: **5:20 h**.
 
@@ -81,7 +81,32 @@ es incorrecto: expresa algo distinto de lo que se pretendía. La intención era
 esa condición no está escrita en el programa.
 
 El árbol de derivación del [capítulo 5](../capitulo-05-como-responde-prolog/index.md) lo muestra de manera directa: tres ramas
-terminan en una hoja de éxito, y por eso hay tres respuestas.
+terminan en una hoja de éxito, y por eso hay tres respuestas. Con los seis
+hechos de `edad/2` numerados R1 a R6 en el orden del programa —`edad(sofia, 3).`
+es R6— y las tres cláusulas de `categoria_sin_corte/2` a continuación:
+
+| | |
+|---|---|
+| R7 | `categoria_sin_corte(P, bebe) :- edad(P, A), A < 4.` |
+| R8 | `categoria_sin_corte(P, chico) :- edad(P, A), A < 13.` |
+| R9 | `categoria_sin_corte(P, adulto) :- edad(P, _).` |
+
+```mermaid
+flowchart TD
+    A["categoria_sin_corte(sofia, C)"] -- "R7. θ₁ = {&nbsp;P/sofia, C/bebe&nbsp;}" --> B["edad(sofia, A),<br/>A < 4"]
+    A -- "R8. θ₃ = {&nbsp;P/sofia, C/chico&nbsp;}" --> C["edad(sofia, A),<br/>A < 13"]
+    A -- "R9. θ₅ = {&nbsp;P/sofia, C/adulto&nbsp;}" --> D["edad(sofia, _)"]
+    B -- "R6. θ₂ = {&nbsp;A/3&nbsp;}" --> B2["3 < 4"]
+    B2 --> S1(["1.ª respuesta<br/>C = bebe"])
+    C -- "R6. θ₄ = {&nbsp;A/3&nbsp;}" --> C2["3 < 13"]
+    C2 --> S2(["2.ª respuesta<br/>C = chico"])
+    D -- "R6. θ₆ = {&nbsp;_/3&nbsp;}" --> S3(["3.ª respuesta<br/>C = adulto"])
+```
+
+Una comparación como `3 < 4` es un objetivo predefinido: no emplea ninguna
+cláusula, y por eso su arco no lleva número ni sustitución. Si se cumple, el
+objetivo desaparece de la consulta; si no, la rama falla. Aquí las tres se
+cumplen, y las tres hojas de éxito aparecen en el orden de las cláusulas.
 
 ## 9.2 El corte poda el árbol
 
@@ -117,6 +142,35 @@ en punto. Las otras dos ramas fueron descartadas. Es la diferencia que registran
 los encabezados de la [sección 2.8](../capitulo-02-hechos-consultas-y-variables/index.md#28-como-se-documenta-el-uso-de-un-predicado): `categoria_sin_corte/2` es `nondet`, y
 `categoria/2`, gracias al corte, es `semidet`, con una respuesta por persona, o
 ninguna si la persona no tiene edad registrada.
+
+En el árbol, el `!` es un objetivo como cualquier otro: ocupa su nodo y, al
+cumplirse, desaparece de la consulta. Lo que lo distingue es su efecto sobre el
+resto del árbol: las alternativas que descarta —las cláusulas restantes del
+predicado y las de los objetivos a su izquierda— se dibujan como ramas que
+salen del nodo donde estaba la alternativa, con una línea fina que se vuelve
+punteada y termina en «podada por el corte», igual que las ramas que la
+búsqueda nunca alcanza en la [sección 5.6](../capitulo-05-como-responde-prolog/index.md#56-ramas-infinitas).
+Una **rama podada** está escrita en el programa, pero ninguna ejecución pasa
+por ella, y por eso tampoco lleva sustitución. Con las cláusulas numeradas
+como en 9.1 —R1 a R6 los hechos de `edad/2`, R7 a R9 las de `categoria/2`—:
+
+```mermaid
+flowchart TD
+    A["categoria(sofia, C)"] -- "R7. θ₁ = {&nbsp;P/sofia, C/bebe&nbsp;}" --> B["edad(sofia, A),<br/>A < 4,<br/>!"]
+    B -- "R6. θ₂ = {&nbsp;A/3&nbsp;}" --> B2["3 < 4,<br/>!"]
+    B2 --> B3["!"]
+    B3 --> S(["consulta vacía<br/>C = bebe"])
+    A -- "R8" --- p1@{ shape: sm-circ } -.- n1["podada por el corte"]
+    A -- "R9" --- p2@{ shape: sm-circ } -.- n2["podada por el corte"]
+    classDef abierto fill:none,stroke:none;
+    class n1,n2 abierto;
+```
+
+Es el árbol de 9.1 con las ramas de R8 y R9 podadas. El `!` se ejecuta en la
+rama de R7, después de que `3 < 4` se cumple, y en ese momento descarta las
+otras dos cláusulas de `categoria/2`: las hojas `C = chico` y `C = adulto` ya
+no existen. `edad(sofia, A)`, a la izquierda del corte, no tenía ninguna otra
+alternativa que podar, porque un solo hecho unifica con él.
 
 En términos del modelo de cajas de la [sección 5.3](../capitulo-05-como-responde-prolog/index.md#53-el-mismo-recorrido-registrado-por-trace), el corte **inhabilita la
 puerta Redo**: los objetivos que quedaron a su izquierda ya no se pueden
@@ -263,6 +317,17 @@ cláusula se descarta de inmediato, sin alcanzar el `!`. Lo mismo ocurre con la
 cláusula de chico. La tercera, `categoria(P, adulto)`, unifica, y solo exige que
 sofía tenga una edad registrada.
 
+El árbol lo muestra, con la numeración de 9.2. Una cláusula cuya cabeza no
+unifica con el objetivo no abre ninguna rama, de modo que R7 y R8, las dos que
+contienen el `!`, no aparecen. Queda únicamente la rama de R9, que en el árbol
+de 9.2 era la podada:
+
+```mermaid
+flowchart TD
+    A["categoria(sofia, adulto)"] -- "R9. θ₁ = {&nbsp;P/sofia&nbsp;}" --> B["edad(sofia, _)"]
+    B -- "R6. θ₂ = {&nbsp;_/3&nbsp;}" --> S(["consulta vacía<br/>true"])
+```
+
 Por lo tanto, el corte tiene efecto cuando el segundo argumento está libre, y no
 lo tiene cuando está instanciado. El programa responde de manera correcta una
 consulta e incorrecta la otra.
@@ -350,6 +415,36 @@ primer_multiplo(De, Desde, N) :-
 ?- primer_multiplo(7, 20, N).
 N = 21.
 ```
+
+En el árbol, `between/3` es un objetivo predefinido que produce varias
+respuestas: cada una abre una rama, con la sustitución que liga `N` y sin
+número de cláusula, porque no emplea ninguna. Con `multiplo/3` numerada R1 y
+`primer_multiplo/3` R2 —las dos reglas tienen una variable `N`, como la
+consulta, y en el árbol se escriben `N₁` y `N₂` para distinguirlas de ella—:
+
+```mermaid
+flowchart TD
+    A["primer_multiplo(7, 20, N)"] -- "R2. θ₁ = {&nbsp;De/7, Desde/20, N₁/N&nbsp;}" --> B["multiplo(7, 20, N),<br/>!"]
+    B -- "R1. θ₂ = {&nbsp;De/7, Desde/20, N₂/N&nbsp;}" --> C["between(20, 200, N),<br/>0 =:= N mod 7,<br/>!"]
+    C -- "θ₃ = {&nbsp;N/20&nbsp;}" --> D["0 =:= 20 mod 7,<br/>!"]
+    D --> F(["falla"])
+    C -- "θ₄ = {&nbsp;N/21&nbsp;}" --> E["0 =:= 21 mod 7,<br/>!"]
+    E --> E2["!"]
+    E2 --> S(["consulta vacía<br/>N = 21"])
+    C -- "N/22" --- p1@{ shape: sm-circ } -.- n1["podada por el corte"]
+    C -- "N/23 … N/200" --- p2@{ shape: sm-circ } -.- n2["podadas por el corte"]
+    classDef abierto fill:none,stroke:none;
+    class n1,n2 abierto;
+```
+
+La primera rama, con `N = 20`, falla en la condición y no llega al `!`: un
+corte que está detrás de un objetivo que falla no poda nada. La segunda cumple
+la condición, y el `!` descarta entonces las alternativas de los objetivos a
+su izquierda: las 179 respuestas que `between/3` todavía podía producir, de 22
+a 200, dibujadas como una rama podada para la de 22 y otra que resume las
+demás. Sin el corte, esas ramas se recorrerían una por una al pedir más
+respuestas, y las que cumplen la condición serían las hojas `N = 28`, `N = 35`
+y las siguientes.
 
 Este uso del corte es adecuado **mientras el tercer argumento llegue sin
 valor**. Con `N` libre, `multiplo/3` produce los candidatos en orden, el corte
@@ -584,6 +679,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | `!` | se cumple siempre, y poda ramas del árbol de derivación |
 | qué poda | las cláusulas siguientes del predicado, y las alternativas de los objetivos a su izquierda |
 | qué no poda | los objetivos a su derecha, ni las alternativas externas al predicado |
+| **rama podada** | una alternativa que el corte descartó: en el árbol se dibuja punteada, como las que la búsqueda nunca alcanza |
 | **corte verde** | no modifica el conjunto de respuestas; eliminarlo solo cuesta trabajo, y puede hacer que alguna se repita |
 | **corte rojo** | modifica las respuestas del programa; requiere verificación cuidadosa |
 | **generar y probar** | un objetivo produce candidatos y otro los verifica |

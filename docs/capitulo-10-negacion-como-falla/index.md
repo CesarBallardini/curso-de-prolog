@@ -29,7 +29,7 @@ Al terminar el capítulo, el lector puede:
   la extensión y el comportamiento de cada versión.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:15 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:45 h**.
     Resolver los 9 ejercicios marcados con ★: **2:40 h**.
     Resolver los 17 ejercicios del final: **5:45 h**.
 
@@ -73,6 +73,60 @@ negación.
 Su definición interna es simple: se intenta probar el objetivo; si se cumple,
 `\+` falla; si falla, `\+` se cumple. El corte del [capítulo 9](../capitulo-09-backtracking-y-corte/index.md) forma parte de esa
 definición.
+
+En el árbol de derivación del [capítulo 5](../capitulo-05-como-responde-prolog/index.md),
+`\+ G` es un objetivo predefinido, como las comparaciones y el `!` del
+[capítulo 9](../capitulo-09-backtracking-y-corte/index.md): no emplea ninguna
+cláusula, y el arco que sale de su nodo no lleva número ni sustitución. Lo que
+lo distingue es que, para decidir si se cumple, Prolog construye otro árbol: el
+**árbol subordinado** de la consulta `G`. Se dibuja debajo del nodo, dentro de
+un recuadro unido a él por una línea gruesa sin flecha, porque entrar en el
+recuadro no es un paso de la derivación sino la pregunta que `\+` plantea. El
+arco que sale del recuadro es el arco de `\+ G`, sin número ni sustitución. Si
+el árbol subordinado no tiene ninguna hoja de éxito, `\+ G` se cumple, y ese
+arco lleva a la consulta siguiente, de la que `\+ G` ya desapareció; si tiene
+alguna, `\+ G` falla, y el arco lleva a «falla». El recorrido del árbol
+subordinado se detiene en su primera hoja de éxito, y las alternativas que
+quedaban se dibujan podadas, como en la
+[sección 9.2](../capitulo-09-backtracking-y-corte/index.md#92-el-corte-poda-el-arbol):
+es el corte que forma parte de la definición. Con los hechos de `negacion.pl`
+numerados en el orden del programa —`persona/1` ocupa R1 a R5—:
+
+| | |
+|---|---|
+| R6 | `padre(juan, ana).` |
+| R7 | `padre(juan, pedro).` |
+| R8 | `padre(pedro, luis).` |
+| R9 | `padre(pedro, eva).` |
+
+```mermaid
+flowchart TD
+    A["\+ padre(ana, juan)"] === s
+    subgraph s ["árbol subordinado de padre(ana, juan)"]
+        direction TB
+        B["padre(ana, juan)"] --> F(["falla"])
+    end
+    s --> S(["consulta vacía<br/>true"])
+```
+
+Ninguna cabeza de `padre/2` unifica con `padre(ana, juan)`: el árbol subordinado
+tiene una sola rama, que falla. Por eso `\+ padre(ana, juan)` se cumple, y como
+era el único objetivo de la consulta, lo que sigue es la consulta vacía.
+
+```mermaid
+flowchart TD
+    A["\+ padre(juan, ana)"] === s
+    subgraph s ["árbol subordinado de padre(juan, ana)"]
+        direction TB
+        B["padre(juan, ana)"] -- "R6. θ₁ = {&nbsp;}" --> S(["consulta vacía"])
+    end
+    s --> F(["falla"])
+```
+
+Aquí el árbol subordinado llega a la consulta vacía con R6, y esa hoja de éxito
+es lo que hace fallar a `\+ padre(juan, ana)`. La sustitución es vacía porque la
+consulta no tenía variables; la [sección 10.4](#104-donde-ubicar) muestra qué
+ocurre con las que sí las tienen.
 
 ## 10.3 Por qué no es la negación de la lógica
 
@@ -169,12 +223,95 @@ esas ligaduras al terminar: lo único que conserva es si el objetivo se pudo
 probar o no. Por eso `\+` nunca deja una variable con valor, y solo puede
 responder `true.` o `false.`, nunca `P = ...`.
 
+El árbol lo muestra. Con la numeración de la [sección 10.2](#102-no-se-puede-probar)
+—R1 a R5 los hechos de `persona/1`, R6 a R9 los de `padre/2`— y las dos reglas
+a continuación:
+
+| | |
+|---|---|
+| R10 | `no_tiene_hijos(P) :- persona(P), \+ padre(P, _).` |
+| R11 | `mal_no_tiene_hijos(P) :- \+ padre(P, _), persona(P).` |
+
+```mermaid
+flowchart TD
+    A["mal_no_tiene_hijos(Quien)"] -- "R11. θ₁ = {&nbsp;P/Quien&nbsp;}" --> B["\+ padre(Quien, _),<br/>persona(Quien)"]
+    B === s
+    subgraph s ["árbol subordinado de padre(Quien, _)"]
+        direction TB
+        C["padre(Quien, _)"] -- "R6. θ₂ = {&nbsp;Quien/juan, _/ana&nbsp;}" --> S(["consulta vacía"])
+        C -- "R7 … R9" --- p@{ shape: sm-circ } -.- n["podadas por el \+"]
+    end
+    s --> F(["falla"])
+    classDef abierto fill:none,stroke:none;
+    class n abierto;
+```
+
+El árbol subordinado liga `Quien` a `juan` en `θ₂` y llega a la consulta vacía
+con el primer hecho; los otros tres quedan podados, porque una hoja de éxito es
+suficiente. Esa hoja hace fallar al `\+`, y la rama principal termina sin haber
+llegado a `persona(Quien)`. La sustitución `θ₂` no sale del recuadro: fuera de
+él, `Quien` sigue libre, y la respuesta es `false.` sin nombrar a nadie.
+
 Prolog no verifica esta situación ni emite ninguna advertencia. La consecuencia
 no es solo que falten respuestas: el programa afirma cosas que no se siguen de
 lo que tiene escrito.
 
 Por eso la versión correcta escribe `persona(P)` en primer lugar: ese objetivo
-instancia `P`, y a partir de ese punto `\+` opera sobre un valor concreto.
+instancia `P`, y a partir de ese punto `\+` opera sobre un valor concreto. En
+el árbol de `no_tiene_hijos(Quien)`, `persona(Quien)` abre cinco ramas, y cada
+una tiene su propio árbol subordinado, sobre una persona concreta:
+
+```mermaid
+%%{init: {"flowchart": {"nodeSpacing": 25, "rankSpacing": 40}}}%%
+flowchart TD
+    A["no_tiene_hijos(Quien)"] -- "R10. θ₁ = {&nbsp;P/Quien&nbsp;}" --> B["persona(Quien),<br/>\+ padre(Quien, _)"]
+    B -- "R1. θ₂ = {&nbsp;Quien/juan&nbsp;}" --> C1["\+ padre(juan, _)"]
+    C1 === s1
+    subgraph s1 ["padre(juan, _)"]
+        direction TB
+        D1["padre(juan, _)"] -- "R6. θ₃ = {&nbsp;_/ana&nbsp;}" --> E1(["consulta vacía"])
+        D1 -- "R7" --- p1@{ shape: sm-circ } -.- n1["podada"]
+    end
+    s1 --> F1(["falla"])
+    B -- "R2. θ₄ = {&nbsp;Quien/ana&nbsp;}" --> C2["\+ padre(ana, _)"]
+    C2 === s2
+    subgraph s2 ["padre(ana, _)"]
+        direction TB
+        D2["padre(ana, _)"] --> E2(["falla"])
+    end
+    s2 --> S2(["1.ª respuesta<br/>Quien = ana"])
+    B -- "R3. θ₅ = {&nbsp;Quien/pedro&nbsp;}" --> C3["\+ padre(pedro, _)"]
+    C3 === s3
+    subgraph s3 ["padre(pedro, _)"]
+        direction TB
+        D3["padre(pedro, _)"] -- "R8. θ₆ = {&nbsp;_/luis&nbsp;}" --> E3(["consulta vacía"])
+        D3 -- "R9" --- p3@{ shape: sm-circ } -.- n3["podada"]
+    end
+    s3 --> F3(["falla"])
+    B -- "R4. θ₇ = {&nbsp;Quien/luis&nbsp;}" --> C4["\+ padre(luis, _)"]
+    C4 === s4
+    subgraph s4 ["padre(luis, _)"]
+        direction TB
+        D4["padre(luis, _)"] --> E4(["falla"])
+    end
+    s4 --> S4(["2.ª respuesta<br/>Quien = luis"])
+    B -- "R5. θ₈ = {&nbsp;Quien/eva&nbsp;}" --> C5["\+ padre(eva, _)"]
+    C5 === s5
+    subgraph s5 ["padre(eva, _)"]
+        direction TB
+        D5["padre(eva, _)"] --> E5(["falla"])
+    end
+    s5 --> S5(["3.ª respuesta<br/>Quien = eva"])
+    classDef abierto fill:none,stroke:none;
+    class n1,n3 abierto;
+```
+
+Los recuadros llevan solo la consulta que encabeza cada árbol subordinado. Los
+de juan y pedro tienen una hoja de éxito, y las ramas de los dos terminan en
+«falla»; los de ana, luis y eva fallan por completo, el `\+` desaparece de la
+consulta y quedan las tres hojas de éxito, en el orden de los hechos de
+`persona/1`. La pregunta se hizo cinco veces, una por persona, y cada vez sobre
+un valor concreto: eso es lo que el orden de los objetivos cambia.
 
 La versión incorrecta **funciona** cuando se le provee el argumento:
 
@@ -363,6 +500,82 @@ los candidatos en el orden de los hechos: para juan, de 68 años, no hay otra
 edad mayor y el `\+` se cumple; para cada una de las demás personas, la edad de
 juan es mayor y el `\+` falla.
 
+El árbol de `mayor_edad(Quien)` tiene cinco ramas, una por cada hecho de
+`edad/2`, y en cada una el `\+` abre su árbol subordinado. Dos de esas ramas
+muestran los dos desenlaces, y se dibujan como las consultas
+`mayor_edad(juan)` y `mayor_edad(ana)`, que son las mismas ramas con el
+candidato elegido de antemano:
+
+```prolog
+?- mayor_edad(juan).
+true.
+
+?- mayor_edad(ana).
+false.
+```
+
+En `por_negacion.pl`, `persona/1` y `padre/2` ocupan R1 a R9 como en
+`negacion.pl`, y siguen los hechos de `edad/2` y la regla:
+
+| | |
+|---|---|
+| R10 | `edad(juan, 68).` |
+| R11 | `edad(ana, 41).` |
+| R12 | `edad(pedro, 39).` |
+| R13 | `edad(luis, 12).` |
+| R14 | `edad(eva, 8).` |
+| R15 | `mayor_edad(P) :- edad(P, E), \+ ( edad(_, Otra), Otra > E ).` |
+
+```mermaid
+%%{init: {"flowchart": {"rankSpacing": 30}}}%%
+flowchart TD
+    A["mayor_edad(juan)"] -- "R15. θ₁ = {&nbsp;P/juan&nbsp;}" --> B["edad(juan, E),<br/>\+ ( edad(_, Otra), Otra > E )"]
+    B -- "R10. θ₂ = {&nbsp;E/68&nbsp;}" --> C["\+ ( edad(_, Otra), Otra > 68 )"]
+    C === s
+    subgraph s ["árbol subordinado de edad(_, Otra), Otra > 68"]
+        direction TB
+        D["edad(_, Otra),<br/>Otra > 68"]
+        D -- "R10. θ₃ = {&nbsp;_/juan, Otra/68&nbsp;}" --> D1["68 > 68"]
+        D1 --> F1(["falla"])
+        D -- "R11. θ₄ = {&nbsp;_/ana, Otra/41&nbsp;}" --> D2["41 > 68"]
+        D2 --> F2(["falla"])
+        D -- "R12. θ₅ = {&nbsp;_/pedro, Otra/39&nbsp;}" --> D3["39 > 68"]
+        D3 --> F3(["falla"])
+        D -- "R13. θ₆ = {&nbsp;_/luis, Otra/12&nbsp;}" --> D4["12 > 68"]
+        D4 --> F4(["falla"])
+        D -- "R14. θ₇ = {&nbsp;_/eva, Otra/8&nbsp;}" --> D5["8 > 68"]
+        D5 --> F5(["falla"])
+    end
+    s --> S(["consulta vacía<br/>true"])
+```
+
+Para juan, el árbol subordinado recorre las cinco edades, y las cinco ramas
+fallan en la comparación: no existe ninguna `Otra` mayor que 68. Es la lectura
+«para toda edad `Otra`» hecha visible: `\+` solo se cumple después de agotar el
+árbol subordinado. Para ana, en cambio, la primera edad ya es mayor que 41:
+
+```mermaid
+%%{init: {"flowchart": {"rankSpacing": 30}}}%%
+flowchart TD
+    A["mayor_edad(ana)"] -- "R15. θ₁ = {&nbsp;P/ana&nbsp;}" --> B["edad(ana, E),<br/>\+ ( edad(_, Otra), Otra > E )"]
+    B -- "R11. θ₂ = {&nbsp;E/41&nbsp;}" --> C["\+ ( edad(_, Otra), Otra > 41 )"]
+    C === s
+    subgraph s ["árbol subordinado de edad(_, Otra), Otra > 41"]
+        direction TB
+        D["edad(_, Otra),<br/>Otra > 41"] -- "R10. θ₃ = {&nbsp;_/juan, Otra/68&nbsp;}" --> D1["68 > 41"]
+        D1 --> S1(["consulta vacía"])
+        D -- "R11 … R14" --- p@{ shape: sm-circ } -.- n["podadas por el \+"]
+    end
+    s --> F(["falla"])
+    classDef abierto fill:none,stroke:none;
+    class n abierto;
+```
+
+Una sola hoja de éxito basta: las cuatro edades restantes quedan podadas, el
+`\+` falla y con él la rama de ana. En el árbol completo de `mayor_edad(Quien)`,
+las ramas de pedro, luis y eva son como la de ana, con la misma edad de juan en
+la hoja de éxito de su árbol subordinado.
+
 La forma general es **«X es el que cumple la condición porque no existe otro que
 la cumpla mejor»**. No requiere ordenar ni recorrer una lista con un acumulador
 que conserve el mayor visto hasta el momento, como en la [sección 8.5](../capitulo-08-aritmetica/index.md#85-acumuladores). Si dos
@@ -536,6 +749,66 @@ respuestas, los empates, y la misma exigencia de que `E` llegue con valor. El
 corte es rojo, en el sentido de la [sección 9.5](../capitulo-09-backtracking-y-corte/index.md#95-corte-verde-y-corte-rojo): sin él, la segunda cláusula
 se cumpliría siempre. Lo que cambia es la extensión: cada negación requiere un
 predicado auxiliar de dos cláusulas, con nombre propio.
+
+Los árboles de `ninguna_mayor/1` para las dos edades de la
+[sección 10.7](#107-obtener-una-respuesta-por-negacion) muestran la
+correspondencia. Solo hacen falta las ramas podadas del
+[capítulo 9](../capitulo-09-backtracking-y-corte/index.md), sin ningún árbol
+subordinado:
+
+```prolog
+?- ninguna_mayor(41).
+false.
+
+?- ninguna_mayor(68).
+true.
+```
+
+En `sin_negacion.pl`, los hechos de `edad/2` son R10 a R14, como en
+`por_negacion.pl`; `personas/1` y `hijos/2` ocupan R15 a R17,
+`mayor_edad_con_corte/1` es R18 y las dos cláusulas de `ninguna_mayor/1`, R19
+y R20:
+
+```mermaid
+flowchart TD
+    A["ninguna_mayor(41)"] -- "R19. θ₁ = {&nbsp;E/41&nbsp;}" --> B["edad(_, Otra),<br/>Otra > 41,<br/>!,<br/>fail"]
+    B -- "R10. θ₂ = {&nbsp;_/juan, Otra/68&nbsp;}" --> C["68 > 41,<br/>!,<br/>fail"]
+    C --> D["!,<br/>fail"]
+    D --> E["fail"]
+    E --> F(["falla"])
+    B -- "R11 … R14" --- p1@{ shape: sm-circ } -.- n1["podadas por el corte"]
+    A -- "R20" --- p2@{ shape: sm-circ } -.- n2["podada por el corte"]
+    classDef abierto fill:none,stroke:none;
+    class n1,n2 abierto;
+```
+
+La rama de R19 es, objetivo por objetivo, el árbol subordinado que `\+` abría
+para ana: la misma edad de juan, la misma comparación. Lo que `\+` hacía por su
+cuenta está escrito: el `!` poda las otras cuatro edades y la cláusula R20, y
+`fail` termina la rama en «falla». Como ya no queda ninguna alternativa, el
+predicado falla.
+
+```mermaid
+flowchart TD
+    A["ninguna_mayor(68)"] -- "R19. θ₁ = {&nbsp;E/68&nbsp;}" --> B["edad(_, Otra),<br/>Otra > 68,<br/>!,<br/>fail"]
+    B -- "R10. θ₂ = {&nbsp;_/juan, Otra/68&nbsp;}" --> C1["68 > 68,<br/>!,<br/>fail"]
+    C1 --> F1(["falla"])
+    B -- "R11. θ₃ = {&nbsp;_/ana, Otra/41&nbsp;}" --> C2["41 > 68,<br/>!,<br/>fail"]
+    C2 --> F2(["falla"])
+    B -- "R12. θ₄ = {&nbsp;_/pedro, Otra/39&nbsp;}" --> C3["39 > 68,<br/>!,<br/>fail"]
+    C3 --> F3(["falla"])
+    B -- "R13. θ₅ = {&nbsp;_/luis, Otra/12&nbsp;}" --> C4["12 > 68,<br/>!,<br/>fail"]
+    C4 --> F4(["falla"])
+    B -- "R14. θ₆ = {&nbsp;_/eva, Otra/8&nbsp;}" --> C5["8 > 68,<br/>!,<br/>fail"]
+    C5 --> F5(["falla"])
+    A -- "R20. θ₇ = {&nbsp;_/68&nbsp;}" --> S(["consulta vacía<br/>true"])
+```
+
+Con 68, las cinco ramas de R19 fallan en la comparación y ninguna llega al
+corte, de modo que R20 no está podada: es la rama que da la consulta vacía. El
+árbol subordinado de juan en la [sección 10.7](#107-obtener-una-respuesta-por-negacion)
+tenía esas mismas cinco ramas; la segunda cláusula escribe lo que allí quedaba
+implícito, que agotar el árbol sin éxito es cumplirse.
 
 **Sin negación.** La otra manera evita la negación por completo: en lugar de
 preguntar si existe una edad mayor, recorre todas las edades y conserva la
@@ -739,6 +1012,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | | |
 |---|---|
 | `\+ Objetivo` | se cumple cuando Objetivo **no** se puede probar |
+| **árbol subordinado** | el árbol de Objetivo que `\+` abre, en un recuadro: sin hoja de éxito, `\+` se cumple y desaparece; con alguna, falla; sus sustituciones no salen del recuadro |
 | **negación como falla** | no demuestra que una afirmación sea falsa: no logra demostrar que sea cierta |
 | **mundo cerrado** | lo que el programa no puede deducir se considera no cierto |
 | ubicación de `\+` | después de los objetivos que instancian sus variables |
