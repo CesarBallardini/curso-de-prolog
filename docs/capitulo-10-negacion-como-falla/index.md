@@ -3,10 +3,13 @@
 El [capítulo 2](../capitulo-02-hechos-consultas-y-variables/index.md) estableció que `false.` no significa "la afirmación es falsa" sino
 "la afirmación no se puede probar con el contenido del programa". Este capítulo
 desarrolla esa idea, la convierte en un operador —`\+`—, describe los tres
-casos en que ese operador produce resultados incorrectos y muestra cómo se lo
-usa para obtener respuestas, como el máximo de un conjunto de valores.
+casos en que ese operador no se comporta como la negación de la lógica y
+muestra cómo se lo usa para obtener respuestas, como el máximo de un conjunto
+de valores.
 
 Es el último capítulo sobre el modelo de ejecución de Prolog. El
+[capítulo 11](../capitulo-11-texto/index.md) trata el texto —átomos, cadenas y
+las conversiones entre ellos— y el
 [capítulo 12](../capitulo-12-prolog-y-la-logica/index.md) analiza todo lo
 anterior desde el punto de vista de la lógica.
 
@@ -26,9 +29,9 @@ Al terminar el capítulo, el lector puede:
   la extensión y el comportamiento de cada versión.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:10 h**.
-    Resolver los 9 ejercicios marcados con ★: **2:35 h**.
-    Resolver los 17 ejercicios del final: **5:40 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:15 h**.
+    Resolver los 9 ejercicios marcados con ★: **2:40 h**.
+    Resolver los 17 ejercicios del final: **5:45 h**.
 
 ## 10.1 El supuesto de mundo cerrado
 
@@ -92,14 +95,15 @@ Regla práctica: **`\+` es confiable en la medida en que el programa es
 completo**. Sobre la información que el programa contiene, opera correctamente.
 Sobre la información que no contiene, responde como si no existiera.
 
-Hay una segunda diferencia, menos visible. La hipótesis de la [sección 10.1](#101-el-supuesto-de-mundo-cerrado) dice
+Hay otra diferencia, menos visible. La hipótesis de la [sección 10.1](#101-el-supuesto-de-mundo-cerrado) dice
 "lo que el programa no puede deducir"; `\+` es más estricto: exige que la
 búsqueda **fracase en una cantidad finita de pasos**. Por eso el nombre completo
 del mecanismo es *negación como falla finita*. Si el objetivo negado corresponde
 a una búsqueda que no termina —como las ramas infinitas de la [sección 5.6](../capitulo-05-como-responde-prolog/index.md#56-ramas-infinitas)—, `\+`
-no responde `true.` ni `false.`: no responde nunca. Es el tercer caso en que el
-operador no se comporta como la negación que aparenta, y a diferencia de los
-otros dos no produce una respuesta incorrecta sino ninguna respuesta.
+no responde `true.` ni `false.`: no responde nunca. Es el tercero de los casos
+que anuncia la introducción —los otros dos son la información faltante de esta
+sección y las variables libres de la [sección 10.4](#104-donde-ubicar)—, y a
+diferencia de ellos no produce una respuesta incorrecta sino ninguna respuesta.
 
 ## 10.4 Dónde ubicar `\+`
 
@@ -158,8 +162,8 @@ regla.
 La diferencia se resume en una línea: **con una variable libre, `\+` no pregunta
 si existe algún valor que falle, sino si fallan todos.**
 
-Conviene ser preciso sobre lo que ocurre, porque no es que `\+` ignore las
-variables libres. El objetivo interno sí las liga mientras intenta la
+Conviene ser preciso sobre lo que ocurre: `\+` no ignora las variables
+libres. El objetivo interno sí las liga mientras intenta la
 demostración —`padre(P, _)` liga `P` a `juan` y se prueba—, pero `\+` descarta
 esas ligaduras al terminar: lo único que conserva es si el objetivo se pudo
 probar o no. Por eso `\+` nunca deja una variable con valor, y solo puede
@@ -302,12 +306,31 @@ de `X` e `Y`, que son las que estableció el primer objetivo de la consulta.
 La convención es usar `\==` cuando el propósito es comparar, porque indica de
 manera explícita que no se espera ninguna instanciación.
 
+`comparar.pl` da nombre a la pregunta que `\=` niega:
+
+<!-- ejemplo: capitulo-10/comparar.pl predicado: pueden_ser_el_mismo/2 consulta: pueden_ser_el_mismo(X, ana). -->
+```prolog
+%!  pueden_ser_el_mismo(?A, ?B) is semidet.
+%
+%   A y B unifican.
+pueden_ser_el_mismo(A, B) :-
+    A = B.
+```
+
+```prolog
+?- pueden_ser_el_mismo(X, ana).
+X = ana.
+```
+
+Donde `=` liga, `\=` falla: la consulta `X \= ana` del comienzo de la sección
+responde `false.` por la misma razón por la que esta responde `X = ana`.
+
 !!! question "Actividad"
-    Sobre `comparar.pl`, ejecutar `pueden_ser_el_mismo(X, ana).` y después
-    `X = eva, pueden_ser_el_mismo(X, ana).` El mismo objetivo cambia de
-    respuesta según si la variable ya tiene valor cuando se lo evalúa. Escribir
-    en una línea la conclusión: `\=` y `\+` consultan el estado **actual** de
-    los términos, no todos los valores que podrían tomar.
+    Sobre `comparar.pl`, ejecutar `X = eva, pueden_ser_el_mismo(X, ana).` y
+    compararlo con la consulta anterior. El mismo objetivo cambia de respuesta
+    según si la variable ya tiene valor cuando se lo evalúa. Escribir en una
+    línea la conclusión: `\=` y `\+` consultan el estado **actual** de los
+    términos, no todos los valores que podrían tomar.
 
 ## 10.7 Obtener una respuesta por negación
 
@@ -410,6 +433,42 @@ Quien = eva.
 y `E2` aparecen solamente dentro del `\+` y recorren todos los hijos de pedro y
 sus edades.
 
+**Un nombre para la condición negada.** La conjunción que describe al candidato
+mejor también se puede escribir en un predicado propio, y negar ese predicado.
+`negacion.pl` define así al hijo único, el hijo para el que no existe otro hijo
+del mismo padre:
+
+<!-- ejemplo: capitulo-10/negacion.pl predicado: hijo_unico/1 otro_hijo/2 consulta: otro_hijo(juan, ana). -->
+```prolog
+%!  hijo_unico(?H) is nondet.
+%
+%   H tiene un padre, y ese padre no tiene otros hijos.
+hijo_unico(H) :-
+    padre(P, H),
+    \+ otro_hijo(P, H).
+
+%!  otro_hijo(?P, +H) is nondet.
+%
+%   P tiene algún hijo que no es H.
+otro_hijo(P, H) :-
+    padre(P, Otro),
+    Otro \== H.
+```
+
+```prolog
+?- otro_hijo(juan, ana).
+true.
+
+?- hijo_unico(Quien).
+false.
+```
+
+En esta familia cada padre tiene dos hijos, de modo que `hijo_unico/1` no tiene
+respuestas. El auxiliar `otro_hijo/2` se puede consultar por separado y lleva su
+propio encabezado, que registra con `+H` que el `\==` necesita a `H` con valor;
+a cambio, la definición ocupa dos predicados. El ejercicio 5 compara las dos
+formas.
+
 **Probar sin ligar.** Como `\+` descarta las ligaduras que produce su objetivo,
 `\+ \+ Objetivo` se cumple exactamente cuando `Objetivo` se cumple, pero no deja
 ninguna variable con valor. Es la forma de preguntar si algo se puede probar sin
@@ -433,7 +492,10 @@ conservar la respuesta; el ejercicio 14 lo examina con una consulta concreta.
 La [sección 10.2](#102-no-se-puede-probar) indicó que el corte forma parte de la definición de `\+`. Esta
 sección escribe sin `\+` tres predicados de las secciones anteriores, de dos
 maneras, y compara la extensión y el comportamiento de cada versión. Todas
-están en `sin_negacion.pl`.
+están en `sin_negacion.pl`; el texto muestra las dos versiones de `mayor_edad/1`
+y la versión sin negación de `hijo_unico/1`, mientras que
+`hijo_menor_con_corte/2`, `hijo_menor_sin_negacion/2` y `hijo_unico_con_corte/1`
+están solo en el archivo, y la tabla del final de la sección las cuenta.
 
 **Con corte y falla.** `fail` es un objetivo predefinido que falla siempre. Con
 él y el corte, la negación se escribe a mano:
@@ -587,11 +649,16 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
    Prestar atención al orden de los objetivos. Escribir también su encabezado:
    qué argumentos pueden llegar libres, cuáles deben llegar ligados, y cuántas
    respuestas produce.
-4. **(2)** Escribir `sin_hermanos(P)`: P no tiene ningún hermano. Se requiere un
-   predicado auxiliar, como en `hijo_unico/1` del ejemplo. Su encabezado es
+4. **(2)** Escribir `sin_hermanos(P)`: P no tiene ningún hermano. La condición
+   negada puede ir en un predicado auxiliar, como `otro_hijo/2` en
+   `hijo_unico/1` de la [sección 10.7](#107-obtener-una-respuesta-por-negacion),
+   o escribirse como conjunción dentro del `\+`. Su encabezado es
    `sin_hermanos(?P) is nondet`.
-5. ★ **(2)** ¿Por qué `hijo_unico/1` del ejemplo requiere el predicado auxiliar
-   `otro_hijo/2`? ¿No es suficiente escribir `\+` dentro de la regla?
+5. ★ **(2)** `hijo_unico/1` de la [sección 10.7](#107-obtener-una-respuesta-por-negacion)
+   niega la condición «P tiene otro hijo» a través del predicado auxiliar
+   `otro_hijo/2`. Escribir la misma regla con la conjunción negada dentro del
+   `\+`, sin auxiliar, y comparar las dos formas: ¿qué se gana y qué se pierde
+   con el predicado auxiliar?
 6. **(2)** Escribir `nadie_tiene(Cosa)` sobre una base de hechos `tiene/2`, y
    explicar con qué argumentos funciona correctamente.
 7. ★ **(3)** El siguiente predicado produce respuestas incorrectas. Explicar la
@@ -643,9 +710,9 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     `padre(juan, H).` Explicar la diferencia: ¿qué ocurre con las ligaduras que
     el objetivo interno produjo?
 15. **(3)** Escribir `solo_en_la_segunda(L1, L2, R)`, análogo al ejercicio 8
-    pero con las listas invertidas, y después explicar por qué no alcanza con
-    consultar `solo_en_la_primera(L2, L1, R)` cuando alguna de las dos listas
-    tiene elementos sin instanciar.
+    pero con las listas invertidas, y después explicar qué ocurre con
+    `solo_en_la_primera(L2, L1, R)` cuando alguna de las dos listas tiene
+    elementos sin instanciar, y qué debe decir el encabezado al respecto.
 16. ★ **(2)** Con la base siguiente, escribir `mejor_de(M, A)`: A tiene la nota
     más alta de la materia M. Usar la forma de la [sección 10.7](#107-obtener-una-respuesta-por-negacion), sin ordenar ni
     recorrer listas. ¿Qué responde `mejor_de(logica, A).`, y por qué?
@@ -678,6 +745,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | corte y falla | `p(X) :- q(X), !, fail.` y `p(_).`: la definición de `\+` escrita a mano |
 | sin negación | recorrer una lista en lugar de negar; requiere los datos en una lista |
 | respuesta por negación | `edad(P, E), \+ ( edad(_, Otra), Otra > E )`: el candidato se genera antes; el `\+` niega que exista uno mejor |
+| `\+ \+ Objetivo` | se cumple cuando Objetivo se cumple, sin dejar ninguna ligadura |
 | `=` `\=` | pueden unificar, o no pueden unificar |
 | `==` `\==` | son el mismo término, o no lo son |
 | `=:=` `=\=` | tienen el mismo valor numérico, o distinto |
@@ -691,4 +759,4 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | `forall/2`, que expresa "para todos" sin los problemas de `\+` | [capítulo 17](../capitulo-17-todas-las-soluciones/index.md) |
 | Verificación del tipo de un término antes de compararlo | [capítulo 32](../capitulo-32-inspeccion-de-terminos/index.md) |
 | Otras formas de obtener el máximo: `aggregate_all(max, …)` y ordenar con `sort/4` | [capítulo 17](../capitulo-17-todas-las-soluciones/index.md) y [capítulo 22](../capitulo-22-estructuras-de-datos-de-la-biblioteca/index.md) |
-| `dif/2`, equivalente a `\==` que se posterga hasta que las variables tengan valor | [capítulo 23](../capitulo-23-programacion-con-restricciones/index.md) |
+| `dif/2`, la desigualdad `\=` que se posterga hasta que las variables tengan valor | [capítulo 23](../capitulo-23-programacion-con-restricciones/index.md) |

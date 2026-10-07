@@ -79,6 +79,7 @@ plugins:
 # with the whole source inside the link. See tools/swish_links.py. The second
 # drops the links of docs/pdf.md to PDFs `make pdf` has not built.
 hooks:
+  - tools/tabla_pipes.py
   - tools/swish_links.py
   - tools/pdf_links.py
   - tools/slides_files.py

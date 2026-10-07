@@ -40,9 +40,10 @@ sumando([X|Resto], Hasta, Total) :-
 largo(L, N) :-
     contando(L, 0, N).
 
-%!  contando(+L, +Hasta, -N) is det.
+%!  contando(?L, +Hasta, ?N) is nondet.
 %
-%   N es Hasta más la cantidad de elementos de L.
+%   N es Hasta más la cantidad de elementos de L. Admite los mismos modos que
+%   largo/2, con la misma limitación: con L libre y N ligado no termina.
 contando([], N, N).
 contando([_|Resto], Hasta, N) :-
     Ahora is Hasta + 1,

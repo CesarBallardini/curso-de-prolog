@@ -529,7 +529,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 
 | Tema | Se retoma en |
 |---|---|
-| Recursión sobre listas, el mismo esquema con `[Primero|Resto]` | [capítulo 7](../capitulo-07-listas/index.md) |
+| Recursión sobre listas, el mismo esquema con `[Primero\|Resto]` | [capítulo 7](../capitulo-07-listas/index.md) |
 | `is`, y por qué es menos general que la relación `suma/3` | [capítulo 8](../capitulo-08-aritmetica/index.md) |
 | Acumuladores, otra forma de escribir una recursión que produce un resultado | [capítulo 8](../capitulo-08-aritmetica/index.md) |
 | Recursión con poda mediante el corte | [capítulo 9](../capitulo-09-backtracking-y-corte/index.md) |

@@ -15,7 +15,7 @@ Al terminar el capítulo, el lector puede:
 
 - evaluar una expresión con `is/2`, y determinar qué condiciones requiere la
   evaluación;
-- elegir entre `=`, `=:=` y `==` según la pregunta que plantea cada uno;
+- elegir entre `=` y `=:=` según la pregunta que plantea cada uno;
 - interpretar el error de argumentos sin instanciar, y corregirlo;
 - explicar por qué en algunos casos una relación aritmética admite la consulta
   inversa y en otros no;
@@ -23,7 +23,7 @@ Al terminar el capítulo, el lector puede:
   recursión sin acumulador.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **0:40 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **0:55 h**.
     Resolver los 6 ejercicios marcados con ★: **1:10 h**.
     Resolver los 16 ejercicios del final: **4:55 h**.
 
@@ -64,8 +64,20 @@ puede evaluar, que es el error mostrado; y si lo tuviera, la consulta pediría
 unificar ese valor con el siguiente, y respondería `false.`. Una variable, una
 vez ligada, conserva su valor.
 
-<!-- ejemplo: capitulo-08/cuentas.pl predicado: edad_en_meses/2 mayor_de_edad/1 consulta: edad_en_meses(eva, Meses). -->
+Los ejemplos de este capítulo están en `cuentas.pl`. El archivo parte de cinco
+hechos `edad/2`, y sobre ellos define dos reglas: una evalúa una expresión con
+`is/2` y la otra compara con `>=`, uno de los operadores de comparación que la
+sección siguiente presenta:
+
+<!-- ejemplo: capitulo-08/cuentas.pl predicado: edad/2 edad_en_meses/2 mayor_de_edad/1 consulta: edad_en_meses(eva, Meses). -->
 ```prolog
+% edad(P, A): P tiene A años.
+edad(juan, 68).
+edad(ana, 41).
+edad(pedro, 45).
+edad(luis, 12).
+edad(eva, 8).
+
 %!  edad_en_meses(?P, -M) is nondet.
 %
 %   M es la edad de P expresada en meses.
@@ -80,6 +92,21 @@ mayor_de_edad(P) :-
     edad(P, A),
     A >= 18.
 ```
+
+```prolog
+?- edad_en_meses(eva, Meses).
+Meses = 96.
+
+?- mayor_de_edad(Quien).
+Quien = juan ;
+Quien = ana ;
+Quien = pedro ;
+false.
+```
+
+En las dos reglas, `edad(P, A)` da valor a `A` antes de que la expresión se
+evalúe o se compare. La [sección 8.4](#84-cuando-se-admite-la-consulta-inversa)
+muestra qué consultas admite esa forma.
 
 Los operadores disponibles en la expresión son los habituales: `+`, `-`, `*`,
 `/`, y otros dos de uso frecuente:
@@ -109,6 +136,11 @@ programa compara el resultado con otro término, se debe tener en cuenta que `2`
 y `2.0` no son el mismo término, aunque su valor numérico sea el mismo. La
 sección siguiente trata ese tema.
 
+!!! question "Actividad"
+    Predecir qué responden `X is 7 // 2`, `X is 7 mod 2`, `X is 7 / 2` y
+    `X is 8 / 2`, y ejecutarlas después. Explicar por qué las dos últimas
+    producen números de tipos distintos.
+
 ## 8.2 Comparación de números
 
 Existen seis operadores de comparación: `<`, `>`, `=<`, `>=`, y otros dos que
@@ -120,6 +152,15 @@ Los seis **evalúan las expresiones de ambos lados antes de comparar**, igual qu
 ```prolog
 ?- 2 + 3 =:= 5.
 true.
+
+?- 2 + 3 =\= 6.
+true.
+
+?- 3 =< 2 + 1.
+true.
+
+?- 7 > 2 * 4.
+false.
 ```
 
 La diferencia siguiente es una fuente frecuente de confusión:
@@ -148,8 +189,12 @@ false.
 un entero y el otro, un número de punto flotante.
 
 La regla práctica es la siguiente: **para comparar dos valores numéricos se usa
-`=:=`; para unificar dos términos cualesquiera se usa `=`**. Existe un tercer
-operador, `==`, que se presenta en el [capítulo 10](../capitulo-10-negacion-como-falla/index.md).
+`=:=`; para unificar dos términos cualesquiera se usa `=`**. El tercer
+operador, `==`, cuya negación `\==` se usó en la
+[sección 3.5](../capitulo-03-reglas-y-conjunciones/index.md#35-una-regla-que-produce-respuestas-de-mas),
+se presenta en la
+[sección 10.5](../capitulo-10-negacion-como-falla/index.md#105-los-seis-operadores-de-igualdad-y-desigualdad),
+que reúne los seis operadores de igualdad y desigualdad.
 
 !!! question "Actividad"
     ¿Qué responden `luis = luis` y `luis =:= luis`? La segunda no responde
@@ -157,16 +202,30 @@ operador, `==`, que se presenta en el [capítulo 10](../capitulo-10-negacion-com
 
 ## 8.3 Argumentos sin instanciar
 
-El siguiente es el error más frecuente de este capítulo:
+El siguiente es el error más frecuente de este capítulo. `doble/2`, también
+en `cuentas.pl`, evalúa una expresión sobre su primer argumento:
+
+<!-- ejemplo: capitulo-08/cuentas.pl predicado: doble/2 consulta: doble(21, D). -->
+```prolog
+%!  doble(+N, -D) is det.
+%
+%   D es el doble de N. Muestra el comportamiento de is/2 cuando N no está
+%   instanciada.
+doble(N, D) :-
+    D is N * 2.
+```
 
 ```prolog
+?- doble(21, D).
+D = 42.
+
 ?- doble(X, 42).
 ERROR: Arguments are not sufficiently instantiated
 ```
 
-`doble/2` está definido como `D is N * 2`. En la consulta `doble(X, 42)`, `N`
-está libre, de modo que la expresión a evaluar es `X * 2`, con `X` sin valor.
-Esa expresión no se puede evaluar, y Prolog informa el error.
+En la consulta `doble(X, 42)`, `N` está libre, de modo que la expresión a
+evaluar es `X * 2`, con `X` sin valor. Esa expresión no se puede evaluar, y
+Prolog informa el error.
 
 Lo relevante es lo que Prolog **no** hace: no despeja la incógnita. No deduce
 que, si el doble es 42, el número es 21. `is/2` es un evaluador, no un
@@ -320,6 +379,12 @@ Este caso base es el elemento central de la plantilla, y el que presenta mayor
 dificultad inicial: no realiza ningún cálculo; solo establece que, cuando no
 quedan elementos por recorrer, el valor acumulado es el resultado.
 
+!!! question "Actividad"
+    Ejecutar `suma_con_acumulador([3, 1, 4], S).` con `trace` y anotar, en
+    cada llamada a `sumando/3`, el valor del acumulador y lo que queda de la
+    lista. Verificar que en la última llamada la lista está vacía y el
+    acumulador ya contiene el resultado.
+
 El mismo esquema cuenta los elementos de una lista. Es `largo/2` del
 [capítulo 7](../capitulo-07-listas/index.md), con un acumulador que empieza en `0` y se incrementa en `1` por
 cada elemento:
@@ -333,9 +398,10 @@ cada elemento:
 largo(L, N) :-
     contando(L, 0, N).
 
-%!  contando(+L, +Hasta, -N) is det.
+%!  contando(?L, +Hasta, ?N) is nondet.
 %
-%   N es Hasta más la cantidad de elementos de L.
+%   N es Hasta más la cantidad de elementos de L. Admite los mismos modos que
+%   largo/2, con la misma limitación: con L libre y N ligado no termina.
 contando([], N, N).
 contando([_|Resto], Hasta, N) :-
     Ahora is Hasta + 1,
@@ -413,7 +479,7 @@ invertirla.
 AlReves = [eva, luis, ana].
 ```
 
-La versión del [capítulo 7](../capitulo-07-listas/index.md) usaba `append/3` para agregar cada elemento al final.
+La versión del [ejercicio 7 del capítulo 7](../capitulo-07-listas/soluciones.md#7) usaba `append/3` para agregar cada elemento al final.
 Aquella recorría toda la lista nuevamente por cada elemento; esta la recorre una
 sola vez. Con tres elementos la diferencia es imperceptible; con tres mil, es
 significativa.
@@ -432,7 +498,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 2. **(1)** Escribir `triple(N, T)` y ejecutar `triple(5, T)` y `triple(N, 15)`.
    Explicar el resultado de la segunda.
 3. ★ **(1)** ¿Cuáles de las siguientes son verdaderas? `3 + 4 = 7` ·
-   `3 + 4 =:= 7` · `7 = 7` · `7 =:= 7.0` · `7 = 7.0`
+   `3 + 4 =:= 7` · `7 = 7` · `7 =:= 7.0` · `7 = 7.0` · `7 =\= 7.0`
 4. **(2)** Escribir `es_par(N)` para los enteros predefinidos, con `mod`. Su
    encabezado es `%! es_par(+N) is semidet.`
 5. **(2)** Escribir `mayor_de_los_dos(A, B, M)` sin usar `max`, con el
@@ -454,13 +520,16 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     clases de la [sección 8.3](#83-argumentos-sin-instanciar):
     `X is 5 + 3.` · `8 is 5 + 3.` · `9 is 5 + 3.` · `X is 5 + Y.` ·
     `X is 5 + dos.` · `X = 5 + 3.`
-12. ★ **(2)** El predicado siguiente pretende contar de 1 a `N`, pero no termina.
-    Identificar la causa y corregirlo:
+12. ★ **(2)** El predicado siguiente pretende verificar, avanzando de uno en
+    uno desde `X`, que `X` no supera a `N`. La consulta `hasta(3, 1)` responde
+    `true`, pero al pedir otra respuesta con `;` no termina, y `hasta(3, 5)`
+    no termina nunca. Identificar la causa y corregirlo:
 
     ```prolog
     %!  hasta(+N, +X) is semidet.
     %
-    %   X recorre los enteros de X a N.
+    %   Se cumple si X es N o un entero menor que N, avanzando de uno en uno
+    %   desde X.
     hasta(N, N).
     hasta(N, X) :-
         Siguiente is X + 1,
@@ -477,8 +546,8 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     respuestas produce.
 14. **(2)** Escribir `suma_hasta(N, S)`: `S` es la suma de los enteros de 1 a
     `N`, en dos versiones, una con acumulador y otra sin él. Después responder:
-    ¿cuál de las dos puede responder `suma_hasta(N, 6).`, y por qué ninguna de
-    las dos lo resuelve?
+    ¿alguna de las dos responde `suma_hasta(N, 6).`? Explicar por qué no, y
+    qué objetivo haría falta agregar para que lo hiciera.
 15. **(3)** Escribir las pruebas de `maximo/2` del ejercicio 8: una que verifique
     el resultado sobre una lista de varios elementos, una sobre una lista de uno
     solo, y una que documente la decisión tomada para la lista vacía.
@@ -505,6 +574,8 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | `=` y `=:=` | unificación de dos términos, y comparación de dos valores numéricos |
 | **acumulador** | un argumento adicional que transporta el resultado parcial durante el avance |
 | argumentos sin instanciar | `is/2` requiere que todas las variables de la expresión tengan valor |
+| `is not a function` | la expresión contiene un término que no es un número y nunca lo será |
+| generar y probar | un objetivo anterior a `is/2` genera los candidatos y la aritmética los verifica: así se admite la consulta inversa |
 
 ## Temas que se retoman
 

@@ -69,9 +69,10 @@ test(clasificar_cero, all(C == [cero])) :-
 test(clasificar_positivo, all(C == [positivo])) :-
     clasificar(5, C).
 
-% El corte rojo: con el segundo argumento instanciado, la respuesta es falsa.
+% El corte rojo: con el segundo argumento instanciado, el predicado acepta
+% una respuesta falsa. La prueba documenta el defecto.
 test(clasificar_acepta_una_respuesta_falsa) :-
-    clasificar(5, negativo) -> true ; true.
+    clasificar(-2, positivo).
 
 % Ejercicio 16: el lugar del corte decide cuántas respuestas quedan.
 test(prenda_sin_corte, all(P == [unico-blanco-lino,

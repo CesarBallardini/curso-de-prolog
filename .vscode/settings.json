@@ -7,16 +7,17 @@
 	// hand at about 80 columns and its tables are written compact (`|---|---|`),
 	// and a formatter undoes both.
 	//
-	// There is also a case where reformatting corrupts the source. A table cell
-	// such as `[Primero|Resto]` holds a pipe inside an inline code span. GFM
-	// requires that pipe to be escaped, so a formatter reads it as a column
-	// boundary, counts one column too many, and pads the cell *inside* the
+	// There is also a case where reformatting corrupted the source. A table cell
+	// such as `[Primero\|Resto]` holds a pipe inside an inline code span, and
+	// while the book wrote it unescaped a formatter read it as a column
+	// boundary, counted one column too many, and padded the cell *inside* the
 	// backticks — leaving `[Primero        | Resto]` in the rendered page. It
 	// happened to the summary table of chapter 1 more than once.
 	//
-	// The book does not escape those pipes, because Python-Markdown renders the
-	// site and would print the backslash. `tools/md2pdf.py` adds the escape on
-	// the fly for the PDF, which is the renderer that needs it.
+	// The book now escapes those pipes as GFM requires (`\|`), which the VS Code
+	// previews, GitHub and the PDF read natively; the site and the decks remove
+	// the backslash themselves (`tools/tabla_pipes.py`, `tools/tabla_pipes.lua`).
+	// Formatting stays off all the same: the hand wrapping and the compact tables.
 	"[markdown]": {
 		"editor.formatOnSave": false
 	},

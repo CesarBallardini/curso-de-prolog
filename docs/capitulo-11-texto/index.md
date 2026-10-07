@@ -10,7 +10,7 @@ Este capítulo presenta las cuatro maneras de representar texto en SWI-Prolog,
 las conversiones entre ellas, `format/2` en detalle, y los predicados
 predefinidos que buscan, dividen, unen, normalizan y escriben texto. Todo lo que
 se construye con ellos usa las herramientas de los capítulos anteriores:
-recursión sobre listas, acumuladores y la ubicación correcta de cada objetivo.
+recursión sobre listas y la ubicación correcta de cada objetivo.
 
 ## Objetivos del capítulo
 
@@ -27,9 +27,9 @@ Al terminar el capítulo, el lector puede:
   la manera que corresponde a cada propósito.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:29 h**.
-    Resolver los 6 ejercicios marcados con ★: **1:12 h**.
-    Resolver los 15 ejercicios del final: **4:04 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:30 h**.
+    Resolver los 6 ejercicios marcados con ★: **1:10 h**.
+    Resolver los 17 ejercicios del final: **4:25 h**.
 
 ## 11.1 Cuatro maneras de escribir texto
 
@@ -74,8 +74,8 @@ F = string.
 
 En otros sistemas Prolog, y en programas escritos para ellos, `"ana"` puede ser
 una lista de códigos o de caracteres. Un programa que usa comillas dobles
-depende de esa bandera; un texto que llega de un libro escrito para otro sistema
-puede requerir cambiarla con `set_prolog_flag/2`.
+depende de esa bandera; un programa escrito para otro sistema puede requerir
+cambiarla con `set_prolog_flag/2`.
 
 La elección entre las cuatro formas sigue una regla práctica:
 
@@ -127,8 +127,36 @@ false.
 ?- atom_number(A, 12).
 A = '12'.
 
-?- number_codes(N, "42").
+?- number_codes(N, `42`).
 N = 42.
+```
+
+La última consulta escribe la lista de códigos con comillas invertidas, que es
+la representación que el nombre `number_codes/2` indica. El predicado también
+acepta la cadena `"42"`, como la mayoría de las conversiones de esta sección en
+el argumento que leen; el ejemplo muestra la representación que corresponde,
+porque con `"42"` parecería que las comillas dobles producen una lista.
+
+Un programa que recibe un número escrito como texto lo convierte con esa misma
+prueba. `numero_de_texto/2`, de `texto.pl`, es `atom_number/2` con un nombre
+que dice qué espera: falla cuando el átomo no representa un número.
+
+<!-- ejemplo: capitulo-11/texto.pl predicado: numero_de_texto/2 consulta: numero_de_texto('12', N). -->
+```prolog
+%!  numero_de_texto(+Texto, -N) is semidet.
+%
+%   N es el número que representa el átomo Texto. Falla si Texto no
+%   representa un número.
+numero_de_texto(Texto, N) :-
+    atom_number(Texto, N).
+```
+
+```prolog
+?- numero_de_texto('12', N).
+N = 12.
+
+?- numero_de_texto(doce, N).
+false.
 ```
 
 `term_to_atom/2` convierte un término completo en el átomo que lo escribe, y
@@ -198,6 +226,7 @@ admite muchas más; estas son las que el curso usa:
 | `~s` | la lista de códigos o la cadena siguiente |
 | `~n` | un salto de línea |
 | `~t` | relleno: los espacios que hagan falta para completar la columna |
+| `` ~`-t `` | relleno con el carácter que sigue a la comilla invertida, `-`, en lugar del espacio |
 | `~10\|` | una columna que termina en la posición 10 de la línea |
 | `~8+` | una columna de 8 posiciones a partir de la columna anterior |
 
@@ -301,8 +330,8 @@ E = 'ana (41)'.
 
 !!! question "Actividad"
     Predecir la salida de `format("~a|~q|~w~n", ['Ana Paz', 'Ana Paz', 'Ana Paz']).`
-    y comprobarla. Después agregar a `tabla/1` una línea de encabezado con los
-    títulos `Nombre` y `Edad`, alineados con las columnas de las filas.
+    y comprobarla. Explicar en qué se diferencian las tres directivas con ese
+    átomo, y con qué átomo las tres escribirían lo mismo.
 
 ## 11.4 Buscar dentro de un átomo
 
@@ -391,8 +420,8 @@ P = ana.
 ```
 
 Para contar cuántas veces aparece una letra, la conversión a lista de
-caracteres permite usar un recorrido con acumulador en la forma del
-[capítulo 8](../capitulo-08-aritmetica/index.md):
+caracteres permite usar un recorrido que cuenta, en la forma de la
+[sección 7.4](../capitulo-07-listas/index.md#74-contar-durante-el-recorrido):
 
 <!-- ejemplo: capitulo-11/palabras.pl predicado: contar_letra/3 contar/3 consulta: contar_letra(a, banana, N). -->
 ```prolog
@@ -550,20 +579,17 @@ A = juan68.
 ```
 
 La tercera consulta usa `atomic_list_concat/2`, que une sin separador.
-`string_code/3` da el código del carácter que está en una posición, contando
-desde 1:
-
-```prolog
-?- string_code(1, "ana", C).
-C = 97.
-```
+`nombre_completo/3` usa la versión con separador en los dos sentidos: une un
+nombre y un apellido, y divide un nombre completo en sus dos palabras.
 
 <!-- ejemplo: capitulo-11/palabras.pl predicado: nombre_completo/3 consulta: nombre_completo(ana, paz, C). -->
 ```prolog
 %!  nombre_completo(+Nombre, +Apellido, -Completo) is det.
+%!  nombre_completo(?Nombre, ?Apellido, +Completo) is semidet.
 %
 %   Completo es el átomo formado por Nombre y Apellido separados por un
-%   espacio.
+%   espacio. Con Completo ligado, lo divide en el espacio: hay respuesta
+%   solo si Completo tiene exactamente dos palabras.
 nombre_completo(Nombre, Apellido, Completo) :-
     atomic_list_concat([Nombre, Apellido], ' ', Completo).
 ```
@@ -574,10 +600,10 @@ C = 'ana paz'.
 ```
 
 !!! question "Actividad"
-    Ejecutar `nombre_completo(N, A, 'ana paz').` y explicar la respuesta a
-    partir del encabezado de `nombre_completo/3`. ¿Qué consulta a
-    `atomic_list_concat/3` obtiene el nombre y el apellido a partir del nombre
-    completo?
+    Ejecutar `nombre_completo(N, A, 'ana paz').` y
+    `nombre_completo(N, A, 'ana paz perez').`, y explicar las dos respuestas a
+    partir de la segunda línea del encabezado de `nombre_completo/3`. ¿Por qué
+    esa línea declara `semidet` y no `det`?
 
 ## 11.6 Mayúsculas, espacios y comparación
 
@@ -728,10 +754,11 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 7. ★ **(2)** Escribir `palindromo(Palabra)`: Palabra se lee igual de izquierda
    a derecha que de derecha a izquierda. Usar la lista de caracteres y la
    inversión del [capítulo 7](../capitulo-07-listas/index.md).
-8. **(2)** Escribir `sin_prefijo(Palabra, Prefijo, Resto)`: Palabra empieza con
-   Prefijo, y Resto es lo que sigue. Escribir su encabezado, y explicar qué
-   responde `sin_prefijo(prolog, P, R).`
-9. **(3)** Escribir `contar_vocales(Palabra, N)`: N es la cantidad de vocales
+8. **(2)** Escribir `quitar_prefijo(Palabra, Prefijo, Resto)`, la versión para
+   átomos de `sin_prefijo/3` de la [sección 11.4](#114-buscar-dentro-de-un-atomo):
+   el átomo Palabra empieza con Prefijo, y Resto es lo que sigue. Escribir su
+   encabezado, y explicar qué responde `quitar_prefijo(prolog, P, R).`
+9. **(2)** Escribir `contar_vocales(Palabra, N)`: N es la cantidad de vocales
    del átomo Palabra, en minúscula o en mayúscula.
 10. ★ **(1)** Predecir qué responde cada consulta:
     `split_string("a,b,,c", ",", "", L).` ·
@@ -744,9 +771,12 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     `C = [juan, '68', '1957']`.
 12. **(2)** Modificar `campos/2` para que los campos que representan números
     queden como números: `C = [juan, 68, 1957]`.
-13. ★ **(2)** Escribir `mismo_texto(A, B)`, que compara dos cadenas sin
-    distinguir mayúsculas, espacios sobrantes ni la representación: `A` y `B`
-    pueden ser átomos o cadenas. Escribir también su encabezado.
+13. ★ **(2)** Escribir `mismo_texto(A, B)`, que extiende `mismo_nombre/2` de la
+    [sección 11.6](#116-mayusculas-espacios-y-comparacion): además de las
+    mayúsculas y los espacios sobrantes, ignora los signos de puntuación `,`,
+    `.`, `;` y `:`, y `A` y `B` pueden ser átomos o cadenas. Por ejemplo,
+    `mismo_texto("Ana, Paz.", 'ana paz')` responde `true.` Escribir también su
+    encabezado.
 14. **(1)** Predecir la salida de `write/1`, `writeq/1`, `print/1` y
     `write_canonical/1` para cada término: `'Ana Paz'` · `"hola"` · `2 + 3` ·
     `[x, 'Y']` · `- 1`.
@@ -754,6 +784,19 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     `'juan carlos perez'`, Iniciales es `'JCP'`. Escribir después sus pruebas:
     una con tres palabras, una con espacios sobrantes y una con una sola
     palabra.
+16. **(2)** Escribir `alrededor(Palabra, Fragmento, Antes, Despues)`: el átomo
+    Palabra es la concatenación de Antes, Fragmento y Despues, con una
+    respuesta por cada aparición de Fragmento. Por ejemplo,
+    `alrededor(banana, na, A, D)` responde `A = ba, D = na` y después
+    `A = bana, D = ''`. Usar `sub_atom/5` para ubicar el fragmento y, con las
+    cantidades que esa llamada deja ligadas, otra vez para tomar por posición lo
+    que queda a cada lado. Su encabezado es
+    `%! alrededor(+Palabra, ?Fragmento, ?Antes, ?Despues) is nondet.`
+17. **(2)** Escribir `en_orden(Palabras)`: la lista de átomos Palabras está en
+    el orden estándar, es decir, cada átomo es menor o igual que el siguiente
+    según `@=<`. Predecir, antes de ejecutar, qué responden
+    `en_orden([ana, eva, 'Zoe']).` y `en_orden(['Zoe', ana, eva]).` Su
+    encabezado es `%! en_orden(+Palabras) is semidet.`
 
 ## Resumen
 
@@ -769,7 +812,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | `string_concat/3`, `sub_string/5` | concatenación y búsqueda de fragmentos de cadenas |
 | `split_string/4`, `atomic_list_concat/2,3` | dividir un texto en partes y unir partes en un texto |
 | `upcase_atom/2`, `downcase_atom/2`, `normalize_space/2` | normalizar antes de comparar |
-| `compare/3`, `@<` | orden de los textos por códigos de caracteres |
+| `compare/3`, `@<`, `@=<` | orden de los textos por códigos de caracteres |
 | `write/1`, `writeq/1`, `print/1`, `write_canonical/1`, `portray_clause/1` | escribir un término para una persona o para volver a leerlo |
 
 ## Temas que se retoman
@@ -778,6 +821,6 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 |---|---|
 | Analizar un texto con una gramática, en lugar de encadenar `sub_atom/5` | [capítulo 21](../capitulo-21-gramaticas-dcg/index.md) |
 | El orden estándar de todos los términos; ordenar listas | [capítulo 22](../capitulo-22-estructuras-de-datos-de-la-biblioteca/index.md) |
-| Leer y escribir texto en archivos; CSV y JSON | [capítulo 27](../capitulo-27-archivos-streams-y-formatos/index.md) |
 | Mensajes al usuario con `print_message/2` | [capítulo 25](../capitulo-25-errores-y-excepciones/index.md) |
+| Leer y escribir texto en archivos; CSV y JSON | [capítulo 27](../capitulo-27-archivos-streams-y-formatos/index.md) |
 | Leer texto del teclado en un programa de línea de comandos | [capítulo 28](../capitulo-28-programas-de-linea-de-comandos/index.md) |

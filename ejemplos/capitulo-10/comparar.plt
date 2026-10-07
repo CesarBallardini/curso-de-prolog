@@ -26,7 +26,8 @@ test(dos_atomos_distintos) :-
     distinto_termino(ana, eva).
 
 % =:= solo se aplica a expresiones aritméticas.
-test(los_atomos_no_tienen_valor, [throws(error(type_error(evaluable, _), _))]) :-
+test(los_atomos_no_tienen_valor,
+     [throws(error(type_error(evaluable, _), _))]) :-
     mismo_valor(ana, ana).
 
 :- end_tests(comparar).

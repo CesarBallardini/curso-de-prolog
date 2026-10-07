@@ -245,7 +245,7 @@ término que le corresponde, y ese término puede tener la estructura que sea.
 | `ana` | — | es una constante, no tiene aridad |
 | `fecha(2021, 5, 3)` | `fecha` | 3 |
 | `-(5)` | `-` | 1 |
-| `[ana]` | `'[|]'` | 2 |
+| `[ana]` | `'[\|]'` | 2 |
 
 `-(5)` es el mismo signo menos de `5 - 3`, con un solo argumento: nombre y
 aridad identifican al término, y `-/1` y `-/2` son dos términos distintos.

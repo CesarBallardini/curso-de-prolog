@@ -873,7 +873,7 @@ dónde se retoma cada uno:
 | Términos compuestos, `=` y unificación                           | [capítulo 4](../capitulo-04-terminos-y-unificacion/index.md)                      |
 | `trace`, backtracking, el modelo de cajas, árboles de derivación | [capítulo 5](../capitulo-05-como-responde-prolog/index.md)                      |
 | Recursión, caso base, terminación                                | [capítulo 6](../capitulo-06-recursion/index.md)                      |
-| Listas, `[Primero|Resto]`, `member/2`, `length/2` | [capítulo 7](../capitulo-07-listas/index.md) |
+| Listas, `[Primero\|Resto]`, `member/2`, `length/2` | [capítulo 7](../capitulo-07-listas/index.md) |
 | `is/2`, el error de argumentos sin instanciar                    | [capítulo 8](../capitulo-08-aritmetica/index.md)                      |
 | Respuestas con alternativas pendientes, y cómo eliminarlas       | [capítulo 9](../capitulo-09-backtracking-y-corte/index.md)                      |
 | `\+` y el supuesto de mundo cerrado                              | [capítulo 10](../capitulo-10-negacion-como-falla/index.md)                     |

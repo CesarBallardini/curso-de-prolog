@@ -53,6 +53,16 @@ test(cuenta_atras, all(L == [[3, 2, 1]])) :-
 test(cuenta_atras_de_cero, all(L == [[]])) :-
     cuenta_atras(0, L).
 
+% Las dos versiones del ejercicio 10 producen la misma lista.
+test(cuenta_atras_con_acumulador, all(L == [[3, 2, 1]])) :-
+    cuenta_atras_con(3, L).
+
+test(cuenta_atras_con_acumulador_de_cero, all(L == [[]])) :-
+    cuenta_atras_con(0, L).
+
+test(cuenta_atras_con_acumulador_de_uno, all(L == [[1]])) :-
+    cuenta_atras_con(1, L).
+
 % Ejercicio 12
 test(hasta_llega_al_tope, [nondet]) :-
     hasta(3, 1).

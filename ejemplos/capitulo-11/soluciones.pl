@@ -69,10 +69,10 @@ palindromo(Palabra) :-
 
 % --- Ejercicio 8 -----------------------------------------------------------
 
-%!  sin_prefijo(+Palabra, ?Prefijo, ?Resto) is nondet.
+%!  quitar_prefijo(+Palabra, ?Prefijo, ?Resto) is nondet.
 %
-%   Palabra empieza con Prefijo, y Resto es lo que sigue.
-sin_prefijo(Palabra, Prefijo, Resto) :-
+%   El átomo Palabra empieza con Prefijo, y Resto es lo que sigue.
+quitar_prefijo(Palabra, Prefijo, Resto) :-
     atom_concat(Prefijo, Resto, Palabra).
 
 % --- Ejercicio 9 -----------------------------------------------------------
@@ -87,15 +87,15 @@ contar_vocales(Palabra, N) :-
 
 %!  vocales(+Letras, -N) is det.
 %
-%   N es la cantidad de vocales de la lista de caracteres Letras. El corte
-%   de la segunda cláusula es rojo: la tercera acepta cualquier carácter.
+%   N es la cantidad de vocales de la lista de caracteres Letras. Las
+%   condiciones de la segunda y la tercera cláusula son complementarias.
 vocales([], 0).
 vocales([C|Resto], N) :-
     vocal(C),
-    !,
     vocales(Resto, N0),
     N is N0 + 1.
-vocales([_|Resto], N) :-
+vocales([C|Resto], N) :-
+    \+ vocal(C),
     vocales(Resto, N).
 
 % vocal(C): C es una vocal minúscula.
@@ -157,19 +157,39 @@ valor(Cadena, Atomo) :-
 
 %!  mismo_texto(+A, +B) is semidet.
 %
-%   A y B, átomos o cadenas, son el mismo texto si se ignoran las mayúsculas
-%   y los espacios sobrantes.
+%   A y B, átomos o cadenas, son el mismo texto si se ignoran las mayúsculas,
+%   los espacios sobrantes y los signos de puntuación.
 mismo_texto(A, B) :-
     en_forma_normal(A, Normal),
     en_forma_normal(B, Normal).
 
 %!  en_forma_normal(+Texto, -Normal) is det.
 %
-%   Normal es el átomo de Texto en minúsculas y con los espacios
-%   normalizados. normalize_space/2 acepta un átomo o una cadena.
+%   Normal es el átomo de Texto sin signos de puntuación, en minúsculas y con
+%   los espacios normalizados. atom_chars/2 acepta un átomo o una cadena.
 en_forma_normal(Texto, Normal) :-
-    normalize_space(atom(Espaciado), Texto),
+    atom_chars(Texto, Caracteres),
+    sin_puntuacion(Caracteres, Letras),
+    atom_chars(SinPuntuacion, Letras),
+    normalize_space(atom(Espaciado), SinPuntuacion),
     downcase_atom(Espaciado, Normal).
+
+%!  sin_puntuacion(+Caracteres, -Letras) is det.
+%
+%   Letras es la lista Caracteres sin los signos de puntuación.
+sin_puntuacion([], []).
+sin_puntuacion([C|Resto], Letras) :-
+    puntuacion(C),
+    sin_puntuacion(Resto, Letras).
+sin_puntuacion([C|Resto], [C|Letras]) :-
+    \+ puntuacion(C),
+    sin_puntuacion(Resto, Letras).
+
+% puntuacion(C): C es un signo de puntuación.
+puntuacion(',').
+puntuacion('.').
+puntuacion(';').
+puntuacion(':').
 
 % --- Ejercicio 15 ----------------------------------------------------------
 
@@ -194,3 +214,26 @@ primeras_letras([Palabra|Resto], [Letra|Letras]) :-
     Palabra \== "",
     string_chars(Palabra, [Letra|_]),
     primeras_letras(Resto, Letras).
+
+% --- Ejercicio 16 ----------------------------------------------------------
+
+%!  alrededor(+Palabra, ?Fragmento, ?Antes, ?Despues) is nondet.
+%
+%   El átomo Palabra es la concatenación de Antes, Fragmento y Despues. Una
+%   respuesta por cada aparición de Fragmento en Palabra.
+alrededor(Palabra, Fragmento, Antes, Despues) :-
+    sub_atom(Palabra, LargoAntes, _, LargoDespues, Fragmento),
+    sub_atom(Palabra, 0, LargoAntes, _, Antes),
+    sub_atom(Palabra, _, LargoDespues, 0, Despues).
+
+% --- Ejercicio 17 ----------------------------------------------------------
+
+%!  en_orden(+Palabras) is semidet.
+%
+%   La lista de átomos Palabras está en el orden estándar: cada átomo es
+%   menor o igual que el siguiente.
+en_orden([]).
+en_orden([_]).
+en_orden([A, B|Resto]) :-
+    A @=< B,
+    en_orden([B|Resto]).

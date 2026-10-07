@@ -75,9 +75,11 @@ no_vacias([Cadena|Resto], N) :-
     N is N0 + 1.
 
 %!  nombre_completo(+Nombre, +Apellido, -Completo) is det.
+%!  nombre_completo(?Nombre, ?Apellido, +Completo) is semidet.
 %
 %   Completo es el átomo formado por Nombre y Apellido separados por un
-%   espacio.
+%   espacio. Con Completo ligado, lo divide en el espacio: hay respuesta
+%   solo si Completo tiene exactamente dos palabras.
 nombre_completo(Nombre, Apellido, Completo) :-
     atomic_list_concat([Nombre, Apellido], ' ', Completo).
 
