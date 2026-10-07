@@ -52,6 +52,17 @@ sin_hermanos(P) :-
     persona(P),
     \+ tiene_hermano(P).
 
+% --- Ejercicio 5 -----------------------------------------------------------
+
+%!  hijo_unico_sin_auxiliar(?H) is nondet.
+%
+%   H tiene un padre, y ese padre no tiene otros hijos. La condición negada
+%   es la conjunción misma, sin el auxiliar otro_hijo/2 de negacion.pl.
+hijo_unico_sin_auxiliar(H) :-
+    padre(P, H),
+    \+ ( padre(P, Otro),
+         Otro \== H ).
+
 % --- Ejercicio 6 -----------------------------------------------------------
 
 %!  nadie_tiene(+Cosa) is semidet.
@@ -75,6 +86,7 @@ soltero(P) :-
 %
 %   R contiene los elementos de L1 que no están en L2. El corte descarta las
 %   demás soluciones de member/2: es suficiente que X aparezca una vez en L2.
+%   Los elementos de las dos listas deben tener valor.
 solo_en_la_primera([], _, []).
 solo_en_la_primera([X|Resto], L2, [X|RestoR]) :-
     \+ member(X, L2),
@@ -88,8 +100,8 @@ solo_en_la_primera([X|Resto], L2, R) :-
 
 %!  solo_en_la_segunda(+L1, +L2, -R) is det.
 %
-%   R contiene los elementos de L2 que no están en L1. L1 no debe tener
-%   elementos sin valor.
+%   R contiene los elementos de L2 que no están en L1. Los elementos de las
+%   dos listas deben tener valor.
 solo_en_la_segunda(L1, L2, R) :-
     solo_en_la_primera(L2, L1, R).
 
@@ -179,7 +191,8 @@ hijos(eva, []).
 % no dice.
 sin_padre(juan).
 
-% cosas_tenidas(L): L es la lista de las cosas que alguien tiene. Repite tiene/2.
+% cosas_tenidas(L): L es la lista de las cosas que alguien tiene. Repite
+% tiene/2.
 cosas_tenidas([gato, perro]).
 
 % casados(L): L es la lista de las personas casadas. Repite casado/2.

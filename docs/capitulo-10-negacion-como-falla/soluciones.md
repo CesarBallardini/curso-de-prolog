@@ -1,7 +1,18 @@
 # Soluciones del capítulo 10 — Negación como falla
 
 El código de esta página está en `ejemplos/capitulo-10/soluciones.pl` y pasa sus
-pruebas.
+pruebas. Además de `persona/1` y `padre/2` del capítulo, el archivo contiene los
+hechos sobre los que razonan los ejercicios 6, 7 y 12:
+
+<!-- ejemplo: capitulo-10/soluciones.pl predicado: tiene/2 casado/2 -->
+```prolog
+% tiene(P, M): P tiene la mascota M.
+tiene(ana, gato).
+tiene(luis, perro).
+
+% casado(A, B): A está casado con B.
+casado(juan, marta).
+```
 
 ## 1
 
@@ -129,7 +140,11 @@ sin_hermanos(P) :-
     \+ tiene_hermano(P).
 ```
 
-Se requieren los dos predicados; la razón es el tema del ejercicio 5.
+`tiene_hermano/1` da nombre a la condición negada, como `otro_hijo/2` en la
+[sección 10.7](index.md#107-obtener-una-respuesta-por-negacion). La misma regla
+se puede escribir con la conjunción dentro del `\+`, sin auxiliar:
+`sin_hermanos(P) :- persona(P), \+ ( padre(Padre, P), padre(Padre, Otro), Otro
+\== P ).` El ejercicio 5 compara las dos formas.
 
 **Sin `\+`.** Con corte y falla:
 
@@ -179,19 +194,38 @@ Usa además `hijos/2`, del ejercicio 3. Líneas de código: con `\+`, 7; con cor
 
 ## 5
 
-Porque `\+` no permite expresar "no existe **otro**". Solo permite expresar "este
-objetivo no se puede probar".
+El auxiliar no es necesario. La condición «P tiene otro hijo» es una conjunción
+de dos objetivos, y la [sección 10.7](index.md#107-obtener-una-respuesta-por-negacion) muestra que una conjunción se niega
+directamente, entre paréntesis:
 
-Para determinar que P no tiene hermanos, se debe establecer que es imposible
-probar que existe una persona que es hija del mismo padre y distinta de P. Esa
-condición —una persona que cumple tres objetivos a la vez— es un objetivo
-compuesto con su propia variable, y la forma de negarlo como una unidad es darle
-un nombre: un predicado auxiliar.
+<!-- ejemplo: capitulo-10/soluciones.pl predicado: hijo_unico_sin_auxiliar/1 consulta: hijo_unico_sin_auxiliar(Quien). -->
+```prolog
+%!  hijo_unico_sin_auxiliar(?H) is nondet.
+%
+%   H tiene un padre, y ese padre no tiene otros hijos. La condición negada
+%   es la conjunción misma, sin el auxiliar otro_hijo/2 de negacion.pl.
+hijo_unico_sin_auxiliar(H) :-
+    padre(P, H),
+    \+ ( padre(P, Otro),
+         Otro \== H ).
+```
 
-Si los tres objetivos se escribieran directamente dentro de `\+`, se estaría
-negando la conjunción completa, con variables libres en su interior, lo que
-dificulta la lectura y favorece los errores de la [sección 10.4](index.md#104-donde-ubicar). El predicado
-auxiliar deja explícito qué condición se niega.
+Las dos formas tienen las mismas respuestas —ninguna, con la base del
+capítulo—, y en las dos `Otro` aparece solamente dentro del `\+`, con la lectura
+«para todo otro hijo» de la [sección 10.7](index.md#107-obtener-una-respuesta-por-negacion); `H` llega con valor desde
+`padre(P, H)`, de modo que ninguna de las dos incurre en el error de la
+[sección 10.4](index.md#104-donde-ubicar).
+
+Lo que se gana con el auxiliar es un nombre: `otro_hijo(P, H)` se lee como una
+afirmación sobre la familia, se puede consultar por separado
+(`otro_hijo(juan, ana).` responde `true.`) y lleva su propio encabezado, que
+registra con `+H` que el `\==` necesita a `H` con valor. Esa condición queda
+implícita en la versión sin auxiliar, donde la garantiza el orden de los
+objetivos. Lo que se pierde es extensión: la definición pasa de una regla de 4
+líneas a dos predicados y 6 líneas, y la condición negada se lee en otro lugar
+del archivo. Para una conjunción de dos objetivos, como esta, la forma directa
+es la habitual; el auxiliar conviene cuando la condición es larga, se usa en
+más de una regla o requiere una prueba propia.
 
 ## 6
 
@@ -231,7 +265,8 @@ nadie_tiene_con_corte(_).
 Sin negación, con la lista de las cosas que alguien tiene:
 
 ```prolog
-% cosas_tenidas(L): L es la lista de las cosas que alguien tiene. Repite tiene/2.
+% cosas_tenidas(L): L es la lista de las cosas que alguien tiene. Repite
+% tiene/2.
 cosas_tenidas([gato, perro]).
 ```
 
@@ -322,6 +357,7 @@ Líneas de código: con `\+`, 3; con corte y falla, 8; sin negación, 9, incluid
 %
 %   R contiene los elementos de L1 que no están en L2. El corte descarta las
 %   demás soluciones de member/2: es suficiente que X aparezca una vez en L2.
+%   Los elementos de las dos listas deben tener valor.
 solo_en_la_primera([], _, []).
 solo_en_la_primera([X|Resto], L2, [X|RestoR]) :-
     \+ member(X, L2),
@@ -395,7 +431,7 @@ Líneas de código: con `\+`, 8; con corte y falla, 7; sin negación, 12, inclui
 
 ## 9
 
-Sí, de dos maneras, y cada una tiene un costo.
+Las dos maneras de la [sección 10.8](index.md#108-prescindir-de) se aplican así, y cada una tiene un costo.
 
 **Con corte y falla**, a partir de la definición de `\+` de la [sección 10.8](index.md#108-prescindir-de):
 
@@ -627,8 +663,8 @@ sugeriría:
   que no se sostiene: que hay un `X` que no es ninguno de los dos, sin decir
   cuál.
 
-Las dos fallas son la misma de fondo: `\+` y `\==` consultan el estado actual de
-los términos, no todos los valores posibles.
+Los dos comportamientos tienen la misma causa: `\+` y `\==` consultan el estado
+actual de los términos, no todos los valores posibles.
 
 **Con corte y falla.** La versión sin negación es `ninguno_es_recorriendo/2`. La
 tercera, con corte y falla, se comporta como la de `\+`, también con `X` libre:
@@ -675,29 +711,47 @@ haya ligado.
 ## 15
 
 El predicado se escribe invirtiendo las dos listas al invocar el del ejercicio
-8, y eso alcanza mientras las dos listas estén completas:
+8, y las dos versiones responden lo correcto mientras los elementos de las dos
+listas tengan valor:
 
 <!-- ejemplo: capitulo-10/soluciones.pl predicado: solo_en_la_segunda/3 consulta: solo_en_la_segunda([luis], [ana, luis, eva], R). -->
 ```prolog
 %!  solo_en_la_segunda(+L1, +L2, -R) is det.
 %
-%   R contiene los elementos de L2 que no están en L1. L1 no debe tener
-%   elementos sin valor.
+%   R contiene los elementos de L2 que no están en L1. Los elementos de las
+%   dos listas deben tener valor.
 solo_en_la_segunda(L1, L2, R) :-
     solo_en_la_primera(L2, L1, R).
 ```
 
-Lo que el ejercicio pide justificar es el caso en que no lo están.
-`solo_en_la_primera/3` recorre su **primera** lista y consulta la pertenencia en
-la segunda con `\+`. Si la segunda lista contiene variables sin valor, ese `\+`
-opera sobre términos que todavía no tienen su valor definitivo, y decide que un
-elemento "no pertenece" cuando en realidad podría pertenecer.
+Lo que el ejercicio pide explicar es el caso en que no lo tienen.
+`solo_en_la_primera/3` recorre su primera lista y consulta la pertenencia de
+cada elemento en la segunda con `\+ member(X, L2)`. Si `L2` contiene una
+variable sin valor, `member/2` se cumple en cuanto llega a ella, porque `X`
+unifica con una variable; `\+` falla, y la tercera cláusula **descarta** el
+elemento como si perteneciera a `L2`. El `\+` no deja ligaduras, pero el
+`member/2` de la tercera cláusula sí: liga la variable al elemento descartado.
 
-Al invertir los argumentos se invierte también cuál de las dos listas queda bajo
-el `\+`, de modo que las dos versiones no son intercambiables en ese caso: cada
-una exige que esté completa una lista distinta. Conviene anotarlo en el
-encabezado de cada predicado, como en la descripción de arriba: el `+` indica
-que la lista debe llegar ligada, pero no que sus elementos deban tener valor.
+```prolog
+?- solo_en_la_primera([a, b], [Y], R).
+Y = a,
+R = [b] ;
+false.
+```
+
+`a` se descarta y `Y` queda ligada a `a`; después `b` sí se conserva, porque
+`[Y]` es ahora `[a]`. Un elemento sin valor en la primera lista se descarta por
+la misma razón: `solo_en_la_primera([X], [a], R)` responde `X = a, R = []`. En
+ningún caso el resultado contiene una variable: el predicado afirma que el
+elemento pertenece a la otra lista cuando solo **podría** pertenecer. Es la
+situación de la [sección 10.4](index.md#104-donde-ubicar), aunque el `\+` esté bien ubicado: `X` llega
+con valor, y lo que carece de valor está dentro de `L2`.
+
+Al invertir los argumentos se invierte cuál de las dos listas queda bajo el
+`\+`, pero la condición es la misma para los dos predicados: los elementos de
+las dos listas deben tener valor. El `+` del encabezado indica que la lista debe
+llegar ligada, no que sus elementos tengan valor; esa condición adicional es la
+que la descripción agrega, en el ejercicio 8 y en este.
 
 ## 16
 

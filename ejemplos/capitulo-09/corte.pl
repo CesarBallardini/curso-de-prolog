@@ -7,6 +7,7 @@
 %
 %?- categoria(eva, C).
 %?- categoria_sin_corte(eva, C).
+%?- un_mayor_de_edad(P).
 
 % edad(P, A): P tiene A años.
 edad(juan, 68).
@@ -46,7 +47,8 @@ categoria(P, adulto) :-
 
 %!  un_mayor_de_edad(-P) is semidet.
 %
-%   P es la primera persona mayor de edad que se encuentra.
+%   P es la primera persona mayor de edad que se encuentra, y solo ella.
+%   P debe llegar libre: con P ya ligado, el corte no tiene nada que podar.
 un_mayor_de_edad(P) :-
     edad(P, A),
     A >= 18,

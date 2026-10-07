@@ -109,13 +109,32 @@ cuenta_atras(N, [N|Resto]) :-
     Anterior is N - 1,
     cuenta_atras(Anterior, Resto).
 
+%!  cuenta_atras_con(+N, -L) is semidet.
+%
+%   La misma lista, con acumulador: se cuenta de 1 a N y cada número se agrega
+%   al comienzo de la lista acumulada, de modo que N queda primero.
+cuenta_atras_con(N, L) :-
+    contando_atras(1, N, [], L).
+
+%!  contando_atras(+Desde, +N, +Hasta, -L) is semidet.
+%
+%   L es Hasta con los enteros de Desde a N agregados al comienzo, el mayor
+%   primero. Desde avanza de uno en uno; Hasta es el acumulador.
+contando_atras(Desde, N, L, L) :-
+    Desde > N.
+contando_atras(Desde, N, Hasta, L) :-
+    Desde =< N,
+    Siguiente is Desde + 1,
+    contando_atras(Siguiente, N, [Desde|Hasta], L).
+
 % --- Ejercicio 12 ----------------------------------------------------------
 
 %!  hasta(+N, +X) is semidet.
 %
-%   X recorre los enteros de X a N. Con los números predefinidos, la
-%   unificación ya no garantiza la terminación, y es necesario reponer la guarda
-%   X < N, que con la notación s(s(cero)) aportaba la estructura del término.
+%   Se cumple si X es N o un entero menor que N, avanzando de uno en uno desde
+%   X. Con los números predefinidos, la unificación ya no garantiza la
+%   terminación, y es necesario reponer la guarda X < N, que con la notación
+%   s(s(cero)) aportaba la estructura del término.
 hasta(N, N).
 hasta(N, X) :-
     X < N,

@@ -16,9 +16,29 @@ X = 2.
 X = 2.
 ```
 
-Las dos últimas producen `2` por razones distintas: `//` es el cociente de la
-división, sin la parte decimal, y `mod` es el resto. En este caso los dos
-valores coinciden.
+Las dos últimas producen `2` por razones distintas: `//` es el cociente entero
+de la división y `mod` es el resto. En este caso los dos valores coinciden.
+
+Respuesta a la actividad de la [sección 8.1](index.md#81-evaluacion-de-expresiones):
+
+```prolog
+?- X is 7 // 2.
+X = 3.
+
+?- X is 7 mod 2.
+X = 1.
+
+?- X is 7 / 2.
+X = 3.5.
+
+?- X is 8 / 2.
+X = 4.
+```
+
+Las dos últimas usan el mismo operador y producen números de tipos distintos:
+`7 / 2` no es exacto y el resultado es de punto flotante; `8 / 2` es exacto y el
+resultado es un entero. `//` produce siempre un entero, sea exacto o no el
+cociente.
 
 ## 2
 
@@ -52,6 +72,7 @@ resultado esperado sea 15 no aporta ninguna información a la evaluación.
 | `7 = 7` | verdadera: es el mismo término |
 | `7 =:= 7.0` | verdadera: tienen el mismo valor numérico |
 | `7 = 7.0` | **falsa**: un entero y un número de punto flotante no son el mismo término |
+| `7 =\= 7.0` | **falsa**: `=\=` pregunta si los valores numéricos difieren, y son el mismo |
 
 Respuesta a la actividad de la [sección 8.2](index.md#82-comparacion-de-numeros):
 
@@ -157,6 +178,20 @@ Se debe tener en cuenta el tipo del resultado: `promedio([10, 20, 30], P)`
 produce `20`, y no `20.0`, porque el cociente es exacto. Es el comportamiento
 descripto en la [sección 8.1](index.md#81-evaluacion-de-expresiones).
 
+Respuesta a la actividad de la [sección 8.5](index.md#85-acumuladores). La
+traza muestra cuatro llamadas a `sumando/3`; en cada una el acumulador contiene
+la suma de los elementos ya extraídos:
+
+| Llamada | Lista que queda | Acumulador |
+|---|---|---|
+| `sumando([3, 1, 4], 0, S)` | `[3, 1, 4]` | `0` |
+| `sumando([1, 4], 3, S)` | `[1, 4]` | `3` |
+| `sumando([4], 4, S)` | `[4]` | `4` |
+| `sumando([], 8, S)` | `[]` | `8` |
+
+En la última llamada la lista está vacía y el acumulador ya vale `8`: el caso
+base `sumando([], Total, Total)` unifica `S` con ese valor, sin calcular nada.
+
 ## 8
 
 <!-- ejemplo: capitulo-08/soluciones.pl predicado: maximo/2 buscando_maximo/3 consulta: maximo([3, 9, 4], M). -->
@@ -216,8 +251,15 @@ false.
 
 El límite no está dado por la magnitud del número sino por la profundidad de la
 recursión: cada llamada deja una multiplicación pendiente hasta el retorno, y
-esa operación pendiente ocupa memoria. Con un acumulador, ese límite se extiende
-de manera considerable; el [capítulo 16](../capitulo-16-rendimiento/index.md) trata el tema.
+esa operación pendiente ocupa memoria. El programa permite establecer qué
+limita el rango —la profundidad—, pero no el valor exacto, que depende de la
+memoria que el intérprete reserva para la pila. Ese valor se determina
+consultando `factorial/2` con valores crecientes —1000, 10 000, 100 000— hasta
+obtener el error de desbordamiento, `Stack limit (1.0Gb) exceeded`. Con el
+límite predeterminado de SWI-Prolog, `factorial(100000, F)` todavía responde.
+Con un acumulador, el límite se extiende de manera considerable; la
+[sección 16.2](../capitulo-16-rendimiento/index.md#162-la-pila-y-la-recursion)
+explica qué ocupa la pila en cada caso.
 
 ## 10
 
@@ -239,11 +281,52 @@ número mayor ocupa la primera posición y la recursión completa el resto, de m
 que la lista se obtiene en el orden pedido sin transportar ningún resultado
 parcial.
 
-Con acumulador, la lista se obtendría en orden inverso —de 1 a N—, y sería
-necesario invertirla al final. El ejemplo muestra que el acumulador no es
-siempre la mejor alternativa: resulta adecuado cuando se acumula un valor, y
-menos adecuado cuando se construye una lista que ya se obtiene en el orden
-requerido.
+La versión con acumulador sigue la plantilla 13. Como el acumulador agrega cada
+número **al comienzo** de la lista, igual que `dando_vuelta/3` de la
+[sección 8.6](index.md#86-un-acumulador-que-no-es-un-numero), los números se
+deben recorrer en orden creciente para que `N` quede primero:
+
+<!-- ejemplo: capitulo-08/soluciones.pl predicado: cuenta_atras_con/2 contando_atras/4 consulta: cuenta_atras_con(3, L). -->
+```prolog
+%!  cuenta_atras_con(+N, -L) is semidet.
+%
+%   La misma lista, con acumulador: se cuenta de 1 a N y cada número se agrega
+%   al comienzo de la lista acumulada, de modo que N queda primero.
+cuenta_atras_con(N, L) :-
+    contando_atras(1, N, [], L).
+
+%!  contando_atras(+Desde, +N, +Hasta, -L) is semidet.
+%
+%   L es Hasta con los enteros de Desde a N agregados al comienzo, el mayor
+%   primero. Desde avanza de uno en uno; Hasta es el acumulador.
+contando_atras(Desde, N, L, L) :-
+    Desde > N.
+contando_atras(Desde, N, Hasta, L) :-
+    Desde =< N,
+    Siguiente is Desde + 1,
+    contando_atras(Siguiente, N, [Desde|Hasta], L).
+```
+
+```prolog
+?- cuenta_atras(3, L).
+L = [3, 2, 1] ;
+false.
+
+?- cuenta_atras_con(3, L).
+L = [3, 2, 1] ;
+false.
+```
+
+Las dos versiones producen la misma lista y recorren los números una sola vez.
+La comparación favorece a la primera: construye la lista en la cabeza, sin
+auxiliar, porque el orden en que la recursión visita los números —de `N` a 1—
+es el orden pedido. La segunda necesita un auxiliar con dos argumentos más, el
+contador y la cota `N`, y una guarda en cada cláusula; si en lugar de contar de
+1 a `N` recorriera `N` hacia abajo, como `sumando_hasta/3` del ejercicio 14, la
+lista quedaría de 1 a `N` y habría que invertirla. El acumulador resulta
+adecuado cuando se acumula un valor, o cuando una llamada necesita consultar lo
+recorrido; es menos adecuado cuando se construye una lista que la cabeza ya
+entrega en el orden requerido.
 
 ## 11
 
@@ -292,9 +375,10 @@ estructura:
 ```prolog
 %!  hasta(+N, +X) is semidet.
 %
-%   X recorre los enteros de X a N. Con los números predefinidos, la
-%   unificación ya no garantiza la terminación, y es necesario reponer la guarda
-%   X < N, que con la notación s(s(cero)) aportaba la estructura del término.
+%   Se cumple si X es N o un entero menor que N, avanzando de uno en uno desde
+%   X. Con los números predefinidos, la unificación ya no garantiza la
+%   terminación, y es necesario reponer la guarda X < N, que con la notación
+%   s(s(cero)) aportaba la estructura del término.
 hasta(N, N).
 hasta(N, X) :-
     X < N,
@@ -370,14 +454,26 @@ sumando_hasta(N, Hasta, S) :-
 ```
 
 Ninguna de las dos responde `suma_hasta(N, 6).`, y la razón es la misma en los
-dos casos: las dos empiezan comparando `N` con `0` o evaluando `N > 0`, y `N` no
-tiene valor. El error aparece antes de llegar a cualquier suma.
+dos casos: con `N` libre, el caso base no unifica —`6` no es `0`— y el caso
+recursivo empieza evaluando `N > 0`, una comparación con un argumento sin
+valor. El error aparece antes de llegar a cualquier suma:
 
-La pregunta del ejercicio sugiere que alguna de las dos podría hacerlo, y
-la razón por la que ninguna lo hace es la siguiente. Ninguna de las dos versiones **enumera** valores de
-`N`: las dos lo reciben. Para responder en ese sentido habría que agregar un
-objetivo que genere candidatos antes de la comparación, que es la plantilla 15
-del [capítulo 9](../capitulo-09-backtracking-y-corte/index.md), o usar la técnica del [capítulo 23](../capitulo-23-programacion-con-restricciones/index.md).
+```prolog
+?- suma_hasta_sin(N, 6).
+ERROR: Arguments are not sufficiently instantiated
+
+?- suma_hasta_con(N, 6).
+ERROR: Arguments are not sufficiently instantiated
+```
+
+Ninguna de las dos versiones **enumera** valores de `N`: las dos lo reciben. Para
+que la consulta tuviera respuesta haría falta agregar, antes de la comparación,
+un objetivo que genere candidatos para `N`, como `edad(P, A)` lo hace para `A`
+en la [sección 8.4](index.md#84-cuando-se-admite-la-consulta-inversa). Es la
+plantilla 15 del
+[capítulo 9](../capitulo-09-backtracking-y-corte/index.md), que presenta
+`between/3` para generar enteros; otra alternativa es la técnica del
+[capítulo 23](../capitulo-23-programacion-con-restricciones/index.md).
 
 ## 15
 

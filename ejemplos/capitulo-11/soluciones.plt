@@ -32,11 +32,11 @@ test(prolog_no_es_palindromo, [fail]) :-
     palindromo(prolog).
 
 % Ejercicio 8
-test(sin_prefijo_pro, all(R == [log])) :-
-    sin_prefijo(prolog, pro, R).
+test(quitar_prefijo_pro, all(R == [log])) :-
+    quitar_prefijo(prolog, pro, R).
 
 test(todas_las_particiones, all(P-R == [''-ana, a-na, an-a, ana-''])) :-
-    sin_prefijo(ana, P, R).
+    quitar_prefijo(ana, P, R).
 
 % Ejercicio 9
 test(vocales_de_murcielago, all(N == [5])) :-
@@ -57,6 +57,12 @@ test(campos_con_numeros, all(C == [[juan, 68, 1957]])) :-
 test(mismo_texto_atomo_y_cadena) :-
     mismo_texto('  Ana   PAZ', "ana paz").
 
+test(mismo_texto_con_puntuacion, [nondet]) :-
+    mismo_texto("Ana, Paz.", 'ana paz').
+
+test(mismo_texto_con_puntuacion_entre_espacios, [nondet]) :-
+    mismo_texto('Ana , Paz', "ana paz").
+
 test(textos_distintos, [fail]) :-
     mismo_texto(ana, "eva").
 
@@ -69,5 +75,34 @@ test(iniciales_con_espacios_sobrantes, all(I == ['JCP'])) :-
 
 test(iniciales_de_una_palabra, all(I == ['A'])) :-
     iniciales_de(ana, I).
+
+% Ejercicio 16
+test(alrededor_de_cada_na, all(A-D == [ba-na, bana-''])) :-
+    alrededor(banana, na, A, D).
+
+test(alrededor_de_un_fragmento_ausente, [fail]) :-
+    alrededor(prolog, x, _, _).
+
+test(alrededor_de_la_palabra_entera, all(A-D == [''-''])) :-
+    alrededor(prolog, prolog, A, D).
+
+test(lo_que_sigue_a_pro, all(F-D == [''-log, l-og, lo-g, log-''])) :-
+    alrededor(prolog, F, pro, D).
+
+% Ejercicio 17
+test(en_orden_estandar, [nondet]) :-
+    en_orden(['Zoe', ana, eva]).
+
+test(no_esta_en_orden_del_diccionario, [fail]) :-
+    en_orden([ana, eva, 'Zoe']).
+
+test(repetidos_en_orden, [nondet]) :-
+    en_orden([ana, ana, eva]).
+
+test(la_lista_vacia_esta_en_orden) :-
+    en_orden([]).
+
+test(un_solo_atomo_esta_en_orden, [nondet]) :-
+    en_orden([ana]).
 
 :- end_tests(soluciones).

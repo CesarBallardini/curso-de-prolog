@@ -13,6 +13,11 @@ test(los_sin_hermanos, all(P == [juan])) :-
 test(ana_tiene_hermano, [nondet]) :-
     tiene_hermano(ana).
 
+% Ejercicio 5: en esta familia cada padre tiene dos hijos; la conjunción
+% negada responde lo mismo que hijo_unico/1 de negacion.pl.
+test(no_hay_hijos_unicos_sin_auxiliar, [fail]) :-
+    hijo_unico_sin_auxiliar(_).
+
 % Ejercicio 6
 test(nadie_tiene_tortuga) :-
     nadie_tiene(tortuga).

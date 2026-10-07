@@ -145,7 +145,8 @@ entero. `~3f` acepta un entero y lo escribe con tres decimales.
 En las dos últimas, la columna termina en la posición 6 de la línea, contada
 desde el comienzo: el corchete ocupa la primera posición, y quedan cinco para
 `ana` y el relleno. Con `~t` antes del valor, el relleno va a la izquierda y
-`ana` queda alineado a la derecha; con `~t` después, al revés.
+`ana` queda alineado a la derecha; con `~t` después, el relleno va a la derecha
+y `ana` queda alineado a la izquierda.
 
 ## 6
 
@@ -210,30 +211,31 @@ debe unificar con la original.
 
 ## 8
 
-<!-- ejemplo: capitulo-11/soluciones.pl predicado: sin_prefijo/3 consulta: sin_prefijo(prolog, pro, R). -->
+<!-- ejemplo: capitulo-11/soluciones.pl predicado: quitar_prefijo/3 consulta: quitar_prefijo(prolog, pro, R). -->
 ```prolog
-%!  sin_prefijo(+Palabra, ?Prefijo, ?Resto) is nondet.
+%!  quitar_prefijo(+Palabra, ?Prefijo, ?Resto) is nondet.
 %
-%   Palabra empieza con Prefijo, y Resto es lo que sigue.
-sin_prefijo(Palabra, Prefijo, Resto) :-
+%   El átomo Palabra empieza con Prefijo, y Resto es lo que sigue.
+quitar_prefijo(Palabra, Prefijo, Resto) :-
     atom_concat(Prefijo, Resto, Palabra).
 ```
 
 ```prolog
-?- sin_prefijo(prolog, pro, R).
+?- quitar_prefijo(prolog, pro, R).
 R = log.
 ```
 
-El encabezado es `sin_prefijo(+Palabra, ?Prefijo, ?Resto) is nondet`. Con
+El encabezado es `quitar_prefijo(+Palabra, ?Prefijo, ?Resto) is nondet`. Con
 `Palabra` ligada, `atom_concat/3` funciona con los otros dos argumentos libres:
-`sin_prefijo(prolog, P, R).` enumera las siete maneras de partir `prolog` en un
-comienzo y un resto, desde `P = ''`, `R = prolog` hasta `P = prolog`, `R = ''`.
-Por eso el predicado es `nondet`, aunque con `Prefijo` ligado dé una sola
-respuesta.
+`quitar_prefijo(prolog, P, R).` enumera las siete maneras de partir `prolog` en
+un comienzo y un resto, desde `P = ''`, `R = prolog` hasta `P = prolog`,
+`R = ''`. Por eso el predicado es `nondet`, aunque con `Prefijo` ligado dé una
+sola respuesta. `sin_prefijo/3` de la [sección 11.4](index.md#114-buscar-dentro-de-un-atomo)
+tiene el mismo encabezado con `string_concat/3`, y por la misma razón.
 
 ## 9
 
-<!-- ejemplo: capitulo-11/soluciones.pl predicado: contar_vocales/2 vocales/2 consulta: contar_vocales(murcielago, N). -->
+<!-- ejemplo: capitulo-11/soluciones.pl predicado: contar_vocales/2 vocales/2 vocal/1 consulta: contar_vocales(murcielago, N). -->
 ```prolog
 %!  contar_vocales(+Palabra, -N) is det.
 %
@@ -245,21 +247,29 @@ contar_vocales(Palabra, N) :-
 
 %!  vocales(+Letras, -N) is det.
 %
-%   N es la cantidad de vocales de la lista de caracteres Letras. El corte
-%   de la segunda cláusula es rojo: la tercera acepta cualquier carácter.
+%   N es la cantidad de vocales de la lista de caracteres Letras. Las
+%   condiciones de la segunda y la tercera cláusula son complementarias.
 vocales([], 0).
 vocales([C|Resto], N) :-
     vocal(C),
-    !,
     vocales(Resto, N0),
     N is N0 + 1.
-vocales([_|Resto], N) :-
+vocales([C|Resto], N) :-
+    \+ vocal(C),
     vocales(Resto, N).
+
+% vocal(C): C es una vocal minúscula.
+vocal(a).
+vocal(e).
+vocal(i).
+vocal(o).
+vocal(u).
 ```
 
 ```prolog
 ?- contar_vocales(murcielago, N).
-N = 5.
+N = 5 ;
+false.
 ```
 
 `downcase_atom/2` resuelve las mayúsculas antes de recorrer: después de esa
@@ -267,9 +277,15 @@ conversión, alcanza con reconocer las cinco vocales minúsculas. Los hechos
 `vocal/1` no incluyen las vocales con tilde; agregarlas es agregar cinco
 hechos.
 
-El corte de la segunda cláusula de `vocales/2` es rojo, en el sentido de la
-[sección 9.5](../capitulo-09-backtracking-y-corte/index.md#95-corte-verde-y-corte-rojo): la tercera cláusula no comprueba que el carácter no sea una
-vocal, y sin el corte daría, al volver atrás, cuentas menores.
+`vocales/2` tiene la forma de `contar/3` de la [sección 11.4](index.md#114-buscar-dentro-de-un-atomo):
+la segunda cláusula cuenta el carácter cuando es una vocal y la tercera lo
+deja pasar cuando no lo es. Las dos condiciones, `vocal(C)` y `\+ vocal(C)`,
+son complementarias, de modo que cada carácter entra en exactamente una
+cláusula y la cuenta es una sola. Sin la condición de la tercera cláusula, al
+volver atrás esa cláusula aceptaría también las vocales y daría cuentas
+menores. El `false.` final tiene la misma explicación que el de
+`contar_letra/3`: la tercera cláusula queda pendiente después de la segunda
+y falla al comprobar `\+ vocal(C)` con la última vocal.
 
 ## 10
 
@@ -369,38 +385,69 @@ segunda cláusula deja el campo como átomo.
 
 ## 13
 
-<!-- ejemplo: capitulo-11/soluciones.pl predicado: mismo_texto/2 en_forma_normal/2 consulta: mismo_texto('  Ana   PAZ', "ana paz"). -->
+<!-- ejemplo: capitulo-11/soluciones.pl predicado: mismo_texto/2 en_forma_normal/2 sin_puntuacion/2 puntuacion/1 consulta: mismo_texto("Ana, Paz.", 'ana paz'). -->
 ```prolog
 %!  mismo_texto(+A, +B) is semidet.
 %
-%   A y B, átomos o cadenas, son el mismo texto si se ignoran las mayúsculas
-%   y los espacios sobrantes.
+%   A y B, átomos o cadenas, son el mismo texto si se ignoran las mayúsculas,
+%   los espacios sobrantes y los signos de puntuación.
 mismo_texto(A, B) :-
     en_forma_normal(A, Normal),
     en_forma_normal(B, Normal).
 
 %!  en_forma_normal(+Texto, -Normal) is det.
 %
-%   Normal es el átomo de Texto en minúsculas y con los espacios
-%   normalizados. normalize_space/2 acepta un átomo o una cadena.
+%   Normal es el átomo de Texto sin signos de puntuación, en minúsculas y con
+%   los espacios normalizados. atom_chars/2 acepta un átomo o una cadena.
 en_forma_normal(Texto, Normal) :-
-    normalize_space(atom(Espaciado), Texto),
+    atom_chars(Texto, Caracteres),
+    sin_puntuacion(Caracteres, Letras),
+    atom_chars(SinPuntuacion, Letras),
+    normalize_space(atom(Espaciado), SinPuntuacion),
     downcase_atom(Espaciado, Normal).
+
+%!  sin_puntuacion(+Caracteres, -Letras) is det.
+%
+%   Letras es la lista Caracteres sin los signos de puntuación.
+sin_puntuacion([], []).
+sin_puntuacion([C|Resto], Letras) :-
+    puntuacion(C),
+    sin_puntuacion(Resto, Letras).
+sin_puntuacion([C|Resto], [C|Letras]) :-
+    \+ puntuacion(C),
+    sin_puntuacion(Resto, Letras).
+
+% puntuacion(C): C es un signo de puntuación.
+puntuacion(',').
+puntuacion('.').
+puntuacion(';').
+puntuacion(':').
 ```
 
 ```prolog
-?- mismo_texto('  Ana   PAZ', "ana paz").
-true.
+?- mismo_texto("Ana, Paz.", 'ana paz').
+true ;
+false.
+
+?- mismo_texto('  Ana ,  PAZ', "ana paz").
+true ;
+false.
 ```
 
-La solución lleva los dos textos a una forma normal y exige que sea la misma.
-`normalize_space/2` acepta un átomo o una cadena y, con `atom(Espaciado)`,
-produce siempre un átomo, de modo que la diferencia de representación
-desaparece en el primer paso.
+La solución lleva los dos textos a una forma normal y exige que sea la misma,
+como `mismo_nombre/2`. La forma normal tiene un paso más, que va primero:
+`atom_chars/2` acepta un átomo o una cadena y da su lista de caracteres, de
+modo que la diferencia de representación desaparece ahí; `sin_puntuacion/2`
+recorre esa lista y descarta los signos, con la forma de `no_vacias/2` de la
+[sección 11.5](index.md#115-dividir-y-unir). El resultado vuelve a ser un átomo
+con `atom_chars/2` en el otro sentido, porque `normalize_space/2` no acepta una
+lista de caracteres, y recién entonces se normalizan los espacios y las
+mayúsculas. El orden importa: quitar la coma de `'Ana , Paz'` deja dos espacios
+seguidos, que `normalize_space/2` reduce a uno después.
 
 El encabezado es `mismo_texto(+A, +B) is semidet`: los dos argumentos deben
-llegar ligados, porque `normalize_space/2` necesita el texto, y hay una
-respuesta o ninguna.
+llegar ligados, porque `atom_chars/2` produce un error de instanciación cuando
+sus dos argumentos llegan libres, y hay una respuesta o ninguna.
 
 ## 14
 
@@ -472,3 +519,89 @@ test(iniciales_con_espacios_sobrantes, all(I == ['JCP'])) :-
 test(iniciales_de_una_palabra, all(I == ['A'])) :-
     iniciales_de(ana, I).
 ```
+
+## 16
+
+<!-- ejemplo: capitulo-11/soluciones.pl predicado: alrededor/4 consulta: alrededor(banana, na, A, D). -->
+```prolog
+%!  alrededor(+Palabra, ?Fragmento, ?Antes, ?Despues) is nondet.
+%
+%   El átomo Palabra es la concatenación de Antes, Fragmento y Despues. Una
+%   respuesta por cada aparición de Fragmento en Palabra.
+alrededor(Palabra, Fragmento, Antes, Despues) :-
+    sub_atom(Palabra, LargoAntes, _, LargoDespues, Fragmento),
+    sub_atom(Palabra, 0, LargoAntes, _, Antes),
+    sub_atom(Palabra, _, LargoDespues, 0, Despues).
+```
+
+```prolog
+?- alrededor(banana, na, A, D).
+A = ba,
+D = na ;
+A = bana,
+D = ''.
+
+?- alrededor(prolog, F, pro, D).
+F = '',
+D = log ;
+F = l,
+D = og ;
+F = lo,
+D = g ;
+F = log,
+D = '' ;
+false.
+```
+
+La primera llamada a `sub_atom/5` busca `Fragmento` y deja ligadas las
+cantidades de caracteres que lo preceden, `LargoAntes`, y que lo siguen,
+`LargoDespues`. Las otras dos llamadas usan esas cantidades como posiciones: el
+fragmento de largo `LargoAntes` que empieza en 0 es `Antes`, y el de largo
+`LargoDespues` que termina al final es `Despues`. Cada aparición de `Fragmento`
+da una respuesta, porque solo la primera llamada deja alternativas pendientes:
+las otras dos reciben la posición y el largo del fragmento que buscan, y con
+esos dos números ligados tienen una sola respuesta cada una.
+
+La segunda consulta muestra que `Fragmento` puede llegar libre: con `Antes`
+ligado, la primera llamada enumera todos los fragmentos de `prolog` y las
+siguientes descartan los que no empiezan en la posición 3.
+
+## 17
+
+<!-- ejemplo: capitulo-11/soluciones.pl predicado: en_orden/1 consulta: en_orden(['Zoe', ana, eva]). -->
+```prolog
+%!  en_orden(+Palabras) is semidet.
+%
+%   La lista de átomos Palabras está en el orden estándar: cada átomo es
+%   menor o igual que el siguiente.
+en_orden([]).
+en_orden([_]).
+en_orden([A, B|Resto]) :-
+    A @=< B,
+    en_orden([B|Resto]).
+```
+
+```prolog
+?- en_orden([ana, eva, 'Zoe']).
+false.
+
+?- en_orden(['Zoe', ana, eva]).
+true ;
+false.
+```
+
+La lista vacía y la lista de un elemento están en orden; con dos o más, el
+primero debe ser menor o igual que el segundo y el resto, desde el segundo, debe
+estar en orden. La primera consulta responde `false.` porque el orden es el de
+los códigos de los caracteres, no el del diccionario: `'Z'` tiene un código
+menor que `a`, de modo que `'Zoe'` va antes que `ana`, como muestra la
+[sección 11.6](index.md#116-mayusculas-espacios-y-comparacion).
+
+El `true ;` de la segunda consulta deja una alternativa pendiente: con la lista
+`[eva]`, la segunda cláusula tiene éxito y la tercera queda por probar, y falla
+porque `[eva]` no unifica con `[A, B|Resto]`. El encabezado declara `semidet`
+porque la cantidad de respuestas es una o ninguna.
+
+`compare/3` da la misma solución con otra forma: `compare(O, A, B)` deja en `O`
+uno de `<`, `=` o `>`, y la condición es que `O` no sea `>`. Con `@=<` la
+condición se escribe de una vez.

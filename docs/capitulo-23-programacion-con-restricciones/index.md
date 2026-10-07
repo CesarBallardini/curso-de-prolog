@@ -26,7 +26,7 @@ Al terminar el capítulo, el lector puede:
   final;
 - usar `all_different/1`, `sum/3`, `global_cardinality/2` y la reificación;
 - comparar, con mediciones, generar y probar con restringir y etiquetar;
-- usar `dif/2` en lugar de `\==` cuando las variables todavía no tienen valor.
+- usar `dif/2` en lugar de `\=` cuando las variables todavía no tienen valor.
 
 !!! info "Tiempo estimado"
     Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:20 h**.

@@ -41,6 +41,12 @@ test(un_texto_vacio_no_tiene_palabras, all(N == [0])) :-
 test(nombre_y_apellido, all(C == ['ana paz'])) :-
     nombre_completo(ana, paz, C).
 
+test(nombre_y_apellido_a_partir_del_completo, all(N-A == [ana-paz])) :-
+    nombre_completo(N, A, 'ana paz').
+
+test(tres_palabras_no_son_nombre_y_apellido, [fail]) :-
+    nombre_completo(_, _, 'ana paz perez').
+
 test(el_mismo_nombre_escrito_distinto) :-
     mismo_nombre('  Ana   Paz ', 'ana paz').
 

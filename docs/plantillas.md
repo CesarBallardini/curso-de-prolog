@@ -304,7 +304,7 @@ corte.
 
 Los casos deben ser **disjuntos y exhaustivos** cuando se los lee de arriba
 hacia abajo: si la última cláusula afirma algo que no es cierto por sí solo, el
-predicado responde mal en cuanto se lo consulta con el segundo argumento ya
+predicado responde de manera incorrecta en cuanto se lo consulta con el segundo argumento ya
 instanciado, porque entonces el corte no llega a ejecutarse.
 
 Capítulo 9, [sección 9.4](capitulo-09-backtracking-y-corte/index.md#94-el-uso-mas-frecuente-casos-que-no-se-superponen).
@@ -315,6 +315,9 @@ Capítulo 9, [sección 9.4](capitulo-09-backtracking-y-corte/index.md#94-el-uso-
 puede verificar si un candidato es una respuesta.
 
 ```prolog
+%!  solucion(?X) is nondet.
+%
+%   X es una solución: una respuesta por cada candidato que cumple.
 solucion(X) :-
     candidato(X),
     cumple(X).

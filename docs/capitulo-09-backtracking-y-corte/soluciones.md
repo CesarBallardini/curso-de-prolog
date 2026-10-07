@@ -26,8 +26,13 @@ El `!` de `un_mayor_de_edad/1` hace que el predicado produzca **una sola
 respuesta**. Sin él, el predicado entrega todas las personas mayores de edad,
 una por cada respuesta solicitada.
 
-Es un uso adecuado del corte: no modifica quiénes son mayores de edad; solo
-establece que la primera respuesta es suficiente.
+Es un uso adecuado del corte mientras `P` llegue libre: no modifica quiénes
+son mayores de edad; solo establece que la primera respuesta es suficiente. Con
+`P` ya ligado tiene la forma del corte rojo de la
+[sección 9.6](index.md#96-generar-y-probar): `un_mayor_de_edad(ana)` responde
+`true`, aunque ana no sea la primera persona mayor de edad, porque `edad(ana, A)`
+se cumple de manera directa y el `!` no tiene nada que podar. Por eso el
+encabezado aclara que `P` debe llegar libre.
 
 ## 3
 
@@ -136,7 +141,25 @@ persona sea mayor que la de la segunda. De ese modo, de cada par se conserva una
 sola de las dos formas, y el predicado sigue funcionando en todos los sentidos.
 
 Con `!` también se obtiene una sola respuesta, pero es la primera que se
-encuentra, y cuál sea depende del orden de los hechos.
+encuentra, y cuál sea depende del orden de los hechos. `generar.pl` incluye esa
+variante, con la forma de la plantilla 15:
+
+<!-- ejemplo: capitulo-09/generar.pl predicado: un_par_que_suma/3 consulta: un_par_que_suma(49, A, B). -->
+```prolog
+%!  un_par_que_suma(+Total, -A, -B) is semidet.
+%
+%   A y B son el primer par que se encuentra, y solo ese. A y B deben
+%   llegar libres: con ambos ligados, el corte no tiene nada que podar.
+un_par_que_suma(Total, A, B) :-
+    dos_que_suman(Total, A, B),
+    !.
+```
+
+```prolog
+?- un_par_que_suma(49, A, B).
+A = ana,
+B = eva.
+```
 
 ## 8
 
@@ -165,8 +188,8 @@ El encabezado se justifica argumento por argumento:
   `C` ya ligado, el predicado acepta un número que no es el primero
   —`primer_cuadrado_mayor(50, 9)` responde `true`—, y por eso la descripción
   aclara que `C` debe llegar libre;
-- es `semidet` y no `det` porque la búsqueda termina en 10000: si `N` es
-  10000 × 10000 o más, no hay respuesta. Con el corte, nunca hay más de una.
+- es `semidet` y no `det` porque la búsqueda termina en 10 000: si `N` es
+  10 000 × 10 000 o más, no hay respuesta. Con el corte, nunca hay más de una.
 
 ## 9
 
@@ -236,7 +259,9 @@ ella es un acumulador, con la plantilla 13 del [capítulo 8](../capitulo-08-arit
 empieza vacío y crece con cada elemento que se conserva.
 
 La segunda cláusula conserva el elemento cuando **no** está entre los vistos, y
-lo agrega a ellos; la tercera lo descarta cuando sí está. Las dos condiciones
+lo agrega a ellos; la tercera lo descarta cuando sí está. La condición de la
+segunda usa `\+`, de la [sección 1.7](../capitulo-01-la-primera-hora/index.md#17-igualdad-y-comparacion), que el
+[capítulo 10](../capitulo-10-negacion-como-falla/index.md) trata en detalle. Las dos condiciones
 son complementarias, de modo que las cláusulas no se superponen.
 
 El corte de la tercera cláusula es verde. `member(X, Vistos)` se cumple una vez
@@ -285,7 +310,7 @@ responde de manera incorrecta con el argumento instanciado.
 C = chico.
 ```
 
-El `!` se ejecuta en el sexto paso, y lo que descarta son dos cosas a la vez: la
+El `!` se ejecuta en el séptimo paso, y lo que descarta son dos cosas a la vez: la
 tercera cláusula de `categoria/2`, que habría respondido `adulto`, y la
 posibilidad de volver a `edad(luis, A)` para buscar otra edad. Por eso la
 respuesta termina en punto y no en `;`.
@@ -332,16 +357,9 @@ Con el segundo argumento libre, el predicado responde de manera correcta:
 ```prolog
 ?- clasificar(5, C).
 C = positivo.
-
-?- clasificar(5, negativo).
-false.
 ```
 
-`clasificar(5, negativo)` responde `false.`, que es correcto: la primera
-cláusula unifica con `negativo` pero `5 < 0` falla, la segunda exige un `0` en
-el primer argumento, y la tercera exige `positivo` en el segundo.
-
-El caso que falla es el opuesto:
+La consulta del enunciado tiene el segundo argumento instanciado:
 
 ```prolog
 ?- clasificar(-2, positivo).
@@ -351,6 +369,13 @@ true.
 El programa afirma que −2 es positivo. Las dos primeras cláusulas se descartan
 por la cabeza —`positivo` no unifica con `negativo` ni con `cero`—, de modo que
 ningún `!` llega a ejecutarse, y la tercera cláusula unifica sin verificar nada.
+
+No toda consulta con el segundo argumento instanciado responde de manera
+incorrecta: `clasificar(5, negativo)` responde `false.`, como corresponde,
+porque la primera cláusula unifica con `negativo` pero `5 < 0` falla, la segunda
+exige un `0` en el primer argumento, y la tercera exige `positivo` en el
+segundo. El defecto aparece solo cuando la consulta llega a la cláusula sin
+condición.
 
 La conclusión es la de la [sección 9.5](index.md#95-corte-verde-y-corte-rojo), y conviene enunciarla como regla de la
 plantilla 14: la **última** cláusula es la que presenta el riesgo, porque no lleva condición

@@ -7,7 +7,7 @@
 % que cumple la condición.
 %
 %?- primer_multiplo(7, 20, N).
-%?- dos_que_suman(50, A, B).
+%?- dos_que_suman(49, A, B).
 
 % edad(P, A): P tiene A años.
 edad(juan, 68).
@@ -44,7 +44,8 @@ dos_que_suman(Total, A, B) :-
 
 %!  un_par_que_suma(+Total, -A, -B) is semidet.
 %
-%   A y B son el primer par que se encuentra, y solo ese.
+%   A y B son el primer par que se encuentra, y solo ese. A y B deben
+%   llegar libres: con ambos ligados, el corte no tiene nada que podar.
 un_par_que_suma(Total, A, B) :-
     dos_que_suman(Total, A, B),
     !.

@@ -47,26 +47,10 @@ def highlighted(code, language):
     return f'<pre><code class="highlight">{coloured}</code></pre>'
 
 
-# A `|` inside an inline code span, on a table row, is read by markdown-it as a
-# cell separator: the row is split and its last cell is dropped. Python-Markdown,
-# which renders the site, is lenient and keeps the span whole — so the site looks
-# right while the PDF is mangled. Escaping it in the source is not an option: the
-# site would then print the backslash. The escape is added here instead, for the
-# PDF alone, which is the renderer that needs it.
-#
-# It matters for the rows that teach `[Primero|Resto]` and `'[|]'`, where the
-# pipe is the subject and cannot be reworded away.
-ROW = re.compile(r'^[ \t]*\|.*$', re.M)
-CODE_SPAN = re.compile(r'`[^`\n]*`')
-
-
-def escape_pipes_in_table_code(text):
-    """Escape the `|` of an inline code span when it sits on a table row."""
-
-    def row(match):
-        return CODE_SPAN.sub(lambda span: span.group(0).replace('|', r'\|'), match.group(0))
-
-    return ROW.sub(row, text)
+# A `|` inside an inline code span, on a table row, is written `\|` in the
+# source, as GFM requires; markdown-it reads that escape natively, so nothing is
+# added here. The site and the decks remove the backslash themselves
+# (tools/tabla_pipes.py, tools/tabla_pipes.lua).
 
 
 MKDOCS = (swish_links.examples.ROOT / 'mkdocs.yml').read_text(encoding='utf-8')
@@ -187,7 +171,6 @@ def heading_ids(state):
 
 def to_html(text):
     """The Markdown of a chapter, as the body of an HTML document."""
-    text = escape_pipes_in_table_code(text)
     md = MarkdownIt('commonmark', {'html': True, 'typographer': True})
     md.enable('table')
     # commonmark ships the typographic rules off. The site turns them on through

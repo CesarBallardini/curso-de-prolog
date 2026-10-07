@@ -218,10 +218,11 @@ diapositivas/plantilla.pptx: tools/slides-template.py
 # can also end the first run without output, so the conversion gets a second
 # try. cygpath gives the file:/// URL the Windows build needs; elsewhere the
 # plain path is already right.
-diapositivas/%.odp: diapositivas/%.md diapositivas/plantilla.pptx tools/slides-breaks.py $(SLIDES_IMG)
+diapositivas/%.odp: diapositivas/%.md diapositivas/plantilla.pptx tools/slides-breaks.py tools/tabla_pipes.lua $(SLIDES_IMG)
 	@tmp=$$(mktemp -d) && \
 	url=$$(cygpath -m "$$tmp" 2>/dev/null || echo "$$tmp") && \
 	pandoc $< --from=markdown-implicit_figures --slide-level=2 --resource-path=diapositivas \
+	  --lua-filter=tools/tabla_pipes.lua \
 	  --reference-doc=diapositivas/plantilla.pptx -o "$$tmp/$*.pptx" && \
 	$(UV) tools/slides-breaks.py "$$tmp/$*.pptx" && \
 	rm -f $@ && \
