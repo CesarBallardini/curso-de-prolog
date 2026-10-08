@@ -103,7 +103,9 @@ flowchart TD
     D -- "R6. θ₆ = {&nbsp;_/3&nbsp;}" --> S3(["3.ª respuesta<br/>C = adulto"])
 ```
 
-Una comparación como `3 < 4` es un objetivo predefinido: no emplea ninguna
+Como en los capítulos anteriores —la lectura del diagrama se presentó en la
+[sección 3.2](../capitulo-03-reglas-y-conjunciones/index.md#32-que-prueba-prolog-y-en-que-orden)—,
+una comparación como `3 < 4` es un objetivo predefinido: no emplea ninguna
 cláusula, y por eso su arco no lleva número ni sustitución. Si se cumple, el
 objetivo desaparece de la consulta; si no, la rama falla. Aquí las tres se
 cumplen, y las tres hojas de éxito aparecen en el orden de las cláusulas.

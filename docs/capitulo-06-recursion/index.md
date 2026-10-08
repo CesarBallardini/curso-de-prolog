@@ -16,7 +16,7 @@ Al terminar el capítulo, el lector puede:
   relación.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **0:40 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:10 h**.
     Resolver los 6 ejercicios marcados con ★: **1:35 h**.
     Resolver los 14 ejercicios del final: **4:40 h**.
 
@@ -64,6 +64,88 @@ false.
 Taré no es progenitor de Isaac, de modo que la primera cláusula no alcanza. La
 segunda desciende a Abraham y pregunta si Abraham es antepasado de Isaac; ahora
 sí, responde la primer cláusula.
+
+El árbol de derivación de la [sección 5.2](../capitulo-05-como-responde-prolog/index.md#52-el-arbol-de-derivacion)
+muestra ese recorrido, y también de dónde salen el `;` y el `false.`. Con los
+siete hechos de `padre/2` numerados R1 a R7 en el orden del programa
+—`padre(tare, abraham).` es R1, `padre(abraham, isaac).` es R4— y las cláusulas
+restantes a continuación:
+
+| | |
+|---|---|
+| R8 | `madre(sara, isaac).` |
+| R9 | `progenitor(P, H) :- padre(P, H).` |
+| R10 | `progenitor(P, H) :- madre(P, H).` |
+| R11 | `antepasado(A, D) :- progenitor(A, D).` |
+| R12 | `antepasado(A, D) :- progenitor(A, Hijo), antepasado(Hijo, D).` |
+
+El árbol completo tiene más de cincuenta arcos, porque cada llamada a
+`progenitor/2` abre dos ramas y la familia de Taré es grande. Se parte en tres
+diagramas: el primero muestra las dos cláusulas de `antepasado/2` sobre Taré;
+el segundo, los tres hijos de Taré; el tercero, la rama de Abraham, que alcanza
+la hoja de éxito. Además, un nodo «⋯ todas sus ramas fallan» **resume un subárbol**
+que el recorrido agotó sin encontrar ninguna hoja de éxito: su segunda línea
+indica qué sustituciones consumió, y la leyenda que sigue a los diagramas dice
+por qué falla.
+
+```mermaid
+flowchart TD
+    A["antepasado(tare, isaac)"] -- "R11. θ₁ = {&nbsp;A/tare, D/isaac&nbsp;}" --> B["progenitor(tare, isaac)"]
+    A -- "R12. θ₄ = {&nbsp;A/tare, D/isaac&nbsp;}" --> C["progenitor(tare, Hijo),<br/>antepasado(Hijo, isaac)"]
+    B -- "R9. θ₂ = {&nbsp;P/tare, H/isaac&nbsp;}" --> B1["padre(tare, isaac)"]
+    B -- "R10. θ₃ = {&nbsp;P/tare, H/isaac&nbsp;}" --> B2["madre(tare, isaac)"]
+    B1 --> F1(["falla"])
+    B2 --> F2(["falla"])
+    C -- "R9. θ₅ = {&nbsp;P₂/tare, H₂/Hijo&nbsp;}" --> C1["padre(tare, Hijo),<br/>antepasado(Hijo, isaac)"]
+    C -- "R10. θ₅₆ =<br/>{&nbsp;P₂/tare, H₂/Hijo&nbsp;}" --> C2["madre(tare, Hijo),<br/>antepasado(Hijo, isaac)"]
+    C2 --> F3(["falla"])
+    C1 --> V["⋮<br/>sigue en el árbol siguiente"]
+    classDef abierto fill:none,stroke:none;
+    class V abierto;
+```
+
+El segundo diagrama continúa desde `padre(tare, Hijo), antepasado(Hijo, isaac)`:
+los tres hechos R1, R2 y R3 unifican con `padre(tare, Hijo)`, y abren una rama
+por hijo.
+
+```mermaid
+flowchart TD
+    C1["padre(tare, Hijo),<br/>antepasado(Hijo, isaac)"]
+    C1 -- "R1. θ₆ = {&nbsp;Hijo/abraham&nbsp;}" --> D["antepasado(abraham, isaac)"]
+    C1 -- "R2. θ₂₁ = {&nbsp;Hijo/nacor&nbsp;}" --> Dn["antepasado(nacor, isaac)"]
+    C1 -- "R3. θ₂₈ = {&nbsp;Hijo/haran&nbsp;}" --> Dh["antepasado(haran, isaac)"]
+    D --> V["⋮<br/>sigue en el árbol siguiente"]
+    Dn --> R2(["⋯ todas sus ramas fallan<br/>θ₂₂ a θ₂₇"])
+    Dh --> R3(["⋯ todas sus ramas fallan<br/>θ₂₉ a θ₅₅"])
+    classDef abierto fill:none,stroke:none;
+    class V abierto;
+```
+
+El tercero continúa desde `antepasado(abraham, isaac)`, el nodo que alcanza la
+hoja de éxito:
+
+```mermaid
+flowchart TD
+    D["antepasado(abraham, isaac)"]
+    D -- "R11. θ₇ = {&nbsp;A₂/abraham, D₂/isaac&nbsp;}" --> E["progenitor(abraham, isaac)"]
+    D -- "R12. θ₁₁ = {&nbsp;A₂/abraham, D₂/isaac&nbsp;}" --> D2["progenitor(abraham, Hijo₂),<br/>antepasado(Hijo₂, isaac)"]
+    E -- "R9. θ₈ = {&nbsp;P₃/abraham, H₃/isaac&nbsp;}" --> F["padre(abraham, isaac)"]
+    E -- "R10. θ₁₀ = {&nbsp;P₃/abraham, H₃/isaac&nbsp;}" --> E2["madre(abraham, isaac)"]
+    F -- "R4. θ₉ = {&nbsp;}" --> S(["consulta vacía"])
+    E2 --> F4(["falla"])
+    D2 --> R1(["⋯ todas sus ramas fallan<br/>θ₁₂ a θ₂₀"])
+```
+
+La hoja de éxito está en `θ₉`: es el `true`. Después del `;`, Prolog retrocede
+y recorre, en este orden, todo lo que quedó pendiente a la derecha de esa rama
+en los tres diagramas:
+`madre(abraham, isaac)` falla; el caso recursivo sobre Abraham (`θ₁₂` a `θ₂₀`)
+falla porque su único hijo es Isaac, e Isaac no tiene hijos; la rama de Nacor
+(`θ₂₂` a `θ₂₇`) falla porque Nacor no tiene hijos; la de Harán (`θ₂₉` a `θ₅₅`)
+recorre a Lot, Milca e Isca sin encontrar a Isaac; y `madre(tare, Hijo)` falla.
+Agotado el árbol, la respuesta es `false.`. Las cuarenta y siete sustituciones
+posteriores al `true` son el costo de las ramas que fallan, señalado en la
+[sección 5.2](../capitulo-05-como-responde-prolog/index.md#52-el-arbol-de-derivacion).
 
 ### Por qué termina
 
@@ -142,6 +224,31 @@ caso base, que es el que termina la recursión:
 ?- desarma(babushka_hueca(babushka_hueca(babushka_hueca(babushka_maciza)))).
 true.
 ```
+
+El árbol de derivación es la tabla anterior escrita en nodos, con las
+sustituciones agregadas. Con el caso base numerado R1 y el recursivo R2, es una
+sola rama: R1 no unifica con ninguna babushka hueca, y R2 no unifica con la
+maciza, de modo que en cada nodo hay una única cláusula aplicable.
+
+```mermaid
+flowchart TD
+    A["desarma(babushka_hueca(babushka_hueca(babushka_hueca(babushka_maciza))))"] -- "R2. θ₁ = {&nbsp;Interior/babushka_hueca(babushka_hueca(babushka_maciza))&nbsp;}" --> B["desarma(babushka_hueca(babushka_hueca(babushka_maciza)))"]
+    B -- "R2. θ₂ = {&nbsp;Interior₂/babushka_hueca(babushka_maciza)&nbsp;}" --> C["desarma(babushka_hueca(babushka_maciza))"]
+    C -- "R2. θ₃ = {&nbsp;Interior₃/babushka_maciza&nbsp;}" --> D["desarma(babushka_maciza)"]
+    D -- "R1. θ₄ = {&nbsp;}" --> S(["consulta vacía"])
+```
+
+Los tres arcos de R2 llevan variables distintas: `Interior`, `Interior₂` e
+`Interior₃`. Es lo que la [sección 5.2](../capitulo-05-como-responde-prolog/index.md#52-el-arbol-de-derivacion)
+anticipó: cada vez que Prolog emplea una cláusula toma una **copia con
+variables nuevas**, y la `Interior` del primer uso no es la del segundo. El
+árbol distingue las copias con un subíndice. `trace` las muestra con
+identificadores como `_8106` ([sección 5.3](../capitulo-05-como-responde-prolog/index.md#53-el-mismo-recorrido-registrado-por-trace)):
+cada uso de una cláusula crea los suyos, y por eso esos números cambian de una
+llamada a la siguiente. En este árbol cada copia queda ligada en el mismo arco
+que la crea, y la traza ya la muestra con su valor; en los árboles de las
+secciones siguientes, con variables libres en la consulta, las copias quedan a
+la vista.
 
 Si falta el caso base, la recursión no tiene condición de finalización. Si el
 caso recursivo no reduce el problema, tampoco. En ambos casos la
@@ -222,6 +329,16 @@ El predicado opera en dos modos. Con un argumento instanciado, verifica:
 true.
 ```
 
+Con `natural(cero).` numerada R1 y la cláusula recursiva R2, el árbol es una
+rama que se acorta en cada arco, como el de `desarma/1`:
+
+```mermaid
+flowchart TD
+    A["natural(s(s(cero)))"] -- "R2. θ₁ = {&nbsp;N/s(cero)&nbsp;}" --> B["natural(s(cero))"]
+    B -- "R2. θ₂ = {&nbsp;N₂/cero&nbsp;}" --> C["natural(cero)"]
+    C -- "R1. θ₃ = {&nbsp;}" --> S(["consulta vacía"])
+```
+
 Con una variable libre, **genera** los naturales, uno tras otro, de manera
 indefinida:
 
@@ -236,7 +353,29 @@ N = s(s(s(cero))) ;
 
 Esta consulta no termina, y ese comportamiento es correcto: el conjunto de los
 naturales es infinito. Es el primer ejemplo del curso de una rama infinita que
-no constituye un error.
+no constituye un error. El árbol muestra la diferencia con la [sección 5.6](../capitulo-05-como-responde-prolog/index.md#56-ramas-infinitas).
+La consulta usa la variable `N`, el mismo nombre que la cláusula R2; como la
+copia de la cláusula tiene variables nuevas, el árbol la escribe `N₁` para que
+no se confundan:
+
+```mermaid
+flowchart TD
+    A["natural(N)"] -- "R1. θ₁ = {&nbsp;N/cero&nbsp;}" --> S1(["1.ª respuesta<br/>N = cero"])
+    A -- "R2. θ₂ = {&nbsp;N/s(N₁)&nbsp;}" --> B["natural(N₁)"]
+    B -- "R1. θ₃ = {&nbsp;N₁/cero&nbsp;}" --> S2(["2.ª respuesta<br/>N = s(cero)"])
+    B -- "R2. θ₄ = {&nbsp;N₁/s(N₂)&nbsp;}" --> C["natural(N₂)"]
+    C -- "R1. θ₅ = {&nbsp;N₂/cero&nbsp;}" --> S3(["3.ª respuesta<br/>N = s(s(cero))"])
+    C -- "R2. θ₆ = {&nbsp;N₂/s(N₃)&nbsp;}" --> D["⋮<br/>la rama no termina"]
+    classDef abierto fill:none,stroke:none;
+    class D abierto;
+```
+
+En la [sección 5.6](../capitulo-05-como-responde-prolog/index.md#56-ramas-infinitas) la rama infinita estaba a la **izquierda**, y Prolog
+no llegaba nunca a las ramas que producían las respuestas. Aquí está a la
+**derecha**: en cada nivel, la rama de R1 cierra con una hoja de éxito antes de
+que el recorrido descienda por la de R2, y por eso las respuestas aparecen una
+por una, en el orden de las hojas. La rama infinita no es un error porque no
+bloquea ninguna respuesta; solo impide que la enumeración termine.
 
 El encabezado de `natural/1` registra los dos modos con la notación de la
 [sección 2.8](../capitulo-02-hechos-consultas-y-variables/index.md#28-como-se-documenta-el-uso-de-un-predicado), una línea `%!` para cada uno: `natural(+N) is semidet` verifica, y
@@ -269,6 +408,19 @@ Cuanto = s(s(s(cero))).
 Uno más dos es tres. En cada llamada se elimina un nivel de `s` del primer
 argumento y se agrega uno al resultado, hasta que el primer argumento es `cero`.
 
+El árbol muestra dónde se arma el resultado. Con el caso base de `suma/3`
+numerado R1 y el recursivo R2, la primera sustitución liga `Cuanto` a `s(C)`,
+un término con una variable adentro, y la última liga esa `C`. La hoja de éxito
+muestra la **composición** de las dos: cómo la variable de la consulta queda
+armada a partir de las sustituciones de la rama, que es lo que la
+[sección 5.2](../capitulo-05-como-responde-prolog/index.md#52-el-arbol-de-derivacion) dejó para más adelante.
+
+```mermaid
+flowchart TD
+    A["suma(s(cero), s(s(cero)), Cuanto)"] -- "R2. θ₁ = {&nbsp;A/cero, B/s(s(cero)), Cuanto/s(C)&nbsp;}" --> B["suma(cero, s(s(cero)), C)"]
+    B -- "R1. θ₂ = {&nbsp;B₂/s(s(cero)), C/s(s(cero))&nbsp;}" --> S(["consulta vacía<br/>Cuanto = s(C) = s(s(s(cero)))"])
+```
+
 La consulta siguiente muestra la propiedad más importante del capítulo:
 
 ```prolog
@@ -281,6 +433,26 @@ La consulta pregunta **qué número sumado a dos da tres**, y la respuesta es un
 La misma definición que suma, consultada en otro sentido, resta. No existe una
 regla para sumar y otra para restar: existe una relación entre tres números, y
 la consulta determina cuáles son los datos y cuál es la incógnita.
+
+En el árbol, la consulta usa la variable `A`, igual que la cláusula R2. Son
+variables distintas: la de la consulta es `A`, y la copia de la cláusula se
+escribe `A₁`, como `N₁` en la [sección 6.3](#63-los-numeros-naturales-definidos-con-terminos). La rama
+de R2 quita una `s` del primer y del tercer argumento a la vez; termina porque
+el **tercero** llega a `cero`, donde ninguna de las dos cabezas unifica.
+
+```mermaid
+flowchart TD
+    A["suma(A, s(s(cero)), s(s(s(cero))))"] -- "R2. θ₁ = {&nbsp;A/s(A₁),<br/>B₁/s(s(cero)),<br/>C₁/s(s(cero))&nbsp;}" --> B["suma(A₁, s(s(cero)), s(s(cero)))"]
+    B -- "R1. θ₂ = {&nbsp;A₁/cero, B₂/s(s(cero))&nbsp;}" --> S(["consulta vacía<br/>A = s(A₁) = s(cero)"])
+    B -- "R2. θ₃ = {&nbsp;A₁/s(A₂), B₂/s(s(cero)), C₂/s(cero)&nbsp;}" --> C["suma(A₂, s(s(cero)), s(cero))"]
+    C -- "R2. θ₄ = {&nbsp;A₂/s(A₃), B₃/s(s(cero)), C₃/cero&nbsp;}" --> D["suma(A₃, s(s(cero)), cero)"]
+    D --> F(["falla"])
+```
+
+En la raíz y en el nodo `suma(A₂, s(s(cero)), s(cero))`, R1 no abre arco:
+su cabeza `suma(cero, B, B)` exige que el segundo y el tercer argumento sean
+iguales, y no lo son. El `;` de la respuesta es la rama de R2 que queda
+pendiente debajo de la hoja de éxito, y el `false.` es su final.
 
 `is` no tiene esta propiedad, y por eso conviene observarla antes del
 [capítulo 8](../capitulo-08-aritmetica/index.md): `X is 1 + 2` evalúa en un único sentido, mientras que `suma/3` define una
@@ -301,7 +473,10 @@ argumento se reduce en cada llamada, y la recursión termina. En la consulta
 `natural(N)`, con `N` libre, **ninguna magnitud se reduce**: Prolog construye
 términos cada vez mayores. Por eso el predicado verifica en un caso y genera de
 manera indefinida en el otro. El mismo predicado, con dos comportamientos,
-según qué argumentos estén instanciados.
+según qué argumentos estén instanciados. Los dos árboles de la
+[sección 6.3](#63-los-numeros-naturales-definidos-con-terminos) lo muestran: el primero es una rama que
+se acorta y termina; el segundo, una rama que crece sin fin con una hoja de
+éxito en cada nivel.
 
 De aquí se desprende un principio general: la terminación de un predicado puede
 depender de **cómo se lo invoca**, y no solo de cómo está escrito.
@@ -352,6 +527,68 @@ El tercer objetivo se escribe después de la llamada recursiva: `Faltan` no tien
 escribiera antes, se produciría el error de argumentos sin instanciar del
 [capítulo 1](../capitulo-01-la-primera-hora/index.md).
 
+El árbol de derivación muestra esa espera. Con los hechos y las cláusulas
+numerados en el orden del programa:
+
+| | |
+|---|---|
+| R1 | `padre(juan, ana).` |
+| R2 | `padre(ana, luis).` |
+| R3 | `padre(luis, eva).` |
+| R4 | `generaciones(A, D, 1) :- padre(A, D).` |
+| R5 | `generaciones(A, D, N) :- padre(A, Hijo), generaciones(Hijo, D, Faltan), N is Faltan + 1.` |
+
+Cada uso de R5 deja un `… is … + 1` pendiente **a la derecha** de la consulta,
+con su variable todavía libre. El árbol es alto, y se parte en dos: el primero
+baja hasta la llamada sobre `luis`, y el segundo continúa desde ese nodo.
+
+```mermaid
+%%{init: {"flowchart": {"rankSpacing": 30}}}%%
+flowchart TD
+    A["generaciones(juan, eva, Cuantas)"] -- "R4. θ₁ = {&nbsp;A/juan, D/eva, Cuantas/1&nbsp;}" --> B["padre(juan, eva)"]
+    B --> F1(["falla"])
+    A -- "R5. θ₂ = {&nbsp;A/juan, D/eva, N/Cuantas&nbsp;}" --> C["padre(juan, Hijo),<br/>generaciones(Hijo, eva, Faltan),<br/>Cuantas is Faltan + 1"]
+    C -- "R1. θ₃ = {&nbsp;Hijo/ana&nbsp;}" --> D["generaciones(ana, eva, Faltan),<br/>Cuantas is Faltan + 1"]
+    D -- "R4. θ₄ = {&nbsp;A₂/ana, D₂/eva, Faltan/1&nbsp;}" --> E["padre(ana, eva),<br/>Cuantas is 1 + 1"]
+    E --> F2(["falla"])
+    D -- "R5. θ₅ = {&nbsp;A₂/ana, D₂/eva, N₂/Faltan&nbsp;}" --> F["padre(ana, Hijo₂),<br/>generaciones(Hijo₂, eva, Faltan₂),<br/>Faltan is Faltan₂ + 1,<br/>Cuantas is Faltan + 1"]
+    F -- "R2. θ₆ = {&nbsp;Hijo₂/luis&nbsp;}" --> G["generaciones(luis, eva, Faltan₂),<br/>Faltan is Faltan₂ + 1,<br/>Cuantas is Faltan + 1"]
+    G --> V["⋮<br/>sigue en el árbol siguiente"]
+    classDef abierto fill:none,stroke:none;
+    class V abierto;
+```
+
+En el segundo árbol aparecen los arcos de `is`. Es un **objetivo predefinido**,
+como el `\==` de la [sección 3.5](../capitulo-03-reglas-y-conjunciones/index.md#35-una-regla-que-produce-respuestas-de-mas):
+no emplea ninguna cláusula, y su arco no lleva número. Cuando evalúa la
+expresión y liga la variable de la izquierda, el arco lleva la sustitución con
+el valor que produce; cuando la variable de la izquierda ya tiene valor, `is`
+actúa como una prueba, y si la igualdad no se cumple la rama falla.
+
+```mermaid
+%%{init: {"flowchart": {"rankSpacing": 30}}}%%
+flowchart TD
+    G["generaciones(luis, eva, Faltan₂),<br/>Faltan is Faltan₂ + 1,<br/>Cuantas is Faltan + 1"]
+    G -- "R4. θ₇ = {&nbsp;A₃/luis, D₃/eva, Faltan₂/1&nbsp;}" --> H["padre(luis, eva),<br/>Faltan is 1 + 1,<br/>Cuantas is Faltan + 1"]
+    H -- "R3. θ₈ = {&nbsp;}" --> I["Faltan is 1 + 1,<br/>Cuantas is Faltan + 1"]
+    I -- "is. θ₉ = {&nbsp;Faltan/2&nbsp;}" --> J["Cuantas is 2 + 1"]
+    J -- "is. θ₁₀ = {&nbsp;Cuantas/3&nbsp;}" --> S(["consulta vacía<br/>Cuantas = 3"])
+    G -- "R5. θ₁₁ = {&nbsp;A₃/luis, D₃/eva, N₃/Faltan₂&nbsp;}" --> K["padre(luis, Hijo₃),<br/>generaciones(Hijo₃, eva, Faltan₃),<br/>Faltan₂ is Faltan₃ + 1,<br/>Faltan is Faltan₂ + 1,<br/>Cuantas is Faltan + 1"]
+    K -- "R3. θ₁₂ = {&nbsp;Hijo₃/eva&nbsp;}" --> L["generaciones(eva, eva, Faltan₃),<br/>Faltan₂ is Faltan₃ + 1,<br/>Faltan is Faltan₂ + 1,<br/>Cuantas is Faltan + 1"]
+    L -- "R4. θ₁₃ = {&nbsp;A₄/eva, D₄/eva, Faltan₃/1&nbsp;}" --> M["padre(eva, eva),<br/>Faltan₂ is 1 + 1,<br/>Faltan is Faltan₂ + 1,<br/>Cuantas is Faltan + 1"]
+    M --> F3(["falla"])
+    L -- "R5. θ₁₄ = {&nbsp;A₄/eva, D₄/eva, N₄/Faltan₃&nbsp;}" --> N["padre(eva, Hijo₄),<br/>generaciones(Hijo₄, eva, Faltan₄),<br/>Faltan₃ is Faltan₄ + 1,<br/>Faltan₂ is Faltan₃ + 1,<br/>Faltan is Faltan₂ + 1,<br/>Cuantas is Faltan + 1"]
+    N --> F4(["falla"])
+```
+
+Los dos `is` se resuelven **de abajo hacia arriba**, recién cuando el caso
+base cierra en `padre(luis, eva)`: `θ₇` liga `Faltan₂` a 1, `θ₉` calcula
+`Faltan` y `θ₁₀` calcula `Cuantas`. Hasta ese momento, `Faltan` no tenía
+valor, y un `is` que lo hubiera necesitado antes habría producido el error
+de argumentos sin instanciar. El `false.` final es la rama de R5 que queda
+pendiente debajo de `generaciones(luis, eva, Faltan₂)`: desciende hasta `eva`,
+que no tiene hijos, y falla con sus `is` todavía sin evaluar.
+
 Como en los casos anteriores, la relación se puede consultar en el otro sentido:
 
 ```prolog
@@ -376,13 +613,16 @@ argumentos que recibió, o con argumentos del mismo tamaño. Es el error del
 el caso más difícil de detectar, porque el programa *parece* correcto: tiene su
 caso base y tiene su objetivo de reducción. Sin embargo, Prolog ejecuta los
 objetivos de izquierda a derecha, y alcanza la llamada recursiva antes de haber
-reducido el problema.
+reducido el problema. Con frecuencia el programa produce la primera respuesta y
+no termina al solicitar la siguiente, como en la actividad del final de la
+sección.
 
 ```prolog
 %!  generaciones(?A, ?D, -N) is nondet.
 %
-%   D está N generaciones por debajo de A. No termina: la llamada recursiva
-%   precede al objetivo que reduce el problema.
+%   D está N generaciones por debajo de A. Produce la primera respuesta y
+%   después no termina: la llamada recursiva precede al objetivo que reduce
+%   el problema.
 generaciones(A, D, N) :-
     generaciones(Hijo, D, Faltan),
     padre(A, Hijo),
@@ -415,6 +655,20 @@ programa: para probar `hijo/2` hay que probar `progenitor/2`, y para probar
 objetivo se acerque a un hecho. Basta con que uno de los dos predicados esté
 definido por hechos para que el problema desaparezca.
 
+El árbol de `hijo(H, P)` lo muestra con el criterio de la [sección 5.6](../capitulo-05-como-responde-prolog/index.md#56-ramas-infinitas):
+con la cláusula de `hijo/2` numerada R1 y la de `progenitor/2` R2, el tercer
+nodo repite la raíz, salvo los nombres de las variables, sin que en el camino
+se haya avanzado nada.
+
+```mermaid
+flowchart TD
+    A["hijo(H, P)"] -- "R1. θ₁ = {&nbsp;H₁/H, P₁/P&nbsp;}" --> B["progenitor(P, H)"]
+    B -- "R2. θ₂ = {&nbsp;P₂/P, H₂/H&nbsp;}" --> C["hijo(H, P)"]
+    C -- "R1. θ₃ = {&nbsp;H₃/H, P₃/P&nbsp;}" --> D["⋮<br/>la rama no termina"]
+    classDef abierto fill:none,stroke:none;
+    class D abierto;
+```
+
 Ante un programa que no termina, se recomienda verificar en ese orden: primero,
 si existe el caso base; después, si el caso recursivo reduce el problema;
 después, si el objetivo de reducción está antes de la llamada recursiva; por
@@ -423,8 +677,11 @@ después, si el objetivo de reducción está antes de la llamada recursiva; por
 !!! question "Actividad"
     En `generaciones.pl`, intercambiar los dos primeros objetivos del caso
     recursivo, como en el bloque anterior, y ejecutar
-    `generaciones(juan, eva, N).` La ejecución se debe interrumpir de manera
-    manual.
+    `generaciones(juan, eva, N).` La consulta responde `N = 3`; al solicitar
+    otra respuesta con `;`, la ejecución no termina y se debe interrumpir de
+    manera manual. Explicar, con el criterio de la [sección 5.6](../capitulo-05-como-responde-prolog/index.md#56-ramas-infinitas),
+    por qué la primera respuesta se encuentra y la búsqueda de la segunda no
+    termina.
 
 ## Ejercicios
 
@@ -457,8 +714,11 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 9. **(3)** Escribir `par/1`, con el encabezado `%! par(?N) is nondet.`, para
    los naturales de `naturales.pl`: se cumple cuando N tiene una cantidad par
    de `s`. Según el planteo, requiere uno o dos casos base.
-10. ★ **(2)** Los tres predicados siguientes no terminan, cada uno por una causa
-    distinta de la [sección 6.7](#67-las-cuatro-causas-de-no-terminacion). Identificar la causa en cada caso y corregirlo:
+10. ★ **(2)** Los tres predicados siguientes presentan cada uno una causa
+    distinta de la [sección 6.7](#67-las-cuatro-causas-de-no-terminacion). Dos de ellos no terminan con cualquier
+    consulta; el otro responde `false.` cuando el primer argumento está
+    instanciado y no termina cuando está libre. Identificar la causa en cada
+    caso y corregirlo:
 
     ```prolog
     % a
@@ -524,6 +784,10 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | terminación | una magnitud debe reducirse en cada llamada, y el caso base debe ser alcanzable |
 | generar y verificar | el mismo predicado realiza ambas operaciones, según qué argumentos estén instanciados |
 | orden dentro del cuerpo | el objetivo que reduce el problema precede a la llamada recursiva |
+| **variables nuevas** | cada uso de una cláusula toma una copia con variables nuevas: en el árbol llevan subíndice (`Interior₂`, `A₁`), en `trace` son los identificadores como `_8106` |
+| **arco de `is`** | objetivo predefinido: sin número de cláusula; con la sustitución del valor que produce, o «falla» si la variable ya tenía valor y la igualdad no se cumple |
+| **composición en la hoja** | la hoja de éxito muestra cómo la variable de la consulta se arma con las sustituciones de la rama (`Cuanto = s(C) = s(s(s(cero)))`) |
+| **subárbol resumido** | un nodo «⋯ todas sus ramas fallan» en lugar de un subárbol que el recorrido agotó sin hojas de éxito; indica qué sustituciones consumió |
 
 ## Temas que se retoman
 

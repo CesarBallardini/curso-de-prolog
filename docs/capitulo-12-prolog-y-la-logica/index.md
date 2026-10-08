@@ -27,7 +27,7 @@ Al terminar el capítulo, el lector puede:
   lógica.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **0:35 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **0:40 h**.
     Resolver los 7 ejercicios marcados con ★: **2:00 h**.
     Resolver los 17 ejercicios del final: **5:40 h**.
 
@@ -173,6 +173,42 @@ demostración**, y juan tiene dos hijos registrados. Es la primera diferencia
 entre las dos lecturas: la lógica establece qué es verdadero; Prolog produce una
 respuesta por cada demostración.
 
+El árbol de derivación del [capítulo 5](../capitulo-05-como-responde-prolog/index.md)
+muestra las seis demostraciones. Con las cláusulas de `logica.pl` numeradas en
+el orden del archivo —los hechos de `mujer/1` y `varon/1` ocupan R1 a R6, y las
+reglas `madre/2` y `padre/2` son R13 y R14—, las que intervienen son:
+
+| | |
+|---|---|
+| R7 | `progenitor(juan, ana).` |
+| R8 | `progenitor(marta, ana).` |
+| R9 | `progenitor(juan, pedro).` |
+| R10 | `progenitor(marta, pedro).` |
+| R11 | `progenitor(pedro, luis).` |
+| R12 | `progenitor(pedro, eva).` |
+| R15 | `tiene_hijos(P) :- progenitor(P, _).` |
+
+La variable `P` de R15 se escribe `P₁` en el árbol, porque la consulta ya usa
+ese nombre y cada uso de una cláusula emplea variables nuevas
+([sección 6.2](../capitulo-06-recursion/index.md#62-caso-base-y-caso-recursivo)):
+
+```mermaid
+%%{init: {"flowchart": {"nodeSpacing": 25}}}%%
+flowchart TD
+    A["tiene_hijos(P)"] -- "R15. θ₁ = {&nbsp;P₁/P&nbsp;}" --> B["progenitor(P, _)"]
+    B -- "R7. θ₂ = {&nbsp;P/juan, _/ana&nbsp;}" --> C1(["consulta vacía<br/>P = juan"])
+    B -- "R8. θ₃ = {&nbsp;P/marta, _/ana&nbsp;}" --> C2(["consulta vacía<br/>P = marta"])
+    B -- "R9. θ₄ = {&nbsp;P/juan, _/pedro&nbsp;}" --> C3(["consulta vacía<br/>P = juan"])
+    B -- "R10. θ₅ = {&nbsp;P/marta, _/pedro&nbsp;}" --> C4(["consulta vacía<br/>P = marta"])
+    B -- "R11. θ₆ = {&nbsp;P/pedro, _/luis&nbsp;}" --> C5(["consulta vacía<br/>P = pedro"])
+    B -- "R12. θ₇ = {&nbsp;P/pedro, _/eva&nbsp;}" --> C6(["consulta vacía<br/>P = pedro"])
+```
+
+Seis hojas de éxito, seis respuestas: cada hoja es una demostración distinta, y
+cada demostración aporta un testigo del $\exists$, el hijo al que queda ligada
+la variable anónima. Las dos hojas `P = juan` difieren solo en ese testigo, y
+la fórmula no distingue entre ellas.
+
 ## 12.4 Cláusulas de Horn
 
 En lógica se pueden escribir fórmulas de cualquier forma: con varias
@@ -301,6 +337,29 @@ resolver con ninguna cláusula. La tabla es el árbol de la
 [sección 5.2](../capitulo-05-como-responde-prolog/index.md#52-el-arbol-de-derivacion)
 leído como resoluciones: cada nodo es un resolvente, cada arco un paso, y la
 consulta vacía de la hoja de éxito es la cláusula vacía.
+
+El árbol siguiente es el de esa sección con cada nodo escrito en las dos
+formas: arriba, la consulta pendiente; abajo, el mismo nodo como resolvente,
+con cada objetivo negado y los objetivos unidos por $\lor$. Los arcos y sus
+sustituciones son los mismos. La hoja de éxito es la consulta vacía, es decir
+$\square$; la hoja de falla es un resolvente que no se resuelve con ninguna
+cláusula.
+
+```mermaid
+%%{init: {"flowchart": {"wrappingWidth": 320}}}%%
+flowchart TD
+    A["abuelo(juan, Quien)<br/>¬abuelo(juan, Quien)"] -- "R4. θ₁ = {&nbsp;A/juan, N/Quien&nbsp;}" --> B["padre(juan, P), padre(P, Quien)<br/>¬padre(juan, P) ∨ ¬padre(P, Quien)"]
+    B -- "R1. θ₂ = {&nbsp;P/ana&nbsp;}" --> C["padre(ana, Quien)<br/>¬padre(ana, Quien)"]
+    B -- "R2. θ₃ = {&nbsp;P/pedro&nbsp;}" --> D["padre(pedro, Quien)<br/>¬padre(pedro, Quien)"]
+    C --> E(["falla<br/>no se resuelve con ninguna cláusula"])
+    D -- "R3. θ₄ = {&nbsp;Quien/luis&nbsp;}" --> F(["consulta vacía: □<br/>Quien = luis"])
+```
+
+El árbol de derivación **es** el árbol de refutación, nodo por nodo; lo que
+cambia es la notación de las etiquetas. Leído de izquierda a derecha, en el
+orden del recorrido de Prolog, el paso 1 de la tabla es el primer arco, la rama
+de R1 termina en el resolvente de θ₂, que no se resuelve con ninguna cláusula, y
+los pasos 2 y 3 son la rama de R2 hasta $\square$.
 
 ## 12.6 Lo que excede la lógica
 
@@ -538,6 +597,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | **resolución** | reemplazar un objetivo por el cuerpo de una cláusula cuya cabeza unifica con él |
 | **refutación** | probar una afirmación suponiendo su negación y derivando una contradicción |
 | **resolvente** | la disyunción que queda al resolver dos cláusulas; la cláusula vacía, $\square$, es la contradicción |
+| **árbol de refutación** | el árbol de derivación leído como resoluciones: cada nodo es un resolvente, cada arco un paso, y la consulta vacía de la hoja de éxito es la cláusula vacía $\square$ |
 
 ## Temas que se retoman
 

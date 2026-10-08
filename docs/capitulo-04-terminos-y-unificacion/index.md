@@ -27,7 +27,7 @@ Al terminar el capítulo, el lector puede:
   herramienta.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **0:35 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **0:40 h**.
     Resolver los 6 ejercicios marcados con ★: **1:40 h**.
     Resolver los 17 ejercicios del final: **5:25 h**.
 
@@ -390,6 +390,52 @@ recibida con el patrón escrito en la cláusula.
 `ficha(_, fecha(A, _, _), _)`, es un patrón: no interesan la mascota, el mes, el
 día ni el propietario; solo interesa el año. Cuando ese patrón unifica con una
 ficha concreta, `A` queda ligada al año y el resto se ignora.
+
+La consulta `?- registro(F), nacio_en(F, Anio).` recorre las tres fichas y
+extrae el año de cada una:
+
+```prolog
+?- registro(F), nacio_en(F, Anio).
+F = ficha(mascota(gato, felix), fecha(2021, 5, 3), ana),
+Anio = 2021 ;
+F = ficha(mascota(perro, rocco), fecha(2019, 11, 20), luis),
+Anio = 2019 ;
+F = ficha(mascota(gato, gaturro), fecha(2023, 2, 14), eva),
+Anio = 2023.
+```
+
+El diagrama siguiente muestra ese recorrido con la notación que define la
+[sección 5.2](../capitulo-05-como-responde-prolog/index.md#52-el-arbol-de-derivacion):
+cada nodo es lo que queda por probar, y cada flecha indica la cláusula empleada
+y los valores que tomaron las variables. Las cláusulas de `fichas.pl` se numeran
+en el orden del archivo:
+
+| | |
+|---|---|
+| R1 | `registro(ficha(mascota(gato, felix), fecha(2021, 5, 3), ana)).` |
+| R2 | `registro(ficha(mascota(perro, rocco), fecha(2019, 11, 20), luis)).` |
+| R3 | `registro(ficha(mascota(gato, gaturro), fecha(2023, 2, 14), eva)).` |
+| R4 | `especie(ficha(mascota(E, _), _, _), E).` |
+| R5 | `nombre_de(ficha(mascota(_, N), _, _), N).` |
+| R6 | `nacio_en(ficha(_, fecha(A, _, _), _), A).` |
+| R7 | `propietario_de(ficha(_, _, P), P).` |
+
+```mermaid
+flowchart TD
+    A["registro(F),<br/>nacio_en(F, Anio)"] -- "R1. θ₁ = {&nbsp;F/ficha(mascota(gato,&nbsp;felix), …)&nbsp;}" --> B["nacio_en(ficha(mascota(gato,&nbsp;felix),<br/>fecha(2021,&nbsp;5,&nbsp;3), ana), Anio)"]
+    A -- "R2. θ₃ = {&nbsp;F/ficha(mascota(perro,&nbsp;rocco), …)&nbsp;}" --> C["nacio_en(ficha(mascota(perro,&nbsp;rocco),<br/>fecha(2019,&nbsp;11,&nbsp;20), luis), Anio)"]
+    A -- "R3. θ₅ = {&nbsp;F/ficha(mascota(gato,&nbsp;gaturro), …)&nbsp;}" --> D["nacio_en(ficha(mascota(gato,&nbsp;gaturro),<br/>fecha(2023,&nbsp;2,&nbsp;14), eva), Anio)"]
+    B -- "R6. θ₂ = {&nbsp;Anio/2021&nbsp;}" --> S1(["consulta vacía<br/>F = ficha(mascota(gato,&nbsp;felix),<br/>fecha(2021,&nbsp;5,&nbsp;3), ana),<br/>Anio = 2021"])
+    C -- "R6. θ₄ = {&nbsp;Anio/2019&nbsp;}" --> S2(["consulta vacía<br/>F = ficha(mascota(perro,&nbsp;rocco),<br/>fecha(2019,&nbsp;11,&nbsp;20), luis),<br/>Anio = 2019"])
+    D -- "R6. θ₆ = {&nbsp;Anio/2023&nbsp;}" --> S3(["consulta vacía<br/>F = ficha(mascota(gato,&nbsp;gaturro),<br/>fecha(2023,&nbsp;2,&nbsp;14), eva),<br/>Anio = 2023"])
+```
+
+`registro/1` abre tres ramas, una por ficha. En cada una queda un solo
+objetivo, `nacio_en/2` sobre una ficha concreta, y la flecha de R6 lleva
+directamente a la consulta vacía con el año: como la cláusula no tiene cuerpo,
+no agrega ningún nodo propio, y todo el trabajo lo realiza la unificación de la
+cabeza. Para abreviar, las sustituciones muestran solo las variables de la
+consulta, con la ficha recortada; la ficha completa se lee en el nodo.
 
 !!! abstract "Plantilla 7 — Extraer un componente de un término"
     **Cuándo**: se dispone de un término con estructura y se necesita uno de sus

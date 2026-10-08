@@ -84,6 +84,61 @@ Tiene tres cláusulas: la lista vacía, el caso en que el primer elemento es
 imprescindible: sin ella, cada aparición de `gato` se resolvería por las dos
 cláusulas, y se obtendrían respuestas de más.
 
+```prolog
+?- cuantos_gatos([gato, perro, gato], N).
+N = 2 ;
+false.
+```
+
+El árbol de derivación muestra el trabajo de esa condición. Con las cláusulas
+numeradas en el orden del programa, y las copias de `N` renombradas (`N₁`,
+`N₂`, …) porque la consulta tiene su propia `N`:
+
+| | |
+|---|---|
+| R1 | `cuantos_gatos([], 0).` |
+| R2 | `cuantos_gatos([gato\|Resto], N) :- cuantos_gatos(Resto, Faltan), N is Faltan + 1.` |
+| R3 | `cuantos_gatos([Otro\|Resto], N) :- Otro \== gato, cuantos_gatos(Resto, N).` |
+
+El árbol está dibujado en dos partes por su altura; la primera llega hasta el
+segundo `gato`:
+
+```mermaid
+flowchart TD
+    A["cuantos_gatos([gato, perro, gato], N)"] -- "R2. θ₁ = {&nbsp;Resto₁/[perro, gato], N₁/N&nbsp;}" --> B["cuantos_gatos([perro, gato], Faltan₁),<br/>N is Faltan₁ + 1"]
+    B -- "R3. θ₂ = {&nbsp;Otro₂/perro, Resto₂/[gato], N₂/Faltan₁&nbsp;}" --> C["perro \== gato,<br/>cuantos_gatos([gato], Faltan₁),<br/>N is Faltan₁ + 1"]
+    C --> D["cuantos_gatos([gato], Faltan₁),<br/>N is Faltan₁ + 1"]
+    D --> V["⋮<br/>sigue en el árbol siguiente"]
+    A -- "R3. θ₈ = {&nbsp;Otro₁/gato, Resto₁/[perro, gato], N₁/N&nbsp;}" --> X1["gato \== gato,<br/>cuantos_gatos([perro, gato], N)"]
+    X1 --> F1(["falla"])
+    classDef abierto fill:none,stroke:none;
+    class V abierto;
+```
+
+El segundo árbol empieza en el último nodo del primero:
+
+```mermaid
+flowchart TD
+    D["cuantos_gatos([gato], Faltan₁),<br/>N is Faltan₁ + 1"]
+    D -- "R2. θ₃ = {&nbsp;Resto₃/[], N₃/Faltan₁&nbsp;}" --> E["cuantos_gatos([], Faltan₃),<br/>Faltan₁ is Faltan₃ + 1,<br/>N is Faltan₁ + 1"]
+    E -- "R1. θ₄ = {&nbsp;Faltan₃/0&nbsp;}" --> G["Faltan₁ is 0 + 1,<br/>N is Faltan₁ + 1"]
+    G -- "is. θ₅ = {&nbsp;Faltan₁/1&nbsp;}" --> H["N is 1 + 1"]
+    H -- "is. θ₆ = {&nbsp;N/2&nbsp;}" --> S(["consulta vacía<br/>N = 2"])
+    D -- "R3. θ₇ = {&nbsp;Otro₃/gato, Resto₃/[], N₃/Faltan₁&nbsp;}" --> X2["gato \== gato,<br/>cuantos_gatos([], Faltan₁),<br/>N is Faltan₁ + 1"]
+    X2 --> F2(["falla"])
+```
+
+En cada `gato`, las cabezas de R2 y de R3 unifican, y se abren dos ramas. La de
+R3 muere de inmediato en `gato \== gato`, una prueba predefinida que no se
+cumple: su arco no lleva número de cláusula, y la rama termina en una hoja de
+falla. En `perro` solo unifica R3, y la prueba `perro \== gato` se cumple: el
+objetivo desaparece de la consulta. Los dos `is` quedan pendientes a la derecha
+y se resuelven al cerrar el caso base, como en la
+[sección 7.4](index.md#74-contar-durante-el-recorrido). Las dos ramas de R3
+sobre un `gato` son las alternativas pendientes que explican el `;` y el
+`false.` del transcripto: el predicado tiene una sola respuesta, aunque el
+toplevel deba intentar esas ramas para confirmarlo.
+
 Como en la solución 8, `\==` supone que los elementos de la lista ya tienen
 valor: compara los términos tal como están escritos, y una variable sin valor se
 considera distinta de `gato`.
@@ -147,6 +202,28 @@ La primera cláusula elimina el elemento cuando es el primero de la lista. La
 segunda lo conserva y continúa la búsqueda. La condición `Otro \== X` garantiza
 que se elimine **la primera aparición** y no otra: sin ella, Prolog entregaría
 también las soluciones que eliminan las apariciones siguientes.
+
+```prolog
+?- sacar(a, [a, b, a], R).
+R = [b, a] ;
+false.
+```
+
+El árbol de derivación, con las dos cláusulas numeradas R1 y R2, muestra que la
+segunda `a` nunca llega a eliminarse. Las dos cabezas unifican con la consulta,
+pero la rama de R2 muere en la prueba `a \== a`, que no se cumple:
+
+```mermaid
+flowchart TD
+    A["sacar(a, [a, b, a], R)"] -- "R1. θ₁ = {&nbsp;X/a, Resto/[b, a], R/[b, a]&nbsp;}" --> S(["consulta vacía<br/>R = [b, a]"])
+    A -- "R2. θ₂ = {&nbsp;X/a, Otro/a, Resto/[b, a], R/[a|RestoR]&nbsp;}" --> B["a \== a,<br/>sacar(a, [b, a], RestoR)"]
+    B --> F(["falla"])
+```
+
+La rama de R2 es la alternativa pendiente que explica el `;` del transcripto;
+al pedir otra respuesta, la prueba falla y Prolog responde `false.`. Sin la
+condición, esa rama continuaría con `sacar(a, [b, a], RestoR)` y produciría
+`R = [a, b]`, la lista sin la segunda `a`.
 
 Este predicado está pensado para consultas en las que los elementos de la lista
 ya tienen valor. `\==` compara los términos tal como están escritos en ese
@@ -259,6 +336,35 @@ cumple la segunda línea de su encabezado: con la primera lista libre, la llamad
 recursiva recibe dos listas sin determinar y genera candidatos sin fin, de modo
 que `duplicar(L, [a, b])` no termina.
 
+El árbol de derivación de esa consulta, con las dos cláusulas del enunciado
+numeradas R1 y R2, lo muestra. `append/3` es predefinido: su arco no lleva
+número de cláusula, y cuando no tiene ninguna respuesta la rama termina en una
+hoja de falla:
+
+```mermaid
+%%{init: {"flowchart": {"rankSpacing": 30, "nodeSpacing": 25}}}%%
+flowchart TD
+    A["duplicar(L, [a, b])"] -- "R2. θ₁ = {&nbsp;L/[X|Resto], Nueva/[a, b]&nbsp;}" --> B["duplicar(Resto, Otros),<br/>append([X, X], Otros, [a, b])"]
+    B -- "R1. θ₂ = {&nbsp;Resto/[], Otros/[]&nbsp;}" --> C["append([X, X], [], [a, b])"]
+    C --> F1(["falla"])
+    B -- "R2. θ₃ = {&nbsp;Resto/[X₂|Resto₂], Nueva₂/Otros&nbsp;}" --> D["duplicar(Resto₂, Otros₂),<br/>append([X₂, X₂], Otros₂, Otros),<br/>append([X, X], Otros, [a, b])"]
+    D -- "R1. θ₄ = {&nbsp;Resto₂/[], Otros₂/[]&nbsp;}" --> E["append([X₂, X₂], [], Otros),<br/>append([X, X], Otros, [a, b])"]
+    E -- "append. θ₅ = {&nbsp;Otros/[X₂, X₂]&nbsp;}" --> G["append([X, X], [X₂, X₂], [a, b])"]
+    G --> F2(["falla"])
+    D -- "R2. θ₆ = {&nbsp;Resto₂/[X₃|Resto₃], Nueva₃/Otros₂&nbsp;}" --> V["⋮<br/>la rama no termina"]
+    classDef abierto fill:none,stroke:none;
+    class V abierto;
+```
+
+La llamada recursiva `duplicar(Resto, Otros)` recibe dos variables libres, y
+por eso admite las dos cláusulas en cada nivel: R1 cierra con listas vacías y
+R2 vuelve a plantear la misma consulta con variables nuevas, sin fin. El
+`append/3` que debía armar el resultado queda siempre a la derecha, y recién
+cuando una rama cierra puede comprobar que su lista no coincide con `[a, b]`:
+en la primera rama, `[X, X]` exige dos elementos iguales y `a` y `b` no lo
+son; en la segunda, la lista tendría cuatro elementos. La rama de R2 sigue
+produciendo candidatos más largos, y ninguno coincide.
+
 <!-- ejemplo: capitulo-07/soluciones.pl predicado: duplicar/2 consulta: duplicar([a, b], R). -->
 ```prolog
 %!  duplicar(+L, -R) is det.
@@ -279,6 +385,26 @@ R = [a, a, b, b].
 La cabeza `[X, X|Otros]` aporta los dos elementos de esta llamada y deja el
 resto sin determinar, que es exactamente lo que describe la [sección 7.5](index.md#75-construir-una-lista-durante-el-recorrido-de-otra).
 
+Con esta versión, la consulta inversa termina:
+
+```prolog
+?- duplicar(L, [a, a, b, b]).
+L = [a, b].
+```
+
+El árbol es una sola rama. La misma cabeza `[X, X|Otros]` que en el otro modo
+construye el resultado, aquí **desarma** el segundo argumento, de a dos
+elementos por nivel, y la primera lista se arma en la cabeza a partir de lo que
+desarma. En el último nodo R2 no abre arco, porque `[]` no unifica con
+`[X, X|Otros]`, y por eso la respuesta termina en punto:
+
+```mermaid
+flowchart TD
+    A["duplicar(L, [a, a, b, b])"] -- "R2. θ₁ = {&nbsp;L/[a|Resto], X/a, Otros/[b, b]&nbsp;}" --> B["duplicar(Resto, [b, b])"]
+    B -- "R2. θ₂ = {&nbsp;Resto/[b|Resto₂], X₂/b, Otros₂/[]&nbsp;}" --> C["duplicar(Resto₂, [])"]
+    C -- "R1. θ₃ = {&nbsp;Resto₂/[]&nbsp;}" --> S(["consulta vacía<br/>L = [a|Resto] = [a, b|Resto₂] = [a, b]"])
+```
+
 ## 14
 
 | Consulta | Resultado |
@@ -296,6 +422,31 @@ que produce particiones sin fin.
 La segunda consulta requiere una observación: responde `A = [a] ;` y recién al pedir otra
 respuesta contesta `false.` Que quede una alternativa abierta no significa que
 haya otra respuesta.
+
+<!-- contexto: capitulo-07/recorrer.pl -->
+```prolog
+?- pegar(A, [b], [a, b]).
+A = [a] ;
+false.
+```
+
+El árbol de derivación, con las dos cláusulas de `pegar/3` numeradas R1 y R2
+como en la [sección 7.5](index.md#75-construir-una-lista-durante-el-recorrido-de-otra),
+muestra esa alternativa. En la raíz solo unifica R2, porque R1 exigiría que
+`[b]` y `[a, b]` fueran la misma lista. En el segundo nodo unifican las dos: R1
+da la respuesta, y R2 queda pendiente; al pedir otra respuesta, esa rama llega
+a `pegar(RestoA₂, [b], [])`, donde ninguna cabeza unifica:
+
+```mermaid
+flowchart TD
+    A["pegar(A, [b], [a, b])"] -- "R2. θ₁ = {&nbsp;A/[a|RestoA], X/a, B/[b], RestoC/[b]&nbsp;}" --> B["pegar(RestoA, [b], [b])"]
+    B -- "R1. θ₂ = {&nbsp;RestoA/[], B₂/[b]&nbsp;}" --> S(["consulta vacía<br/>A = [a|RestoA] = [a]"])
+    B -- "R2. θ₃ = {&nbsp;RestoA/[b|RestoA₂], X₂/b, B₂/[b], RestoC₂/[]&nbsp;}" --> C["pegar(RestoA₂, [b], [])"]
+    C --> F(["falla"])
+```
+
+La alternativa abierta es una rama del árbol que todavía no se recorrió, no una
+respuesta: Prolog no puede saber que fallará hasta que la recorre.
 
 ## 15
 
@@ -337,7 +488,9 @@ La primera prueba es la que requiere más atención, porque se podría
 suponer que `sacar(a, [a, b, a], R)` tiene dos respuestas, una por cada `a`. No
 las tiene: la condición `Otro \== X` de la segunda cláusula impide que el
 recorrido saltee una aparición del elemento buscado, que es justamente lo que
-hace que se elimine **la primera**.
+hace que se elimine **la primera**. El árbol de derivación de esa consulta está
+en la [solución 8](#8): la rama que eliminaría la segunda `a` muere en
+`a \== a`.
 
 La tercera prueba documenta el caso límite: sobre la lista vacía no hay cláusula
 aplicable, y el predicado falla.

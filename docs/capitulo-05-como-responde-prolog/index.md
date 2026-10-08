@@ -101,6 +101,12 @@ Un **árbol de derivación** se construye de la siguiente manera:
 - una rama **falla** cuando el objetivo seleccionado no unifica con la cabeza de
   ninguna cláusula.
 
+Los diagramas de la
+[sección 3.2](../capitulo-03-reglas-y-conjunciones/index.md#32-que-prueba-prolog-y-en-que-orden)
+y la [sección 3.5](../capitulo-03-reglas-y-conjunciones/index.md#35-una-regla-que-produce-respuestas-de-mas)
+son árboles de derivación, leídos con estas mismas reglas; aquí la noción se
+define con precisión.
+
 ```mermaid
 flowchart TD
     A["abuelo(juan, Quien)"] -- "R4. θ₁ = {&nbsp;A/juan, N/Quien&nbsp;}" --> B["padre(juan, P),<br/>padre(P, Quien)"]

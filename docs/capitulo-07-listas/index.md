@@ -16,7 +16,7 @@ Al terminar el capítulo, el lector puede:
 - usar los predicados de listas predefinidos de Prolog, y explicar cómo están definidos.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **0:55 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:15 h**.
     Resolver los 7 ejercicios marcados con ★: **2:00 h**.
     Resolver los 18 ejercicios del final: **5:30 h**.
 
@@ -117,6 +117,33 @@ La enumeración termina en `false.` y no en punto: después de `eva` queda
 pendiente el recorrido del resto, que es `[]`, y ahí ninguna cláusula unifica.
 No indica que algo haya fallado, sino que se agotaron las alternativas.
 
+El árbol de derivación del [capítulo 5](../capitulo-05-como-responde-prolog/index.md#52-el-arbol-de-derivacion)
+muestra las tres respuestas y el `false.` final. Con el hecho numerado R1 y la
+regla R2, cada arco exhibe cómo la cabeza parte la lista: en R1, `[X|_]` liga
+`X` al primer elemento y `_` al resto; en R2, `[_|Resto]` descarta el primer
+elemento y deja la consulta sobre `Resto`. Cada uso de una cláusula emplea una
+copia con variables nuevas, que llevan un subíndice (`X₂`, `Resto₂`), como
+explica la [sección 6.2](../capitulo-06-recursion/index.md#62-caso-base-y-caso-recursivo);
+aquí también la copia del primer uso lleva subíndice (`X₁`), porque la consulta
+tiene su propia `X`:
+
+```mermaid
+flowchart TD
+    A["esta_en(X, [ana, luis, eva])"] -- "R1. θ₁ = {&nbsp;X/ana, X₁/ana, _/[luis, eva]&nbsp;}" --> S1(["1.ª respuesta<br/>X = ana"])
+    A -- "R2. θ₂ = {&nbsp;X₁/X, _/ana, Resto₁/[luis, eva]&nbsp;}" --> B["esta_en(X, [luis, eva])"]
+    B -- "R1. θ₃ = {&nbsp;X/luis, X₂/luis, _/[eva]&nbsp;}" --> S2(["2.ª respuesta<br/>X = luis"])
+    B -- "R2. θ₄ = {&nbsp;X₂/X, _/luis, Resto₂/[eva]&nbsp;}" --> C["esta_en(X, [eva])"]
+    C -- "R1. θ₅ = {&nbsp;X/eva, X₃/eva, _/[]&nbsp;}" --> S3(["3.ª respuesta<br/>X = eva"])
+    C -- "R2. θ₆ = {&nbsp;X₃/X, _/eva, Resto₃/[]&nbsp;}" --> D["esta_en(X, [])"]
+    D --> F(["falla"])
+```
+
+En cada nivel, R1 está a la izquierda y produce una respuesta, y R2 a la
+derecha reduce la lista en un elemento. Las tres hojas de éxito son las tres
+respuestas, en el orden en que aparecen de izquierda a derecha. El cuarto nodo,
+`esta_en(X, [])`, es el `false.` final: ni `[X|_]` ni `[_|Resto]` unifican con
+`[]`, y la rama falla sin aportar una respuesta.
+
 Conviene además observar que el predicado responde **una vez por cada aparición** del elemento en la lista:
 
 ```prolog
@@ -127,6 +154,19 @@ false.
 ```
 
 Hay dos demostraciones, una por cada `ana`, y por eso hay dos respuestas. No es un defecto en el predicado: cada respuesta corresponde a una manera diferente de satisfacer la consulta.
+
+El árbol tiene la misma forma que el anterior, con una hoja de éxito por cada
+`ana` y la misma hoja de falla sobre `[]`. La consulta no tiene variables, y
+por eso las dos hojas de éxito dicen `true`:
+
+```mermaid
+flowchart TD
+    A["esta_en(ana, [ana, ana])"] -- "R1. θ₁ = {&nbsp;X/ana, _/[ana]&nbsp;}" --> S1(["1.ª respuesta<br/>true"])
+    A -- "R2. θ₂ = {&nbsp;X/ana, _/ana, Resto/[ana]&nbsp;}" --> B["esta_en(ana, [ana])"]
+    B -- "R1. θ₃ = {&nbsp;X₂/ana, _/[]&nbsp;}" --> S2(["2.ª respuesta<br/>true"])
+    B -- "R2. θ₄ = {&nbsp;X₂/ana, _/ana, Resto₂/[]&nbsp;}" --> C["esta_en(ana, [])"]
+    C --> F(["falla"])
+```
 
 !!! abstract "Plantilla 9 — Recorrer una lista"
     **Cuándo**: se deben examinar los elementos de una lista, de a uno por vez.
@@ -189,6 +229,61 @@ true ;
 false.
 ```
 
+El árbol de esta consulta combina los dos predicados. Con las cláusulas
+numeradas en el orden del programa:
+
+| | |
+|---|---|
+| R1 | `esta_en(X, [X\|_]).` |
+| R2 | `esta_en(X, [_\|Resto]) :- esta_en(X, Resto).` |
+| R3 | `todos_estan([], _).` |
+| R4 | `todos_estan([X\|Resto], L) :- esta_en(X, L), todos_estan(Resto, L).` |
+
+Cada uso de R4 deja dos objetivos: la pertenencia del primer elemento, que se
+resuelve primero, y el recorrido del resto, que espera a la derecha. El
+subíndice de las variables numera las copias en el orden en que se usan. El
+árbol está dibujado en dos partes por su altura; la primera llega hasta la
+pertenencia de `ana`, y muestra completa la rama de la derecha, que recorre el
+resto de la lista buscando otra `ana`:
+
+```mermaid
+%%{init: {"flowchart": {"rankSpacing": 30, "nodeSpacing": 25}}}%%
+flowchart TD
+    A["todos_estan([ana, eva], [ana, luis, eva])"] -- "R4. θ₁ = {&nbsp;X/ana, Resto/[eva], L/[ana, luis, eva]&nbsp;}" --> B["esta_en(ana, [ana, luis, eva]),<br/>todos_estan([eva], [ana, luis, eva])"]
+    B -- "R1. θ₂ = {&nbsp;X₂/ana, _/[luis, eva]&nbsp;}" --> C["todos_estan([eva], [ana, luis, eva])"]
+    B -- "R2. θ₉ = {&nbsp;X₂/ana, _/ana, Resto₂/[luis, eva]&nbsp;}" --> P["esta_en(ana, [luis, eva]),<br/>todos_estan([eva], [ana, luis, eva])"]
+    C --> V["⋮<br/>sigue en el árbol siguiente"]
+    P -- "R2. θ₁₀ = {&nbsp;X₇/ana, _/luis, Resto₇/[eva]&nbsp;}" --> Q["esta_en(ana, [eva]),<br/>todos_estan([eva], [ana, luis, eva])"]
+    Q -- "R2. θ₁₁ = {&nbsp;X₈/ana, _/eva, Resto₈/[]&nbsp;}" --> R["esta_en(ana, []),<br/>todos_estan([eva], [ana, luis, eva])"]
+    R --> F2(["falla"])
+    classDef abierto fill:none,stroke:none;
+    class V abierto;
+```
+
+La rama de R1 continúa en el segundo árbol, que empieza en su primer nodo y
+sigue con la pertenencia de `eva`:
+
+```mermaid
+%%{init: {"flowchart": {"rankSpacing": 30, "nodeSpacing": 25}}}%%
+flowchart TD
+    C["todos_estan([eva], [ana, luis, eva])"]
+    C -- "R4. θ₃ = {&nbsp;X₃/eva, Resto₃/[], L₃/[ana, luis, eva]&nbsp;}" --> D["esta_en(eva, [ana, luis, eva]),<br/>todos_estan([], [ana, luis, eva])"]
+    D -- "R2. θ₄ = {&nbsp;X₄/eva, _/ana, Resto₄/[luis, eva]&nbsp;}" --> E["esta_en(eva, [luis, eva]),<br/>todos_estan([], [ana, luis, eva])"]
+    E -- "R2. θ₅ = {&nbsp;X₅/eva, _/luis, Resto₅/[eva]&nbsp;}" --> F["esta_en(eva, [eva]),<br/>todos_estan([], [ana, luis, eva])"]
+    F -- "R1. θ₆ = {&nbsp;X₆/eva, _/[]&nbsp;}" --> G["todos_estan([], [ana, luis, eva])"]
+    F -- "R2. θ₈ = {&nbsp;X₆/eva, _/eva, Resto₆/[]&nbsp;}" --> H["esta_en(eva, []),<br/>todos_estan([], [ana, luis, eva])"]
+    G -- "R3. θ₇ = {&nbsp;_/[ana, luis, eva]&nbsp;}" --> S(["consulta vacía<br/>true"])
+    H --> F1(["falla"])
+```
+
+La hoja de éxito se alcanza cuando `esta_en(eva, [eva])` cierra por R1 y
+`todos_estan([], …)` cierra por R3. El `;` y el `false.` del transcripto son
+las dos alternativas de `esta_en/2` que quedaron pendientes, en dos niveles
+distintos: la rama de R2 sobre `esta_en(eva, [eva])`, en el segundo árbol, y
+la rama de R2 sobre `esta_en(ana, [ana, luis, eva])`, en el primero. Las dos
+llegan a `esta_en(…, [])` y fallan; los subíndices de sus sustituciones, `θ₈`
+a `θ₁₁`, dicen que Prolog las recorre después de la respuesta.
+
 !!! abstract "Plantilla 11 — Todos los elementos cumplen"
     **Cuándo**: la condición se debe verificar sobre **todos** los elementos.
 
@@ -237,6 +332,49 @@ La lista vacía tiene cero elementos: es el caso base. Una lista con primer elem
 
 `is` se escribe **después** de la llamada recursiva, por la misma razón que en el [capítulo 6](../capitulo-06-recursion/index.md): es necesario que `Faltan` tenga valor para que `is` no dé un error.
 
+```prolog
+?- largo([ana, luis, eva], Cuantos).
+Cuantos = 3.
+```
+
+El árbol de derivación muestra esa razón. Con el hecho numerado R1 y la regla
+R2, cada uso de R2 deja un `is` pendiente a la derecha de la consulta, y los
+tres se resuelven de abajo hacia arriba cuando el caso base liga `Faltan₃` a
+`0`. Como en la [sección 6.6](../capitulo-06-recursion/index.md#66-recursion-que-produce-un-resultado),
+`is` es un objetivo predefinido: su arco no lleva número de cláusula, y la
+sustitución registra el valor que produce. El árbol es una sola rama, porque
+R1 no unifica con una lista no vacía y R2 no unifica con `[]`; por eso la
+respuesta termina en punto. Está dibujado en dos partes: el descenso, en el que
+la consulta crece, y el ascenso, en el que se reduce.
+
+```mermaid
+flowchart TD
+    A["largo([ana, luis, eva], Cuantos)"] -- "R2. θ₁ = {&nbsp;_/ana, Resto/[luis, eva], N/Cuantos&nbsp;}" --> B["largo([luis, eva], Faltan),<br/>Cuantos is Faltan + 1"]
+    B -- "R2. θ₂ = {&nbsp;_/luis, Resto₂/[eva], N₂/Faltan&nbsp;}" --> C["largo([eva], Faltan₂),<br/>Faltan is Faltan₂ + 1,<br/>Cuantos is Faltan + 1"]
+    C -- "R2. θ₃ = {&nbsp;_/eva, Resto₃/[], N₃/Faltan₂&nbsp;}" --> D["largo([], Faltan₃),<br/>Faltan₂ is Faltan₃ + 1,<br/>Faltan is Faltan₂ + 1,<br/>Cuantos is Faltan + 1"]
+    D --> V["⋮<br/>sigue en el árbol siguiente"]
+    classDef abierto fill:none,stroke:none;
+    class V abierto;
+```
+
+Hasta aquí la consulta crece: cada llamada agrega un `is` que no se puede
+evaluar todavía, porque su lado derecho tiene una variable sin valor. El
+segundo árbol empieza en el último nodo del primero:
+
+```mermaid
+flowchart TD
+    D["largo([], Faltan₃),<br/>Faltan₂ is Faltan₃ + 1,<br/>Faltan is Faltan₂ + 1,<br/>Cuantos is Faltan + 1"]
+    D -- "R1. θ₄ = {&nbsp;Faltan₃/0&nbsp;}" --> E["Faltan₂ is 0 + 1,<br/>Faltan is Faltan₂ + 1,<br/>Cuantos is Faltan + 1"]
+    E -- "is. θ₅ = {&nbsp;Faltan₂/1&nbsp;}" --> F["Faltan is 1 + 1,<br/>Cuantos is Faltan + 1"]
+    F -- "is. θ₆ = {&nbsp;Faltan/2&nbsp;}" --> G["Cuantos is 2 + 1"]
+    G -- "is. θ₇ = {&nbsp;Cuantos/3&nbsp;}" --> S(["consulta vacía<br/>Cuantos = 3"])
+```
+
+A partir del caso base, la consulta se reduce: cada `is` liga la variable del
+nivel anterior, y el último liga `Cuantos`. Es la lección de la
+[sección 6.6](../capitulo-06-recursion/index.md#66-recursion-que-produce-un-resultado)
+en su forma más simple: una sola rama, sin alternativas.
+
 ## 7.5 Construir una lista durante el recorrido de otra
 
 En los predicados anteriores, las listas eran datos de entrada. En el siguiente, una lista es el resultado: la concatenación de dos listas.
@@ -264,6 +402,25 @@ Cuando un predicado necesita saber qué lleva hecho para decidir el paso siguien
 ?- pegar([ana, luis], [eva], Todos).
 Todos = [ana, luis, eva].
 ```
+
+El árbol de derivación hace visible la construcción en la cabeza. Con el hecho
+numerado R1 y la regla R2, cada uso de R2 liga el resultado a una lista
+incompleta: `θ₁` liga `Todos` a `[ana|RestoC]`, `θ₂` liga `RestoC` a
+`[luis|RestoC₂]`, y recién `θ₃`, en el caso base, cierra `RestoC₂` con `[eva]`.
+La hoja compone las tres sustituciones para obtener la respuesta, como en la
+[sección 6.4](../capitulo-06-recursion/index.md#64-la-suma):
+
+```mermaid
+flowchart TD
+    A["pegar([ana, luis], [eva], Todos)"] -- "R2. θ₁ = {&nbsp;X/ana, RestoA/[luis], B/[eva], Todos/[ana|RestoC]&nbsp;}" --> B["pegar([luis], [eva], RestoC)"]
+    B -- "R2. θ₂ = {&nbsp;X₂/luis, RestoA₂/[], B₂/[eva], RestoC/[luis|RestoC₂]&nbsp;}" --> C["pegar([], [eva], RestoC₂)"]
+    C -- "R1. θ₃ = {&nbsp;B₃/[eva], RestoC₂/[eva]&nbsp;}" --> S(["consulta vacía<br/>Todos = [ana|RestoC] = [ana, luis|RestoC₂] = [ana, luis, eva]"])
+```
+
+En el segundo nodo ya existe `[ana|RestoC]`, un resultado parcial con el resto
+sin determinar; en el tercero, `[ana, luis|RestoC₂]`. Ninguna de las dos
+llamadas recursivas recibe ese resultado parcial como argumento: la recursión
+no puede consultarlo, que es la limitación señalada más arriba.
 
 !!! abstract "Plantilla 12 — Construir una lista durante el recorrido de otra"
     **Cuándo**: el resultado es una lista que se obtiene al recorrer otra.
@@ -305,6 +462,33 @@ false.
 
 Se obtienen **todas las particiones de la lista en dos partes**. No se escribió ningún predicado para particionar listas: es el mismo `pegar/3`, consultado en otro sentido.
 
+El árbol de derivación muestra de dónde salen las cuatro respuestas y por qué
+la consulta termina. Con las mismas R1 y R2 de la [sección 7.5](#75-construir-una-lista-durante-el-recorrido-de-otra),
+y las copias de `B` renombradas (`B₁`, `B₂`, …) porque la consulta tiene su
+propia `B`:
+
+```mermaid
+flowchart TD
+    A["pegar(A, B, [ana, luis, eva])"] -- "R1. θ₁ = {&nbsp;A/[], B₁/B, B/[ana, luis, eva]&nbsp;}" --> S1(["1.ª respuesta<br/>A = [],<br/>B = [ana, luis, eva]"])
+    A -- "R2. θ₂ = {&nbsp;A/[ana|RestoA₁], B₁/B,<br/>X₁/ana, RestoC₁/[luis, eva]&nbsp;}" --> B["pegar(RestoA₁, B, [luis, eva])"]
+    B -- "R1. θ₃ = {&nbsp;RestoA₁/[], B₂/B, B/[luis, eva]&nbsp;}" --> S2(["2.ª respuesta<br/>A = [ana|RestoA₁] = [ana],<br/>B = [luis, eva]"])
+    B -- "R2. θ₄ = {&nbsp;RestoA₁/[luis|RestoA₂], B₂/B,<br/>X₂/luis, RestoC₂/[eva]&nbsp;}" --> C["pegar(RestoA₂, B, [eva])"]
+    C -- "R1. θ₅ = {&nbsp;RestoA₂/[], B₃/B, B/[eva]&nbsp;}" --> S3(["3.ª respuesta<br/>A = [ana, luis|RestoA₂] = [ana, luis],<br/>B = [eva]"])
+    C -- "R2. θ₆ = {&nbsp;RestoA₂/[eva|RestoA₃], B₃/B,<br/>X₃/eva, RestoC₃/[]&nbsp;}" --> D["pegar(RestoA₃, B, [])"]
+    D -- "R1. θ₇ = {&nbsp;RestoA₃/[], B₄/B, B/[]&nbsp;}" --> S4(["4.ª respuesta<br/>A = [ana, luis, eva|RestoA₃] = [ana, luis, eva],<br/>B = []"])
+```
+
+En cada nivel, R1 está a la izquierda y produce una partición: `A` recibe lo
+recorrido hasta allí y `B`, el resto de la tercera lista. R2, a la derecha,
+pasa un elemento de la tercera lista a `A` y deja la consulta sobre una lista
+más corta. La lista que se recorre es la **tercera**, y por eso la consulta
+termina: en el último nodo, `pegar(RestoA₃, B, [])`, R2 no abre arco porque
+`[]` no unifica con `[X|RestoC]`, y después de la cuarta respuesta no queda
+nada por intentar. Ese intento sin arco es el `false.` del transcripto. El
+árbol tiene exactamente la forma del de `suma(A, B, s(s(cero)))` en la
+solución 11 del [capítulo 6](../capitulo-06-recursion/soluciones.md#11): la
+misma escalera de respuestas, sobre una lista en lugar de un número.
+
 De esta propiedad se derivan otras operaciones sin código adicional. Para determinar si una lista comienza con otra, se consulta si existe una lista que, concatenada a continuación de la segunda, produce la primera. Para obtener el último elemento, se consulta por una partición cuya segunda parte tenga un solo elemento.
 
 Esta propiedad es la razón por la que en Prolog conviene modelar un problema mediante relaciones antes que mediante secuencias de pasos.
@@ -332,6 +516,21 @@ false.
 
 La respuesta es una sola, pero la consulta deja una alternativa pendiente: las dos cláusulas aceptan la lista `[eva]`, y después de la primera respuesta queda por intentar la segunda. La [sección 16.3](../capitulo-16-rendimiento/index.md#163-indexacion) explica por qué y cómo se evita.
 
+El árbol lo muestra sin necesidad de esa explicación. Con el hecho numerado R1
+y la regla R2, los dos primeros nodos solo admiten R2, porque una lista de tres
+o de dos elementos no unifica con `[X]`; el tercero, `ultimo([eva], U)`, admite
+las dos cláusulas, y la rama de R2 llega a `ultimo([], U)`, donde ninguna
+cabeza unifica:
+
+```mermaid
+flowchart TD
+    A["ultimo([ana, luis, eva], U)"] -- "R2. θ₁ = {&nbsp;_/ana, Resto/[luis, eva], X/U&nbsp;}" --> B["ultimo([luis, eva], U)"]
+    B -- "R2. θ₂ = {&nbsp;_/luis, Resto₂/[eva], X₂/U&nbsp;}" --> C["ultimo([eva], U)"]
+    C -- "R1. θ₃ = {&nbsp;X₃/eva, U/eva&nbsp;}" --> S(["consulta vacía<br/>U = eva"])
+    C -- "R2. θ₄ = {&nbsp;_/eva, Resto₃/[], X₃/U&nbsp;}" --> D["ultimo([], U)"]
+    D --> F(["falla"])
+```
+
 `ultimo/2` también es una relación. Con la lista libre, enumera listas cada vez más largas que terminan en el elemento dado:
 
 ```prolog
@@ -340,6 +539,27 @@ L = [eva] ;
 L = [_, eva] ;
 L = [_, _, eva] ;
 ...
+```
+
+El árbol de esta consulta es el de `natural(N)` de la
+[sección 6.3](../capitulo-06-recursion/index.md#63-los-numeros-naturales-definidos-con-terminos),
+sobre listas: en cada nivel R1 produce una respuesta a la izquierda, y R2, a la
+derecha, agrega un elemento sin determinar y vuelve a plantear la consulta.
+La rama de R2 no termina nunca, y por eso la enumeración tampoco. A
+diferencia de la [sección 5.6](../capitulo-05-como-responde-prolog/index.md#56-ramas-infinitas),
+la rama infinita está a la derecha, y las respuestas se obtienen una por una
+antes de descender por ella:
+
+```mermaid
+flowchart TD
+    A["ultimo(L, eva)"] -- "R1. θ₁ = {&nbsp;L/[eva], X/eva&nbsp;}" --> S1(["1.ª respuesta<br/>L = [eva]"])
+    A -- "R2. θ₂ = {&nbsp;L/[_|Resto], X/eva&nbsp;}" --> B["ultimo(Resto, eva)"]
+    B -- "R1. θ₃ = {&nbsp;Resto/[eva], X₂/eva&nbsp;}" --> S2(["2.ª respuesta<br/>L = [_|Resto] = [_, eva]"])
+    B -- "R2. θ₄ = {&nbsp;Resto/[_|Resto₂], X₂/eva&nbsp;}" --> C["ultimo(Resto₂, eva)"]
+    C -- "R1. θ₅ = {&nbsp;Resto₂/[eva], X₃/eva&nbsp;}" --> S3(["3.ª respuesta<br/>L = [_, _|Resto₂] = [_, _, eva]"])
+    C -- "R2. θ₆ = {&nbsp;Resto₂/[_|Resto₃], X₃/eva&nbsp;}" --> D["⋮<br/>la rama no termina"]
+    classDef abierto fill:none,stroke:none;
+    class D abierto;
 ```
 
 !!! warning "Usar una relación en varios sentidos tiene un límite"

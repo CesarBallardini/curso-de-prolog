@@ -26,7 +26,7 @@ Al terminar el capítulo, el lector puede:
 - escribir una prueba que especifique las respuestas esperadas de un predicado.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **0:55 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:10 h**.
     Resolver los 6 ejercicios marcados con ★: **1:55 h**.
     Resolver los 15 ejercicios del final: **4:45 h**.
 
@@ -119,6 +119,53 @@ cuando retrocedió al primer objetivo, `Que` **dejó de estar ligada** a
 `dibujar`. Esta operación se denomina *desligar* la variable, y garantiza que el
 intento siguiente comience sin valores previos.
 
+Esa búsqueda se puede dibujar. El diagrama tiene pocas reglas de lectura, y las
+mismas sirven para todos los que aparecen en el curso.
+
+!!! note "Cómo leer el diagrama"
+    - Cada **nodo** es lo que queda por probar en ese momento: la raíz es la
+      consulta completa, y cada objetivo ocupa una línea.
+    - Cada **flecha** indica qué cláusula se usó, numerada R1, R2, … en una
+      tabla, y la **sustitución** θ, que registra el valor que toma cada
+      variable: `θ₁ = { Que/dibujar }` se lee "`Que` toma el valor `dibujar`".
+      Las sustituciones se numeran en el orden en que Prolog las produce.
+    - Una rama que llega a la **consulta vacía** —no queda nada por probar— es
+      una respuesta, y la hoja la muestra.
+    - Una rama cuyo primer objetivo no unifica con ninguna cláusula termina en
+      **falla**.
+
+    Prolog recorre el diagrama de arriba hacia abajo y de izquierda a derecha;
+    retroceder es pasar a la rama vecina. Un objetivo predefinido, como el
+    `\==` de la [sección 3.5](#35-una-regla-que-produce-respuestas-de-mas), no
+    emplea ninguna cláusula, y su flecha no lleva número. Este diagrama es el
+    **árbol de derivación**, que la
+    [sección 5.2](../capitulo-05-como-responde-prolog/index.md#52-el-arbol-de-derivacion)
+    define con precisión.
+
+Los seis hechos de `gusta/2`, numerados en el orden en que están escritos:
+
+| | |
+|---|---|
+| R1 | `gusta(juan, futbol).` |
+| R2 | `gusta(ana, prolog).` |
+| R3 | `gusta(ana, futbol).` |
+| R4 | `gusta(luis, futbol).` |
+| R5 | `gusta(eva, prolog).` |
+| R6 | `gusta(sofia, dibujar).` |
+
+La consulta que falla tiene una sola rama:
+
+```mermaid
+flowchart TD
+    A["gusta(sofia, Que),<br/>gusta(ana, Que)"] -- "R6. θ₁ = {&nbsp;Que/dibujar&nbsp;}" --> B["gusta(ana, dibujar)"]
+    B --> F(["falla"])
+```
+
+El único hecho que unifica con `gusta(sofia, Que)` es R6. Con `Que` ligada a
+`dibujar`, lo que queda por probar es `gusta(ana, dibujar)`, que no unifica con
+ninguna cabeza: la rama falla. No hay otra rama a la que retroceder, y por eso
+la respuesta es `false.`
+
 ### Una consulta que tiene éxito
 
 Se retoma la consulta `?- gusta(ana, Que), gusta(luis, Que).`
@@ -137,6 +184,22 @@ Se retoma la consulta `?- gusta(ana, Que), gusta(luis, Que).`
    Ese hecho está en el programa.
 5. Los dos objetivos se cumplen simultáneamente. Prolog responde `Que = futbol`.
 
+Los cinco pasos son el recorrido de este árbol:
+
+```mermaid
+flowchart TD
+    A["gusta(ana, Que),<br/>gusta(luis, Que)"] -- "R2. θ₁ = {&nbsp;Que/prolog&nbsp;}" --> B["gusta(luis, prolog)"]
+    A -- "R3. θ₂ = {&nbsp;Que/futbol&nbsp;}" --> C["gusta(luis, futbol)"]
+    B --> F(["falla"])
+    C -- "R4. θ₃ = {&nbsp;}" --> S(["consulta vacía<br/>Que = futbol"])
+```
+
+Dos hechos unifican con el primer objetivo, R2 y R3, y por eso de la raíz
+salen dos ramas. Los pasos 1 y 2 son la rama de la izquierda, que falla; el
+paso 3 es el pasaje a la rama de la derecha; los pasos 4 y 5 son esa rama, que
+llega a la consulta vacía. La sustitución `θ₃` está vacía porque
+`gusta(luis, futbol)` ya no tiene variables cuando unifica con R4.
+
 El paso 3 es el fundamental. Cuando un objetivo falla, la ejecución no termina:
 Prolog retrocede al objetivo anterior e intenta la alternativa siguiente. Es el
 **backtracking** presentado en el [capítulo 1](../capitulo-01-la-primera-hora/index.md), y se lo puede nombrar con los
@@ -146,7 +209,9 @@ diagrama.
 
 El retroceso también deshace las ligaduras: al volver al paso 1, `Que` deja de
 estar ligada a `prolog`. El valor no se conserva; la variable vuelve a estar
-libre hasta que el primer objetivo la ligue nuevamente.
+libre hasta que el primer objetivo la ligue nuevamente. En el árbol, la ligadura
+`Que/prolog` pertenece a la rama abandonada: la rama de la derecha parte de la
+raíz, donde `Que` está libre, y no conserva nada de la otra.
 
 ### El orden no cambia la respuesta, pero sí el trabajo realizado
 
@@ -157,10 +222,18 @@ Si se invierte el orden de los dos objetivos, la respuesta es la misma:
 Que = futbol.
 ```
 
-Lo que cambia es la cantidad de búsqueda necesaria. A luis le gusta una sola
-cosa, de modo que comenzar por él deja menos alternativas por explorar. Con seis
-hechos la diferencia es imperceptible; en programas de mayor tamaño puede
-determinar que una consulta termine en un tiempo razonable o que no termine. El
+```mermaid
+flowchart TD
+    A["gusta(luis, Que),<br/>gusta(ana, Que)"] -- "R4. θ₁ = {&nbsp;Que/futbol&nbsp;}" --> B["gusta(ana, futbol)"]
+    B -- "R3. θ₂ = {&nbsp;}" --> S(["consulta vacía<br/>Que = futbol"])
+```
+
+Lo que cambia es la cantidad de búsqueda necesaria, y el árbol la mide: tres
+nodos y una sola rama, frente a los cinco nodos y las dos ramas del árbol
+anterior. A luis le gusta una sola cosa, de modo que comenzar por él deja menos
+alternativas por explorar. Con seis hechos la diferencia es imperceptible; en
+programas de mayor tamaño puede determinar que una consulta termine en un
+tiempo razonable o que no termine. El
 [capítulo 16](../capitulo-16-rendimiento/index.md) trata este tema.
 
 ## 3.3 Reglas
@@ -217,6 +290,29 @@ de ana y también de pedro: son **dos demostraciones distintas de la misma
 conclusión**, y Prolog entrega una respuesta por cada una. No elimina
 duplicados ni verifica si una respuesta ya fue entregada.
 
+El árbol lo muestra con una hoja por demostración. Las cláusulas de `reglas.pl`
+se numeran en el orden del archivo: los tres hechos de `varon/1` son R1 a R3
+—`varon(pedro)` es R2—, los cuatro de `mujer/1` R4 a R7, los cuatro de
+`padre/2` R8 a R11 —`padre(juan, ana)` es R8— y los tres de `madre/2` R12 a R14
+—`madre(marta, ana)` es R12—. La regla va a continuación:
+
+| | |
+|---|---|
+| R15 | `es_padre(P) :- padre(P, _).` |
+
+```mermaid
+flowchart TD
+    A["es_padre(Quien)"] -- "R15. θ₁ = {&nbsp;P/Quien&nbsp;}" --> B["padre(Quien, _)"]
+    B -- "R8. θ₂ = {&nbsp;Quien/juan, _/ana&nbsp;}" --> S1(["consulta vacía<br/>Quien = juan"])
+    B -- "R9. θ₃ = {&nbsp;Quien/juan, _/pedro&nbsp;}" --> S2(["consulta vacía<br/>Quien = juan"])
+    B -- "R10. θ₄ = {&nbsp;Quien/pedro, _/luis&nbsp;}" --> S3(["consulta vacía<br/>Quien = pedro"])
+    B -- "R11. θ₅ = {&nbsp;Quien/pedro, _/eva&nbsp;}" --> S4(["consulta vacía<br/>Quien = pedro"])
+```
+
+La regla reemplaza el objetivo por su cuerpo, y `padre(Quien, _)` unifica con
+los cuatro hechos: cuatro ramas, cuatro hojas de éxito, cuatro respuestas. Dos
+de las hojas dicen `Quien = juan`, y el árbol no las distingue de las demás.
+
 Este comportamiento es general: la cantidad de respuestas no es la cantidad de
 soluciones distintas, sino la cantidad de demostraciones. Es posible eliminar
 los duplicados, pero requiere herramientas que se presentan en el [capítulo 17](../capitulo-17-todas-las-soluciones/index.md).
@@ -241,7 +337,33 @@ progenitor(P, H) :-
 
 P es progenitor de H si es su padre, **o** si es su madre. Prolog evalúa las
 cláusulas en el orden en que están escritas: cuando se solicita otra respuesta
-con `;`, evalúa la segunda.
+con `;`, evalúa la segunda. Si la primera no produce ninguna, pasa a la segunda
+por sí solo. Nadie figura como padre de sofia, y la respuesta llega por la
+segunda cláusula:
+
+```prolog
+?- progenitor(Quien, sofia).
+Quien = eva.
+```
+
+Con las dos cláusulas numeradas a continuación de las de `reglas.pl`:
+
+| | |
+|---|---|
+| R16 | `progenitor(P, H) :- padre(P, H).` |
+| R17 | `progenitor(P, H) :- madre(P, H).` |
+
+```mermaid
+flowchart TD
+    A["progenitor(Quien, sofia)"] -- "R16. θ₁ = {&nbsp;P/Quien, H/sofia&nbsp;}" --> B["padre(Quien, sofia)"]
+    A -- "R17. θ₂ = {&nbsp;P/Quien, H/sofia&nbsp;}" --> C["madre(Quien, sofia)"]
+    B --> F(["falla"])
+    C -- "R14. θ₃ = {&nbsp;Quien/eva&nbsp;}" --> S(["consulta vacía<br/>Quien = eva"])
+```
+
+Dos cláusulas son dos ramas desde la raíz. La de R16 falla, porque
+`padre(Quien, sofia)` no unifica con ningún hecho; la de R17 llega a la
+consulta vacía con `madre(eva, sofia)`. Así se dibuja una disyunción.
 
 Esta es la forma de expresar una disyunción en Prolog, y ya se usó en los
 capítulos anteriores: en el [capítulo 1](../capitulo-01-la-primera-hora/index.md), `etapa/2` tenía tres cláusulas, una por
@@ -437,6 +559,28 @@ regla. Prolog responde de acuerdo con lo que el programa expresa, no con la
 intención de quien lo escribió; la mayor parte de los errores proviene de esa
 diferencia.
 
+En el árbol, el mismo hecho aparece en dos flechas consecutivas. En
+`hermana.pl`, los hechos de `mujer/1` son R1 a R4 —`mujer(ana)` es R2—, los de
+`padre/2` R5 a R8 —`padre(juan, ana)` es R5 y `padre(juan, pedro)` es R6— y la
+regla:
+
+| | |
+|---|---|
+| R9 | `hermana(A, B) :- mujer(A), padre(P, A), padre(P, B).` |
+
+```mermaid
+flowchart TD
+    A["hermana(ana, Quien)"] -- "R9. θ₁ = {&nbsp;A/ana, B/Quien&nbsp;}" --> B["mujer(ana),<br/>padre(P, ana),<br/>padre(P, Quien)"]
+    B -- "R2. θ₂ = {&nbsp;}" --> C["padre(P, ana),<br/>padre(P, Quien)"]
+    C -- "R5. θ₃ = {&nbsp;P/juan&nbsp;}" --> D["padre(juan, Quien)"]
+    D -- "R5. θ₄ = {&nbsp;Quien/ana&nbsp;}" --> S1(["consulta vacía<br/>Quien = ana"])
+    D -- "R6. θ₅ = {&nbsp;Quien/pedro&nbsp;}" --> S2(["consulta vacía<br/>Quien = pedro"])
+```
+
+R5 resuelve `padre(P, ana)` y, en la flecha siguiente de la rama izquierda,
+también `padre(juan, Quien)`: es la respuesta `Quien = ana`. La rama de R6 es
+la respuesta esperada.
+
 La solución es escribir la condición de manera explícita:
 
 <!-- ejemplo: capitulo-03/hermana.pl predicado: hermana_de_verdad/2 consulta: hermana_de_verdad(ana, Quien). -->
@@ -460,6 +604,30 @@ Quien = pedro.
 deliberada: en ese punto las dos variables ya tienen valor, y `\==` solo compara
 los términos tal como están en el momento de la llamada. El efecto de ubicarlo
 antes, cuando las variables todavía están libres, se trata en el [capítulo 10](../capitulo-10-negacion-como-falla/index.md).
+
+Con la regla corregida como R10, el árbol tiene un objetivo más en cada nodo, y
+la rama de `Quien = ana` termina en una comparación que no se cumple:
+
+| | |
+|---|---|
+| R10 | `hermana_de_verdad(A, B) :- mujer(A), padre(P, A), padre(P, B), A \== B.` |
+
+```mermaid
+flowchart TD
+    A["hermana_de_verdad(ana, Quien)"] -- "R10. θ₁ = {&nbsp;A/ana, B/Quien&nbsp;}" --> B["mujer(ana),<br/>padre(P, ana),<br/>padre(P, Quien),<br/>ana \== Quien"]
+    B -- "R2. θ₂ = {&nbsp;}" --> C["padre(P, ana),<br/>padre(P, Quien),<br/>ana \== Quien"]
+    C -- "R5. θ₃ = {&nbsp;P/juan&nbsp;}" --> D["padre(juan, Quien),<br/>ana \== Quien"]
+    D -- "R5. θ₄ = {&nbsp;Quien/ana&nbsp;}" --> E["ana \== ana"]
+    D -- "R6. θ₅ = {&nbsp;Quien/pedro&nbsp;}" --> G["ana \== pedro"]
+    E --> F(["falla"])
+    G --> S(["consulta vacía<br/>Quien = pedro"])
+```
+
+`\==` es un objetivo **predefinido**: no emplea ninguna cláusula del programa,
+y por eso su flecha no lleva número ni sustitución. Si la comparación se cumple,
+el objetivo desaparece de la consulta; si no, la rama falla. `ana \== ana` no se
+cumple, y la primera rama se cierra; `ana \== pedro` sí, y la segunda llega a la
+consulta vacía.
 
 !!! abstract "Plantilla 6 — Exigir que dos valores sean distintos"
     **Cuándo**: una regla usa dos veces la misma relación, y ambos usos pueden
@@ -637,6 +805,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | **cláusula** | un hecho o una regla; toda unidad terminada en punto |
 | **desligar** | deshacer la ligadura de una variable al retroceder |
 | **backtracking** | retroceder al objetivo anterior e intentar la alternativa siguiente |
+| **árbol de derivación** | el diagrama de la búsqueda: cada nodo es lo que queda por probar, cada flecha la cláusula usada y su sustitución, cada hoja una respuesta o una falla. Lo define el [capítulo 5](../capitulo-05-como-responde-prolog/index.md) |
 | `begin_tests/1`, `end_tests/1` | delimitan un conjunto de pruebas |
 | `test/2` con `all`, `[fail]`, `[nondet]` | especifican el resultado esperado de cada prueba |
 | `run_tests/0` | ejecuta las pruebas cargadas |
