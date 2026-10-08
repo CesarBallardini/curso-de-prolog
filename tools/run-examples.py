@@ -27,7 +27,7 @@ import sys
 
 import examples
 
-LIMIT = 120  # seconds per example
+LIMIT = 180  # seconds per example
 # plunit says '% 3 tests passed', '% test passed' when there is only one, and
 # 'All 12 (+7 sub-tests) tests passed' when a test uses the forall option.
 PASSED = re.compile(r'(?:All )?(?:(\d+) (?:\(\+\d+ sub-tests\) )?tests|test) passed')

@@ -105,7 +105,7 @@ dar_de_baja(Legajo, Materia) :-
 
 %!  requisitos_de(+Materia:atom, -Requisitos:list(atom)) is det.
 %
-%   Requisitos son todas las materias que hay que aprobar antes de cursar
+%   Requisitos son todas las materias que se deben aprobar antes de cursar
 %   Materia, directa o indirectamente, en orden y sin repetidos. El resultado
 %   se guarda la primera vez que se calcula.
 requisitos_de(Materia, Requisitos) :-

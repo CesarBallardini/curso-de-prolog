@@ -320,6 +320,7 @@ nav:
           - Soluciones: capitulo-48-proyecto-circuitos-logicos/soluciones.md
           - Verificar con library(clpb): capitulo-48-proyecto-circuitos-logicos/verificacion.md
           - Circuitos secuenciales: capitulo-48-proyecto-circuitos-logicos/secuenciales.md
+          - Los productos como vectores de signos: capitulo-48-proyecto-circuitos-logicos/vectores.md
           - Compuertas hechas con transistores: capitulo-48-proyecto-circuitos-logicos/transistores.md
       - "Capítulo 49 — Proyecto: diagnóstico por abducción":
           - capitulo-49-proyecto-diagnostico-abduccion/index.md

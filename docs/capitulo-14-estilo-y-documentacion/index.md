@@ -101,7 +101,7 @@ I necesitaba.
 | `?` | puede llegar ligado o libre | los argumentos de `padre/2` |
 | `@` | no se instancia más de lo que llega | los argumentos de `mismo_termino/2` |
 | `:` | es un objetivo o un predicado que se va a llamar | el argumento de `once/1` |
-| `!` | es un término que el predicado modifica | se usa en la parte III |
+| `!` | es un término que el predicado modifica | no se usa en el curso |
 
 La diferencia entre `-` y `--` es la que el [capítulo 9](../capitulo-09-backtracking-y-corte/index.md) encontró en los
 predicados con corte rojo. Un argumento `-` puede

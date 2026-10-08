@@ -276,6 +276,13 @@ llegó el cumpleaños. Los pares `Mes-Dia` se comparan con el orden estándar de
 la [sección 22.2](../capitulo-22-estructuras-de-datos-de-la-biblioteca/index.md#222-el-orden-estandar): primero el mes, después el día. El cálculo no
 necesita timestamps.
 
+El encabezado declara `+Nacimiento` y `+Fecha` porque el cálculo necesita las
+dos fechas completas: con una libre, `A2 - A1` produce un error de
+instanciación, y el predicado no genera fechas. `-Edad:integer` porque la edad
+es una diferencia de años enteros; si llega ligada, el predicado la calcula y
+la compara. El determinismo es `det`: el condicional elige una sola rama, y
+para dos fechas dadas la respuesta es una sola.
+
 ## 9
 
 <!-- ejemplo: capitulo-28/soluciones.pl predicado: proximo_habil/2 consulta: edad_en(date(2005, 10, 3), date(2026, 9, 25), Edad). -->

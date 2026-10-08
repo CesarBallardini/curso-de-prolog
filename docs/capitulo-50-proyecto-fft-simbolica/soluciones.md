@@ -23,7 +23,7 @@ Con $k = 3$ y $n = 4$, el primer nivel evalúa los polinomios de índices
 `[0, 2]` y `[1, 3]` en $\omega^{6 \bmod 4} = \omega^2$, y multiplica el
 segundo por `w(3)`. La simplificación es de abajo hacia arriba. En las dos
 sumas internas, `a(0) + w(2) * a(2)` y `a(1) + w(2) * a(3)`, se aplica la
-tercera regla de `raiz/3` con $K = 2 = n/2$: pasan a ser restas con
+tercera cláusula de `raiz/3` con $K = 2 = n/2$: pasan a ser restas con
 `w(0) * ...`, y la segunda regla y `regla(1 * X, X)` del
 [capítulo 32](../capitulo-32-inspeccion-de-terminos/index.md) eliminan el producto. En la suma externa, `w(3)` tiene
 $3 \geq 2$: la misma regla la convierte en la resta con `w(1)`, que

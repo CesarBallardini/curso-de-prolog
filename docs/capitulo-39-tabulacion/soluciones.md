@@ -80,12 +80,13 @@ tablas(N) :-
 ```
 
 ```prolog
-?- findall(Y, camino_der(a, Y), Ys), tablas(T).
+?- findall(Y, camino_der(a, Y), Ys), msort(Ys, Ordenadas), tablas(T).
 Ys = [b, a, d, c],
+Ordenadas = [a, b, c, d],
 T = 4.
 ```
 
-Las respuestas son las mismas que las de `camino/2`, en otro orden. La
+Las respuestas ordenadas son las mismas que las de `camino/2`. La
 recursión a la derecha llama a `camino_der(b, Y)`, `camino_der(c, Y)` y
 `camino_der(d, Y)`, cada una con su tabla, y cuando el ciclo vuelve a
 `camino_der(a, Y)` encuentra la variante en curso y consume su tabla: cuatro
@@ -510,9 +511,10 @@ alcanza_fijo(X, Y) :-
 ```
 
 ```prolog
-?- assertz(enlace(c, a)), findall(Y, alcanza(c, Y), I1), findall(Y, alcanza_fijo(c, Y), F1), retract(enlace(a, b)), findall(Y, alcanza(c, Y), I2), findall(Y, alcanza_fijo(c, Y), F2).
+?- assertz(enlace(c, a)), findall(Y, alcanza(c, Y), I1), msort(I1, Inc1), findall(Y, alcanza_fijo(c, Y), F1), msort(F1, Fijo1), retract(enlace(a, b)), findall(Y, alcanza(c, Y), I2), msort(I2, Inc2), findall(Y, alcanza_fijo(c, Y), F2), msort(F2, Fijo2).
 I1 = F1, F1 = F2, F2 = [b, c, a],
-I2 = [a].
+Inc1 = Fijo1, Fijo1 = Fijo2, Fijo2 = [a, b, c],
+I2 = Inc2, Inc2 = [a].
 ```
 
 Después de agregar el enlace de c a a, las dos consultas dan a, b y c: la

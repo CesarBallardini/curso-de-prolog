@@ -428,6 +428,33 @@ corte verde después de un caso que ya se decidió, o un `once/1` en el borde
 que corre en espacio constante: `memberchk/2` equivale a `member/2` seguido
 de un corte.
 
+`todos_estan/2` de la [sección 16.4](#164-puntos-de-eleccion-que-cuestan) se corrige así sin cambiar
+`esta_en/2`: la llamada va dentro de `once/1`, que conserva la primera
+respuesta y descarta las alternativas que esa llamada dejó.
+
+<!-- ejemplo: capitulo-16/indexacion.pl predicado: todos_estan_once/2 consulta: todos_estan_once([a, b], [a, b, c]). -->
+```prolog
+%!  todos_estan_once(+Buscados:list, +L:list) is semidet.
+%
+%   La misma relación con esta_en/2 dentro de once/1: el corte queda en el
+%   borde de la llamada, y esta_en/2 no deja alternativas pendientes.
+todos_estan_once([], _).
+todos_estan_once([X|Resto], L) :-
+    once(esta_en(X, L)),
+    todos_estan_once(Resto, L).
+```
+
+```prolog
+?- todos_estan_once([a, b], [a, b, c]).
+true.
+```
+
+Con la medición de la [sección 16.4](#164-puntos-de-eleccion-que-cuestan), `todos_estan_once(B, [a, b])`
+sobre 300 000 copias de `a` termina con 0 MB adicionales de pila, como
+`todos_estan_chk/2` y a diferencia de `todos_estan/2`; con un millón de copias
+y 64 MB de pila, termina sin error. El corte explícito que hace lo mismo es el
+tema del ejercicio 5.
+
 El corte no ahorra nada cuando no hay alternativas: `ultimo_indexado/2` no lo
 necesita, porque la indexación ya descarta la otra cláusula. Antes de agregar
 un corte por rendimiento conviene comprobar, con una prueba sin `nondet`, que

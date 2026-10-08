@@ -374,11 +374,18 @@ las 5 040 prioridades posibles del proyecto: ninguna baja de 33.
 En `casa` la misma prioridad `orden` da 28, que es el óptimo. La
 planificación por lista es rápida y muchas veces buena, pero no puede
 esperar a propósito, y no sabe cuánto se aleja del óptimo en cada caso.
-Ronald Graham (1966), que estudió este método con procesadores
-idénticos, acotó cuánto puede variar: con n procesadores, cambiar la lista
-de prioridades no alarga el calendario más que 2 − 1/n veces el de la
-mejor lista. En `coffman` todas las listas dan 33, y el óptimo de 24 está
-fuera de su alcance, porque exige tiempo ocioso.
+Ronald Graham, que estudió este método con procesadores idénticos,
+demostró en 1966 un teorema que acota cuánto puede variar: con n
+procesadores, cambiar la lista de prioridades no alarga el calendario más
+que 2 − 1/n veces el de la mejor lista. El teorema vale para todo
+proyecto, y su demostración está en el artículo citado en las
+referencias; el capítulo no la reproduce. Los programas del capítulo
+solo muestran casos que la respetan: en `coffman` las 5 040 listas del
+ejercicio 2 dan la misma duración, y el peor ejemplo de la página de las
+anomalías se alarga 16/12, menos que 5/3. Ver la cota cumplida en los
+ejemplos no es una prueba: cubre esos casos, no todos.
+En `coffman` todas las listas dan 33, y el óptimo de 24 está fuera de su
+alcance, porque exige tiempo ocioso.
 
 !!! question "Actividad"
     Antes de ejecutarlo, armar a mano el calendario de `coffman` con la

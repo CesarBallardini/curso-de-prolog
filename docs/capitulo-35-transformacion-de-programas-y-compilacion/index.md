@@ -178,8 +178,8 @@ no cumpla.
     escritos en una forma cómoda de leer pero distinta de la que conviene
     consultar.
 
-    **Versión ingenua.** Hacer ese trabajo en cada llamada; o escribir a mano
-    la forma expandida en todos los lugares donde se usa.
+    **Versión ingenua.** Hacer ese trabajo en cada llamada; o escribir de
+    manera explícita la forma expandida en todos los lugares donde se usa.
 
     **Patrón.** Escribir la forma cómoda y un gancho, `term_expansion/2`
     para los términos del programa o `goal_expansion/2` para los objetivos
@@ -591,8 +591,8 @@ efectos laterales. Por eso el control despliega `pruebas//1` y
     de una estructura que no cambia: los cuerpos de las cláusulas, las
     condiciones de las reglas.
 
-    **Versión ingenua.** Interpretar siempre; o escribir a mano un compilador
-    aparte, que hay que mantener de acuerdo con el intérprete.
+    **Versión ingenua.** Interpretar siempre; o escribir aparte un compilador
+    propio, que hay que mantener de acuerdo con el intérprete.
 
     **Patrón.** Evaluar parcialmente el intérprete respecto del programa: un
     evaluador parcial despliega las llamadas del intérprete cuyo argumento de

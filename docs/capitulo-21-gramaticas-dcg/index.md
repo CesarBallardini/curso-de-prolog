@@ -30,7 +30,7 @@ Al terminar el capítulo, el lector puede:
 !!! info "Tiempo estimado"
     Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:10 h**.
     Resolver los 7 ejercicios marcados con ★: **2:28 h**.
-    Resolver los 16 ejercicios del final: **5:15 h**.
+    Resolver los 17 ejercicios del final: **5:21 h**.
 
 ## 21.1 Una gramática es un conjunto de cláusulas
 
@@ -630,6 +630,9 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 16. **(3)** Cuando un texto no es un comando pero empieza con la palabra de uno,
     como «inscribir 104», `ejecutar/2` debe responder `uso(Ejemplo)`, con un
     comando correcto que empieza con esa palabra, generado por la gramática.
+17. **(1)** Escribir `empieza_con_mayuscula//0`, que se cumple si el próximo
+    código de la entrada es una letra mayúscula, sin consumirlo, con
+    `siguiente//1` y `code_type/2` con la clase `upper`.
 
 ## Resumen
 
@@ -652,7 +655,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 
 | Tema | Se retoma en |
 |---|---|
-| Ordenar los resultados de un informe con pares y `sort/4` | [capítulo 22](../capitulo-22-estructuras-de-datos-de-la-biblioteca/index.md) |
 | Leer un archivo con una gramática: `phrase_from_file/2` | [capítulo 27](../capitulo-27-archivos-streams-y-formatos/index.md) |
 | El lenguaje de comandos desde la línea de comandos | [capítulo 28](../capitulo-28-programas-de-linea-de-comandos/index.md) |
 | Listas de diferencia, la técnica detrás de la traducción | [capítulo 34](../capitulo-34-estructuras-incompletas-y-listas-diferencia/index.md) |
+| Una gramática para el texto de un lenguaje de programación | [capítulo 45](../capitulo-45-proyecto-compilador/index.md) |

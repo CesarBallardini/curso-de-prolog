@@ -16,7 +16,7 @@
 :- op(780, xfy, y).
 :- op(770, fy, no).
 
-% correlativa(Materia, Requisito): para cursar Materia hay que aprobar
+% correlativa(Materia, Requisito): para cursar Materia se debe aprobar
 % Requisito.
 correlativa(am2, am1).
 correlativa(am2, alg).

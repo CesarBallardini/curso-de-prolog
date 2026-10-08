@@ -115,7 +115,7 @@ mayor_de_los_dos(A, B, B) :-
     A < B.
 ```
 
-Tiene dos cláusulas, de acuerdo con la plantilla 4. Las dos condiciones son
+Tiene dos cláusulas, de acuerdo con la plantilla 3. Las dos condiciones son
 mutuamente excluyentes —una es `>=` y la otra, `<`—, de modo que nunca se
 obtienen dos respuestas. Si en la primera se hubiera escrito `>`, con dos
 números iguales no se cumpliría ninguna de las dos cláusulas.

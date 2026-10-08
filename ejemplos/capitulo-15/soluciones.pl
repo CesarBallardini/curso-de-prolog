@@ -135,7 +135,10 @@ sumando(I, N, Hasta, S) :-
 % edad(P, A): P tiene A años.
 edad(juan, 68).
 edad(ana, 41).
+edad(pedro, 45).
 edad(luis, 12).
+edad(eva, 8).
+edad(sofia, 3).
 
 %!  listar_edades is det.
 %

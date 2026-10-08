@@ -492,7 +492,7 @@ paridad(N, impar) :-
 ```
 
 `paridad/2` requiere **dos** cláusulas, una por cada resultado posible. Es la
-plantilla 4 del [capítulo 3](../capitulo-03-reglas-y-conjunciones/index.md): la relación se cumple por un caso o por el otro.
+plantilla 3 del [capítulo 3](../capitulo-03-reglas-y-conjunciones/index.md): la relación se cumple por un caso o por el otro.
 
 `paridad(s(cero), par).` responde `false.`, y el trabajo previo es el que conviene
 observar: Prolog prueba la primera cláusula, que lo lleva a `par(s(cero))`, y esa

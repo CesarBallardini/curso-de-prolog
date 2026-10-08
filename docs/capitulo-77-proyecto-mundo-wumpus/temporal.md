@@ -37,6 +37,11 @@ $$\mathit{WumpusAlive}^{t+1} \Leftrightarrow \mathit{WumpusAlive}^{t} \land \lno
 
 $$L^{t+1}_{1,1} \Leftrightarrow (L^{t}_{1,1} \land (\lnot \mathit{Forward}^{t} \lor \mathit{Bump}^{t+1})) \lor (L^{t}_{1,2} \land \mathit{FacingSouth}^{t} \land \mathit{Forward}^{t}) \lor (L^{t}_{2,1} \land \mathit{FacingWest}^{t} \land \mathit{Forward}^{t})$$
 
+El axioma de la ubicación en el código de `aima-python` difiere del
+libro: en la disyunción que deja al agente en su celda escribe la
+ubicación del mismo momento a los dos lados del bicondicional, donde el
+libro usa la del momento anterior. La página sigue la forma del libro.
+
 La segunda parte de cada disyunción es la que resuelve el **problema del
 marco**: sin ella, nada dice que el agente que gira sigue en la misma
 celda, ni que la flecha sigue en su lugar mientras no se dispara. Con un

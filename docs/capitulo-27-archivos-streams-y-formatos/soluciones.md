@@ -115,6 +115,13 @@ L = "segunda linea".
 ordena de mayor a menor sin quitar repetidos. El orden es estable: entre dos
 líneas del mismo largo, queda primero la que estaba primero en el archivo.
 
+El encabezado declara `+Archivo` porque el archivo se lee, no se genera, y
+`-Linea:string` porque `split_string/4` produce cadenas: si `Linea` llega
+ligada, el predicado calcula la línea más larga y la compara. El determinismo
+es `det`: todo archivo legible tiene una línea más larga —un archivo vacío
+da la cadena vacía, su única línea—, y la respuesta es una sola, porque entre
+dos líneas del mismo largo el predicado elige la primera.
+
 ## 5
 
 <!-- ejemplo: capitulo-27/soluciones.pl predicado: frecuencias/2 consulta: frecuencias(archivos('texto.txt'), P). -->
@@ -549,3 +556,70 @@ bd      bases_de_datos  3                0         -
 `promedio_de_materia/2` falla con una materia sin notas; `promedio_texto/2`
 convierte esa falla en un guion. Los números van alineados a la derecha, con
 `~t` antes del valor.
+
+## 16
+
+<!-- ejemplo: capitulo-27/soluciones.pl fragmento: :- persistent .. sort(Todas, Fechas). consulta: asistencias_de(101, Fechas). -->
+```prolog
+:- persistent
+    asistencia(legajo:integer, fecha:atom).
+
+%!  abrir_asistencias(+Archivo) is det.
+%
+%   Asocia Archivo a las asistencias: carga las que tiene, y los cambios
+%   siguientes se le agregan. Se llama desde aquí por el mismo detalle de
+%   módulos que abrir_notas/1, de persistencia.pl.
+abrir_asistencias(Archivo) :-
+    db_attach(Archivo, []).
+
+%!  cerrar_asistencias is det.
+%
+%   Cierra el archivo asociado y olvida las asistencias cargadas.
+cerrar_asistencias :-
+    db_detach.
+
+%!  marcar_asistencia(+Legajo:integer, +Fecha:atom) is det.
+%
+%   Registra que el alumno Legajo asistió en Fecha. Una asistencia ya
+%   registrada no se repite.
+marcar_asistencia(Legajo, Fecha) :-
+    (   asistencia(Legajo, Fecha)
+    ->  true
+    ;   assert_asistencia(Legajo, Fecha)
+    ).
+
+%!  asistencias_de(+Legajo:integer, -Fechas:list(atom)) is det.
+%
+%   Fechas son las fechas en que asistió el alumno Legajo, ordenadas.
+asistencias_de(Legajo, Fechas) :-
+    findall(Fecha, asistencia(Legajo, Fecha), Todas),
+    sort(Todas, Fechas).
+```
+
+`marcar_asistencia/2` consulta antes de agregar, para que una asistencia
+marcada dos veces quede una sola vez en el archivo; `assert_asistencia/2`
+verifica los tipos declarados, y un legajo que no es un entero produce un
+error de tipo. `abrir_asistencias/1` llama a `db_attach/2` desde el mismo
+archivo que declara `asistencia/2`, por el detalle de módulos de la
+[sección 27.10](index.md#2710-hechos-que-persisten-en-un-archivo-librarypersistency).
+La prueba registra las asistencias, desasocia el archivo, comprueba que los
+hechos ya no están, y los recupera al volver a asociarlo:
+
+<!-- ejemplo: capitulo-27/soluciones.plt fragmento: % Ejercicio 16 .. cerrar_asistencias. -->
+```prolog
+% Ejercicio 16: lo marcado se recupera al volver a asociar el archivo.
+test(asistencias_recuperadas,
+     [ setup(tmp_file(asistencias, F)),
+       cleanup(delete_file(F)),
+       true(Fechas == ['2026-03-02', '2026-03-09']) ]) :-
+    abrir_asistencias(F),
+    marcar_asistencia(101, '2026-03-09'),
+    marcar_asistencia(101, '2026-03-02'),
+    marcar_asistencia(101, '2026-03-02'),
+    marcar_asistencia(102, '2026-03-02'),
+    cerrar_asistencias,
+    asistencias_de(101, []),
+    abrir_asistencias(F),
+    asistencias_de(101, Fechas),
+    cerrar_asistencias.
+```

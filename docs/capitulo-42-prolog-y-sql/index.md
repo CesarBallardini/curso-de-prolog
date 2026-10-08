@@ -409,7 +409,9 @@ citaba es una vista:
 %   El alumno de Legajo aprobó Materia con Nota: una selección sobre
 %   inscripciones. integer/1 descarta las filas con null antes de comparar.
 aprobada(L, M, N) :-
-    inscripcion(L, M, N), integer(N), N >= 6.
+    inscripcion(L, M, N),
+    integer(N),
+    N >= 6.
 ```
 
 ```sql

@@ -47,6 +47,8 @@ Que el orden sea fijo tiene una consecuencia directa: **el orden de búsqueda
 queda determinado por quien escribe el programa**. Dos programas con el mismo
 significado lógico pueden comportarse de manera muy distinta según el orden de
 sus cláusulas y objetivos. Más detalles de esto se darán en las secciones [5.4](#54-el-orden-de-las-clausulas-determina-el-orden-de-las-respuestas) y [5.5](#55-el-orden-de-los-objetivos-determina-el-trabajo), y el [capítulo 16](../capitulo-16-rendimiento/index.md) lo retoma desde el punto de vista del rendimiento.
+Esas dos secciones llegan, sobre el árbol de derivación de la
+[sección 5.2](#52-el-arbol-de-derivacion), a dos conclusiones:
 
 - **el orden de los objetivos decide cómo es el árbol.** Cambiarlo produce un
   árbol distinto, con otra cantidad de nodos, y por eso cambia el trabajo;
@@ -141,11 +143,12 @@ en que Prolog lo recorre:
 !!! note "Cada uso de una cláusula emplea variables nuevas"
     Las variables `A`, `N` y `P` de R4 no son las mismas en dos usos distintos
     de esa cláusula: cada vez que Prolog emplea una cláusula, toma una copia con
-    variables nuevas. En este árbol R4 se usa una sola vez y la distinción no se nota,
-    por otro lado, en el [capítulo 6](../capitulo-06-recursion/index.md) donde una misma cláusula se usa
-    muchas veces, cada uso va a tener sus propias variables. Allá también se explica a los
-    identificadores como `_8106` de la sección siguiente: son los nombres que
-    Prolog le da a esas nuevas variables.
+    variables nuevas. En este árbol R4 se usa una sola vez y la distinción no se
+    nota; en la recursión, donde una misma cláusula se usa muchas veces, cada
+    uso tiene sus propias variables. Los identificadores como `_8106` de la
+    sección siguiente son los nombres que Prolog da a esas variables nuevas. La
+    [sección 6.2](../capitulo-06-recursion/index.md#62-caso-base-y-caso-recursivo)
+    muestra las copias en un árbol y en la traza.
 
 Tres observaciones sobre el diagrama:
 
@@ -158,7 +161,8 @@ Tres observaciones sobre el diagrama:
   respuesta conserva únicamente lo que les corresponde a las variables que
   escribió quien consultó. `Quien` quedó ligada a `luis`, y por eso la respuesta
   es `Quien = luis`. `A`, `N` y `P` eran variables de R4, no de la consulta, y
-  por eso no aparecen. Más tarde veremos cómo las sustituciones se componen entre sí.
+  por eso no aparecen. La [sección 6.4](../capitulo-06-recursion/index.md#64-la-suma)
+  muestra cómo se componen entre sí las sustituciones de una rama.
 - **las ramas que fallan tienen costo**: representan trabajo que Prolog realizó.
   La rama de `ana` no produjo ninguna respuesta, pero recorrerla requirió el
   mismo esfuerzo que una rama exitosa.
@@ -395,8 +399,8 @@ explorar las ramas vecinas, y la primera hoja de éxito que alcanza es la del
 descendiente más lejano.
 
 En ninguno de los dos casos se pierde una respuesta, lo que cambia es cuál se
-obtiene primero. Cuando sólo nos interesa la primer respuesta, es importante que la
-primer solución sea cercana a la raíz.
+obtiene primero. Cuando solo interesa la primera respuesta, es importante que la
+primera solución sea cercana a la raíz.
 
 Que no se pierda ninguna respuesta depende de que este árbol sea finito por izquierda: el
 árbol es el mismo en los dos casos y solo cambia el orden de sus ramas, de modo
@@ -454,7 +458,7 @@ la misma, `Quien = luis`; el trabajo para encontrarla, no.
 De aquí se desprende una regla práctica, válida para todo el curso: **se escribe
 primero el objetivo que genera menos alternativas**. Cuanto antes se descartan
 los candidatos que no cumplen, menor es el árbol a recorrer. Con tres hechos la
-diferencia es irrelevante, cuando hay miles de hechos se vuelve un problema de performance.
+diferencia es irrelevante, cuando hay miles de hechos se vuelve un problema de rendimiento.
 
 ## 5.6 Ramas infinitas
 
@@ -551,7 +555,7 @@ De este análisis se derivan dos criterios de escritura:
 !!! warning "Correcto no equivale a ejecutable"
     Las dos versiones tienen el mismo significado si se las lee como
     afirmaciones lógicas. Una termina y la otra no. Un programa Prolog es,
-    simultáneamente, un conjunto de aserciones lógicas (interpretación logica)
+    simultáneamente, un conjunto de aserciones lógicas (interpretación lógica)
     y un procedimiento que se ejecuta (interpretación procedimental);
     el orden no modifica lo primero, pero determina lo segundo. El
     [capítulo 12](../capitulo-12-prolog-y-la-logica/index.md) analiza esta dualidad desde el punto de vista de la lógica.

@@ -61,9 +61,10 @@ marca como inválidas las tablas incrementales que usaron ese predicado,
 directa o indirectamente, y la próxima llamada las recalcula:
 
 ```prolog
-?- findall(Y, alcanza(a, Y), Antes), findall(Y, alcanza_fijo(a, Y), AntesFijo), assertz(enlace(c, d)), findall(Y, alcanza(a, Y), Despues), findall(Y, alcanza_fijo(a, Y), DespuesFijo).
-Antes = AntesFijo, AntesFijo = DespuesFijo, DespuesFijo = [b, c],
-Despues = [b, d, c].
+?- findall(Y, alcanza(a, Y), Antes0), msort(Antes0, Antes), findall(Y, alcanza_fijo(a, Y), AntesFijo0), msort(AntesFijo0, AntesFijo), assertz(enlace(c, d)), findall(Y, alcanza(a, Y), Despues0), msort(Despues0, Despues), findall(Y, alcanza_fijo(a, Y), DespuesFijo0), msort(DespuesFijo0, DespuesFijo).
+Antes0 = Antes, Antes = AntesFijo0, AntesFijo0 = AntesFijo, AntesFijo = DespuesFijo0, DespuesFijo0 = DespuesFijo, DespuesFijo = [b, c],
+Despues0 = [b, d, c],
+Despues = [b, c, d].
 ```
 
 `alcanza_fijo/2` sigue respondiendo con la tabla de antes del cambio; con

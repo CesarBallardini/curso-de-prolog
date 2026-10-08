@@ -61,7 +61,8 @@ test(aprobadas_de_diego, true(S == "log: 9\nalg: 7\npp: 8\n")) :-
     with_output_to(string(S), listar_aprobadas(104)).
 
 % Ejercicios 8 y 14
-test(menu_todas, true(S == "juan: 68\nana: 41\nluis: 12\nFin\n")) :-
+test(menu_todas,
+     true(S == "juan: 68\nana: 41\npedro: 45\nluis: 12\neva: 8\nsofia: 3\nFin\n")) :-
     open_string("todas. salir.", In),
     with_output_to(string(S), menu(In)).
 

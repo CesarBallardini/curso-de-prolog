@@ -372,8 +372,15 @@ T = 5.
 
 ## 9
 
-<!-- ejemplo: capitulo-47/soluciones_matriz.pl predicado: potencia/4 fibonacci/2 -->
+<!-- ejemplo: capitulo-47/soluciones_matriz.pl predicado: potencia/3 potencia/4 fibonacci/2 -->
 ```prolog
+%!  potencia(+M:list(list), +K:integer, -P:list(list)) is det.
+%
+%   P es la matriz cuadrada M elevada al natural K, calculada por
+%   cuadrados sucesivos.
+potencia(M, K, P) :-
+    potencia(M, K, P, _).
+
 %!  potencia(+M:list(list), +K:integer, -P:list(list),
 %!           -Productos:integer) is det.
 %
@@ -404,7 +411,8 @@ fibonacci(N, F) :-
 ```
 
 Para K par, M^K es el cuadrado de M^(K/2); para K impar, es M por ese
-cuadrado. `potencia/4` cuenta los productos.
+cuadrado. `potencia/3` es la que pide el enunciado; llama a `potencia/4`,
+que además cuenta los productos.
 
 ```prolog
 ?- potencia([[1, 1], [1, 0]], 10, P).

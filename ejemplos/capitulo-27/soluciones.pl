@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 27 - Soluciones de los ejercicios 1 a 11.
+% Capítulo 27 - Soluciones de los ejercicios 1 a 11 y 16.
 %
 % Usan los predicados de archivos.pl y de formatos.pl, que este archivo
 % carga, y los archivos de ejemplo del directorio archivos/.
@@ -13,6 +13,7 @@
 :- ensure_loaded(archivos).
 :- ensure_loaded(formatos).
 :- use_module(library(yaml)).
+:- use_module(library(persistency)).
 
 % --- Ejercicio 1 ------------------------------------------------------------
 
@@ -196,3 +197,39 @@ tabla_ajustable(Filas) :-
     forall(member(Legajo-Nombre-Promedio, Filas),
            format("~w~t~*|~w~t~*|~t~2f~*|~n",
                   [Legajo, A, Nombre, B, Promedio, C])).
+
+% --- Ejercicio 16 -----------------------------------------------------------
+
+:- persistent
+    asistencia(legajo:integer, fecha:atom).
+
+%!  abrir_asistencias(+Archivo) is det.
+%
+%   Asocia Archivo a las asistencias: carga las que tiene, y los cambios
+%   siguientes se le agregan. Se llama desde aquí por el mismo detalle de
+%   módulos que abrir_notas/1, de persistencia.pl.
+abrir_asistencias(Archivo) :-
+    db_attach(Archivo, []).
+
+%!  cerrar_asistencias is det.
+%
+%   Cierra el archivo asociado y olvida las asistencias cargadas.
+cerrar_asistencias :-
+    db_detach.
+
+%!  marcar_asistencia(+Legajo:integer, +Fecha:atom) is det.
+%
+%   Registra que el alumno Legajo asistió en Fecha. Una asistencia ya
+%   registrada no se repite.
+marcar_asistencia(Legajo, Fecha) :-
+    (   asistencia(Legajo, Fecha)
+    ->  true
+    ;   assert_asistencia(Legajo, Fecha)
+    ).
+
+%!  asistencias_de(+Legajo:integer, -Fechas:list(atom)) is det.
+%
+%   Fechas son las fechas en que asistió el alumno Legajo, ordenadas.
+asistencias_de(Legajo, Fechas) :-
+    findall(Fecha, asistencia(Legajo, Fecha), Todas),
+    sort(Todas, Fechas).

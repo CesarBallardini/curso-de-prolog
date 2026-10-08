@@ -580,3 +580,38 @@ a la gramática un comando que empiece con ella: `phrase(comando(_), [Verbo|Rest
 con `Resto` libre genera uno, con el primer alumno y la primera materia de la
 base. La ayuda sale de la misma gramática que analiza, y por eso no puede
 quedar desactualizada.
+
+## 17
+
+<!-- ejemplo: capitulo-21/soluciones.pl predicado: siguiente//1 empieza_con_mayuscula//0 consulta: phrase(empieza_con_mayuscula, `Ana`, Resto). -->
+```prolog
+%!  siguiente(-C)// is semidet.
+%
+%   C es el próximo elemento de la entrada, que no se consume: se devuelve a
+%   la entrada con el pushback. Es la de gramatica.pl.
+siguiente(C), [C] --> [C].
+
+%!  empieza_con_mayuscula// is semidet.
+%
+%   El próximo código de la entrada es una letra mayúscula. No lo consume.
+empieza_con_mayuscula -->
+    siguiente(C),
+    { code_type(C, upper) }.
+```
+
+```prolog
+?- phrase(empieza_con_mayuscula, `Ana`, Resto), atom_codes(A, Resto).
+Resto = [65, 110, 97],
+A = 'Ana'.
+
+?- phrase(empieza_con_mayuscula, `ana`, Resto).
+false.
+```
+
+`siguiente//1` toma el próximo código y lo devuelve a la entrada; la condición
+entre llaves decide si es una mayúscula. Por eso, con `` `Ana` ``, `Resto` es
+la entrada completa: la regla examina la `A` sin consumirla, y la regla que
+siga la encuentra en su lugar. Con `` `ana` `` la condición falla, y con la
+entrada vacía falla `siguiente//1`, porque no hay ningún código que examinar.
+`code_type/2` con `upper` se cumple solo para las letras mayúsculas: un dígito
+o un espacio tampoco la cumplen.

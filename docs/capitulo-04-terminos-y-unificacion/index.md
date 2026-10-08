@@ -131,7 +131,7 @@ Juan = juan.
 
 `juan`, con minúscula, es un átomo; `Juan`, con mayúscula, es una variable. La
 respuesta indica que, para que los dos términos sean idénticos, `Juan` debe
-quedar ligada a `juan`.  Note que el signo `=` no representa la asignación sino unificación. La unificación se puede dar entre dos términos, los cuales pueden estar de cualquier lado del signo igual.
+quedar ligada a `juan`. El signo `=` no representa la asignación sino la unificación. La unificación se puede dar entre dos términos, los cuales pueden estar de cualquier lado del signo igual.
 
 ## 4.5 Términos compuestos
 

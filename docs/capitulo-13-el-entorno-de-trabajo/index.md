@@ -28,7 +28,7 @@ Al terminar el capítulo, el lector puede:
 !!! info "Tiempo estimado"
     Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:06 h**.
     Resolver los 6 ejercicios marcados con ★: **1:12 h**.
-    Resolver los 12 ejercicios del final: **3:05 h**.
+    Resolver los 13 ejercicios del final: **3:10 h**.
 
 ## 13.1 El toplevel como herramienta
 
@@ -638,6 +638,10 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 12. **(2)** Abrir `inscripciones.pl` en SWISH desde su enlace y ejecutar las
     consultas del encabezado. Después intentar allí `make.` y
     `set_prolog_flag(editor, code).` y explicar las respuestas.
+13. **(1)** Con `revision.pl` cargado, ejecutar `listing(padre/2).`, agregar el
+    hecho `padre(luis, sofia).` al final del archivo, ejecutar `make.` y repetir
+    `listing(padre/2).` ¿Qué cambió en la salida, y en qué posición aparece el
+    hecho nuevo?
 
 ## Resumen
 

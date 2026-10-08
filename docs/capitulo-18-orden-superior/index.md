@@ -26,7 +26,7 @@ Al terminar el capítulo, el lector puede:
 - decidir cuándo una recursión explícita es preferible al orden superior.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:28 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:35 h**.
     Resolver los 6 ejercicios marcados con ★: **1:53 h**.
     Resolver los 12 ejercicios del final: **3:34 h**.
 
@@ -595,8 +595,28 @@ La versión de *Inscripciones* de este capítulo reescribe los informes del
 `informe/3` aplica a una lista de alumnos **cualquier** cálculo de dos
 argumentos, y devuelve una fila por alumno.
 
-<!-- ejemplo: capitulo-18/inscripciones.pl predicado: promedio/2 contar_y_sumar/3 informe/3 consulta: legajos(Ls), informe(promedio_de_alumno, Ls, Filas). -->
+<!-- ejemplo: capitulo-18/inscripciones.pl predicado: legajos/1 tiene_nota/1 sin_notas/1 promedio/2 contar_y_sumar/3 informe/3 consulta: legajos(Ls), informe(promedio_de_alumno, Ls, Filas). -->
 ```prolog
+%!  legajos(-Legajos:list(integer)) is det.
+%
+%   Legajos son los legajos de todos los alumnos, en el orden de los hechos.
+legajos(Legajos) :-
+    findall(Legajo, alumno(Legajo, _, _, _), Legajos).
+
+%!  tiene_nota(+Legajo:integer) is semidet.
+%
+%   El alumno Legajo tiene al menos una nota.
+tiene_nota(Legajo) :-
+    once(inscripcion(Legajo, _, nota(_))).
+
+%!  sin_notas(-Legajos:list(integer)) is det.
+%
+%   Legajos son los alumnos que no tienen ninguna nota: los que no se
+%   inscribieron en nada y los que solo están cursando.
+sin_notas(Legajos) :-
+    legajos(Todos),
+    exclude(tiene_nota, Todos, Legajos).
+
 %!  promedio(+Notas:list(number), -Promedio:number) is semidet.
 %
 %   Promedio es el promedio de Notas. Falla con la lista vacía. Un solo
@@ -647,7 +667,7 @@ F = [101-4, 102-1, 103-1, 104-3, 105-0, 106-1, 107-0].
 `foldl/4` es el par `Cantidad-Suma`. `promedio_de_materia/2` y
 `promedio_de_alumno/2` reúnen las notas con `findall/3` y llaman a
 `promedio/2`. `sin_notas/1` es la lista de todos los legajos (`legajos/1`) sin
-los que tienen nota, con `exclude/3`. `aprobadas/2` cuenta las materias
+los que tienen nota (`tiene_nota/1`), con `exclude/3`. `aprobadas/2` cuenta las materias
 aprobadas, y `mostrar_informe/2` escribe las filas con `maplist/2`. `informe/3` usa `convlist/3`,
 y por eso omite los alumnos para los que el cálculo falla: elena y gabriela no
 tienen promedio, y no aparecen en el primer informe; con `aprobadas/2`, que

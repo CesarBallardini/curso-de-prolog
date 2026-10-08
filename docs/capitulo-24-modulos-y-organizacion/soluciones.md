@@ -3,7 +3,10 @@
 El código de esta página está en `ejemplos/capitulo-24/soluciones/`, un
 archivo por módulo, cada uno con su archivo de pruebas, y pasa sus pruebas.
 Los módulos que usan el proyecto lo cargan de
-`ejemplos/capitulo-24/inscripciones/` con una ruta relativa.
+`ejemplos/capitulo-24/inscripciones/` con una ruta relativa,
+`'../inscripciones/datos'`, que se resuelve desde el directorio del archivo
+que contiene la directiva, no desde el directorio de trabajo, como explica la
+[sección 24.7](index.md#247-cargar-y-examinar-modulos).
 
 ## 1
 
@@ -358,3 +361,98 @@ escribirse dentro de la directiva misma:
 
 Con un predicado con nombre, la prueba `cantidad` captura la salida con
 `with_output_to/2` y la compara.
+
+## 16
+
+<!-- ejemplo: capitulo-24/soluciones/dependencias.pl fragmento: :- module(dependencias .. sort(Origenes, Modulos). consulta: dependencias(informes, Modulos). -->
+```prolog
+:- module(dependencias, [dependencias/2]).
+
+:- use_module('../inscripciones/comandos', []).
+:- use_module('../inscripciones/horarios', []).
+
+%!  dependencias(+Modulo:atom, -Modulos:list(atom)) is det.
+%
+%   Modulos son los módulos de clase user de los que Modulo importa al menos
+%   un predicado, ordenados y sin repetidos.
+dependencias(Modulo, Modulos) :-
+    findall(Origen,
+            ( predicate_property(Modulo:_, imported_from(Origen)),
+              module_property(Origen, class(user)) ),
+            Origenes),
+    sort(Origenes, Modulos).
+```
+
+`predicate_property(Modulo:_, imported_from(Origen))`, con la cabeza libre,
+recorre los predicados visibles en `Modulo` y deja los importados, con el
+módulo de origen; `module_property(Origen, class(user))` descarta los de la
+biblioteca, como `apply` o `lists`. `sort/2` quita los repetidos, porque
+`Modulo` importa varios predicados de un mismo módulo.
+
+```prolog
+?- dependencias(informes, Modulos).
+Modulos = [datos, reglas].
+```
+
+| Módulo | `dependencias/2` |
+|---|---|
+| `datos` | `[]` |
+| `reglas` | `[datos]` |
+| `informes` | `[datos, reglas]` |
+| `comandos` | `[datos, informes, reglas]` |
+| `horarios` | `[datos, informes]` |
+
+El resultado coincide con la columna «Importa» de la tabla de la
+[sección 24.9](index.md#249-el-proyecto-cinco-modulos). `dependencias.pl`
+carga el proyecto con `use_module/2` y la lista vacía: los módulos quedan
+cargados, y `dependencias` no importa nada de ellos, como verifica la prueba
+`sin_importar`. `comandos` y `horarios` alcanzan para cargar los cinco, porque
+cada uno carga los módulos que importa.
+
+## 17
+
+En los tres lugares la respuesta depende del módulo en el que se lee el texto.
+`comillas.pl` no declara un módulo, y `consult/1` lo carga en `user`:
+
+<!-- ejemplo: capitulo-24/soluciones/comillas.pl fragmento: :- set_prolog_flag .. saludo("hola"). consulta: saludo(S). -->
+```prolog
+:- set_prolog_flag(double_quotes, codes).
+
+% saludo(S): S es lo que este archivo lee de "hola".
+saludo("hola").
+```
+
+- En el toplevel, que lee en `user`, `X = "ab"` responde `X = [97, 98]`: el
+  cambio quedó en `user`.
+- Un archivo que se carga después en `user` también lee listas de códigos: el
+  hecho `leido("ab")` de `comillas.plt`, fuera de la unidad de pruebas, guarda
+  `[97, 98]`.
+- Dentro de la unidad de pruebas, `"ab"` es una cadena: la unidad es otro
+  módulo, `plunit_comillas`, que tiene su propio valor de la bandera.
+
+```prolog
+% La unidad de pruebas es otro módulo, plunit_comillas, con su propia
+% bandera: allí "ab" es una cadena.
+test(en_la_unidad) :-
+    string("ab").
+```
+
+Con `codigos.pl`, que declara un módulo, la directiva no alcanza a `user`: es
+lo que muestra la [sección 24.7](index.md#247-cargar-y-examinar-modulos).
+
+Los operadores siguen la misma regla, y es la respuesta a la Actividad de esa
+sección. Con `usa_relaciones.pl` cargado, `aprobadas_de(101, M)` responde
+`M = [am1, alg, log, am2]`, y `101 aprobo M.` no se puede leer:
+
+```text
+?- 101 aprobo M.
+ERROR: Syntax error: Operator expected
+ERROR: 101
+ERROR: ** here **
+ERROR:  aprobo M .
+```
+
+`user` importó `usa_relaciones`, y con él `aprobadas_de/2`; el operador lo
+importó `usa_relaciones`, no `user`. Después de `use_module(relaciones)`, el
+operador llega también a `user`, y la consulta responde `M = am1` y las demás
+materias aprobadas.

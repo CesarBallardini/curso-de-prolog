@@ -245,11 +245,13 @@ analizar un texto.
 
 ## 10
 
-`atom_number(abc, N)` falla: `abc` no es un número, y el predicado lo responde
-con `false`. `succ(X, 0)` falla: 0 no es el sucesor de ningún natural.
-`arg(x, f(a), A)` produce `type_error(integer, x)`: la posición del argumento
-debe ser un entero. Las dos primeras son consultas sin respuesta; la tercera
-recibe un argumento que no cumple la interfaz del predicado.
+`last([], X)` falla: la lista vacía no tiene último elemento, y el predicado
+lo responde con `false`. `atom_length(abc, foo)` produce
+`type_error(integer, foo)`, y `char_code(C, N)` produce `instantiation_error`.
+`last/2` responde una pregunta sin respuesta; `atom_length/2` recibe una
+longitud que no es un entero; `char_code/2` no tiene ningún argumento ligado.
+La primera es una falla; las otras dos son errores, porque reciben argumentos
+que no cumplen la interfaz del predicado.
 
 ## 11
 

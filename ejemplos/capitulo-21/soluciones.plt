@@ -110,4 +110,15 @@ test(lista_generar, true(A == '[4, 5]')) :-
     phrase(lista_de_enteros([4, 5]), Cs),
     atom_codes(A, Cs).
 
+% Ejercicio 17: la regla no consume el código que examina.
+test(empieza_con_mayuscula, true(A == 'Ana')) :-
+    phrase(empieza_con_mayuscula, `Ana`, Resto),
+    atom_codes(A, Resto).
+
+test(empieza_con_minuscula, [fail]) :-
+    phrase(empieza_con_mayuscula, `ana`, _).
+
+test(empieza_vacia, [fail]) :-
+    phrase(empieza_con_mayuscula, ``, _).
+
 :- end_tests(soluciones).

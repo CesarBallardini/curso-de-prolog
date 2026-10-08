@@ -219,3 +219,43 @@ consulta. `set_prolog_flag(editor, code).` es rechazada: SWISH no permite
 cambiar banderas del sistema, porque ejecuta los programas de todos sus
 usuarios en un entorno restringido. Es la razón de la marca `% solo-local:` de
 `init.pl`.
+
+## 13
+
+Antes de modificar el archivo, `listing/1` muestra los cuatro hechos cargados:
+
+```prolog
+?- listing(padre/2).
+```
+
+```text
+padre(juan, ana).
+padre(juan, pedro).
+padre(pedro, luis).
+padre(pedro, eva).
+
+true.
+```
+
+`make.` recarga `revision.pl` y emite dos advertencias. La primera indica que
+las cláusulas de `padre/2` no están juntas: el hecho nuevo quedó al final del
+archivo, después de `nieto/2`, y la definición anterior empieza en la línea 12.
+La segunda es la de `persona/1` sin definir, porque `make/0` repite la revisión
+de `list_undefined/0` después de recargar. La segunda consulta muestra el
+predicado recargado:
+
+```text
+padre(juan, ana).
+padre(juan, pedro).
+padre(pedro, luis).
+padre(pedro, eva).
+padre(luis, sofia).
+
+true.
+```
+
+El hecho nuevo aparece último, en el orden del archivo: `listing/1` no ordena
+las cláusulas, escribe las que están cargadas en el orden en que se cargaron.
+Lo que muestra es la versión que `make.` acaba de recargar, no el texto del
+editor: si el archivo se guardara sin ejecutar `make.`, la segunda consulta
+seguiría mostrando cuatro hechos.

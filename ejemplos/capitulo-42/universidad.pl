@@ -36,7 +36,7 @@ materia(pp,  paradigmas,     2).
 materia(ssl, sintaxis,       2).
 materia(bd,  bases_de_datos, 3).
 
-% correlativa(Materia, Requisito): para cursar Materia hay que aprobar
+% correlativa(Materia, Requisito): para cursar Materia se debe aprobar
 % Requisito. La tabla correlativas.
 correlativa(am2, am1).
 correlativa(am2, alg).
@@ -73,7 +73,9 @@ inscripcion(106, am1, 6).
 %   El alumno de Legajo aprobó Materia con Nota: una selección sobre
 %   inscripciones. integer/1 descarta las filas con null antes de comparar.
 aprobada(L, M, N) :-
-    inscripcion(L, M, N), integer(N), N >= 6.
+    inscripcion(L, M, N),
+    integer(N),
+    N >= 6.
 
 %!  de_carrera(?Carrera, ?Legajo, ?Nombre) is nondet.
 %

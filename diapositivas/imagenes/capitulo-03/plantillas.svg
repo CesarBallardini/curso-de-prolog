@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 470" width="960" height="470">
-  <title>Cuatro plantillas del capítulo: derivar una relación de otra, encadenar dos relaciones con una variable compartida, definir por casos, y generar y después comprobar</title>
+  <title>Cuatro plantillas del capítulo: derivar una relación de otra, definir por casos, encadenar dos relaciones con una variable compartida, y generar y después comprobar</title>
   <defs>
     <marker id="a-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1F2933"/></marker>
     <marker id="a-navy" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1F3A5F"/></marker>
@@ -14,20 +14,20 @@
   <text x="44.0" y="96.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">nueva(X) :-</text>
   <text x="90.2" y="126.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">vieja(X, _).</text>
   <rect x="490.0" y="20.0" width="450.0" height="205.0" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
-  <text x="508.0" y="54.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#1F3A5F" text-anchor="start" font-weight="bold" xml:space="preserve">Plantilla 3 — Encadenar dos relaciones</text>
-  <text x="514.0" y="96.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">nueva(A, C) :-</text>
-  <rect x="684.2" y="108.8" width="17.6" height="25.2" rx="6" fill="#FCE8D2" stroke="#D9822B" stroke-width="3"/>
-  <text x="560.2" y="126.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">primera(A, B),</text>
-  <rect x="649.6" y="138.8" width="17.6" height="25.2" rx="6" fill="#FCE8D2" stroke="#D9822B" stroke-width="3"/>
-  <text x="560.2" y="156.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">segunda(B, C).</text>
-  <text x="790.0" y="156.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#D9822B" text-anchor="start" font-weight="bold" xml:space="preserve">B: la misma</text>
-  <text x="790.0" y="176.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#D9822B" text-anchor="start" font-weight="bold" xml:space="preserve">en los dos</text>
+  <text x="508.0" y="54.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#1F3A5F" text-anchor="start" font-weight="bold" xml:space="preserve">Plantilla 3 — Definir por casos</text>
+  <text x="514.0" y="96.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">p(X) :-</text>
+  <text x="560.2" y="126.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">primer_caso(X).</text>
+  <text x="514.0" y="156.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">p(X) :-</text>
+  <text x="560.2" y="186.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">otro_caso(X).</text>
   <rect x="20.0" y="245.0" width="450.0" height="205.0" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
-  <text x="38.0" y="279.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#1F3A5F" text-anchor="start" font-weight="bold" xml:space="preserve">Plantilla 4 — Definir por casos</text>
-  <text x="44.0" y="321.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">p(X) :-</text>
-  <text x="90.2" y="351.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">primer_caso(X).</text>
-  <text x="44.0" y="381.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">p(X) :-</text>
-  <text x="90.2" y="411.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">otro_caso(X).</text>
+  <text x="38.0" y="279.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#1F3A5F" text-anchor="start" font-weight="bold" xml:space="preserve">Plantilla 4 — Encadenar dos relaciones</text>
+  <text x="44.0" y="321.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">nueva(A, C) :-</text>
+  <rect x="214.2" y="333.8" width="17.6" height="25.2" rx="6" fill="#FCE8D2" stroke="#D9822B" stroke-width="3"/>
+  <text x="90.2" y="351.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">primera(A, B),</text>
+  <rect x="179.6" y="363.8" width="17.6" height="25.2" rx="6" fill="#FCE8D2" stroke="#D9822B" stroke-width="3"/>
+  <text x="90.2" y="381.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">segunda(B, C).</text>
+  <text x="320.0" y="381.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#D9822B" text-anchor="start" font-weight="bold" xml:space="preserve">B: la misma</text>
+  <text x="320.0" y="401.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="15" fill="#D9822B" text-anchor="start" font-weight="bold" xml:space="preserve">en los dos</text>
   <rect x="490.0" y="245.0" width="450.0" height="205.0" rx="10" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="2"/>
   <text x="508.0" y="279.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="17" fill="#1F3A5F" text-anchor="start" font-weight="bold" xml:space="preserve">Plantilla 5 — Generar y después comprobar</text>
   <text x="514.0" y="321.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">nueva(X) :-</text>

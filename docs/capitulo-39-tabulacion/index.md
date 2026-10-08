@@ -123,11 +123,9 @@ camino(X, Y) :-
 ```
 
 ```prolog
-?- camino(a, Y).
-Y = b ;
-Y = a ;
-Y = d ;
-Y = c.
+?- findall(Y, camino(a, Y), Ys), msort(Ys, Ordenadas).
+Ys = [b, a, d, c],
+Ordenadas = [a, b, c, d].
 
 ?- camino(d, Y).
 false.
@@ -156,11 +154,15 @@ lo sumo cuatro respuestas y la tabla se completa. Es la evaluación
 semi-ingenua de la [sección 38.6](../capitulo-38-semantica-de-los-programas-logicos/index.md#386-evaluacion-de-abajo-hacia-arriba), aplicada solo a lo que la consulta
 pide: `camino(a, Y)` no calcula los caminos que salen de b.
 
-Dos consecuencias se leen en la respuesta. El orden de las respuestas es el
-de la tabla, no el de las cláusulas, y puede cambiar de una ejecución a
-otra: en esta máquina, la misma consulta dio d, b, c, a en otro proceso. Y
-la respuesta termina en `.`: la tabla completa no deja alternativas. Las
-pruebas de `camino.plt` comparan las respuestas ordenadas con `msort/2`.
+El orden de las respuestas, el de `Ys`, es el de la tabla, no el de las
+cláusulas, y puede cambiar de una ejecución a otra y de un sistema a otro:
+en esta máquina, la misma consulta dio d, b, c, a en otro proceso. Por eso
+la consulta reúne las respuestas con `findall/3` y las ordena con
+`msort/2`, que conserva las repetidas: `Ordenadas` es la misma en cualquier
+ejecución, y muestra cada respuesta una vez. Consultada sola,
+`camino(a, Y)` da las respuestas una por una, y que la última deje o no una
+alternativa pendiente también depende del sistema. Las pruebas de
+`camino.plt` comparan las respuestas ordenadas con `msort/2`.
 
 La recursión a la izquierda del [capítulo 33](../capitulo-33-introspeccion-y-metainterpretes/index.md#333-variar-el-interprete) tiene la misma solución.
 Allí, `antepasado_izq(A, eva)` daba sus tres respuestas y agotaba la pila, y
@@ -183,10 +185,9 @@ antepasado_izq(A, D) :-
 ```
 
 ```prolog
-?- antepasado_izq(A, eva).
-A = ana ;
-A = luis ;
-A = juan.
+?- findall(A, antepasado_izq(A, eva), As), msort(As, Ordenadas).
+As = [ana, luis, juan],
+Ordenadas = [ana, juan, luis].
 ```
 
 La directiva se aplica al cargar el archivo, como las expansiones del
@@ -641,7 +642,7 @@ requisito_sin_tabla(Materia, Requisito) :-
 
 %!  requisitos_de(+Materia:atom, -Requisitos:list(atom)) is det.
 %
-%   Requisitos son todas las materias que hay que aprobar antes de cursar
+%   Requisitos son todas las materias que se deben aprobar antes de cursar
 %   Materia, directa o indirectamente, en orden y sin repetidos.
 requisitos_de(Materia, Requisitos) :-
     must_be(atom, Materia),

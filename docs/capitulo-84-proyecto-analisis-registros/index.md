@@ -467,7 +467,7 @@ pasarlo.
 !!! example "Patrón 92 — Límites como argumento"
     **Problema.** Una regla decide si el valor de una métrica es anómalo
     comparándolo con un límite, y los límites tienen varios orígenes: se
-    escriben a mano, se ajustan con días anteriores o con el mismo día
+    fijan de manera explícita, se ajustan con días anteriores o con el mismo día
     que se examina, o se aprenden de incidentes ya investigados. La
     regla, y las que buscan la causa, son las mismas para todos.
 

@@ -29,7 +29,7 @@ Al terminar el capítulo, el lector puede:
 !!! info "Tiempo estimado"
     Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:08 h**.
     Resolver los 7 ejercicios marcados con ★: **2:11 h**.
-    Resolver los 18 ejercicios del final: **5:25 h**.
+    Resolver los 18 ejercicios del final: **5:40 h**.
 
 ## 15.1 `;` en el cuerpo
 
@@ -365,7 +365,10 @@ tabla_de_multiplicar(N) :-
 ?- listar_edades.
 juan: 68
 ana: 41
+pedro: 45
 luis: 12
+eva: 8
+sofia: 3
 true.
 ```
 
@@ -420,9 +423,9 @@ alguien lo escribiera en el teclado. Es la forma de probar un programa
 interactivo sin escribir las órdenes en el teclado:
 
 ```prolog
-?- open_string("edad(ana). edad(sofia). salir.", In), menu(In).
+?- open_string("edad(ana). edad(marta). salir.", In), menu(In).
 ana tiene 41 años
-sofia no está en la base
+marta no está en la base
 Fin
 In = <stream>(...).
 ```
@@ -692,7 +695,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 15. **(3)** Escribir `categoria_pura/2` con `if_/3` y una condición reificada
     sobre números, y explicar por qué `library(reif)` no alcanza para las
     comparaciones aritméticas y qué capítulo las resuelve.
-16. **(1)** El predicado siguiente, sobre los datos de *Inscripciones* de este
+16. **(2)** El predicado siguiente, sobre los datos de *Inscripciones* de este
     capítulo, tiene una disyunción en el cuerpo:
 
     ```prolog

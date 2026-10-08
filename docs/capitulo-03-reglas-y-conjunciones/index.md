@@ -370,7 +370,7 @@ capítulos anteriores: en el [capítulo 1](../capitulo-01-la-primera-hora/index.
 caso; los cuatro hechos `padre/2` del [capítulo 2](../capitulo-02-hechos-consultas-y-variables/index.md) son cuatro cláusulas del mismo
 predicado.
 
-!!! abstract "Plantilla 4 — Definir por casos"
+!!! abstract "Plantilla 3 — Definir por casos"
     **Cuándo**: la relación se cumple por una condición **o** por otra.
 
     ```prolog
@@ -426,7 +426,7 @@ lugar de enumerar todos los casos.
 marta también cumpliría `abuelo/2`, porque los dos objetivos `progenitor/2` se
 cumplen de la misma manera.
 
-!!! abstract "Plantilla 3 — Encadenar dos relaciones"
+!!! abstract "Plantilla 4 — Encadenar dos relaciones"
     **Cuándo**: se conoce A, se necesita C, y existe una relación entre A y B y
     otra entre B y C.
 
@@ -675,8 +675,15 @@ test(hermana_se_cuenta_a_si_misma, all(Q == [ana, pedro])) :-
 test(hermanas_de_verdad, all(Q == [pedro])) :-
     hermana_de_verdad(ana, Q).
 
+test(eva_es_hermana_de_luis) :-
+    hermana_de_verdad(eva, luis).
+
 test(nadie_es_hermana_de_si_misma, [fail]) :-
     hermana_de_verdad(eva, eva).
+
+% pedro es varón: no es hermana de nadie, aunque tenga hermanos.
+test(pedro_no_es_hermana, [fail]) :-
+    hermana_de_verdad(pedro, _).
 
 :- end_tests(hermana).
 ```
@@ -703,9 +710,14 @@ swipl -g "consult(['hermana.pl','hermana.plt']),run_tests" -t halt
 La salida tiene la siguiente forma:
 
 ```text
-[1/5] hermana:hermana_se_cuenta_a_si_misma ....... passed (0.000 sec)
-[2/5] hermana:hermanas_de_verdad .................. passed (0.000 sec)
-% All 5 tests passed
+% Start unit: hermana
+% [1/5] hermana:hermana_se_cuenta_a_si_misma ........ passed (0.043 sec)
+% [2/5] hermana:hermanas_de_verdad .................. passed (0.000 sec)
+% [3/5] hermana:eva_es_hermana_de_luis .............. passed (0.000 sec)
+% [4/5] hermana:nadie_es_hermana_de_si_misma ........ passed (0.000 sec)
+% [5/5] hermana:pedro_no_es_hermana ................. passed (0.000 sec)
+% End unit hermana: passed (0.031 sec CPU)
+% All 5 tests passed in 0.068 seconds (0.031 cpu)
 ```
 
 Todos los ejemplos de este curso tienen su archivo de pruebas, y todas las

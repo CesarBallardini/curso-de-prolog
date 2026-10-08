@@ -38,7 +38,7 @@ materia(pp,  paradigmas,     2).
 materia(ssl, sintaxis,       2).
 materia(bd,  bases_de_datos, 3).
 
-% correlativa(Materia, Requisito): para cursar Materia hay que aprobar
+% correlativa(Materia, Requisito): para cursar Materia se debe aprobar
 % Requisito.
 correlativa(am2, am1).
 correlativa(am2, alg).
@@ -285,7 +285,7 @@ contar_operacion :-
 
 %!  requisitos_de(+Materia:atom, -Requisitos:list(atom)) is det.
 %
-%   Requisitos son todas las materias que hay que aprobar antes de cursar
+%   Requisitos son todas las materias que se debe aprobar antes de cursar
 %   Materia, directa o indirectamente, en orden y sin repetidos. El resultado
 %   se guarda la primera vez que se calcula.
 requisitos_de(Materia, Requisitos) :-

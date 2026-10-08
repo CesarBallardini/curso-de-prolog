@@ -696,6 +696,18 @@ planes de la versión 3 a las acciones del libro y explica por qué el
 conocimiento `c/7`, que se actualiza con cada acción, evita releer la
 historia en cada decisión.
 
+Dos partes de ese apartado del libro solo se describen aquí, sin
+programarlas. La primera es el agente que escribe los axiomas como
+fórmulas proposicionales, un símbolo por fluente y por momento, y decide
+si una celda es segura preguntando a un procedimiento de satisfacibilidad
+(SAT) si la base de conocimiento es compatible con un peligro en ella. La
+segunda es SATPlan, que planifica por la misma vía: afirma la meta en el
+momento T, para T = 1, 2, …, y lee el plan en los símbolos de acción del
+primer modelo que el procedimiento encuentra. Tampoco se programan
+«Wumpus 2» y «Wumpus 3», las versiones posteriores del juego de Yob, con
+otras cuevas y peligros nuevos: no hay una edición de acceso libre de
+sus reglas que el capítulo pueda seguir.
+
 ## Ejercicios
 
 Las soluciones están en [la página de soluciones](soluciones.md). La dificultad

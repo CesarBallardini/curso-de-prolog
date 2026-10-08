@@ -731,8 +731,8 @@ La compilación con dos polaridades es el patrón 97:
     negación en `\+` de esa meta, como `filtro/3` de la
     [versión 4](#866-version-4-el-compilador-de-toy-sequel). `\+` cuenta
     como falsa toda condición que no se prueba: `NOT (nota >= 6)` deja
-    pasar también las inscripciones sin nota, y la versión escrita a mano
-    de la
+    pasar también las inscripciones sin nota, y la versión escrita directamente
+    en Prolog de la
     [sección 42.4](../capitulo-42-prolog-y-sql/index.md#424-donde-difieren-bolsas-conjuntos-y-null)
     da siete inscripciones en lugar de cuatro.
 

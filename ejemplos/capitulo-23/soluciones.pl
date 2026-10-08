@@ -114,14 +114,15 @@ to_go_out([T, O, G, U]) :-
 %   Con es la cantidad de soluciones de SEND + MORE = MONEY que exigen que S
 %   y M no sean cero, y Sin la cantidad sin esa exigencia.
 soluciones_sin_ceros(Con, Sin) :-
-    aggregate_all(count, send_more_money(true), Con),
-    aggregate_all(count, send_more_money(false), Sin).
+    aggregate_all(count, send_more_money_con(true), Con),
+    aggregate_all(count, send_more_money_con(false), Sin).
 
-%!  send_more_money(+SinCeros:boolean) is nondet.
+%!  send_more_money_con(+SinCeros:boolean) is nondet.
 %
 %   Una solución de SEND + MORE = MONEY; con SinCeros en true, S y M no son
-%   cero.
-send_more_money(SinCeros) :-
+%   cero. Se llama distinto de send_more_money/1 del capítulo, que da las
+%   letras de la única solución.
+send_more_money_con(SinCeros) :-
     Letras = [S, E, N, D, M, O, R, Y],
     Letras ins 0..9,
     all_different(Letras),

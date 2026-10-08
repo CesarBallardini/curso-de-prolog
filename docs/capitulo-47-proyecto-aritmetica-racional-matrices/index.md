@@ -31,7 +31,37 @@ aritmética del [capítulo 8](../capitulo-08-aritmetica/index.md), las estructur
 carga sin copiarlo, y la búsqueda de costo uniforme del
 [capítulo 40](../capitulo-40-busqueda-y-planificacion/index.md#402-una-sola-busqueda-varias-estrategias).
 
-## El programa terminado
+![Una matriz A de cuatro filas y dos columnas, una matriz B de dos filas y tres columnas y su producto de cuatro filas y tres columnas; dos flechas señalan que el elemento de la fila 1 y la columna 2 del producto sale de la fila 1 de A y la columna 2 de B, y el de la fila 3 y la columna 3, de la fila 3 de A y la columna 3 de B](producto-matrices.png){ style="background-color: white" }
+
+El producto de matrices, la segunda parte del problema: una matriz A de
+4 × 2 por una matriz B de 2 × 3, y cada elemento del resultado es el
+producto interno de una fila de A por una columna de B. Imagen: Lakeworks,
+[CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/), vía
+[Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Matrix_multiplication_diagram_2.svg).
+
+## Objetivos del capítulo
+
+Al terminar el capítulo, el lector puede:
+
+- representar los racionales como términos en forma normal y evaluar
+  expresiones sobre ellos, y explicar por qué la forma normal hace que la
+  igualdad sea la unificación;
+- usar los racionales de SWI-Prolog —`rdiv`, la sintaxis `1r3`,
+  `rational/1`, `rational/3` y la bandera `prefer_rationals`— y decidir
+  cuándo un cálculo necesita números exactos;
+- representar matrices como listas de listas y escribir la traspuesta, el
+  producto y la inversa con predicados de orden superior;
+- separar el recorrido de un cálculo de la operación que hace en cada
+  paso, para usar el mismo producto con números y con símbolos;
+- planificar rutas con la búsqueda de costo uniforme, sobre un estado que
+  crece cuando el problema agrega una restricción.
+
+!!! info "Tiempo estimado"
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:40 h**.
+    Resolver los 5 ejercicios marcados con ★: **1:35 h**.
+    Resolver los 12 ejercicios del final: **3:15 h**.
+
+## 47.1 El programa terminado
 
 `proyecto.pl` carga las versiones finales de las tres partes:
 
@@ -66,29 +96,7 @@ combustible que el recorrido necesita:
 H = ['8:00'-pradera_alta, '8:33'-puerto_quieto, '8:48'-carga(puerto_quieto), '9:24'-piedra_mora, '9:45'-ribera_honda, '10:00'-carga(ribera_honda), '10:08'-alto_del_cardo, '10:21'-ermita_vieja].
 ```
 
-## Objetivos del capítulo
-
-Al terminar el capítulo, el lector puede:
-
-- representar los racionales como términos en forma normal y evaluar
-  expresiones sobre ellos, y explicar por qué la forma normal hace que la
-  igualdad sea la unificación;
-- usar los racionales de SWI-Prolog —`rdiv`, la sintaxis `1r3`,
-  `rational/1`, `rational/3` y la bandera `prefer_rationals`— y decidir
-  cuándo un cálculo necesita números exactos;
-- representar matrices como listas de listas y escribir la traspuesta, el
-  producto y la inversa con predicados de orden superior;
-- separar el recorrido de un cálculo de la operación que hace en cada
-  paso, para usar el mismo producto con números y con símbolos;
-- planificar rutas con la búsqueda de costo uniforme, sobre un estado que
-  crece cuando el problema agrega una restricción.
-
-!!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:40 h**.
-    Resolver los 5 ejercicios marcados con ★: **1:35 h**.
-    Resolver los 12 ejercicios del final: **3:15 h**.
-
-## 47.1 Versión 1: fracciones como términos
+## 47.2 Versión 1: fracciones como términos
 
 Un racional es el cociente de dos enteros, y el mismo racional tiene
 infinitas escrituras: 1/2, 2/4, -3/-6. La primera versión lo representa con
@@ -173,7 +181,7 @@ evalúa como un racional: la expresión se escribe como una fórmula y se
 evalúa exactamente. Un número de punto flotante no es una expresión
 racional, y `q_valor/2` lo rechaza con un error de tipo en lugar de
 convertirlo: el número puede haber perdido ya la exactitud, como 0.1, que
-no es exactamente un décimo ([sección 47.2](#472-version-2-los-racionales-de-swi-prolog)):
+no es exactamente un décimo ([sección 47.3](#473-version-2-los-racionales-de-swi-prolog)):
 
 ```text
 ?- q_valor(1 + 0.5, Q).
@@ -194,7 +202,7 @@ ningún predicado de la biblioteca acepta un `fr/2`. Una
 matriz de racionales necesitaría un producto y una inversa escritos para
 `fr/2`, distintos de los que sirven para enteros.
 
-## 47.2 Versión 2: los racionales de SWI-Prolog
+## 47.3 Versión 2: los racionales de SWI-Prolog
 
 SWI-Prolog tiene los racionales como un tipo de número, junto a los enteros
 y los de punto flotante, con numeradores y denominadores de cualquier
@@ -312,7 +320,7 @@ sumas redondea; `1r10` es exactamente un décimo. `X is 1/10 + 2/10` da
     y `X is 1 rdiv 0`. Comprobarlas, y explicar cuáles dan un entero, cuáles
     un número de punto flotante y cuál un error.
 
-## 47.3 Versión 3: matrices como listas de listas
+## 47.4 Versión 3: matrices como listas de listas
 
 Una matriz de F filas y C columnas es una lista de F filas, cada una una
 lista de C elementos: `[[1, 2, 3], [4, 5, 6]]` tiene dos filas y tres
@@ -320,14 +328,6 @@ columnas. El producto de A por B multiplica cada fila de A por cada columna
 de B, y las columnas de B son las filas de su **traspuesta**. `transpuesta/2`
 separa de cada fila su primer elemento con `maplist/4`: los primeros
 elementos forman una columna, y los restos, la matriz que queda.
-
-![Una matriz A de cuatro filas y dos columnas, una matriz B de dos filas y tres columnas y su producto de cuatro filas y tres columnas; dos flechas señalan que el elemento de la fila 1 y la columna 2 del producto sale de la fila 1 de A y la columna 2 de B, y el de la fila 3 y la columna 3, de la fila 3 de A y la columna 3 de B](producto-matrices.png){ style="background-color: white" }
-
-El producto de una matriz A de 4 × 2 por una matriz B de 2 × 3: cada
-elemento del resultado es el producto interno de una fila de A por una
-columna de B. Imagen: Lakeworks,
-[CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/), vía
-[Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Matrix_multiplication_diagram_2.svg).
 
 <!-- ejemplo: capitulo-47/matriz.pl predicado: transpuesta/2 columnas/3 -->
 ```prolog
@@ -424,7 +424,7 @@ La limitación es que el producto solo calcula con números. Una matriz de
 rotación tiene elementos como `cos(t)`, y su producto simbólico no se puede
 evaluar con `is/2`.
 
-## 47.4 Versión 4: el producto con símbolos
+## 47.5 Versión 4: el producto con símbolos
 
 Para multiplicar con símbolos basta un producto interno que construya la
 expresión en lugar de evaluarla. `matriz_simbolica.pl` carga `matriz.pl` y
@@ -480,7 +480,7 @@ simplificado da lo mismo que el numérico, porque la primera regla del
 simplificador evalúa las operaciones entre números; una prueba de
 `matriz_simbolica.plt` lo verifica.
 
-## 47.5 Versión 5: la inversa exacta
+## 47.6 Versión 5: la inversa exacta
 
 La inversa de una matriz cuadrada A es la matriz que multiplicada por A da
 la identidad. `inversa/2` la calcula con la **eliminación de Gauss–Jordan**
@@ -593,7 +593,7 @@ el de mayor valor absoluto, lo que reduce el error sin eliminarlo; el
     Comprobarlo con `between/3` y `desvio_hilbert/3`. Después, predecir la
     inversa de `[[1r2, 1r3], [1r4, 1r5]]` y comprobarla.
 
-## 47.6 Versión 6: rutas con horario
+## 47.7 Versión 6: rutas con horario
 
 El tercer proyecto del libro de Clocksin y Mellish planifica una ruta y da
 un horario de viaje a partir de un mapa con distancias, estado de los
@@ -742,7 +742,7 @@ La limitación de esta versión es el último atributo del mapa del
 enunciado: la disponibilidad de combustible. El planificador supone que el
 vehículo llega a cualquier distancia.
 
-## 47.7 Versión 7: el combustible
+## 47.8 Versión 7: el combustible
 
 Un vehículo recorre con el tanque lleno una cantidad fija de kilómetros, su
 **autonomía**, y solo carga en las ciudades con estación. La ciudad ya no
@@ -919,7 +919,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
   Maps», presentan el producto interno y la traspuesta de una matriz como
   lista de listas; la segunda propone separar en un solo recorrido la
   primera columna del resto, que es lo que hace `primero_y_resto/3` en la
-  [sección 47.3](#473-version-3-matrices-como-listas-de-listas).
+  [sección 47.4](#474-version-3-matrices-como-listas-de-listas).
 - *SWI-Prolog Reference Manual* — apartados
   «[Arithmetic types](https://www.swi-prolog.org/pldoc/man?section=artypes)»,
   «[Rational number examples](https://www.swi-prolog.org/pldoc/man?section=rational)»

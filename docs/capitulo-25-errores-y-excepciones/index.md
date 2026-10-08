@@ -551,15 +551,16 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
    teléfono escrito con espacios, guiones, puntos o paréntesis, con un
    `domain_error(telefono, Motivo)` distinto para las letras, la cantidad de
    dígitos y un código de área que empieza con 0 o 1.
-10. **(1)** ¿Qué responden `atom_number(abc, N).`, `succ(X, 0).` y
-    `arg(x, f(a), A).`? Clasificar cada una como falla o error.
+10. **(1)** ¿Qué responden `last([], X).`, `atom_length(abc, foo).` y
+    `char_code(C, N).`? Clasificar cada una como falla o error.
 11. ★ **(2)** Escribir `registrar_nota(Legajo, Materia, Nota)` para el proyecto,
     con validación de los tres argumentos, `domain_error(nota, Nota)` y
     `existence_error(cursada, Legajo-Materia)`.
 12. **(2)** Agregar el comando «nota de 101 en paradigmas 9», que llama a
-    `registrar_nota/3` y convierte sus errores en `error(Formal)`.
-13. **(2)** Registrar cada error del ejercicio 12 en un hecho dinámico, y
-    escribir `errores(L)`.
+    `registrar_nota/3`, convierte sus errores en `error(Formal)` y registra cada
+    uno en un hecho dinámico `error_registrado(Texto, Formal)`.
+13. **(2)** Escribir `errores(L)`: los errores registrados por el ejercicio 12,
+    como pares `Texto-Formal`, en el orden en que ocurrieron.
 14. **(1)** ¿Cuántas respuestas tiene `catch(member(X, [1, 2, 3]), _, true)`?
     ¿Por qué?
 

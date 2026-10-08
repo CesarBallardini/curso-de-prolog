@@ -1,11 +1,15 @@
 # Soluciones del capítulo 46 — Proyecto: métodos numéricos
 
-El código de esta página está en `ejemplos/capitulo-46/soluciones.pl`, que
-carga `metodos.pl` y con él todo el programa del capítulo —`iteracion.pl`,
-`biseccion.pl`, `secante.pl`, `newton.pl` y `gauss_seidel.pl`— y los
-programas del [capítulo 32](../capitulo-32-inspeccion-de-terminos/index.md); sus pruebas están en `soluciones.plt`. Los
-ejercicios 1 y 2 se resuelven con los archivos del capítulo. Como allí, los
-resultados de punto flotante se comparan en las pruebas con una tolerancia.
+El código de esta página está en dos archivos de `ejemplos/capitulo-46/`,
+cada uno con sus pruebas en el `.plt` del mismo nombre. `soluciones.pl`
+resuelve los ejercicios 3 a 12 y carga `metodos.pl` y con él todo el
+programa del capítulo —`iteracion.pl`, `biseccion.pl`, `secante.pl`,
+`newton.pl` y `gauss_seidel.pl`— y los programas del
+[capítulo 32](../capitulo-32-inspeccion-de-terminos/index.md).
+`soluciones_covington.pl` resuelve el 13 y el 14 y carga `covington.pl`.
+Los ejercicios 1 y 2 se resuelven con los archivos del capítulo. Como allí,
+los resultados de punto flotante se comparan en las pruebas con una
+tolerancia.
 
 ## 1
 

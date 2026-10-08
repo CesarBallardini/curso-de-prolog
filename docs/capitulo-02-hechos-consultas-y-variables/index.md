@@ -475,7 +475,7 @@ independiente.
 Cuando una consulta tiene más de una respuesta, Prolog muestra la primera y
 queda en espera. El punto y coma de los ejemplos anteriores **lo ingresa el
 usuario** para solicitar la respuesta siguiente. La barra espaciadora y la tecla
-TAB tienen el mismo efecto.  En general, el entorno de Prolog usado puede tener alguna forma de configurar estas teclas.
+TAB tienen el mismo efecto. Cada entorno de Prolog puede ofrecer alguna forma de configurar estas teclas.
 
 Para no solicitar más respuestas se presiona Enter.
 

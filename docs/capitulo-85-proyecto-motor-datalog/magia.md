@@ -191,8 +191,8 @@ La transformación es el patrón 96:
     sea por una parte pequeña.
 
     **Versión ingenua.** Calcular el modelo entero y quedarse con lo que
-    unifica con la consulta (`respuestas/4`), o escribir a mano una
-    versión del programa especializada para cada forma de la consulta,
+    unifica con la consulta (`respuestas/4`), o escribir de manera explícita
+    una versión del programa especializada para cada forma de la consulta,
     como `alcanza/1` en el
     [ejercicio 13 del capítulo 38](../capitulo-38-semantica-de-los-programas-logicos/soluciones.md#13).
 

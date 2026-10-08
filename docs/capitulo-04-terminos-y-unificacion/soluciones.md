@@ -98,7 +98,7 @@ operacion(A + B, A, B).
 operacion(A * B, A, B).
 ```
 
-`operacion/3` tiene dos cláusulas, de acuerdo con la plantilla 4: se cumple para
+`operacion/3` tiene dos cláusulas, de acuerdo con la plantilla 3: se cumple para
 una suma **o** para un producto.
 
 ## 9

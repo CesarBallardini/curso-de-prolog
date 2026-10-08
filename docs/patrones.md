@@ -605,7 +605,7 @@ restauran lo que modifican.
 **Cuándo no usarlo.** En un programa pequeño, o en un guion de un solo uso:
 la separación cuesta más que lo que ordena.
 
-Capítulo 24, [sección 24.8](capitulo-24-modulos-y-organizacion/index.md#248-el-proyecto-cinco-modulos).
+Capítulo 24, [sección 24.9](capitulo-24-modulos-y-organizacion/index.md#249-el-proyecto-cinco-modulos).
 
 ## 30 — Capturar lo justo y relanzar
 
@@ -775,8 +775,8 @@ Capítulo 27, [sección 27.7](capitulo-27-archivos-streams-y-formatos/index.md#2
 desde un script: con argumentos, con mensajes claros y con un código de
 salida que diga si terminó bien.
 
-**Versión ingenua.** Leer `current_prolog_flag(argv, …)` a mano en cada
-predicado que necesita un argumento, llamar a `halt/1` desde donde se
+**Versión ingenua.** Leer `current_prolog_flag(argv, …)` directamente en
+cada predicado que necesita un argumento, llamar a `halt/1` desde donde se
 detecta un problema, y dejar que los errores lleguen al usuario con la pila
 de llamadas.
 
@@ -1025,8 +1025,8 @@ se repite en cada ejecución: una llamada a un predicado de acceso, datos
 escritos en una forma cómoda de leer pero distinta de la que conviene
 consultar.
 
-**Versión ingenua.** Hacer ese trabajo en cada llamada; o escribir a mano
-la forma expandida en todos los lugares donde se usa.
+**Versión ingenua.** Hacer ese trabajo en cada llamada; o escribir de
+manera explícita la forma expandida en todos los lugares donde se usa.
 
 **Patrón.** Escribir la forma cómoda y un gancho, `term_expansion/2`
 para los términos del programa o `goal_expansion/2` para los objetivos
@@ -1049,8 +1049,8 @@ Capítulo 35, [sección 35.1](capitulo-35-transformacion-de-programas-y-compilac
 de una estructura que no cambia: los cuerpos de las cláusulas, las
 condiciones de las reglas.
 
-**Versión ingenua.** Interpretar siempre; o escribir a mano un compilador
-aparte, que hay que mantener de acuerdo con el intérprete.
+**Versión ingenua.** Interpretar siempre; o escribir aparte un compilador
+propio, que hay que mantener de acuerdo con el intérprete.
 
 **Patrón.** Evaluar parcialmente el intérprete respecto del programa: un
 evaluador parcial despliega las llamadas del intérprete cuyo argumento de
@@ -1393,7 +1393,7 @@ aplica necesita otra representación, como las listas de patrones
 prohibidos que la versión 4 convierte en autómatas. La traducción de
 una a otra es mecánica, pero larga y fácil de equivocar.
 
-**Versión ingenua.** Hacer la traducción a mano para cada regla, como
+**Versión ingenua.** Hacer la traducción explícita de cada regla, como
 la versión 3 escribe `regla/2` con `solo_ante_frontal/2` y
 `no_ante_frontal/2`: quien agrega una regla tiene que deducir qué
 sucesiones de pares quedan prohibidas, y la regla tal como se enuncia
@@ -1680,7 +1680,7 @@ en otro formato.
 **Versión ingenua.** Escribir las acciones del mundo dentro del
 planificador, como cláusulas de la regresión, o copiar el planificador
 para cada mundo; y, para un mundo que ya existe, reescribir su
-descripción a mano en el formato nuevo, con dos copias que hay que
+descripción, cláusula por cláusula, en el formato nuevo, con dos copias que hay que
 mantener iguales.
 
 **Patrón.** El planificador recibe el nombre del módulo del mundo como
@@ -1794,7 +1794,7 @@ consistencia de una heurística, y no hay una demostración general,
 o la que hay conviene confirmarla con el programa.
 
 **Versión ingenua.** Comprobar la propiedad en algunos estados
-elegidos a mano, o juzgar la heurística por el resultado de la
+elegidos uno por uno, o juzgar la heurística por el resultado de la
 búsqueda. Ninguna de las dos cosas detecta el defecto de
 `salteada/3`: A\* con ella da en `coffman` la duración óptima, 24,
 igual que con `camino/3`, y solo los 52 estados expandidos, contra
@@ -2506,7 +2506,7 @@ Capítulo 83, página [«Las curvas»](capitulo-83-proyecto-procesamiento-textos
 
 **Problema.** Una regla decide si el valor de una métrica es anómalo
 comparándolo con un límite, y los límites tienen varios orígenes: se
-escriben a mano, se ajustan con días anteriores o con el mismo día
+fijan de manera explícita, se ajustan con días anteriores o con el mismo día
 que se examina, o se aprenden de incidentes ya investigados. La
 regla, y las que buscan la causa, son las mismas para todos.
 
@@ -2664,8 +2664,8 @@ calcula todo lo que el programa permite deducir, aunque la pregunta
 sea por una parte pequeña.
 
 **Versión ingenua.** Calcular el modelo entero y quedarse con lo que
-unifica con la consulta (`respuestas/4`), o escribir a mano una
-versión del programa especializada para cada forma de la consulta,
+unifica con la consulta (`respuestas/4`), o escribir de manera explícita
+una versión del programa especializada para cada forma de la consulta,
 como `alcanza/1` en el
 [ejercicio 13 del capítulo 38](capitulo-38-semantica-de-los-programas-logicos/soluciones.md#13).
 
@@ -2699,8 +2699,8 @@ desconocida.
 negación en `\+` de esa meta, como `filtro/3` de la
 [versión 4](capitulo-86-proyecto-mini-sql-prolog/index.md#866-version-4-el-compilador-de-toy-sequel). `\+` cuenta
 como falsa toda condición que no se prueba: `NOT (nota >= 6)` deja
-pasar también las inscripciones sin nota, y la versión escrita a mano
-de la
+pasar también las inscripciones sin nota, y la versión escrita directamente
+en Prolog de la
 [sección 42.4](capitulo-42-prolog-y-sql/index.md#424-donde-difieren-bolsas-conjuntos-y-null)
 da siete inscripciones en lugar de cuatro.
 
@@ -2893,8 +2893,8 @@ primera vez y unas 500 la segunda. Es el
 [Patrón 53](patrones.md#53-tabular-la-relacion-recursiva) con otro
 motivo: aquí la relación no es recursiva, y la tabla no hace falta
 para terminar sino para no repetir, como la memorización del
-[Patrón 17](patrones.md#17-memorizacion-con-assertz) sin escribirla
-a mano.
+[Patrón 17](patrones.md#17-memorizacion-con-assertz) sin programarla
+de manera explícita.
 
 **Cuándo no usarlo.** Cuando lo que se repite es barato, como una
 búsqueda indexada en un hecho: la tabla cuesta más que la llamada.

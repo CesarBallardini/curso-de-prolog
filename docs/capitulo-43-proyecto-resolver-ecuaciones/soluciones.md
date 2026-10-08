@@ -1,10 +1,11 @@
 # Soluciones del capítulo 43 — Proyecto: resolver ecuaciones
 
-El código de esta página está en `ejemplos/capitulo-43/`, en cinco módulos
+El código de esta página está en `ejemplos/capitulo-43/`, en seis módulos
 con sus pruebas: `soluciones_aislar.pl` para el ejercicio 2,
 `soluciones_reglas.pl` para el 3, el 4 y el 5, `soluciones_metodos.pl` para
-el 6, el 7, el 8 y el 12, `soluciones_numericas.pl` para el 9 y el 10, y
-`soluciones.pl` para el 11. Ninguno modifica los archivos del capítulo: los
+el 6, el 7, el 8 y el 12, `soluciones_numericas.pl` para el 9 y el 10,
+`soluciones.pl` para el 11 y `soluciones_press.pl` para el 13 y el 14.
+Ninguno modifica los archivos del capítulo: los
 axiomas y las reglas nuevas se agregan a `axioma/3` y a `regla/3`, que son
 `multifile`, y los métodos nuevos son predicados que prueban su método y
 usan `resolver/3` de `ecuaciones.pl` cuando no se aplica. Como en el
