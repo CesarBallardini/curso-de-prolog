@@ -25,7 +25,7 @@ devuelve una parte de la frase anterior con la persona cambiada («your
 boyfriend made you come here»). Imagen: autor desconocido, dominio público,
 vía [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:ELIZA_conversation.png).
 
-El proyecto parte de tres libros. El apartado 2.1, «Template matching», de
+El proyecto parte principalmente de tres libros. El apartado 2.1, «Template matching», de
 *Natural Language Processing for Prolog Programmers* de Michael Covington,
 presenta ELIZA como un sistema de plantillas; el ejercicio de proyecto
 «ELIZA in Prolog» del apartado 2.2.4 enumera lo que una versión en Prolog
@@ -40,7 +40,7 @@ que resume quién, qué, dónde y cuándo, las guarda y responde preguntas; es
 la agenda de la versión 4. El apartado 14.3, «Artificial Intelligence
 Classics: ANALOGY, ELIZA, and McSAM», de *The Art of Prolog* de Leon Sterling
 y Ehud Shapiro
-([edición de acceso abierto](https://archive.org/details/artofprologadvan00ster)),
+([préstamo en el Internet Archive](https://archive.org/details/artofprologadvan00ster)),
 reconstruye los tres programas clásicos: de él vienen los pares de estímulo y
 respuesta con ranuras, la analogía como una operación que se encuentra y se
 aplica con el mismo predicado, y el guion que se activa por una palabra de la
@@ -1047,7 +1047,7 @@ archivo que carga los del capítulo, sin modificarlos.
 - Leon Sterling y Ehud Shapiro, *The Art of Prolog: Advanced Programming
   Techniques*, 2.ª edición, MIT Press, 1994 — apartado 14.3, «Artificial
   Intelligence Classics: ANALOGY, ELIZA, and McSAM».
-  [Edición en línea](https://archive.org/details/artofprologadvan00ster).
+  1.ª edición (1986) en [préstamo en el Internet Archive](https://archive.org/details/artofprologadvan00ster).
   El capítulo toma los pares de estímulo y respuesta con ranuras, la
   analogía como una operación que se encuentra y se aplica con el mismo
   predicado, el guion que se activa por una palabra y se empareja como una

@@ -54,6 +54,57 @@ unidad `begin_tests/end_tests`. Las opciones dicen qué se espera del cuerpo:
 | `fixme(Motivo)` | se ejecute y se informe aparte, como error conocido: si falla no cuenta como fallo, y si pasa plunit lo informa para que se quite la marca |
 | `timeout(Segundos)` | termine en ese tiempo |
 
+`opciones.pl` tiene los hechos `padre/2` de la
+[sección 5.3](../capitulo-05-como-responde-prolog/index.md#53-el-mismo-recorrido-registrado-por-trace),
+y `opciones.plt`, una prueba por cada una de las opciones menos frecuentes:
+
+<!-- ejemplo: capitulo-26/opciones.plt fragmento: :- begin_tests(opciones). .. :- end_tests(opciones). -->
+```prolog
+:- begin_tests(opciones).
+
+test(hijos_de_juan, set(H == [ana, pedro])) :-
+    padre(juan, H).
+
+test(excepcion, throws(mi_error)) :-
+    throw(mi_error).
+
+test(enteros_sin_limite, condition(current_prolog_flag(bounded, false))) :-
+    X is 2^100,
+    X > 2^64.
+
+test(hijos_de_eva, blocked('pendiente')) :-
+    padre(eva, _).
+
+test(juan_padre_de_luis, fixme('caso conocido')) :-
+    padre(juan, luis).
+
+:- end_tests(opciones).
+```
+
+`run_tests(opciones)` escribe:
+
+```text
+% Start unit: opciones
+% [1/4] opciones:hijos_de_juan ...................... passed (0.028 sec)
+% [2/4] opciones:excepcion .......................... passed (0.000 sec)
+% [3/4] opciones:enteros_sin_limite ................. passed (0.000 sec)
+% [4/4] opciones:juan_padre_de_luis .................. fixme (0.000 sec)
+% End unit opciones: passed (0.031 sec CPU)
+% one test is blocked (use run_tests/2 with show_blocked(true) for details)
+% all 1 tests flagged FIXME failed
+% All 4 (+-1 sub-tests) tests passed in 0.037 seconds (0.031 cpu)
+```
+
+La unidad tiene cinco pruebas y la salida numera cuatro: la bloqueada no se
+ejecuta, y una línea aparte informa que existe. La prueba `enteros_sin_limite`
+se ejecuta porque SWI-Prolog tiene enteros sin límite (`bounded` es `false`);
+con la condición incumplida, plunit la omitiría sin informarla como fallo. La
+prueba marcada con `fixme` falla, y aun así la unidad termina con `passed`: la
+falla se informa como `fixme` y se resume en la línea `all 1 tests flagged
+FIXME failed`. En la última línea, `(+-1 sub-tests)` es la diferencia entre
+las pruebas que pasaron, tres, y las ejecutadas, cuatro: la prueba `fixme` no
+cuenta como aprobada.
+
 La opción `forall` convierte una tabla en pruebas: una fila por caso, y un solo
 cuerpo que los recorre. El ejercicio 4 la usa para los ocho casos de
 `inscripcion_posible/3`.
@@ -217,10 +268,9 @@ optimización de la última llamada elimina. Es la pila completa que el
 [capítulo 25](../capitulo-25-errores-y-excepciones/index.md) mencionó: se obtiene con `debug.` antes de la consulta.
 
 !!! question "Actividad"
-    Cargar `traza.pl`, consultar `trace, abuelo(juan, Q).` y avanzar con
-    Enter. En el primer `Call` de `padre/2`, usar `s` (skip) en lugar de
-    Enter. ¿Qué puertos dejan de aparecer? Repetir con `r` (retry) en el
-    `Fail`.
+    Cargar `traza.pl`, consultar `trace, abuelo(juan, Q).` y, en el `Fail` de
+    `padre(ana, _)`, usar `g` (goals): ¿qué llamadas muestra la pila, y con qué
+    profundidad?
 
 ## 26.4 `gtrace/0`
 
@@ -390,10 +440,8 @@ cláusula, y si una generalización todavía falla, el objetivo tachado no era e
 responsable.
 
 !!! question "Actividad"
-    `hermanos_mal/2`, en `soluciones.pl`, no encuentra que ana y pedro son
-    hermanos. Predecir cuál de sus tres objetivos se debe tachar para que
-    `hermanos_mal(ana, pedro)` se cumpla, y comprobarlo con una copia de la
-    regla.
+    Tachar el primer objetivo de `abuelo_mal/2` en lugar del segundo, y
+    explicar por qué `abuelo_mal(juan, luis)` sigue fallando.
 
 !!! example "Patrón 35 — Depurar recortando"
     **Problema.** Una consulta falla y debería cumplirse, o da una respuesta

@@ -3,8 +3,9 @@
 El código de esta página está en `ejemplos/capitulo-33/soluciones.pl`,
 `soluciones_diagnostico.pl` y `soluciones_experto.pl`, en el mismo directorio,
 y pasa sus pruebas. `soluciones.pl` repite el programa de `programa.pl` y de
-las secciones siguientes, y el intérprete de `limpio.pl` con la disyunción, el
-condicional y la negación del ejercicio 4; los otros dos contienen el
+las secciones siguientes, y el intérprete de `limpio.pl` con la disyunción y
+el condicional del ejercicio 4, y la negación de la
+[sección 33.3](index.md#333-variar-el-interprete); los otros dos contienen el
 diagnóstico de `diagnostico.pl` y el sistema experto de `experto.pl`, para que
 cada archivo se cargue solo.
 

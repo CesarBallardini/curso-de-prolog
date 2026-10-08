@@ -48,7 +48,7 @@ flowchart TD
     P -- "se ejecutan" --> R
 ```
 
-El proyecto parte de tres fuentes. De *The Art of Prolog* de Leon Sterling y
+El proyecto parte principalmente de tres fuentes. De *The Art of Prolog* de Leon Sterling y
 Ehud Shapiro, el capítulo «A Compiler», toma la idea central: las etiquetas
 de los saltos son variables de Prolog, y el ensamblador las liga a sus
 direcciones por unificación, en una sola pasada, con un diccionario
@@ -939,7 +939,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 
 - Leon Sterling y Ehud Shapiro, *The Art of Prolog: Advanced Programming
   Techniques*, 2.ª edición, MIT Press, 1994 — «A Compiler».
-  [Edición en línea](https://archive.org/details/artofprologadvan00ster).
+  1.ª edición (1986) en [préstamo en el Internet Archive](https://archive.org/details/artofprologadvan00ster).
   El capítulo toma la idea central del ensamblador: las etiquetas de los
   saltos son variables que se ligan a sus direcciones por unificación en una
   sola pasada, con un diccionario incompleto para las variables del

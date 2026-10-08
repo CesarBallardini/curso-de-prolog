@@ -30,7 +30,7 @@ antemano: habría que escribir una regla para cada profundidad posible.
 La recursión resuelve exactamente ese problema. Una regla puede usar en su
 cuerpo el mismo predicado que está definiendo.
 
-Retomaremos el ejemplo es el del [capítulo 1](../capitulo-01-la-primera-hora/index.md):
+El ejemplo es el del [capítulo 1](../capitulo-01-la-primera-hora/index.md):
 
 <!-- ejemplo: capitulo-06/antepasados.pl predicado: antepasado/2 consulta: antepasado(tare, isaac). -->
 ```prolog
@@ -63,7 +63,7 @@ false.
 
 Taré no es progenitor de Isaac, de modo que la primera cláusula no alcanza. La
 segunda desciende a Abraham y pregunta si Abraham es antepasado de Isaac; ahora
-sí, responde la primer cláusula.
+sí, responde la primera cláusula.
 
 El árbol de derivación de la [sección 5.2](../capitulo-05-como-responde-prolog/index.md#52-el-arbol-de-derivacion)
 muestra ese recorrido, y también de dónde salen el `;` y el `false.`. Con los
@@ -159,11 +159,11 @@ falla y esa rama se agota. No hay manera de descender para siempre.
 
 Ese es el requisito fundamental para que el programa termine: **el caso recursivo debe avanzar hacia el caso base**. La [sección 5.6](../capitulo-05-como-responde-prolog/index.md#56-ramas-infinitas) mostró qué ocurre cuando esto no es así.
 
-La recursión funciona porque el problema tiene una estructura recurrente.  Tomemos el caso de una babushka, esas muñecas rusas huecas que se anidan una dentro de otra: desarmar una babushka puede pensarse como un procedimiento recurrente que toma un muñeca como argumento; cuando quitamos la muñeca hueca externa, nos queda una babushka todavía.  Como el objeto resultante tiene la misma forma que el argumento, una babushka, podemos a su vez aplicarle el procedimiento desarmar. Así seguiremos aplicando el procedimiento hasta que nos encontremos con una muñeca que ya no es hueca, en ese caso hemos llegado al final de la tarea de desarme.
+La recursión funciona porque el problema tiene una estructura recurrente. Un ejemplo es la babushka, esas muñecas rusas huecas que se anidan una dentro de otra: desarmar una babushka puede pensarse como un procedimiento recurrente que toma una muñeca como argumento; al quitar la muñeca hueca externa, lo que queda es todavía una babushka. Como el objeto resultante tiene la misma forma que el argumento, una babushka, se le puede aplicar a su vez el procedimiento desarmar. El procedimiento se sigue aplicando así hasta encontrar una muñeca que ya no es hueca, y en ese caso la tarea de desarme terminó.
 
 ![Una babushka a medio desarmar: las dos muñecas exteriores ya están abiertas, y la que queda es todavía una babushka](babushka.svg)
 
-Vemos que el procedimiento de desarme debe considerar dos casos: la muñeca externa es hueca, la muñeca externa es maciza.
+El procedimiento de desarme debe considerar, entonces, dos casos: la muñeca externa es hueca, la muñeca externa es maciza.
 
 ## 6.2 Caso base y caso recursivo
 
@@ -380,6 +380,31 @@ bloquea ninguna respuesta; solo impide que la enumeración termine.
 El encabezado de `natural/1` registra los dos modos con la notación de la
 [sección 2.8](../capitulo-02-hechos-consultas-y-variables/index.md#28-como-se-documenta-el-uso-de-un-predicado), una línea `%!` para cada uno: `natural(+N) is semidet` verifica, y
 `natural(-N) is multi` genera.
+
+Los naturales en notación `s` y los enteros predefinidos de Prolog se
+relacionan con `valor/2`, que traduce un natural en el entero que le
+corresponde: el valor de `cero` es 0, y el de `s(N)` es uno más que el de `N`.
+
+<!-- ejemplo: capitulo-06/naturales.pl predicado: valor/2 consulta: valor(s(s(s(cero))), V). -->
+```prolog
+%!  valor(+N, -V) is det.
+%
+%   V es el entero predefinido que corresponde al natural N.
+valor(cero, 0).
+valor(s(N), V) :-
+    valor(N, Anterior),
+    V is Anterior + 1.
+```
+
+```prolog
+?- valor(s(s(s(cero))), V).
+V = 3.
+```
+
+El `is` se escribe después de la llamada recursiva, porque `Anterior` no tiene
+valor hasta que la llamada termina; la
+[sección 6.6](#66-recursion-que-produce-un-resultado) explica ese orden en
+detalle.
 
 ## 6.4 La suma
 

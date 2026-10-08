@@ -120,10 +120,14 @@ La columna de la derecha muestra que la anomalía es del método, no del
 problema: la duración óptima nunca crece con esos cambios, porque todo
 calendario del proyecto original sigue siendo válido después de quitar
 precedencias o de agregar un procesador, y uno con las tareas más cortas
-se obtiene del original sin moverlas de su inicio. Graham prueba que,
-con n procesadores antes del cambio y n′ después, el calendario por lista
-no se alarga más que 1 + (n − 1)/n′ veces; con n = n′ = 3 da 5/3, y el
-ejemplo llega a 16/12. Es otra razón por la que el planificador de la
+se obtiene del original sin moverlas de su inicio. Graham demuestra en
+el artículo de 1966 que, con n procesadores antes del cambio y n′
+después, el calendario por lista no se alarga más que 1 + (n − 1)/n′
+veces, para cualquier proyecto y cualquier combinación de los cuatro
+cambios; el artículo de 1969 repite la cota junto al ejemplo. Con
+n = n′ = 3 da 5/3, y el ejemplo llega a 16/12. Que las cuatro variantes
+de `anomalias.pl` queden dentro de la cota ilustra el teorema, no lo
+demuestra. Es otra razón por la que el planificador de la
 [versión 5](index.md#727-version-5-el-planificador) no confía en un
 calendario por lista sin una cota inferior que lo respalde.
 
@@ -270,7 +274,7 @@ la consistencia asegura además que ningún estado se expande dos veces.
     o la que hay conviene confirmarla con el programa.
 
     **Versión ingenua.** Comprobar la propiedad en algunos estados
-    elegidos a mano, o juzgar la heurística por el resultado de la
+    elegidos uno por uno, o juzgar la heurística por el resultado de la
     búsqueda. Ninguna de las dos cosas detecta el defecto de
     `salteada/3`: A\* con ella da en `coffman` la duración óptima, 24,
     igual que con `camino/3`, y solo los 52 estados expandidos, contra

@@ -871,8 +871,8 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
   «Game-Playing Programs» (Mastermind, Nim y Kalah, que se mencionan aquí
   y se desarrollan en el
   [capítulo 78](../capitulo-78-proyecto-kalah-mastermind-nim/index.md)).
-  [Edición en línea](https://archive.org/details/artofprologadvan00ster).
-  Sin edición en línea de acceso libre verificada.
+  La 1.ª edición (1986) se consigue en
+  [préstamo en el Internet Archive](https://archive.org/details/artofprologadvan00ster).
 - *SWI-Prolog Reference Manual*, secciones de `library(time)`
   (`call_with_time_limit/2`), de la tabulación y de `library(thread)`
   (`concurrent_maplist/3`):

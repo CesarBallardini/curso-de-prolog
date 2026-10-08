@@ -29,7 +29,7 @@ Al terminar el capítulo, el lector puede:
 !!! info "Tiempo estimado"
     Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:29 h**.
     Resolver los 6 ejercicios marcados con ★: **1:53 h**.
-    Resolver los 15 ejercicios del final: **4:16 h**.
+    Resolver los 16 ejercicios del final: **4:35 h**.
 
 ## 27.1 Streams
 
@@ -672,7 +672,7 @@ Como los ajustes se declaran en un módulo, desde otro se nombran con el
 módulo: el proyecto declara `nota_minima` en `datos`, y su archivo de ajustes
 dice `setting(datos:nota_minima, 7)`.
 
-## 27.10 Hechos que se guardan solos: `library(persistency)`
+## 27.10 Hechos que persisten en un archivo: `library(persistency)`
 
 La [sección 20.10](../capitulo-20-base-de-datos-dinamica/index.md#2010-persistir-hechos) guardaba los hechos dinámicos escribiéndolos con
 `listing/1`. `library(persistency)` lo automatiza: cada `assert` y cada
@@ -885,7 +885,8 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
    archivo sin borrar lo que tiene.
 3. ★ **(2)** Escribir `copiar_en_mayusculas/2`, que copia un archivo de texto
    con cada línea en mayúsculas, con el [Patrón 36](../patrones.md#36-leer-procesar-escribir).
-4. **(2)** Escribir `linea_mas_larga/2`: la línea más larga de un archivo.
+4. **(2)** Escribir `linea_mas_larga/2`: la línea más larga de un archivo,
+   con su encabezado PlDoc: modos, tipos y determinismo.
 5. ★ **(2)** Escribir `frecuencias/2`: los pares `Palabra-Cantidad` de las
    palabras de un archivo, de la más frecuente a la menos frecuente.
 6. **(1)** Escribir `archivos_con_extension/2`: los archivos del directorio
@@ -912,6 +913,11 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 15. **(3)** En el proyecto, escribir `escribir_materias/1`: una tabla con el
     código, el nombre, el año, la cantidad de inscriptos y el promedio de cada
     materia.
+16. **(2)** Con `library(persistency)`, declarar
+    `asistencia(legajo:integer, fecha:atom)` y escribir `marcar_asistencia/2`
+    y `asistencias_de/2`, la lista de fechas de un alumno. Una prueba registra
+    dos asistencias, desasocia el archivo, lo vuelve a asociar y verifica que
+    se recuperan.
 
 ## Resumen
 

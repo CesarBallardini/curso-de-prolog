@@ -89,6 +89,12 @@ pasa directamente a `Exit: (11) padre(juan, ana)`, sin los puertos internos,
 que en un hecho no hay. Retry, en el `Fail` de `padre(ana, _)`, vuelve a su
 `Call`, que falla otra vez: retry repite una llamada, no cambia los datos.
 
+Respuesta a la actividad de la
+[sección 26.3](index.md#263-el-depurador-en-la-terminal): en el `Fail` de
+`padre(ana, _)`, `g` muestra dos llamadas, `padre(ana, _)` a profundidad 11 y,
+debajo, `abuelo(juan, _)` a profundidad 10, la llamada que la contiene. Las
+llamadas del toplevel no aparecen.
+
 ## 7
 
 <!-- ejemplo: capitulo-26/soluciones_proyecto.pl predicado: inscribir_registrado/3 consulta: vacantes_no_negativas. -->
@@ -197,6 +203,13 @@ Con el último objetivo tachado, `hermanos_recortado(ana, pedro)` se cumple: el
 error está en `A == B`, que exige que los dos sean el mismo, en lugar de
 distintos. Tachar el primero o el segundo no alcanza, porque el tercero sigue
 fallando.
+
+Respuesta a la actividad de la
+[sección 26.6](index.md#266-depuracion-declarativa): con el primer objetivo de
+`abuelo_mal/2` tachado, el cuerpo queda en `padre(N, P)`, y
+`abuelo_mal(juan, luis)` pide `padre(luis, P)`, que no tiene respuesta: luis no
+tiene hijos en el programa. La generalización todavía falla, de modo que el
+objetivo tachado no era el responsable.
 
 ## 11
 

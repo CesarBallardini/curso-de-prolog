@@ -6,7 +6,8 @@
 % llamada. ultimo/2 del capítulo 7 no se distingue por el primer argumento y
 % deja una alternativa al final; ultimo_indexado/2 pasa la lista al primer
 % argumento de un auxiliar, que se distingue en [] y [_|_]. todos_estan/2 deja
-% una alternativa en cada paso, y con ella la pila crece; con memberchk/2, no.
+% una alternativa en cada paso, y con ella la pila crece; con memberchk/2 o
+% con esta_en/2 dentro de once/1, no.
 % copias/3 arma los datos de esa medición.
 %
 %?- ultimo_indexado([a, b, c], U).
@@ -58,6 +59,15 @@ todos_estan_chk([], _).
 todos_estan_chk([X|Resto], L) :-
     memberchk(X, L),
     todos_estan_chk(Resto, L).
+
+%!  todos_estan_once(+Buscados:list, +L:list) is semidet.
+%
+%   La misma relación con esta_en/2 dentro de once/1: el corte queda en el
+%   borde de la llamada, y esta_en/2 no deja alternativas pendientes.
+todos_estan_once([], _).
+todos_estan_once([X|Resto], L) :-
+    once(esta_en(X, L)),
+    todos_estan_once(Resto, L).
 
 %!  copias(+N:integer, +X, -L:list) is det.
 %

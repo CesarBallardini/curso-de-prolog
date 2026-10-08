@@ -130,11 +130,11 @@ Quien = ana ;
 Quien = pedro.
 ```
 
-Ese nombre en mayúscula es una **variable**.  Cuando damos `Enter` Prolog nos muestra `Quien = ana` que es la primera solución, debemos escribir el `;` para solicitar la respuesta siguiente.
+Ese nombre en mayúscula es una **variable**.  Al pulsar `Enter`, Prolog muestra `Quien = ana`, que es la primera solución; para solicitar la respuesta siguiente se escribe `;`.
 
 ## 1.3 Reglas
 
-Los hechos enuncian lo que ya sabemos que se cumple. Las **reglas** indican cómo deducir afirmaciones nuevas:
+Los hechos enuncian lo que ya se sabe que se cumple. Las **reglas** indican cómo deducir afirmaciones nuevas:
 
 <!-- ejemplo: capitulo-01/familia.pl predicado: abuelo/2 consulta: abuelo(juan, Quien). -->
 ```prolog
@@ -155,7 +155,7 @@ concluirlo. Una regla no afirma nada por sí sola; afirma su cabeza cada vez que
 su cuerpo se puede probar.
 
 `A`, `N` y `P` son variables, como `Quien` en la sección anterior: nombres para objetos aún sin determinar, a los que Prolog asigna valores buscando en el programa. La
-novedad de esta sección son únicamente el `:-` y la coma. Veamos entonces:
+novedad de esta sección son únicamente el `:-` y la coma. Una consulta que usa la regla:
 
 ```prolog
 ?- abuelo(juan, eva).
@@ -318,7 +318,7 @@ tiene(eva, mascota(gato, gaturro)).
 tiene(pedro, mascota(tortuga, manuelita)).
 ```
 
-`mascota(gato, felix)` es un **término compuesto**: un nombre --que llamaremos símbolo funcional-- como
+`mascota(gato, felix)` es un **término compuesto**: un nombre --que se llama símbolo funcional-- como
 `mascota`, seguido de sus argumentos. Su forma es exactamente la de un hecho; lo
 que cambia es su posición dentro del programa. Escrito como predicado, un término afirma una relación o propiedad de un objeto; escrito como argumento de otro término, es un dato, igual que
 `felix`. Su utilidad reside en que se puede consultar completo o por
@@ -585,7 +585,7 @@ La enumeración no termina en punto sino en `false.`: después de `isca` todaví
 quedaban alternativas por explorar —el caso recursivo aplicado a cada uno de los
 hijos de Harán—, y ninguna aporta una respuesta nueva. Es lo habitual en un
 predicado recursivo: el `false.` final no indica que
-algo haya fallado, sino que se agotaron las alternativas pendientes.  Otra forma de interpretarlo es que mediante `;` preguntamos si hay alguna respuesta adicional: cada vez que hay alguna se la muestra, cuando no hay más la respuesta a si hay más es "no" (`false.`).
+algo haya fallado, sino que se agotaron las alternativas pendientes.  Otra forma de interpretarlo es que mediante `;` se pregunta si hay alguna respuesta adicional: cada vez que hay alguna se la muestra, cuando no hay más la respuesta a si hay más es "no" (`false.`).
 
 La recursión termina porque cada invocación desciende una generación, y el árbol
 es finito. Una recursión en la que el problema no se reduce en cada paso no

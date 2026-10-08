@@ -519,7 +519,7 @@ las materias que cursa), v3 solo para alg (am1 está aprobada) y v4 no (quedan
 ```prolog
 :- op(700, xfx, requiere).
 
-% Materia requiere Requisitos: para cursar Materia hay que aprobar cada uno
+% Materia requiere Requisitos: para cursar Materia se debe aprobar cada uno
 % de los Requisitos, unidos con y.
 am2 requiere am1 y alg.
 pp  requiere log.
@@ -528,7 +528,7 @@ bd  requiere pp y ssl.
 
 %!  correlativa(?Materia:atom, ?Requisito:atom) is nondet.
 %
-%   Para cursar Materia hay que aprobar Requisito: la relación del proyecto,
+%   Para cursar Materia se debe aprobar Requisito: la relación del proyecto,
 %   obtenida de los hechos requiere.
 correlativa(Materia, Requisito) :-
     Materia requiere Requisitos,

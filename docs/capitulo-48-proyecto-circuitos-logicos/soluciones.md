@@ -1,11 +1,15 @@
 # Soluciones del capítulo 48 — Proyecto: circuitos lógicos
 
-Las soluciones de los ejercicios 2 a 9 y 11 están en
-`ejemplos/capitulo-48/soluciones.pl`, que carga los módulos del proyecto
-(`circuitos.pl`, `formulas.pl`, `verificar.pl`, `secuenciales.pl` y
-`estados.pl`) y agrega sus circuitos con cláusulas `multifile`; la del ejercicio 10, en
-`soluciones_cmos.pl`, que no depende de ellos y corre en SWISH. Cada archivo
-tiene sus pruebas en el `.plt` del mismo nombre.
+Los ejercicios 1 y 13 se resuelven con los archivos del capítulo,
+`compuertas.pl` y `retardos.pl`. Las soluciones de los demás están en
+`ejemplos/capitulo-48/`, en tres archivos que cargan otros y se ejecutan
+localmente: `soluciones.pl`, para los ejercicios 2 a 9 y 11, carga los
+módulos del proyecto (`circuitos.pl`, `formulas.pl`, `verificar.pl`,
+`secuenciales.pl` y `estados.pl`) y agrega sus circuitos con cláusulas
+`multifile`; `soluciones_vectores.pl`, para el 12, carga el módulo
+`vectores`; y `soluciones_cmos.pl`, para el 10 y el 14, carga
+`transistores.pl`. Cada archivo tiene sus pruebas en el `.plt` del mismo
+nombre.
 
 ## Ejercicio 1
 

@@ -4,8 +4,8 @@
 
 % with_output_to/2, que captura la salida, se presenta en el capítulo 27.
 test(dos_ordenes_y_salir,
-     true(S == "ana tiene 41 años\nsofia no está en la base\nFin\n")) :-
-    open_string("edad(ana). edad(sofia). salir.", In),
+     true(S == "ana tiene 41 años\nmarta no está en la base\nFin\n")) :-
+    open_string("edad(ana). edad(marta). salir.", In),
     with_output_to(string(S), menu(In)).
 
 test(una_orden_desconocida,

@@ -48,7 +48,7 @@ requisito(Materia, Requisito) :-
 
 %!  requisitos_de(+Materia:atom, -Requisitos:list(atom)) is det.
 %
-%   Requisitos son todas las materias que hay que aprobar antes de cursar
+%   Requisitos son todas las materias que se deben aprobar antes de cursar
 %   Materia, directa o indirectamente, en orden y sin repetidos.
 requisitos_de(Materia, Requisitos) :-
     must_be(atom, Materia),

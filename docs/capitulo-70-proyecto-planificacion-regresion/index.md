@@ -670,7 +670,7 @@ La descripción con acciones sin variables cuesta más del doble que la de
     **Versión ingenua.** Escribir las acciones del mundo dentro del
     planificador, como cláusulas de la regresión, o copiar el planificador
     para cada mundo; y, para un mundo que ya existe, reescribir su
-    descripción a mano en el formato nuevo, con dos copias que hay que
+    descripción, cláusula por cláusula, en el formato nuevo, con dos copias que hay que
     mantener iguales.
 
     **Patrón.** El planificador recibe el nombre del módulo del mundo como

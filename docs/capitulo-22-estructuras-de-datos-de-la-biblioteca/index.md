@@ -740,8 +740,15 @@ materias_de(Indice, Legajo, Materias) :-
 R = [101-8.5, 104-8, 103-6, 106-4.5, 102-4].
 ```
 
-Con el índice de `indice_por_alumno(I)`, `materias_de(I, 104, M)` da
-`M = [log-nota(9), alg-nota(7), pp-nota(8)]`.
+La consulta con el índice imprime también el assoc entero, el término `t/5`
+que se vio en la [sección 22.5](#225-libraryassoc-y-libraryrbtrees); lo que
+interesa es `M`, las materias del alumno 104 con su estado:
+
+```prolog
+?- indice_por_alumno(I), materias_de(I, 104, M).
+I = t(104, [log-nota(9), alg-nota(7), pp-nota(8)], -, t(102, [am1-nota(4), log-nota(6), alg-nota(2)], -, t(101, [am1-nota(8), alg-nota(9), log-nota(10), am2-nota(7), pp-cursando], -, t, t), t(103, [am1-nota(7), alg-nota(5), am2-cursando], -, t, t)), t(106, [log-nota(3), am1-nota(6)], <, t(105, [am1-cursando], -, t, t), t)),
+M = [log-nota(9), alg-nota(7), pp-nota(8)].
+```
 
 `sort(2, @>=, Pares, Ranking)` ordena por el promedio, de mayor a menor, y
 conserva el orden de los legajos en los empates. `mejores/2` toma los primeros

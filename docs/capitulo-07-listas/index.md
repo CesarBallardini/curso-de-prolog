@@ -3,7 +3,7 @@
 Una lista es una secuencia ordenada de elementos, cuya cantidad no se conoce de antemano: los invitados a una fiesta, las materias de un cuatrimestre, las letras de una palabra.
 
 El [capítulo 6](../capitulo-06-recursion/index.md) mostró cómo recorrer una estructura que se reduce en cada llamada.
-Una lista es exactamente una estructura de ese tipo, de modo que este capítulo es, en lo esencial, una aplicación del [capítulo 6](../capitulo-06-recursion/index.md). Los elementos nuevos son la notación y un conjunto de predicados predefinidos de uso frecuente.
+Una lista es exactamente una estructura de ese tipo, de modo que este capítulo es, en lo esencial, una aplicación de ese capítulo. Los elementos nuevos son la notación y un conjunto de predicados predefinidos de uso frecuente.
 
 ## Objetivos del capítulo
 

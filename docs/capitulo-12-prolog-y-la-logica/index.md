@@ -437,11 +437,23 @@ son:
 - el texto: sus representaciones, sus conversiones y `format/2`;
 - quince plantillas que cubren la mayor parte de los programas de este nivel.
 
-Los contenidos que la parte II presenta son: reunir todas las
-respuestas de una consulta en una lista, escribir predicados que reciben otros
-predicados como argumento, y modificar el programa durante la ejecución. Con
-esos tres mecanismos, gran parte de lo que en la parte I se debía escribir de
-manera explícita se reduce a una línea.
+La parte II, «Prolog para programadores», va del
+[capítulo 13](../capitulo-13-el-entorno-de-trabajo/index.md) al
+[31](../capitulo-31-ejecutables-y-distribucion/index.md) y enseña a escribir
+con el lenguaje programas que otros usan: el entorno de trabajo y las pruebas,
+el estilo y el rendimiento, todas las soluciones de una consulta, el orden
+superior, la base de datos dinámica, las gramáticas, las restricciones, los
+módulos, las excepciones y los archivos, y la entrega de programas por línea
+de comandos, desde Python y por HTTP; con todas las soluciones y el orden
+superior, gran parte de lo que en la parte I se debía escribir de manera
+explícita se reduce a una línea. La parte III, «Lo avanzado», va del
+[capítulo 32](../capitulo-32-inspeccion-de-terminos/index.md) al
+[42](../capitulo-42-prolog-y-sql/index.md) y trata los programas como datos,
+las interfaces de usuario y la concurrencia, la semántica, la tabulación, la
+búsqueda, los juegos y la relación con SQL; la parte IV, «Proyectos», va del
+[capítulo 43](../capitulo-43-proyecto-resolver-ecuaciones/index.md) al
+[87](../capitulo-87-proyecto-preguntas-en-castellano/index.md) y construye con
+todo lo anterior proyectos completos.
 
 ## Ejercicios
 

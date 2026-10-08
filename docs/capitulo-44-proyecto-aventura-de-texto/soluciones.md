@@ -3,7 +3,7 @@
 El código de esta página está en `ejemplos/capitulo-44/`:
 `soluciones_mundo.pl` para los ejercicios 2 y 3, un archivo de hechos que
 agrega cláusulas a los módulos del capítulo; `soluciones.pl` para los
-ejercicios 4, 5, 6, 7, 9, 11 y 12, un módulo que carga la versión 5; y
+ejercicios 4, 5, 6, 7, 9, 11 y 12, un módulo que carga la versión 5;
 `soluciones_puro.pl` para el 10; y `soluciones_colossal.pl` para los
 ejercicios 13, 14 y 15, un módulo que carga los de las secciones
 [44.8](index.md#448-el-puntaje-y-los-turnos) a

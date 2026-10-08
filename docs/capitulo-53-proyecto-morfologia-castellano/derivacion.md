@@ -162,7 +162,7 @@ léxico y verifican que no cambian.
     prohibidos que la versión 4 convierte en autómatas. La traducción de
     una a otra es mecánica, pero larga y fácil de equivocar.
 
-    **Versión ingenua.** Hacer la traducción a mano para cada regla, como
+    **Versión ingenua.** Hacer la traducción explícita de cada regla, como
     la versión 3 escribe `regla/2` con `solo_ante_frontal/2` y
     `no_ante_frontal/2`: quien agrega una regla tiene que deducir qué
     sucesiones de pares quedan prohibidas, y la regla tal como se enuncia

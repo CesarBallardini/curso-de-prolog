@@ -484,8 +484,16 @@ alumnos_de_materia(Indice, Materia, Legajos) :-
     ).
 ```
 
-Con el índice de `indice_por_materia(I)`, `alumnos_en_comun(I, am1, log, L)` da
-`L = [101, 102, 106]`. Cada valor del índice es un conjunto ordenado, y
+La consulta con el índice imprime también el assoc entero; lo que interesa es
+`L`, los alumnos inscriptos en las dos materias:
+
+```prolog
+?- indice_por_materia(I), alumnos_en_comun(I, am1, log, L).
+I = t(am2, [101, 103], -, t(am1, [101, 102, 103, 105, 106], <, t(alg, [101, 102, 103, 104], -, t, t), t), t(pp, [101, 104], <, t(log, [101, 102, 104, 106], -, t, t), t)),
+L = [101, 102, 106].
+```
+
+Cada valor del índice es un conjunto ordenado, y
 `ord_intersection/3` los recorre una sola vez, a la par.
 
 ## 16

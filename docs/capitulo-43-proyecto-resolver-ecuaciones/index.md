@@ -44,9 +44,9 @@ ejercicio 16 del [capítulo 34](../capitulo-34-estructuras-incompletas-y-listas-
 tres capítulos. Todos los archivos del capítulo son módulos que cargan otros
 módulos, y por eso se ejecutan en una instalación local, no en SWISH.
 
-El proyecto parte de cuatro libros. El capítulo «An Equation Solver», el 23,
+El proyecto parte principalmente de cuatro libros. El capítulo «An Equation Solver», el 23,
 de *The Art of Prolog* de Leon Sterling y Ehud Shapiro
-([edición de acceso abierto](https://archive.org/details/artofprologadvan00ster)),
+([préstamo en el Internet Archive](https://archive.org/details/artofprologadvan00ster)),
 presenta una versión simplificada de PRESS, el programa de Alan Bundy y Bob
 Welham en Edimburgo: de él vienen la idea de probar los métodos en orden, la
 posición de la incógnita como una lista de números de argumento, los axiomas
@@ -877,7 +877,7 @@ prueba su método y usa `resolver/3` si no se aplica.
 
 - Leon Sterling y Ehud Shapiro, *The Art of Prolog: Advanced Programming
   Techniques*, 2.ª edición, MIT Press, 1994 — «An Equation Solver».
-  [Edición en línea](https://archive.org/details/artofprologadvan00ster).
+  1.ª edición (1986) en [préstamo en el Internet Archive](https://archive.org/details/artofprologadvan00ster).
   El capítulo toma de allí la organización del programa: los métodos
   probados en orden, la posición de la incógnita como lista de números de
   argumento, los axiomas de aislamiento, la forma normal de un polinomio y

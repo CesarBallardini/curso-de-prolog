@@ -25,13 +25,15 @@ Al terminar el capítulo, el lector puede:
 - declarar los meta-predicados de un módulo, y explicar qué ocurre si no se
   declaran;
 - dividir un programa en módulos con dependencias claras, y probar cada uno
-  por separado;
+  por separado, también desde la línea de comandos;
+- elegir entre `use_module/1`, `consult/1` y `ensure_loaded/1`, y examinar los
+  módulos cargados;
 - usar la biblioteca y los packs.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **0:42 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:10 h**.
     Resolver los 6 ejercicios marcados con ★: **1:53 h**.
-    Resolver los 15 ejercicios del final: **4:00 h**.
+    Resolver los 17 ejercicios del final: **4:25 h**.
 
 ## 24.1 Por qué módulos
 
@@ -66,7 +68,8 @@ Un módulo empieza con la directiva `module(Nombre, Exporta)`, antes que
 cualquier otra cláusula; en los archivos del curso solo la precede la
 directiva `encoding/1`. `Exporta` es la lista de los predicados de su
 interfaz, con su aridad; los no terminales de una gramática se escriben con
-`//`.
+`//`, y admite también operadores, como muestra la
+[sección 24.7](#247-cargar-y-examinar-modulos).
 
 <!-- ejemplo: capitulo-24/inscripciones/datos.pl fragmento: :- module(datos .. ]). consulta: alumno(101, Nombre, Carrera, Ingreso). -->
 ```prolog
@@ -289,7 +292,7 @@ de otro módulo, lo importa, como `reglas.plt`, que importa `datos` para usar
 La importación no es transitiva: `informes` importa `reglas`, y no recibe por
 eso lo que `reglas` importa de `datos`; para usar `alumno/4` importa `datos`
 también, como muestra la tabla de la
-[sección 24.8](#248-el-proyecto-cinco-modulos). Un módulo que ofrece la
+[sección 24.9](#249-el-proyecto-cinco-modulos). Un módulo que ofrece la
 interfaz de otro, además de la propia, lo declara con `:- reexport(Archivo).`
 o `:- reexport(Archivo, Lista).`: importa y vuelve a exportar; un módulo que
 solo reexporta hace de fachada, y los ejercicios 8 y 13 escriben dos.
@@ -326,7 +329,241 @@ usa como cualquier módulo de la biblioteca: `:- use_module(library(reif)).`.
 Antes de instalar uno, conviene verificar su licencia y su versión, como el
 [capítulo 13](../capitulo-13-el-entorno-de-trabajo/index.md) hizo con `lsp_server`.
 
-## 24.7 Módulos y SWISH
+## 24.7 Cargar y examinar módulos
+
+Los ejemplos de esta sección están en `ejemplos/capitulo-24/carga/`, y usan
+los módulos del proyecto.
+
+**`use_module/1`, `consult/1` y `ensure_loaded/1`.** Los tres cargan un
+archivo, y difieren en dos cosas: si lo cargan de nuevo cuando ya está
+cargado, y si exigen que sea un módulo. `consult/1`, del
+[capítulo 13](../capitulo-13-el-entorno-de-trabajo/index.md), lo carga cada
+vez que se lo llama, que es lo que se necesita al editar y probar.
+`ensure_loaded/1` lo carga solo si no estaba cargado: un archivo que varios
+otros necesitan se carga una sola vez. `use_module/1` hace lo mismo que
+`ensure_loaded/1`, y además exige que el archivo empiece con la declaración de
+un módulo. `aviso.pl` es un archivo sin módulo que escribe una línea cada vez
+que termina de cargarse:
+
+<!-- ejemplo: capitulo-24/carga/aviso.pl fragmento: :- initialization .. aviso(hola). consulta: aviso(Texto). -->
+```prolog
+:- initialization(format("aviso.pl cargado~n")).
+
+% aviso(T): T es el texto del aviso.
+aviso(hola).
+```
+
+```text
+?- consult(aviso).
+aviso.pl cargado
+true.
+
+?- consult(aviso).
+aviso.pl cargado
+true.
+
+?- ensure_loaded(aviso).
+true.
+```
+
+En una sesión nueva, `use_module(aviso)` no lo carga:
+
+```text
+?- use_module(aviso).
+ERROR: …/carga/aviso.pl:15:
+ERROR:    Domain error: `module_header' expected, found `:-initialization format("aviso.pl cargado~n")'
+```
+
+Con un módulo, `consult/1` también importa lo que el módulo exporta; la
+diferencia con `use_module/1` sigue siendo que lo carga de nuevo. La regla del
+curso: `use_module/1` en los programas, para los módulos; `ensure_loaded/1`
+para un archivo sin módulo que se carga desde varios lugares; `consult/1` en el
+toplevel.
+
+**Rutas relativas.** Un nombre de archivo relativo en una directiva, como
+`'../inscripciones/reglas'`, se resuelve desde el directorio del archivo que
+contiene la directiva, no desde el directorio de trabajo. Por eso los módulos
+de `carga/` y de `soluciones/` cargan el proyecto con `'../inscripciones/…'`,
+y se pueden cargar desde cualquier directorio. Un nombre relativo que se usa
+durante la ejecución —en una consulta del toplevel, o en el cuerpo de una
+regla— se busca, en cambio, desde el directorio de trabajo; por eso
+`aviso.plt` guarda la ruta completa de `aviso.pl` mientras se carga, con
+`prolog_load_context/2`, como la solución 10.
+
+**Operadores en la interfaz.** La lista de exportación admite también
+operadores. `relaciones` exporta `op(700, xfx, aprobo)`, la declaración del
+[capítulo 19](../capitulo-19-operadores-y-reglas-como-datos/index.md), junto
+con el predicado que se escribe con ella:
+
+<!-- ejemplo: capitulo-24/carga/relaciones.pl fragmento: :- module(relaciones .. aprobada(Legajo, Materia, _). consulta: 101 aprobo Materia. -->
+```prolog
+:- module(relaciones,
+          [ op(700, xfx, aprobo),
+            aprobo/2
+          ]).
+
+:- use_module('../inscripciones/reglas', [aprobada/3]).
+
+%!  aprobo(?Legajo:integer, ?Materia:atom) is nondet.
+%
+%   El alumno Legajo aprobó Materia.
+Legajo aprobo Materia :-
+    aprobada(Legajo, Materia, _).
+```
+
+El operador queda declarado al leer la directiva `module/2`, y la cláusula de
+`aprobo/2` ya lo usa en su cabeza. Un módulo que importa `relaciones` recibe
+el operador junto con los predicados, y puede escribir `Legajo aprobo
+Materia` en sus cláusulas:
+
+<!-- ejemplo: capitulo-24/carga/usa_relaciones.pl predicado: aprobadas_de/2 consulta: aprobadas_de(101, Materias). -->
+```prolog
+%!  aprobadas_de(+Legajo:integer, -Materias:list(atom)) is det.
+%
+%   Materias son las materias que aprobó el alumno Legajo, en el orden de
+%   los datos.
+aprobadas_de(Legajo, Materias) :-
+    findall(Materia, Legajo aprobo Materia, Materias).
+```
+
+```prolog
+?- aprobadas_de(101, Materias).
+Materias = [am1, alg, log, am2].
+```
+
+Los operadores, como los predicados, son propios de cada módulo: un módulo
+que no importa `relaciones` lee `101 aprobo am1` como un error de sintaxis.
+
+!!! question "Actividad"
+    En una sesión nueva, en el directorio `carga/`, cargar `usa_relaciones.pl`
+    con `use_module/1` y consultar `aprobadas_de(101, M).` y
+    `101 aprobo M.` Después, cargar `relaciones.pl` con `use_module/1` y
+    repetir la segunda consulta. ¿Por qué responde ahora?
+
+**Examinar los módulos.** `module_property(Modulo, Propiedad)` informa lo que
+el sistema registra de un módulo cargado: `file(F)`, su archivo;
+`exports(L)`, los indicadores que exporta; `exported_operators(L)`, los
+operadores; `class(C)`, `user` para un módulo del programa y `library` para
+uno de la biblioteca. Con un predicado, `predicate_property/2`, que el
+[capítulo 33](../capitulo-33-introspeccion-y-metainterpretes/index.md)
+presenta con las demás propiedades, tiene la propiedad `imported_from(M)`
+cuando el predicado llega importado del módulo `M`. `examinar.pl` carga
+`usa_relaciones` y define dos consultas sobre los módulos:
+
+<!-- ejemplo: capitulo-24/carga/examinar.pl predicado: interfaz/2 importados/3 consulta: interfaz(relaciones, Predicados). -->
+```prolog
+%!  interfaz(+Modulo:atom, -Predicados:list) is det.
+%
+%   Predicados son los indicadores Nombre/Aridad que exporta Modulo,
+%   ordenados.
+interfaz(Modulo, Predicados) :-
+    module_property(Modulo, exports(Exporta)),
+    msort(Exporta, Predicados).
+
+%!  importados(+Modulo:atom, +Origen:atom, -Predicados:list) is det.
+%
+%   Predicados son los indicadores Nombre/Aridad que Modulo importa de
+%   Origen, ordenados.
+importados(Modulo, Origen, Predicados) :-
+    findall(Nombre/Aridad,
+            ( predicate_property(Modulo:Cabeza, imported_from(Origen)),
+              functor(Cabeza, Nombre, Aridad) ),
+            Encontrados),
+    msort(Encontrados, Predicados).
+```
+
+```prolog
+?- interfaz(relaciones, Predicados).
+Predicados = [aprobo/2].
+
+?- module_property(relaciones, exported_operators(Ops)).
+Ops = [op(700, xfx, aprobo)].
+
+?- module_property(relaciones, class(C)).
+C = user.
+
+?- predicate_property(usa_relaciones:aprobo(_, _), imported_from(M)).
+M = relaciones.
+
+?- importados(relaciones, reglas, Predicados).
+Predicados = [aprobada/3].
+```
+
+En `importados/3`, `functor(Cabeza, Nombre, Aridad)`, que el
+[capítulo 32](../capitulo-32-inspeccion-de-terminos/index.md) presenta, da el
+nombre y la aridad de la cabeza que `predicate_property/2` encontró.
+`relaciones` importa de `reglas` solo `aprobada/3`, porque la directiva
+`use_module/2` lo pide así. El ejercicio 16 reconstruye con estas consultas la
+tabla de dependencias de la
+[sección 24.9](#249-el-proyecto-cinco-modulos).
+
+**La bandera `double_quotes`.** El
+[capítulo 11](../capitulo-11-texto/index.md) presentó la bandera que decide
+qué son las comillas dobles. Su valor es propio de cada módulo:
+`set_prolog_flag(double_quotes, codes)` en un módulo cambia la lectura de las
+cláusulas de ese módulo y de ningún otro.
+
+<!-- ejemplo: capitulo-24/carga/codigos.pl fragmento: :- module(codigos .. texto("ab"). consulta: texto(T). -->
+```prolog
+:- module(codigos, [vocal/1, texto/1]).
+
+:- set_prolog_flag(double_quotes, codes).
+
+%!  vocal(+Codigo:integer) is semidet.
+%
+%   Codigo es el código de una vocal minúscula sin acento.
+vocal(Codigo) :-
+    memberchk(Codigo, "aeiou").
+
+% texto(T): T es lo que este módulo lee de "ab".
+texto("ab").
+```
+
+```prolog
+?- texto(T).
+T = [97, 98].
+
+?- vocal(0'e).
+true.
+
+?- X = "ab".
+X = "ab".
+```
+
+En `codigos`, `"ab"` es la lista de sus códigos; en el toplevel, que lee en
+el módulo `user`, sigue siendo una cadena. Un programa escrito para otro
+sistema Prolog, que espera listas de códigos, puede ponerse en un módulo con
+esa directiva sin cambiar la lectura del resto. Un archivo sin módulo se carga
+en `user`, y el cambio alcanza entonces a todo lo que se lea en `user`
+después: el ejercicio 17 lo muestra.
+
+**Las pruebas desde la línea de comandos.** El
+[capítulo 13](../capitulo-13-el-entorno-de-trabajo/index.md#137-el-proyecto-inscripciones)
+ejecutó las pruebas con `swipl -g … -t halt`: `-g Objetivo` ejecuta un
+objetivo después de cargar, y puede repetirse; `-t halt` termina en lugar de
+abrir el toplevel. Para el proyecto en módulos, se cargan el archivo
+principal y los seis archivos de pruebas:
+
+```text
+$ cd ejemplos/capitulo-24/inscripciones
+$ swipl -g "consult([inscripciones, 'datos.plt', 'reglas.plt', 'informes.plt', 'comandos.plt', 'horarios.plt', 'inscripciones.plt'])" -g run_tests -t halt
+…
+% All 77 tests passed in 0.284 seconds (0.250 cpu)
+```
+
+Un módulo se prueba solo con su archivo y el suyo de pruebas:
+`swipl -g "consult([reglas, 'reglas.plt'])" -g run_tests -t halt` ejecuta
+las 31 pruebas de `reglas`, que carga por su cuenta `datos` e `informes`.
+Desde otro directorio basta con escribir la ruta de los dos archivos: las
+directivas `use_module/1` de cada módulo se resuelven desde su propio
+directorio. Si una prueba falla, `run_tests/0` falla, `swipl` escribe
+`ERROR: -g run_tests: false` y termina con código 1: es el código de salida
+del [capítulo 28](../capitulo-28-programas-de-linea-de-comandos/index.md#284-codigos-de-salida),
+que el gancho `pre-commit` del
+[capítulo 13](../capitulo-13-el-entorno-de-trabajo/index.md#137-el-proyecto-inscripciones)
+usa para cancelar un commit.
+
+## 24.8 Módulos y SWISH
 
 SWISH carga cada programa en un módulo temporal propio, y no admite programas
 formados por varios archivos que se importan entre sí. Los ejemplos de este
@@ -339,7 +576,7 @@ enlace.
     |---|---|
     | C6 | `datos` es el único módulo que modifica los hechos dinámicos, a través de los predicados que exporta; los demás consultan. `informes` y `horarios` no modifican nada. La separación es una convención: el ejercicio 9 muestra que el sistema no la impone |
 
-## 24.8 El proyecto: cinco módulos
+## 24.9 El proyecto: cinco módulos
 
 *Inscripciones* queda dividido en cinco módulos y un archivo principal, en el
 directorio `ejemplos/capitulo-24/inscripciones/`:
@@ -431,8 +668,10 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 5. ★ **(2)** Escribir un módulo `utiles` con `contar_cumplen(:Condicion, +L, -N)`,
    declarado como meta-predicado, y usarlo desde otro módulo con una condición
    privada.
-6. **(2)** Agregar a `comprobar_datos/0` una advertencia por cada materia con
-   vacantes negativas.
+6. **(2)** Escribir `comprobar_vacantes/0`, una comprobación más de los datos,
+   que escriba en la salida de errores una advertencia por cada materia con
+   vacantes negativas, y probarla con `with_output_to/2`, que el
+   [capítulo 27](../capitulo-27-archivos-streams-y-formatos/index.md) presenta.
 7. ★ **(2)** Mover la salida de los informes a un módulo `salida`, que importa
    `informes` sin su `mostrar_informe/2`.
 8. **(2)** Escribir un módulo `operaciones` que ofrezca solo `inscribir/3` y
@@ -452,6 +691,15 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     error se produce, y qué directiva lo resuelve?
 15. **(1)** Escribir en `inscripciones.pl` una directiva `initialization/1`
     que informe cuántas inscripciones hay al terminar la carga.
+16. **(2)** Escribir `dependencias(+Modulo, -Modulos)`: los módulos del
+    programa, no los de la biblioteca, de los que `Modulo` importa al menos un
+    predicado. Aplicarlo a los cinco módulos del proyecto y comparar el
+    resultado con la tabla de la [sección 24.9](#249-el-proyecto-cinco-modulos).
+17. **(1)** Un archivo sin módulo empieza con
+    `:- set_prolog_flag(double_quotes, codes).` y se carga con `consult/1`.
+    Predecir cómo se leen después las comillas dobles en el toplevel, en un
+    archivo que se carga a continuación, y dentro de una unidad de pruebas de
+    ese archivo.
 
 ## Resumen
 
@@ -466,6 +714,12 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | herencia de `user` | todo módulo ve los predicados de `user` |
 | `:- initialization(Objetivo)` | un objetivo al terminar de cargar el archivo |
 | `reexport/1,2` | un módulo que ofrece la interfaz de otros |
+| `ensure_loaded/1` | carga un archivo si no estaba cargado; `use_module/1` exige además un módulo, y `consult/1` carga siempre |
+| `op(P, T, Nombre)` en `Exporta` | un operador en la interfaz del módulo, para quien lo importa |
+| `module_property/2` | lo que el sistema registra de un módulo: `file(F)`, `exports(L)`, `exported_operators(L)`, `class(C)` |
+| `predicate_property(P, imported_from(M))` | `P` llega importado del módulo `M`; el predicado se presenta en el [capítulo 33](../capitulo-33-introspeccion-y-metainterpretes/index.md) |
+| `double_quotes` por módulo | la bandera vale para el módulo que la cambia; un archivo sin módulo la cambia en `user` |
+| `swipl -g Objetivo -t halt` | ejecutar las pruebas desde la línea de comandos; código 1 si alguna falla |
 | `file_search_path/2`, `prolog_load_context/2` | alias de directorios, como `library`; el directorio del archivo que se carga (solución 10) |
 | `current_output/1` | el stream de la salida actual, en las pruebas de la solución 6 |
 | packs | `pack_install/1`, `pack_list/1`, `pack_info/1`, `pack_remove/1` |
@@ -478,5 +732,6 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 |---|---|
 | Errores como términos, en la interfaz de un módulo | [capítulo 25](../capitulo-25-errores-y-excepciones/index.md) |
 | Las pruebas de un programa en módulos | [capítulo 26](../capitulo-26-pruebas-y-depuracion/index.md) |
+| `predicate_property/2` y la introspección del programa | [capítulo 33](../capitulo-33-introspeccion-y-metainterpretes/index.md) |
 | `:- initialization(main, main)` en un programa de línea de comandos | [capítulo 28](../capitulo-28-programas-de-linea-de-comandos/index.md) |
 | El Buscaminas completo, en módulos | [capítulo 31](../capitulo-31-ejecutables-y-distribucion/index.md) |

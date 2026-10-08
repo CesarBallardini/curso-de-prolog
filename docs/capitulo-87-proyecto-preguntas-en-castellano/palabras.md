@@ -110,8 +110,8 @@ La tabla de `analisis/2` es el patrón 102:
     [Patrón 53](../patrones.md#53-tabular-la-relacion-recursiva) con otro
     motivo: aquí la relación no es recursiva, y la tabla no hace falta
     para terminar sino para no repetir, como la memorización del
-    [Patrón 17](../patrones.md#17-memorizacion-con-assertz) sin escribirla
-    a mano.
+    [Patrón 17](../patrones.md#17-memorizacion-con-assertz) sin programarla
+    de manera explícita.
 
     **Cuándo no usarlo.** Cuando lo que se repite es barato, como una
     búsqueda indexada en un hecho: la tabla cuesta más que la llamada.

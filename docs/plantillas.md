@@ -58,23 +58,7 @@ nueva(X) :-
 
 Capítulo 3, [sección 3.3](capitulo-03-reglas-y-conjunciones/index.md#33-reglas).
 
-## 3 — Encadenar dos relaciones
-
-**Cuándo**: se conoce A, se necesita C, y existe una relación entre A y B y otra
-entre B y C.
-
-```prolog
-nueva(A, C) :-
-    primera(A, B),
-    segunda(B, C).
-```
-
-El elemento central es `B`: aparece dos veces, y por eso debe tener el mismo
-valor en los dos objetivos.
-
-Capítulo 3, [sección 3.3](capitulo-03-reglas-y-conjunciones/index.md#33-reglas).
-
-## 4 — Definir por casos
+## 3 — Definir por casos
 
 **Cuándo**: la relación se cumple por una condición **o** por otra.
 
@@ -87,6 +71,22 @@ p(X) :-
 
 Cada cláusula es una alternativa completa. Si se cumple más de una, se obtiene
 más de una respuesta.
+
+Capítulo 3, [sección 3.3](capitulo-03-reglas-y-conjunciones/index.md#33-reglas).
+
+## 4 — Encadenar dos relaciones
+
+**Cuándo**: se conoce A, se necesita C, y existe una relación entre A y B y otra
+entre B y C.
+
+```prolog
+nueva(A, C) :-
+    primera(A, B),
+    segunda(B, C).
+```
+
+El elemento central es `B`: aparece dos veces, y por eso debe tener el mismo
+valor en los dos objetivos.
 
 Capítulo 3, [sección 3.3](capitulo-03-reglas-y-conjunciones/index.md#33-reglas).
 

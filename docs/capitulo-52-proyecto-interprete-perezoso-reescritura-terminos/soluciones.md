@@ -1,8 +1,9 @@
 # Soluciones del capítulo 52 — Proyecto: un intérprete perezoso de reescritura de términos
 
-Las soluciones de los ejercicios 2 a 11 están en
-`ejemplos/capitulo-52/soluciones.pl`, que carga el programa terminado
-(`numeros.pl`, que vuelve a exportar las versiones anteriores) y agrega
+Las soluciones de los ejercicios 2 a 13 están en
+`ejemplos/capitulo-52/soluciones.pl`, que carga, como el programa terminado
+`proyecto.pl`, su última versión (`universal.pl`, que vuelve a exportar las
+anteriores) y agrega
 máquinas con cláusulas de `plana:fila/5` y `perezosa:alias/3`. Sus pruebas
 están en `soluciones.plt`. Las consultas usan predicados de las versiones:
 `resolver/4`, `seleccionar/7` y `sucesion/4`, de `perezosa.pl`; `medir/4`,

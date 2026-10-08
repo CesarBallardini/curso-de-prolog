@@ -293,7 +293,7 @@ Esta es la forma de expresar una disyunción en Prolog, y ya se usó antes: los
 cuatro hechos del predicado padre del capítulo 2 son cuatro cláusulas del mismo
 predicado.
 
-Plantilla 4 del curso: definir por casos. Cada cláusula es una alternativa
+Plantilla 3 del curso: definir por casos. Cada cláusula es una alternativa
 completa; si se cumple más de una, se obtiene más de una respuesta.
 :::
 
@@ -367,11 +367,11 @@ cumplen de la misma manera para ella.
 ::: notes
 Las reglas del capítulo siguen cuatro plantillas del curso.
 
-Derivar una relación de otra, como es_padre. Encadenar dos relaciones, como
-abuelo: el elemento central es la variable intermedia, que aparece dos veces y
-por eso debe tener el mismo valor en los dos objetivos; es la variable
-compartida de las conjunciones, ahora dentro de una regla. Definir por casos,
-como progenitor.
+Derivar una relación de otra, como es_padre. Definir por casos, como
+progenitor. Encadenar dos relaciones, como abuelo: el elemento central es la
+variable intermedia, que aparece dos veces y por eso debe tener el mismo valor
+en los dos objetivos; es la variable compartida de las conjunciones, ahora
+dentro de una regla.
 
 Y generar y después comprobar: primero se genera un candidato y después se lo
 verifica. El orden es significativo, porque la condición se verifica sobre una

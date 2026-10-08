@@ -93,4 +93,26 @@ test(ajuste_guardado, [ setup(( set_setting(user:ancho, 10),
     save_settings(F),
     leer_terminos(F, T).
 
+% Ejercicio 16: lo marcado se recupera al volver a asociar el archivo.
+test(asistencias_recuperadas,
+     [ setup(tmp_file(asistencias, F)),
+       cleanup(delete_file(F)),
+       true(Fechas == ['2026-03-02', '2026-03-09']) ]) :-
+    abrir_asistencias(F),
+    marcar_asistencia(101, '2026-03-09'),
+    marcar_asistencia(101, '2026-03-02'),
+    marcar_asistencia(101, '2026-03-02'),
+    marcar_asistencia(102, '2026-03-02'),
+    cerrar_asistencias,
+    asistencias_de(101, []),
+    abrir_asistencias(F),
+    asistencias_de(101, Fechas),
+    cerrar_asistencias.
+
+test(asistencia_tipo, [ setup(( tmp_file(asistencias, F),
+                                abrir_asistencias(F) )),
+                        cleanup(( cerrar_asistencias, delete_file(F) )),
+                        error(type_error(integer, ana)) ]) :-
+    marcar_asistencia(ana, '2026-03-02').
+
 :- end_tests(soluciones).

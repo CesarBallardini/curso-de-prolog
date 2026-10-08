@@ -266,7 +266,8 @@ dominio, que dependen de $n$:
   $k \geq n/2$, y una suma `X + w(K) * Y` con $K$ de $n/2$ en adelante es la
   resta `X - w(K - n/2) * Y`.
 
-La segunda versión, `raices.pl`, escribe esas tres reglas en `raiz/3` y
+La segunda versión, `raices.pl`, escribe esas dos identidades en las tres
+cláusulas de `raiz/3` y
 recorre la expresión como el simplificador del
 [capítulo 32](../capitulo-32-inspeccion-de-terminos/index.md): de abajo hacia arriba, con `mapargs/3`, y aplicando a cada
 nodo una regla propia o, si ninguna se aplica, una de `regla/2`:
@@ -311,7 +312,7 @@ raiz(N, X + w(K) * Y, X - w(K1) * Y) :-
     K1 is K - N // 2.
 ```
 
-La tercera regla de `raiz/3` se aplica a la suma entera y no a `w(K)` sola,
+La tercera cláusula de `raiz/3` se aplica a la suma entera y no a `w(K)` sola,
 porque el signo tiene que salir del producto: la resta `X - w(1) * Y` usa
 el mismo producto `w(1) * Y` que la suma `X + w(1) * Y`, y la
 [sección 50.6](#506-la-mariposa) aprovecha exactamente eso. Como el recorrido
@@ -355,7 +356,7 @@ una calcula lo aprovecha otra.
     Predecir, sin ejecutarla, la salida 4 de la transformada de orden 8
     simplificada, la que corresponde a $\omega^4 = -1$. Comprobarla con
     `tdf_ingenua(8, Es0), nth0(4, Es0, E0), simplificar_raices(8, E0, E)`,
-    y explicar con las reglas de `raiz/3` por qué no queda ningún producto.
+    y explicar con las cláusulas de `raiz/3` por qué no queda ningún producto.
 
 ## 50.4 La recursión sobre las mitades
 
@@ -636,7 +637,7 @@ fft_numerica(Coefs, Vs) :-
     valor_grafo(N, Coefs, Nodos, Salidas, Vs).
 ```
 
-El efecto está en la tercera regla de `raiz/3`. Las salidas $k$ y
+El efecto está en la tercera cláusula de `raiz/3`. Las salidas $k$ y
 $k + n/2$ provienen del mismo par de polinomios, evaluados en el mismo
 $\omega^{2k}$: son `A + w(K) * B` y `A + w(K + n/2) * B`. Después de
 simplificar, la segunda es `A - w(K) * B`, y las dos comparten `A` y el
@@ -723,7 +724,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 
 1. ★ **(1)** Predecir la expresión de `evaluar([0, 1, 2, 3], 3, 4, E)` y
    su forma simplificada con `simplificar_raices/3`, y comprobar las dos.
-   ¿Qué regla de `raiz/3` se aplica en cada suma?
+   ¿Qué cláusula de `raiz/3` se aplica en cada suma?
 2. ★ **(1)** En una copia de `mitades.pl`, la cláusula recursiva de
    `alternar/3` es `alternar([X, Y|T], [X|Xs], [Y|Ys]) :- alternar(T, Ys, Xs).`
    Predecir qué devuelve `alternar([0, 1, 2, 3], P, I)` y qué pruebas de
@@ -790,7 +791,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | | |
 |---|---|
 | **transformada discreta** | las $n$ salidas $X_k = \sum_j a_j \omega^{jk}$: el polinomio de los coeficientes evaluado en las potencias de una raíz $n$-ésima de la unidad |
-| **raíz de la unidad** | $\omega = e^{2\pi i/n}$; cumple $\omega^n = 1$ y $\omega^{n/2} = -1$, las dos reglas de `raiz/3` |
+| **raíz de la unidad** | $\omega = e^{2\pi i/n}$; cumple $\omega^n = 1$ y $\omega^{n/2} = -1$, las dos identidades que `raiz/3` escribe en tres cláusulas |
 | **recursión sobre las mitades** | $p(x) = p_{\mathit{par}}(x^2) + x\,p_{\mathit{impar}}(x^2)$; sola, no ahorra operaciones |
 | **grafo dirigido acíclico** | las expresiones con cada subexpresión distinta una sola vez; un nodo puede tener varios padres |
 | **mariposa** | una suma y una resta con los mismos dos operandos; la transformada rápida tiene $n/2$ en cada uno de sus $\log_2 n$ niveles |

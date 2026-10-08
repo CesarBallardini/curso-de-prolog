@@ -22,6 +22,12 @@ test(todos_estan_chk_sin_alternativas) :-
 test(falta_uno, [fail]) :-
     todos_estan_chk([a, z], [a, b, c]).
 
+test(todos_estan_once_sin_alternativas) :-
+    todos_estan_once([a, b], [a, b, c]).
+
+test(falta_uno_con_once, [fail]) :-
+    todos_estan_once([a, z], [a, b, c]).
+
 test(copias, true(L == [a, a, a])) :-
     copias(3, a, L).
 

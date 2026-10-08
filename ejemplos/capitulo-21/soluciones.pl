@@ -1,7 +1,7 @@
 :- encoding(utf8).
 
-% Capítulo 21 - Soluciones de los ejercicios 1 a 13. Las de los ejercicios 14
-% a 16, sobre el proyecto, están en soluciones_proyecto.pl.
+% Capítulo 21 - Soluciones de los ejercicios 1 a 13 y 17. Las de los
+% ejercicios 14 a 16, sobre el proyecto, están en soluciones_proyecto.pl.
 %
 %?- phrase(oracion_verdadera(H), P).
 %?- phrase(expresion(V), `2+3*4-6/2`).
@@ -334,3 +334,18 @@ aplicar(cociente, A, B, R) :- R is A / B.
 %   "[1, 2, 3]": enteros entre corchetes, separados por coma y espacio.
 lista_de_enteros(L) -->
     sequence("[", integer, ", ", "]", L).
+
+% --- Ejercicio 17 -------------------------------------------------------------
+
+%!  siguiente(-C)// is semidet.
+%
+%   C es el próximo elemento de la entrada, que no se consume: se devuelve a
+%   la entrada con el pushback. Es la de gramatica.pl.
+siguiente(C), [C] --> [C].
+
+%!  empieza_con_mayuscula// is semidet.
+%
+%   El próximo código de la entrada es una letra mayúscula. No lo consume.
+empieza_con_mayuscula -->
+    siguiente(C),
+    { code_type(C, upper) }.

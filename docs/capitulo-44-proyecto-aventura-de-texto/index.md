@@ -32,7 +32,7 @@ flowchart LR
     B -- "escalera" --- C["cúpula<br/>telescopio"]
 ```
 
-El proyecto parte de dos libros. El principal es *Adventure in Prolog*, de
+El proyecto parte principalmente de dos libros. El principal es *Adventure in Prolog*, de
 Dennis Merritt, que enseña Prolog construyendo capítulo a capítulo un juego,
 *Nani Search*; Amzi! lo publica en línea sin costo en
 <https://www.amzi.com/AdventureInProlog/>. De él se toman la representación

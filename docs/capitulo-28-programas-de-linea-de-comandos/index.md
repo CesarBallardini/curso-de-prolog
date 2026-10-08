@@ -257,8 +257,8 @@ decidir qué hacer después: `swipl contar.pl x.txt && echo listo` escribe
     desde un script: con argumentos, con mensajes claros y con un código de
     salida que diga si terminó bien.
 
-    **Versión ingenua.** Leer `current_prolog_flag(argv, …)` a mano en cada
-    predicado que necesita un argumento, llamar a `halt/1` desde donde se
+    **Versión ingenua.** Leer `current_prolog_flag(argv, …)` directamente en
+    cada predicado que necesita un argumento, llamar a `halt/1` desde donde se
     detecta un problema, y dejar que los errores lleguen al usuario con la pila
     de llamadas.
 
@@ -327,8 +327,8 @@ si_no("n",  no).
 si_no("no", no).
 ```
 
-Una sesión con el teclado, después de `preguntar_si_no(user_input,
-"¿Seguir?", R)`:
+Una sesión con el teclado, después de `prompt(_, '')` y de
+`preguntar_si_no(user_input, "¿Seguir?", R)`:
 
 ```text
 ¿Seguir? (s/n) tal vez
@@ -762,7 +762,8 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 7. **(2)** Escribir `codigo_de/3`, que ejecuta un archivo de Prolog con
    argumentos y da su código de salida, y usarlo para probar `eco.pl`.
 8. ★ **(2)** Escribir `edad_en/3`: la edad, en años cumplidos, de una persona
-   nacida en una fecha, en otra fecha.
+   nacida en una fecha, en otra fecha, con su encabezado PlDoc: modos, tipos y
+   determinismo.
 9. **(2)** Escribir `proximo_habil/2`: el primer día después de una fecha que
    no es sábado ni domingo.
 10. **(1)** Escribir `fecha_corta/2`, que escribe una fecha como `vie 25/09`,
