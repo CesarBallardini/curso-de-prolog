@@ -1,10 +1,10 @@
 # Capítulo 30 — Servicios web (REST)
 
-El [capítulo 29](../capitulo-29-prolog-desde-python/index.md) llevó las reglas de Prolog a un programa de Python que corre en
-la misma máquina, en el mismo proceso. Un **servicio web** las ofrece a
+El [capítulo 29](../capitulo-29-prolog-desde-python/index.md) llevó las reglas de Prolog a un programa de Python que se ejecuta
+en la misma máquina, en el mismo proceso. Un **servicio web** las ofrece a
 cualquier programa, en cualquier lenguaje y en cualquier máquina de la red: el
 programa cliente envía un pedido por HTTP, y el servicio responde con datos en
-JSON. Es la forma en que se conectan hoy la mayoría de los programas: una
+JSON. Es una forma habitual de conectar programas: una
 aplicación web, una aplicación de teléfono o un script le piden los datos a un
 servicio, sin saber en qué lenguaje está escrito.
 
@@ -37,7 +37,7 @@ Al terminar el capítulo, el lector puede:
 Un servidor HTTP espera **pedidos** en un **puerto** de la máquina. Cada
 pedido tiene un **método** —`GET` para consultar, `POST` para enviar datos— y
 una **ruta**, como `/hola`; la respuesta tiene un **código de estado** —200 si
-todo salió bien— y un cuerpo. `servidor.pl` declara la ruta `/hola` con
+el pedido se atendió— y un cuerpo. `servidor.pl` declara la ruta `/hola` con
 `http_handler/3`, y el predicado que la atiende, el **manejador**, recibe el
 pedido y responde:
 
@@ -183,7 +183,8 @@ La conversión es la del [capítulo 27](../capitulo-27-archivos-streams-y-format
 que el manejador necesita. 201 —creado— es el código de un `POST` que
 registró algo. En JSON, los booleanos se escriben `true` y `false`, y la
 ausencia de valor, `null`: en un dict de Prolog son esos mismos átomos. La
-notación `@(true)` del [capítulo 29](../capitulo-29-prolog-desde-python/index.md) es de Janus, y no sirve para JSON.
+notación `@(true)` del [capítulo 29](../capitulo-29-prolog-desde-python/index.md) es propia de Janus:
+`json_write_dict/2` la rechaza con un error de tipo.
 
 ## 30.4 Códigos de estado y errores
 
@@ -220,8 +221,8 @@ persona(Nombre, _Pedido) :-
 %
 %   Ejecuta Objetivo, que responde el pedido. Si produce un error de tipo o
 %   de dominio, responde 400; si es de existencia, 404; si falla, como
-%   cuando al cuerpo le falta un campo, 400. Los demás errores siguen su
-%   camino, y el servidor responde 500.
+%   cuando al cuerpo le falta un campo, 400. Los demás errores se propagan
+%   sin cambios, y el servidor responde 500.
 responder(Objetivo) :-
     catch(( Objetivo
           ->  true
@@ -252,7 +253,7 @@ codigo_de_error(existence_error(_, _), 404).
 
 `responder/1` ejecuta su argumento como una meta, y la declaración
 `:- meta_predicate responder(0)` del comienzo de `servidor.pl` lo dice, como
-en la [sección 24.4](../capitulo-24-modulos-y-organizacion/index.md#244-meta_predicate-y-los-modulos). Un error que no está en la tabla sigue su camino, y el servidor responde 500,
+en la [sección 24.4](../capitulo-24-modulos-y-organizacion/index.md#244-meta_predicate-y-los-modulos). Un error que no está en la tabla se propaga sin cambios, y el servidor responde 500,
 el código de un error del programa. Los errores que el propio servidor
 detecta —una ruta que no existe, un parámetro que falta— los responde en
 HTML, salvo que el pedido diga, con el encabezado `Accept:
@@ -265,7 +266,7 @@ como los demás.
     llegar al cliente como un código de estado, no como un 500 ni como un
     200 con un mensaje de error.
 
-    **Versión ingenua.** Un manejador largo, que valida los datos a mano,
+    **Versión ingenua.** Un manejador largo, que valida los datos uno por uno,
     llama a las reglas, examina cada resultado con `->` y escribe la
     respuesta en cada rama, con los códigos elegidos en cada lugar.
 
@@ -291,7 +292,7 @@ como los demás.
 Un cliente de Prolog usa `http_open/3`, que abre la respuesta de un pedido
 como un stream, y `http_post/4` para enviar datos. `cliente.pl` arma las
 direcciones con `library(uri)`, que codifica los valores: un nombre con
-espacios, con tildes o con `&` no rompe la dirección, por la misma razón que
+espacios, con tildes o con `&` no produce una dirección inválida, por la misma razón que
 el [capítulo 29](../capitulo-29-prolog-desde-python/index.md) pasaba los valores como ligaduras:
 
 <!-- ejemplo: capitulo-30/cliente.pl predicado: direccion/4 obtener_json/3 ficha_remota/3 consulta: direccion('http://localhost:8080', '/nietos', [abuelo=juan], Url). -->
@@ -354,7 +355,7 @@ cada uno: 404 es una falla, como `edad_de/2` con una persona desconocida;
 cualquier otro código distinto de 200, un error.
 
 Del lado de Python, `urllib.request`, de la biblioteca estándar, hace lo
-mismo; el paquete `requests` es una alternativa muy usada, con una
+mismo; el paquete `requests` es una alternativa habitual, con una
 interfaz más breve. El cliente convierte el 404 en una excepción, como la
 frontera del [Patrón 39](../patrones.md#39-frontera-pythonprolog):
 
@@ -395,8 +396,8 @@ el cliente cambie.
 
 ## 30.6 Probar un servidor
 
-Las pruebas de un servicio hacen pedidos de verdad, a un servidor que
-funciona. `servidor.plt` lo arranca una vez para toda la unidad, en un puerto
+Las pruebas de un servicio hacen pedidos reales a un servidor en ejecución.
+`servidor.plt` lo arranca una vez para toda la unidad, en un puerto
 libre, y lo detiene al terminar:
 
 <!-- ejemplo: capitulo-30/servidor.plt fragmento: :- dynamic puerto_de_prueba/1. .. detener(Puerto). -->
@@ -427,7 +428,7 @@ test(persona_inexistente, true(C == 404)) :-
 ```
 
 Un puerto fijo, como 8080, haría fallar las pruebas cuando otro programa lo
-usa, o cuando dos baterías corren a la vez; un puerto libre, elegido por el
+usa, o cuando dos baterías se ejecutan a la vez; un puerto libre, elegido por el
 sistema, no. Las pruebas del cliente de Python arrancan el servidor como
 programa, con `swipl -q servidor.pl`, y leen el puerto de la primera línea
 que escribe:
@@ -456,16 +457,16 @@ def base():
 En Windows, `localhost` se resuelve primero como dirección IPv6, y el
 servidor, que escucha en IPv4, no responde por ahí: cada pedido espera unos
 segundos antes de probar IPv4. `127.0.0.1` es la dirección IPv4 directa, y
-las pruebas la usan. Las de Prolog corren con `make test`, y también en la
+las pruebas la usan. Las de Prolog se ejecutan con `make test`, y también en la
 integración continua del curso; las de Python, con `make appendix`.
 
 !!! example "Patrón 41 — Servidor bajo prueba"
     **Problema.** Las pruebas de un servicio tienen que ejercitar las rutas,
-    los códigos y el JSON de verdad, sin depender de un servidor que alguien
-    arrancó a mano ni de un puerto que puede estar ocupado.
+    los códigos y el JSON reales, sin depender de un servidor arrancado por
+    separado ni de un puerto que puede estar ocupado.
 
     **Versión ingenua.** Probar solo los predicados del núcleo, o arrancar el
-    servidor a mano en el puerto 8080 antes de ejecutar las pruebas.
+    servidor por separado en el puerto 8080 antes de ejecutar las pruebas.
 
     **Patrón.** La unidad de pruebas arranca el servidor en su `setup`, en un
     puerto libre de `localhost` —`port(localhost:Puerto)` con `Puerto`
@@ -517,7 +518,7 @@ reenvía los pedidos. El [capítulo 31](../capitulo-31-ejecutables-y-distribucio
 lugar de rutas con JSON, el cliente envía una consulta de Prolog y recibe sus
 respuestas, una por una, como en el toplevel. SWISH está construido sobre
 Pengines, y `library(pengines)` viene con SWI-Prolog. Conviene cuando los
-clientes son programas que hablan Prolog; para clientes en cualquier
+clientes son programas escritos en Prolog; para clientes en cualquier
 lenguaje, un servicio con rutas y JSON, como el de este capítulo, es más
 simple de usar y de proteger, porque el servidor decide qué consultas se
 pueden hacer.
@@ -542,7 +543,7 @@ pueden hacer.
 | `GET /ranking` | el ranking |
 | `POST /inscripciones` | 201 si se acepta; 409 con el motivo si se rechaza; 404 si el alumno o la materia no existen |
 
-Los manejadores usan los predicados de siempre —`inscribir/3`,
+Los manejadores usan los predicados del proyecto —`inscribir/3`,
 `promedio_de_materia/2`, `ranking/1`— y las conversiones a dicts del módulo
 `puente` del [capítulo 29](../capitulo-29-prolog-desde-python/index.md): un dict es un objeto de JSON, lo reciba Python o un
 cliente HTTP. La inscripción es la ruta más completa:

@@ -57,4 +57,18 @@ test(con_valor, true(V == 41)) :-
 test(otros_errores_se_propagan, [error(instantiation_error)]) :-
     con_valor_por_omision(edad_de(_), 0, _).
 
+% catch/3 es transparente a la falla: edad/2 falla con zoe, sin error.
+test(por_omision_falla, [fail]) :-
+    con_valor_por_omision(edad(zoe), 0, _).
+
+test(edad_o_cero, true(E == 41)) :-
+    edad_o_cero(ana, E).
+
+% El error de existencia se captura; cualquier otro se relanza.
+test(captura_existencia, true(E == 0)) :-
+    edad_o_cero(zoe, E).
+
+test(relanza_instanciacion, [error(instantiation_error)]) :-
+    edad_o_cero(_, _).
+
 :- end_tests(errores).

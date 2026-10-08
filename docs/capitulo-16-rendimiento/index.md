@@ -1,6 +1,6 @@
 # Capítulo 16 — Rendimiento
 
-Un programa correcto puede ser inutilizable: responde bien con los siete alumnos
+Un programa correcto puede ser inutilizable: responde de inmediato con los siete alumnos
 del ejemplo y no termina con los cinco mil de una facultad, o agota la memoria
 con una lista de un millón de elementos. La parte I dejó varias señales de ese
 problema —el acumulador que usa menos memoria, el `append/3` que recorre toda la
@@ -28,7 +28,7 @@ Al terminar el capítulo, el lector puede:
 - leer un perfil de ejecución.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **0:50 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:05 h**.
     Resolver los 6 ejercicios marcados con ★: **1:36 h**.
     Resolver los 15 ejercicios del final: **5:00 h**.
 
@@ -58,7 +58,8 @@ second*) es el cociente entre los dos.
 SWI-Prolog, `statistics(cputime, T)` el tiempo de procesador, y
 `statistics(stack, S)` la memoria que ocupan las pilas. La diferencia entre dos
 lecturas mide lo que ocurrió en el medio. Los ejemplos del capítulo la calculan
-con un predicado auxiliar, que ejecuta el objetivo hasta agotar sus respuestas:
+con un predicado auxiliar, que ejecuta el objetivo hasta agotar sus respuestas con
+`forall/2`, presentado en el [capítulo 17](../capitulo-17-todas-las-soluciones/index.md#176-forall2):
 
 <!-- ejemplo: capitulo-16/pila.pl predicado: inferencias/2 consulta: numlist(1, 1000, L), inferencias(dar_vuelta_acc(L, _), I). -->
 ```prolog
@@ -142,8 +143,8 @@ El mensaje dice la causa: `last-call: 0%`, ninguna llamada pudo reutilizar su
 espacio, y `Stack depth: 277,922` llamadas esperando cuando se agotó la
 memoria. Medida con `statistics(stack, S)` sobre una lista de 300 000
 elementos, `largo/2` ocupa unos 53 MB, y `largo_acc/2` no ocupa nada adicional.
-Es la misma causa del límite que tenía `factorial/2` en el [capítulo 8](../capitulo-08-aritmetica/index.md): la
-multiplicación se hacía al volver.
+Es la misma causa del límite que tenía `factorial/2` en la
+[solución 9 del capítulo 8](../capitulo-08-aritmetica/soluciones.md#9): la multiplicación se hacía al volver.
 
 !!! example "Patrón 8 — Recursión en espacio constante"
     **Problema.** Una recursión que funciona con listas cortas agota la pila
@@ -152,14 +153,14 @@ multiplicación se hacía al volver.
     **Versión ingenua.** La operación después de la llamada recursiva:
     `largo([_|R], N) :- largo(R, N0), N is N0 + 1.`
 
-    **Patrón.** Un acumulador que lleva el resultado parcial (plantilla 13), la
+    **Patrón.** Un acumulador que lleva el resultado parcial ([plantilla 13](../plantillas.md#13-acumulador)), la
     operación antes de la llamada, y la llamada recursiva como último objetivo,
     sin alternativas pendientes.
 
     **Cuándo no usarlo.** Cuando la recursión es naturalmente corta —la
     profundidad de un árbol genealógico, los casos de una definición— y la
     versión directa es más clara. Tampoco cuando el resultado es una lista que
-    se construye en la cabeza de la cláusula (plantilla 12): esa recursión ya
+    se construye en la cabeza de la cláusula ([plantilla 12](../plantillas.md#12-construir-una-lista-durante-el-recorrido-de-otra)): esa recursión ya
     corre en espacio constante, y un acumulador daría la lista invertida.
 
 !!! question "Actividad"
@@ -248,7 +249,7 @@ alternativa, la llamada no se puede descartar. `todos_estan/2` del [capítulo 7]
 es un caso: `esta_en/2` encuentra el elemento y deja pendiente la búsqueda en el
 resto de la lista.
 
-<!-- ejemplo: capitulo-16/indexacion.pl predicado: todos_estan/2 todos_estan_chk/2 consulta: todos_estan_chk([a, b], [a, b, c]). -->
+<!-- ejemplo: capitulo-16/indexacion.pl predicado: todos_estan/2 todos_estan_chk/2 copias/3 consulta: todos_estan_chk([a, b], [a, b, c]). -->
 ```prolog
 %!  todos_estan(+Buscados:list, +L:list) is nondet.
 %
@@ -266,19 +267,37 @@ todos_estan_chk([], _).
 todos_estan_chk([X|Resto], L) :-
     memberchk(X, L),
     todos_estan_chk(Resto, L).
+
+%!  copias(+N:integer, +X, -L:list) is det.
+%
+%   L es la lista de N copias de X: los datos con que se mide todos_estan/2.
+copias(N, X, L) :-
+    (   N =:= 0
+    ->  L = []
+    ;   L = [X|Resto],
+        Faltan is N - 1,
+        copias(Faltan, X, Resto)
+    ).
 ```
 
-Con 300 000 elementos buscados, `todos_estan/2` ocupa unos 131 MB de pila, y
-`todos_estan_chk/2` nada adicional. Con un millón y 64 MB de pila, la primera se
-detiene:
+Los datos de la medición los arma `copias/3`: `copias(300000, a, B)` liga `B`
+con 300 000 copias de `a`, y cada una se encuentra en el primer lugar de
+`[a, b]` y deja pendiente el resto. Con `statistics(stack, S)` antes y después
+de `todos_estan(B, [a, b])`, la pila crece unos 134 MB; con
+`todos_estan_chk(B, [a, b])` no crece, y con tres millones de copias tampoco.
+Con un millón y 64 MB de pila, la primera se detiene:
+
+```prolog
+?- copias(1000000, a, B), todos_estan(B, [a, b]).
+```
 
 ```text
 ERROR: Stack limit (64.0Mb) exceeded
-ERROR:   Stack sizes: local: 26.3Mb, global: 22.9Mb, trail: 1Kb
-ERROR:   Stack depth: 111,175, last-call: 0%, Choice points: 111,165
+ERROR:   Stack sizes: local: 26.3Mb, global: 22.9Mb, trail: 0Kb
+ERROR:   Stack depth: 111,274, last-call: 0%, Choice points: 111,264
 ```
 
-`Choice points: 111,165` es la causa: una alternativa pendiente por cada
+`Choice points: 111,264` es la causa: una alternativa pendiente por cada
 elemento procesado. `memberchk/2` se cumple a lo sumo una vez y no deja
 ninguna. La corrección es la del criterio C4: un predicado que promete una
 respuesta no debe dejar alternativas, y la prueba sin `nondet` lo verifica.
@@ -351,9 +370,14 @@ decidir leyendo el programa —depende de los datos—, y por eso se mide.
     reales: una optimización sin medición complica el código sin beneficio
     comprobado.
 
+!!! question "Actividad"
+    Ejecutar `generar(500), comparar(alumno_250, bd).` y después
+    `generar(5000), comparar(alumno_2500, bd).` Comparar con las cifras del
+    texto y explicar por qué una versión crece y la otra no.
+
 ## 16.6 `append/3` en un bucle
 
-`dar_vuelta/2` del [capítulo 7](../capitulo-07-listas/index.md) agrega cada elemento al final de lo ya invertido
+`dar_vuelta/2` del [ejercicio 7 del capítulo 7](../capitulo-07-listas/soluciones.md#7) agrega cada elemento al final de lo ya invertido
 con `append/3`, que recorre toda esa lista para llegar al final:
 
 <!-- ejemplo: capitulo-16/pila.pl predicado: dar_vuelta/2 dar_vuelta_acc/2 dando_vuelta/3 consulta: numlist(1, 1000, L), inferencias(dar_vuelta(L, _), I). -->
@@ -401,13 +425,13 @@ rendimiento es el de esta sección: descarta alternativas que no van a aportar
 nada, y con eso ahorra el trabajo de probarlas y la memoria de guardarlas. Un
 corte verde después de un caso que ya se decidió, o un `once/1` en el borde
 ([Patrón 6](../patrones.md#6-una-respuesta-en-el-borde)), convierten una recursión que deja alternativas en cada paso en una
-que corre en espacio constante: `memberchk/2` es exactamente `member/2` seguido
+que corre en espacio constante: `memberchk/2` equivale a `member/2` seguido
 de un corte.
 
 El corte no ahorra nada cuando no hay alternativas: `ultimo_indexado/2` no lo
 necesita, porque la indexación ya descarta la otra cláusula. Antes de agregar
 un corte por rendimiento conviene comprobar, con una prueba sin `nondet`, que
-de verdad había una alternativa pendiente.
+efectivamente había una alternativa pendiente.
 
 ## 16.8 El profiler
 
@@ -436,6 +460,11 @@ tiempo; el resto fue la recolección de memoria que esas listas intermedias
 provocan. Las filas que empiezan con `$` son predicados internos de SWI-Prolog,
 como la carga automática de bibliotecas.
 
+!!! question "Actividad"
+    Ejecutar `numlist(1, 2000, L), profile(dar_vuelta(L, _)).` y comparar la
+    tabla con la del texto: ¿qué filas cambian de una ejecución a otra, y cuál
+    no?
+
 En `swipl-win`, la versión con ventanas de Windows, o en Linux con la
 interfaz gráfica instalada, `profile/1` abre una ventana con el mismo informe.
 La lista de la izquierda está ordenada por tiempo acumulado; al elegir un
@@ -450,10 +479,15 @@ El profiler requiere una instalación local; SWISH no lo ofrece.
 ## 16.9 `library(apply_macros)`
 
 Los predicados de orden superior del [capítulo 18](../capitulo-18-orden-superior/index.md) —`maplist/3` y los demás— reciben
-un predicado como argumento y lo llaman para cada elemento, con un costo por
-llamada. `library(apply_macros)` los reescribe en tiempo de carga como
-recursiones comunes, sin ese costo, pero solo cuando la bandera
-`optimise_apply` vale `true` o cuando `swipl` se ejecuta con la opción `-O`:
+un predicado como argumento y lo llaman para cada elemento.
+`library(apply_macros)` los reescribe en tiempo de carga como recursiones
+comunes. Con un predicado con nombre la cantidad de inferencias no cambia:
+unas 300 000 con y sin la expansión para `maplist(doble, L, D)` sobre 100 000
+elementos. Lo que la expansión ahorra es la copia de una lambda en cada
+llamada: de unas 1 300 000 a unas 300 000 inferencias con
+`[X, Y]>>(Y is 2 * X)`. La [sección 18.7](../capitulo-18-orden-superior/index.md#187-cuando-no-usar-el-orden-superior) mide los dos casos. La reescritura
+ocurre solo cuando la bandera `optimise_apply` vale `true` o cuando `swipl` se
+ejecuta con la opción `-O`:
 
 ```prolog
 :- set_prolog_flag(optimise_apply, true).
@@ -476,7 +510,7 @@ con el orden de objetivos que la [sección 16.5](#165-el-orden-de-los-objetivos-
 %
 %   El alumno llamado Nombre aprobó Materia. El primer objetivo es el que el
 %   nombre selecciona: con el orden inverso, la consulta recorre todas las
-%   inscripciones de la materia antes de mirar el nombre (sección 16.5).
+%   inscripciones de la materia antes de examinar el nombre (sección 16.5).
 aprobada_por_nombre(Nombre, Materia) :-
     alumno(Legajo, Nombre, _, _),
     aprobada(Legajo, Materia, _Nota).
@@ -499,7 +533,7 @@ ese: sin él, una edición posterior podría invertirlo sin saber lo que cuesta.
 !!! success "Criterios de calidad"
     | Criterio | En este capítulo |
     |---|---|
-    | C4 | medido además de verificado: `todos_estan/2` deja 111 165 alternativas y agota 64 MB; `todos_estan_chk/2` y `ultimo_indexado/2` no dejan ninguna, y sus pruebas no declaran `nondet` |
+    | C4 | medido además de verificado: `todos_estan/2` deja 111 264 alternativas y agota 64 MB; `todos_estan_chk/2` y `ultimo_indexado/2` no dejan ninguna, y sus pruebas no declaran `nondet` |
     | C7 | las pruebas de `pila.plt` y `generar_datos.plt` fijan cotas de inferencias: una regresión de rendimiento hace fallar una prueba |
 
 ## Ejercicios
@@ -531,13 +565,15 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     ```
 
 5. ★ **(2)** Corregir `todos_estan/2` con un corte, sin usar `memberchk/2`, y
-   comprobar con `statistics(stack, S)` sobre 300 000 elementos que ya no
-   ocupa memoria. ¿Es un corte verde o rojo?
+   comprobar con `statistics(stack, S)` y la lista de `copias(300000, a, B)`
+   que ya no ocupa memoria. ¿Es un corte verde o rojo?
 6. **(2)** Generar 50 000 alumnos y predecir, antes de medir, cuántas
    inferencias usa cada versión de `comparar/2`. Medir y comparar.
-7. ★ **(2)** Escribir `aplanar(Listas, L)`: `L` es la concatenación de las
-   listas de `Listas`, primero con `append/3` en cada paso y después sin él.
-   Medir las dos con mil listas de diez elementos.
+7. ★ **(2)** Escribir `aplanar(Listas, L)`, la concatenación de las listas de
+   `Listas`, de dos maneras: acumulando por la izquierda, con
+   `append(Acumulado, X, Nuevo)` en cada paso, y pegando cada lista delante del
+   resto ya aplanado, con `append(X, RestoAplanado, L)`. Medir las dos con mil
+   listas de diez elementos y explicar la diferencia.
 8. **(3)** `ultimo/2` deja una alternativa, pero no ocupa memoria; `todos_estan/2`
    deja alternativas y sí la ocupa. Explicar la diferencia con la optimización de
    la última llamada.
@@ -588,7 +624,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 
 | Tema | Se retoma en |
 |---|---|
-| `forall/2`, `findall/3` y `aggregate_all/3` | [capítulo 17](../capitulo-17-todas-las-soluciones/index.md) |
+| `forall/2`, usado en `inferencias/2` | [capítulo 17](../capitulo-17-todas-las-soluciones/index.md) |
 | `maplist/3` y `library(apply_macros)` | [capítulo 18](../capitulo-18-orden-superior/index.md) |
 | `assertz/1`, con el que se generaron los datos | [capítulo 20](../capitulo-20-base-de-datos-dinamica/index.md) |
 | Pruebas de rendimiento en la batería del proyecto | [capítulo 26](../capitulo-26-pruebas-y-depuracion/index.md) |

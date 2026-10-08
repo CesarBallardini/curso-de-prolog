@@ -17,12 +17,23 @@ La calificación dice en qué módulo buscar, pero el módulo tiene que estar
 cargado. Con `inscripciones.pl` cargado, las dos últimas responden
 `R = [alg, am1]`.
 
+La Actividad de la [sección 24.5](index.md#245-dividir-un-programa) muestra lo
+mismo desde las pruebas: sin `:- use_module(datos).`, siete pruebas de
+`reglas.plt` fallan, las seis con `setup(estado(E))` con el error «test setup
+goal raised error: … Unknown procedure: plunit_reglas:estado/1», y
+`estado_intacto` porque tampoco ve `inscripcion/3` ni `operaciones/1`. La
+unidad de pruebas es un módulo más, `plunit_reglas`, y solo ve lo que importa.
+
 ## 2
 
 `use_module(informes, [ranking/1])` carga el módulo entero, pero importa solo
-`ranking/1`. `ranking(R)` responde el ranking; `mejores(2, R)` produce un error
-de existencia: `mejores/2` está cargado, en el módulo `informes`, pero no
-importado. `informes:mejores(2, R)` lo encuentra.
+`ranking/1`. `mejores(2, R)` no está en `user`: el toplevel propone la
+corrección `informes:mejores(2,R)` y, al aceptarla, responde; desde un
+programa, sin esa ayuda, la llamada es un error de existencia. Lo mismo ocurre
+en la Actividad de la
+[sección 24.3](index.md#243-moduloobjetivo-y-la-autocarga) con
+`contar_y_sumar/3`, privado de `informes`: el toplevel propone
+`informes:contar_y_sumar(8,0-0,T)`.
 
 ## 3
 
@@ -50,12 +61,14 @@ La prueba `privado` verifica que `padre/2` no existe fuera del módulo, y
 ```prolog
 % padre/2 no se exporta: sin calificar, no existe fuera del módulo.
 test(privado, [error(existence_error(procedure, _), _)]) :-
-    call(padre(_, _)).
+    padre(_, _).
 ```
 
-`call/1` hace que la llamada ocurra al ejecutar la prueba: escrita
-directamente, `padre(_, _)` produciría una advertencia al cargar el archivo de
-pruebas, porque el predicado no existe.
+SWI-Prolog no verifica al cargar que los predicados que una cláusula llama
+existan: el archivo de pruebas carga sin advertencias y el error aparece al
+ejecutar la prueba. `check/0`, del
+[capítulo 26](../capitulo-26-pruebas-y-depuracion/index.md#267-check0-list_undefined0-y-gxref0),
+lo detecta antes de ejecutar.
 
 ## 4
 
@@ -282,3 +295,66 @@ reexporta. `pegar([a], [b], L)` responde `L = [a, b]`.
 Un módulo que reexporta sirve de **fachada**: quien solo consulta importa
 `consultas`, y no necesita saber en qué módulos están los informes y el
 calendario.
+
+## 14
+
+Con la autocarga desactivada, `use_module(informes)` carga el módulo sin
+advertencias, y `ranking(R)` termina con un error de existencia:
+
+```text
+ERROR: Unknown procedure: informes:foldl/4
+ERROR: In:
+ERROR:   [19] informes:foldl(contar_y_sumar,[8,9|...],0-0,_1706-_1708)
+ERROR:   [18] informes:promedio([8,9|...],_1740) at …/informes.pl:70
+```
+
+`promedio/2` llama a `foldl/4`, que `library(apply)` exporta, e `informes` no
+importa esa biblioteca. Con la autocarga activa, el módulo de la biblioteca se
+carga en la primera llamada, y por eso el error no apareció antes. La
+directiva que lo resuelve, en `informes.pl`, es `:- use_module(library(apply)).`,
+o `:- use_module(library(apply), [foldl/4]).` para importar solo ese
+predicado. El módulo `promedios` es la parte de `informes` que usa `foldl/4`,
+con la importación explícita:
+
+<!-- ejemplo: capitulo-24/soluciones/promedios.pl fragmento: :- module(promedios .. [foldl/4]). consulta: promedio([7, 9], P). -->
+```prolog
+:- module(promedios, [promedio/2]).
+
+:- use_module(library(apply), [foldl/4]).
+```
+
+La prueba `importado` verifica que `foldl/4` llega de `apply` con
+`predicate_property(promedios:foldl(_, _, _, _), imported_from(apply))`, un
+predicado que el
+[capítulo 33](../capitulo-33-introspeccion-y-metainterpretes/index.md)
+presenta.
+
+## 15
+
+`principal.pl` es `inscripciones.pl` con la directiva agregada: carga los cinco
+módulos del proyecto y, al terminar, comprueba los datos y escribe la cantidad
+de inscripciones:
+
+<!-- ejemplo: capitulo-24/soluciones/principal.pl fragmento: %!  informar_inscripciones .. initialization(informar_inscripciones). consulta: informar_inscripciones. -->
+```prolog
+%!  informar_inscripciones is det.
+%
+%   Escribe cuántas inscripciones hay.
+informar_inscripciones :-
+    aggregate_all(count, inscripcion(_, _, _), N),
+    format("~d inscripciones~n", [N]).
+
+:- initialization(comprobar_datos).
+:- initialization(informar_inscripciones).
+```
+
+Al cargar `principal.pl`, la salida dice `17 inscripciones`. El objetivo puede
+escribirse dentro de la directiva misma:
+
+```prolog
+:- initialization(( aggregate_all(count, inscripcion(_, _, _), N),
+                    format("~d inscripciones~n", [N]) )).
+```
+
+Con un predicado con nombre, la prueba `cantidad` captura la salida con
+`with_output_to/2` y la compara.

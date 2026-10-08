@@ -81,6 +81,12 @@ $ swipl soluciones_contar.pl --version
 contar 1.0.0
 ```
 
+**Actividad de la [sección 31.3](index.md#313-linux)**: lo construido sigue
+mostrando la ayuda anterior, porque el programa guardado contiene el código
+tal como se compiló al construirlo, y el cambio en `contar.pl` no lo afecta.
+Para que aparezca la nueva ayuda es necesario construir otra vez con
+`construir.pl`.
+
 ## 4
 
 <!-- ejemplo: capitulo-31/materias.pl predicado: cargar_materias/1 main/1 -->
@@ -181,8 +187,8 @@ La prueba es mínima: comprueba que lo construido arranca, carga lo que
 necesita y lee sus argumentos. Con `contar.pl` pasa, porque `argv_options/3`
 atiende `--help` y termina con 0. Con `refranes.pl` y `materias.pl` no
 pasa: sus `main/1` no usan `argv_options/3`, toman `--help` como un número
-de refrán o un código de materia, y terminan con 1. La prueba descubre así
-algo cierto: esos dos programas no tienen ayuda.
+de refrán o un código de materia, y terminan con 1. La prueba señala un
+hecho: esos dos programas no tienen opción de ayuda.
 
 ## 6
 
@@ -217,7 +223,7 @@ CMD ["swipl", "buscaminas.pl", "--servicio", "--puerto=8080", "--publico"]
 ```
 
 El comando necesita tres opciones: `--servicio`, porque en un contenedor no
-hay nadie que juegue en la terminal; `--puerto=8080`, porque sin la opción
+hay una terminal interactiva; `--puerto=8080`, porque sin la opción
 el servicio elige un puerto libre, y `docker run -p` necesita saber cuál
 publicar; y `--publico`, porque dentro del contenedor `localhost` es el
 propio contenedor, y los pedidos que Docker reenvía llegan por otra
@@ -419,7 +425,11 @@ jugar(Filas, Columnas, Minas, Opciones, Codigo) :-
     ).
 ```
 
-Como el servicio del [capítulo 30](../capitulo-30-servicios-web-rest/index.md), el programa espera con `thread_get_message/1` mientras los hilos del servidor atienden los pedidos; el [capítulo 37](../capitulo-37-concurrencia-y-paralelismo/index.md) presenta los hilos y sus colas de mensajes.
+Como el servicio del [capítulo 30](../capitulo-30-servicios-web-rest/index.md),
+el programa espera con `thread_get_message/1` mientras los hilos del servidor
+atienden los pedidos; el
+[capítulo 37](../capitulo-37-concurrencia-y-paralelismo/index.md) presenta los
+hilos y sus colas de mensajes.
 
 La opción se declara con el tipo
 `oneof([principiante, intermedio, experto])`: `argv_options/3` rechaza
@@ -434,3 +444,12 @@ $ swipl soluciones_buscaminas.pl --nivel=experto
 $ swipl soluciones_buscaminas.pl --nivel=facil
 ERROR: Option --nivel=facil requires one of principiante, intermedio, experto (found facil)
 ```
+
+**Actividad de la [sección 31.9](index.md#319-buscaminas-completo)**: `resolver`
+no encuentra ninguna celda segura al comienzo de la partida, cuando no hay
+números a la vista, y en las posiciones en que cada celda oculta lleva mina
+en al menos una solución de las restricciones visibles, como los «50 y 50».
+Eso no prueba que no haya una celda segura: `deducir/3` usa solo los números
+descubiertos, no la cantidad total de minas (`minas_restantes/2`), de modo
+que una celda que solo el conteo total revela queda fuera; además trata las
+celdas marcadas como ocultas, sin dar por cierta la marca.

@@ -21,8 +21,8 @@ los hechos ya no están. `listing(q/2), listing(p/1)` escribe, al final:
 
 :- dynamic p/1.
 
-p(X) :-
-    h(X).
+p(A) :-
+    h(A).
 ```
 
 La prueba `ejercicio_1` de `soluciones.plt` repite la secuencia y verifica el
@@ -75,9 +75,14 @@ los números nuevos, 2, 3 y 4, no se recorren. La segunda consulta quita los
 tres: `retract/1` quita el que `numero(N)` acaba de encontrar, y el recorrido
 sigue con los que había al empezar. Las dos terminan.
 
+La actividad de la [sección 20.3](index.md#203-la-vista-logica-de-actualizacion), con `numero(1)` y `numero(2)`:
+`forall(numero(N), retract(numero(N)))` deja `numero/1` vacío, y
+`forall(numero(N), assertz(numero(N)))` termina con `[1, 2, 1, 2]`: el
+recorrido ve solo los dos números del comienzo, y agrega una copia de cada uno.
+
 ## 4
 
-<!-- ejemplo: capitulo-20/soluciones.pl predicado: aleatorio/2 primeros_aleatorios/3 consulta: iniciar_cuenta, depositar(100), extraer(30), saldo(S). -->
+<!-- ejemplo: capitulo-20/soluciones.pl predicado: aleatorio/2 primeros_aleatorios/3 consulta: primeros_aleatorios(6, 10, L). -->
 ```prolog
 %!  aleatorio(+R:integer, -N:integer) is det.
 %
@@ -204,11 +209,16 @@ Quedan guardadas las sumas de 2 a 100: la de 1 es el caso base y no se guarda.
 Con `:- table suma_hasta/2.` y sin `suma_guardada/2`, la tabulación del
 [capítulo 39](../capitulo-39-tabulacion/index.md) haría lo mismo.
 
+La actividad de la [sección 20.5](index.md#205-memorizacion) tiene la misma cuenta: después de
+`olvidar_fib, fib_memo(25, F)` quedan 24 hechos `fib_guardado/2`, los de 2 a
+25. `fib_memo/2` guarda cada valor que calcula con la suma, y los casos base,
+0 y 1, no se guardan.
+
 ## 7
 
 El predicado de la [sección 20.4](index.md#204-contadores-y-estado-global), en `contadores.pl`:
 
-<!-- ejemplo: capitulo-20/contadores.pl predicado: contar_respuestas/2 consulta: global_con_retroceso(X), global_sin_retroceso(Y). -->
+<!-- ejemplo: capitulo-20/contadores.pl predicado: contar_respuestas/2 consulta: contar_respuestas(member(_, [a, b, c]), N). -->
 ```prolog
 %!  contar_respuestas(:Objetivo, -N:integer) is det.
 %
@@ -289,7 +299,7 @@ repartido en los hechos `derivado/3`.
 
 Las dos reglas se agregan a la lista, sin cambiar el intérprete:
 
-<!-- ejemplo: capitulo-20/soluciones.pl fragmento: regla(tio_o_tia .. primos(A, B)). consulta: reiniciar, encadenar, como(abuelo(juan, sofia)). -->
+<!-- ejemplo: capitulo-20/soluciones.pl fragmento: regla(tio_o_tia .. primos(A, B)). consulta: reiniciar, encadenar, hecho(primos(A, B)). -->
 ```prolog
 regla(tio_o_tia,    [hermanos(T, P), progenitor(P, S)], tio_o_tia(T, S)).
 regla(primos,       [progenitor(P, A), hermanos(P, Q), progenitor(Q, B)],
@@ -308,7 +318,7 @@ que ninguna agrega nada.
 
 ## 10
 
-<!-- ejemplo: capitulo-20/soluciones.pl predicado: encadenar_por_rondas/1 por_rondas/2 agregar/3 consulta: reiniciar, encadenar, como(abuelo(juan, sofia)). -->
+<!-- ejemplo: capitulo-20/soluciones.pl predicado: encadenar_por_rondas/1 por_rondas/2 agregar/3 consulta: reiniciar, encadenar_por_rondas(R). -->
 ```prolog
 %!  encadenar_por_rondas(-Rondas:integer) is det.
 %
@@ -430,6 +440,12 @@ El agente no puede deducir más con lo que percibió: la brisa de (3, 2) viene d
 (3, 1), de (3, 3) o de (4, 2). `setof/3` elimina las celdas repetidas, que
 aparecen una vez por cada vecina con brisa.
 
+La actividad de la [sección 20.7](index.md#207-el-agente-del-mundo-del-wumpus): sin el pozo de (3, 1), el
+recorrido es `[1-1, 2-1, 1-2, 3-1, 2-2, 4-1, 3-2, 2-3]`, y el resultado sigue
+siendo `oro(2-3)`. En (2, 1) ya no hay brisa, y eso prueba segura a (3, 1),
+vecina de (2, 1): `siguiente/1` la elige antes que (2, 2), y por la misma razón
+entran (4, 1) y (3, 2) antes de llegar a (2, 3).
+
 ## 13
 
 <!-- ejemplo: capitulo-20/soluciones_proyecto.pl predicado: registrar_nota/3 consulta: registrar_nota(101, pp, 9), promedio_memo(101, P). -->
@@ -460,7 +476,9 @@ test(nota_invalida, [ setup(estado(E)), cleanup(restaurar(E)), fail ]) :-
 
 Las comprobaciones van antes de `retract/1`: una nota inválida falla sin tocar
 la base, y la prueba `nota_no_cambia_la_base` lo verifica. Cada prueba guarda
-y restaura el estado con los predicados del programa.
+y restaura el estado con los predicados del programa. `contar_operacion/1`,
+con la operación como argumento, es la versión del [ejercicio 14](#14); en
+`inscripciones.pl` la llamada es `contar_operacion`.
 
 ## 14
 

@@ -32,7 +32,7 @@ test(principiante, true(L == "     1  2  3  4  5  6  7  8  9")) :-
 test(nivel_desconocido, true(E == exit(1))) :-
     primera_linea(['--nivel=facil'], _, E).
 
-% Sin nivel ni números, el error de uso de siempre.
+% Sin nivel ni números, el mismo error de uso que sin opciones.
 test(sin_tablero, true(E == exit(2))) :-
     primera_linea([], _, E).
 

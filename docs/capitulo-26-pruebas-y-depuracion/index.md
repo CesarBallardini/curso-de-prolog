@@ -7,7 +7,7 @@ forma de ejecutar una sola prueba o la batería completa, la medida de qué
 parte del programa ejercitan, y la pregunta de qué probar para que la batería
 detecte errores.
 
-Y se ocupa de lo que viene después de una prueba que falla: encontrar el
+También se ocupa de lo que viene después de una prueba que falla: encontrar el
 error. El depurador de SWI-Prolog, en la terminal y en su versión gráfica, las
 trazas con `debug/3`, las aserciones, y una técnica que no necesita el
 depurador: preguntar a las partes del programa, o tachar objetivos hasta que
@@ -28,9 +28,9 @@ Al terminar el capítulo, el lector puede:
   objetivos.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **0:42 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **0:50 h**.
     Resolver los 6 ejercicios marcados con ★: **2:10 h**.
-    Resolver los 14 ejercicios del final: **4:10 h**.
+    Resolver los 15 ejercicios del final: **4:15 h**.
 
 ## 26.1 plunit en detalle
 
@@ -51,7 +51,7 @@ unidad `begin_tests/end_tests`. Las opciones dicen qué se espera del cuerpo:
 | `forall(Generador)` | se cumpla para cada respuesta de `Generador`: una prueba por fila |
 | `condition(G)` | se ejecute solo si `G` se cumple |
 | `blocked(Motivo)` | no se ejecute: la prueba está desactivada |
-| `fixme(Motivo)` | falle: es un error conocido, que se informa aparte |
+| `fixme(Motivo)` | se ejecute y se informe aparte, como error conocido: si falla no cuenta como fallo, y si pasa plunit lo informa para que se quite la marca |
 | `timeout(Segundos)` | termine en ese tiempo |
 
 La opción `forall` convierte una tabla en pruebas: una fila por caso, y un solo
@@ -193,10 +193,23 @@ En cada puerto, el depurador espera un comando de una letra:
 | `h` | help | lista todos los comandos |
 
 `spy(padre/2)` pone un **punto espía**: en modo de depuración, el programa
-corre sin detenerse hasta llegar a una llamada a `padre/2`, y el depurador solo
-muestra los puertos de ese predicado. `nospy/1` lo quita, y `nospyall/0` los
-quita todos. Con `leash(-all)` el depurador escribe los puertos sin
-detenerse, que es como se obtuvieron las trazas de este capítulo.
+corre sin detenerse hasta la primera llamada a `padre/2`; desde allí, Enter
+muestra cada puerto, de cualquier predicado, y `l` (leap) avanza hasta el
+próximo puerto de `padre/2`. `nospy/1` lo quita, y `nospyall/0` los quita
+todos. Con `leash(-all)` el depurador escribe los puertos sin detenerse, que
+es como se obtuvieron las trazas de este capítulo. Con el punto espía y `l`
+en cada puerto, `abuelo(juan, Q)` muestra siete puertos, todos de `padre/2`:
+
+```text
+   Call: (11) padre(juan, _13660) ? leap
+   Exit: (11) padre(juan, ana) ? leap
+   Call: (11) padre(ana, _13250) ? leap
+   Fail: (11) padre(ana, _13250) ? leap
+   Exit: (11) padre(juan, pedro) ? leap
+   Call: (11) padre(pedro, _13250) ? leap
+   Exit: (11) padre(pedro, luis) ? leap
+Q = luis.
+```
 
 El modo de depuración tiene un efecto más: conserva todas las llamadas en la
 pila, y un error muestra la **pila completa**, sin los marcos que la
@@ -270,9 +283,24 @@ P = 5.
 salida del programa.
 
 `assertion(Condicion)` comprueba una condición que **debe** cumplirse si el
-programa está bien: un invariante. Si no se cumple, produce un error con la
-pila de llamadas; no es una validación de los datos de entrada —eso es
-`must_be/2`, del [capítulo 25](../capitulo-25-errores-y-excepciones/index.md)— sino una comprobación del propio programa.
+programa está bien: un invariante. Si no se cumple, escribe el mensaje y la
+pila de llamadas y, en el toplevel, activa el depurador; en un programa sin
+consola lanza `error(assertion_error(fail, Objetivo), _)`. No es una
+validación de los datos de entrada —eso es `must_be/2`, del
+[capítulo 25](../capitulo-25-errores-y-excepciones/index.md)— sino una
+comprobación del propio programa. `nota_valida/1` comprueba dos invariantes:
+
+<!-- ejemplo: capitulo-26/depurar.pl predicado: nota_valida/1 consulta: nota_valida(7). -->
+```prolog
+%!  nota_valida(+N) is det.
+%
+%   Comprueba con assertion/1 que N es una nota de 1 a 10. Una aserción que
+%   no se cumple indica un error del programa, no de los datos.
+nota_valida(N) :-
+    assertion(integer(N)),
+    assertion(between(1, 10, N)).
+```
+
 `nota_valida(11)` escribe:
 
 ```text
@@ -308,12 +336,9 @@ hizo falta el depurador. La traza del mismo cálculo llega a la misma línea,
 `Exit: (14) contar_y_sumar_mal(9, 1-6, 2-10)`, después de catorce pasos.
 
 Para una respuesta que **falta**, la técnica es otra. `abuelo_mal(juan, luis)`
-falla, y debería cumplirse. Se **tachan** objetivos del cuerpo, uno por vez,
-hasta que la consulta se cumple: el último tachado es el que falla. Un
-operador prefijo `*` que se cumple siempre hace de tachadura, sin borrar el
-objetivo:
+falla, y debería cumplirse:
 
-<!-- ejemplo: capitulo-26/depurar.pl predicado: abuelo_mal/2 abuelo_recortado/2 consulta: promedio_mal([6, 9], P). -->
+<!-- ejemplo: capitulo-26/depurar.pl predicado: abuelo_mal/2 consulta: abuelo_mal(juan, luis). -->
 ```prolog
 %!  abuelo_mal(?A, ?N) is nondet.
 %
@@ -322,6 +347,23 @@ objetivo:
 abuelo_mal(A, N) :-
     padre(A, P),
     padre(N, P).
+```
+
+Se **tachan** objetivos del cuerpo, uno por vez, hasta que la consulta se
+cumple: el último tachado es el que falla. Un operador prefijo `*` que se
+cumple siempre hace de tachadura, sin borrar el objetivo. El operador se
+declara con `op/3`, del [capítulo 19](../capitulo-19-operadores-y-reglas-como-datos/index.md), y
+`*(_)` se cumple con cualquier objetivo sin ejecutarlo:
+
+<!-- ejemplo: capitulo-26/depurar.pl fragmento: :- op(920, fy, *). .. * padre(N, P). consulta: abuelo_recortado(juan, luis). -->
+```prolog
+:- op(920, fy, *).
+
+%!  *(+Objetivo) is det.
+%
+%   Tacha Objetivo: *G se cumple siempre, sin ejecutar G. Un objetivo tachado
+%   se quita de una cláusula sin borrarlo, para ver si el error depende de él.
+*(_).
 
 %!  abuelo_recortado(?A, ?N) is nondet.
 %
@@ -372,7 +414,7 @@ responsable.
 
 ## 26.7 `check/0`, `list_undefined/0` y `gxref/0`
 
-Algunos errores se encuentran sin ejecutar nada. `check/0` revisa el programa
+Algunos errores se encuentran sin ejecutar nada. `check/0` examina el programa
 cargado y avisa de los predicados que se llaman y no están definidos, entre
 otras cosas. Con el archivo de soluciones de este capítulo cargado, `check.`
 escribe:
@@ -435,7 +477,8 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 4. **(2)** Escribir la tabla de casos de `inscripcion_posible/3` con la opción
    `forall`.
 5. ★ **(2)** Escribir la prueba que cubre la advertencia de
-   `comprobar_datos/0`, capturando el mensaje con `message_hook/3`.
+   `comprobar_datos/0`, capturando el mensaje con `message_hook/3`
+   ([sección 25.7](../capitulo-25-errores-y-excepciones/index.md#257-mensajes-para-el-usuario)).
 6. **(1)** En la traza de la [sección 26.3](#263-el-depurador-en-la-terminal), ¿qué habría mostrado el comando skip
    en el primer `Call` de `padre/2`? ¿Y retry en el `Fail`?
 7. ★ **(2)** Escribir `inscribir_registrado/3`, que registra el pedido y el
@@ -455,6 +498,11 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     `requisitos_de/2` usa menos inferencias que la primera.
 14. **(2)** Escribir una prueba para una consulta que no termina, sin que la
     batería quede esperando.
+15. **(1)** Poner un punto espía en `padre/2` con `spy(padre/2)`, consultar
+    `abuelo(juan, Q).` y avanzar con `l` (leap) hasta la respuesta. ¿Qué
+    puertos muestra, y cuáles no, frente a la traza de la
+    [sección 26.3](#263-el-depurador-en-la-terminal)? Quitarlo con
+    `nospy(padre/2)`.
 
 ## Resumen
 
@@ -469,8 +517,8 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | `gtrace/0` | el depurador gráfico: ligaduras, pila y código juntos |
 | `debug/3`, `debug/1` | mensajes por tema, activados a pedido |
 | `assertion/1` | un invariante del programa |
-| depuración declarativa | preguntar a las partes; tachar objetivos con `*` |
-| `check/0`, `list_undefined/0`, `gxref/0` | revisar el programa sin ejecutarlo |
+| depuración declarativa | preguntar a las partes; tachar objetivos con `*`, declarado con `:- op(920, fy, *)` |
+| `check/0`, `list_undefined/0`, `gxref/0` | examinar el programa sin ejecutarlo |
 | **Patrones 33, 34, 35** | una prueba por modo y caso límite; azar reproducible; depurar recortando |
 
 ## Temas que se retoman

@@ -2,16 +2,22 @@
 
 :- begin_tests(dinamica).
 
-% guardar(E): E es una copia de los hechos dinámicos. restaurar(E) los deja
-% como estaban. Cada prueba que modifica la base los usa en setup y cleanup,
-% para que el orden de las pruebas no importe. Las pruebas corren en su
-% propio módulo: assertz/1 y retractall/1 llevan user: para modificar los
+% Cada prueba que modifica la base usa guardar/1 y restaurar/1 en setup y
+% cleanup, para que el orden de las pruebas no importe. Las pruebas corren en
+% su propio módulo: assertz/1 y retractall/1 llevan user: para modificar los
 % hechos del programa y no crear otros en el módulo de las pruebas.
+
+%!  guardar(-Estado:list) is det.
+%
+%   Estado es una copia de los hechos dinámicos del programa.
 guardar([Ps, Es, Ns]) :-
     findall(padre(A, B), padre(A, B), Ps),
     findall(edad(A, B), edad(A, B), Es),
     findall(numero(N), numero(N), Ns).
 
+%!  restaurar(+Estado:list) is det.
+%
+%   Deja los hechos dinámicos como estaban en Estado.
 restaurar([Ps, Es, Ns]) :-
     retractall(user:padre(_, _)),
     retractall(user:edad(_, _)),

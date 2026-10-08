@@ -1,8 +1,8 @@
 :- encoding(utf8).
 
-% Pruebas del módulo reglas (capítulo 25): las reglas y las operaciones. Las que
-% modifican la base guardan el estado en su setup y lo restauran en su cleanup,
-% con estado/1 y restaurar/1 del módulo datos.
+% Pruebas del módulo reglas (capítulo 25): las reglas y las operaciones. Las
+% que modifican la base guardan el estado en su setup y lo restauran en su
+% cleanup, con estado/1 y restaurar/1 del módulo datos.
 
 % Las pruebas cargan los módulos que usan además del que prueban.
 :- use_module(datos).

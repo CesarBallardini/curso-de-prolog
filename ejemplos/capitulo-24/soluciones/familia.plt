@@ -7,7 +7,7 @@ test(abuelo, all(N == [luis, eva])) :-
 
 % padre/2 no se exporta: sin calificar, no existe fuera del módulo.
 test(privado, [error(existence_error(procedure, _), _)]) :-
-    call(padre(_, _)).
+    padre(_, _).
 
 test(calificado, all(H == [ana, pedro])) :-
     familia:padre(juan, H).

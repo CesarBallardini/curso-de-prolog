@@ -51,11 +51,24 @@ leer_edad(Texto, E) :-
     ;   domain_error(edad, Texto)
     ).
 
-%!  con_valor_por_omision(:Objetivo, +PorOmision, -Valor) is det.
+%!  con_valor_por_omision(:Objetivo, +PorOmision, -Valor) is semidet.
 %
 %   Valor es la primera respuesta de call(Objetivo, Valor), o PorOmision si
 %   Objetivo produce un error de existencia. Los demás errores se propagan.
+%   Falla si Objetivo no tiene respuestas.
 con_valor_por_omision(Objetivo, PorOmision, Valor) :-
     catch(once(call(Objetivo, Valor)),
           error(existence_error(_, _), _),
           Valor = PorOmision).
+
+%!  edad_o_cero(+P, -E:integer) is det.
+%
+%   E es la edad de P, o 0 si P no tiene edad registrada. Cualquier otro
+%   error se relanza.
+edad_o_cero(P, E) :-
+    catch(edad_de(P, E),
+          error(Formal, Contexto),
+          (   Formal = existence_error(persona, _)
+          ->  E = 0
+          ;   throw(error(Formal, Contexto))
+          )).

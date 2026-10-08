@@ -7,16 +7,6 @@ ejemplo del capítulo que extienden, para que cada uno se cargue solo.
 
 ## 1
 
-<!-- ejemplo: capitulo-22/soluciones.pl predicado: sorteo/3 consulta: sorteo(3, 10, L). -->
-```prolog
-%!  sorteo(+Cantidad:integer, +Hasta:integer, -Numeros:list(integer)) is det.
-%
-%   Numeros son Cantidad números distintos entre 1 y Hasta, elegidos al azar,
-%   en el orden en que salieron.
-sorteo(Cantidad, Hasta, Numeros) :-
-    randseq(Cantidad, Hasta, Numeros).
-```
-
 ```prolog
 ?- msort([b, 2, "a", f(1), 1.5], L).
 L = [1.5, 2, "a", b, f(1)].
@@ -32,7 +22,6 @@ La primera sigue el orden estándar: números, cadenas, átomos, compuestos. La
 segunda ordena de mayor a menor y conserva el 3 repetido, porque `@>=` no
 elimina. La tercera ordena por la clave, el primer argumento de cada par, y
 `@<` elimina los pares con la misma clave: de los dos `b`, queda el primero.
-El bloque de código es el del ejercicio 9, que las consultas no usan.
 
 ## 2
 
@@ -72,7 +61,7 @@ dos listas de la misma longitud quedan en su orden original, y la prueba
 
 ## 4
 
-<!-- ejemplo: capitulo-22/soluciones.pl predicado: anagramas/3 letras/2 consulta: anagramas(roma, [amor, mora, ramo, rama], L). -->
+<!-- ejemplo: capitulo-22/soluciones.pl predicado: anagramas/3 letras/2 consulta: anagramas(roma, [amor, mora, ramo, rama, roma, aroma], L). -->
 ```prolog
 %!  anagramas(+Palabra:atom, +Candidatas:list, -Anagramas:list) is det.
 %
@@ -92,13 +81,14 @@ letras(Palabra, Letras) :-
 ```
 
 ```prolog
-?- anagramas(roma, [amor, mora, ramo, rama, roma], L).
+?- anagramas(roma, [amor, mora, ramo, rama, roma, aroma], L).
 L = [amor, mora, ramo].
 ```
 
 Dos palabras son anagramas si sus letras, ordenadas con los repetidos, son la
-misma lista. `msort/2` conserva las letras repetidas; `sort/2` las eliminaría, y
-«rama» y «ramo» tendrían las mismas letras que «amor» si tuvieran una sola `a`.
+misma lista. `msort/2` conserva las letras repetidas. Con `sort/2`, «aroma»
+daría `[a, m, o, r]`, igual que «roma», y pasaría por anagrama; `msort/2` da
+`[a, a, m, o, r]` y la rechaza.
 
 ## 5
 
@@ -214,6 +204,12 @@ antes de `foldl/4`, cuando `P` todavía es una variable. La prueba
 `punto_en_lambda` lo verifica. Un predicado con nombre, `la_mayor_de_dos/3`,
 tiene su propia cláusula, y la expansión ocurre dentro de ella.
 
+La actividad de la [sección 22.7](index.md#227-dicts) muestra las dos formas
+de consultar una clave que el dict no tiene: `persona(ana, D),
+get_dict(altura, D, V)` falla, y `persona(ana, D), V = D.altura` produce el
+error `existence_error(key, altura, …)`, que la prueba `clave_inexistente` de
+`dicts.plt` verifica.
+
 ## 8
 
 <!-- ejemplo: capitulo-22/soluciones.pl predicado: formatear_nombre/3 consulta: formatear_nombre(ana, [mayusculas(true), prefijo('Sra. ')], T). -->
@@ -246,8 +242,17 @@ opciones en la lista no importa, y una opción desconocida se ignora.
 
 ## 9
 
-El predicado es el del bloque del ejercicio 1: `randseq/3` da números
-distintos. La prueba fija la semilla en su `setup`:
+<!-- ejemplo: capitulo-22/soluciones.pl predicado: sorteo/3 consulta: sorteo(3, 10, L). -->
+```prolog
+%!  sorteo(+Cantidad:integer, +Hasta:integer, -Numeros:list(integer)) is det.
+%
+%   Numeros son Cantidad números distintos entre 1 y Hasta, elegidos al azar,
+%   en el orden en que salieron.
+sorteo(Cantidad, Hasta, Numeros) :-
+    randseq(Cantidad, Hasta, Numeros).
+```
+
+`randseq/3` da números distintos. La prueba fija la semilla en su `setup`:
 
 ```prolog
 test(sorteo, [ setup(set_random(seed(1))),
@@ -295,13 +300,20 @@ en_profundidad(Estado, Meta, Limite, Camino, [A|Plan]) :-
 P = [tomar(c), soltar(c), tomar(b), apilar(b, c), tomar(a), apilar(a, b)].
 ```
 
-La búsqueda en profundidad con límite no se pierde en ramas infinitas: con un
+La búsqueda en profundidad con límite no entra en ramas infinitas: con un
 límite de N acciones, cada rama termina. Probar límites crecientes —0, 1, 2,
 …— encuentra primero el plan más corto, como la búsqueda a lo ancho, y en
 memoria solo guarda el camino actual, no la cola completa. A cambio, repite el
 trabajo de los límites anteriores. `\+ memberchk(Siguiente, Camino)` evita los
 ciclos dentro de un mismo camino. La prueba `iterativo` verifica que el plan es
 el mismo de `plan/3`.
+
+La actividad de la [sección 22.10](index.md#2210-un-estado-como-termino-el-mundo-de-bloques)
+cuenta dos sucesores de `estado([[c, a], [b]], vacia)`, `tomar(c)` y
+`tomar(b)`: con la mano vacía, solo se cumple la primera cláusula de
+`sucesor/3`; `soltar` y `apilar` exigen que la mano sostenga un bloque, y
+ambas cláusulas empiezan con `B \== vacia`. La prueba `sucesores` de
+`bloques.plt` enumera las dos acciones.
 
 ## 11
 

@@ -5,8 +5,8 @@
 % Cada predicado arma una dirección a partir de Base, como
 % 'http://localhost:8080', hace el pedido con http_open/3 o http_post/4 y
 % convierte la respuesta de JSON en un dict. Los valores de la dirección se
-% codifican con library(uri): un nombre con espacios o con & no rompe la
-% dirección.
+% codifican con library(uri): un nombre con espacios o con & no produce una
+% dirección inválida.
 %
 % solo-local: SWISH no permite conexiones de red.
 %

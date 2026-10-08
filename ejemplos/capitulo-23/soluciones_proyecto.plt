@@ -22,7 +22,7 @@ test(con_aulas, true(H == [examen(am1, 1, 2), examen(alg, 2, 1),
     once(horario_con_aulas([4, 6], 5, H)).
 
 % am1 tiene cinco inscriptos: ningún aula de 4 alcanza.
-test(aulas_chicas, [fail]) :-
+test(aulas_insuficientes, [fail]) :-
     horario_con_aulas([4, 4], 5, _).
 
 :- end_tests(soluciones_proyecto).

@@ -18,6 +18,11 @@ La segunda resuelve la ecuación; la quinta muestra un dominio con un agujero:
 `1\/3` es la unión de 1 y 3, sin el 2 que la restricción quitó. Las consultas
 usan solo `library(clpfd)`, que `soluciones.pl` carga.
 
+La actividad de la [sección 23.2](index.md#232-variables-dominios-y-restricciones):
+`X in 0..20, X mod 3 #= 0, X #> 10` deja `X in 12..18` con `X mod 3 #= 0`
+pendiente, porque `mod` propaga solo sobre los límites; `label([X])` da 12,
+15 y 18.
+
 ## 2
 
 <!-- ejemplo: capitulo-23/soluciones.pl predicado: celsius_fahrenheit/2 consulta: celsius_fahrenheit(C, 212). -->
@@ -138,6 +143,11 @@ dos_de_cada(Xs) :-
     label(Xs).
 ```
 
+```prolog
+?- aggregate_all(count, dos_de_cada(_), N).
+N = 90.
+```
+
 Hay 90 listas: 6! / (2! · 2! · 2!), las permutaciones de `[1, 1, 2, 2, 3, 3]`
 sin repetir las que solo intercambian valores iguales.
 
@@ -171,6 +181,11 @@ N = 15.
 Tres posiciones posibles para el dado que no es seis, y cinco valores para él:
 15. `exactamente/3` es el [Patrón 26](../patrones.md#26-contar-con-reificacion), y funciona en todos los sentidos: la prueba
 `exactamente_inverso` fija la cantidad y deduce los valores.
+
+La actividad de la [sección 23.6](index.md#236-reificacion) va en el mismo
+sentido: `cantidad_de_unos([A, B, C], 3)` responde `A = B, B = C, C = 1`,
+porque la suma de tres variables booleanas es 3 solo si las tres son 1, y
+cada una es 1 solo si su elemento es 1.
 
 ## 8
 
@@ -363,6 +378,13 @@ detiene el etiquetado en la primera. `["##1#", "1211", "0000"]` no lo es: las
 únicas celdas ocultas que tocan a (2, 1) y a (2, 2) son (1, 1) y (1, 2); el 1 de
 (2, 1) exige una mina entre las dos, y el 2 de (2, 2), dos minas.
 
+La actividad de la [sección 23.14](index.md#2314-buscaminas-deducir-donde-estan-las-minas)
+es el caso opuesto: `deducir(["#2#", "###"], Seguras, Minas)` responde
+`Seguras = Minas, Minas = []`. El tablero es consistente, pero el 2 de (1, 2)
+admite cualquier par de sus cinco vecinas ocultas: ninguna celda tiene mina en
+todas las soluciones, ni está libre en todas, y no se deduce nada. La prueba
+`sin_informacion` de `buscaminas.plt` lo verifica.
+
 ## 14
 
 <!-- ejemplo: capitulo-23/soluciones_proyecto.pl predicado: horario_minimo/3 consulta: horario_minimo(20, Dias, Horario). -->
@@ -397,8 +419,8 @@ materias.
 %!  horario_separado(+Dias:integer, +Capacidad:integer, -Horario:list(pair))
 %!      is nondet.
 %
-%   Como horario/3, con dos días al menos entre los exámenes de dos materias
-%   con un alumno en común.
+%   Como horario/3, con una diferencia de al menos dos días entre los
+%   exámenes de dos materias con un alumno en común.
 horario_separado(Dias, Capacidad, Horario) :-
     findall(M-_, materia(M, _, _), Horario),
     pairs_values(Horario, Ds),
@@ -424,7 +446,7 @@ H = [am1-1, alg-3, log-5, am2-7, pp-9, ssl-1, bd-1] ;
 ...
 ```
 
-Hacen falta nueve días: las cinco materias de ana, separadas de a dos días,
+Hacen falta nueve días: las cinco materias de ana, con dos días de diferencia,
 ocupan los días 1, 3, 5, 7 y 9. Con ocho días, `horario_separado/3` falla. El
 cambio respecto de `horario/3` es una sola restricción: `abs(D1 - D2) #>= 2`
 en lugar de `D1 #\= D2`.
@@ -462,18 +484,20 @@ dominio_de_examen(Dias, Aulas, Capacidades, examen(M, Dia, Aula)) :-
     element(Aula, Capacidades, Capacidad),
     N #=< Capacidad.
 
-%!  examenes_en_dias_distintos(+Horario:list, +Conflicto:pair) is det.
+%!  examenes_en_dias_distintos(+Horario:list, +Conflicto:pair) is semidet.
 %
-%   Las dos materias de Conflicto rinden en días distintos.
+%   Las dos materias de Conflicto rinden en días distintos. Falla si los
+%   dominios de los dos días no admiten valores distintos.
 examenes_en_dias_distintos(Horario, M1-M2) :-
     memberchk(examen(M1, D1, _), Horario),
     memberchk(examen(M2, D2, _), Horario),
     D1 #\= D2.
 
-%!  turnos_distintos(+Horario:list) is det.
+%!  turnos_distintos(+Horario:list) is semidet.
 %
 %   Dos exámenes no ocupan la misma aula el mismo día: cada par Dia-Aula se
-%   codifica como un número distinto.
+%   codifica como un número distinto. Falla si hay más exámenes que pares
+%   Dia-Aula posibles.
 turnos_distintos(Horario) :-
     maplist([examen(_, D, A), T]>>(T #= D * 100 + A), Horario, Turnos),
     all_different(Turnos).

@@ -49,7 +49,7 @@ la versión anterior, y un error se descubre recién cuando alguien usa el
 predicado.
 
 **Versión ingenua.** Salir de `swipl` y volver a entrar después de cada
-cambio, y probar a mano algunas consultas.
+cambio, y repetir algunas consultas una por una.
 
 **Patrón.** El toplevel queda abierto toda la sesión. Cada cambio sigue el
 mismo ciclo: editar y guardar; `make.`; `run_tests.`; y `check.` antes de
@@ -180,7 +180,7 @@ una recursión, solo para escribirlas.
 `repeat, Leer, Ejecutar, Condicion_de_salida, !` para un ciclo.
 
 **Cuándo no usarlo.** Cuando lo que se necesita es un **resultado**: un
-bucle por falla deshace las ligaduras en cada vuelta, y lo único que queda
+bucle por falla deshace las ligaduras en cada iteración, y lo único que queda
 son los efectos. Para calcular, una recursión o las herramientas del
 [capítulo 17](capitulo-17-todas-las-soluciones/index.md), que presenta además `forall/2`, la forma declarativa de este mismo
 recorrido.
@@ -195,14 +195,14 @@ con listas largas.
 **Versión ingenua.** La operación después de la llamada recursiva:
 `largo([_|R], N) :- largo(R, N0), N is N0 + 1.`
 
-**Patrón.** Un acumulador que lleva el resultado parcial (plantilla 13), la
+**Patrón.** Un acumulador que lleva el resultado parcial ([plantilla 13](plantillas.md#13-acumulador)), la
 operación antes de la llamada, y la llamada recursiva como último objetivo,
 sin alternativas pendientes.
 
 **Cuándo no usarlo.** Cuando la recursión es naturalmente corta —la
 profundidad de un árbol genealógico, los casos de una definición— y la
 versión directa es más clara. Tampoco cuando el resultado es una lista que
-se construye en la cabeza de la cláusula (plantilla 12): esa recursión ya
+se construye en la cabeza de la cláusula ([plantilla 12](plantillas.md#12-construir-una-lista-durante-el-recorrido-de-otra)): esa recursión ya
 corre en espacio constante, y un acumulador daría la lista invertida.
 
 Capítulo 16, [sección 16.2](capitulo-16-rendimiento/index.md#162-la-pila-y-la-recursion).
@@ -250,7 +250,8 @@ Capítulo 16, [sección 16.5](capitulo-16-rendimiento/index.md#165-el-orden-de-l
 **Problema.** Un cálculo necesita todas las respuestas de un objetivo a la
 vez: su cantidad, su orden, compararlas entre sí.
 
-**Versión ingenua.** Repetir los datos en una lista escrita a mano, como en
+**Versión ingenua.** Repetir los datos en una lista escrita de manera
+explícita, como en
 la [sección 10.8](capitulo-10-negacion-como-falla/index.md#108-prescindir-de), o recorrer las respuestas con un bucle por falla, que no
 puede construir un resultado.
 
@@ -286,7 +287,7 @@ Capítulo 17, [sección 17.5](capitulo-17-todas-las-soluciones/index.md#175-aggr
 objetivo cumplen una condición.
 
 **Versión ingenua.** Una recursión sobre una lista de los datos, o la doble
-negación escrita a mano: `\+ (C, \+ A)`.
+negación escrita de manera explícita: `\+ (C, \+ A)`.
 
 **Patrón.** `forall(Condicion, Accion)`, con las variables de `Condicion`
 ligadas en ella y usadas en `Accion`.
@@ -299,11 +300,11 @@ Capítulo 17, [sección 17.6](capitulo-17-todas-las-soluciones/index.md#176-fora
 
 ## 14 — Recorrido con `maplist`
 
-**Problema.** Hay que aplicar la misma relación a cada elemento de una o
-varias listas: comprobar, transformar o procesar cada uno.
+**Problema.** Es necesario aplicar la misma relación a cada elemento de
+una o varias listas: comprobar, transformar o procesar cada uno.
 
-**Versión ingenua.** Una recursión escrita a mano, con su caso base y su
-caso recursivo, que repite la forma de la plantilla en cada predicado.
+**Versión ingenua.** Una recursión explícita, con su caso base y su caso
+recursivo, que repite la forma de la plantilla en cada predicado.
 
 **Patrón.** `maplist(Relacion, L1, …)`, con `Relacion` un predicado con
 nombre y encabezado propio, o una clausura que fija sus primeros
@@ -318,11 +319,11 @@ Capítulo 18, [sección 18.2](capitulo-18-orden-superior/index.md#182-maplist25)
 
 ## 15 — Plegado con `foldl`
 
-**Problema.** Hay que construir un valor a partir de todos los elementos de
-una lista, en un solo recorrido: una suma, un máximo, varios valores a la
-vez.
+**Problema.** Es necesario construir un valor a partir de todos los
+elementos de una lista, en un solo recorrido: una suma, un máximo, varios
+valores a la vez.
 
-**Versión ingenua.** Un predicado auxiliar con acumulador escrito a mano
+**Versión ingenua.** Un predicado auxiliar con acumulador explícito
 ([plantilla 13](plantillas.md#13-acumulador)), o varios recorridos, uno por valor.
 
 **Patrón.** `foldl(Paso, Lista, Inicial, Final)`, con `Paso(X, Antes,
@@ -377,8 +378,8 @@ Capítulo 20, [sección 20.5](capitulo-20-base-de-datos-dinamica/index.md#205-me
 
 ## 18 — Base de conocimiento que crece
 
-**Problema.** Hay que obtener todas las consecuencias de un conjunto de
-hechos y reglas, y conservarlas para consultarlas después.
+**Problema.** Obtener todas las consecuencias de un conjunto de hechos y
+reglas, y conservarlas para consultarlas después.
 
 **Versión ingenua.** Probar cada conclusión posible hacia atrás, cada vez
 que se la consulta, repitiendo las mismas pruebas.
@@ -435,10 +436,10 @@ Capítulo 21, [sección 21.4](capitulo-21-gramaticas-dcg/index.md#214-argumentos
 
 ## 21 — Secuencia con separadores
 
-**Problema.** Hay que reconocer una lista de elementos separados por comas,
-espacios u otro separador, y obtener la lista de los elementos.
+**Problema.** Reconocer una lista de elementos separados por comas, espacios
+u otro separador, y obtener la lista de los elementos.
 
-**Versión ingenua.** Una recursión escrita a mano para cada lista, con los
+**Versión ingenua.** Una recursión propia para cada lista, con los
 casos del primer elemento, del separador y del final, o `split_string/4`
 seguido de una conversión elemento por elemento.
 
@@ -521,8 +522,9 @@ acciones; una cola de estados con su camino, y un conjunto ordenado de
 visitados que no se vuelven a encolar. A lo ancho, el primer plan es uno
 de los más cortos.
 
-**Cuándo no usarlo.** Cuando el espacio de estados es enorme y hace falta
-una heurística que guíe la búsqueda, como en el [capítulo 40](capitulo-40-busqueda-y-planificacion/index.md); o
+**Cuándo no usarlo.** Cuando el espacio de estados es demasiado grande
+para recorrerlo y hace falta una heurística que guíe la búsqueda, como en
+el [capítulo 40](capitulo-40-busqueda-y-planificacion/index.md); o
 cuando el problema se modela mejor con restricciones
 ([capítulo 23](capitulo-23-programacion-con-restricciones/index.md)).
 
@@ -608,11 +610,12 @@ Capítulo 24, [sección 24.8](capitulo-24-modulos-y-organizacion/index.md#248-el
 ## 30 — Capturar lo justo y relanzar
 
 **Problema.** Un error esperable —un dato que falta, una conversión que
-no se puede hacer— tiene una respuesta razonable, y los demás errores no.
+no se puede hacer— tiene una respuesta prevista, y los demás errores no.
 
 **Versión ingenua.** `catch(Objetivo, _, Recuperacion)`: captura todo,
-incluidos los errores de programación y la interrupción con Ctrl-C, y los
-convierte en la misma respuesta.
+incluidos los errores de programación, y los convierte en la misma
+respuesta; solo la interrupción con Ctrl-C (`'$aborted'`) se relanza
+después de ejecutar la recuperación.
 
 **Patrón.** Un patrón que describe exactamente el error esperado,
 `error(existence_error(persona, _), _)`, y ninguna captura para los
@@ -633,7 +636,7 @@ otras personas, y un argumento mal formado produce una falla, o un error
 lejos de su causa.
 
 **Versión ingenua.** No validar, y dejar que el primer predicado
-predefinido que tropiece con el valor produzca un error que habla de
+predefinido que reciba el valor produzca un error que habla de
 `is/2` o de `atom_length/2`.
 
 **Patrón.** Al principio de cada predicado público, `must_be/2` para cada
@@ -643,7 +646,7 @@ internos no se validan: confían en el que los llama.
 
 **Cuándo no usarlo.** En los predicados que funcionan en varios modos: una
 validación de `+` rompe el modo `-`. Y en las relaciones puras, donde un
-tipo incorrecto es simplemente un caso en que la relación no se cumple.
+tipo incorrecto es un caso en que la relación no se cumple.
 
 Capítulo 25, [sección 25.4](capitulo-25-errores-y-excepciones/index.md#254-throw1-must_be2-y-libraryerror).
 
@@ -761,7 +764,7 @@ rechaza lo que no puede convertir. Para escribir, la conversión inversa.
 El núcleo trabaja solo con términos, y se prueba sin archivos.
 
 **Cuándo no usarlo.** Cuando el programa solo pasa los datos de un lado a
-otro sin mirarlos, como un servicio que reenvía un JSON: convertirlos no
+otro sin examinarlos, como un servicio que reenvía un JSON: convertirlos no
 agrega nada.
 
 Capítulo 27, [sección 27.7](capitulo-27-archivos-streams-y-formatos/index.md#277-json).
@@ -819,7 +822,7 @@ aplicar las reglas y responder, y cada falla de las reglas tiene que
 llegar al cliente como un código de estado, no como un 500 ni como un
 200 con un mensaje de error.
 
-**Versión ingenua.** Un manejador largo, que valida los datos a mano,
+**Versión ingenua.** Un manejador largo, que valida los datos uno por uno,
 llama a las reglas, examina cada resultado con `->` y escribe la
 respuesta en cada rama, con los códigos elegidos en cada lugar.
 
@@ -838,11 +841,11 @@ Capítulo 30, [sección 30.4](capitulo-30-servicios-web-rest/index.md#304-codigo
 ## 41 — Servidor bajo prueba
 
 **Problema.** Las pruebas de un servicio tienen que ejercitar las rutas,
-los códigos y el JSON de verdad, sin depender de un servidor que alguien
-arrancó a mano ni de un puerto que puede estar ocupado.
+los códigos y el JSON reales, sin depender de un servidor arrancado por
+separado ni de un puerto que puede estar ocupado.
 
 **Versión ingenua.** Probar solo los predicados del núcleo, o arrancar el
-servidor a mano en el puerto 8080 antes de ejecutar las pruebas.
+servidor por separado en el puerto 8080 antes de ejecutar las pruebas.
 
 **Patrón.** La unidad de pruebas arranca el servidor en su `setup`, en un
 puerto libre de `localhost` —`port(localhost:Puerto)` con `Puerto`
@@ -861,14 +864,14 @@ Capítulo 30, [sección 30.6](capitulo-30-servicios-web-rest/index.md#306-probar
 vez, en cada sistema, y lo construido tiene que comportarse como el
 fuente.
 
-**Versión ingenua.** Escribir a mano los comandos de construcción en cada
-máquina, o anotarlos en un archivo de instrucciones, y probar el fuente
-pero nunca lo construido.
+**Versión ingenua.** Escribir uno por uno los comandos de construcción en
+cada máquina, o anotarlos en un archivo de instrucciones, y probar el
+fuente pero nunca lo construido.
 
 **Patrón.** Un programa, `construir.pl`, recibe los programas y construye
 cada uno en otro proceso de `swipl`, con las opciones que corresponden al
 sistema. Un error de construcción es un error del constructor, con los
-mensajes del proceso que falló. Las pruebas construyen de verdad en un
+mensajes del proceso que falló. Las pruebas construyen el programa en un
 directorio temporal y ejecutan lo construido con los mismos argumentos
 que el fuente: la batería del proyecto incluye lo que se entrega.
 

@@ -56,7 +56,7 @@ modelo(Lineas, Ocultas) :-
 %!      is semidet.
 %
 %   Numero es Celda-N: las celdas ocultas vecinas de Celda suman N minas.
-%   Falla si ya se sabe que no pueden sumarlas.
+%   Falla si las restricciones ya planteadas excluyen esa suma.
 restringir(Filas, Columnas, Ocultas, Celda-N) :-
     findall(V, vecina(Filas, Columnas, Celda, V), Vecinas),
     convlist(variable_de(Ocultas), Vecinas, Bs),

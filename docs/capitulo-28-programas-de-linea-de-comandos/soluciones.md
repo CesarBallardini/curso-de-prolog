@@ -69,6 +69,13 @@ archivo se cuenta y se escribe, y el error del segundo se captura, se escribe
 como mensaje y da el código 2. `maplist/2` se detiene en el error, y un tercer
 archivo no se contaría.
 
+Respuesta a la actividad de la [sección 28.4](index.md#284-codigos-de-salida):
+los códigos son 1 (sin argumentos), 2 (archivo inexistente), 1 (`--bytes`) y
+0 (`-l` con un archivo). Solo el primer mensaje lo escribe `contar.pl`, con su
+`prolog:message//1`; `source_sink ... does not exist` lo escribe SWI-Prolog
+para el error de `read_file_to_string/3`, y `Unknown option: --bytes (-h for
+help)` lo escribe `argv_options/3` antes de llamar a `main/1`.
+
 ## 3
 
 <!-- ejemplo: capitulo-28/eco.pl predicado: main/1 invertir/2 consulta: invertir([uno, dos, tres], L). -->
@@ -239,7 +246,7 @@ test(eco_sin_argumentos, true(C == 1)) :-
 ```
 
 `stdout(null)` y `stderr(null)` descartan lo que el programa escribe: la
-prueba solo mira el código. `eco/1`, en `soluciones.plt`, arma la ruta de
+prueba solo examina el código. `eco/1`, en `soluciones.plt`, arma la ruta de
 `eco.pl` a partir del directorio de `soluciones.pl`, para que la prueba no
 dependa del directorio desde el que se ejecuta.
 
@@ -266,7 +273,7 @@ Edad = 20.
 
 La edad es la diferencia de años, menos uno si en la segunda fecha todavía no
 llegó el cumpleaños. Los pares `Mes-Dia` se comparan con el orden estándar de
-la [sección 22.2](../capitulo-22-estructuras-de-datos-de-la-biblioteca/index.md#222-el-orden-estandar): primero el mes, después el día. La cuenta no
+la [sección 22.2](../capitulo-22-estructuras-de-datos-de-la-biblioteca/index.md#222-el-orden-estandar): primero el mes, después el día. El cálculo no
 necesita timestamps.
 
 ## 9
@@ -315,6 +322,13 @@ Texto = "vie 25/09".
 `~|~`0t~d~2+` escribe un número en dos columnas, rellenando con ceros a la
 izquierda: `~|` marca dónde empieza la columna, y `` ~`0t `` pide el relleno
 con `0` en lugar de espacios.
+
+Respuesta a la actividad de la [sección 28.7](index.md#287-fecha-y-hora): en
+la máquina del curso, con la configuración regional en castellano,
+`format_time/3` escribe `'viernes 25 de septiembre'`; con la configuración
+regional en inglés, `'Friday 25 de September'`. `fecha_texto/2` escribe
+`"viernes 25 de septiembre de 2026"` en las dos, porque toma los nombres de
+sus propias tablas.
 
 ## 11
 
@@ -403,14 +417,14 @@ bucle_contando(In, Hasta, N) :-
 
 La cantidad es un acumulador, como los del [capítulo 8](../capitulo-08-aritmetica/index.md): pasa de una llamada
 a la siguiente, y al terminar se unifica con el resultado. Un contador en la
-base dinámica, como el del [capítulo 20](../capitulo-20-base-de-datos-dinamica/index.md#204-contadores-y-estado-global), también funcionaría, pero
-habría que reiniciarlo en cada ejecución y en cada prueba.
+base dinámica, como el del [capítulo 20](../capitulo-20-base-de-datos-dinamica/index.md#204-contadores-y-estado-global), también serviría, pero
+exige reiniciarlo en cada ejecución y en cada prueba.
 
 ## 14
 
 La solución completa está en `soluciones_buscaminas.pl`; el tablero y
 `vecina/4` son los del [capítulo 22](../capitulo-22-estructuras-de-datos-de-la-biblioteca/index.md#2211-buscaminas-el-tablero-como-tabla-de-busqueda). Descubrir es el recorrido
-del [capítulo 18](../capitulo-18-orden-superior/index.md), con el tablero como argumento y las celdas descubiertas
+del [capítulo 18](../capitulo-18-orden-superior/index.md#189-buscaminas-descubrir-una-region), con el tablero como argumento y las celdas descubiertas
 como un conjunto ordenado:
 
 <!-- ejemplo: capitulo-28/soluciones_buscaminas.pl predicado: descubrir/4 aplicar/4 consulta: tablero(3, 3, [1-1], T), descubrir(T, 3-3, [], D), length(D, N). -->

@@ -1,7 +1,7 @@
 :- encoding(utf8).
 
 % Pruebas de soluciones_contar.pl: la opción --version, en el programa
-% ejecutado en otro proceso, y la cuenta de siempre.
+% ejecutado en otro proceso, y el conteo habitual.
 
 :- use_module(library(process)).
 :- use_module(library(readutil)).

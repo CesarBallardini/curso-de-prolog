@@ -30,6 +30,7 @@ test(aplanar_izq_cuesta_mas, true(Izq > 100 * Der)) :-
     inferencias(aplanar_izq(Listas, _), Izq),
     inferencias(aplanar_der(Listas, _), Der).
 
+% diez(L): L es la lista de 1 a 10; arma las mil listas de la prueba.
 diez(L) :-
     numlist(1, 10, L).
 

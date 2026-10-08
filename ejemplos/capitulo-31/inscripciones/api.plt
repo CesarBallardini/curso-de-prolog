@@ -112,7 +112,7 @@ test(cuerpo_incompleto, true(C == 400)) :-
     inscribir_por_http(_{legajo: 104}, C, _).
 
 % Con alcance publico, el servicio también responde: en esta máquina, por
-% la dirección de siempre.
+% la misma dirección local.
 test(alcance_publico, [ setup(iniciar_api(P, publico)),
                         cleanup(detener_api(P)),
                         true(C == 200) ]) :-

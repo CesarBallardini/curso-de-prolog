@@ -23,7 +23,7 @@ opt_type(salida,  salida,  atom).
 
 % opt_help(Clave, Texto): la ayuda de cada opción.
 opt_help(estado,      "Archivo donde se guarda el estado entre ejecuciones").
-opt_help(ajustes,     "Archivo de ajustes, como archivos/ajustes.cfg").
+opt_help(ajustes,     "Archivo de ajustes, como ../archivos/ajustes.cfg").
 opt_help(salida,      "Archivo donde se escribe la respuesta de la orden").
 opt_help(help(usage), " [opciones] [orden]").
 

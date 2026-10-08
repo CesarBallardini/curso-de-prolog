@@ -32,7 +32,7 @@ materia(pp,  paradigmas,     2).
 materia(ssl, sintaxis,       2).
 materia(bd,  bases_de_datos, 3).
 
-% correlativa(Materia, Requisito): para cursar Materia hay que aprobar
+% correlativa(Materia, Requisito): para cursar Materia es necesario aprobar
 % Requisito.
 correlativa(am2, am1).
 correlativa(am2, alg).
@@ -125,7 +125,7 @@ puede_inscribirse(Legajo, Materia) :-
 %
 %   El alumno llamado Nombre aprobó Materia. El primer objetivo es el que el
 %   nombre selecciona: con el orden inverso, la consulta recorre todas las
-%   inscripciones de la materia antes de mirar el nombre (sección 16.5).
+%   inscripciones de la materia antes de examinar el nombre (sección 16.5).
 aprobada_por_nombre(Nombre, Materia) :-
     alumno(Legajo, Nombre, _, _),
     aprobada(Legajo, Materia, _Nota).

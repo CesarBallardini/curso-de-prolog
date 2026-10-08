@@ -22,4 +22,10 @@ test(todos_estan_chk_sin_alternativas) :-
 test(falta_uno, [fail]) :-
     todos_estan_chk([a, z], [a, b, c]).
 
+test(copias, true(L == [a, a, a])) :-
+    copias(3, a, L).
+
+test(copias_cero, true(L == [])) :-
+    copias(0, a, L).
+
 :- end_tests(indexacion).

@@ -10,8 +10,8 @@ cada elemento.
 Este capítulo presenta los predicados que reciben otros predicados —`call/N`,
 `maplist/2..5`, `foldl/4..6`, `include/3` y los demás de `library(apply)`—, las
 lambdas de `library(yall)`, y la forma de escribir y declarar un predicado
-propio de ese tipo, junto con los casos en los que una recursión escrita a
-mano sigue siendo preferible. El proyecto reescribe sus informes con un
+propio de ese tipo, junto con los casos en los que una recursión explícita
+sigue siendo preferible. El proyecto reescribe sus informes con un
 predicado genérico, y el Buscaminas descubre una región del tablero.
 
 ## Objetivos del capítulo
@@ -23,8 +23,7 @@ Al terminar el capítulo, el lector puede:
   `exclude`, `partition` y `convlist`, y escribir una lambda con `yall`;
 - escribir un predicado de orden superior propio, con su encabezado y su
   declaración `meta_predicate`;
-- decidir cuándo una recursión escrita a mano es preferible al orden
-  superior.
+- decidir cuándo una recursión explícita es preferible al orden superior.
 
 !!! info "Tiempo estimado"
     Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:28 h**.
@@ -103,7 +102,7 @@ plantillas de recorrido de la parte I se escriben con una línea cada una:
 | [11 — Todos los elementos cumplen](../plantillas.md#11-todos-los-elementos-cumplen) | `maplist(cumple, L)` |
 | [12 — Construir una lista durante el recorrido de otra](../plantillas.md#12-construir-una-lista-durante-el-recorrido-de-otra) | `maplist(relacionar, L, R)` |
 
-<!-- ejemplo: capitulo-18/aplicar.pl predicado: edades/2 mostrar_edades/1 mostrar_edad/1 consulta: edades([juan, ana, eva], Edades). -->
+<!-- ejemplo: capitulo-18/aplicar.pl predicado: edades/2 todos_mayores/1 mostrar_edades/1 mostrar_edad/1 consulta: edades([juan, ana, eva], Edades). -->
 ```prolog
 %!  edades(?Personas:list, ?Edades:list(integer)) is nondet.
 %
@@ -111,6 +110,12 @@ plantillas de recorrido de la parte I se escriben con una línea cada una:
 %   ligada hay una respuesta.
 edades(Personas, Edades) :-
     maplist(edad, Personas, Edades).
+
+%!  todos_mayores(+Personas:list) is semidet.
+%
+%   Todas las Personas son mayores de edad.
+todos_mayores(Personas) :-
+    maplist(mayor_de_edad, Personas).
 
 %!  mostrar_edades(+Personas:list) is semidet.
 %
@@ -134,7 +139,7 @@ Edades = [68, 41, 8].
 ?- edades(Personas, [41, 8]).
 Personas = [ana, eva].
 
-?- maplist(mayor_de_edad, [juan, eva]).
+?- todos_mayores([juan, eva]).
 false.
 
 ?- mostrar_edades([juan, eva]).
@@ -146,6 +151,11 @@ true.
 L = [11, 22].
 ```
 
+`plus/3` y `succ/2` son predefinidos: `plus(X, Y, Z)` es la relación
+`Z = X + Y` y `succ(X, Y)` es `Y = X + 1`, y a diferencia de `is/2` admiten
+más de un sentido: `plus(1, X, 3)` responde `X = 2`. Con `maplist/4`, `plus/3`
+suma las dos listas elemento a elemento.
+
 `maplist/3` es una relación, no una función: conserva los modos de la clausura.
 `edad/2` responde en los dos sentidos, y por eso `edades/2` también: de las
 personas a las edades, y de las edades a las personas. Con `maplist/2`, la
@@ -153,11 +163,11 @@ lista vacía cumple la condición —«todos los elementos de ninguno» es ciert
 como en la plantilla 11.
 
 !!! example "Patrón 14 — Recorrido con `maplist`"
-    **Problema.** Hay que aplicar la misma relación a cada elemento de una o
-    varias listas: comprobar, transformar o procesar cada uno.
+    **Problema.** Es necesario aplicar la misma relación a cada elemento de
+    una o varias listas: comprobar, transformar o procesar cada uno.
 
-    **Versión ingenua.** Una recursión escrita a mano, con su caso base y su
-    caso recursivo, que repite la forma de la plantilla en cada predicado.
+    **Versión ingenua.** Una recursión explícita, con su caso base y su caso
+    recursivo, que repite la forma de la plantilla en cada predicado.
 
     **Patrón.** `maplist(Relacion, L1, …)`, con `Relacion` un predicado con
     nombre y encabezado propio, o una clausura que fija sus primeros
@@ -227,11 +237,11 @@ la lista vacía, como el máximo de `aggregate_all/3` en la
 [sección 17.5](../capitulo-17-todas-las-soluciones/index.md#175-aggregate_all3).
 
 !!! example "Patrón 15 — Plegado con `foldl`"
-    **Problema.** Hay que construir un valor a partir de todos los elementos de
-    una lista, en un solo recorrido: una suma, un máximo, varios valores a la
-    vez.
+    **Problema.** Es necesario construir un valor a partir de todos los
+    elementos de una lista, en un solo recorrido: una suma, un máximo, varios
+    valores a la vez.
 
-    **Versión ingenua.** Un predicado auxiliar con acumulador escrito a mano
+    **Versión ingenua.** Un predicado auxiliar con acumulador explícito
     ([plantilla 13](../plantillas.md#13-acumulador)), o varios recorridos, uno por valor.
 
     **Patrón.** `foldl(Paso, Lista, Inicial, Final)`, con `Paso(X, Antes,
@@ -365,12 +375,13 @@ Con `{Y}`, las dos llamadas comparten la misma variable, y la consulta responde
 lo esperado.
 
 La regla práctica: **toda variable de la cláusula que aparece en la lambda se
-declara entre llaves**, aunque la versión sin llaves responda bien mientras la
+declara entre llaves**, aunque la versión sin llaves responda lo esperado mientras la
 variable ya está ligada cuando la lambda se copia.
 
 !!! question "Actividad"
     Quitar `{N}` de `sumar_a_todos/3` en `aplicar.pl` y consultar
-    `sumar_a_todos(10, [1, 2, 3], R).`: responde bien. Después iniciar
+    `sumar_a_todos(10, [1, 2, 3], R).`: responde `R = [11, 12, 13]`. Después
+    iniciar
     `swipl -O aplicar.pl` y observar qué informa al cargar el archivo. Explicar
     qué cambia cuando SWI-Prolog compila la lambda al cargar en lugar de
     copiarla en cada llamada, y por qué la regla práctica exige las llaves en
@@ -456,7 +467,8 @@ La indexación distingue `[]` de `[X|Resto]`, y no queda ninguna alternativa.
 Es lo que hace `library(apply)`: `maplist/2` llama a un predicado interno cuyo
 primer argumento es la lista. Es el [Patrón 9](../patrones.md#9-el-argumento-que-indexa-primero) aplicado a un predicado de orden
 superior: el argumento que indexa va primero. Las pruebas lo verifican con
-`call_cleanup/2`, que ejecuta su segundo argumento cuando el primero ya no
+`call_cleanup/2`, la forma de dos argumentos de `setup_call_cleanup/3`
+([sección 25.6](../capitulo-25-errores-y-excepciones/index.md#256-setup_call_cleanup3)), que ejecuta su segundo argumento cuando el primero ya no
 tiene alternativas; `alternativas/2`, en `propio.plt`, responde `pendientes` o
 `ninguna` según ese segundo argumento se haya ejecutado o no:
 
@@ -485,9 +497,11 @@ son objetivos:
 
 Un número indica cuántos argumentos agrega `call/N` a esa clausura (`1` en
 `cada_uno/2`, `2` en `relacionar/3`), y `+`, `-` o `?` marcan los argumentos
-comunes. Mientras todo el programa está en un solo archivo, la declaración no
-cambia el comportamiento: documenta, y la usan las herramientas de
-SWI-Prolog. Pasa a ser necesaria cuando el predicado está en un módulo y recibe
+comunes. `cuantos_cumplen(1, +, -)` declara el último predicado del archivo,
+que combina `include/3` con `length/2`: la clausura recibe un argumento, la
+lista llega ligada y la cantidad se devuelve. Mientras todo el programa está
+en un solo archivo, la declaración no cambia el comportamiento: documenta, y
+la usan las herramientas de SWI-Prolog. Pasa a ser necesaria cuando el predicado está en un módulo y recibe
 una clausura definida en otro, el caso del
 [capítulo 24](../capitulo-24-modulos-y-organizacion/index.md). La declaración queda registrada, y
 `predicate_property/2`, que el [capítulo 33](../capitulo-33-introspeccion-y-metainterpretes/index.md) presenta con los demás predicados que
@@ -501,7 +515,7 @@ M = cada_uno(1, ?).
 ## 18.7 Cuándo no usar el orden superior
 
 `maplist/3` con un predicado con nombre cuesta lo mismo que la recursión
-escrita a mano. Con 100 000 elementos, `maplist(doble, L, D)` y la plantilla 12
+explícita. Con 100 000 elementos, `maplist(doble, L, D)` y la plantilla 12
 usan 300 000 inferencias cada uno. Una lambda, en cambio, se copia en cada
 llamada: con la misma lista, `maplist([X, Y]>>(Y is 2 * X), L, D)` usa
 1 300 000 inferencias y tarda unas diez veces más. `swipl -O` compila las
@@ -545,7 +559,7 @@ pp. 111–133; la tabla la desarrolla con los predicados de la biblioteca.
 | mapeo parcial: un resultado para algunos elementos | los mayores de edad; las edades conocidas | `include/3`, `exclude/3`, `convlist/3` |
 | salidas disjuntas: cada elemento va a una de dos o tres listas | mayores y menores; menores, iguales y mayores que un valor | `partition/4`, `partition/5` |
 | mapeo completo con estado: el resultado de un elemento depende de los anteriores | numerar los elementos | `foldl/6` |
-| mapeo secuencial con estado: un resultado por cada racha de elementos iguales consecutivos | `[a, a, b, a]` da `[a-2, b-1, a-1]` | `clumped/2`, que presenta el [capítulo 22](../capitulo-22-estructuras-de-datos-de-la-biblioteca/index.md), o una recursión escrita a mano |
+| mapeo secuencial con estado: un resultado por cada racha de elementos iguales consecutivos | `[a, a, b, a]` da `[a-2, b-1, a-1]` | `clumped/2`, que presenta el [capítulo 22](../capitulo-22-estructuras-de-datos-de-la-biblioteca/index.md), o una recursión explícita |
 | mapeo disperso con estado: un resultado por valor, que reúne apariciones no consecutivas | la frecuencia de cada elemento | `msort/2` y después `clumped/2`, o `aggregate_all/3` |
 | reducción a un valor | la suma, el máximo | `foldl/4` |
 
@@ -572,7 +586,7 @@ Mayores = [7, 9].
     | C1 | el modo `:` en cada argumento que se llama (`cumplen/2`, `informe/3`), y la declaración `meta_predicate` que da cuántos argumentos agrega `call/N` |
     | C2 | la lista vacía decidida en cada plegado: `suma_de_edades([], 0)`, `mayor([], _)` falla y lo declara, y `informe/3` con una lista vacía da `[]` (prueba `informe_vacio`) |
     | C4 | los recorridos propios con la lista primero: la prueba `segunda_version` verifica que `cada_uno/2` no deja alternativas; `informe/3` es `det` con clausuras `nondet`, gracias a `once/1` |
-    | C7 | 119 pruebas en los cinco archivos del capítulo; las 32 de los informes del [capítulo 17](../capitulo-17-todas-las-soluciones/index.md) pasan sin cambios sobre la versión reescrita |
+    | C7 | 119 pruebas en los cinco archivos del capítulo; las 32 pruebas del [capítulo 17](../capitulo-17-todas-las-soluciones/index.md), siete de ellas de los informes, pasan sin cambios sobre la versión reescrita |
 
 ## 18.8 El proyecto: informes genéricos
 
@@ -641,8 +655,9 @@ siempre responde, aparecen todos. La lambda de `informe/3` declara `{Calculo}`
 entre llaves, según la regla de la [sección 18.5](#185-lambdas-con-yall), y usa `once/1` para que un
 cálculo con varias respuestas aporte solo la primera.
 
-Las 32 pruebas del [capítulo 17](../capitulo-17-todas-las-soluciones/index.md) se mantienen sin cambios, y pasan sobre la
-versión reescrita: la prueba de que la reescritura no cambió el comportamiento.
+Las 32 pruebas del [capítulo 17](../capitulo-17-todas-las-soluciones/index.md), siete de ellas de los informes, se mantienen
+sin cambios y pasan sobre la versión reescrita: la prueba de que la
+reescritura no cambió el comportamiento.
 Las nueve pruebas nuevas cubren `promedio/2`, `aprobadas/2` e `informe/3`.
 
 ## 18.9 Buscaminas: descubrir una región
@@ -650,7 +665,8 @@ Las nueve pruebas nuevas cubren `promedio/2`, `aprobadas/2` e `informe/3`.
 Al descubrir una celda sin minas vecinas, el Buscaminas descubre también sus
 vecinas, y sigue así mientras encuentre celdas sin minas vecinas: un clic puede
 descubrir una región entera. El tablero de esta sección tiene seis filas y seis
-columnas, con cuatro minas.
+columnas, con cuatro minas; `buscaminas.pl` repite `vecina/4` y
+`minas_alrededor/3` de la [sección 17.10](../capitulo-17-todas-las-soluciones/index.md#1710-buscaminas-las-minas-alrededor-de-una-celda) sobre ese tablero.
 
 <!-- ejemplo: capitulo-18/buscaminas.pl predicado: descubrir/3 consulta: descubrir(1-6, [], D), mostrar(D). -->
 ```prolog
@@ -759,6 +775,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | `include/3`, `exclude/3`, `partition/4` | filtran con una condición |
 | `partition/5` | separa en menores, iguales y mayores, según el orden que responde una relación |
 | `convlist/3` | como `maplist/3`, omitiendo los elementos para los que falla |
+| `plus/3`, `succ/2` | suma y sucesor como relaciones, en más de un sentido |
 | forma del recorrido | mapeo completo, parcial, con salidas disjuntas, con estado (completo, secuencial o disperso), reducción: la tabla de la [sección 18.7](#187-cuando-no-usar-el-orden-superior) |
 | `{Libres}/[Parametros]>>Objetivo` | una lambda de `yall`; las variables compartidas, entre llaves |
 | `:- meta_predicate` | qué argumentos se llaman, y con cuántos argumentos agregados |

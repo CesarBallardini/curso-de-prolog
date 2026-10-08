@@ -1,6 +1,7 @@
 :- encoding(utf8).
 
-% Capítulo 27 - library(persistency): hechos dinámicos que se guardan solos.
+% Capítulo 27 - library(persistency): hechos dinámicos que persisten en un
+% archivo.
 %
 % La directiva persistent/1 declara nota_guardada/3 con el tipo de cada
 % argumento, y genera assert_nota_guardada/3 y retract_nota_guardada/3. Con

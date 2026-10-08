@@ -1,8 +1,8 @@
 # Capítulo 23 — Programación con restricciones
 
 Un calendario de exámenes, el coloreo de un mapa, un criptoaritmo, la ubicación
-de las reinas en un tablero: son problemas **combinatorios**, en los que hay
-que elegir valores para muchas variables de modo que se cumplan muchas
+de las reinas en un tablero: son problemas **combinatorios**, en los que es
+necesario elegir valores para muchas variables de modo que se cumplan muchas
 condiciones a la vez. La [plantilla 15](../plantillas.md#15-generar-y-probar) los resuelve generando candidatos y
 probándolos, lo que alcanza para problemas pequeños y se vuelve impracticable
 en cuanto crecen.
@@ -12,7 +12,7 @@ las variables y sus dominios, se declaran las condiciones como restricciones, y
 el sistema las usa para descartar valores **antes** de probarlos. Este capítulo
 presenta `library(clpfd)`, que trabaja con enteros: la aritmética en los dos
 sentidos que la parte I dejó pendiente, los dominios, el etiquetado, las sumas
-y los conteos, la reificación, y cuatro problemas clásicos. Presenta también
+y los conteos, la reificación, y tres problemas clásicos. Presenta también
 `dif/2`. El proyecto arma el calendario de exámenes, y el Buscaminas deduce
 dónde están las minas.
 
@@ -29,7 +29,7 @@ Al terminar el capítulo, el lector puede:
 - usar `dif/2` en lugar de `\=` cuando las variables todavía no tienen valor.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:20 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:35 h**.
     Resolver los 7 ejercicios marcados con ★: **2:11 h**.
     Resolver los 16 ejercicios del final: **5:15 h**.
 
@@ -86,10 +86,13 @@ resuelve cuando se conoce.
 
 La biblioteca se carga con `:- use_module(library(clpfd)).`. Sus restricciones
 son `#=`, `#\=`, `#<`, `#>`, `#=<` y `#>=`, y sus expresiones admiten `+`, `-`,
-`*`, `//`, `mod`, `abs`, `min` y `max`; `abs(E)` es el valor absoluto de `E`,
-una función que también evalúa `is/2`. En un programa que usa enteros, `#=`
-puede reemplazar a `is/2` siempre: con los datos ligados, calcula lo mismo; con
-datos sin ligar, no produce un error.
+`*`, `//`, `div`, `mod`, `rem`, `^`, `abs`, `min` y `max`; `abs(E)` es el valor
+absoluto de `E`, una función que también evalúa `is/2`. En un programa que usa
+enteros, `#=` puede reemplazar a `is/2` en las expresiones de la lista
+anterior: con los datos ligados calcula lo mismo, y con datos sin ligar no
+produce un error. Las funciones de `is/2` que no están en la lista —`/`, `**`,
+`sqrt/1`, las de punto flotante— producen un error de dominio: `X #= 7 / 2`
+responde `domain_error(clpfd_expression, 7/2)`.
 
 ## 23.2 Variables, dominios y restricciones
 
@@ -139,11 +142,12 @@ X = 3.
 ```
 
 `labeling(Opciones, Vs)` elige el orden. `ff` (*first fail*) etiqueta primero la
-variable con el dominio más chico, la que tiene más posibilidades de fallar y
+variable con el dominio más pequeño, la que tiene más posibilidades de fallar y
 podar el árbol de búsqueda cuanto antes; `min(Expr)` y `max(Expr)` buscan
 primero las soluciones que minimizan o maximizan una expresión. El orden no
 cambia las soluciones, pero puede cambiar en varios órdenes de magnitud el
-tiempo que se tarda en encontrar la primera: la [sección 23.9](#239-las-n-reinas) lo mide.
+tiempo que se tarda en encontrar la primera: la
+[sección 23.9](#239-las-n-reinas) y el ejercicio 10 lo muestran.
 
 El etiquetado va **al final**, después de todas las restricciones. Si se
 etiqueta antes, cada valor se prueba contra las restricciones de a uno, y el
@@ -190,6 +194,23 @@ valor: `global_cardinality(Xs, [1-2, 2-2, 3-2])` exige dos de cada uno.
 `scalar_product(Coeficientes, Vs, #=<, Limite)` restringe una suma ponderada,
 como la cantidad de alumnos que rinden en un día, en el proyecto.
 
+```prolog
+?- [A, B] ins 1..3, global_cardinality([A, B], [1-1, 2-1]), label([A, B]).
+A = 1,
+B = 2 ;
+A = 2,
+B = 1.
+
+?- [P, Q] ins 0..5, scalar_product([2, 3], [P, Q], #=, 12), label([P, Q]).
+P = 0,
+Q = 4 ;
+P = 3,
+Q = 2.
+```
+
+`global_cardinality/2` restringe además cada variable a los valores de la
+lista: el 3 no aparece.
+
 ## 23.6 Reificación
 
 A veces lo que se cuenta no es un valor sino una condición: cuántos elementos
@@ -221,6 +242,9 @@ A = B, B = 1.
 La segunda consulta va en sentido inverso: si dos de dos elementos son 1,
 los dos lo son. La reificación admite también `#\/`, `#/\` y `#\` para
 combinar condiciones.
+
+!!! question "Actividad"
+    Predecir y comprobar `cantidad_de_unos([A, B, C], 3).`
 
 !!! example "Patrón 26 — Contar con reificación"
     **Problema.** Un modelo necesita que exactamente, al menos o a lo sumo N de
@@ -345,8 +369,8 @@ columna i.
 ```prolog
 %!  reinas(+N:integer, -Qs:list(integer)) is nondet.
 %
-%   Qs es una ubicación de N reinas que no se atacan: la reina de la columna
-%   i está en la fila i-ésima de Qs.
+%   Qs es una ubicación de N reinas que no se atacan: el elemento i-ésimo
+%   de Qs es la fila de la reina de la columna i.
 reinas(N, Qs) :-
     length(Qs, N),
     Qs ins 1..N,
@@ -409,13 +433,14 @@ descubre que un candidato no cumple las restricciones: generar y probar
 construye la permutación completa antes de comprobar; restringir descarta el
 valor de una reina en cuanto choca con otra, y con él todas las permutaciones
 que empiezan igual. La diferencia crece con el tamaño: con 8 reinas, las dos
-tardan centésimas de segundo; con 20, generar y probar no termina en un tiempo
-razonable, y restringir encuentra una solución en milisegundos.
+tardan centésimas de segundo; con 20, generar y probar tendría que recorrer
+hasta 20! ≈ 2,4 × 10¹⁸ permutaciones, y restringir encuentra una solución en
+milisegundos.
 
 ## 23.11 `dif/2`
 
-El [capítulo 10](../capitulo-10-negacion-como-falla/index.md) mostró que `\+` y `\==` dan respuestas incorrectas con variables
-libres: `X \== a` se cumple si `X` todavía no tiene valor, aunque después se
+El [capítulo 10](../capitulo-10-negacion-como-falla/index.md) mostró que `\+` y `\==` dan respuestas que dependen del momento en
+que se evalúan: `X \== a` se cumple si `X` todavía no tiene valor, aunque después se
 ligue a `a`. `dif(X, Y)` es la restricción de desigualdad: si `X` e `Y` ya son
 distintos, se cumple; si ya son iguales, falla; y si todavía no se sabe, se
 **posterga** hasta que se sepa.
@@ -498,10 +523,11 @@ si la salida equivale a `X # Y`, la disyunción exclusiva:
 
 <!-- ejemplo: capitulo-23/circuito.pl predicado: circuito_b/3 es_xor/1 consulta: es_xor(T). -->
 ```prolog
-%!  circuito_b(?X, ?Y, ?Z) is det.
+%!  circuito_b(?X, ?Y, ?Z) is semidet.
 %
 %   El mismo circuito como restricciones de library(clpb): ~ es la
-%   negación, * la conjunción y =:= la equivalencia.
+%   negación, * la conjunción y =:= la equivalencia. Falla si los valores
+%   dados para las entradas y la salida no son compatibles con el circuito.
 circuito_b(X, Y, Z) :-
     sat(A =:= ~(X * Y)),
     sat(B =:= ~(X * A)),
@@ -545,7 +571,7 @@ Cada materia rinde un día; dos materias con un alumno inscripto en común
 deben rendir en días distintos, y cada día la cantidad de alumnos que rinden
 no puede superar la capacidad del aula.
 
-<!-- ejemplo: capitulo-23/inscripciones.pl predicado: horario/3 conflicto/2 dias_distintos/2 capacidad_del_dia/3 rinde_ese_dia/3 consulta: horario(5, 6, Horario). -->
+<!-- ejemplo: capitulo-23/inscripciones.pl predicado: horario/3 conflicto/2 dias_distintos/2 capacidad_del_dia/3 rinde_ese_dia/3 cantidad_de_inscriptos/2 consulta: horario(5, 6, Horario). -->
 ```prolog
 %!  horario(+Dias:integer, +Capacidad:integer, -Horario:list(pair)) is nondet.
 %
@@ -597,6 +623,13 @@ capacidad_del_dia(Horario, Capacidad, Dia) :-
 %   B es 1 si la materia rinde el día Dia, y 0 si no.
 rinde_ese_dia(Dia, _-D, B) :-
     B #<==> (D #= Dia).
+
+%!  cantidad_de_inscriptos(+MateriaDia:pair, -N:integer) is det.
+%
+%   N es la cantidad de alumnos inscriptos en la materia.
+cantidad_de_inscriptos(M-_, N) :-
+    inscriptos(M, Legajos),
+    length(Legajos, N).
 ```
 
 ```prolog
@@ -651,7 +684,7 @@ modelo(Lineas, Ocultas) :-
 %!      is semidet.
 %
 %   Numero es Celda-N: las celdas ocultas vecinas de Celda suman N minas.
-%   Falla si ya se sabe que no pueden sumarlas.
+%   Falla si las restricciones ya planteadas excluyen esa suma.
 restringir(Filas, Columnas, Ocultas, Celda-N) :-
     findall(V, vecina(Filas, Columnas, Celda, V), Vecinas),
     convlist(variable_de(Ocultas), Vecinas, Bs),
@@ -677,6 +710,12 @@ clasificar(Ocultas, Seguras, Minas) :-
                  \+ ( B = 0, label(Bs) ) ), Minas).
 ```
 
+`deducir/3`, en el mismo archivo, encadena `modelo/2` y `clasificar/3`;
+`deducir/4` recibe además el total de minas y agrega `sum(Bs, #=, Total)`
+antes de clasificar. `vecina/4` es la de `buscaminas.pl` del
+[capítulo 22](../capitulo-22-estructuras-de-datos-de-la-biblioteca/index.md#2211-buscaminas-el-tablero-como-tabla-de-busqueda),
+copiada en este archivo.
+
 ```prolog
 ?- deducir(["#100", "1211", "01##", "01##"], Seguras, Minas).
 Seguras = [3-4, 4-3],
@@ -700,6 +739,10 @@ de `findall/3`: `findall/3` devuelve **copias** de las variables, y una
 restricción sobre una copia no restringe la original. Con cualquiera de los dos
 errores, el modelo no tiene restricciones, y todas las celdas quedan sin
 deducir.
+
+!!! question "Actividad"
+    Consultar `deducir(["#2#", "###"], Seguras, Minas).` y explicar por qué
+    no deduce nada.
 
 ## Ejercicios
 
@@ -737,8 +780,9 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     pueden cumplir.
 14. ★ **(2)** Escribir `horario_minimo(Capacidad, Dias, Horario)`: la menor
     cantidad de días con la que hay un horario.
-15. **(2)** Escribir `horario_separado/3`, que exige al menos dos días entre los
-    exámenes de dos materias con un alumno en común. ¿Cuántos días hacen falta?
+15. **(2)** Escribir `horario_separado/3`, que exige una diferencia de al menos
+    dos días entre los exámenes de dos materias con un alumno en común.
+    ¿Cuántos días hacen falta?
 16. **(3)** Escribir `horario_con_aulas(Capacidades, Dias, Horario)`: cada examen
     tiene un día y un aula; un aula tiene a lo sumo un examen por día, y los
     inscriptos caben en ella.
@@ -756,6 +800,8 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | `B #<==> C` | reificación: la verdad de C en la variable B |
 | `dif/2` | desigualdad que se posterga, para cualquier término |
 | `sat/1`, `taut/2` | `library(clpb)`: restricciones booleanas; si una fórmula es tautología |
+| `transpose/2` | las columnas de una lista de filas, de `library(clpfd)` (en las soluciones) |
+| `element/3` | `element(I, Lista, X)`: X es el elemento I-ésimo de Lista, como restricción (en las soluciones) |
 | generar y probar, `permutation/2` | se descubre el fracaso tarde; restringir lo descubre antes |
 | **Patrones 26, 27** | contar con reificación; modelar, restringir, etiquetar |
 

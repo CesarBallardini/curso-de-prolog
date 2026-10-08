@@ -1,9 +1,9 @@
 :- encoding(utf8).
 
-% Capítulo 28 - Fecha y hora: la fecha de hoy, y cuentas con fechas.
+% Capítulo 28 - Fecha y hora: la fecha de hoy, y cálculos con fechas.
 %
 % Una fecha es date(Anio, Mes, Dia). hoy/1 es el único predicado que depende
-% del reloj; los demás son cuentas que dan siempre el mismo resultado. Los
+% del reloj; los demás son cálculos que dan siempre el mismo resultado. Los
 % nombres de los días y de los meses están en tablas propias: los de
 % format_time/3 dependen de la configuración regional del sistema.
 %
@@ -71,7 +71,8 @@ fecha_texto(date(Anio, Mes, Dia), Texto) :-
     format(string(Texto), "~w ~d de ~w de ~d",
            [NombreDelDia, Dia, NombreDelMes, Anio]).
 
-%!  fecha_iso(?Fecha, ?Texto:string) is det.
+%!  fecha_iso(+Fecha, -Texto:string) is det.
+%!  fecha_iso(-Fecha, +Texto:string) is det.
 %
 %   Texto es Fecha en el formato de ISO 8601, "2026-09-25". Con Texto dado,
 %   lo lee y da la Fecha: nonvar/1, que el capítulo 32 presenta, elige el

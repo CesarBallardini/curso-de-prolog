@@ -10,5 +10,5 @@
 
 name(fechas_castellano).
 version('1.0.0').
-title('Fechas en castellano: cuentas con fechas y nombres propios').
+title('Fechas en castellano: calculos con fechas y nombres propios').
 author('Curso de Prolog', 'https://katra.ballardini.com.ar/curso-de-prolog/').

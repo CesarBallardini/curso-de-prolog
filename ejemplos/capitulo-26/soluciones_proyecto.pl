@@ -36,4 +36,4 @@ inscribir_registrado(Legajo, Materia, Resultado) :-
 vacantes_no_negativas :-
     forall(vacantes(_, N),
            assertion(N >= 0)),
-    debug(inscripcion, "vacantes revisadas", []).
+    debug(inscripcion, "vacantes verificadas", []).

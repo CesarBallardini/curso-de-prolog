@@ -22,7 +22,8 @@
 %
 %?- iniciar_buscaminas(Puerto), detener_buscaminas(Puerto).
 %
-% thread_get_message/1 y with_mutex/2: los presenta el capítulo 37, con los hilos.
+% thread_get_message/1 y with_mutex/2: los presenta el capítulo 37, con los
+% hilos.
 
 :- use_module(library(http/http_server)).
 :- use_module(library(http/http_json)).

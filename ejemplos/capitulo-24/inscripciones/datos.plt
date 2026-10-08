@@ -1,7 +1,7 @@
 :- encoding(utf8).
 
-% Pruebas del módulo datos (capítulo 24): los datos: cada inscripción es de un
-% alumno y una materia existentes, y los estados son válidos.
+% Pruebas del módulo datos (capítulo 24): los datos: cada inscripción es de
+% un alumno y una materia existentes, y los estados son válidos.
 
 :- begin_tests(datos).
 

@@ -76,7 +76,7 @@ Los hechos aparecen en el orden en que están en el archivo, que es el orden en
 que se cargaron. Es también el orden en que Prolog los prueba, como mostró el
 [capítulo 5](../capitulo-05-como-responde-prolog/index.md): `listing/1` muestra el programa tal como lo va a recorrer la
 búsqueda. `listing/1` no conserva el formato del archivo: alinea los argumentos
-a su manera y quita los espacios que el archivo usaba para encolumnar.
+con su propia disposición y quita los espacios que el archivo usaba para encolumnar.
 
 ## 4
 
@@ -175,7 +175,7 @@ volver a intentar el commit. El gancho se puede saltear con
 
 ## 10
 
-`[revision].` no advierte nada porque, al cargar, SWI-Prolog no sabe si
+`[revision].` no advierte nada porque, al cargar, no se puede determinar si
 `persona/1` va a existir cuando se ejecute `nieto/2`: el predicado podría estar
 en otro archivo que se cargue después, o agregarse durante la ejecución con
 `assertz/1`. `check.` revisa el programa **completo** cargado en ese momento,
@@ -183,7 +183,7 @@ y por eso puede afirmar que no hay ninguna definición.
 
 La advertencia de `check.` es incorrecta en un programa que agrega los hechos
 durante la ejecución: si `persona/1` se crea con `assertz/1` al arrancar, antes
-de que nadie llame a `nieto/2`, el programa funciona y `check.` igual advierte.
+de la primera llamada a `nieto/2`, el programa funciona y `check.` igual advierte.
 El mensaje mismo lo anticipa: en ese caso se declara `:- dynamic persona/1.`, y
 la advertencia desaparece. El [capítulo 20](../capitulo-20-base-de-datos-dinamica/index.md) trata esos predicados.
 

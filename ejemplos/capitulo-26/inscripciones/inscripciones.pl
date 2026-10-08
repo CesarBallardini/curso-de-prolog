@@ -4,7 +4,7 @@
 %
 % Este archivo solo carga los módulos. Cargarlo es cargar el programa; cada
 % módulo se puede cargar y probar también por separado. Al terminar de cargar,
-% comprobar_datos/0 revisa que cada inscripción sea de un alumno y una
+% comprobar_datos/0 verifica que cada inscripción sea de un alumno y una
 % materia existentes.
 %
 % solo-local: SWISH no admite módulos propios en un programa.

@@ -35,12 +35,21 @@ test(valor_absoluto_negativo, true(A == 5)) :-
 test(valor_absoluto_positivo, true(A == 5)) :-
     valor_absoluto(5, A).
 
+test(valor_absoluto_ligado_verdadero) :-
+    valor_absoluto(-5, 5).
+
+test(valor_absoluto_ligado_falso, [fail]) :-
+    valor_absoluto(-5, 4).
+
 % Ejercicio 5
 test(cuatro_es_par, true(P == par)) :-
     paridad(4, P).
 
 test(tres_es_impar, true(P == impar)) :-
     paridad(3, P).
+
+test(tres_no_es_par, [fail]) :-
+    paridad(3, par).
 
 % Ejercicio 6
 test(primera_aprobada_de_ana, true(M == am1)) :-
@@ -118,5 +127,19 @@ test(eco_hasta_el_final, true(S == "a\nb\n")) :-
 test(eco_vacio, true(S == "")) :-
     open_string("", In),
     with_output_to(string(S), eco_hasta_el_final(In)).
+
+% Ejercicio 18: *-> recorre todas las propiedades; sin nondet, las pruebas
+% verifican que cumple/1 y presentar/1 no dejan alternativas pendientes.
+test(cumple_tres_propiedades, true(S == "par\npositivo\nmayor_que_10\n")) :-
+    with_output_to(string(S), cumple(12)).
+
+test(cumple_ninguna, true(S == "ninguna\n")) :-
+    with_output_to(string(S), cumple(-3)).
+
+test(presentar_con_edad, true(S == "ana (41 años)\n")) :-
+    with_output_to(string(S), presentar(ana)).
+
+test(presentar_sin_edad, true(S == "marta\n")) :-
+    with_output_to(string(S), presentar(marta)).
 
 :- end_tests(soluciones).

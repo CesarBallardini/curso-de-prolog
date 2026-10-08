@@ -30,6 +30,18 @@ manejador: la opción `method(get)` de `/hola` y `method(post)` de `/edades`
 hacen que el servidor rechace los demás métodos antes de llamarlo. Las pruebas
 del ejercicio 7 lo verifican.
 
+**Actividad de la [sección 30.4](index.md#304-codigos-de-estado-y-errores)**:
+`GET /personas/zoe` recibe 404 con el cuerpo
+`{"error":"existence_error(persona,zoe)"}`, con y sin el encabezado `Accept`:
+lo responde `responder/1`. `POST /hola` recibe 405: lo responde el servidor,
+antes de llamar al manejador, y el formato del cuerpo depende del encabezado.
+`curl` envía `Accept: */*` si no se indica otro, y con ese valor el cuerpo ya
+llega en JSON, con `"message":"Method not allowed: POST"`; sin ningún
+encabezado `Accept` (`-H "Accept:"`) llega en HTML. `POST /edades` con el
+cuerpo `{mal` recibe 400 con `{"error":"syntax_error(json(illegal_json))"}`
+en los dos casos: `http_read_json_dict/3` lanza el error de sintaxis y
+`responder/1` lo convierte en el código.
+
 ## 3
 
 <!-- ejemplo: capitulo-30/soluciones.pl fragmento: :- http_handler(root(mayores) .. reply_json_dict(_{edad: Minima, personas: Personas}). consulta: iniciar(Puerto), detener(Puerto). -->
@@ -48,7 +60,8 @@ mayores(Pedido) :-
 
 El parámetro no tiene `default`, y es obligatorio: sin él, o con un texto que
 no es un entero, `http_parameters/2` responde 400 sin llamar al resto del
-manejador. `/mayores?edad=40` responde `["juan", "ana"]`.
+manejador. `/mayores?edad=40` responde
+`{"edad":40,"personas":["juan","ana"]}`.
 
 ## 4
 
@@ -143,6 +156,16 @@ test(get_a_edades, true(C == 405)) :-
 la opción `method(M)` de `http_open/3`, al servidor que la unidad arrancó en
 su `setup`.
 
+**Actividad de la [sección 30.6](index.md#306-probar-un-servidor)**: en Linux
+el segundo `swipl servidor.pl --puerto=8080` no arranca, porque el puerto ya
+está en uso, y termina con un error de socket. En Windows los dos arrancan y
+escriben la misma dirección: el servidor abre el socket con la opción
+`reuseaddr`, que en ese sistema permite que dos procesos reserven el mismo
+puerto. Sin `--puerto`, cada uno escribe un puerto distinto, elegido por el
+sistema. Con el 8080 fijo, las pruebas fallarían siempre que otro programa
+lo usara, y dos baterías ejecutadas a la vez no podrían arrancar cada una su
+servidor.
+
 ## 8
 
 <!-- ejemplo: capitulo-30/soluciones.pl fragmento: :- set_setting(http:cors, [*]). .. hola(Pedido). -->
@@ -218,7 +241,8 @@ ranking_limitado(Pedido) :-
 ```
 
 `http_parameters/2` no conoce el tipo `positive_integer`: con él, el límite
-llega como el átomo `'2'`, y la cuenta produce un error 500. `between(1,
+llega como el átomo `'2'`, y la expresión aritmética `min(Limite, Total)`
+produce un error de tipo, que el servidor responde con 500. `between(1,
 1000)` convierte el texto en un entero y verifica el rango, y un límite fuera
 de él responde 400. `optional(true)` deja la variable libre cuando el
 parámetro falta.
@@ -415,7 +439,7 @@ jugada(Texto, Accion, F, C, Id, Juego, Estado) :-
 
 `with_mutex/2` hace que dos pedidos a la vez no modifiquen las partidas al
 mismo tiempo: el servidor atiende cada pedido en un hilo propio. El
-[capítulo 37](../capitulo-37-concurrencia-y-paralelismo/index.md) presenta los hilos, `with_mutex/2` y lo que pasa sin él.
+[capítulo 37](../capitulo-37-concurrencia-y-paralelismo/index.md) presenta los hilos, `with_mutex/2` y qué ocurre sin él.
 
 Del lado de Python, el paquete del [capítulo 29](../capitulo-29-prolog-desde-python/index.md) recibe un adaptador más, que
 implementa el mismo puerto con pedidos HTTP:

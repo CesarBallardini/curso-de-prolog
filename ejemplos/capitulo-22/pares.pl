@@ -3,7 +3,7 @@
 % Capítulo 22 - Pares, library(assoc) y library(ordsets).
 %
 % por_largo/2 ordena nombres por su longitud con la técnica de decorar,
-% ordenar y desdecorar. hijos_por_padre/2 construye un assoc de cada padre a
+% ordenar y desdecorar. hijos_por_padre/1 construye un assoc de cada padre a
 % la lista de sus hijos. Los conjuntos ordenados de ordsets responden qué
 % personas están en dos grupos, o en uno y no en el otro.
 %

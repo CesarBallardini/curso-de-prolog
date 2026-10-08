@@ -38,4 +38,9 @@ test(no_liga_variables) :-
     mismo_termino(f(X), f(X)),
     var(X).
 
+% primero/1: $/1 produce un error cuando member/2 deja una alternativa.
+test(primero_con_alternativa_es_error,
+     [error(determinism_error(_, det, nondet, goal))]) :-
+    primero(_).
+
 :- end_tests(encabezados).

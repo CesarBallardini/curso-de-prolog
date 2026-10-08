@@ -2,14 +2,16 @@
 
 % Capítulo 16 - Indexación y puntos de elección.
 %
-% SWI-Prolog elige las cláusulas candidatas mirando los argumentos de la
+% SWI-Prolog elige las cláusulas candidatas examinando los argumentos de la
 % llamada. ultimo/2 del capítulo 7 no se distingue por el primer argumento y
 % deja una alternativa al final; ultimo_indexado/2 pasa la lista al primer
 % argumento de un auxiliar, que se distingue en [] y [_|_]. todos_estan/2 deja
 % una alternativa en cada paso, y con ella la pila crece; con memberchk/2, no.
+% copias/3 arma los datos de esa medición.
 %
 %?- ultimo_indexado([a, b, c], U).
 %?- todos_estan_chk([a, b], [a, b, c]).
+%?- copias(3, a, L).
 
 %!  ultimo(?L:list, ?X) is nondet.
 %
@@ -56,3 +58,14 @@ todos_estan_chk([], _).
 todos_estan_chk([X|Resto], L) :-
     memberchk(X, L),
     todos_estan_chk(Resto, L).
+
+%!  copias(+N:integer, +X, -L:list) is det.
+%
+%   L es la lista de N copias de X: los datos con que se mide todos_estan/2.
+copias(N, X, L) :-
+    (   N =:= 0
+    ->  L = []
+    ;   L = [X|Resto],
+        Faltan is N - 1,
+        copias(Faltan, X, Resto)
+    ).

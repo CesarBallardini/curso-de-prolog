@@ -3,11 +3,12 @@
 % Capítulo 31 - Inscripciones, módulo api: el programa como servicio web.
 %
 % Cada ruta es un manejador corto: lee el pedido, llama a los predicados de
-% los demás módulos —los mismos que usan la terminal y Python— y responde con
-% JSON y un código de estado. El ranking y las materias usan las conversiones
-% de puente, que producen dicts, y un dict es un objeto de JSON; el
-% resultado de una inscripción se convierte aquí, porque puente escribe los
-% booleanos con la notación de Janus, @(true), y JSON los escribe true.
+% los demás módulos —los mismos que usan la terminal y Python— y
+% responde con JSON y un código de estado. El ranking y las materias usan
+% las conversiones de puente, que producen dicts, y un dict es un objeto de
+% JSON; el resultado de una inscripción se convierte aquí, porque puente
+% escribe los booleanos con la notación de Janus, @(true), y JSON los
+% escribe true.
 % responder/1 convierte los errores en códigos.
 %
 %     GET  /alumnos                     los alumnos
@@ -76,10 +77,10 @@ alumnos(_Pedido) :-
     findall(A, ( alumno(L, _, _, _), alumno_json(L, A) ), Alumnos),
     reply_json_dict(Alumnos).
 
-%!  alumno(+Legajo:atom, +Pedido) is det.
+%!  alumno(+Texto:atom, +Pedido) is det.
 %
-%   GET /alumnos/Legajo: el alumno, o 404 si no existe. Un legajo que no es
-%   un número es un error de tipo, y la respuesta es 400.
+%   GET /alumnos/Texto: el alumno de legajo Texto, o 404 si no existe. Un
+%   legajo que no es un número es un error de tipo, y la respuesta es 400.
 alumno(Texto, _Pedido) :-
     responder(( legajo(Texto, Legajo),
                 (   alumno_json(Legajo, Alumno)
@@ -165,8 +166,8 @@ legajo(Texto, Legajo) :-
 %
 %   Ejecuta Objetivo, que responde el pedido. Un error de tipo, de dominio o
 %   de sintaxis responde 400; uno de existencia, 404; si Objetivo falla,
-%   como cuando al cuerpo le falta un campo, 400. Los demás errores siguen
-%   su camino, y el servidor responde 500.
+%   como cuando al cuerpo le falta un campo, 400. Los demás errores se
+%   propagan sin cambios, y el servidor responde 500.
 responder(Objetivo) :-
     catch(( Objetivo
           ->  true

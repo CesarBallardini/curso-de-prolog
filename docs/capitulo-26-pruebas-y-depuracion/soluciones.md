@@ -53,7 +53,8 @@ caso(101, pp, rechazada(ya_la_cursa)).
 caso(102, am2, rechazada(falta(am1))).
 caso(105, log, rechazada(sin_vacantes)).
 
-test(inscripcion_posible, [forall(caso(L, M, Esperado)), true(R == Esperado)]) :-
+test(inscripcion_posible,
+     [forall(caso(L, M, Esperado)), true(R == Esperado)]) :-
     inscripcion_posible(L, M, R).
 ```
 
@@ -122,7 +123,7 @@ mensajes pueden quedar en el código.
 vacantes_no_negativas :-
     forall(vacantes(_, N),
            assertion(N >= 0)),
-    debug(inscripcion, "vacantes revisadas", []).
+    debug(inscripcion, "vacantes verificadas", []).
 ```
 
 Con los datos del proyecto, el invariante se cumple. Después de
@@ -158,8 +159,8 @@ N = 1.
 
 Se pregunta a las partes, empezando por la más simple: la lista vacía debería
 tener largo 0, y `largo_mal/2` responde 1. El caso recursivo, con esa respuesta
-incorrecta como base, suma bien: el error está en el caso base, y no hace
-falta mirar el recursivo. `largo/2` es la versión corregida.
+incorrecta como base, suma bien: el error está en el caso base, y no es
+necesario examinar el recursivo. `largo/2` es la versión corregida.
 
 ## 10
 
@@ -231,12 +232,22 @@ test(cantidad_de_minas, [forall(between(1, 20, S)), true(N == 10)]) :-
     tablero_al_azar(9, 9, 10, tablero(_, _, Celdas)),
     assoc_to_values(Celdas, Vs),
     aggregate_all(count, member(mina, Vs), N).
+
+test(numeros_correctos, [forall(between(1, 20, S)), fail]) :-
+    set_random(seed(S)),
+    tablero_al_azar(6, 6, 6, T),
+    valor(T, F-C, N),
+    integer(N),
+    aggregate_all(count, ( vecina(6, 6, F-C, V), valor(T, V, mina) ), M),
+    M =\= N.
 ```
 
 La primera prueba fija la semilla y compara con un resultado conocido: detecta
 cualquier cambio en cómo se eligen las minas. Las de propiedades recorren
 veinte semillas y verifican lo que vale para cualquier tablero: la cantidad de
-minas, y que cada número cuenta sus minas vecinas.
+minas, y que cada número cuenta sus minas vecinas. La segunda propiedad se
+escribe al revés, con `fail`: ninguna celda numerada cuenta una cantidad de
+minas vecinas distinta de su número.
 
 Es el [Patrón 34](../patrones.md#34-azar-reproducible), de la [sección 26.2](index.md#262-la-bateria-completa-y-su-cobertura).
 
@@ -254,11 +265,22 @@ resumen_con_error(Texto) :-
 ```
 
 La carga no dice nada: una cláusula puede llamar a un predicado que todavía no
-existe, porque podría definirse después. `check.` revisa el programa completo y
+existe, porque podría definirse después. `check.` examina el programa completo y
 lo informa, con el archivo, la línea y la cláusula; la salida está en la
 [sección 26.7](index.md#267-check0-list_undefined0-y-gxref0).
 
 ## 13
+
+`inferencias(G, I)` mide con `statistics(inferences, I)` antes y después de
+`once(G)`:
+
+```prolog
+inferencias(G, I) :-
+    statistics(inferences, I0),
+    once(G),
+    statistics(inferences, I1),
+    I is I1 - I0.
+```
 
 ```prolog
 test(segunda_llamada_mas_barata) :-
@@ -295,3 +317,15 @@ test(no_termina, true(R == inference_limit_exceeded)) :-
 inferencias la detiene, independiente de la velocidad de la máquina. La opción
 `timeout(Segundos)` de plunit también la detendría, pero con un límite de
 tiempo.
+
+## 15
+
+Con `spy(padre/2)` y `l` en cada puerto, la sesión muestra siete puertos,
+todos de `padre/2`: `Call` y `Exit` de `padre(juan, _)` con `ana`, `Call` y
+`Fail` de `padre(ana, _)`, `Exit` de `padre(juan, _)` con `pedro`, y `Call` y
+`Exit` de `padre(pedro, _)` con `luis`; la sesión está en la
+[sección 26.3](index.md#263-el-depurador-en-la-terminal). Frente a la traza
+completa, no aparecen los puertos de `abuelo/2` ni el `Redo` de
+`padre(juan, _)`: leap avanza de un punto espía al siguiente, y lo que ocurre
+entre ellos no se muestra. `nospy(padre/2)` quita el punto espía, y la
+consulta siguiente corre sin detenerse.

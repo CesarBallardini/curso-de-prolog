@@ -74,7 +74,8 @@ jugar(Accion, Celda, partida(T, D0, M0, Estado0), Partida) :-
 %!  aplicar(+Accion, +Celda, +Valor, +Partida0, -Partida) is det.
 %
 %   Aplica una jugada válida.
-aplicar(descubrir, Celda, mina, partida(T, D0, M, _), partida(T, D, M, perdio)) :-
+aplicar(descubrir, Celda, mina,
+        partida(T, D0, M, _), partida(T, D, M, perdio)) :-
     !,
     ord_add_element(D0, Celda, D).
 aplicar(descubrir, Celda, _, partida(T, D0, M, _), partida(T, D, M, Estado)) :-

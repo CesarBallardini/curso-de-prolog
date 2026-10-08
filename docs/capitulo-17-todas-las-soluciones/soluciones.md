@@ -62,6 +62,12 @@ con los hijos de ana, `[sofia]`, y otra con los de pedro, `[luis, eva]`. Con
 quedan en una sola lista, sin decir de quién es cada uno; `findall/3` sirve
 cuando el abuelo llega ligado, como en `nietos_de/2`.
 
+Las consultas de la actividad de la [sección 17.3](index.md#173-bagof3-setof3-y): `bagof(H, padre(P, H), L)`
+tiene dos respuestas, una por padre; `bagof(H, P^padre(P, H), L)` una,
+`[ana, pedro, luis, eva]`; `setof(H-P, padre(P, H), L)` una,
+`[ana-juan, eva-pedro, luis-pedro, pedro-juan]`, ordenada por el hijo;
+`findall(P, padre(P, _), L)` una, `[juan, juan, pedro, pedro]`, con repetidos.
+
 ## 4
 
 <!-- ejemplo: capitulo-17/soluciones.pl predicado: edades_ordenadas/1 edades_ordenadas_2/1 consulta: edades_ordenadas(E). -->
@@ -119,8 +125,8 @@ requisitos_faltantes_2(Legajo, Materia, Faltan) :-
 ```
 
 La tabla `requisitos/2` del [capítulo 15](../capitulo-15-control/index.md) repetía las correlatividades; `findall/3`
-las reúne desde `correlativa/2`. El `\+` está bien ubicado: `R` llega con valor
-desde el objetivo anterior.
+las reúne desde `correlativa/2`. El `\+` está después del objetivo que liga
+`R`: `R` llega con valor desde `correlativa/2`.
 
 ## 7
 
@@ -147,6 +153,12 @@ la primera persona que encuentra, y `mayor_edad_2/2` responde marta.
 `68-juan` y `68-marta` es mayor el segundo, por el nombre. Ninguno de los dos da
 los dos empatados; para eso, `findall/3` con la edad máxima ya calculada, o la
 forma de la [sección 10.7](../capitulo-10-negacion-como-falla/index.md#107-obtener-una-respuesta-por-negacion).
+
+En la actividad de la [sección 17.5](index.md#175-aggregate_all3), zoe no tiene edad registrada:
+`aggregate_all(max(E), edad(zoe, E), M)` responde `false.`, porque el máximo
+de ningún valor no existe; `aggregate_all(count, edad(zoe, _), N)` responde
+`N = 0` y `aggregate_all(sum(E), edad(zoe, E), S)` responde `S = 0`, porque
+contar o sumar ninguna respuesta da cero.
 
 ## 8
 
@@ -350,9 +362,90 @@ un ranking son promedios iguales de alumnos distintos. `primeros/3` toma los `N`
 primeros con un condicional.
 
 Con 5 000 alumnos generados y los diez mejores, las dos dan el mismo ranking.
-Contadas las inferencias, `mejores_2/2` usa unas 150 000 y `mejores/2` unas
-275 000: las dos calculan todos los promedios y los ordenan, y `order_by/2`
-agrega el trabajo de entregarlos de a uno. La diferencia es de un factor menor
-que dos, y no crece con los datos; `mejores/2` es más breve y se lee como la
-pregunta. Es la conclusión del [Patrón 10](../patrones.md#10-medir-antes-de-cambiar): sin una medición que muestre que pesa,
-la versión más clara es la que corresponde.
+Contadas las inferencias después de una primera llamada —la primera carga
+`library(solution_sequences)` y cuesta unas 275 000—, las dos usan unas
+150 000: calculan todos los promedios y los ordenan, y entregar las respuestas
+de a una no agrega trabajo medible. `mejores/2` es más breve y se lee como la
+pregunta. Es la conclusión del [Patrón 10](../patrones.md#10-medir-antes-de-cambiar): sin una medición que muestre una
+diferencia, la versión más breve es la que corresponde.
+
+En la actividad de la [sección 17.7](index.md#177-librarysolution_sequences),
+`limit(2, offset(1, de_mayor_a_menor(P, E)))` responde ana y pedro: `offset/2`
+descarta a juan y `limit/2` se queda con las dos siguientes.
+`findall(P, limit(2, de_mayor_a_menor(P, _)), L)` responde `L = [juan, ana]`.
+El predicado que envuelve al otro se aplica después: en la primera consulta,
+primero el desplazamiento y después el límite.
+
+## 17
+
+<!-- ejemplo: capitulo-17/soluciones.pl predicado: carreras/1 carreras_2/1 carreras_en_orden/1 consulta: carreras_en_orden(Cs). -->
+```prolog
+%!  carreras(-Carreras:list(atom)) is semidet.
+%
+%   Carreras es la lista ordenada y sin repetidos de las carreras con algún
+%   alumno. Falla si no hay ninguno.
+carreras(Carreras) :-
+    setof(C, L^N^I^alumno(L, N, C, I), Carreras).
+
+%!  carreras_2(-Carreras:list(atom)) is det.
+%
+%   La misma lista con aggregate_all/3: la lista vacía si no hay alumnos.
+carreras_2(Carreras) :-
+    aggregate_all(set(C), alumno(_, _, C, _), Carreras).
+
+%!  carreras_en_orden(-Carreras:list(atom)) is det.
+%
+%   Carreras son las carreras en el orden en que aparecen en alumno/4, cada
+%   una la primera vez.
+carreras_en_orden(Carreras) :-
+    findall(C, distinct(C, alumno(_, _, C, _)), Carreras).
+```
+
+```prolog
+?- carreras(Cs).
+Cs = [civil, industrial, sistemas].
+
+?- carreras_en_orden(Cs).
+Cs = [sistemas, civil, industrial].
+```
+
+`setof/3` y `set(C)` dan la lista en el orden estándar y sin repetidos; las
+otras variables de `alumno/4` se marcan con `^` en `setof/3` para que no
+agrupen, y `aggregate_all/3` las ignora, como `findall/3`. `distinct/2`
+conserva la primera aparición de cada carrera en el orden de los hechos, y
+`findall/3` reúne esas respuestas: sistemas, la carrera de ana, va primero.
+Sin alumnos, `carreras/1` falla y las otras dos dan la lista vacía.
+
+## 18
+
+<!-- ejemplo: capitulo-17/soluciones.pl predicado: de_mayor_a_menor/2 pagina/3 consulta: pagina(2, 3, Filas). -->
+```prolog
+%!  de_mayor_a_menor(-P, -E:integer) is multi.
+%
+%   Las personas de la base, de la mayor a la menor edad.
+de_mayor_a_menor(P, E) :-
+    order_by([desc(E)], edad(P, E)).
+
+%!  pagina(+N:integer, +Tamanio:integer, -Filas:list(pair)) is det.
+%
+%   Filas son los pares P-E de la página N, de Tamanio filas, del ranking de
+%   de_mayor_a_menor/2; la lista vacía más allá de la última página.
+pagina(N, Tamanio, Filas) :-
+    Salto is (N - 1) * Tamanio,
+    findall(P-E,
+            limit(Tamanio, offset(Salto, de_mayor_a_menor(P, E))),
+            Filas).
+```
+
+```prolog
+?- pagina(2, 3, Filas).
+Filas = [pedro-39, luis-12, eva-8].
+
+?- pagina(4, 3, Filas).
+Filas = [].
+```
+
+La página `N` empieza después de `(N - 1) * Tamanio` respuestas: `offset/2`
+las descarta, `limit/2` se queda con las `Tamanio` siguientes y `findall/3`
+las reúne. Más allá de la última página, `offset/2` descarta todas las
+respuestas y `findall/3` da la lista vacía: el predicado es `det` y no falla.

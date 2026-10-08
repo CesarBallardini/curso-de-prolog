@@ -41,6 +41,15 @@ agregar_termino(Archivo, Termino) :-
 El modo `append` escribe al final y crea el archivo si no existe. Con `write`,
 cada llamada borraría lo que dejó la anterior.
 
+Respuesta a la actividad de la [sección 27.2](index.md#272-leer-terminos-y-lineas):
+en Windows, los dos archivos difieren en un byte. Con `open/3` la `í` ocupa
+uno, el 237 de la codificación regional; con `encoding(utf8)`, dos, 195 y 173,
+los que verifica la prueba `utf8` de `archivos.plt`. En Linux la codificación
+del sistema ya es UTF-8, y los dos archivos son iguales. Al leer con
+`encoding(utf8)` el archivo escrito sin la opción, SWI-Prolog advierte
+`Illegal UTF-8 continuation` y el átomo queda con un carácter de reemplazo en
+lugar de la `í`: `nombre('Ana Mar\uFFFDa')`.
+
 ## 3
 
 <!-- ejemplo: capitulo-27/soluciones.pl predicado: copiar_en_mayusculas/2 copiar_lineas/2 consulta: contar_terminos(archivos('hechos.txt'), N). -->
@@ -261,6 +270,11 @@ error(domain_error(objeto_materia, _{codigo:am1, nombre:x}), _)
 diferencia entre una falla y un error del [capítulo 25](../capitulo-25-errores-y-excepciones/index.md#255-fallo-o-error).
 `read_file_to_string/3` y `atom_json_dict/3` reemplazan aquí al stream: con un
 archivo pequeño, leerlo entero es más simple.
+
+Es la respuesta a la actividad de la [sección 27.7](index.md#277-json): con
+una materia sin `"anio"`, `materias_json/2` responde `false.`. Falla
+`objeto_materia/2`, en `:<`, porque la clave `anio` del dict de la izquierda
+no está en el objeto, y `maplist/3` falla con él, sin decir en qué objeto.
 
 ## 10
 

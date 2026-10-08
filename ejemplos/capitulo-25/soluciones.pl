@@ -110,7 +110,7 @@ limpiar_telefono(Texto, Numero) :-
     ->  domain_error(telefono, letras)
     ;   true
     ),
-    include([C]>>char_type(C, digit(_)), Caracteres, Digitos),
+    include([Ch]>>char_type(Ch, digit(_)), Caracteres, Digitos),
     length(Digitos, Cantidad),
     (   Cantidad =\= 10
     ->  domain_error(telefono, cantidad_de_digitos(Cantidad))

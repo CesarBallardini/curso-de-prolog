@@ -5,8 +5,9 @@ El código de esta página está en `ejemplos/capitulo-19/soluciones_operadores.
 `ejemplos/capitulo-19/soluciones_inscripciones.pl`, y pasa sus pruebas. Los
 ejercicios de operadores, los del sistema experto y los del proyecto tienen su
 propio archivo porque declaran operadores distintos: `y` es un operador de
-precedencia 200 en el ejercicio 1 y de precedencia 780 en el 4, y un archivo
-no puede tener las dos declaraciones.
+precedencia 200 en el ejercicio 1 y de precedencia 780 en el 4, y en un
+archivo no pueden regir las dos a la vez: una segunda declaración reemplaza a
+la primera para todo lo que se lee después.
 
 ## 1
 
@@ -191,6 +192,16 @@ false.
 Las dos cláusulas de `o` dan una prueba por cada alternativa que se cumple, y
 el árbol es el de esa alternativa: `explicar/2` no necesita cambios, porque el
 árbol no tiene nodos `o`.
+
+La actividad de la [sección 19.4](index.md#194-el-interprete-y-la-pregunta-como): con el intérprete del texto,
+`prueba(mamifero, [tiene_pelo, da_leche], Arbol)` tiene dos respuestas,
+`deducido(mamifero, r1, observado(tiene_pelo))` y
+`deducido(mamifero, r2, observado(da_leche))`, una por cada regla que concluye
+`mamifero` y se cumple con esas observaciones: `prueba/3` responde una vez por
+cada prueba distinta. `identificar/2` llama a `prueba/3` dentro de `once/1`
+para responder cada animal una sola vez, aunque tenga varias pruebas. Con la
+regla r1 de esta solución, la consulta sigue teniendo dos respuestas, las dos
+por r1: una por cada alternativa de `tiene_pelo o da_leche` que se cumple.
 
 ## 5
 
@@ -416,6 +427,14 @@ Los operadores de precedencia 700 son los de comparación y unificación —`=`,
 demás—, y todos son `xfx`: una comparación no se encadena, y `a < b < c` es
 un error de sintaxis, no un término con dos comparaciones.
 
+La actividad de la [sección 19.2](index.md#192-precedencia-y-asociatividad) se responde con la misma tabla.
+`X = (a :- b, c), X = (H :- B)` liga `H = a` y `B = (b, c)`: `:-` (1200) es el
+operador principal y la coma (1000) queda entera en su segundo argumento.
+`write_canonical((p :- q ; r, s))` escribe `:-(p,;(q,','(r,s)))`: `;` (1100)
+contiene a la coma (1000), y las dos quedan dentro de `:-`.
+`write_canonical(- 1 + 2)` escribe `+(-(1),2)`, como en la segunda
+predicción de este ejercicio.
+
 ## 10
 
 <!-- ejemplo: capitulo-19/soluciones_inscripciones.pl predicado: por_que/2 consulta: por_que(102, am2). -->
@@ -442,8 +461,9 @@ rechazada(falta(alg)): por v3
 true.
 ```
 
-`forall/2` recorre las pruebas de `rechazada(_)` y escribe cada árbol, sin
-reunirlos en una lista: es el bucle por falla del [capítulo 17](../capitulo-17-todas-las-soluciones/index.md#176-forall2). `explicar/2`
+`forall/2`, del [capítulo 17](../capitulo-17-todas-las-soluciones/index.md#176-forall2), recorre las pruebas de
+`rechazada(_)` y escribe cada árbol, sin reunirlos en una lista: es el bucle
+por falla de la [sección 15.7](../capitulo-15-control/index.md#157-bucles-por-falla) escrito con `forall/2`. `explicar/2`
 es el del [ejercicio 7](#7) con la cláusula para los nodos `no`, que escribe
 la condición y «no se prueba». `soluciones_inscripciones.pl` repite las reglas
 y los datos que necesitan, porque el archivo de soluciones tiene que cargarse
@@ -485,6 +505,13 @@ unifica con `rechazada(_)`: al buscar reglas para `rechazada(_)`, el
 intérprete solo encuentra v1 a v4. `se_acepta/2` usa `once/1` porque
 `prueba/3` deja pendientes las demás reglas después de probar v5, y el
 predicado es `semidet`.
+
+La actividad de la [sección 19.5](index.md#195-el-proyecto-los-motivos-de-rechazo-como-reglas): `situacion(103, am2, Obs)` da
+`[materia(am2), aprobada(am1), cursando(am2), requisito(am1), requisito(alg), vacantes(25)]`.
+Con esa lista, v1 no se prueba (am2 no está aprobada), v2 sí (am2 está entre
+las materias que cursa), v3 solo para alg (am1 está aprobada) y v4 no (quedan
+25 vacantes): `motivos_de_rechazo(103, am2, M)` responde
+`M = [ya_la_cursa, falta(alg)]`.
 
 ## 12
 

@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 31 - El módulo del pack fechas_castellano: las cuentas con fechas
+% Capítulo 31 - El módulo del pack fechas_castellano: los cálculos con fechas
 % del capítulo 28, como biblioteca.
 %
 % Instalado el pack, se carga con use_module(library(fechas_castellano)),

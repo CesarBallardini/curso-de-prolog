@@ -4,7 +4,7 @@
 %
 % Cada predicado escribe la pregunta en la salida actual y lee la respuesta,
 % una línea, del stream In: user_input para el teclado, o un stream sobre una
-% cadena en las pruebas. Una respuesta que no sirve se rechaza con un aviso,
+% cadena en las pruebas. Una respuesta no válida se rechaza con un aviso,
 % y la pregunta se repite.
 %
 % solo-local: el sandbox de SWISH no permite leer de la entrada.

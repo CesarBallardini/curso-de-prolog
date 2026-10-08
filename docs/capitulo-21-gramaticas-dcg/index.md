@@ -25,10 +25,10 @@ Al terminar el capítulo, el lector puede:
 - analizar números, fechas y listas separadas con `dcg/basics` y
   `dcg/high_order`;
 - reconocer una recursión a izquierda y reescribirla con un acumulador;
-- mirar el próximo elemento de la entrada sin consumirlo, con pushback.
+- examinar el próximo elemento de la entrada sin consumirlo, con pushback.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:00 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:10 h**.
     Resolver los 7 ejercicios marcados con ★: **2:28 h**.
     Resolver los 16 ejercicios del final: **5:15 h**.
 
@@ -38,8 +38,14 @@ Una gramática describe las secuencias válidas de un lenguaje. La de este
 ejemplo describe oraciones sobre la familia, escritas como listas de palabras:
 `[juan, es, el, padre, de, ana]`.
 
-<!-- ejemplo: capitulo-21/gramatica.pl predicado: oracion//1 relacion//3 nombre//1 consulta: phrase(oracion(Hecho), [juan, es, el, padre, de, ana]). -->
+<!-- ejemplo: capitulo-21/gramatica.pl predicado: persona/1 oracion//1 relacion//3 nombre//1 consulta: phrase(oracion(Hecho), [juan, es, el, padre, de, ana]). -->
 ```prolog
+% persona(P): P es una de las personas de las que se puede hablar.
+persona(juan).
+persona(ana).
+persona(pedro).
+persona(marta).
+
 %!  oracion(?Hecho)// is nondet.
 %
 %   Una oración que afirma Hecho: «juan es el padre de ana» afirma
@@ -186,7 +192,7 @@ Hecho = madre(juan, juan).
 ```
 
 Para aceptar solo oraciones verdaderas, un objetivo entre llaves al final de la
-regla comprueba el hecho; es el ejercicio 5.
+regla comprueba el hecho; es el [ejercicio 5](#ejercicios).
 
 !!! question "Actividad"
     ¿Cuántas oraciones genera `phrase(oracion(H), P)`? Calcularlo antes de
@@ -197,9 +203,9 @@ regla comprueba el hecho; es el ejercicio 5.
 
 `library(dcg/basics)` tiene los no terminales que casi toda gramática de texto
 necesita: `integer//1`, `number//1`, `digits//1`, `blanks//0` (cero o más
-blancos), `blank//0`, `csym//1` (una palabra de letras, dígitos y guiones
-bajos), `string//1`, `remainder//1` y `eos//0` (el fin de la entrada), entre
-otros. `library(dcg/high_order)` tiene no terminales que reciben otros no
+blancos), `blank//0`, `csym//1` (una palabra que empieza con letra o guion
+bajo y sigue con letras, dígitos y guiones bajos), `string//1`,
+`remainder//1` y `eos//0` (el fin de la entrada), entre otros. `library(dcg/high_order)` tiene no terminales que reciben otros no
 terminales, como `maplist/3` recibe predicados: `sequence//3` reconoce una
 lista de elementos separados.
 
@@ -252,10 +258,10 @@ separador que puede ser vacío, como `blanks//0`, no conviene usarlo; el
 proyecto escribe su propia recursión para separar palabras.
 
 !!! example "Patrón 21 — Secuencia con separadores"
-    **Problema.** Hay que reconocer una lista de elementos separados por comas,
-    espacios u otro separador, y obtener la lista de los elementos.
+    **Problema.** Reconocer una lista de elementos separados por comas, espacios
+    u otro separador, y obtener la lista de los elementos.
 
-    **Versión ingenua.** Una recursión escrita a mano para cada lista, con los
+    **Versión ingenua.** Una recursión propia para cada lista, con los
     casos del primer elemento, del separador y del final, o `split_string/4`
     seguido de una conversión elemento por elemento.
 
@@ -354,6 +360,10 @@ El corte en `restas//2`, después de reconocer el signo, dice que un signo
 menos no puede ser otra cosa: no quedan alternativas pendientes, y `resta//1`
 es determinista.
 
+!!! question "Actividad"
+    Predecir `` phrase(resta_derecha(V), `10-3-2-1`) `` y
+    `` phrase(resta(V), `10-3-2-1`) `` antes de ejecutarlas.
+
 !!! example "Patrón 22 — Gramática con argumento acumulador"
     **Problema.** Una gramática construye un valor a partir de una secuencia
     que se lee de izquierda a derecha: una operación que agrupa a la
@@ -411,9 +421,9 @@ general.
 
 Una regla puede devolver elementos a la entrada: lo que se escribe después de
 una coma, a la izquierda de `-->`, se agrega adelante de lo que sobra. Sirve
-para **mirar** el próximo elemento sin consumirlo:
+para **examinar** el próximo elemento sin consumirlo:
 
-<!-- ejemplo: capitulo-21/gramatica.pl predicado: siguiente//1 palabra_o_numero//1 consulta: phrase(saludo, `hola`). -->
+<!-- ejemplo: capitulo-21/gramatica.pl predicado: siguiente//1 palabra_o_numero//1 consulta: phrase(palabra_o_numero(T), `42x`, Resto). -->
 ```prolog
 %!  siguiente(-C)// is semidet.
 %
@@ -423,8 +433,8 @@ siguiente(C), [C] --> [C].
 
 %!  palabra_o_numero(-T)// is semidet.
 %
-%   T es numero si el próximo código es un dígito, o palabra si no. Mira el
-%   código con siguiente//1, sin consumirlo.
+%   T es numero si el próximo código es un dígito, o palabra si no. Examina
+%   el código con siguiente//1, sin consumirlo.
 palabra_o_numero(T) -->
     siguiente(C),
     { code_type(C, digit) -> T = numero ; T = palabra }.
@@ -442,9 +452,13 @@ A = '42x'.
 y el resto queda intacto para la regla que siga. La decisión la toma
 `code_type(C, digit)`, que se cumple cuando el código `C` es un dígito; el
 segundo argumento nombra una clase de caracteres, como `digit`, `alpha`,
-`upper`, `lower` o `space`. El pushback se usa poco; casi
-siempre alcanza con ordenar bien las reglas, y una gramática que lo usa en
-muchos lugares es difícil de leer.
+`upper`, `lower` o `space`. El pushback se usa poco: en la mayoría de las
+gramáticas, poner primero la regla más específica evita tener que examinar la
+entrada, y una gramática que lo usa en muchos lugares es difícil de seguir.
+
+!!! question "Actividad"
+    Predecir qué responde `` phrase(palabra_o_numero(T), `x42`, Resto) `` y qué
+    queda en `Resto`.
 
 !!! success "Criterios de calidad"
     | Criterio | En este capítulo |
@@ -555,9 +569,9 @@ Respuesta = no_entendido.
 Palabras = [dar, de, baja, a, 105, en, analisis_1].
 ```
 
-Separar las dos etapas simplifica las dos. `palabras//1` no sabe nada de
-comandos: solo sabe qué es un blanco. `comando//1` no sabe nada de códigos: sus
-terminales son palabras, y por eso funciona en los dos sentidos —la última
+Separar las dos etapas simplifica las dos. `palabras//1` no depende de los
+comandos: solo distingue los blancos de las palabras. `comando//1` no depende
+de los códigos: sus terminales son palabras, y por eso funciona en los dos sentidos —la última
 consulta genera las palabras de un comando— y se puede probar con listas, sin
 escribir texto. Los no terminales `legajo//1` y `materia_por_nombre//1`
 consultan la base con `{}`: un comando con un alumno que no existe no se
@@ -580,9 +594,9 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
    `` phrase(resta(V), `8-2-1`). ``
 2. **(1)** Escribir `ab//0`: una o más `a` seguidas de la misma cantidad de
    `b`. Generar las listas de hasta seis elementos.
-3. ★ **(2)** Traducir a mano la regla `saludo_a(N) --> "hola ", nombre(N).` a
-   una cláusula con dos argumentos más, y comprobar que responde lo mismo que
-   la regla.
+3. ★ **(2)** Escribir, sin `-->`, la traducción de la regla
+   `saludo_a(N) --> "hola ", nombre(N).` a una cláusula con dos argumentos
+   más, y comprobar que responde lo mismo que la regla.
 4. **(2)** Escribir `frase//0` para oraciones como «el perro ladra» y «los
    perros ladran», con un argumento que haga concordar el sujeto y el verbo en
    número.

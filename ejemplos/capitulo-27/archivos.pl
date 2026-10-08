@@ -134,5 +134,5 @@ palabras([]) -->
 archivos_del_directorio(Nombres) :-
     absolute_file_name(archivos('.'), Directorio, [file_type(directory)]),
     directory_files(Directorio, Todos),
-    exclude([N]>>sub_atom(N, 0, _, _, '.'), Todos, Sinpuntos),
-    sort(Sinpuntos, Nombres).
+    exclude([N]>>sub_atom(N, 0, _, _, '.'), Todos, SinPuntos),
+    sort(SinPuntos, Nombres).

@@ -27,9 +27,9 @@ Al terminar el capítulo, el lector puede:
 - revisar un predicado con los siete criterios de calidad.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **0:41 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **0:55 h**.
     Resolver los 6 ejercicios marcados con ★: **1:53 h**.
-    Resolver los 15 ejercicios del final: **4:45 h**.
+    Resolver los 16 ejercicios del final: **5:05 h**.
 
 ## 14.1 Nombres
 
@@ -100,10 +100,11 @@ I necesitaba.
 | `--` | debe llegar libre; ligado, el predicado no cumple lo que promete | el múltiplo de `primer_multiplo/3` |
 | `?` | puede llegar ligado o libre | los argumentos de `padre/2` |
 | `@` | no se instancia más de lo que llega | los argumentos de `mismo_termino/2` |
-| `:` | es un objetivo o un predicado que se va a llamar | el primer argumento de `once/1` |
+| `:` | es un objetivo o un predicado que se va a llamar | el argumento de `once/1` |
 | `!` | es un término que el predicado modifica | se usa en la parte III |
 
-La diferencia entre `-` y `--` es la del [capítulo 9](../capitulo-09-backtracking-y-corte/index.md). Un argumento `-` puede
+La diferencia entre `-` y `--` es la que el [capítulo 9](../capitulo-09-backtracking-y-corte/index.md) encontró en los
+predicados con corte rojo. Un argumento `-` puede
 llegar ligado, y el predicado comprueba el valor. Un argumento `--` no: el
 predicado usa un corte rojo, y con el argumento ligado el corte deja de
 proteger la respuesta. Los comentarios del [capítulo 9](../capitulo-09-backtracking-y-corte/index.md) lo decían en palabras
@@ -160,10 +161,10 @@ mismo_termino(A, B) :-
     A == B.
 ```
 
-`suma_lista/2` declara `++L` porque no le alcanza con que la lista esté: sus
-elementos también deben tener valor, porque `is/2` no puede sumar una variable.
-`largo/2` del [capítulo 7](../capitulo-07-listas/index.md), en cambio, cuenta los elementos sin mirarlos, y le
-alcanza con `+`.
+`suma_lista/2` declara `++L` porque no basta con que la lista llegue
+instanciada: sus elementos también deben tener valor, porque `is/2` no puede
+sumar una variable. `largo/2` del [capítulo 7](../capitulo-07-listas/index.md), en cambio, cuenta los elementos
+sin examinarlos, y declara `+`.
 
 ```prolog
 ?- suma_lista([3, 1, 4], S).
@@ -172,6 +173,11 @@ S = 8.
 ?- suma_lista([3, X], S).
 ERROR: Arguments are not sufficiently instantiated
 ```
+
+!!! question "Actividad"
+    Escribir el encabezado completo, con tipos, de `largo/2` de la
+    [sección 7.4](../capitulo-07-listas/index.md#74-contar-durante-el-recorrido), y justificar por qué su lista lleva `+` y la de
+    `suma_lista/2` lleva `++`. Comprobar la diferencia con la lista `[a, b]`.
 
 ## 14.4 Lo que el encabezado promete
 
@@ -197,10 +203,12 @@ test(suma_con_un_elemento_libre, [error(instantiation_error)]) :-
 ```
 
 La primera prueba verifica también la determinación. plunit advierte cuando
-una prueba que no se declaró `nondet` termina con alternativas pendientes:
+una prueba que no se declaró `nondet` termina con alternativas pendientes; con
+`suma_de_tres` escrita sobre un predicado que dejara una alternativa, el aviso
+sería:
 
 ```text
-Warning:     test v:esta: Test succeeded with choicepoint
+Warning:     test encabezados:suma_de_tres: Test succeeded with choicepoint
 ```
 
 !!! example "Patrón 2 — Encabezado que se cumple"
@@ -237,7 +245,25 @@ Prolog la encuentra deja una alternativa, y para `det/1` eso es un error. Por
 eso se usa donde la implementación es determinista, como en
 `suma_lista/2`, que distingue la lista vacía de la no vacía por el primer
 argumento. Dentro de una cláusula, `$` actúa como el corte y además exige que
-lo que sigue sea determinista; `$(Objetivo)` exige lo mismo de un objetivo. El
+lo que sigue sea determinista; `$(Objetivo)` exige lo mismo de un objetivo:
+
+<!-- ejemplo: capitulo-14/encabezados.pl predicado: primero/1 consulta: primero(X). -->
+```prolog
+%!  primero(-X) is det.
+%
+%   X es el primer elemento de [a, b, c]. $/1 exige que member/2 no deje
+%   alternativas, y member/2 las deja: la llamada produce un error en lugar
+%   de responder.
+primero(X) :-
+    $(member(X, [a, b, c])).
+```
+
+```prolog
+?- primero(X).
+ERROR: Goal member(a,[a,b,c]) succeeded with a choice point
+```
+
+El mensaje nombra el objetivo que dejó la alternativa. El
 [capítulo 16](../capitulo-16-rendimiento/index.md) vuelve sobre las alternativas pendientes y su costo.
 
 ## 14.5 Orden de los argumentos y estabilidad
@@ -316,8 +342,14 @@ número o el átomo `null`. Es la traducción directa de la tabla SQL del
 tipo de valor recibió. La regla de aprobación que usa ese capítulo lo muestra:
 
 ```prolog
+%!  aprobada(?Legajo, ?Materia, ?Nota) is nondet.
+%
+%   El alumno Legajo aprobó Materia con Nota, con la representación del
+%   capítulo 13.
 aprobada(L, M, N) :-
-    inscripcion(L, M, N), integer(N), N >= 6.
+    inscripcion(L, M, N),
+    integer(N),
+    N >= 6.
 ```
 
 `integer/1` es una prueba de tipo: tiene éxito cuando su argumento es un número
@@ -357,6 +389,11 @@ caso. La representación limpia tiene además una ventaja de rendimiento, que el
 [capítulo 16](../capitulo-16-rendimiento/index.md) explica: el functor del argumento permite a SWI-Prolog elegir
 las cláusulas sin probarlas una por una.
 
+!!! question "Actividad"
+    Con el `inscripciones.pl` del [capítulo 13](../capitulo-13-el-entorno-de-trabajo/index.md) cargado, consultar
+    `inscripcion(L, M, N), N >= 6.` y explicar la respuesta. Repetir con la
+    versión de este capítulo y `aprobada(L, M, N)`.
+
 !!! example "Patrón 4 — Datos limpios"
     **Problema.** Un valor tiene varios casos, y un caso se representa con un
     valor especial —`null`, `0`, `[]`, `ninguno`— del mismo tipo que los
@@ -387,7 +424,7 @@ instalación local:
 
 ```prolog
 ?- use_module(library(pldoc)), use_module(library(doc_files)).
-?- consult(recorrer).
+?- consult([estilo, encabezados, inscripciones]).
 ?- doc_save('.', [doc_root(html)]).
 ```
 
@@ -400,8 +437,9 @@ descripción. Los hechos no aparecen: sus comentarios de una línea empiezan con
 `%` y no con `%!`, y PlDoc solo lee los segundos.
 
 La descripción se escribe en el formato de PlDoc, que admite, entre otras
-cosas, nombres de predicados como enlaces (`esta_en/2` en la descripción se
-convierte en un enlace a su documentación) y listas con guiones.
+cosas, nombres de predicados como enlaces (`aprobada/3` en la descripción de
+otro predicado se convierte en un enlace a su documentación) y listas con
+guiones.
 
 ## 14.8 Criterios de calidad
 
@@ -551,6 +589,10 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     la consulta `p(b, [a, b, c, b], z, L)`. Después, nombrar el predicado y sus
     variables según la [sección 14.1](#141-nombres), escribir su encabezado completo y
     compararlo con `select/4` de la biblioteca.
+16. **(2)** Reemplazar en `maximo/3` de `estilo.pl` el `!` por `$`, y
+    consultar `maximo(3, 1, M)`, `maximo(1, 3, M)` y `maximo(3, 1, 1)`. Después
+    hacer el mismo reemplazo en `mal_maximo/3`: ¿qué cambia en
+    `mal_maximo(3, 1, 1)`? Explicar qué verifica `$` que el corte no verifica.
 
 ## Resumen
 
