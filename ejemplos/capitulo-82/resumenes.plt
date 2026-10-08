@@ -47,8 +47,8 @@ test(bits_avalancha, true(N == 122)) :-
     bits_distintos(H1, H2, N).
 
 % Los valores esperados son los de la orden sha256sum.
-test(como_sha256sum, true(Es == ['pack.pl'-'12184a89ee8bf395c29c202bb95ef2098731418153c487b130b8ed36dd70b9b2',
-                                 'prolog/fechas_castellano.pl'-'37e03fb3c85f072f62dea0f58cbf1c2252929fbdfa8e6cf1424588731a81259e',
+test(como_sha256sum, true(Es == ['pack.pl'-'0d089dd24743621257881fd3d90e911693f033ab94c0b8ddb9caab64ab4e7edb',
+                                 'prolog/fechas_castellano.pl'-'4b3d5b7a08c0d75a0c06352fc7313068f3e61052340e72272876a8c236e5c2a0',
                                  'prolog/fechas_castellano.plt'-'6860f571afc3653a260e7deadcb7989813d015a347895c9545285b798a16edbf'])) :-
     manifiesto(paquete31(fechas_castellano), Es).
 
