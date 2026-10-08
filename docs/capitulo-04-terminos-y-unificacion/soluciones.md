@@ -236,6 +236,31 @@ La respuesta muestra el término completo porque eso es lo que `F` vale: una
 ficha entera. Una variable no se liga a "una parte" de un término; se liga al
 término que le corresponde, y ese término puede tener la estructura que sea.
 
+El árbol de la consulta, con la notación de la
+[sección 5.2](../capitulo-05-como-responde-prolog/index.md#52-el-arbol-de-derivacion),
+explica también el `false.` final. Los hechos de `registro/1` se numeran R1 a R3, como en la
+[sección 4.10](index.md#410-extraer-los-componentes-de-un-termino), y la regla
+`ficha_de/2` es R4; la copia de la regla renombra su `F` como `F₁` para no
+confundirla con la `F` de la consulta. El `=` es un objetivo predefinido: su
+flecha no lleva número de cláusula.
+
+```mermaid
+flowchart TD
+    A["ficha_de(ana, F)"] -- "R4. θ₁ = {&nbsp;P/ana, F₁/F&nbsp;}" --> B["registro(F),<br/>F = ficha(_, _, ana)"]
+    B -- "R1. θ₂ = {&nbsp;F/ficha(mascota(gato,&nbsp;felix), …)&nbsp;}" --> C["ficha(mascota(gato,&nbsp;felix),<br/>fecha(2021,&nbsp;5,&nbsp;3), ana)<br/>= ficha(_, _, ana)"]
+    B -- "R2. θ₃ = {&nbsp;F/ficha(mascota(perro,&nbsp;rocco), …)&nbsp;}" --> D["ficha(mascota(perro,&nbsp;rocco),<br/>fecha(2019,&nbsp;11,&nbsp;20), luis)<br/>= ficha(_, _, ana)"]
+    B -- "R3. θ₄ = {&nbsp;F/ficha(mascota(gato,&nbsp;gaturro), …)&nbsp;}" --> E["ficha(mascota(gato,&nbsp;gaturro),<br/>fecha(2023,&nbsp;2,&nbsp;14), eva)<br/>= ficha(_, _, ana)"]
+    C --> S(["consulta vacía<br/>F = ficha(mascota(gato,&nbsp;felix),<br/>fecha(2021,&nbsp;5,&nbsp;3), ana)"])
+    D --> F1(["falla"])
+    E --> F2(["falla"])
+```
+
+`registro(F)` genera las tres fichas, y `F = ficha(_, _, ana)` cierra dos: las
+de `luis` y `eva` no unifican con el patrón, porque `luis` y `eva` no son `ana`.
+La respuesta está en la primera rama; las otras dos quedan pendientes, y por eso
+la respuesta termina en `;`. Al pedir otra, Prolog las recorre, las dos fallan, y
+responde `false.`.
+
 ## 15
 
 | Término | Nombre | Aridad |

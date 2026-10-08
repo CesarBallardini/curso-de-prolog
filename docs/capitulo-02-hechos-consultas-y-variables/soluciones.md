@@ -282,4 +282,8 @@ ninguno.
 Ejecutada en SWI-Prolog, `abuelo(juan, luis)` responde `true ;` y después
 `false.`: Prolog queda en espera aunque no haya otra respuesta. No contradice el
 encabezado, que describe cuántas respuestas existen y no la forma en que Prolog
-termina de mostrarlas; el [capítulo 5](../capitulo-05-como-responde-prolog/index.md) explica ese `;`.
+termina de mostrarlas. El árbol de derivación del
+[capítulo 5](../capitulo-05-como-responde-prolog/index.md) no muestra ese `;`:
+una consulta que termina en punto tiene el mismo árbol que una que queda en
+espera, y que Prolog deje o no una alternativa abierta depende de cómo indexa
+las cláusulas, tema de la [sección 16.3](../capitulo-16-rendimiento/index.md#163-indexacion).

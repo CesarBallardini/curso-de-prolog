@@ -23,7 +23,7 @@ Al terminar el capítulo, el lector puede:
   recursión sin acumulador.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **0:55 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:10 h**.
     Resolver los 6 ejercicios marcados con ★: **1:10 h**.
     Resolver los 16 ejercicios del final: **4:55 h**.
 
@@ -107,6 +107,59 @@ false.
 En las dos reglas, `edad(P, A)` da valor a `A` antes de que la expresión se
 evalúe o se compare. La [sección 8.4](#84-cuando-se-admite-la-consulta-inversa)
 muestra qué consultas admite esa forma.
+
+El árbol de derivación del [capítulo 5](../capitulo-05-como-responde-prolog/index.md)
+muestra ese orden. Con las cláusulas de `cuentas.pl` numeradas en el orden del
+archivo:
+
+| | |
+|---|---|
+| R1 | `edad(juan, 68).` |
+| R2 | `edad(ana, 41).` |
+| R3 | `edad(pedro, 45).` |
+| R4 | `edad(luis, 12).` |
+| R5 | `edad(eva, 8).` |
+| R6 | `edad_en_meses(P, M) :- edad(P, A), M is A * 12.` |
+| R7 | `mayor_de_edad(P) :- edad(P, A), A >= 18.` |
+
+```mermaid
+flowchart TD
+    A["edad_en_meses(eva, Meses)"] -- "R6. θ₁ = {&nbsp;P/eva, M/Meses&nbsp;}" --> B["edad(eva, A),<br/>Meses is A * 12"]
+    B -- "R5. θ₂ = {&nbsp;A/8&nbsp;}" --> C["Meses is 8 * 12"]
+    C -- "is. θ₃ = {&nbsp;Meses/96&nbsp;}" --> S(["consulta vacía<br/>Meses = 96"])
+```
+
+Como en la [sección 6.6](../capitulo-06-recursion/index.md#66-recursion-que-produce-un-resultado),
+el arco de `is` no lleva número de cláusula, porque `is/2` es un objetivo
+predefinido y no emplea ninguna; lleva sustitución porque liga una variable.
+Esa sustitución, `{ Meses/96 }`, la produce la unificación del resultado de
+evaluar `8 * 12` con el término de la izquierda, no una asignación. Cuando
+`is` se ejecuta, `A` ya fue reemplazada por `8` en el arco anterior.
+
+El árbol de `mayor_de_edad(Quien)` tiene una rama por cada hecho de `edad/2`:
+
+```mermaid
+%%{init: {"flowchart": {"nodeSpacing": 25}}}%%
+flowchart TD
+    A["mayor_de_edad(Quien)"] -- "R7. θ₁ = {&nbsp;P/Quien&nbsp;}" --> B["edad(Quien, A),<br/>A >= 18"]
+    B -- "R1. θ₂ = {&nbsp;Quien/juan, A/68&nbsp;}" --> C1["68 >= 18"]
+    C1 --> S1(["1.ª respuesta<br/>Quien = juan"])
+    B -- "R2. θ₃ = {&nbsp;Quien/ana, A/41&nbsp;}" --> C2["41 >= 18"]
+    C2 --> S2(["2.ª respuesta<br/>Quien = ana"])
+    B -- "R3. θ₄ = {&nbsp;Quien/pedro, A/45&nbsp;}" --> C3["45 >= 18"]
+    C3 --> S3(["3.ª respuesta<br/>Quien = pedro"])
+    B -- "R4. θ₅ = {&nbsp;Quien/luis, A/12&nbsp;}" --> C4["12 >= 18"]
+    C4 --> F4(["falla"])
+    B -- "R5. θ₆ = {&nbsp;Quien/eva, A/8&nbsp;}" --> C5["8 >= 18"]
+    C5 --> F5(["falla"])
+```
+
+La comparación `>=` tampoco emplea ninguna cláusula, y como no liga ninguna
+variable su arco no lleva sustitución: si se cumple, el objetivo desaparece de
+la consulta; si no, la rama falla. Las dos últimas ramas, las de luis y eva,
+fallan en la comparación, y son el `false.` con que termina el transcripto:
+después de `Quien = pedro` quedaban dos alternativas por recorrer, y ninguna
+produce una respuesta.
 
 Los operadores disponibles en la expresión son los habituales: `+`, `-`, `*`,
 `/`, y otros dos de uso frecuente:
@@ -227,6 +280,30 @@ En la consulta `doble(X, 42)`, `N` está libre, de modo que la expresión a
 evaluar es `X * 2`, con `X` sin valor. Esa expresión no se puede evaluar, y
 Prolog informa el error.
 
+Los dos árboles muestran la diferencia. Con `doble/2` numerada R8, a
+continuación de las cláusulas de la [sección 8.1](#81-evaluacion-de-expresiones)
+—la regla tiene una variable `D`, como la primera consulta, y en el árbol se
+escribe `D₁` para distinguirla de ella—:
+
+```mermaid
+flowchart TD
+    A["doble(21, D)"] -- "R8. θ₁ = {&nbsp;N/21, D₁/D&nbsp;}" --> B["D is 21 * 2"]
+    B -- "is. θ₂ = {&nbsp;D/42&nbsp;}" --> S(["consulta vacía<br/>D = 42"])
+```
+
+```mermaid
+flowchart TD
+    A["doble(X, 42)"] -- "R8. θ₁ = {&nbsp;N/X, D/42&nbsp;}" --> B["42 is X * 2"]
+    B --> E[/"error: argumentos sin instanciar"/]
+```
+
+La **hoja de error** tiene una forma distinta de la hoja «falla», porque un
+error no es una falla: la rama no se cierra, se **interrumpe**. Tras una falla
+Prolog retrocede a la alternativa pendiente más cercana; tras un error no
+retrocede a ninguna, aunque exista, y la consulta termina con el mensaje. La
+[sección 12.6](../capitulo-12-prolog-y-la-logica/index.md#126-lo-que-excede-la-logica)
+llama a este desenlace el tercero, junto a `true.` y `false.`
+
 Lo relevante es lo que Prolog **no** hace: no despeja la incógnita. No deduce
 que, si el doble es 42, el número es 21. `is/2` es un evaluador, no un
 mecanismo de resolución de ecuaciones: requiere que todas las variables de la
@@ -306,6 +383,34 @@ lo asignó. Prolog probó cada persona, calculó su edad en meses y comparó el
 resultado con 96, hasta encontrar la que coincide. No despejó ninguna
 incógnita: **generó candidatos y los verificó**.
 
+El árbol dibuja ese recorrido, con la numeración de la
+[sección 8.1](#81-evaluacion-de-expresiones). La regla tiene una variable `P`,
+como la consulta, y en el árbol se escribe `P₁` para distinguirla de ella:
+
+```mermaid
+%%{init: {"flowchart": {"nodeSpacing": 25}}}%%
+flowchart TD
+    A["edad_en_meses(P, 96)"] -- "R6. θ₁ = {&nbsp;P₁/P, M/96&nbsp;}" --> B["edad(P, A),<br/>96 is A * 12"]
+    B -- "R1. θ₂ = {&nbsp;P/juan, A/68&nbsp;}" --> C1["96 is 68 * 12"]
+    C1 --> F1(["falla"])
+    B -- "R2. θ₃ = {&nbsp;P/ana, A/41&nbsp;}" --> C2["96 is 41 * 12"]
+    C2 --> F2(["falla"])
+    B -- "R3. θ₄ = {&nbsp;P/pedro, A/45&nbsp;}" --> C3["96 is 45 * 12"]
+    C3 --> F3(["falla"])
+    B -- "R4. θ₅ = {&nbsp;P/luis, A/12&nbsp;}" --> C4["96 is 12 * 12"]
+    C4 --> F4(["falla"])
+    B -- "R5. θ₆ = {&nbsp;P/eva, A/8&nbsp;}" --> C5["96 is 8 * 12"]
+    C5 --> S(["consulta vacía<br/>P = eva"])
+```
+
+En las cinco ramas `is` llega con un número a la izquierda, y es una
+comprobación, como en `8 is 3 + 5` de la [sección 8.1](#81-evaluacion-de-expresiones):
+en cuatro de ellas el resultado de la expresión no unifica con `96` y la rama
+**falla**, como fallaría una comparación; en la quinta unifica, sin ligar nada,
+y por eso el arco no lleva sustitución. La hoja de éxito es la última del
+árbol: no queda ninguna alternativa pendiente, y la respuesta termina en punto,
+`P = eva.`, a diferencia del `false.` final de `mayor_de_edad(Quien)`.
+
 Esta técnica tiene aplicación general en Prolog: cuando no es posible calcular
 en sentido inverso, se generan las posibilidades en sentido directo y se
 verifica cada una. Es la plantilla 5 del [capítulo 3](../capitulo-03-reglas-y-conjunciones/index.md), y se desarrolla en detalle
@@ -378,6 +483,63 @@ sumando([], Total, Total).
 Este caso base es el elemento central de la plantilla, y el que presenta mayor
 dificultad inicial: no realiza ningún cálculo; solo establece que, cuando no
 quedan elementos por recorrer, el valor acumulado es el resultado.
+
+Los dos árboles de derivación muestran en qué difieren las dos versiones. Con
+las cinco cláusulas de `acumuladores.pl` numeradas en el orden del archivo:
+
+| | |
+|---|---|
+| R1 | `suma_lista([], 0).` |
+| R2 | `suma_lista([X\|Resto], S) :- suma_lista(Resto, Faltan), S is Faltan + X.` |
+| R3 | `suma_con_acumulador(L, S) :- sumando(L, 0, S).` |
+| R4 | `sumando([], Total, Total).` |
+| R5 | `sumando([X\|Resto], Hasta, Total) :- Ahora is Hasta + X, sumando(Resto, Ahora, Total).` |
+
+Los árboles se dibujan para la lista `[3, 4]`, de dos elementos; con
+`[3, 1, 4]` son los mismos árboles con un nivel más. Cada uso de R2 toma una
+copia con variables nuevas, que se escriben con un subíndice: `Faltan`,
+`Faltan₂`.
+
+```prolog
+?- suma_lista([3, 4], Total).
+Total = 7.
+
+?- suma_con_acumulador([3, 4], Total).
+Total = 7.
+```
+
+```mermaid
+%%{init: {"flowchart": {"rankSpacing": 25}}}%%
+flowchart TD
+    A["suma_lista([3, 4], Total)"] -- "R2. θ₁ = {&nbsp;X/3, Resto/[4], S/Total&nbsp;}" --> B["suma_lista([4], Faltan),<br/>Total is Faltan + 3"]
+    B -- "R2. θ₂ = {&nbsp;X₂/4, Resto₂/[], S₂/Faltan&nbsp;}" --> C["suma_lista([], Faltan₂),<br/>Faltan is Faltan₂ + 4,<br/>Total is Faltan + 3"]
+    C -- "R1. θ₃ = {&nbsp;Faltan₂/0&nbsp;}" --> D["Faltan is 0 + 4,<br/>Total is Faltan + 3"]
+    D -- "is. θ₄ = {&nbsp;Faltan/4&nbsp;}" --> E["Total is 4 + 3"]
+    E -- "is. θ₅ = {&nbsp;Total/7&nbsp;}" --> S(["consulta vacía<br/>Total = 7"])
+```
+
+Cada nodo arrastra un `is` más que el anterior: la operación queda
+**pendiente** hasta que la recursión llega a la lista vacía, y recién entonces
+los `is` se evalúan, de abajo hacia arriba. En la versión con acumulador la
+regla R5 tiene una variable `Total`, como la consulta, y en el árbol se escribe
+`Total₁` en el primer uso y `Total₂` en el segundo; la de R4 es `Total₃`:
+
+```mermaid
+%%{init: {"flowchart": {"rankSpacing": 25}}}%%
+flowchart TD
+    A["suma_con_acumulador([3, 4], Total)"] -- "R3. θ₁ = {&nbsp;L/[3, 4], S/Total&nbsp;}" --> B["sumando([3, 4], 0, Total)"]
+    B -- "R5. θ₂ = {&nbsp;X/3, Resto/[4], Hasta/0, Total₁/Total&nbsp;}" --> C["Ahora is 0 + 3,<br/>sumando([4], Ahora, Total)"]
+    C -- "is. θ₃ = {&nbsp;Ahora/3&nbsp;}" --> D["sumando([4], 3, Total)"]
+    D -- "R5. θ₄ = {&nbsp;X₂/4, Resto₂/[], Hasta₂/3, Total₂/Total&nbsp;}" --> E["Ahora₂ is 3 + 4,<br/>sumando([], Ahora₂, Total)"]
+    E -- "is. θ₅ = {&nbsp;Ahora₂/7&nbsp;}" --> F["sumando([], 7, Total)"]
+    F -- "R4. θ₆ = {&nbsp;Total₃/7, Total/7&nbsp;}" --> S(["consulta vacía<br/>Total = 7"])
+```
+
+Aquí los nodos tienen siempre el mismo ancho: cada `is` se evalúa en el arco
+siguiente al que lo introduce, y el acumulador llega a la lista vacía con el
+resultado ya calculado. El último arco, el de R4, no evalúa nada: su
+sustitución liga `Total` al `7` que el acumulador trae, y esa sustitución es la
+respuesta.
 
 !!! question "Actividad"
     Ejecutar `suma_con_acumulador([3, 1, 4], S).` con `trace` y anotar, en
@@ -479,6 +641,32 @@ invertirla.
 AlReves = [eva, luis, ana].
 ```
 
+El árbol es lineal, y el acumulador crece por el frente en cada arco. Con
+`dar_vuelta/2` y `dando_vuelta/3` numeradas a continuación de las cláusulas de
+la [sección 8.5](#85-acumuladores) —R6 a R8 son las de `largo/2` y
+`contando/3`—:
+
+| | |
+|---|---|
+| R9 | `dar_vuelta(L, R) :- dando_vuelta(L, [], R).` |
+| R10 | `dando_vuelta([], R, R).` |
+| R11 | `dando_vuelta([X\|Resto], Hasta, R) :- dando_vuelta(Resto, [X\|Hasta], R).` |
+
+```mermaid
+%%{init: {"flowchart": {"rankSpacing": 25}}}%%
+flowchart TD
+    A["dar_vuelta([ana, luis, eva], AlReves)"] -- "R9. θ₁ = {&nbsp;L/[ana, luis, eva], R/AlReves&nbsp;}" --> B["dando_vuelta([ana, luis, eva], [], AlReves)"]
+    B -- "R11. θ₂ = {&nbsp;X/ana, Resto/[luis, eva], Hasta/[], R/AlReves&nbsp;}" --> C["dando_vuelta([luis, eva], [ana], AlReves)"]
+    C -- "R11. θ₃ = {&nbsp;X₂/luis, Resto₂/[eva], Hasta₂/[ana], R₂/AlReves&nbsp;}" --> D["dando_vuelta([eva], [luis, ana], AlReves)"]
+    D -- "R11. θ₄ = {&nbsp;X₃/eva, Resto₃/[], Hasta₃/[luis, ana], R₃/AlReves&nbsp;}" --> E["dando_vuelta([], [eva, luis, ana], AlReves)"]
+    E -- "R10. θ₅ = {&nbsp;R₄/[eva, luis, ana], AlReves/[eva, luis, ana]&nbsp;}" --> S(["consulta vacía<br/>AlReves = [eva, luis, ana]"])
+```
+
+No hay ninguna evaluación aritmética: todo el trabajo lo hace la unificación
+de la cabeza de R11, que extrae `X` de la lista y lo agrega al acumulador en el
+mismo paso. Como en `sumando/3`, el caso base R10 no calcula nada: liga
+`AlReves` a la lista acumulada.
+
 La versión del [ejercicio 7 del capítulo 7](../capitulo-07-listas/soluciones.md#7) usaba `append/3` para agregar cada elemento al final.
 Aquella recorría toda la lista nuevamente por cada elemento; esta la recorre una
 sola vez. Con tres elementos la diferencia es imperceptible; con tres mil, es
@@ -575,6 +763,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | **acumulador** | un argumento adicional que transporta el resultado parcial durante el avance |
 | argumentos sin instanciar | `is/2` requiere que todas las variables de la expresión tengan valor |
 | `is not a function` | la expresión contiene un término que no es un número y nunca lo será |
+| **hoja de error** | la rama que un error interrumpe: no es una falla y no hay retroceso hacia otra alternativa; en el árbol se dibuja con otra forma y el texto del error |
 | generar y probar | un objetivo anterior a `is/2` genera los candidatos y la aritmética los verifica: así se admite la consulta inversa |
 
 ## Temas que se retoman

@@ -284,8 +284,10 @@ son complementarias, de modo que cada carácter entra en exactamente una
 cláusula y la cuenta es una sola. Sin la condición de la tercera cláusula, al
 volver atrás esa cláusula aceptaría también las vocales y daría cuentas
 menores. El `false.` final tiene la misma explicación que el de
-`contar_letra/3`: la tercera cláusula queda pendiente después de la segunda
-y falla al comprobar `\+ vocal(C)` con la última vocal.
+`contar_letra/3`, cuyo árbol dibuja la
+[sección 11.4](index.md#114-buscar-dentro-de-un-atomo): la tercera cláusula
+queda pendiente después de la segunda y falla al comprobar `\+ vocal(C)` con
+la última vocal.
 
 ## 10
 
@@ -382,6 +384,48 @@ C = [juan, 68, 1957].
 [sección 11.2](index.md#112-conversiones): si el campo representa un número, la primera cláusula lo
 convierte y el corte descarta la segunda; si no, `atom_number/2` falla y la
 segunda cláusula deja el campo como átomo.
+
+Los dos árboles, con las cláusulas de `valor/2` numeradas R1 y R2, muestran el
+corte rojo. Con `"68"`, `atom_number/2` liga `V` y el `!` poda la rama de R2,
+dibujada como en la [sección 9.2](../capitulo-09-backtracking-y-corte/index.md#92-el-corte-poda-el-arbol):
+
+```prolog
+?- valor("68", V).
+V = 68.
+```
+
+```mermaid
+flowchart TD
+    A["valor(#quot;68#quot;, V)"] -- "R1. θ₁ = {&nbsp;Cadena/#quot;68#quot;, Numero/V&nbsp;}" --> B["atom_string(Atomo, #quot;68#quot;),<br/>atom_number(Atomo, V),<br/>!"]
+    B -- "atom_string. θ₂ = {&nbsp;Atomo/'68'&nbsp;}" --> C["atom_number('68', V),<br/>!"]
+    C -- "atom_number. θ₃ = {&nbsp;V/68&nbsp;}" --> D["!"]
+    D --> S(["consulta vacía<br/>V = 68"])
+    A -- "R2" --- p@{ shape: sm-circ } -.- n["podada por el corte"]
+    classDef abierto fill:none,stroke:none;
+    class n abierto;
+```
+
+Sin el corte, la rama de R2 daría una segunda respuesta, `V = '68'`: el corte
+cambia el conjunto de respuestas, y por eso es rojo. Con `"juan"`,
+`atom_number(juan, V)` falla antes de llegar al `!`, que no poda nada, y la
+rama de R2 responde:
+
+```prolog
+?- valor("juan", V).
+V = juan.
+```
+
+```mermaid
+flowchart TD
+    A["valor(#quot;juan#quot;, V)"] -- "R1. θ₁ = {&nbsp;Cadena/#quot;juan#quot;, Numero/V&nbsp;}" --> B["atom_string(Atomo, #quot;juan#quot;),<br/>atom_number(Atomo, V),<br/>!"]
+    B -- "atom_string. θ₂ = {&nbsp;Atomo/juan&nbsp;}" --> C["atom_number(juan, V),<br/>!"]
+    C --> F(["falla"])
+    A -- "R2. θ₃ = {&nbsp;Cadena/#quot;juan#quot;, Atomo/V&nbsp;}" --> D["atom_string(V, #quot;juan#quot;)"]
+    D -- "atom_string. θ₄ = {&nbsp;V/juan&nbsp;}" --> S(["consulta vacía<br/>V = juan"])
+```
+
+Como R2 es la última cláusula, no queda ninguna alternativa pendiente y la
+respuesta termina en punto.
 
 ## 13
 
@@ -562,6 +606,26 @@ da una respuesta, porque solo la primera llamada deja alternativas pendientes:
 las otras dos reciben la posición y el largo del fragmento que buscan, y con
 esos dos números ligados tienen una sola respuesta cada una.
 
+El árbol lo muestra, con la cláusula de `alrededor/4` numerada R1. Solo el
+primer `sub_atom/5` abre más de una rama, una por aparición de `na`, como
+`between/3` en la [sección 9.6](../capitulo-09-backtracking-y-corte/index.md#96-generar-y-probar):
+
+```mermaid
+flowchart TD
+    A["alrededor(banana, na, A, D)"] -- "R1. θ₁ = {&nbsp;Palabra/banana, Fragmento/na, Antes/A, Despues/D&nbsp;}" --> B["sub_atom(banana, LargoAntes, _, LargoDespues, na),<br/>sub_atom(banana, 0, LargoAntes, _, A),<br/>sub_atom(banana, _, LargoDespues, 0, D)"]
+    B -- "sub_atom. θ₂ = {&nbsp;LargoAntes/2, LargoDespues/2&nbsp;}" --> C["sub_atom(banana, 0, 2, _, A),<br/>sub_atom(banana, _, 2, 0, D)"]
+    C -- "sub_atom. θ₃ = {&nbsp;A/ba&nbsp;}" --> C2["sub_atom(banana, _, 2, 0, D)"]
+    C2 -- "sub_atom. θ₄ = {&nbsp;D/na&nbsp;}" --> S1(["1.ª respuesta<br/>A = ba, D = na"])
+    B -- "sub_atom. θ₅ = {&nbsp;LargoAntes/4, LargoDespues/0&nbsp;}" --> E["sub_atom(banana, 0, 4, _, A),<br/>sub_atom(banana, _, 0, 0, D)"]
+    E -- "sub_atom. θ₆ = {&nbsp;A/bana&nbsp;}" --> E2["sub_atom(banana, _, 0, 0, D)"]
+    E2 -- "sub_atom. θ₇ = {&nbsp;D/''&nbsp;}" --> S2(["2.ª respuesta<br/>A = bana, D = ''"])
+```
+
+Las ramas de `θ₂` y `θ₅` son las dos apariciones de `na`, en las posiciones 2
+y 4. Debajo de cada una, los otros dos `sub_atom/5` reciben la posición y el
+largo ya ligados y tienen una sola respuesta: el árbol no vuelve a
+ramificarse, y las hojas de éxito son dos, una por aparición.
+
 La segunda consulta muestra que `Fragmento` puede llegar libre: con `Antes`
 ligado, la primera llamada enumera todos los fragmentos de `prolog` y las
 siguientes descartan los que no empiezan en la posición 3.
@@ -599,8 +663,15 @@ menor que `a`, de modo que `'Zoe'` va antes que `ana`, como muestra la
 
 El `true ;` de la segunda consulta deja una alternativa pendiente: con la lista
 `[eva]`, la segunda cláusula tiene éxito y la tercera queda por probar, y falla
-porque `[eva]` no unifica con `[A, B|Resto]`. El encabezado declara `semidet`
-porque la cantidad de respuestas es una o ninguna.
+porque `[eva]` no unifica con `[A, B|Resto]`. A diferencia del `false.` de
+`contar_letra/3`, cuya rama pendiente aparece en el árbol de la
+[sección 11.4](index.md#114-buscar-dentro-de-un-atomo), el árbol de derivación
+no dibuja esta alternativa, porque solo abre ramas para las cabezas que
+unifican; que la alternativa quede abierta o no depende de la indexación de
+cláusulas, que describe la
+[sección 16.3](../capitulo-16-rendimiento/index.md#163-indexacion). El
+encabezado declara `semidet` porque la cantidad de respuestas es una o
+ninguna.
 
 `compare/3` da la misma solución con otra forma: `compare(O, A, B)` deja en `O`
 uno de `<`, `=` o `>`, y la condición es que `O` no sea `>`. Con `@=<` la

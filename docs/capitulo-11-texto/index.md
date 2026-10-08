@@ -27,7 +27,7 @@ Al terminar el capítulo, el lector puede:
   la manera que corresponde a cada propósito.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:30 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:40 h**.
     Resolver los 6 ejercicios marcados con ★: **1:10 h**.
     Resolver los 17 ejercicios del final: **4:25 h**.
 
@@ -419,6 +419,27 @@ P = an ;
 P = ana.
 ```
 
+En el árbol de derivación, `sub_atom/5` es un objetivo predefinido que produce
+varias respuestas: cada una abre una rama, con la sustitución que liga `P` y
+sin número de cláusula, como `between/3` en la
+[sección 9.6](../capitulo-09-backtracking-y-corte/index.md#96-generar-y-probar).
+Con la cláusula de `empieza_con/2` numerada R1:
+
+```mermaid
+flowchart TD
+    A["empieza_con(ana, P)"] -- "R1. θ₁ = {&nbsp;Palabra/ana, Prefijo/P&nbsp;}" --> B["sub_atom(ana, 0, _, _, P)"]
+    B -- "sub_atom. θ₂ = {&nbsp;P/''&nbsp;}" --> S1(["1.ª respuesta<br/>P = ''"])
+    B -- "sub_atom. θ₃ = {&nbsp;P/a&nbsp;}" --> S2(["2.ª respuesta<br/>P = a"])
+    B -- "sub_atom. θ₄ = {&nbsp;P/an&nbsp;}" --> S3(["3.ª respuesta<br/>P = an"])
+    B -- "sub_atom. θ₅ = {&nbsp;P/ana&nbsp;}" --> S4(["4.ª respuesta<br/>P = ana"])
+```
+
+Cuatro hojas de éxito son cuatro respuestas, en el orden en que `sub_atom/5`
+las produce; por eso el encabezado declara `nondet`. Las dos variables
+anónimas del objetivo también reciben un valor en cada rama —el largo del
+prefijo y la cantidad de caracteres que lo siguen—, pero la sustitución no lo
+muestra porque ningún otro objetivo las usa.
+
 Para contar cuántas veces aparece una letra, la conversión a lista de
 caracteres permite usar un recorrido que cuenta, en la forma de la
 [sección 7.4](../capitulo-07-listas/index.md#74-contar-durante-el-recorrido):
@@ -452,8 +473,75 @@ false.
 ```
 
 El `false.` final corresponde a la tercera cláusula de `contar/3`, que queda
-pendiente después de la segunda y falla al comprobar `X \== Y` con el último
-carácter. La respuesta es una sola, como declara el encabezado.
+pendiente después de la segunda. El árbol de una consulta más corta,
+`contar_letra(a, ana, N)`, muestra de dónde sale:
+
+```prolog
+?- contar_letra(a, ana, N).
+N = 2 ;
+false.
+```
+
+Numeradas las cláusulas de la sección en el orden del programa —R1 y R2 son
+las de `empieza_con/2` y `termina_con/2`—, las de `contar_letra/3` y
+`contar/3` son:
+
+| | |
+|---|---|
+| R3 | `contar_letra(Letra, Palabra, N) :- atom_chars(Palabra, Letras), contar(Letra, Letras, N).` |
+| R4 | `contar(_, [], 0).` |
+| R5 | `contar(X, [X\|Resto], N) :- contar(X, Resto, N0), N is N0 + 1.` |
+| R6 | `contar(X, [Y\|Resto], N) :- X \== Y, contar(X, Resto, N).` |
+
+`atom_chars/2` es un objetivo predefinido: su arco no lleva número de cláusula
+([capítulo 3](../capitulo-03-reglas-y-conjunciones/index.md#35-una-regla-que-produce-respuestas-de-mas)),
+pero sí la sustitución que liga `Letras`, como los arcos de `is` de la
+[sección 6.6](../capitulo-06-recursion/index.md#66-recursion-que-produce-un-resultado).
+Las tres reglas tienen una variable `N`, como la consulta, y cada copia la
+renombra (`N₁`, `N₂`, …); la segunda copia de R5 renombra también su `N0`
+como `N0₂`. El árbol va en dos partes por su altura:
+
+```mermaid
+%%{init: {"flowchart": {"rankSpacing": 30, "nodeSpacing": 25}}}%%
+flowchart TD
+    A["contar_letra(a, ana, N)"] -- "R3. θ₁ = {&nbsp;Letra/a, Palabra/ana, N₁/N&nbsp;}" --> B["atom_chars(ana, Letras),<br/>contar(a, Letras, N)"]
+    B -- "atom_chars. θ₂ = {&nbsp;Letras/[a, n, a]&nbsp;}" --> C["contar(a, [a, n, a], N)"]
+    C -- "R5. θ₃ = {&nbsp;X/a, Resto/[n, a], N₂/N&nbsp;}" --> D["contar(a, [n, a], N0),<br/>N is N0 + 1"]
+    D -- "R6. θ₄ = {&nbsp;X/a, Y/n, Resto/[a], N₃/N0&nbsp;}" --> E["a \== n,<br/>contar(a, [a], N0),<br/>N is N0 + 1"]
+    E --> F["contar(a, [a], N0),<br/>N is N0 + 1"]
+    F --> V["⋮<br/>sigue en el árbol siguiente"]
+    C -- "R6. θ₁₀ = {&nbsp;X/a, Y/a, Resto/[n, a], N₆/N&nbsp;}" --> L["a \== a,<br/>contar(a, [n, a], N)"]
+    L --> LF(["falla"])
+    classDef abierto fill:none,stroke:none;
+    class V abierto;
+```
+
+La rama de R5 continúa en el segundo árbol, que empieza en el último nodo del
+primero:
+
+```mermaid
+%%{init: {"flowchart": {"rankSpacing": 30, "nodeSpacing": 25}}}%%
+flowchart TD
+    F["contar(a, [a], N0),<br/>N is N0 + 1"]
+    F -- "R5. θ₅ = {&nbsp;X/a, Resto/[], N₄/N0&nbsp;}" --> G["contar(a, [], N0₂),<br/>N0 is N0₂ + 1,<br/>N is N0 + 1"]
+    G -- "R4. θ₆ = {&nbsp;_/a, N0₂/0&nbsp;}" --> H["N0 is 0 + 1,<br/>N is N0 + 1"]
+    H -- "is. θ₇ = {&nbsp;N0/1&nbsp;}" --> I["N is 1 + 1"]
+    I -- "is. θ₈ = {&nbsp;N/2&nbsp;}" --> S(["consulta vacía<br/>N = 2"])
+    F -- "R6. θ₉ = {&nbsp;X/a, Y/a, Resto/[], N₅/N0&nbsp;}" --> K["a \== a,<br/>contar(a, [], N0),<br/>N is N0 + 1"]
+    K --> KF(["falla"])
+```
+
+La cabeza de R6, `[Y|Resto]`, unifica con cualquier lista no vacía, también
+cuando el primer carácter es la letra buscada: en cada `a` se abren dos ramas,
+la de R5 a la izquierda y la de R6 a la derecha. La búsqueda baja por las de
+R5 hasta la hoja `N = 2`; las dos ramas de R6 quedan a la derecha, sin
+recorrer, y son las alternativas pendientes. Al pedir otra respuesta, Prolog
+las recorre en orden, `θ₉` y después `θ₁₀`, y las dos fallan en la guarda
+`a \== a`: de ahí el `false.`. En la `n` solo unifica la cabeza de R6, porque
+la de R5 exige que el primer carácter sea `a`, y ese nodo tiene una única
+rama. Con `banana` el árbol es el mismo con tres niveles más: una rama de R6
+pendiente por cada una de las tres `a`, y las tres fallan. La respuesta es una
+sola, como declara el encabezado.
 
 Las cadenas tienen sus propias versiones de los dos predicados, que responden
 con cadenas aunque reciban átomos. `string_concat/3` relaciona dos cadenas con
@@ -653,6 +741,46 @@ true.
 `mismo_nombre/2` normaliza `A`, y después exige que la normalización de `B` sea
 el **mismo** átomo: la variable `Normal` aparece en los dos objetivos, y la
 segunda aparición llega con valor.
+
+El árbol lo muestra, en dos partes por su altura, con `mismo_nombre/2`
+numerada R1 y `normalizado/2` R2. Las dos copias de R2 tienen variables
+propias: la primera renombra su `Normal` como `Normal₁`, porque la consulta
+pendiente ya tiene una `Normal`, y la segunda escribe `Texto₂`, `Normal₂` y
+`Espaciado₂`:
+
+```mermaid
+%%{init: {"flowchart": {"rankSpacing": 30, "nodeSpacing": 25}}}%%
+flowchart TD
+    A["mismo_nombre('&nbsp;&nbsp;Ana&nbsp;&nbsp;&nbsp;Paz&nbsp;', 'ana paz')"] -- "R1. θ₁ = {&nbsp;A/'&nbsp;&nbsp;Ana&nbsp;&nbsp;&nbsp;Paz&nbsp;', B/'ana paz'&nbsp;}" --> B["normalizado('&nbsp;&nbsp;Ana&nbsp;&nbsp;&nbsp;Paz&nbsp;', Normal),<br/>normalizado('ana paz', Normal)"]
+    B -- "R2. θ₂ = {&nbsp;Texto/'&nbsp;&nbsp;Ana&nbsp;&nbsp;&nbsp;Paz&nbsp;', Normal₁/Normal&nbsp;}" --> C["normalize_space(atom(Espaciado), '&nbsp;&nbsp;Ana&nbsp;&nbsp;&nbsp;Paz&nbsp;'),<br/>downcase_atom(Espaciado, Normal),<br/>normalizado('ana paz', Normal)"]
+    C -- "normalize_space. θ₃ = {&nbsp;Espaciado/'Ana Paz'&nbsp;}" --> D["downcase_atom('Ana Paz', Normal),<br/>normalizado('ana paz', Normal)"]
+    D -- "downcase_atom. θ₄ = {&nbsp;Normal/'ana paz'&nbsp;}" --> E["normalizado('ana paz', 'ana paz')"]
+    E --> V["⋮<br/>sigue en el árbol siguiente"]
+    classDef abierto fill:none,stroke:none;
+    class V abierto;
+```
+
+El recorrido continúa en el segundo árbol, que empieza en el último nodo del
+primero:
+
+```mermaid
+%%{init: {"flowchart": {"rankSpacing": 30, "nodeSpacing": 25}}}%%
+flowchart TD
+    E["normalizado('ana paz', 'ana paz')"]
+    E -- "R2. θ₅ = {&nbsp;Texto₂/'ana paz', Normal₂/'ana paz'&nbsp;}" --> F["normalize_space(atom(Espaciado₂), 'ana paz'),<br/>downcase_atom(Espaciado₂, 'ana paz')"]
+    F -- "normalize_space. θ₆ = {&nbsp;Espaciado₂/'ana paz'&nbsp;}" --> G["downcase_atom('ana paz', 'ana paz')"]
+    G -- "downcase_atom. θ₇ = {&nbsp;}" --> S(["consulta vacía<br/>true"])
+```
+
+Hasta `θ₄` el recorrido calcula: `normalize_space/2` liga `Espaciado` y
+`downcase_atom/2` liga `Normal`. La segunda `normalizado` llega con `Normal`
+ya sustituida por `'ana paz'`, y su último objetivo,
+`downcase_atom('ana paz', 'ana paz')`, no tiene nada que ligar: comprueba, con
+una sustitución vacía, que el átomo calculado es el esperado. Es la situación
+de la [sección 8.4](../capitulo-08-aritmetica/index.md#84-cuando-se-admite-la-consulta-inversa):
+un objetivo que recibe su variable ya ligada verifica en lugar de calcular. Con
+dos nombres distintos, ese objetivo fallaría y la consulta respondería
+`false.`.
 
 Además de la igualdad, dos textos se pueden ordenar. `compare/3` informa si el
 primero va antes, es igual o va después; `@<`, `@>`, `@=<` y `@>=` hacen la

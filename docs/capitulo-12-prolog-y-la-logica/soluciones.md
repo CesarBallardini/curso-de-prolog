@@ -287,6 +287,28 @@ infinita. La segunda cláusula —la que responde— está a su derecha, y el
 recorrido nunca llega. Las respuestas se siguen del programa y están en el
 árbol; lo que falla es el orden en que se lo explora.
 
+Con la cláusula recursiva numerada R1 y el caso base R2, como en la
+[sección 5.6](../capitulo-05-como-responde-prolog/index.md#56-ramas-infinitas),
+el árbol de `?- ascendiente(juan, Quien).` es:
+
+```mermaid
+flowchart TD
+    A["ascendiente(juan, Quien)"] -- "R1. θ₁ = {&nbsp;A/juan, D/Quien&nbsp;}" --> B["ascendiente(juan, X₁),<br/>progenitor(X₁, Quien)"]
+    B -- "R1. θ₂ = {&nbsp;A₂/juan, D₂/X₁&nbsp;}" --> C["ascendiente(juan, X₂),<br/>progenitor(X₂, X₁),<br/>progenitor(X₁, Quien)"]
+    C -- "R1. θ₃ = {&nbsp;A₃/juan, D₃/X₂&nbsp;}" --> D["⋮<br/>la rama no termina"]
+    A -- "R2" --- pA@{ shape: sm-circ } -.- nA["nunca llega<br/>a pasar por aquí"]
+    B -- "R2" --- pB@{ shape: sm-circ } -.- nB["nunca llega<br/>a pasar por aquí"]
+    C -- "R2" --- pC@{ shape: sm-circ } -.- nC["nunca llega<br/>a pasar por aquí"]
+    classDef abierto fill:none,stroke:none;
+    class D,nA,nB,nC abierto;
+```
+
+Las respuestas están en las ramas punteadas de R2: la primera de ellas, con los
+hechos de `progenitor/2` de `logica.pl`, daría `Quien = ana` y `Quien = pedro`.
+El recorrido no pasa nunca por ellas, porque para llegar a cada una tendría que
+agotar antes la rama de R1 que está a su izquierda, y esa rama no termina; por
+eso no llevan sustitución que numerar.
+
 Es el mismo programa de la [sección 5.6](../capitulo-05-como-responde-prolog/index.md#56-ramas-infinitas), leído ahora desde la lógica: ninguna de
 sus dos cláusulas es falsa, y aun así no responde.
 
@@ -314,6 +336,24 @@ no se puede resolver con ninguna cláusula: ningún hecho afirma
 $\mathit{padre}(\mathit{ana}, \mathit{luis})$ ni
 $\mathit{padre}(\mathit{luis}, \mathit{luis})$, y R4 no contiene ningún átomo
 $\mathit{padre}$ sin negar. Son las dos hojas de falla del árbol.
+
+Dibujado con las etiquetas de la
+[sección 12.5](index.md#la-refutacion-en-forma-clausal) —cada nodo como
+consulta y como resolvente, $\square$ en la hoja de éxito—, es el árbol de la
+solución 1 del [capítulo 5](../capitulo-05-como-responde-prolog/soluciones.md#1)
+con otra notación:
+
+```mermaid
+%%{init: {"flowchart": {"wrappingWidth": 320}}}%%
+flowchart TD
+    A["abuelo(Quien, luis)<br/>¬abuelo(Quien, luis)"] -- "R4. θ₁ = {&nbsp;A/Quien, N/luis&nbsp;}" --> B["padre(Quien, P), padre(P, luis)<br/>¬padre(Quien, P) ∨ ¬padre(P, luis)"]
+    B -- "R1. θ₂ = {&nbsp;Quien/juan, P/ana&nbsp;}" --> C["padre(ana, luis)<br/>¬padre(ana, luis)"]
+    B -- "R2. θ₃ = {&nbsp;Quien/juan, P/pedro&nbsp;}" --> D["padre(pedro, luis)<br/>¬padre(pedro, luis)"]
+    B -- "R3. θ₅ = {&nbsp;Quien/pedro, P/luis&nbsp;}" --> E["padre(luis, luis)<br/>¬padre(luis, luis)"]
+    C --> F(["falla<br/>no se resuelve con ninguna cláusula"])
+    D -- "R3. θ₄ = {&nbsp;}" --> G(["consulta vacía: □<br/>Quien = juan"])
+    E --> H(["falla<br/>no se resuelve con ninguna cláusula"])
+```
 
 El orden de los pasos es el del recorrido de Prolog: la rama de R1 se prueba
 primero y la de R3, al final. Para la resolución el orden no importa: la
@@ -469,6 +509,47 @@ restricción «no se rema cuando llueve» no se puede escribir en él.
 `remar` se debe probar `picnic`; para `picnic`, `templado` y `\+ llueve`; y
 `\+ llueve` falla, porque `llueve` es un hecho. Sin `picnic`, ninguna cláusula
 permite probar `remar`, y `\+ remar` tiene éxito.
+
+El árbol de derivación lo muestra con dos árboles subordinados de la
+[sección 10.2](../capitulo-10-negacion-como-falla/index.md#102-no-se-puede-probar),
+uno dentro del otro. Con las cuatro cláusulas del programa numeradas C1 a C4 en
+el orden del archivo —C3 es la regla de `picnic`—, el primer diagrama es el
+árbol de `\+ remar`. El recuadro de `llueve` va dentro del recuadro de `remar`,
+en el lugar que marca «⋮»; por su altura se dibuja aparte, en el segundo
+diagrama.
+
+```mermaid
+%%{init: {"flowchart": {"rankSpacing": 25}}}%%
+flowchart TD
+    A["\+ remar"] === s
+    subgraph s ["árbol subordinado de remar"]
+        direction TB
+        B["remar"] -- "C4. θ₁ = {&nbsp;}" --> C["picnic"]
+        C -- "C3. θ₂ = {&nbsp;}" --> D["templado,<br/>\+ llueve"]
+        D -- "C1. θ₃ = {&nbsp;}" --> E["\+ llueve"]
+        E === t["⋮ el recuadro de llueve,<br/>en el diagrama siguiente"]
+        t --> H(["falla"])
+    end
+    s --> S(["consulta vacía<br/>true"])
+    classDef abierto fill:none,stroke:none;
+    class t abierto;
+```
+
+```mermaid
+flowchart TD
+    E["\+ llueve"] === t
+    subgraph t ["árbol subordinado de llueve"]
+        direction TB
+        F["llueve"] -- "C2. θ₄ = {&nbsp;}" --> G(["consulta vacía"])
+    end
+    t --> H(["falla"])
+```
+
+El recuadro interior llega a la consulta vacía con C2, y esa hoja de éxito hace
+fallar a `\+ llueve`. Con él falla la única rama de `remar`: el recuadro
+exterior no tiene ninguna hoja de éxito, y por eso `\+ remar` se cumple. Las
+sustituciones son vacías porque el programa no tiene variables. Ejecutada sobre
+las cuatro cláusulas, la consulta responde `true.`
 
 La razón es distinta de la del punto a. Allí, $\lnot \mathit{remar}$ se deduce de
 la restricción C5 y del hecho de que llueve: es una consecuencia lógica. `\+`,

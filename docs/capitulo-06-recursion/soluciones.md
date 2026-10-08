@@ -114,6 +114,57 @@ Entre `ana` y `eva` hay dos generaciones: `ana` → `luis` → `eva`. La consult
 funciona aunque el primer argumento esté libre, porque `padre(A, Hijo)` permite
 buscar tanto padres como hijos.
 
+El árbol, con las cláusulas numeradas como en la [sección 6.6](index.md#66-recursion-que-produce-un-resultado)
+—R1 a R3 los hechos de `padre/2`, R4 el caso base y R5 el recursivo—, es el
+único del capítulo con tres ramas en un mismo nodo: con `A` libre,
+`padre(A, Hijo)` unifica con los tres hechos. El primer diagrama muestra la
+raíz, las tres ramas y en qué termina cada una; el segundo, la rama de `ana`
+completa. La consulta usa la variable `A`, igual que las cláusulas, y por eso
+la copia de la cláusula se escribe `A₁`. R4 no abre arco en la raíz: su cabeza
+tiene `1` en el tercer argumento, y la consulta tiene `2`.
+
+```mermaid
+flowchart TD
+    A["generaciones(A, eva, 2)"] -- "R5. θ₁ = {&nbsp;A₁/A, D/eva, N/2&nbsp;}" --> B["padre(A, Hijo),<br/>generaciones(Hijo, eva, Faltan),<br/>2 is Faltan + 1"]
+    B -- "R1. θ₂ = {&nbsp;A/juan, Hijo/ana&nbsp;}" --> C["generaciones(ana, eva, Faltan),<br/>2 is Faltan + 1"]
+    B -- "R2. θ₁₃ = {&nbsp;A/ana, Hijo/luis&nbsp;}" --> D["generaciones(luis, eva, Faltan),<br/>2 is Faltan + 1"]
+    B -- "R3. θ₂₀ = {&nbsp;A/luis, Hijo/eva&nbsp;}" --> E["generaciones(eva, eva, Faltan),<br/>2 is Faltan + 1"]
+    C --> R1(["⋯ todas sus ramas fallan<br/>θ₃ a θ₁₂"])
+    D --> V["⋮<br/>sigue en el árbol siguiente"]
+    E --> R3(["⋯ todas sus ramas fallan<br/>θ₂₁ y θ₂₂"])
+    classDef abierto fill:none,stroke:none;
+    class V abierto;
+```
+
+La rama de `juan` es la primera que se recorre, y no falla por falta de
+cláusulas: desciende por `ana` y `luis` hasta `padre(luis, eva)`, calcula
+`Faltan is 1 + 1` y llega a `2 is 2 + 1` con `Faltan` ya ligada a 2. Es la
+primera vez en el curso que `is` actúa como **prueba** en lugar de asignar:
+la variable de la izquierda ya tiene valor, la igualdad no se cumple, y la
+rama falla. Las diez sustituciones de ese subárbol (`θ₃` a `θ₁₂`) son trabajo
+sin respuesta. La rama de `eva` falla de inmediato, porque `eva` no tiene
+hijos. La de `ana` continúa en el segundo árbol:
+
+```mermaid
+%%{init: {"flowchart": {"rankSpacing": 30}}}%%
+flowchart TD
+    D["generaciones(luis, eva, Faltan),<br/>2 is Faltan + 1"]
+    D -- "R4. θ₁₄ = {&nbsp;A₂/luis, D₂/eva, Faltan/1&nbsp;}" --> F["padre(luis, eva),<br/>2 is 1 + 1"]
+    F -- "R3. θ₁₅ = {&nbsp;}" --> G["2 is 1 + 1"]
+    G --> S(["consulta vacía<br/>A = ana"])
+    D -- "R5. θ₁₆ = {&nbsp;A₂/luis, D₂/eva, N₂/Faltan&nbsp;}" --> H["padre(luis, Hijo₂),<br/>generaciones(Hijo₂, eva, Faltan₂),<br/>Faltan is Faltan₂ + 1,<br/>2 is Faltan + 1"]
+    H -- "R3. θ₁₇ = {&nbsp;Hijo₂/eva&nbsp;}" --> I["generaciones(eva, eva, Faltan₂),<br/>Faltan is Faltan₂ + 1,<br/>2 is Faltan + 1"]
+    I -- "R4. θ₁₈ = {&nbsp;A₃/eva, D₃/eva, Faltan₂/1&nbsp;}" --> J["padre(eva, eva),<br/>Faltan is 1 + 1,<br/>2 is Faltan + 1"]
+    J --> F1(["falla"])
+    I -- "R5. θ₁₉ = {&nbsp;A₃/eva, D₃/eva, N₃/Faltan₂&nbsp;}" --> K["padre(eva, Hijo₃),<br/>generaciones(Hijo₃, eva, Faltan₃),<br/>Faltan₂ is Faltan₃ + 1,<br/>Faltan is Faltan₂ + 1,<br/>2 is Faltan + 1"]
+    K --> F2(["falla"])
+```
+
+Aquí `2 is 1 + 1` también es una prueba, y se cumple: el objetivo desaparece
+sin ligar nada, y la hoja de éxito es la respuesta `A = ana`, que viene de
+`θ₁₃`. El `;` corresponde a la rama de R5 que queda debajo, y a la de `luis`
+en el primer árbol; las dos fallan, y la respuesta siguiente es `false.`.
+
 ## 7
 
 <!-- ejemplo: capitulo-06/soluciones.pl predicado: tatarabuelo/2 consulta: tatarabuelo(Quien, eva). -->
@@ -172,9 +223,21 @@ con `s(s(N))`, de modo que ninguna cláusula es aplicable.
 
 ## 10
 
-**a. El objetivo que reduce el problema está después de la llamada recursiva.**
-En realidad el problema es peor: `cuenta_s/2` no tiene caso base, de modo que
-también le falta la condición de finalización. Con las dos correcciones:
+**a. Falta el caso base.** Es el predicado que responde `false.` con el primer
+argumento instanciado:
+
+```prolog
+?- cuenta_s(s(cero), C).
+false.
+```
+
+La única cláusula quita una `s` por llamada, hasta que el objetivo es
+`cuenta_s(cero, Menos)`, que no unifica con ninguna cabeza: sin caso base,
+ninguna consulta se puede probar. Con el primer argumento libre,
+`cuenta_s(N, C).`, la consulta no termina: cada uso de la cláusula liga `N` a
+`s(N₁)`, después `N₁` a `s(N₂)`, y así de manera indefinida, sin que nada se
+reduzca. Además, el resultado se construye en el cuerpo, después de la llamada
+recursiva, cuando conviene escribirlo en la cabeza. Con las dos correcciones:
 
 ```prolog
 %!  cuenta_s(?N, ?C) is nondet.
@@ -207,6 +270,24 @@ despues_de(B, A) :-
 **c. El caso recursivo no reduce el problema**: `baja/2` se invoca con
 `s(N)`, que es **mayor** que `N`. Cada llamada agrega un nivel en lugar de
 quitarlo. Además el caso base está escrito último, lo que agrava el problema.
+El árbol de `baja(N, Cero)`, con la cláusula recursiva numerada R1 y el caso
+base R2, tiene la forma del de la [sección 5.6](../capitulo-05-como-responde-prolog/index.md#56-ramas-infinitas),
+pero la consulta **crece** en cada nodo en lugar de reducirse; la consulta usa
+las variables `N` y `Cero`, iguales a las de la cláusula, y las copias llevan
+subíndice:
+
+```mermaid
+flowchart TD
+    A["baja(N, Cero)"] -- "R1. θ₁ = {&nbsp;N₁/N, Cero₁/Cero&nbsp;}" --> B["baja(s(N), Cero)"]
+    B -- "R1. θ₂ = {&nbsp;N₂/s(N), Cero₂/Cero&nbsp;}" --> C["baja(s(s(N)), Cero)"]
+    C -- "R1. θ₃ = {&nbsp;N₃/s(s(N)), Cero₃/Cero&nbsp;}" --> D["⋮<br/>la rama no termina"]
+    A -- "R2" --- pA@{ shape: sm-circ } -.- nA["nunca llega<br/>a pasar por aquí"]
+    B -- "R2" --- pB@{ shape: sm-circ } -.- nB["nunca llega<br/>a pasar por aquí"]
+    C -- "R2" --- pC@{ shape: sm-circ } -.- nC["nunca llega<br/>a pasar por aquí"]
+    classDef abierto fill:none,stroke:none;
+    class D,nA,nB,nC abierto;
+```
+
 Corregido:
 
 ```prolog
@@ -244,6 +325,21 @@ El mismo recorrido, con los datos en otras posiciones. La cabeza
 base unifica `B` con lo que quedó del tercero. Nada en el programa distingue
 "entrada" de "salida": la unificación trabaja en las dos direcciones.
 
+El árbol, con la numeración de la [sección 6.4](index.md#64-la-suma) —R1 el
+caso base, R2 el recursivo—, es una sola rama de dos arcos. La consulta usa la
+variable `B`, igual que las cláusulas, y las copias se escriben `B₁` y `B₂`.
+`B` recibe su valor en la hoja, desde el **tercer** argumento:
+
+```mermaid
+flowchart TD
+    A["suma(s(cero), B, s(s(s(cero))))"] -- "R2. θ₁ = {&nbsp;A/cero, B₁/B, C/s(s(cero))&nbsp;}" --> B["suma(cero, B, s(s(cero)))"]
+    B -- "R1. θ₂ = {&nbsp;B₂/B, B/s(s(cero))&nbsp;}" --> S(["consulta vacía<br/>B = s(s(cero))"])
+```
+
+R1 no abre arco en la raíz, porque `cero` no unifica con `s(cero)`, y R2 no lo
+abre en el segundo nodo, por la razón inversa. Por eso la respuesta termina en
+punto: no queda ninguna alternativa pendiente.
+
 **c.**
 
 ```prolog
@@ -262,6 +358,26 @@ porque el tercer argumento **está instanciado** y cada llamada le quita un
 `s`: la cantidad de llamadas posibles es finita, y está acotada por esa
 cantidad de `s`.
 
+El árbol es una escalera: en cada nivel, R1 cierra una hoja de éxito a la
+izquierda y R2 baja un escalón a la derecha quitando una `s` del tercer
+argumento. Las copias de las cláusulas llevan subíndice porque la consulta usa
+`A` y `B`, los mismos nombres:
+
+```mermaid
+flowchart TD
+    A["suma(A, B, s(s(cero)))"] -- "R1. θ₁ = {&nbsp;A/cero, B₁/B, B/s(s(cero))&nbsp;}" --> S1(["1.ª respuesta<br/>A = cero, B = s(s(cero))"])
+    A -- "R2. θ₂ = {&nbsp;A/s(A₁), B₁/B, C₁/s(cero)&nbsp;}" --> B["suma(A₁, B, s(cero))"]
+    B -- "R1. θ₃ = {&nbsp;A₁/cero, B₂/B, B/s(cero)&nbsp;}" --> S2(["2.ª respuesta<br/>A = s(cero), B = s(cero)"])
+    B -- "R2. θ₄ = {&nbsp;A₁/s(A₂), B₂/B, C₂/cero&nbsp;}" --> C["suma(A₂, B, cero)"]
+    C -- "R1. θ₅ = {&nbsp;A₂/cero, B₃/B, B/cero&nbsp;}" --> S3(["3.ª respuesta<br/>A = s(s(cero)), B = cero"])
+```
+
+En el último nodo, `suma(A₂, B, cero)`, R2 no abre arco: su cabeza tiene
+`s(C)` en el tercer argumento, y `cero` no unifica con él. Ese intento es el
+`false.` final. El árbol de `pegar(A, B, [ana, luis, eva])` de la
+[sección 7.6](../capitulo-07-listas/index.md#76-una-relacion-varios-sentidos) tiene exactamente la misma forma: allí
+el escalón quita un elemento de la lista en lugar de una `s`.
+
 ## 12
 
 - `valor(s(s(cero)), V).` funciona y responde `V = 2`. La recursión avanza sobre
@@ -275,6 +391,39 @@ cantidad de `s`.
 - `valor(s(N), 3).` responde `N = s(s(cero))` y **tampoco termina** después, por
   la misma razón: `s(N)` fija el primer nivel, pero `N` sigue libre, y a partir
   de ahí el crecimiento es el mismo.
+
+El árbol de `valor(N, 2)` muestra las dos cosas a la vez. Con `valor(cero, 0).`
+numerada R1 y la cláusula recursiva R2 —la consulta usa `N`, como la cláusula,
+y las copias llevan subíndice—, la rama de R2 baja sin fin a la derecha, y en
+cada nivel la rama de R1 cierra el `valor` con `cero` y deja un `is` que
+compara: `2 is 0 + 1` falla, `2 is 1 + 1` es la respuesta, `2 is 2 + 1` falla,
+y así siguiendo. R1 no abre arco en la raíz, porque `0` no unifica con `2`.
+
+```mermaid
+%%{init: {"flowchart": {"rankSpacing": 30}}}%%
+flowchart TD
+    A["valor(N, 2)"] -- "R2. θ₁ = {&nbsp;N/s(N₁), V₁/2&nbsp;}" --> B["valor(N₁, Anterior₁),<br/>2 is Anterior₁ + 1"]
+    B -- "R1. θ₂ = {&nbsp;N₁/cero, Anterior₁/0&nbsp;}" --> B1["2 is 0 + 1"]
+    B1 --> F1(["falla"])
+    B -- "R2. θ₃ = {&nbsp;N₁/s(N₂), V₂/Anterior₁&nbsp;}" --> C["valor(N₂, Anterior₂),<br/>Anterior₁ is Anterior₂ + 1,<br/>2 is Anterior₁ + 1"]
+    C -- "R1. θ₄ = {&nbsp;N₂/cero, Anterior₂/0&nbsp;}" --> C1["Anterior₁ is 0 + 1,<br/>2 is Anterior₁ + 1"]
+    C1 -- "is. θ₅ = {&nbsp;Anterior₁/1&nbsp;}" --> C2["2 is 1 + 1"]
+    C2 --> S(["consulta vacía<br/>N = s(N₁) = s(s(N₂)) = s(s(cero))"])
+    C -- "R2. θ₆ = {&nbsp;N₂/s(N₃), V₃/Anterior₂&nbsp;}" --> D["valor(N₃, Anterior₃),<br/>Anterior₂ is Anterior₃ + 1,<br/>Anterior₁ is Anterior₂ + 1,<br/>2 is Anterior₁ + 1"]
+    D -- "R1. θ₇ = {&nbsp;N₃/cero, Anterior₃/0&nbsp;}" --> D1["Anterior₂ is 0 + 1,<br/>Anterior₁ is Anterior₂ + 1,<br/>2 is Anterior₁ + 1"]
+    D1 -- "is. θ₈ = {&nbsp;Anterior₂/1&nbsp;}" --> D2["Anterior₁ is 1 + 1,<br/>2 is Anterior₁ + 1"]
+    D2 -- "is. θ₉ = {&nbsp;Anterior₁/2&nbsp;}" --> D3["2 is 2 + 1"]
+    D3 --> F2(["falla"])
+    D -- "R2. θ₁₀ = {&nbsp;N₃/s(N₄), V₄/Anterior₃&nbsp;}" --> E["⋮<br/>la rama no termina"]
+    classDef abierto fill:none,stroke:none;
+    class E abierto;
+```
+
+El `is` que compara está a la derecha de la llamada recursiva en todos los
+nodos, y por eso no puede detener la búsqueda: se evalúa recién cuando la rama
+de R1 cierra el `valor`, y para entonces la rama de R2 ya quedó pendiente a su
+derecha. A diferencia de `natural(N)` en la [sección 6.3](index.md#63-los-numeros-naturales-definidos-con-terminos),
+los niveles siguientes no producen más respuestas: solo descartan.
 
 La lección es la de la [sección 6.5](index.md#65-por-que-termina): la terminación depende de qué argumentos
 llegan instanciados. `valor/2` solo es utilizable en un sentido, y su
@@ -309,7 +458,18 @@ que la relación no necesita determinar, exactamente como en las respuestas con
 variables del [capítulo 4](../capitulo-04-terminos-y-unificacion/index.md).
 
 Es el caso base `menor_o_igual(cero, _)` el que produce ese `_`: no exige nada del
-segundo argumento.
+segundo argumento. El árbol muestra de dónde sale. Con el caso base numerado R1
+y el recursivo R2 —la consulta usa `B`, como la cláusula, y la copia se escribe
+`B₁`—, la primera sustitución liga `B` a `s(B₁)`, y `B₁` no vuelve a ligarse:
+en la hoja sigue libre, y la respuesta la muestra como `_`. Es el caso de una
+**variable nueva** de la [sección 6.2](index.md#62-caso-base-y-caso-recursivo)
+que queda sin valor hasta el final.
+
+```mermaid
+flowchart TD
+    A["menor_o_igual(s(cero), B)"] -- "R2. θ₁ = {&nbsp;A₁/cero, B/s(B₁)&nbsp;}" --> B["menor_o_igual(cero, B₁)"]
+    B -- "R1. θ₂ = {&nbsp;_/B₁&nbsp;}" --> S(["consulta vacía<br/>B = s(B₁) = s(_)"])
+```
 
 ## 14
 

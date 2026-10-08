@@ -170,6 +170,26 @@ La primera respuesta es `lot`. Según esta regla, toda persona es hermana de sí
 misma, y la deducción es correcta: `haran` es padre de `lot`, y `haran` es padre
 de `lot`. Los dos objetivos se cumplen con la misma persona en ambas posiciones.
 
+El diagrama siguiente sigue la notación de árbol de derivación de la
+[sección 5.2](../capitulo-05-como-responde-prolog/index.md#52-el-arbol-de-derivacion), que conviene leer antes de volver a esta solución. Los
+hechos de `padre/2` de `hermanos.pl` se numeran R1 a R7 en el orden del archivo
+—`padre(haran, lot).` es R5, `padre(haran, milca).` es R6 y `padre(haran, isca).`
+es R7— y la regla es R8:
+
+```mermaid
+%%{init: {"flowchart": {"nodeSpacing": 90}}}%%
+flowchart TD
+    A["hermano(lot, Quien)"] -- "R8. θ₁ = {&nbsp;A/lot, B/Quien&nbsp;}" --> B["padre(P, lot),<br/>padre(P, Quien)"]
+    B -- "R5. θ₂ = {&nbsp;P/haran&nbsp;}" --> C["padre(haran, Quien)"]
+    C -- "R5. θ₃ = {&nbsp;Quien/lot&nbsp;}" --> S1(["consulta vacía<br/>Quien = lot"])
+    C -- "R6. θ₄ = {&nbsp;Quien/milca&nbsp;}" --> S2(["consulta vacía<br/>Quien = milca"])
+    C -- "R7. θ₅ = {&nbsp;Quien/isca&nbsp;}" --> S3(["consulta vacía<br/>Quien = isca"])
+```
+
+El mismo hecho, R5, aparece en dos arcos consecutivos: resuelve `padre(P, lot)`
+y, con `P = haran`, también `padre(haran, Quien)`. Nada en la regla impide que
+un hecho responda a los dos objetivos, y esa rama es la respuesta `Quien = lot`.
+
 ## 11
 
 Se agrega la condición de que las dos personas sean distintas:
@@ -191,6 +211,28 @@ hermano_de_verdad(A, B) :-
 Quien = milca ;
 Quien = isca.
 ```
+
+Con la misma numeración y la regla corregida como R9, el árbol —en la notación
+de la [sección 5.2](../capitulo-05-como-responde-prolog/index.md#52-el-arbol-de-derivacion)— es:
+
+```mermaid
+%%{init: {"flowchart": {"wrappingWidth": 280}}}%%
+flowchart TD
+    A["hermano_de_verdad(lot, Quien)"] -- "R9. θ₁ = {&nbsp;A/lot, B/Quien&nbsp;}" --> B["padre(P, lot),<br/>padre(P, Quien),<br/>\+ lot = Quien"]
+    B -- "R5. θ₂ = {&nbsp;P/haran&nbsp;}" --> C["padre(haran, Quien),<br/>\+ lot = Quien"]
+    C -- "R5. θ₃ = {&nbsp;Quien/lot&nbsp;}" --> D1["\+ lot = lot"]
+    C -- "R6. θ₄ = {&nbsp;Quien/milca&nbsp;}" --> D2["\+ lot = milca"]
+    C -- "R7. θ₅ = {&nbsp;Quien/isca&nbsp;}" --> D3["\+ lot = isca"]
+    D1 --> F(["falla"])
+    D2 --> S2(["consulta vacía<br/>Quien = milca"])
+    D3 --> S3(["consulta vacía<br/>Quien = isca"])
+```
+
+`\+ lot = lot` es un objetivo predefinido: no emplea ninguna cláusula, y su arco
+no lleva número ni sustitución. Con `Quien = lot` no se cumple y la rama falla;
+con `milca` e `isca` se cumple, desaparece de la consulta y la rama llega a la
+consulta vacía. La [sección 10.2](../capitulo-10-negacion-como-falla/index.md#102-no-se-puede-probar) presenta la forma completa de dibujar
+`\+`, con el árbol subordinado del objetivo negado.
 
 Este error es conocido: la misma regla, definida para hermanas, aparece en
 Clocksin y Mellish con el mismo defecto.
@@ -226,7 +268,11 @@ prueba `padre(pedro, luis)`. En ese punto todavía **quedaba** un hecho de
 abierta. Para `eva` no queda ninguna, porque es el último hecho.
 
 El punto y coma no indica que haya otra respuesta, sino que Prolog todavía no
-descartó la posibilidad de que la haya.
+descartó la posibilidad de que la haya. El árbol de derivación del
+[capítulo 5](../capitulo-05-como-responde-prolog/index.md) no muestra esta diferencia: las dos consultas tienen el
+mismo árbol —dos ramas desde `padre(juan, P)`, una que falla y otra que llega a
+la consulta vacía—, y que Prolog deje o no una alternativa abierta depende de
+cómo indexa las cláusulas, tema de la [sección 16.3](../capitulo-16-rendimiento/index.md#163-indexacion).
 
 ## 14
 
@@ -263,6 +309,33 @@ La parte **c** es la importante. `mayor_de/2` admite la consulta con la persona
 sin especificar porque su primer objetivo, `edad(P, A)`, **genera** personas de
 a una por vez, y la comparación se aplica a cada una. No hay ninguna búsqueda
 inversa: hay una enumeración seguida de una comprobación.
+
+El árbol de derivación de `mayor_de(Quien, 40)` —en la notación de la
+[sección 5.2](../capitulo-05-como-responde-prolog/index.md#52-el-arbol-de-derivacion)— muestra esa enumeración. Los cinco hechos de `edad/2` de
+`soluciones.pl` se numeran R1 a R5 en el orden del archivo (`edades.pl` tiene
+además `edad(sofia, 3).`, que agrega una rama más, y también falla) y la regla
+es R6:
+
+```mermaid
+%%{init: {"flowchart": {"nodeSpacing": 25}}}%%
+flowchart TD
+    A["mayor_de(Quien, 40)"] -- "R6. θ₁ = {&nbsp;P/Quien, N/40&nbsp;}" --> B["edad(Quien, A),<br/>A > 40"]
+    B -- "R1. θ₂ = {&nbsp;Quien/juan, A/68&nbsp;}" --> C1["68 > 40"]
+    B -- "R2. θ₃ = {&nbsp;Quien/ana, A/41&nbsp;}" --> C2["41 > 40"]
+    B -- "R3. θ₄ = {&nbsp;Quien/pedro, A/39&nbsp;}" --> C3["39 > 40"]
+    B -- "R4. θ₅ = {&nbsp;Quien/luis, A/12&nbsp;}" --> C4["12 > 40"]
+    B -- "R5. θ₆ = {&nbsp;Quien/eva, A/8&nbsp;}" --> C5["8 > 40"]
+    C1 --> S1(["consulta vacía<br/>Quien = juan"])
+    C2 --> S2(["consulta vacía<br/>Quien = ana"])
+    C3 --> F3(["falla"])
+    C4 --> F4(["falla"])
+    C5 --> F5(["falla"])
+```
+
+`edad(Quien, A)` abre una rama por hecho, y la comparación `A > 40` es un
+objetivo predefinido, sin número de cláusula: cierra tres ramas y deja pasar
+dos. Después de `Quien = ana` quedan las ramas de `pedro`, `luis` y `eva`, que
+fallan; por eso la última respuesta va seguida de `false.`
 
 `triple(X, 33)` no puede hacer lo mismo porque `T is N * 3` no enumera nada:
 exige que `N` ya tenga valor. La diferencia no está en la aritmética sino en si

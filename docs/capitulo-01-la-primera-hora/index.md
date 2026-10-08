@@ -25,7 +25,7 @@ Al terminar el capítulo, el lector puede:
 - reconocer tres de los errores más frecuentes del principiante en Prolog.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:30 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:35 h**.
     Resolver los 6 ejercicios marcados con ★: **1:40 h**.
     Resolver los 15 ejercicios del final: **3:50 h**.
 
@@ -231,6 +231,10 @@ encuentra ninguna solución más y responde `false.`.
 Por lo tanto, `true ;` no equivale a `true.`. El punto indica que no hay más
 respuestas; el punto y coma se usa cuando la consulta es cierta y todavía
 quedan alternativas sin explorar. Esta diferencia adquiere importancia en el [capítulo 9](../capitulo-09-backtracking-y-corte/index.md).
+El árbol de derivación del [capítulo 5](../capitulo-05-como-responde-prolog/index.md) no muestra esta
+diferencia: `abuelo(juan, luis)` y `abuelo(juan, eva)` tienen el mismo árbol,
+y que Prolog deje o no una alternativa abierta depende de cómo indexa las
+cláusulas, tema de la [sección 16.3](../capitulo-16-rendimiento/index.md#163-indexacion).
 
 !!! question "Actividad"
     ¿Por qué `abuelo(juan, eva).` responde `true.` y `abuelo(juan, luis).` deja
@@ -477,7 +481,34 @@ En la parte central de la traza, Prolog elige `ana`, intenta probar
 retroceder y explorar la alternativa siguiente se denomina *backtracking* —en
 castellano, vuelta atrás o retroceso—, y es la base del modelo de ejecución de Prolog. El
 [capítulo 5](../capitulo-05-como-responde-prolog/index.md) lo representa como un árbol, y el [capítulo 9](../capitulo-09-backtracking-y-corte/index.md) muestra cómo podar
-ramas de ese árbol.
+ramas de ese árbol. Para esta consulta, el árbol es el siguiente. Las cláusulas
+se numeran en el orden del archivo `familia.pl`: los cuatro hechos de `padre/2`
+de la [sección 1.2](#12-hechos) y la regla a continuación:
+
+| | |
+|---|---|
+| R1 | `padre(juan, ana).` |
+| R2 | `padre(juan, pedro).` |
+| R3 | `padre(pedro, luis).` |
+| R4 | `padre(pedro, eva).` |
+| R5 | `abuelo(A, N) :- padre(A, P), padre(P, N).` |
+
+```mermaid
+flowchart TD
+    A["abuelo(juan, eva)"] -- "R5. θ₁ = {&nbsp;A/juan, N/eva&nbsp;}" --> B["padre(juan, P),<br/>padre(P, eva)"]
+    B -- "R1. θ₂ = {&nbsp;P/ana&nbsp;}" --> C["padre(ana, eva)"]
+    B -- "R2. θ₃ = {&nbsp;P/pedro&nbsp;}" --> D["padre(pedro, eva)"]
+    C --> E(["falla"])
+    D -- "R4. θ₄ = {&nbsp;&nbsp;}" --> F(["consulta vacía<br/>true"])
+```
+
+Cada nodo es lo que queda por probar, y cada flecha indica la cláusula empleada
+y el valor que tomaron las variables (`θ`). La traza es el recorrido de este
+diagrama, de arriba hacia abajo y de izquierda a derecha: la rama de `ana`
+termina en «falla» —el `Fail` de la traza—, el `Redo` pasa a la rama de `pedro`,
+y esta llega a la **consulta vacía**, que es la respuesta `true`. Las secciones
+[5.2](../capitulo-05-como-responde-prolog/index.md#52-el-arbol-de-derivacion) y [5.3](../capitulo-05-como-responde-prolog/index.md#53-el-mismo-recorrido-registrado-por-trace) definen este diagrama y relacionan cada línea de la
+traza con un nodo.
 
 Los cuatro eventos no son independientes: son las cuatro **puertas** de una
 misma caja, una por cada objetivo del programa. Ese diagrama —el *modelo de

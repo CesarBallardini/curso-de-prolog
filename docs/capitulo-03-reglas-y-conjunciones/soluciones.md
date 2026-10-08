@@ -104,6 +104,32 @@ A ana le gustan dos cosas y a luis, una: 2 × 1 = 2. Como las variables son
 distintas, Prolog no exige que los valores coincidan, y genera todas las
 combinaciones. Con `Que` en ambas posiciones, en cambio, se obtiene una sola.
 
+<!-- contexto: capitulo-03/conjunciones.pl -->
+```prolog
+?- gusta(ana, Una), gusta(luis, Otra).
+Una = prolog,
+Otra = futbol ;
+Una = futbol,
+Otra = futbol.
+```
+
+El árbol, con los hechos de `gusta/2` numerados como en la
+[sección 3.2](index.md#32-que-prueba-prolog-y-en-que-orden), tiene dos ramas y
+ninguna falla: sin variable compartida, el segundo objetivo es el mismo en las
+dos, `gusta(luis, Otra)`, y se cumple en ambas con R4.
+
+```mermaid
+flowchart TD
+    A["gusta(ana, Una),<br/>gusta(luis, Otra)"] -- "R2. θ₁ = {&nbsp;Una/prolog&nbsp;}" --> B["gusta(luis, Otra)"]
+    A -- "R3. θ₃ = {&nbsp;Una/futbol&nbsp;}" --> C["gusta(luis, Otra)"]
+    B -- "R4. θ₂ = {&nbsp;Otra/futbol&nbsp;}" --> S1(["consulta vacía<br/>Una = prolog, Otra = futbol"])
+    C -- "R4. θ₄ = {&nbsp;Otra/futbol&nbsp;}" --> S2(["consulta vacía<br/>Una = futbol, Otra = futbol"])
+```
+
+En el árbol de la [sección 3.2](index.md#32-que-prueba-prolog-y-en-que-orden),
+en cambio, el segundo objetivo cambia con cada rama, porque hereda el valor de
+`Que`, y una de las dos falla.
+
 ## 7
 
 <!-- ejemplo: capitulo-03/soluciones.pl predicado: nieto/2 consulta: nieto(Quien, juan). -->
@@ -162,6 +188,66 @@ repetidas: entrega una por cada demostración de la consulta.
 
 Con `padre/2`, como en la [sección 3.5](index.md#35-una-regla-que-produce-respuestas-de-mas), existe una sola demostración, y por eso la
 respuesta no se repetía.
+
+El árbol muestra las dos demostraciones. Por su tamaño se dibuja en tres
+partes: el tronco, hasta que `P` toma valor, y un subárbol por cada valor. Las
+cláusulas de `soluciones.pl` que intervienen, numeradas en el orden del
+archivo, son `mujer(ana)` (R6), `padre(juan, ana)` (R9), `padre(juan, pedro)`
+(R10), `madre(marta, ana)` (R13), `madre(marta, pedro)` (R14), las dos
+cláusulas de `progenitor/2` (R17 y R18) y la regla `hermana_con_progenitor/2`
+(R27). Cada llamada a `progenitor/2` emplea una copia nueva de sus variables,
+como dice la [sección 3.4](index.md#34-el-alcance-de-una-variable-es-la-clausula):
+`P₁` y `H₁` en la primera, `P₂` y `H₂` en la segunda. Las sustituciones se
+numeran en el orden del recorrido, y por eso en el tronco `θ₉` y `θ₁₀` vienen
+después de las del segundo árbol.
+
+```mermaid
+flowchart TD
+    A["hermana_con_progenitor(ana, Quien)"] -- "R27. θ₁ = {&nbsp;A/ana, B/Quien&nbsp;}" --> B["mujer(ana),<br/>progenitor(P, ana),<br/>progenitor(P, Quien),<br/>ana \== Quien"]
+    B -- "R6. θ₂ = {&nbsp;}" --> C["progenitor(P, ana),<br/>progenitor(P, Quien),<br/>ana \== Quien"]
+    C -- "R17. θ₃ = {&nbsp;P₁/P, H₁/ana&nbsp;}" --> D["padre(P, ana),<br/>progenitor(P, Quien),<br/>ana \== Quien"]
+    C -- "R18. θ₉ = {&nbsp;P₁/P, H₁/ana&nbsp;}" --> E["madre(P, ana),<br/>progenitor(P, Quien),<br/>ana \== Quien"]
+    D -- "R9. θ₄ = {&nbsp;P/juan&nbsp;}" --> G["progenitor(juan, Quien),<br/>ana \== Quien"]
+    E -- "R13. θ₁₀ = {&nbsp;P/marta&nbsp;}" --> H["progenitor(marta, Quien),<br/>ana \== Quien"]
+    G --> V1["⋮<br/>sigue en el segundo árbol"]
+    H --> V2["⋮<br/>sigue en el tercer árbol"]
+    classDef abierto fill:none,stroke:none;
+    class V1,V2 abierto;
+```
+
+El segundo árbol es la rama de `P = juan`, y empieza en su último nodo:
+
+```mermaid
+flowchart TD
+    G["progenitor(juan, Quien),<br/>ana \== Quien"]
+    G -- "R17. θ₅ = {&nbsp;P₂/juan, H₂/Quien&nbsp;}" --> I["padre(juan, Quien),<br/>ana \== Quien"]
+    G -- "R18. θ₈ = {&nbsp;P₂/juan, H₂/Quien&nbsp;}" --> J["madre(juan, Quien),<br/>ana \== Quien"]
+    I -- "R9. θ₆ = {&nbsp;Quien/ana&nbsp;}" --> K["ana \== ana"]
+    I -- "R10. θ₇ = {&nbsp;Quien/pedro&nbsp;}" --> L["ana \== pedro"]
+    K --> F1(["falla"])
+    L --> S1(["consulta vacía<br/>Quien = pedro"])
+    J --> F2(["falla"])
+```
+
+El tercero es la rama de `P = marta`:
+
+```mermaid
+flowchart TD
+    H["progenitor(marta, Quien),<br/>ana \== Quien"]
+    H -- "R17. θ₁₁ = {&nbsp;P₂/marta, H₂/Quien&nbsp;}" --> I["padre(marta, Quien),<br/>ana \== Quien"]
+    H -- "R18. θ₁₂ = {&nbsp;P₂/marta, H₂/Quien&nbsp;}" --> J["madre(marta, Quien),<br/>ana \== Quien"]
+    I --> F1(["falla"])
+    J -- "R13. θ₁₃ = {&nbsp;Quien/ana&nbsp;}" --> K["ana \== ana"]
+    J -- "R14. θ₁₄ = {&nbsp;Quien/pedro&nbsp;}" --> L["ana \== pedro"]
+    K --> F2(["falla"])
+    L --> S2(["consulta vacía<br/>Quien = pedro"])
+```
+
+Las dos hojas de éxito dicen lo mismo, `Quien = pedro`, y se alcanzan por
+caminos distintos: una por `padre/2`, con `P = juan`, y otra por `madre/2`, con
+`P = marta`. En cada subárbol, la rama de `Quien = ana` se cierra en
+`ana \== ana`, como en la
+[sección 3.5](index.md#35-una-regla-que-produce-respuestas-de-mas).
 
 Es posible eliminar los duplicados, pero requiere herramientas que se presentan
 en el [capítulo 17](../capitulo-17-todas-las-soluciones/index.md).
@@ -238,10 +324,24 @@ La consulta no produce ninguna respuesta, y la tabla explica por qué:
 
 Con `conjunciones.pl` cargado:
 
+<!-- contexto: capitulo-03/conjunciones.pl -->
 ```prolog
 ?- gusta(eva, Que), gusta(juan, Que).
 false.
 ```
+
+La tabla es el recorrido de un árbol de tres nodos. Con los hechos de `gusta/2`
+numerados como en la [sección 3.2](index.md#32-que-prueba-prolog-y-en-que-orden),
+`gusta(eva, prolog)` es R5:
+
+```mermaid
+flowchart TD
+    A["gusta(eva, Que),<br/>gusta(juan, Que)"] -- "R5. θ₁ = {&nbsp;Que/prolog&nbsp;}" --> B["gusta(juan, prolog)"]
+    B --> F(["falla"])
+```
+
+Las dos primeras filas son la única rama; la tercera, el intento de retroceder
+a una rama vecina que no existe.
 
 La tercera fila es la que conviene registrar: al retroceder, `Que` vuelve a
 estar libre. Si no fuera así, el segundo intento arrastraría el valor del
@@ -269,6 +369,29 @@ el objetivo se resuelve con una regla, Prolog no lo busca entre los hechos sino
 que lo reemplaza por el cuerpo de la regla. Esos objetivos nuevos son los
 **subobjetivos**, y el retroceso puede llevar tanto a otro hecho como a otra
 cláusula de la regla.
+
+En el árbol, esos dos tipos de retroceso son dos tipos de rama vecina. Con las
+cláusulas de `reglas.pl` numeradas como en la
+[sección 3.3](index.md#33-reglas) —`varon(pedro)` es R2, `madre(marta, ana)`
+R12, `madre(marta, pedro)` R13, y las cláusulas de `progenitor/2` R16 y R17—,
+de la raíz salen dos ramas, una por cláusula de la regla, y de
+`madre(marta, H)` salen otras dos, una por hecho. La `H` de la regla se
+renombra `H₁` en el primer uso y `H₂` en el segundo, porque la consulta también
+tiene una `H`.
+
+```mermaid
+flowchart TD
+    A["progenitor(marta, H),<br/>varon(H)"] -- "R16. θ₁ = {&nbsp;P₁/marta, H₁/H&nbsp;}" --> B["padre(marta, H),<br/>varon(H)"]
+    A -- "R17. θ₂ = {&nbsp;P₂/marta, H₂/H&nbsp;}" --> C["madre(marta, H),<br/>varon(H)"]
+    B --> F1(["falla"])
+    C -- "R12. θ₃ = {&nbsp;H/ana&nbsp;}" --> D["varon(ana)"]
+    C -- "R13. θ₄ = {&nbsp;H/pedro&nbsp;}" --> E["varon(pedro)"]
+    D --> F2(["falla"])
+    E -- "R2. θ₅ = {&nbsp;}" --> S(["consulta vacía<br/>H = pedro"])
+```
+
+Las siete filas de la tabla son, en orden, la rama de R16, la de R17 hasta
+`varon(ana)`, y la de R13 hasta la consulta vacía.
 
 ## 13
 

@@ -120,6 +120,44 @@ mutuamente excluyentes —una es `>=` y la otra, `<`—, de modo que nunca se
 obtienen dos respuestas. Si en la primera se hubiera escrito `>`, con dos
 números iguales no se cumpliría ninguna de las dos cláusulas.
 
+```prolog
+?- mayor_de_los_dos(3, 9, M).
+M = 9.
+
+?- mayor_de_los_dos(9, 3, M).
+M = 9 ;
+false.
+```
+
+Los dos árboles muestran por qué la segunda consulta deja una alternativa
+pendiente y la primera no. Con las dos cláusulas numeradas R1 y R2, la cabeza
+liga `M` **antes** de la comparación: en `mayor_de_los_dos(A, B, A)` el tercer
+argumento es la misma variable que el primero, de modo que `M` queda ligada a
+`A` al unificar la cabeza, y la comparación decide después si la rama sigue.
+
+```mermaid
+flowchart TD
+    A["mayor_de_los_dos(3, 9, M)"] -- "R1. θ₁ = {&nbsp;A/3, B/9, M/3&nbsp;}" --> B["3 >= 9"]
+    B --> F(["falla"])
+    A -- "R2. θ₂ = {&nbsp;A/3, B/9, M/9&nbsp;}" --> C["3 < 9"]
+    C --> S(["consulta vacía<br/>M = 9"])
+```
+
+```mermaid
+flowchart TD
+    A["mayor_de_los_dos(9, 3, M)"] -- "R1. θ₁ = {&nbsp;A/9, B/3, M/9&nbsp;}" --> B["9 >= 3"]
+    B --> S(["consulta vacía<br/>M = 9"])
+    A -- "R2. θ₂ = {&nbsp;A/9, B/3, M/3&nbsp;}" --> C["9 < 3"]
+    C --> F(["falla"])
+```
+
+En el primer árbol la hoja de éxito es la última, y la respuesta termina en
+punto. En el segundo, la rama de R2 queda a la derecha de la hoja de éxito:
+cuando Prolog muestra `M = 9` todavía no la recorrió, y al pedir otra respuesta
+la recorre, falla en `9 < 3` y responde `false.`. Las condiciones
+complementarias garantizan una sola hoja de éxito, no que la respuesta termine
+en punto.
+
 ## 6
 
 <!-- ejemplo: capitulo-08/soluciones.pl predicado: cuantos_mayores/2 consulta: cuantos_mayores([12, 41, 8, 68], N). -->
@@ -141,6 +179,39 @@ Tiene tres cláusulas: la lista vacía, el caso en que el número se cuenta, y e
 caso en que no. La condición de la tercera, `X =< 18`, es imprescindible: sin
 ella, cada número mayor que 18 se resolvería por las dos cláusulas recursivas, y
 se obtendrían respuestas de más.
+
+```prolog
+?- cuantos_mayores([41, 8], N).
+N = 1 ;
+false.
+```
+
+El árbol de esa consulta muestra las dos cosas: dónde actúa la guarda y de
+dónde sale el `false.` final. Con las tres cláusulas numeradas R1 a R3 —la
+segunda tiene una variable `N`, como la consulta, y en el árbol se escribe `N₁`
+para distinguirla de ella—:
+
+```mermaid
+%%{init: {"flowchart": {"rankSpacing": 30}}}%%
+flowchart TD
+    A["cuantos_mayores([41, 8], N)"] -- "R2. θ₁ = {&nbsp;X/41, Resto/[8], N₁/N&nbsp;}" --> B["41 > 18,<br/>cuantos_mayores([8], Faltan),<br/>N is Faltan + 1"]
+    B --> C["cuantos_mayores([8], Faltan),<br/>N is Faltan + 1"]
+    C -- "R2. θ₂ = {&nbsp;X₂/8, Resto₂/[], N₂/Faltan&nbsp;}" --> D["8 > 18,<br/>cuantos_mayores([], Faltan₂),<br/>Faltan is Faltan₂ + 1,<br/>N is Faltan + 1"]
+    D --> F1(["falla"])
+    C -- "R3. θ₃ = {&nbsp;X₃/8, Resto₃/[], N₃/Faltan&nbsp;}" --> E["8 =< 18,<br/>cuantos_mayores([], Faltan),<br/>N is Faltan + 1"]
+    E --> G["cuantos_mayores([], Faltan),<br/>N is Faltan + 1"]
+    G -- "R1. θ₄ = {&nbsp;Faltan/0&nbsp;}" --> H["N is 0 + 1"]
+    H -- "is. θ₅ = {&nbsp;N/1&nbsp;}" --> S(["consulta vacía<br/>N = 1"])
+    A -- "R3. θ₆ = {&nbsp;X₄/41, Resto₄/[8], N₄/N&nbsp;}" --> I["41 =< 18,<br/>cuantos_mayores([8], N)"]
+    I --> F2(["falla"])
+```
+
+Las dos cláusulas recursivas tienen la misma cabeza, de modo que cada número
+abre dos ramas: la de R2 y la de R3. Con `8`, la de R2 falla en `8 > 18` y la
+de R3 sigue; con `41`, la de R2 sigue y la de R3 —a la derecha, recorrida
+después de la hoja de éxito— falla en `41 =< 18`, y es el `false.` final. Sin
+la guarda, esa rama no fallaría: continuaría con `cuantos_mayores([8], N)` y
+llegaría a una segunda hoja de éxito, `N = 0`, en la que el 41 no se contó.
 
 ## 7
 
@@ -368,6 +439,36 @@ impide que siga avanzando **más allá** de `N`: después de alcanzar `N` con la
 primera cláusula, el backtracking entra en la segunda y cuenta `N+1`, `N+2`, sin
 fin.
 
+El árbol de `hasta(3, 1)` sobre el predicado del enunciado lo muestra. Con
+`hasta(N, N).` numerada R1 y la cláusula recursiva R2; en la raíz R1 no abre
+ninguna rama, porque `hasta(N, N)` no unifica con `hasta(3, 1)`:
+
+```mermaid
+%%{init: {"flowchart": {"rankSpacing": 25}}}%%
+flowchart TD
+    A["hasta(3, 1)"] -- "R2. θ₁ = {&nbsp;N/3, X/1&nbsp;}" --> B["Siguiente is 1 + 1,<br/>hasta(3, Siguiente)"]
+    B -- "is. θ₂ = {&nbsp;Siguiente/2&nbsp;}" --> C["hasta(3, 2)"]
+    C -- "R2. θ₃ = {&nbsp;N₂/3, X₂/2&nbsp;}" --> D["Siguiente₂ is 2 + 1,<br/>hasta(3, Siguiente₂)"]
+    D -- "is. θ₄ = {&nbsp;Siguiente₂/3&nbsp;}" --> E["hasta(3, 3)"]
+    E -- "R1. θ₅ = {&nbsp;N₃/3&nbsp;}" --> S(["1.ª respuesta<br/>true"])
+    E -- "R2. θ₆ = {&nbsp;N₄/3, X₄/3&nbsp;}" --> F["Siguiente₄ is 3 + 1,<br/>hasta(3, Siguiente₄)"]
+    F -- "is. θ₇ = {&nbsp;Siguiente₄/4&nbsp;}" --> G["hasta(3, 4)"]
+    G -- "R2. θ₈ = {&nbsp;N₅/3, X₅/4&nbsp;}" --> H["⋮<br/>hasta(3, 5), hasta(3, 6), …<br/>la rama no termina"]
+    classDef abierto fill:none,stroke:none;
+    class H abierto;
+```
+
+La hoja de éxito es `hasta(3, 3)` con R1, y es el `true` de la primera
+respuesta. Pero en ese mismo nodo R2 también unifica, y al pedir otra respuesta
+con `;` el recorrido entra en esa rama: `hasta(3, 4)`, `hasta(3, 5)`, y así sin
+fin. Es una rama infinita de otro tipo que la de la
+[sección 5.6](../capitulo-05-como-responde-prolog/index.md#56-ramas-infinitas):
+ningún nodo repite uno anterior —el segundo argumento crece en cada nivel—, de
+modo que el criterio de aquella sección, el nodo repetido, no la detecta. La
+rama avanza, pero en la dirección equivocada: se aleja de `N` en lugar de
+acercarse. Con `hasta(3, 5)` la raíz ya está más allá de `N`, y el árbol es esa
+rama sola, sin ninguna hoja.
+
 Se corrige reponiendo de manera explícita la condición que antes daba la
 estructura:
 
@@ -386,8 +487,30 @@ hasta(N, X) :-
     hasta(N, Siguiente).
 ```
 
+```prolog
+?- hasta(3, 1).
+true ;
+false.
+```
+
 La guarda `X < N` es exactamente lo que `s(N)` aportaba sin escribirlo: un
-límite que la recursión no puede atravesar.
+límite que la recursión no puede atravesar. El árbol corregido se dibuja desde
+`hasta(3, 2)`, un nivel más abajo que la consulta del enunciado: el nivel
+superior es el mismo del árbol anterior, con la comparación `1 < 3` delante.
+Con la misma numeración, la rama de R2 que sale de `hasta(3, 3)` falla en
+`3 < 3` y cierra el árbol: por eso la segunda respuesta es `false.` en lugar de
+no terminar.
+
+```mermaid
+%%{init: {"flowchart": {"rankSpacing": 25}}}%%
+flowchart TD
+    A["hasta(3, 2)"] -- "R2. θ₁ = {&nbsp;N/3, X/2&nbsp;}" --> B["2 < 3,<br/>Siguiente is 2 + 1,<br/>hasta(3, Siguiente)"]
+    B --> C["Siguiente is 2 + 1,<br/>hasta(3, Siguiente)"]
+    C -- "is. θ₂ = {&nbsp;Siguiente/3&nbsp;}" --> D["hasta(3, 3)"]
+    D -- "R1. θ₃ = {&nbsp;N₂/3&nbsp;}" --> S(["1.ª respuesta<br/>true"])
+    D -- "R2. θ₄ = {&nbsp;N₃/3, X₃/3&nbsp;}" --> E["3 < 3,<br/>Siguiente₃ is 3 + 1,<br/>hasta(3, Siguiente₃)"]
+    E --> F(["falla"])
+```
 
 ## 13
 
