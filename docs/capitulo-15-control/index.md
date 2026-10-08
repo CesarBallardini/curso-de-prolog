@@ -29,7 +29,7 @@ Al terminar el capítulo, el lector puede:
 !!! info "Tiempo estimado"
     Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:08 h**.
     Resolver los 7 ejercicios marcados con ★: **2:11 h**.
-    Resolver los 17 ejercicios del final: **5:10 h**.
+    Resolver los 18 ejercicios del final: **5:25 h**.
 
 ## 15.1 `;` en el cuerpo
 
@@ -81,10 +81,15 @@ Sin la rama `Si_no`, `( Condicion -> Entonces )` falla cuando la condición fall
 false.
 ```
 
-Existe una variante, `*->`, que no poda la condición: con `( member(X, [a, b])
-*-> Y = X ; Y = ninguno )` se obtienen las dos respuestas, y `Si_no` se ejecuta
-solo si la condición no tiene ninguna. Se usa poco; el condicional habitual es
-`->`.
+Existe una variante, `*->`, que no poda la condición: se obtienen todas sus
+respuestas, y `Si_no` se ejecuta solo si la condición no tiene ninguna. Se usa
+poco; el condicional habitual es `->`.
+
+```prolog
+?- ( member(X, [a, b]) *-> Y = X ; Y = ninguno ).
+X = Y, Y = a ;
+X = Y, Y = b.
+```
 
 !!! question "Actividad"
     Predecir cuántas respuestas tiene cada consulta y comprobarlo:
@@ -204,7 +209,7 @@ primer_mayor_de_edad(P) :-
 P = juan.
 ```
 
-`memberchk/2`, de `library(lists)`, es el caso más usado de la misma idea: se
+`memberchk/2`, predefinido en SWI-Prolog, es el caso más usado de la misma idea: se
 cumple si el elemento está en la lista, y a lo sumo una vez. `sin_repetidos/2`
 la usa como condición, y con eso deja de tener la alternativa pendiente que
 la [solución 9 del capítulo 14](../capitulo-14-estilo-y-documentacion/soluciones.md#9) le señalaba:
@@ -220,7 +225,7 @@ sin_repetidos(L, R) :-
 %!  sin_los_vistos(++L:list, +Vistos:list, -R:list) is det.
 %
 %   R es L sin los elementos de Vistos y sin repetidos. memberchk/2 se cumple
-%   a lo sumo una vez: es member/2 seguido de un corte.
+%   a lo sumo una vez: equivale a member/2 seguido de un corte.
 sin_los_vistos([], _, []).
 sin_los_vistos([X|Resto], Vistos, R) :-
     (   memberchk(X, Vistos)
@@ -277,12 +282,12 @@ true.
 ## 15.5 `\+`: lo que ya se sabe y lo que falta
 
 El [capítulo 10](../capitulo-10-negacion-como-falla/index.md) presentó `\+` y sus usos para obtener una respuesta
-([sección 10.7](../capitulo-10-negacion-como-falla/index.md#107-obtener-una-respuesta-por-negacion)), y la [sección 10.8](../capitulo-10-negacion-como-falla/index.md#108-prescindir-de) lo escribió a mano con corte y
+([sección 10.7](../capitulo-10-negacion-como-falla/index.md#107-obtener-una-respuesta-por-negacion)), y la [sección 10.8](../capitulo-10-negacion-como-falla/index.md#108-prescindir-de) lo escribió con corte y
 `fail`. Con el condicional, esa definición es más breve: `\+ G` es
 `( G -> fail ; true )`.
 
 `\+` no es el único predicado predefinido que da nombre a una técnica que antes
-se escribía a mano con corte, `fail` y alternativas. `\+ G` es el corte y falla
+se escribía con corte, `fail` y alternativas. `\+ G` es el corte y falla
 de la [sección 10.8](../capitulo-10-negacion-como-falla/index.md#108-prescindir-de); `once/1`, el corte después de la primera respuesta;
 `ignore/1`, el paso opcional que se cumple de todos modos; y `forall/2`, que
 presenta el [capítulo 17](../capitulo-17-todas-las-soluciones/index.md), el bucle por falla de la [sección 15.7](#157-bucles-por-falla) aplicado a
@@ -308,7 +313,7 @@ si se le pide otra respuesta. El toplevel lo muestra: una respuesta que termina
 en punto no dejó ninguno; una que espera `;` dejó al menos uno, aunque al
 pedirlo resulte que no había otra respuesta (el `false.` del [capítulo 5](../capitulo-05-como-responde-prolog/index.md)).
 
-Un punto de elección que nadie va a usar tiene dos costos. Ocupa memoria mientras
+Un punto de elección que ninguna consulta va a usar tiene dos costos. Ocupa memoria mientras
 el programa sigue, y hace que el predicado no cumpla lo que su encabezado `det`
 o `semidet` promete, que es lo que el criterio C4 verifica y lo que plunit
 advierte con *Test succeeded with choicepoint*. Las pruebas de
@@ -406,11 +411,13 @@ ejecutar(Orden) :-
     format("Orden desconocida: ~q~n", [Orden]).
 ```
 
-`menu/1` lee de un stream que recibe como argumento. Con `menu(user_input)` lee
+`menu/1` lee de un stream que recibe como argumento. `read(In, Termino)` lee de
+`In` el siguiente término terminado en punto, y da `end_of_file` al llegar al
+final; los streams son tema del [capítulo 27](../capitulo-27-archivos-streams-y-formatos/index.md). Con `menu(user_input)` lee
 del teclado; en las pruebas, de un texto abierto con `open_string/2`:
 `open_string(Texto, In)` da en `In` un stream que entrega `Texto` como si
 alguien lo escribiera en el teclado. Es la forma de probar un programa
-interactivo sin escribir nada a mano:
+interactivo sin escribir las órdenes en el teclado:
 
 ```prolog
 ?- open_string("edad(ana). edad(sofia). salir.", In), menu(In).
@@ -433,7 +440,7 @@ In = <stream>(...).
     `repeat, Leer, Ejecutar, Condicion_de_salida, !` para un ciclo.
 
     **Cuándo no usarlo.** Cuando lo que se necesita es un **resultado**: un
-    bucle por falla deshace las ligaduras en cada vuelta, y lo único que queda
+    bucle por falla deshace las ligaduras en cada iteración, y lo único que queda
     son los efectos. Para calcular, una recursión o las herramientas del
     [capítulo 17](../capitulo-17-todas-las-soluciones/index.md), que presenta además `forall/2`, la forma declarativa de este mismo
     recorrido.
@@ -443,12 +450,13 @@ In = <stream>(...).
 Un predicado es **puro** si su significado no depende del orden en que se
 evalúan sus objetivos ni de qué argumentos llegan instanciados: se puede leer
 como una relación, y responde de acuerdo con esa lectura en todos los modos. Los
-predicados de la parte I sin corte ni negación son puros.
+predicados de la parte I sin corte, negación ni aritmética son puros.
 
 Las construcciones de este capítulo y del [capítulo 9](../capitulo-09-backtracking-y-corte/index.md) no lo son. El corte, el
-condicional, `\+`, `==` y los efectos de entrada y salida preguntan por el
-**estado actual** de la ejecución, y su respuesta cambia según qué esté ligado
-en ese momento. `sacar/3` lo muestra con la consulta más general:
+condicional, `\+`, `==`, los efectos de entrada y salida, y también `is/2` y las
+comparaciones aritméticas, que exigen valores, preguntan por el **estado
+actual** de la ejecución, y su respuesta cambia según qué esté ligado en ese
+momento; el [capítulo 23](../capitulo-23-programacion-con-restricciones/index.md) muestra la aritmética que no los exige. `sacar/3` lo muestra con la consulta más general:
 
 ```prolog
 ?- sacar(X, [a, b], R).
@@ -532,7 +540,10 @@ El [capítulo 23](../capitulo-23-programacion-con-restricciones/index.md) presen
 | encabezado | `sacar(+X, +L, -R)` | `sacar_puro(?X, +L, ?R)` |
 
 El costo de `if_/3` es el de una biblioteca externa: se instala aparte, no es
-parte de ningún estándar, y es algo más lenta que el condicional. Conviene
+parte de ningún estándar, y cuesta el doble de inferencias que el condicional:
+sobre una lista de 2 000 elementos, `sacar/3` emplea 2 000 inferencias, una por
+elemento, y `sacar_puro/3` el doble, una llamada a `if_/3` y una a `(=)/3` por
+elemento en lugar de una comparación `==`. Conviene
 cuando el predicado se va a usar con argumentos libres, o cuando la consulta más
 general debe responder completo; para una validación con todos los argumentos
 ligados, como la de la sección siguiente, alcanza con `->`.
@@ -544,12 +555,16 @@ inscribir en una materia. Las condiciones se evalúan en orden, y el resultado
 dice cuál falló: la primera condición que falla es el motivo del rechazo. Se
 agrega un dato, las vacantes de cada materia:
 
+<!-- ejemplo: capitulo-15/inscripciones.pl predicado: vacantes/2 -->
 ```prolog
 % vacantes(Materia, N): quedan N lugares en la materia.
 vacantes(am1, 30).
 vacantes(alg, 30).
 vacantes(log, 0).
-...
+vacantes(am2, 25).
+vacantes(pp,  25).
+vacantes(ssl, 20).
+vacantes(bd,  15).
 ```
 
 <!-- ejemplo: capitulo-15/inscripciones.pl predicado: inscripcion_posible/3 puede_inscribirse/2 consulta: inscripcion_posible(104, ssl, Resultado). -->
@@ -612,6 +627,8 @@ El resultado es un término limpio —`aceptada` o `rechazada(Motivo)`—, y no 
     | C2 | con el legajo libre, `\+ alumno(Legajo, …)` falla y las ramas siguientes preguntan por algún alumno: la respuesta no se refiere a nadie en particular. Es una restricción declarada con `+Legajo`, que el [capítulo 25](../capitulo-25-errores-y-excepciones/index.md) convierte en un error |
     | C3 | `inscripcion_posible(102, am2, aceptada)` falla: el resultado se liga dentro de cada rama, después de la condición |
     | C4 | las once pruebas del predicado no declaran `nondet`, y plunit no advierte ninguna alternativa pendiente |
+    | C5 | `inscripcion_posible(x, am1, R)`, con un legajo que no es un entero, responde `rechazada(alumno_inexistente)` en lugar de un error: es una restricción declarada con `+Legajo:integer`, que el [capítulo 25](../capitulo-25-errores-y-excepciones/index.md) convierte en error |
+    | C6 | ningún predicado escribe ni modifica datos; `inscripcion_posible/3` solo consulta los hechos |
     | C7 | 22 pruebas en `inscripciones.plt`: las del [capítulo 14](../capitulo-14-estilo-y-documentacion/index.md) y un caso por cada resultado |
 
 ## Ejercicios
@@ -713,6 +730,13 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     con un máximo de 200 inferencias y, si las agota, lo detiene y liga `R` con
     `inference_limit_exceeded` (la [sección 26.8](../capitulo-26-pruebas-y-depuracion/index.md#268-el-proyecto-la-bateria-completa) lo usa en las pruebas).
     Corregir `eco/1` según el [Patrón 7](../patrones.md#7-bucle-por-falla).
+18. **(2)** Dadas las reglas `propiedad(par, N) :- 0 =:= N mod 2.`,
+    `propiedad(positivo, N) :- N > 0.` y `propiedad(mayor_que_10, N) :- N > 10.`,
+    escribir `cumple(N)`, que escribe una línea por cada propiedad que `N`
+    cumple, y `ninguna` si no cumple ninguna, con `*->` y un bucle por falla.
+    ¿Qué escribiría la misma definición con `->`? Después reescribir
+    `presentar/1` de `condicional.pl` sin `ignore/1`, con un condicional, y
+    comprobar con `presentar(marta)` que escribe lo mismo.
 
 ## Resumen
 
@@ -727,6 +751,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | punto de elección | alternativa pendiente; depende de la implementación y de la versión |
 | bucle por falla | `( G, Efecto, fail ; true )`; `repeat, …, !` |
 | `open_string/2` | un stream que lee un texto como si viniera del teclado: la entrada de las pruebas |
+| `read/2` | lee un término terminado en punto de un stream; `end_of_file` al final |
 | predicado puro | responde según su lectura lógica en todos los modos |
 | `if_/3`, `(=)/3`, `tfilter/3` | condicional puro de `library(reif)` |
 | **Patrones 5, 6, 7** | casos con condicional; una respuesta en el borde; bucle por falla |

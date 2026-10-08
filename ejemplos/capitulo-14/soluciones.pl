@@ -123,3 +123,27 @@ iguala(A, B) :-
 reemplazo(Viejo, [Viejo|Resto], Nuevo, [Nuevo|Resto]).
 reemplazo(Viejo, [Otro|Resto], Nuevo, [Otro|Resto2]) :-
     reemplazo(Viejo, Resto, Nuevo, Resto2).
+
+% --- Ejercicio 16 ----------------------------------------------------------
+
+%!  maximo_d(+X, +Y, -M) is det.
+%
+%   M es el mayor de X e Y: maximo/3 de estilo.pl con $ en lugar del corte.
+%   Con M ligada a un valor que no es el mayor, M = X falla después de $, y
+%   SWI-Prolog lo informa como un error en lugar de responder false.
+maximo_d(X, Y, M) :-
+    X >= Y,
+    $,
+    M = X.
+maximo_d(_, Y, Y).
+
+%!  mal_maximo_d(+X, +Y, -M) is det.
+%
+%   M pretende ser el mayor de X e Y: mal_maximo/3 con $ en lugar del corte.
+%   Sigue siendo incorrecta: con M ligada a un valor falso, la primera
+%   cláusula no se elige y $ nunca se ejecuta. $ y . son caracteres de
+%   símbolo, de modo que el $ final se escribe separado del punto.
+mal_maximo_d(X, Y, X) :-
+    X >= Y,
+    $ .
+mal_maximo_d(_, Y, Y).

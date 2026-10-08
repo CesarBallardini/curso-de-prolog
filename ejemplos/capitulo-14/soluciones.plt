@@ -77,4 +77,23 @@ test(reemplazo_con_dos_apariciones, all(L == [[x, a, b], [b, a, x]])) :-
 test(select_con_dos_apariciones, all(L == [[x, a, b], [b, a, x]])) :-
     select(b, [b, a, b], x, L).
 
+% Ejercicio 16: $ poda como el corte y además exige que el resto de la
+% cláusula tenga éxito una vez; con la salida ligada a un valor falso, el
+% resto falla y $ lo informa como error. En mal_maximo_d/3, $ no se ejecuta.
+test(maximo_d_libre, true(M == 3)) :-
+    maximo_d(3, 1, M).
+
+test(maximo_d_segunda_clausula, true(M == 3)) :-
+    maximo_d(1, 3, M).
+
+test(maximo_d_ligado_correcto) :-
+    maximo_d(3, 1, 3).
+
+test(maximo_d_ligado_falso_es_error,
+     [error(determinism_error(maximo_d/3, det, fail, guard))]) :-
+    maximo_d(3, 1, 1).
+
+test(mal_maximo_d_ligado_falso_se_cumple) :-
+    mal_maximo_d(3, 1, 1).
+
 :- end_tests(soluciones).

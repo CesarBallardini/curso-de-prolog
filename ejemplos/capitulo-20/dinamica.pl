@@ -26,7 +26,7 @@ edad(eva, 8).
 
 % visita(P, Q): P visita a Q. Ningún hecho todavía.
 
-% numero(N): los números de la sección 19.3.
+% numero(N): los números de la sección 20.3.
 numero(1).
 numero(2).
 

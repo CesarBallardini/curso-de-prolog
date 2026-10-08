@@ -28,10 +28,11 @@ circuito(X, Y, Z) :-
     nand(Y, A, C),
     nand(B, C, Z).
 
-%!  circuito_b(?X, ?Y, ?Z) is det.
+%!  circuito_b(?X, ?Y, ?Z) is semidet.
 %
 %   El mismo circuito como restricciones de library(clpb): ~ es la
-%   negación, * la conjunción y =:= la equivalencia.
+%   negación, * la conjunción y =:= la equivalencia. Falla si los valores
+%   dados para las entradas y la salida no son compatibles con el circuito.
 circuito_b(X, Y, Z) :-
     sat(A =:= ~(X * Y)),
     sat(B =:= ~(X * A)),

@@ -53,7 +53,7 @@ test(destino_windows, true(S-A == 'salida/contar.state'-false)) :-
 test(lanzador, true(T == "@swipl -x \"%~dp0contar.state\" -- %*\n")) :-
     texto_del_lanzador(contar, T).
 
-% La construcción de verdad: el programa construido cuenta como el fuente.
+% La construcción real: el programa construido cuenta como el fuente.
 test(construir_y_ejecutar,
      [ setup(( tmp_file(construido, D), make_directory(D) )),
        cleanup(delete_directory_and_contents(D)),

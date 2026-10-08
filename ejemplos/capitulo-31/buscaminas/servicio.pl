@@ -3,7 +3,7 @@
 % Capítulo 31 - Buscaminas completo, módulo servicio: el juego por HTTP
 % (capítulo 30).
 %
-%     POST /partidas                    {"filas", "columnas", "minas", "semilla"}
+%     POST /partidas                    filas, columnas, minas, semilla
 %     GET  /partidas/{id}               el estado y el tablero
 %     POST /partidas/{id}/descubrir     {"fila", "columna"}
 %     POST /partidas/{id}/marcar        {"fila", "columna"}

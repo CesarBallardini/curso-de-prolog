@@ -29,9 +29,9 @@ Al terminar el capítulo, el lector puede:
 - ordenar y limitar las respuestas de un objetivo con `order_by/2` y `limit/2`.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **0:54 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:10 h**.
     Resolver los 7 ejercicios marcados con ★: **2:11 h**.
-    Resolver los 16 ejercicios del final: **5:03 h**.
+    Resolver los 18 ejercicios del final: **5:25 h**.
 
 ## 17.1 De una respuesta por vez a todas juntas
 
@@ -198,7 +198,8 @@ no_tiene_hijos(P) :-
     **Problema.** Un cálculo necesita todas las respuestas de un objetivo a la
     vez: su cantidad, su orden, compararlas entre sí.
 
-    **Versión ingenua.** Repetir los datos en una lista escrita a mano, como en
+    **Versión ingenua.** Repetir los datos en una lista escrita de manera
+    explícita, como en
     la [sección 10.8](../capitulo-10-negacion-como-falla/index.md#108-prescindir-de), o recorrer las respuestas con un bucle por falla, que no
     puede construir un resultado.
 
@@ -268,7 +269,28 @@ Si la lista ya está reunida, `max_member/2` y `min_member/2`, de
 
 `library(aggregate)` ofrece además `aggregate/3`, que agrupa por las variables
 libres como `bagof/3`: `aggregate(count, H^padre(P, H), N)` responde la cantidad
-de hijos de cada padre.
+de hijos de cada padre. `bag(Plantilla)` y `set(Plantilla)` reúnen como
+`findall/3` y `setof/3`:
+
+```prolog
+?- aggregate_all(set(P), padre(P, _), Ps).
+Ps = [juan, pedro].
+
+?- aggregate_all(bag(P), padre(P, _), Ps).
+Ps = [juan, juan, pedro, pedro].
+
+?- aggregate(count, H^padre(P, H), N).
+P = juan,
+N = 2 ;
+P = pedro,
+N = 2.
+```
+
+!!! question "Actividad"
+    Predecir y comprobar: `aggregate_all(max(E), edad(zoe, E), M).` ·
+    `aggregate_all(count, edad(zoe, _), N).` ·
+    `aggregate_all(sum(E), edad(zoe, E), S).` ¿Cuál falla, y por qué las otras
+    no?
 
 !!! example "Patrón 12 — Contar y agregar sin recorrer"
     **Problema.** Es necesario contar, sumar o encontrar el máximo de las
@@ -318,7 +340,7 @@ las edades, y se cumple al terminar.
     objetivo cumplen una condición.
 
     **Versión ingenua.** Una recursión sobre una lista de los datos, o la doble
-    negación escrita a mano: `\+ (C, \+ A)`.
+    negación escrita de manera explícita: `\+ (C, \+ A)`.
 
     **Patrón.** `forall(Condicion, Accion)`, con las variables de `Condicion`
     ligadas en ella y usadas en `Accion`.
@@ -362,10 +384,35 @@ P = ana,
 E = 41.
 ```
 
+`distinct/2` deja una respuesta por padre, y `offset/2` descarta la primera
+persona del ranking:
+
+```prolog
+?- distinct(P, padre(P, _)).
+P = juan ;
+P = pedro ;
+false.
+
+?- offset(1, de_mayor_a_menor(P, E)).
+P = ana,
+E = 41 ;
+P = pedro,
+E = 39 ;
+P = luis,
+E = 12 ;
+P = eva,
+E = 8.
+```
+
 A diferencia de `findall/3`, estos predicados siguen entregando las respuestas
 de a una: se combinan entre sí, y con `findall/3` cuando se quiere la lista.
 `order_by/2` necesita obtener todas las respuestas para ordenarlas, pero
 `limit/2` y `distinct/2` trabajan sobre la marcha.
+
+!!! question "Actividad"
+    Predecir y comprobar: `limit(2, offset(1, de_mayor_a_menor(P, E))).` y
+    `findall(P, limit(2, de_mayor_a_menor(P, _)), L).` ¿En qué orden se
+    aplican `offset/2` y `limit/2`?
 
 ## 17.8 Lo que ahora se puede escribir
 
@@ -565,6 +612,17 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 16. **(3)** `mejores/2` usa `order_by/2`. Escribir la misma consulta con
     `findall/3`, `sort/4` y un predicado que tome los primeros `N` elementos, y
     comparar las dos con 5 000 alumnos generados como en el [capítulo 16](../capitulo-16-rendimiento/index.md).
+    `sort(2, @>=, Pares, Ordenados)` ordena los pares por su segundo elemento,
+    de mayor a menor, conservando los repetidos; el [capítulo 22](../capitulo-22-estructuras-de-datos-de-la-biblioteca/index.md#223-ordenar)
+    presenta `sort/4`.
+17. **(1)** Escribir `carreras(Cs)`, la lista de las carreras sin repetidos,
+    con `setof/3`, y `carreras_2(Cs)`, la misma lista con
+    `aggregate_all(set(…))`; y `carreras_en_orden(Cs)`, las carreras en el
+    orden de aparición de los alumnos, con `findall/3` y `distinct/2`.
+    Comparar los dos órdenes.
+18. **(2)** Escribir `pagina(N, Tamanio, Filas)`: la página `N` del ranking
+    `de_mayor_a_menor/2`, de `Tamanio` filas, con `offset/2`, `limit/2` y
+    `findall/3`. ¿Qué responde con una página más allá de la última?
 
 ## Resumen
 
@@ -573,7 +631,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | `findall/3` | todas las respuestas en una lista; la lista vacía si no hay ninguna |
 | `bagof/3` | como `findall/3`, agrupando por las variables libres; falla sin respuestas |
 | `setof/3` | como `bagof/3`, ordenada y sin repetidos |
-| `sort/2` | una lista ordenada en el orden estándar y sin repetidos |
+| `sort/2`, `list_to_set/2` | una lista ordenada y sin repetidos; sin repetidos conservando la primera aparición |
 | `Var^Objetivo` | la variable no agrupa: «existe un Var tal que…» |
 | `aggregate_all/3` | `count`, `sum`, `max`, `min`, `bag`, `set` sin construir la lista |
 | `aggregate/3` | como `aggregate_all/3`, agrupando por las variables libres |

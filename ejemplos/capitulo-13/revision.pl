@@ -2,7 +2,7 @@
 
 % Capítulo 13 - Un programa para revisar antes de entregar.
 %
-% Se carga sin errores y responde bien a las consultas sobre abuelo/2, pero
+% Se carga sin errores y responde a las consultas sobre abuelo/2, pero
 % nieto/2 llama a persona/1, que no está definido en ninguna parte. La carga no
 % lo advierte; check/0 sí.
 %

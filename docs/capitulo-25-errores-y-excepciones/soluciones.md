@@ -23,7 +23,7 @@ un átomo en una expresión es una función sin argumentos.
 La parte formal es `domain_error(edad, "200")`, y la primera línea del mensaje
 la escribe en palabras. La pila de llamadas tiene una sola línea, la del
 `throw/1` que produjo `domain_error/2` de `library(error)`, y muestra el término
-completo: `error(domain_error(edad,"200"),_19134)`, con el contexto todavía sin
+completo: `error(domain_error(edad,"200"),_19114)`, con el contexto todavía sin
 completar.
 
 ## 3
@@ -63,7 +63,7 @@ número fuera de rango, lleva al `domain_error/2`.
 
 ## 4
 
-<!-- ejemplo: capitulo-25/soluciones.pl predicado: seguro/2 consulta: leer_nota("7", N). -->
+<!-- ejemplo: capitulo-25/soluciones.pl predicado: seguro/2 consulta: seguro(member(3, [1, 2]), R). -->
 ```prolog
 %!  seguro(:Objetivo, -Resultado) is det.
 %
@@ -88,11 +88,11 @@ R = error(evaluation_error(zero_divisor)).
 
 `once/1` dentro del `catch/3` hace que `seguro/2` sea `det`. El patrón
 `error(Formal, _)` captura los errores con la forma ISO; un `throw/1` con otro
-término, como el que produce Ctrl-C, sigue su camino.
+término, como el que produce Ctrl-C, se propaga.
 
 ## 5
 
-<!-- ejemplo: capitulo-25/soluciones.pl predicado: promedio_seguro/2 consulta: leer_nota("7", N). -->
+<!-- ejemplo: capitulo-25/soluciones.pl predicado: promedio_seguro/2 consulta: promedio_seguro([], P). -->
 ```prolog
 %!  promedio_seguro(+L:list(number), -P) is det.
 %
@@ -123,7 +123,7 @@ un error del que llama, y `sin_datos` lo ocultaría.
 
 ## 6
 
-<!-- ejemplo: capitulo-25/soluciones.pl predicado: rango/3 consulta: leer_nota("7", N). -->
+<!-- ejemplo: capitulo-25/soluciones.pl predicado: rango/3 consulta: rango(3, 5, L). -->
 ```prolog
 %!  rango(+Desde:integer, +Hasta:integer, -L:list(integer)) is det.
 %
@@ -150,7 +150,7 @@ no una lista vacía. Es una decisión de interfaz, y el encabezado la declara.
 
 ## 7
 
-<!-- ejemplo: capitulo-25/soluciones.pl predicado: primera_linea/2 consulta: leer_nota("7", N). -->
+<!-- ejemplo: capitulo-25/soluciones.pl predicado: primera_linea/2 consulta: primera_linea("uno\ndos", L). -->
 ```prolog
 %!  primera_linea(+Texto:string, -Linea:string) is det.
 %
@@ -171,9 +171,15 @@ stream aunque quede texto sin leer. El objetivo es `det`, y la limpieza ocurre
 en cuanto termina. Con la cadena vacía, `read_line_to_string/2` da
 `end_of_file`, que el predicado traduce a la cadena vacía.
 
+La Actividad de la [sección 25.6](index.md#256-setup_call_cleanup3) muestra
+el desenlace de falla: `usar(r1, fail)` falla y `abierto(R)` no tiene
+respuesta, porque `cerrar/1` se ejecutó; `usar_sin_limpieza(r1, fail)` también
+falla, y `abierto(R)` responde `R = r1`, porque `cerrar/1` no llegó a
+ejecutarse.
+
 ## 8
 
-<!-- ejemplo: capitulo-25/soluciones.pl fragmento: :- multifile prolog:message//1. .. debe ser un entero de 1 a 10'-[N] ]. consulta: leer_nota("7", N). -->
+<!-- ejemplo: capitulo-25/soluciones.pl fragmento: :- multifile prolog:message//1. .. debe ser un entero de 1 a 10'-[N] ]. consulta: phrase(prolog:message(nota_invalida(11)), L). -->
 ```prolog
 :- multifile prolog:message//1.
 
@@ -208,7 +214,7 @@ limpiar_telefono(Texto, Numero) :-
     ->  domain_error(telefono, letras)
     ;   true
     ),
-    include([C]>>char_type(C, digit(_)), Caracteres, Digitos),
+    include([Ch]>>char_type(Ch, digit(_)), Caracteres, Digitos),
     length(Digitos, Cantidad),
     (   Cantidad =\= 10
     ->  domain_error(telefono, cantidad_de_digitos(Cantidad))
@@ -242,8 +248,8 @@ analizar un texto.
 `atom_number(abc, N)` falla: `abc` no es un número, y el predicado lo responde
 con `false`. `succ(X, 0)` falla: 0 no es el sucesor de ningún natural.
 `arg(x, f(a), A)` produce `type_error(integer, x)`: la posición del argumento
-debe ser un entero. Los dos primeros responden una pregunta con «no»; el tercero
-recibe un argumento que no cumple su interfaz.
+debe ser un entero. Las dos primeras son consultas sin respuesta; la tercera
+recibe un argumento que no cumple la interfaz del predicado.
 
 ## 11
 
@@ -277,8 +283,8 @@ F = domain_error(nota, 11).
 F = existence_error(cursada, 101-am1).
 ```
 
-Las validaciones van antes de modificar nada: una nota inválida no toca la
-base. `existence_error(cursada, 101-am1)` dice qué falta —una cursada de ana en
+Las validaciones van antes de modificar nada: una nota inválida no modifica
+la base. `existence_error(cursada, 101-am1)` dice qué falta —una cursada de ana en
 análisis 1— aunque la inscripción existe: ana ya aprobó esa materia.
 
 ## 12
@@ -322,7 +328,7 @@ delegan en `ejecutar/2`.
 
 ## 13
 
-<!-- ejemplo: capitulo-25/soluciones_proyecto.pl predicado: errores/1 consulta: ejecutar_ampliado("nota de 101 en paradigmas 11", R). -->
+<!-- ejemplo: capitulo-25/soluciones_proyecto.pl predicado: errores/1 consulta: errores(L). -->
 ```prolog
 %!  errores(-Errores:list(pair)) is det.
 %
@@ -346,3 +352,10 @@ Las pruebas lo vacían en su `setup` y al terminar la unidad, como el
 `catch(member(X, [1, 2, 3]), _, true)` tiene tres respuestas: `catch/3` es
 transparente al retroceso, y las alternativas de `member/2` siguen disponibles.
 La prueba `catch_y_retroceso` lo verifica con `all(X == [1, 2, 3])`.
+
+La Actividad de la [sección 25.3](index.md#253-catch3) pregunta por dos
+consultas más. `con_valor_por_omision(edad(zoe), 0, V)` falla: `edad/2` no
+tiene respuesta para `zoe` y no produce ningún error, y `catch/3` es
+transparente a la falla; el valor por omisión reemplaza solo un error de
+existencia. `catch(member(X, [1, 2]), _, true)` tiene dos respuestas, por la
+misma transparencia.

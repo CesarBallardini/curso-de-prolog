@@ -2,9 +2,9 @@
 
 % Capítulo 18 - Escribir un predicado de orden superior.
 %
-% cada_uno/2 y relacionar/3 son maplist/2 y maplist/3 escritos a mano: la
-% plantilla de recorrido del capítulo 7 con la condición como argumento, y la
-% lista primero en el predicado que recorre.
+% cada_uno/2 y relacionar/3 son maplist/2 y maplist/3 escritos de manera
+% explícita: la plantilla de recorrido del capítulo 7 con la condición como
+% argumento, y la lista primero en el predicado que recorre.
 % cuantos_cumplen/3 combina un predicado de la biblioteca con length/2. La
 % directiva meta_predicate declara qué argumentos son objetivos.
 %

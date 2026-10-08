@@ -52,7 +52,7 @@ codigo_de_error(_, 2).
 
 %!  contar_archivos(+Archivos:list, +Opciones:list) is det.
 %
-%   Escribe la cuenta de cada archivo de Archivos.
+%   Escribe el conteo de cada archivo de Archivos.
 %
 %   @error uso(sin_archivos) si Archivos es la lista vacía.
 contar_archivos([], _) :-
@@ -62,7 +62,7 @@ contar_archivos([Archivo|Archivos], Opciones) :-
 
 %!  contar_archivo(+Opciones:list, +Archivo) is det.
 %
-%   Escribe la cuenta de Archivo, con las columnas que piden Opciones.
+%   Escribe el conteo de Archivo, con las columnas que piden Opciones.
 contar_archivo(Opciones, Archivo) :-
     read_file_to_string(Archivo, Texto, [encoding(utf8)]),
     contar_texto(Texto, Lineas, Palabras),

@@ -64,8 +64,8 @@ D = [2, 4, 6].
 false.
 ```
 
-Cada predicado es una línea: el recorrido de las plantillas 12 y 11 lo hace
-`maplist`, y lo que queda es la relación entre un elemento y el suyo.
+Cada predicado es una línea: el recorrido de las
+[plantillas 12](../plantillas.md#12-construir-una-lista-durante-el-recorrido-de-otra) y [11](../plantillas.md#11-todos-los-elementos-cumplen) lo hace `maplist`, y lo que queda es la relación entre un elemento y el suyo.
 
 ## 3
 
@@ -111,8 +111,8 @@ R = [c, b, a].
 todas las listas, y toma el primer elemento, que la lista vacía no tiene.
 `largo/2` empieza en 0 y `dar_vuelta/2` en `[]`, y los dos responden con la
 lista vacía. En `dar_vuelta/2`, el paso antepone cada elemento a lo acumulado:
-el primero de la entrada queda último, como en el `dar_vuelta/2` con
-acumulador del [capítulo 8](../capitulo-08-aritmetica/index.md). La lambda `[X, Hasta, [X|Hasta]]>>true` hace
+el primero de la entrada queda último, como en `dar_vuelta_acc/2` de la
+[sección 16.6](../capitulo-16-rendimiento/index.md#166-append3-en-un-bucle). La lambda `[X, Hasta, [X|Hasta]]>>true` hace
 todo el trabajo en sus parámetros, y su cuerpo no tiene nada que hacer.
 
 ## 4
@@ -162,11 +162,20 @@ L = [1, 2].
 L = [-1].
 ```
 
+La declaración, al principio del archivo, es
+`:- meta_predicate conservar(1, +, -), conservar_(+, 1, -), descartar(1, +, -), descartar_(+, 1, -).`
+
 Los dos recorren con la lista primero, como `cada_uno_/2` de la
 [sección 18.6](index.md#186-escribir-un-predicado-de-orden-superior), y deciden con `->`: la condición se usa como prueba, y
 solo cuenta su primera respuesta, como en `include/3`. La declaración
 `meta_predicate` marca con `1` el argumento que se llama con un argumento más,
 tanto en el predicado público como en el que recorre.
+
+En la actividad de la [sección 18.4](index.md#184-include3-exclude3-partition4-convlist3),
+`include(padre(juan), [ana, luis, pedro], L)` responde `L = [ana, pedro]` y
+`exclude(padre(pedro), [ana, luis, pedro], L)` también `L = [ana, pedro]`:
+cada llamada recibe el primer argumento fijado por la clausura y el elemento
+como segundo, `padre(juan, ana)`, `padre(pedro, luis)`.
 
 ## 5
 
@@ -206,6 +215,11 @@ cada llamada encuentra el padre de un hijo, cada una con su copia de `P`. La
 lambda no es la única solución: la clausura `padre(P)` fija el primer
 argumento y comparte `P` sin necesidad de llaves, y
 `maplist(padre(P), Hijos)` es la forma más corta.
+
+En la segunda actividad de la [sección 18.5](index.md#185-lambdas-con-yall),
+`maplist([X, Y]>>atom_concat(X, '_bis', Y), [a, b], L)` responde
+`L = [a_bis, b_bis]` y no necesita llaves: `X` e `Y` son parámetros, y el
+cuerpo no usa ninguna variable de la consulta.
 
 ## 6
 
@@ -268,6 +282,8 @@ en el cálculo, no en el informe.
 ## 8
 
 `informe/3` no necesita cambios: no depende de que las claves sean legajos.
+`materias/1`, análogo a `legajos/1`, reúne los códigos de `materia/3` con
+`findall/3`.
 
 ```prolog
 ?- materias(Ms), informe(promedio_de_materia, Ms, F).

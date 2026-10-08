@@ -236,7 +236,7 @@ puede_inscribirse(Legajo, Materia) :-
 %
 %   El alumno llamado Nombre aprobó Materia. El primer objetivo es el que el
 %   nombre selecciona: con el orden inverso, la consulta recorre todas las
-%   inscripciones de la materia antes de mirar el nombre (sección 16.5).
+%   inscripciones de la materia antes de examinar el nombre (sección 16.5).
 aprobada_por_nombre(Nombre, Materia) :-
     alumno(Legajo, Nombre, _, _),
     aprobada(Legajo, Materia, _Nota).
@@ -373,3 +373,43 @@ primeros(N, L, Primeros) :-
         Primeros = [X|Resto1],
         primeros(N1, Resto, Resto1)
     ).
+
+% --- Ejercicio 17: las carreras, en dos órdenes ------------------------------
+
+%!  carreras(-Carreras:list(atom)) is semidet.
+%
+%   Carreras es la lista ordenada y sin repetidos de las carreras con algún
+%   alumno. Falla si no hay ninguno.
+carreras(Carreras) :-
+    setof(C, L^N^I^alumno(L, N, C, I), Carreras).
+
+%!  carreras_2(-Carreras:list(atom)) is det.
+%
+%   La misma lista con aggregate_all/3: la lista vacía si no hay alumnos.
+carreras_2(Carreras) :-
+    aggregate_all(set(C), alumno(_, _, C, _), Carreras).
+
+%!  carreras_en_orden(-Carreras:list(atom)) is det.
+%
+%   Carreras son las carreras en el orden en que aparecen en alumno/4, cada
+%   una la primera vez.
+carreras_en_orden(Carreras) :-
+    findall(C, distinct(C, alumno(_, _, C, _)), Carreras).
+
+% --- Ejercicio 18: una página del ranking por edad ---------------------------
+
+%!  de_mayor_a_menor(-P, -E:integer) is multi.
+%
+%   Las personas de la base, de la mayor a la menor edad.
+de_mayor_a_menor(P, E) :-
+    order_by([desc(E)], edad(P, E)).
+
+%!  pagina(+N:integer, +Tamanio:integer, -Filas:list(pair)) is det.
+%
+%   Filas son los pares P-E de la página N, de Tamanio filas, del ranking de
+%   de_mayor_a_menor/2; la lista vacía más allá de la última página.
+pagina(N, Tamanio, Filas) :-
+    Salto is (N - 1) * Tamanio,
+    findall(P-E,
+            limit(Tamanio, offset(Salto, de_mayor_a_menor(P, E))),
+            Filas).

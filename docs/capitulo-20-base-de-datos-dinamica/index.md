@@ -31,7 +31,7 @@ Al terminar el capítulo, el lector puede:
   dejan la base como la encontraron.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:23 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:45 h**.
     Resolver los 7 ejercicios marcados con ★: **2:11 h**.
     Resolver los 15 ejercicios del final: **4:57 h**.
 
@@ -79,9 +79,9 @@ ERROR: Unknown procedure: vive_en/2 (DWIM could not correct goal)
 ```
 
 La diferencia es la del [capítulo 13](../capitulo-13-el-entorno-de-trabajo/index.md), donde `check/0` advertía sobre un
-predicado sin definir: el error protege de un nombre mal escrito. Declararlo
-dinámico le dice a Prolog que el predicado existe aunque todavía no tenga
-hechos, y que la consulta sin respuestas es legítima.
+predicado sin definir: el error protege de un nombre mal escrito. La
+declaración establece que el predicado existe aunque todavía no tenga hechos,
+y que la consulta sin respuestas es legítima.
 
 ## 20.2 `assertz/1`, `asserta/1`, `retract/1`, `retractall/1`
 
@@ -121,6 +121,8 @@ olvidar(P) :-
     retractall(padre(_, P)).
 ```
 
+Cada consulta de este bloque parte del archivo recién cargado:
+
 ```prolog
 ?- nace(sofia, pedro), padre(pedro, Hijo).
 Hijo = luis ;
@@ -136,8 +138,9 @@ L = [ana-y, juan-ana, juan-pedro, pedro-luis, pedro-eva, juan-x].
 
 `cumple_anios/1` es la forma habitual de **cambiar** un hecho: `retract/1`
 quita el valor anterior y lo liga en su argumento, y `assertz/1` agrega el
-nuevo. Entre las dos operaciones el hecho no existe; un programa con varios
-hilos necesita más cuidado, y el [capítulo 37](../capitulo-37-concurrencia-y-paralelismo/index.md) lo trata. `olvidar/1` usa
+nuevo. Entre las dos operaciones el hecho no existe, y en un programa con
+varios hilos otro hilo puede consultarlo en ese instante; el [capítulo 37](../capitulo-37-concurrencia-y-paralelismo/index.md)
+trata ese caso. `olvidar/1` usa
 `retractall/1`, que no falla aunque no haya nada que quitar.
 
 Los cambios no forman parte del archivo: al terminar la sesión se pierden, y
@@ -152,8 +155,12 @@ modifica, ¿qué cláusulas ve? SWI-Prolog, como el estándar ISO, aplica la
 **vista lógica de actualización**: una llamada ve las cláusulas que había
 **cuando empezó**, sin importar lo que se agregue o se quite después.
 
-<!-- ejemplo: capitulo-20/dinamica.pl predicado: multiplicar_por_diez/0 consulta: multiplicar_por_diez, findall(N, numero(N), L). -->
+<!-- ejemplo: capitulo-20/dinamica.pl predicado: numero/1 multiplicar_por_diez/0 consulta: multiplicar_por_diez, findall(N, numero(N), L). -->
 ```prolog
+% numero(N): los números de la sección 20.3.
+numero(1).
+numero(2).
+
 %!  multiplicar_por_diez is det.
 %
 %   Agrega el décuplo de cada número que había al empezar. La vista lógica
@@ -188,9 +195,18 @@ Hay tres formas de llevarlo, con propiedades distintas.
 anterior y agregar el nuevo. Es la forma general: se ve con `listing/1`, se
 puede guardar en un archivo, y funciona en SWISH.
 
+<!-- ejemplo: capitulo-20/contadores.pl fragmento: :- dynamic contador/1 .. contador(0). consulta: siguiente_con_hecho(A), siguiente_con_hecho(B). -->
+```prolog
+:- dynamic contador/1.
+
+% contador(N): el último número entregado por siguiente_con_hecho/1.
+contador(0).
+```
+
 **`flag/3`.** `flag(Clave, Anterior, Nuevo)` lee el valor asociado a `Clave` y
 lo reemplaza por el resultado de evaluar `Nuevo`, en un solo paso. Solo admite
-números y átomos, y es más rápido que un hecho dinámico.
+números y átomos, y en SWI-Prolog 9 no es más rápido que el hecho dinámico: un
+millón de llamadas tarda unos 0,8 s con cualquiera de los dos.
 
 **Variables globales.** `b_setval(Clave, Valor)` y `nb_setval(Clave, Valor)`
 asocian un término a una clave, y `b_getval/2` y `nb_getval/2` lo leen. La
@@ -239,6 +255,10 @@ global_sin_retroceso(X) :-
 ```
 
 ```prolog
+?- siguiente_con_hecho(A), siguiente_con_hecho(B).
+A = 1,
+B = 2.
+
 ?- siguiente_numero(A), siguiente_numero(B).
 A = 1,
 B = 2.
@@ -259,10 +279,33 @@ Las variables globales tienen limitaciones propias:
   ejemplo es solo local.
 
 Contar las respuestas de un objetivo con una variable global y un bucle por
-falla funciona, pero el [capítulo 17](../capitulo-17-todas-las-soluciones/index.md) ya tiene la herramienta sin estado:
-`aggregate_all(count, Objetivo, N)`. El estado global se justifica cuando el
-valor debe sobrevivir entre consultas, no para calcular un resultado dentro de
-una.
+falla funciona; `contar_respuestas/2` lo hace así:
+
+<!-- ejemplo: capitulo-20/contadores.pl predicado: contar_respuestas/2 consulta: contar_respuestas(member(_, [a, b, c]), N). -->
+```prolog
+%!  contar_respuestas(:Objetivo, -N:integer) is det.
+%
+%   N es la cantidad de respuestas de Objetivo, contadas con una variable
+%   global en un bucle por falla. aggregate_all(count, Objetivo, N) hace lo
+%   mismo sin estado.
+contar_respuestas(Objetivo, N) :-
+    nb_setval(cuenta, 0),
+    forall(call(Objetivo),
+           ( nb_getval(cuenta, C0),
+             C is C0 + 1,
+             nb_setval(cuenta, C) )),
+    nb_getval(cuenta, N).
+```
+
+```prolog
+?- contar_respuestas(member(_, [a, b, c]), N).
+N = 3.
+```
+
+El [capítulo 17](../capitulo-17-todas-las-soluciones/index.md) ya tiene la herramienta sin estado,
+`aggregate_all(count, Objetivo, N)`, y es la que corresponde: el estado global
+se justifica cuando el valor debe sobrevivir entre consultas, no para calcular
+un resultado dentro de una.
 
 ## 20.5 Memorización
 
@@ -336,7 +379,12 @@ otra. Y un valor guardado solo es correcto mientras no cambie nada de lo que se
 usó para calcularlo: `fib/2` no depende de ningún dato, y por eso su tabla
 nunca queda vieja.
 
-SWI-Prolog ofrece la misma técnica sin escribir el estado a mano: con la
+!!! question "Actividad"
+    Predecir cuántos hechos `fib_guardado/2` quedan después de
+    `olvidar_fib, fib_memo(25, F)`, y comprobarlo con
+    `aggregate_all(count, fib_guardado(_, _), N)`.
+
+SWI-Prolog ofrece la misma técnica sin que el programa escriba el estado: con la
 directiva `:- table fib/2.`, la **tabulación** guarda las respuestas
 automáticamente. El [capítulo 39](../capitulo-39-tabulacion/index.md) la presenta.
 
@@ -362,7 +410,22 @@ conclusión y busca las reglas que la prueban. El **encadenamiento hacia
 adelante** hace el camino inverso: parte de los hechos conocidos, aplica todas
 las reglas que se puedan aplicar, agrega sus conclusiones como hechos nuevos, y
 repite hasta que ninguna regla agrega nada. La base de conocimiento **crece**, y
-por eso sus hechos son dinámicos.
+por eso sus hechos son dinámicos. Los hechos iniciales, en `inicial/1`, son
+los de la familia: padres y madres.
+
+<!-- ejemplo: capitulo-20/experto_adelante.pl predicado: inicial/1 consulta: reiniciar, encadenar, hecho(abuelo(juan, N)). -->
+```prolog
+% inicial(F): F es uno de los hechos con los que empieza la base.
+inicial(padre(juan, ana)).
+inicial(padre(juan, pedro)).
+inicial(padre(pedro, luis)).
+inicial(padre(pedro, eva)).
+inicial(madre(marta, ana)).
+inicial(madre(marta, pedro)).
+inicial(madre(ana, sofia)).
+```
+
+Las reglas son datos, como en el [capítulo 19](../capitulo-19-operadores-y-reglas-como-datos/index.md), con las condiciones en una lista:
 
 <!-- ejemplo: capitulo-20/experto_adelante.pl fragmento: regla(Nombre, Condiciones .. antepasado(H, D)], antepasado(A, D)). consulta: reiniciar, encadenar, hecho(abuelo(juan, N)). -->
 ```prolog
@@ -377,8 +440,6 @@ regla(antepasado_1, [progenitor(A, D)],              antepasado(A, D)).
 regla(antepasado_2, [progenitor(A, H), antepasado(H, D)], antepasado(A, D)).
 ```
 
-Los hechos iniciales, en `inicial/1`, son los de la familia: padres y madres.
-Las reglas son datos, como en el [capítulo 19](../capitulo-19-operadores-y-reglas-como-datos/index.md), con las condiciones en una lista.
 `hermanos` tiene una condición que no es un hecho, `A \== B`, que el
 intérprete evalúa con su propia cláusula:
 
@@ -446,8 +507,8 @@ consecuencias de los datos, o cuando los datos llegan de a poco y cada uno
 puede disparar conclusiones nuevas.
 
 !!! example "Patrón 18 — Base de conocimiento que crece"
-    **Problema.** Hay que obtener todas las consecuencias de un conjunto de
-    hechos y reglas, y conservarlas para consultarlas después.
+    **Problema.** Obtener todas las consecuencias de un conjunto de hechos y
+    reglas, y conservarlas para consultarlas después.
 
     **Versión ingenua.** Probar cada conclusión posible hacia atrás, cada vez
     que se la consulta, repitiendo las mismas pruebas.
@@ -467,12 +528,14 @@ El mundo del Wumpus es un problema clásico de la inteligencia artificial, del
 libro de Russell y Norvig. Una cueva de 4 × 4 celdas tiene pozos, un monstruo
 —el wumpus— y oro. El agente entra por la celda (1, 1) sin conocer la
 ubicación de cada cosa; solo percibe **brisa** en las celdas vecinas de un
-pozo, **hedor** en las vecinas del wumpus y **brillo** en la del oro. Tiene que encontrar el oro
-sin entrar nunca en una celda peligrosa.
+pozo, **hedor** en las vecinas del wumpus y **brillo** en la del oro. El agente
+debe encontrar el oro sin entrar en una celda con pozo o con el wumpus.
 
 La cueva está en el archivo como hechos (`pozo/1`, `wumpus/1`, `oro/1`), pero el
 agente no los consulta: solo usa `percepcion/2`, que dice qué se percibe en una
-celda. Lo que el agente **conoce** es estado, y crece a medida que explora:
+celda. `vecina/2`, que da las celdas contiguas a una, y `recorrido/1`, que
+lista las visitadas en orden, están también en `wumpus.pl`. Lo que el agente
+**conoce** es estado, y crece a medida que explora:
 
 <!-- ejemplo: capitulo-20/wumpus.pl predicado: reiniciar/0 visitar/1 sin_pozo/1 sin_wumpus/1 segura/1 consulta: explorar(Resultado), recorrido(Celdas). -->
 ```prolog
@@ -523,15 +586,25 @@ Una celda no tiene pozo si alguna vecina visitada no tuvo brisa: si hubiera un
 pozo, esa vecina lo habría percibido. Lo mismo con el wumpus y el hedor. Una
 celda es segura cuando las dos cosas están probadas. `\+ percibio(V, brisa)` es
 correcto aquí porque `V` está visitada: el agente registró todo lo que percibió
-allí, y lo que no registró no estaba. Es la hipótesis de mundo cerrado del
+allí, y lo que no registró no estaba. Es el supuesto de mundo cerrado del
 [capítulo 10](../capitulo-10-negacion-como-falla/index.md), aplicada solo donde vale.
 
 El agente repite un paso: si percibió el brillo, terminó; si no, visita la
 primera celda segura sin visitar vecina de una visitada; si no queda ninguna,
 se detiene.
 
-<!-- ejemplo: capitulo-20/wumpus.pl predicado: explorar/1 explorar_/1 consulta: explorar(Resultado), recorrido(Celdas). -->
+<!-- ejemplo: capitulo-20/wumpus.pl predicado: siguiente/1 explorar/1 explorar_/1 consulta: explorar(Resultado), recorrido(Celdas). -->
 ```prolog
+%!  siguiente(-C) is semidet.
+%
+%   C es la primera celda segura sin visitar vecina de una visitada, en el
+%   orden en que se visitaron. Falla si no queda ninguna.
+siguiente(C) :-
+    once(( visitada(V),
+           vecina(V, C),
+           \+ visitada(C),
+           segura(C) )).
+
 %!  explorar(-Resultado) is det.
 %
 %   El agente explora la cueva desde (1, 1). Resultado es oro(C) si encuentra
@@ -564,6 +637,10 @@ Celdas = [1-1, 2-1, 1-2, 2-2, 3-2, 2-3].
 En (2, 1) percibe brisa y en (1, 2) hedor; ninguna de las dos permite avanzar
 por sí sola. (2, 2) es segura por la combinación: (2, 1) no tuvo hedor, y
 descarta el wumpus; (1, 2) no tuvo brisa, y descarta el pozo.
+
+!!! question "Actividad"
+    Predecir el recorrido del agente si la cueva no tuviera el pozo de (3, 1),
+    y comprobarlo quitando el hecho `pozo(3-1)` del archivo y recargándolo.
 
 El estado del agente se modifica solo en `reiniciar/0` y `visitar/1`, y se
 consulta con `segura/1` y `recorrido/1`. El resto del programa, y las pruebas,
@@ -598,7 +675,8 @@ que pasó antes. Eso tiene costos concretos:
 - **Se pierden los modos.** `cumple_anios/1` no tiene sentido con el argumento
   libre, ni en sentido inverso: una acción no es una relación.
 - **Es más lento que un argumento.** Agregar y quitar una cláusula cuesta
-  bastante más que pasar un valor.
+  más que pasar un valor: un contador que avanza un millón de veces tarda
+  unos 0,8 s con `retract/1` y `assertz/1`, y 0,03 s con un acumulador.
 
 La regla práctica: si el valor se calcula y se usa dentro de una misma
 consulta, va en un argumento, como los acumuladores del
@@ -644,7 +722,7 @@ recupera al iniciar el programa.
     | Criterio | En este capítulo |
     |---|---|
     | C6 | el estado se modifica en pocos predicados con nombre: `visitar/1` y `reiniciar/0` en el agente; `inscribir/3`, `dar_de_baja/2`, `restaurar/1` en el proyecto; el resto del programa solo consulta |
-    | C7 | cada prueba que modifica la base la restaura: `setup(estado(E))` y `cleanup(restaurar(E))` en `inscripciones.plt`, `setup(olvidar_fib)` en `memo.plt`; la prueba `estado_intacto`, al final, verifica que la base quedó como estaba |
+    | C7 | cada prueba que modifica la base la restaura: `setup(estado(E))` y `cleanup(restaurar(E))` en `inscripciones.plt`, `setup(olvidar_fib)` en `memo.plt`; la prueba `estado_intacto`, después de las operaciones, verifica que la base quedó como estaba |
 
 ## 20.11 El proyecto: inscribir y dar de baja
 
@@ -697,6 +775,33 @@ N = 1.
 `requisitos_de/2` calcula todas las correlativas de una materia, directas e
 indirectas, y guarda el resultado con el [Patrón 17](../patrones.md#17-memorizacion-con-assertz):
 
+<!-- ejemplo: capitulo-20/inscripciones.pl predicado: requisitos_de/2 requisito/2 consulta: requisitos_de(bd, Requisitos). -->
+```prolog
+%!  requisitos_de(+Materia:atom, -Requisitos:list(atom)) is det.
+%
+%   Requisitos son todas las materias que hay que aprobar antes de cursar
+%   Materia, directa o indirectamente, en orden y sin repetidos. El resultado
+%   se guarda la primera vez que se calcula.
+requisitos_de(Materia, Requisitos) :-
+    (   requisitos_guardados(Materia, Guardados)
+    ->  Requisitos = Guardados
+    ;   findall(R, requisito(Materia, R), Todos),
+        sort(Todos, Calculados),
+        assertz(requisitos_guardados(Materia, Calculados)),
+        Requisitos = Calculados
+    ).
+
+%!  requisito(+Materia:atom, -Requisito:atom) is nondet.
+%
+%   Requisito es una correlativa de Materia, o una correlativa de una de
+%   ellas.
+requisito(Materia, Requisito) :-
+    correlativa(Materia, Requisito).
+requisito(Materia, Requisito) :-
+    correlativa(Materia, Intermedia),
+    requisito(Intermedia, Requisito).
+```
+
 ```prolog
 ?- requisitos_de(bd, Requisitos).
 Requisitos = [alg, log, pp, ssl].
@@ -704,7 +809,7 @@ Requisitos = [alg, log, pp, ssl].
 
 Memorizar es correcto aquí porque las correlatividades no cambian durante la
 ejecución. Memorizar `aprobada/3`, en cambio, sería un error: una nota nueva
-dejaría viejo el valor guardado. El ejercicio 15 memoriza un promedio y lo
+dejaría viejo el valor guardado. El [ejercicio 15](#ejercicios) memoriza un promedio y lo
 invalida en el único predicado que cambia las notas.
 
 Las pruebas de las operaciones guardan el estado antes de cada una y lo
@@ -833,6 +938,6 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | Los módulos y la calificación `user:` | [capítulo 24](../capitulo-24-modulos-y-organizacion/index.md) |
 | Guardar la base en archivos; `library(persistency)` | [capítulo 27](../capitulo-27-archivos-streams-y-formatos/index.md) |
 | La base de datos y los hilos | [capítulo 37](../capitulo-37-concurrencia-y-paralelismo/index.md) |
-| La tabulación, que memoriza sin estado escrito a mano | [capítulo 39](../capitulo-39-tabulacion/index.md) |
+| La tabulación, que memoriza sin estado explícito | [capítulo 39](../capitulo-39-tabulacion/index.md) |
 | El camino de vuelta del Wumpus como búsqueda | [capítulo 40](../capitulo-40-busqueda-y-planificacion/index.md) |
 | El juego del Wumpus completo y un agente que prueba seguras las celdas con los mundos consistentes con lo percibido | [capítulo 77](../capitulo-77-proyecto-mundo-wumpus/index.md) |

@@ -2,7 +2,7 @@
 
 Esta página tiene el código completo del Buscaminas del curso, con sus
 pruebas, tal como está en `ejemplos/capitulo-31/buscaminas/`. Reúne lo que
-los capítulos anteriores construyeron por partes: la cuenta de minas vecinas
+los capítulos anteriores construyeron por partes: el conteo de minas vecinas
 del [capítulo 17](../capitulo-17-todas-las-soluciones/index.md), el recorrido que descubre una región del
 [capítulo 18](../capitulo-18-orden-superior/index.md), el tablero como tabla de búsqueda del [capítulo 22](../capitulo-22-estructuras-de-datos-de-la-biblioteca/index.md),
 la deducción con restricciones del [capítulo 23](../capitulo-23-programacion-con-restricciones/index.md), el juego en la terminal del
@@ -423,7 +423,8 @@ jugar(Accion, Celda, partida(T, D0, M0, Estado0), Partida) :-
 %!  aplicar(+Accion, +Celda, +Valor, +Partida0, -Partida) is det.
 %
 %   Aplica una jugada válida.
-aplicar(descubrir, Celda, mina, partida(T, D0, M, _), partida(T, D, M, perdio)) :-
+aplicar(descubrir, Celda, mina,
+        partida(T, D0, M, _), partida(T, D, M, perdio)) :-
     !,
     ord_add_element(D0, Celda, D).
 aplicar(descubrir, Celda, _, partida(T, D0, M, _), partida(T, D, M, Estado)) :-

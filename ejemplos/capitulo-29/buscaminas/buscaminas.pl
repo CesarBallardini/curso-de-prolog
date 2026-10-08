@@ -9,7 +9,7 @@
 % como assoc y el recorrido que descubre una región. El módulo exporta solo
 % lo que usa Python. Una partida es el término juego(Tablero, Descubiertas,
 % Marcadas); cruza a Python envuelta en prolog/1, y Python la devuelve en
-% cada jugada sin mirarla. Las filas del tablero cruzan como textos.
+% cada jugada sin examinarla. Las filas del tablero cruzan como textos.
 %
 % solo-local: SWISH no admite módulos propios ni ejecuta Python.
 %

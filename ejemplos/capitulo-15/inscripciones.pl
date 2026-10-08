@@ -1,10 +1,10 @@
 :- encoding(utf8).
 
-% Capítulo 15 - El proyecto Inscripciones: las validaciones de una inscripción.
+% Capítulo 15 - El proyecto Inscripciones: validaciones de una inscripción.
 %
 % Respecto del capítulo 14 se agregan las vacantes de cada materia y el
 % predicado que decide si un alumno se puede inscribir en una materia. Las
-% condiciones se evalúan en orden, con un condicional, y el resultado dice cuál
+% condiciones se evalúan en orden con un condicional, y el resultado dice cuál
 % falló: la primera que falla determina el motivo del rechazo.
 %
 %?- inscripcion_posible(104, ssl, Resultado).

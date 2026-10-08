@@ -52,7 +52,7 @@ $ swipl -x contar.state -- archivos/texto.txt
 ```
 
 La opción `-x` le indica a `swipl` que cargue un programa guardado en lugar
-de su sistema de siempre, y `--` separa los argumentos de `swipl` de los del
+del sistema predeterminado, y `--` separa los argumentos de `swipl` de los del
 programa. El resultado es el mismo que el del fuente, y también los códigos
 de salida: sin argumentos, el programa guardado termina con el código 1, como
 `contar.pl`.
@@ -265,7 +265,7 @@ argumento terminado en `.pl` como otro archivo que debe cargar, y carga los
 programas junto con el constructor, en lugar de pasárselos.
 
 Las pruebas de `construir.plt` no se limitan a lo que decide `destino/4`:
-construyen `contar.pl` de verdad en un directorio temporal, ejecutan lo
+construyen `contar.pl` en un directorio temporal, ejecutan lo
 construido, y verifican que responde lo mismo y termina con el mismo código
 que el fuente. La integración continua del curso las ejecuta en Linux, donde
 construyen el ejecutable autónomo.
@@ -275,14 +275,14 @@ construyen el ejecutable autónomo.
     vez, en cada sistema, y lo construido tiene que comportarse como el
     fuente.
 
-    **Versión ingenua.** Escribir a mano los comandos de construcción en cada
-    máquina, o anotarlos en un archivo de instrucciones, y probar el fuente
-    pero nunca lo construido.
+    **Versión ingenua.** Escribir uno por uno los comandos de construcción en
+    cada máquina, o anotarlos en un archivo de instrucciones, y probar el
+    fuente pero nunca lo construido.
 
     **Patrón.** Un programa, `construir.pl`, recibe los programas y construye
     cada uno en otro proceso de `swipl`, con las opciones que corresponden al
     sistema. Un error de construcción es un error del constructor, con los
-    mensajes del proceso que falló. Las pruebas construyen de verdad en un
+    mensajes del proceso que falló. Las pruebas construyen el programa en un
     directorio temporal y ejecutan lo construido con los mismos argumentos
     que el fuente: la batería del proyecto incluye lo que se entrega.
 
@@ -446,7 +446,7 @@ de Windows, en la instalación de la máquina.
 
 Una biblioteca de Prolog se distribuye como **pack**: un directorio con un
 archivo de descripción, `pack.pl`, y los módulos en un subdirectorio
-`prolog/`. `paquete/fechas_castellano/` convierte las cuentas con fechas del
+`prolog/`. `paquete/fechas_castellano/` convierte los cálculos con fechas del
 [capítulo 28](../capitulo-28-programas-de-linea-de-comandos/index.md) en un pack:
 
 ```text
@@ -460,7 +460,7 @@ paquete/fechas_castellano/
 ```prolog
 name(fechas_castellano).
 version('1.0.0').
-title('Fechas en castellano: cuentas con fechas y nombres propios').
+title('Fechas en castellano: calculos con fechas y nombres propios').
 author('Curso de Prolog', 'https://katra.ballardini.com.ar/curso-de-prolog/').
 ```
 
@@ -497,7 +497,7 @@ grandes que se cargan muchas veces; el
     | Criterio | En este capítulo |
     |---|---|
     | C5 | un programa que no se puede construir produce un error de `construir.pl`, con los mensajes del `swipl` que falló, y el código de salida 2 |
-    | C7 | las pruebas construyen de verdad, ejecutan lo construido y lo comparan con el fuente: `contar.pl`, `refranes.pl` sin su archivo de datos y el programa del proyecto |
+    | C7 | las pruebas construyen los programas, ejecutan lo construido y lo comparan con el fuente: `contar.pl`, `refranes.pl` sin su archivo de datos y el programa del proyecto |
 
 ## 31.8 El proyecto: *Inscripciones* se entrega
 
@@ -529,7 +529,7 @@ con alcance público y le hace un pedido.
 
 ## 31.9 Buscaminas completo
 
-El Buscaminas se armó por partes a lo largo del curso: la cuenta de minas
+El Buscaminas se armó por partes a lo largo del curso: el conteo de minas
 vecinas en el [capítulo 17](../capitulo-17-todas-las-soluciones/index.md), el recorrido que descubre una región en el
 [capítulo 18](../capitulo-18-orden-superior/index.md), el tablero como tabla de búsqueda en el [capítulo 22](../capitulo-22-estructuras-de-datos-de-la-biblioteca/index.md),
 la deducción con restricciones en el [capítulo 23](../capitulo-23-programacion-con-restricciones/index.md), los módulos en el
@@ -617,11 +617,20 @@ hechos y termina como un sistema en módulos, probado, que se usa desde la
 línea de comandos, desde Python y por HTTP, y que se entrega construido, como
 servicio y en un contenedor.
 
-La parte III trata temas avanzados: la inspección de términos, la
-introspección y los metaintérpretes, las estructuras incompletas y las
-listas diferencia, la transformación de programas, las interfaces de usuario,
-la concurrencia, la tabulación y la búsqueda en juegos, y la relación entre
-Prolog y SQL. Cada uno parte de lo que las partes I y II dan por conocido.
+La parte III, «Lo avanzado», va del [capítulo 32](../capitulo-32-inspeccion-de-terminos/index.md) al
+[42](../capitulo-42-prolog-y-sql/index.md). Los capítulos [32](../capitulo-32-inspeccion-de-terminos/index.md) a [35](../capitulo-35-transformacion-de-programas-y-compilacion/index.md) tratan los términos y los
+programas como datos: la inspección de términos, la introspección y los
+metaintérpretes, las estructuras incompletas y las listas diferencia, y la
+transformación de programas y la compilación. El [36](../capitulo-36-interfaces-de-usuario/index.md) y el [37](../capitulo-37-concurrencia-y-paralelismo/index.md)
+llevan los programas a las interfaces de usuario y a varios hilos. El [38](../capitulo-38-semantica-de-los-programas-logicos/index.md)
+define la semántica de los programas lógicos y el [39](../capitulo-39-tabulacion/index.md) presenta la
+tabulación. El [40](../capitulo-40-busqueda-y-planificacion/index.md) y el [41](../capitulo-41-juegos/index.md) tratan la búsqueda, la planificación y
+los juegos, y el [42](../capitulo-42-prolog-y-sql/index.md) relaciona Prolog con SQL. Cada uno parte de lo que
+las partes I y II dan por conocido.
+
+La parte IV, «Proyectos», va del [capítulo 43](../capitulo-43-proyecto-resolver-ecuaciones/index.md) al [87](../capitulo-87-proyecto-preguntas-en-castellano/index.md):
+cada capítulo construye un proyecto completo con las prácticas de esta
+parte, y el 87 cierra el curso.
 
 ## Ejercicios
 
@@ -631,7 +640,7 @@ Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
 tiene de propio, y los capítulos siguientes los dan por hechos.
 
 1. ★ **(1)** Construir `contar.pl` y `refranes.pl` con `construir.pl`.
-   ¿Qué archivos hay que copiar a otra máquina para ejecutar cada uno, en
+   ¿Qué archivos deben copiarse a otra máquina para ejecutar cada uno, en
    Windows y en Linux? ¿Qué tiene que estar instalado en esa máquina?
 2. **(1)** ¿Qué ocurre con `swipl construir.pl contar.pl`, sin el `--`? ¿Por
    qué el mensaje de error no es el de `construir.pl`?

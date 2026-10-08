@@ -32,7 +32,8 @@ categoria(P, C) :-
     ;   C = adulto
     ).
 
-%!  signo(+N:number, ?S:atom) is det.
+%!  signo(+N:number, -S:atom) is det.
+%!  signo(+N:number, +S:atom) is semidet.
 %
 %   S es negativo, cero o positivo, según N.
 signo(N, S) :-
@@ -63,7 +64,7 @@ sin_repetidos(L, R) :-
 %!  sin_los_vistos(++L:list, +Vistos:list, -R:list) is det.
 %
 %   R es L sin los elementos de Vistos y sin repetidos. memberchk/2 se cumple
-%   a lo sumo una vez: es member/2 seguido de un corte.
+%   a lo sumo una vez: equivale a member/2 seguido de un corte.
 sin_los_vistos([], _, []).
 sin_los_vistos([X|Resto], Vistos, R) :-
     (   memberchk(X, Vistos)

@@ -11,13 +11,16 @@ El código de esta página está en `ejemplos/capitulo-21/soluciones.pl` y
 | `phrase(saludo, "hola").` | error de tipo: se esperaba una lista | fuera de una regla, `"hola"` es una cadena |
 | `` phrase(fecha(F), `31/4/2026`). `` | `false.` | abril tiene 30 días, y `fecha_valida/3` rechaza el 31 |
 | `` phrase(resta(V), `8-2-1`). `` | `V = 5.` | `(8 - 2) - 1`: el acumulador agrupa a la izquierda |
+| `` phrase(resta_derecha(V), `10-3-2-1`). `` | `V = 8.` | `10 - (3 - (2 - 1))`: la recursión después del primer número agrupa a la derecha (actividad de la [sección 21.7](index.md#217-recursion-a-izquierda)) |
+| `` phrase(resta(V), `10-3-2-1`). `` | `V = 4.` | `((10 - 3) - 2) - 1`: el acumulador agrupa a la izquierda |
+| `` phrase(palabra_o_numero(T), `x42`, Resto). `` | `T = palabra, Resto = [120, 52, 50].` | la `x` no es un dígito, y `siguiente//1` la devolvió: `Resto` es la entrada entera (actividad de la [sección 21.9](index.md#219-pushback)) |
 
 Cada consulta usa el archivo del capítulo que define su gramática:
 `gramatica.pl`, `fechas.pl` y `expresiones.pl`.
 
 ## 2
 
-<!-- ejemplo: capitulo-21/soluciones.pl predicado: ab//0 consulta: phrase(expresion(V), `2+3*4-6/2`). -->
+<!-- ejemplo: capitulo-21/soluciones.pl predicado: ab//0 consulta: between(1, 6, N), length(L, N), phrase(ab, L). -->
 ```prolog
 %!  ab// is nondet.
 %
@@ -44,7 +47,7 @@ ninguna lista.
 
 ## 3
 
-<!-- ejemplo: capitulo-21/soluciones.pl predicado: saludo_a//1 saludo_a_traducido/3 nombre//1 consulta: phrase(expresion(V), `2+3*4-6/2`). -->
+<!-- ejemplo: capitulo-21/soluciones.pl predicado: saludo_a//1 saludo_a_traducido/3 nombre//1 consulta: phrase(saludo_a(N), `hola luis`). -->
 ```prolog
 %!  saludo_a(?N)// is nondet.
 %
@@ -55,7 +58,7 @@ saludo_a(N) -->
 
 %!  saludo_a_traducido(?N, ?S0, ?S) is nondet.
 %
-%   La traducción de saludo_a//1 escrita a mano: los códigos de "hola " al
+%   La traducción de saludo_a//1 escrita sin -->: los códigos de "hola " al
 %   principio de S0, y el nombre en lo que sigue.
 saludo_a_traducido(N, S0, S) :-
     S0 = [0'h, 0'o, 0'l, 0'a, 0' |S1],
@@ -77,7 +80,7 @@ responden lo mismo.
 
 ## 4
 
-<!-- ejemplo: capitulo-21/soluciones.pl predicado: frase//0 sujeto//1 consulta: phrase(expresion(V), `2+3*4-6/2`). -->
+<!-- ejemplo: capitulo-21/soluciones.pl predicado: frase//0 sujeto//1 articulo//1 sustantivo//1 verbo//1 consulta: phrase(frase, [los, perros, ladran]). -->
 ```prolog
 %!  frase// is nondet.
 %
@@ -93,9 +96,27 @@ frase -->
 sujeto(Numero) -->
     articulo(Numero),
     sustantivo(Numero).
+
+% articulo(Numero)//: el artículo de ese número.
+articulo(singular) --> [el].
+articulo(plural)   --> [los].
+
+% sustantivo(Numero)//: un sustantivo de ese número.
+sustantivo(singular) --> [perro].
+sustantivo(plural)   --> [perros].
+sustantivo(singular) --> [gato].
+sustantivo(plural)   --> [gatos].
+
+% verbo(Numero)//: un verbo conjugado en ese número.
+verbo(singular) --> [ladra].
+verbo(plural)   --> [ladran].
 ```
 
 ```prolog
+?- phrase(frase, [los, perros, ladran]).
+true ;
+false.
+
 ?- phrase(frase, [los, perros, ladra]).
 false.
 ```
@@ -152,7 +173,7 @@ conoce de antemano, como explicó el [capítulo 19](../capitulo-19-operadores-y-
 
 ## 6
 
-<!-- ejemplo: capitulo-21/soluciones.pl predicado: ab_invertida//0 consulta: phrase(expresion(V), `2+3*4-6/2`). -->
+<!-- ejemplo: capitulo-21/soluciones.pl predicado: ab_invertida//0 consulta: phrase(ab_invertida, [a, a, b, b]). -->
 ```prolog
 %!  ab_invertida// is nondet.
 %
@@ -171,13 +192,15 @@ respuesta, la segunda regla rodea esa respuesta con una `a` y una `b`.
 Al generar, en cambio, la primera regla es la recursiva: agrega una `a` y se
 llama de nuevo, que vuelve a elegir la regla recursiva, sin llegar nunca al
 caso base. La prueba `ab_invertida_no_genera` lo verifica con
-`call_with_inference_limit/3`: la consulta agota un millón de inferencias sin
-ninguna respuesta. Es la misma rama infinita del [capítulo 5](../capitulo-05-como-responde-prolog/index.md), en una
+`call_with_inference_limit(Objetivo, Limite, R)`, que ejecuta `Objetivo` y
+liga `R` a `inference_limit_exceeded` si supera `Limite` inferencias
+([capítulo 26](../capitulo-26-pruebas-y-depuracion/index.md)): la consulta agota un millón sin ninguna respuesta. Es la
+misma rama infinita del [capítulo 5](../capitulo-05-como-responde-prolog/index.md), en una
 gramática.
 
 ## 7
 
-<!-- ejemplo: capitulo-21/soluciones.pl predicado: preorden//1 simetrico//1 postorden//1 consulta: phrase(expresion(V), `2+3*4-6/2`). -->
+<!-- ejemplo: capitulo-21/soluciones.pl predicado: preorden//1 simetrico//1 postorden//1 consulta: phrase(postorden(nodo(a, nodo(b, nil, nil), nodo(c, nil, nil))), L). -->
 ```prolog
 %!  preorden(+Arbol)// is det.
 %
@@ -219,7 +242,7 @@ lista sin `append/3`.
 
 ## 8
 
-<!-- ejemplo: capitulo-21/soluciones.pl predicado: balanceado//0 balanceado//1 consulta: phrase(expresion(V), `2+3*4-6/2`). -->
+<!-- ejemplo: capitulo-21/soluciones.pl predicado: balanceado//0 balanceado//1 consulta: phrase(balanceado, `{[a(b)]c}`). -->
 ```prolog
 %!  balanceado// is semidet.
 %
@@ -327,7 +350,7 @@ es exacta, como `is/2`.
 
 ## 10
 
-<!-- ejemplo: capitulo-21/soluciones.pl predicado: fecha_larga//1 nombre_de_mes//1 consulta: phrase(expresion(V), `2+3*4-6/2`). -->
+<!-- ejemplo: capitulo-21/soluciones.pl predicado: fecha_larga//1 nombre_de_mes//1 consulta: phrase(fecha_larga(fecha(2027, 1, 1)), Cs), atom_codes(A, Cs). -->
 ```prolog
 %!  fecha_larga(?F)// is semidet.
 %
@@ -364,12 +387,12 @@ queda una alternativa pendiente: la prueba `fecha_larga` la declara con
 
 ## 11
 
-<!-- ejemplo: capitulo-21/soluciones.pl predicado: enumeracion//1 consulta: phrase(expresion(V), `2+3*4-6/2`). -->
+<!-- ejemplo: capitulo-21/soluciones.pl predicado: enumeracion//1 consulta: phrase(enumeracion(L), `ana, luis y eva`). -->
 ```prolog
-%!  enumeracion(-Nombres:list)// is semidet.
+%!  enumeracion(?Nombres:list)// is semidet.
 %
 %   Los nombres separados por comas, con y antes del último: "ana",
-%   "ana y luis", "ana, luis y eva". Solo analiza: csym//1 no genera.
+%   "ana y luis", "ana, luis y eva", en los dos sentidos.
 enumeracion([N]) -->
     csym(N).
 enumeracion([N1, N2]) -->
@@ -382,10 +405,23 @@ enumeracion([N1, N2, N3|Ns]) -->
     enumeracion([N2, N3|Ns]).
 ```
 
+```prolog
+?- phrase(enumeracion(L), `ana, luis y eva`).
+L = [ana, luis, eva] ;
+false.
+
+?- once(phrase(enumeracion([ana, luis, eva]), Cs)), atom_codes(A, Cs).
+Cs = [97, 110, 97, 44, 32, 108, 117, 105, 115|...],
+A = 'ana, luis y eva'.
+```
+
 Tres casos según la cantidad de nombres: uno solo, dos unidos por «y», o uno
 seguido de una coma y el resto. `sequence//3` no alcanza, porque el último
-separador es distinto de los demás. La gramática solo analiza: `csym//1` no
-genera texto a partir de un átomo, y al generar no termina.
+separador es distinto de los demás. `csym//1` también genera: con el átomo
+ligado, su primera cláusula escribe los códigos del átomo, y la consulta da el
+texto. Esa cláusula no corta, y al pedir una segunda respuesta la otra
+cláusula de `csym//1` genera palabras cada vez más largas sin terminar: por
+eso la consulta va dentro de `once/1`, como la prueba `enumeracion_generar`.
 
 ## 12
 
@@ -444,7 +480,7 @@ número falla, y la prueba `problema_mal_escrito` lo verifica.
 
 ## 13
 
-<!-- ejemplo: capitulo-21/soluciones.pl predicado: lista_de_enteros//1 consulta: phrase(expresion(V), `2+3*4-6/2`). -->
+<!-- ejemplo: capitulo-21/soluciones.pl predicado: lista_de_enteros//1 consulta: phrase(lista_de_enteros(L), `[1, 2, 3]`). -->
 ```prolog
 %!  lista_de_enteros(?L:list(integer))// is semidet.
 %

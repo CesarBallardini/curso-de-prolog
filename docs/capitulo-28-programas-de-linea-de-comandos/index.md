@@ -3,14 +3,14 @@
 Todos los programas del curso se usaron desde el toplevel: se cargan, se
 consultan, y la sesión sigue abierta. Una herramienta se usa de otra forma: se
 ejecuta desde la terminal con sus argumentos, hace su trabajo y termina, y
-quien la ejecutó —una persona, otro programa, un script— sabe por el código de
-salida si terminó bien.
+quien la ejecutó —una persona, otro programa, un script— conoce por el código
+de salida si terminó bien.
 
 Este capítulo convierte un programa de Prolog en esa herramienta: un programa
 que empieza y termina, que lee opciones y argumentos, que escribe mensajes para
 el usuario y termina con un código de salida. Agrega lo que una herramienta
 suele necesitar —leer del teclado, ejecutar otros programas, trabajar con
-fechas— y las diferencias entre Windows y Linux que hay que tener en cuenta. El
+fechas— y las diferencias entre Windows y Linux que afectan a un programa. El
 proyecto se ejecuta desde la terminal, con una orden o con un bucle que lee
 órdenes del teclado.
 
@@ -29,7 +29,7 @@ Al terminar el capítulo, el lector puede:
   en Linux.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:22 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:30 h**.
     Resolver los 6 ejercicios marcados con ★: **1:53 h**.
     Resolver los 14 ejercicios del final: **3:53 h**.
 
@@ -87,7 +87,7 @@ codigo_de_error(_, 2).
 
 `main/1` es la única parte del programa que depende de la línea de
 comandos: lee los argumentos, llama al resto, convierte los errores en
-mensajes y termina con `halt/1`. El trabajo de verdad lo hace
+mensajes y termina con `halt/1`. El conteo propiamente dicho lo hace
 `contar_texto/3`, que recibe un texto y da dos números:
 
 <!-- ejemplo: capitulo-28/contar.pl predicado: contar_texto/3 consulta: contar_texto("uno dos\ntres\n", Lineas, Palabras). -->
@@ -158,6 +158,27 @@ posibles son los de `must_be/2` —`integer`, `nonneg`, `atom`, `boolean`,
 `oneof(Lista)`, …— y una opción `boolean` no lleva valor: `-l` es
 `lineas(true)`.
 
+`columnas/4` elige qué cantidades se escriben según las opciones:
+
+<!-- ejemplo: capitulo-28/contar.pl predicado: columnas/4 consulta: contar_texto("uno dos\ntres\n", Lineas, Palabras). -->
+```prolog
+%!  columnas(+Opciones:list, +Lineas:integer, +Palabras:integer,
+%!           -Numeros:list(integer)) is det.
+%
+%   Numeros son las cantidades que se escriben: las que piden Opciones, o
+%   las dos si no piden ninguna.
+columnas(Opciones, Lineas, Palabras, Numeros) :-
+    (   option(lineas(true), Opciones)
+    ->  Numeros = [Lineas]
+    ;   option(palabras(true), Opciones)
+    ->  Numeros = [Palabras]
+    ;   Numeros = [Lineas, Palabras]
+    ).
+```
+
+`contar_archivos/2` recorre los archivos con `maplist/2`, y `contar_archivo/2`
+lee cada uno con `read_file_to_string/3` y escribe su fila.
+
 ## 28.3 Mensajes
 
 Un programa de línea de comandos escribe dos clases de texto: su **salida**,
@@ -190,7 +211,7 @@ prolog:message(uso(sin_archivos)) -->
 ```
 
 Los errores de la biblioteca ya tienen texto: un archivo que no existe se
-escribe `source_sink `'no.txt'' does not exist`, sin definir nada. Los
+escribe ``source_sink `'no.txt'' does not exist``, sin definir nada. Los
 mensajes para quien desarrolla el programa, que el usuario no necesita ver,
 son los de `debug/3`, del [capítulo 26](../capitulo-26-pruebas-y-depuracion/index.md#265-debug3-y-assertion1): se activan con `debug(Tema)` y no
 aparecen en una ejecución normal.
@@ -262,8 +283,9 @@ decidir qué hacer después: `swipl contar.pl x.txt && echo listo` escribe
 
 El teclado es el stream `user_input`, y se lee con los predicados del
 [capítulo 27](../capitulo-27-archivos-streams-y-formatos/index.md#272-leer-terminos-y-lineas): `read_line_to_string/2` para una línea, `read_term/2` para un
-término de Prolog. Una persona escribe respuestas equivocadas, y un programa
-que pregunta tiene que validarlas y volver a preguntar:
+término de Prolog. Una persona puede responder con un texto que el programa
+no acepta, y un programa que pregunta tiene que validarlo y volver a
+preguntar:
 
 <!-- ejemplo: capitulo-28/preguntar.pl predicado: preguntar/3 preguntar_si_no/3 si_no/2 consulta: open_string("tal vez\nS\n", In), preguntar_si_no(In, "¿Seguir?", R). -->
 ```prolog
@@ -379,12 +401,12 @@ Estado = exit(3).
 `read_string(Out, _, Salida)` lee lo que queda en el stream `Out`, hasta el
 final, como una cadena; el segundo argumento, libre, queda ligado a su
 longitud. `path(swipl)` busca el programa en los directorios del `PATH`, en
-Windows y en Linux. Los argumentos van en una lista, cada uno por separado, y no pasan por
-el intérprete de comandos del sistema: un nombre con espacios o con comillas
-llega intacto. `shell/2` ejecuta, en cambio, una línea completa con el
-intérprete de comandos —`cmd.exe` en Windows, `sh` en Linux—, y la misma línea
-se comporta distinto en cada uno; conviene reservarlo para usos
-interactivos.
+Windows y en Linux. Los argumentos van en una lista, cada uno por separado,
+y no pasan por el intérprete de comandos del sistema: un nombre con espacios
+o con comillas llega intacto. `shell/2` ejecuta, en cambio, una línea
+completa con el intérprete de comandos —`cmd.exe` en Windows, `sh` en
+Linux—, y la misma línea se comporta distinto en cada uno; conviene
+reservarlo para usos interactivos.
 
 Ejecutar un programa en otro proceso es también la forma de probarlo
 completo, con sus argumentos, su salida y su código de salida. `contar.plt`
@@ -421,7 +443,7 @@ hora universal, en segundos hacia el oeste: 10 800 son tres horas. Los nombres
 de `%A` y de `%B` dependen de la configuración regional del sistema: en otra
 máquina, el mismo formato escribe `Friday` y `September`.
 
-Las cuentas con fechas se hacen con timestamps. `fecha.pl` representa una
+Los cálculos con fechas se hacen con timestamps. `fecha.pl` representa una
 fecha como `date(Anio, Mes, Dia)`, y convierte a días:
 
 <!-- ejemplo: capitulo-28/fecha.pl predicado: dia_absoluto/2 dias_entre/3 sumar_dias/3 consulta: dias_entre(date(2026, 3, 1), date(2026, 9, 25), Dias). -->
@@ -463,11 +485,11 @@ F = date(2026, 3, 2).
 
 `round(X)` es la función aritmética que da el entero más cercano a `X`:
 `dia_absoluto/2` la usa porque la división `/` da un número de punto
-flotante. El día 61 de enero no existe, y `date_time_stamp/2` lo acepta igual: lo
-convierte en el 2 de marzo, contando los días de febrero de ese año. Los años
-bisiestos y los cambios de mes y de año quedan a cargo de la biblioteca. Para
-que los nombres no dependan del sistema, `fecha.pl` los toma de tablas
-propias:
+flotante. El día 61 de enero no existe, y `date_time_stamp/2` lo acepta
+igual: lo convierte en el 2 de marzo, contando los días de febrero de ese
+año. Los años bisiestos y los cambios de mes y de año quedan a cargo de la
+biblioteca. Para que los nombres no dependan del sistema, `fecha.pl` los toma
+de tablas propias:
 
 <!-- ejemplo: capitulo-28/fecha.pl predicado: dia_de_la_semana/2 fecha_texto/2 consulta: fecha_texto(date(2026, 9, 25), Texto). -->
 ```prolog
@@ -488,6 +510,27 @@ fecha_texto(date(Anio, Mes, Dia), Texto) :-
     nombre_del_mes(Mes, NombreDelMes),
     format(string(Texto), "~w ~d de ~w de ~d",
            [NombreDelDia, Dia, NombreDelMes, Anio]).
+```
+
+`fecha_iso/2` convierte en los dos sentidos: `parse_time/3` lee una fecha
+escrita en ISO 8601 (`"2026-09-25"`) y da su timestamp, y `format_time/3` con
+`%F` la escribe:
+
+<!-- ejemplo: capitulo-28/fecha.pl predicado: fecha_iso/2 consulta: fecha_iso(F, "2026-09-25"). -->
+```prolog
+%!  fecha_iso(+Fecha, -Texto:string) is det.
+%!  fecha_iso(-Fecha, +Texto:string) is det.
+%
+%   Texto es Fecha en el formato de ISO 8601, "2026-09-25". Con Texto dado,
+%   lo lee y da la Fecha: nonvar/1, que el capítulo 32 presenta, elige el
+%   sentido.
+fecha_iso(date(Anio, Mes, Dia), Texto) :-
+    (   nonvar(Texto)
+    ->  parse_time(Texto, iso_8601, Segundos),
+        stamp_date_time(Segundos, date(Anio, Mes, Dia, _, _, _, _, _, _),
+                        'UTC')
+    ;   format_time(string(Texto), '%F', date(Anio, Mes, Dia))
+    ).
 ```
 
 ```prolog
@@ -520,7 +563,7 @@ mismo. Las diferencias que un programa de línea de comandos encuentra:
 | Separador de rutas | `\`, y también acepta `/` | `/` | escribir las rutas con `/`, o armarlas con `directory_file_path/3` |
 | Fin de línea | `\r\n` | `\n` | leer con `read_line_to_string/2`, o quitar el `\r` con `split_string/4` |
 | Codificación de archivos | la regional, si no se indica | UTF-8 | `encoding(utf8)` en cada `open/4` ([capítulo 27](../capitulo-27-archivos-streams-y-formatos/index.md#271-streams)) |
-| Codificación de la terminal | la regional: las tildes pueden verse mal en algunas terminales | UTF-8 | en la salida, sin tildes lo que deba leerse en cualquier terminal |
+| Codificación de la terminal | la regional: las tildes pueden verse mal en algunas terminales | UTF-8 | escribir sin tildes lo que deba leerse en cualquier terminal |
 | Nombres de días y meses | los de la configuración regional | los de la configuración regional | tablas propias, como en `fecha.pl` |
 | Intérprete de comandos | `cmd.exe`, PowerShell | `sh`, `bash` | `process_create/3`, no `shell/2` |
 | Ejecutar el programa | `swipl programa.pl` | `swipl programa.pl`, o `./programa.pl` con `#!` | documentar la primera forma, que sirve en los dos |
@@ -535,7 +578,7 @@ donde aparece la diferencia.
 !!! success "Criterios de calidad"
     | Criterio | En este capítulo |
     |---|---|
-    | C6 | `main/1` es el borde: lee los argumentos, llama al núcleo y convierte el resultado en un código de salida; `contar_texto/3`, `ejecutar/2` y las cuentas de `fecha.pl` no dependen de la terminal, y se prueban sin ella |
+    | C6 | `main/1` es el borde: lee los argumentos, llama al núcleo y convierte el resultado en un código de salida; `contar_texto/3`, `ejecutar/2` y los cálculos de `fecha.pl` no dependen de la terminal, y se prueban sin ella |
     | C5 | cada error llega al usuario como un mensaje y un código de salida distinto de 0; las pruebas de `contar.plt` y de `principal.plt` verifican los códigos ejecutando el programa en otro proceso |
 
 ## 28.9 El proyecto: *Inscripciones* en la terminal
@@ -676,9 +719,10 @@ correr(Palabras, Opciones, Codigo) :-
 ```
 
 Con `--estado=ARCHIVO`, el programa carga el estado guardado antes de
-ejecutar la orden, si `exists_file/1` confirma que el archivo existe, y lo guarda al terminar, con los predicados del
-[capítulo 27](../capitulo-27-archivos-streams-y-formatos/index.md#2711-el-proyecto-el-borde-con-los-archivos). Así, una inscripción hecha en una ejecución se ve en la
-siguiente:
+ejecutar la orden, si `exists_file/1` confirma que el archivo existe, y lo
+guarda al terminar, con los predicados del
+[capítulo 27](../capitulo-27-archivos-streams-y-formatos/index.md#2711-el-proyecto-el-borde-con-los-archivos).
+Así, una inscripción hecha en una ejecución se ve en la siguiente:
 
 ```text
 $ swipl principal.pl --estado=estado.txt inscribir a 104 en sintaxis
@@ -687,7 +731,7 @@ $ swipl principal.pl --estado=estado.txt listar sintaxis
 Inscriptos: 104.
 ```
 
-Con `--ajustes=archivos/ajustes.cfg`, la nota mínima es 7, y `inscribir a 102
+Con `--ajustes=../archivos/ajustes.cfg`, la nota mínima es 7, y `inscribir a 102
 en paradigmas` se rechaza con `falta(log)`, porque el 6 de lógica ya no
 aprueba. Las pruebas de `principal.plt` ejecutan el programa en otro proceso,
 como en la [sección 28.6](#286-procesos-externos): una orden aceptada, una rechazada, los ajustes, un
@@ -735,7 +779,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     jugadas —`d 3 4` descubre la celda de la fila 3 y la columna 4, `m 3 4`
     la marca— hasta que se descubre una mina o todas las celdas libres. Usar
     el tablero del [capítulo 22](../capitulo-22-estructuras-de-datos-de-la-biblioteca/index.md#2211-buscaminas-el-tablero-como-tabla-de-busqueda) y la forma de descubrir una región
-    del [capítulo 18](../capitulo-18-orden-superior/index.md).
+    del [capítulo 18](../capitulo-18-orden-superior/index.md#189-buscaminas-descubrir-una-region).
 
 ## Resumen
 
@@ -754,9 +798,9 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | `get_time/1`, `stamp_date_time/3`, `date_time_stamp/2`, `format_time/3`, `round/1` | fecha y hora; `round/1`, el entero más cercano, en `is/2` |
 | `ord_del_element/3` | quitar un elemento de un conjunto ordenado (solución 14) |
 | `current_prolog_flag(windows, true)` | distinguir el sistema, en un solo lugar |
-| **[Patrón 38](../patrones.md#38-programa-de-linea-de-comandos)** | programa de línea de comandos |
 | `day_of_the_week/2`, `parse_time/3` | el día de la semana de una fecha, de 1 a 7; leer una fecha escrita en ISO 8601 |
 | `getenv/2`, `prolog_to_os_filename/2` | el valor de una variable de entorno; convertir una ruta entre la forma de Prolog y la del sistema (solución 11) |
+| **[Patrón 38](../patrones.md#38-programa-de-linea-de-comandos)** | programa de línea de comandos |
 
 ## Temas que se retoman
 

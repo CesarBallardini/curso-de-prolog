@@ -15,8 +15,8 @@
 
 %!  reinas(+N:integer, -Qs:list(integer)) is nondet.
 %
-%   Qs es una ubicación de N reinas que no se atacan: la reina de la columna
-%   i está en la fila i-ésima de Qs.
+%   Qs es una ubicación de N reinas que no se atacan: el elemento i-ésimo
+%   de Qs es la fila de la reina de la columna i.
 reinas(N, Qs) :-
     length(Qs, N),
     Qs ins 1..N,

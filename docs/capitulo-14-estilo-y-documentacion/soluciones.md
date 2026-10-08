@@ -70,8 +70,8 @@ test(sacar_con_resultado_ligado, [nondet]) :-
 Las pruebas que se cumplen declaran `[nondet]`. Sin esa opción, plunit advierte
 que terminan con una alternativa pendiente: después de la primera cláusula queda
 por probar la segunda, que falla recién al comparar `Otro \== X`. El predicado
-es `semidet` por el conteo lógico —tiene una respuesta como mucho—, pero su
-implementación no lo sabe de antemano. El comentario de las pruebas lo registra,
+es `semidet` por el conteo lógico —tiene una respuesta como mucho—, pero la
+implementación no puede descartar la segunda cláusula de antemano. El comentario de las pruebas lo registra,
 y los capítulos [15](../capitulo-15-control/index.md) y [16](../capitulo-16-rendimiento/index.md) muestran cómo quitar esa alternativa.
 
 ## 4
@@ -99,7 +99,7 @@ lee «A es abuelo de N», y el cuerpo, «A es padre de alguien que es padre de N
 
 `signo(-3, positivo).` responde `true.` con la versión del enunciado: la primera
 cláusula no se elige, porque su cabeza exige `negativo`; la segunda tampoco,
-porque exige `0`; y la tercera acepta cualquier cosa. Es el defecto de
+porque exige `0`; y la tercera acepta cualquier valor. Es el defecto de
 `mal_maximo/3`: la salida está en la cabeza, antes del corte. Con el [Patrón 3](../patrones.md#3-salida-despues-del-compromiso):
 
 <!-- ejemplo: capitulo-14/soluciones.pl predicado: signo/2 consulta: signo(-3, S). -->
@@ -160,7 +160,8 @@ false.
 Se verifican C1 (el encabezado, con pruebas para legajo ligado, materia ligada y
 los dos ligados), C2 (con todo libre enumera todos los pares), C3 (con los dos
 ligados comprueba, y `aprobadas_de(102, alg)` falla, como corresponde), C6 (no
-tiene efectos laterales) y C7 (las pruebas). C4 no aplica, porque no es `det`.
+tiene efectos laterales) y C7 (las pruebas). C4 no corresponde, porque no es
+`det`.
 C5 queda como restricción: con un legajo que no es un número, falla en lugar de
 producir un error.
 
@@ -203,6 +204,16 @@ préstamos en curso también aparecen como vencidos. La representación limpia
 tiene un functor por estado, y `vencido/1` selecciona el suyo con
 `vencido(_Desde)` en el segundo argumento, sin ninguna comparación.
 
+La actividad de la [sección 14.6](index.md#146-representacion-de-los-datos) muestra el mismo defecto en *Inscripciones*.
+Con el `inscripciones.pl` del [capítulo 13](../capitulo-13-el-entorno-de-trabajo/index.md) cargado, `inscripcion(L, M, N), N >= 6.`
+da cuatro respuestas —las notas de `101` en `am1`, `alg`, `log` y `am2`— y en
+la quinta inscripción, la de `pp`, produce ``ERROR: Arithmetic: `null/0' is not
+a function``: la comparación recibe el átomo `null`. Es el error que
+`integer(N)` evitaba en la regla de esa sección. Con la versión de este
+capítulo, `aprobada(L, M, N)` enumera las diez aprobadas sin ninguna prueba de
+tipo: `nota(Nota)` en la llamada a `inscripcion/3` deja fuera las inscripciones
+en curso.
+
 ## 9
 
 `sin_repetidos/2` de la solución 10 del [capítulo 9](../capitulo-09-backtracking-y-corte/soluciones.md#10):
@@ -212,9 +223,9 @@ tiene un functor por estado, y `vencido/1` selecciona el suyo con
 | C1 | Interfaz declarada | sí: `sin_repetidos(+L, -R) is det` |
 | C2 | Consulta más general | con `L` libre enumera listas cada vez más largas, sin fin; las respuestas son correctas, y el `+L` del encabezado declara la restricción |
 | C3 | Estabilidad | sí: `sin_repetidos([a, b, a], [b, a])` falla, como corresponde |
-| C4 | Sin alternativas pendientes | **no**: declara `det`, pero plunit advierte *Test succeeded with choicepoint* en una prueba sin `nondet`; la tercera cláusula queda pendiente después de la segunda |
+| C4 | Sin puntos de elección sobrantes | **no**: declara `det`, pero plunit advierte *Test succeeded with choicepoint* en una prueba sin `nondet`; la tercera cláusula queda pendiente después de la segunda |
 | C5 | Error, no falla silenciosa | con una lista con variables, `member/2` las unifica: `sin_repetidos([X, a], R)` responde `X = a, R = [a]`, es decir, liga una variable de quien llama para quitar un «repetido» que no lo era; no hay error, y el `+L` no lo advierte |
-| C6 | Núcleo puro | sí |
+| C6 | Núcleo puro, bordes impuros | sí |
 | C7 | Probado | sí, con tres pruebas, que declaran `all(...)` y por eso no advierten las alternativas |
 
 El incumplimiento de C4 se corrige con el condicional del [capítulo 15](../capitulo-15-control/index.md). El
@@ -240,9 +251,24 @@ sumarlo; `largo/2` solo cuenta cuántos hay:
 ERROR: Arithmetic: `b/0' is not a function
 ```
 
-`largo([a, b], N)` responde `N = 2`. Por eso `largo/2` se conforma con `+L`
-—la lista debe estar, sus elementos pueden ser cualquier cosa— y `suma_lista/2`
-declara `++L` con el tipo `list(number)`.
+`largo([a, b], N)` responde `N = 2`. Por eso `largo/2` declara `+L` —la lista
+debe llegar instanciada, sus elementos pueden ser cualquier término— y
+`suma_lista/2` declara `++L` con el tipo `list(number)`.
+
+El encabezado completo que pide la actividad de la [sección 14.3](index.md#143-el-encabezado-completo) escribe esa
+diferencia en el tipo: `list` sin parámetro, porque los elementos no se
+examinan.
+
+```prolog
+%!  largo(+L:list, -N:integer) is det.
+%!  largo(-L:list, -N:integer) is multi.
+%
+%   N es la cantidad de elementos de L. Con L libre, enumera listas de
+%   variables de largo creciente.
+```
+
+El modo con `L` libre y `N` ligada no se declara: da la lista de `N` variables
+y después no termina, como documenta el encabezado del [capítulo 7](../capitulo-07-listas/index.md#74-contar-durante-el-recorrido).
 
 ## 12
 
@@ -274,7 +300,8 @@ Con la directiva agregada:
   `det/1`, fallar también es no cumplir: `det` promete exactamente una
   respuesta;
 - con la lista libre, un error: *Deterministic procedure primero_y_ultimo/3
-  succeeded with a choicepoint*, porque `last/2` puede seguir generando listas.
+  succeeded with a choicepoint*, y la traza del error señala `lists:last_/3`:
+  `last/2` puede seguir generando listas.
 
 El encabezado declara `?L ... is nondet` porque describe todos los modos, y en
 dos de ellos el predicado no es `det`. `det/1` no admite matices: se aplica a
@@ -369,3 +396,64 @@ auxiliar como primer argumento, la disposición del [Patrón 9](../patrones.md#9
 lectura del ejercicio muestra por qué el encabezado importa: el código solo
 dice qué términos se relacionan, y los modos dicen cuáles se dan y cuáles se
 obtienen.
+
+## 16
+
+Con `$` en lugar del corte, y con los nombres `maximo_d/3` y `mal_maximo_d/3`
+para distinguirlos de los predicados de `estilo.pl`:
+
+<!-- ejemplo: capitulo-14/soluciones.pl predicado: maximo_d/3 mal_maximo_d/3 consulta: maximo_d(3, 1, 1). -->
+```prolog
+%!  maximo_d(+X, +Y, -M) is det.
+%
+%   M es el mayor de X e Y: maximo/3 de estilo.pl con $ en lugar del corte.
+%   Con M ligada a un valor que no es el mayor, M = X falla después de $, y
+%   SWI-Prolog lo informa como un error en lugar de responder false.
+maximo_d(X, Y, M) :-
+    X >= Y,
+    $,
+    M = X.
+maximo_d(_, Y, Y).
+
+%!  mal_maximo_d(+X, +Y, -M) is det.
+%
+%   M pretende ser el mayor de X e Y: mal_maximo/3 con $ en lugar del corte.
+%   Sigue siendo incorrecta: con M ligada a un valor falso, la primera
+%   cláusula no se elige y $ nunca se ejecuta. $ y . son caracteres de
+%   símbolo, de modo que el $ final se escribe separado del punto.
+mal_maximo_d(X, Y, X) :-
+    X >= Y,
+    $ .
+mal_maximo_d(_, Y, Y).
+```
+
+```prolog
+?- maximo_d(3, 1, M).
+M = 3.
+
+?- maximo_d(1, 3, M).
+M = 3.
+
+?- maximo_d(3, 1, 1).
+ERROR: Procedure maximo_d/3 failed after $-guard
+
+?- mal_maximo_d(3, 1, 1).
+true.
+```
+
+Las dos primeras consultas responden igual que con el corte: `$` poda la segunda
+cláusula, y lo que sigue, `M = X`, tiene éxito exactamente una vez. La tercera
+cambia: con el corte, `maximo(3, 1, 1)` falla; con `$`, `M = X` falla después
+de la poda, y SWI-Prolog lo informa como un error, porque `$` promete que el
+resto de la cláusula tiene exactamente una respuesta.
+
+`mal_maximo_d(3, 1, 1)` sigue respondiendo `true.`: la primera cláusula no se
+elige, porque su cabeza exige que el tercer argumento sea igual al primero, de
+modo que `$` nunca se ejecuta, y la segunda cláusula responde que 1 es el
+mayor. `$` verifica la determinación de lo que sigue en la cláusula que lo
+ejecuta; la estabilidad depende de qué cláusula se elige, y eso se decide
+antes. La corrección sigue siendo el [Patrón 3](../patrones.md#3-salida-despues-del-compromiso).
+
+Un detalle de sintaxis: `$` y `.` son caracteres de símbolo, y `$.` se lee como
+un solo átomo; el `$` que cierra una cláusula se escribe `$ .`, con un espacio,
+que es también como lo imprime `listing/1`.

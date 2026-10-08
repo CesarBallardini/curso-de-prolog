@@ -3,7 +3,7 @@
 % Capítulo 24 - Solución del ejercicio 11: el tablero del Buscaminas como
 % módulo.
 %
-% El tablero como assoc, del capítulo 21. vecina/4 se exporta porque el
+% El tablero como assoc, del capítulo 22. vecina/4 se exporta porque el
 % módulo resolver la usa.
 %
 % solo-local: SWISH no admite módulos propios en un programa.

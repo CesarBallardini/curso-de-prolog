@@ -5,14 +5,15 @@ o produce un **error**. La parte I casi no se ocupó de la tercera, porque los
 programas del curso recibían siempre los datos que esperaban. Un programa que
 otros usan no puede suponerlo: recibe un texto donde esperaba un número, un
 legajo que no existe, una lista vacía donde hacía falta al menos un elemento.
-Si responde `false.` en esos casos, quien lo usa no puede distinguir «no» de
-«no entendí la pregunta».
+Si responde `false.` en esos casos, quien lo usa no puede distinguir una
+respuesta negativa de una consulta mal formada.
 
 Este capítulo presenta los errores de Prolog: los términos que los describen,
 `catch/3` para capturarlos, `throw/1` y `library(error)` para producirlos, la
 decisión entre fallar y producir un error, `setup_call_cleanup/3` para liberar
-recursos pase lo que pase, y los mensajes para el usuario. El proyecto valida
-sus argumentos y convierte los errores en respuestas del lenguaje de comandos.
+recursos con independencia del desenlace, y los mensajes para el usuario. El
+proyecto valida sus argumentos y convierte los errores en respuestas del
+lenguaje de comandos.
 
 ## Objetivos del capítulo
 
@@ -26,7 +27,7 @@ Al terminar el capítulo, el lector puede:
 - liberar un recurso con `setup_call_cleanup/3`, y escribir mensajes propios.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **0:51 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:05 h**.
     Resolver los 6 ejercicios marcados con ★: **1:53 h**.
     Resolver los 14 ejercicios del final: **3:41 h**.
 
@@ -39,12 +40,12 @@ ERROR: In:
 ERROR:   [12] _15340 is 1/0
 ```
 
-`is/2` no puede fallar aquí —fallar diría que no existe ningún `X` igual a
-1/0, lo que tampoco es cierto— y no puede dar una respuesta. Produce un
-**error**: una **excepción** que interrumpe la ejecución, deshace todo hasta
-el primer `catch/3` que la capture, y, si ninguno la captura, llega al
-toplevel, que la muestra. El error no es una respuesta: después de él, el
-toplevel no ofrece alternativas.
+`is/2` no puede fallar aquí —fallar afirmaría que la relación no se cumple,
+cuando lo que ocurre es que la expresión no tiene valor— y no puede dar una
+respuesta. Produce un **error**: una **excepción** que interrumpe la
+ejecución, deshace todo hasta el primer `catch/3` que la capture, y, si
+ninguno la captura, llega al toplevel, que la muestra. El error no es una
+respuesta: después de él, el toplevel no ofrece alternativas.
 
 Los predicados predefinidos producen errores en los casos que el
 [capítulo 8](../capitulo-08-aritmetica/index.md) mostró: una expresión con una variable sin valor, un átomo donde
@@ -79,16 +80,17 @@ E = error(evaluation_error(zero_divisor), context((/)/2, _)).
 
 `catch(Objetivo, Patron, Recuperacion)` ejecuta `Objetivo`. Si produce un error
 que **unifica** con `Patron`, se ejecuta `Recuperacion` en su lugar; si el
-error no unifica, sigue su camino hacia el `catch/3` anterior. Si `Objetivo`
+error no unifica, se propaga hacia el `catch/3` anterior. Si `Objetivo`
 tiene éxito o falla, `catch/3` hace lo mismo: es transparente para las
 respuestas y para el retroceso.
 
-<!-- ejemplo: capitulo-25/errores.pl predicado: con_valor_por_omision/3 consulta: catch(edad_de(zoe, E), Error, true). -->
+<!-- ejemplo: capitulo-25/errores.pl predicado: con_valor_por_omision/3 consulta: con_valor_por_omision(edad_de(zoe), 0, V). -->
 ```prolog
-%!  con_valor_por_omision(:Objetivo, +PorOmision, -Valor) is det.
+%!  con_valor_por_omision(:Objetivo, +PorOmision, -Valor) is semidet.
 %
 %   Valor es la primera respuesta de call(Objetivo, Valor), o PorOmision si
 %   Objetivo produce un error de existencia. Los demás errores se propagan.
+%   Falla si Objetivo no tiene respuestas.
 con_valor_por_omision(Objetivo, PorOmision, Valor) :-
     catch(once(call(Objetivo, Valor)),
           error(existence_error(_, _), _),
@@ -108,13 +110,49 @@ existencia. Un error de instanciación —`con_valor_por_omision(edad_de(_), 0, 
 no unifica con el patrón, y llega hasta el toplevel: es un error del programa
 que llama, y ocultarlo detrás de un valor por omisión lo volvería invisible.
 
+!!! question "Actividad"
+    Predecir, y después comprobar, qué responden
+    `con_valor_por_omision(edad(zoe), 0, V).` y
+    `catch(member(X, [1, 2]), _, true).`
+
+Cuando la recuperación depende de más detalles que los que un patrón expresa,
+se captura con un patrón amplio, se examina el término y se relanza lo que no
+corresponde. `throw/1` vuelve a lanzar el mismo término, contexto incluido, y
+el error se propaga hacia el `catch/3` anterior:
+
+<!-- ejemplo: capitulo-25/errores.pl predicado: edad_o_cero/2 consulta: edad_o_cero(zoe, E). -->
+```prolog
+%!  edad_o_cero(+P, -E:integer) is det.
+%
+%   E es la edad de P, o 0 si P no tiene edad registrada. Cualquier otro
+%   error se relanza.
+edad_o_cero(P, E) :-
+    catch(edad_de(P, E),
+          error(Formal, Contexto),
+          (   Formal = existence_error(persona, _)
+          ->  E = 0
+          ;   throw(error(Formal, Contexto))
+          )).
+```
+
+```prolog
+?- edad_o_cero(zoe, E).
+E = 0.
+
+?- edad_o_cero(_, E).
+ERROR: Arguments are not sufficiently instantiated
+ERROR: In:
+ERROR:   [15] throw(error(instantiation_error,_22948))
+```
+
 !!! example "Patrón 30 — Capturar lo justo y relanzar"
     **Problema.** Un error esperable —un dato que falta, una conversión que
-    no se puede hacer— tiene una respuesta razonable, y los demás errores no.
+    no se puede hacer— tiene una respuesta prevista, y los demás errores no.
 
     **Versión ingenua.** `catch(Objetivo, _, Recuperacion)`: captura todo,
-    incluidos los errores de programación y la interrupción con Ctrl-C, y los
-    convierte en la misma respuesta.
+    incluidos los errores de programación, y los convierte en la misma
+    respuesta; solo la interrupción con Ctrl-C (`'$aborted'`) se relanza
+    después de ejecutar la recuperación.
 
     **Patrón.** Un patrón que describe exactamente el error esperado,
     `error(existence_error(persona, _), _)`, y ninguna captura para los
@@ -131,7 +169,7 @@ que llama, y ocultarlo detrás de un valor por omisión lo volvería invisible.
 `throw(Termino)` produce una excepción con cualquier término. Para errores, el
 término debe tener la forma `error(Formal, Contexto)`, y `library(error)` tiene
 un predicado para cada término formal: `type_error(Tipo, Valor)`,
-`domain_error(Dominio, Valor)`, `existence_error(Clase, Valor)`, … Y tiene
+`domain_error(Dominio, Valor)`, `existence_error(Clase, Valor)`, … También tiene
 `must_be(Tipo, Valor)`, que verifica un tipo y produce el error que
 corresponde si no se cumple:
 
@@ -169,13 +207,13 @@ ERROR: In:
 ERROR:   [16] throw(error(type_error(nonneg,tres),_19174))
 ```
 
-`must_be/2` conoce muchos tipos: `integer`, `atom`, `text`, `list`, `boolean`,
+`must_be/2` admite muchos tipos: `integer`, `atom`, `text`, `list`, `boolean`,
 `positive_integer`, `nonneg`, `between(Min, Max)`, `oneof(Lista)`,
 `list(Tipo)`, … Una variable sin valor produce un error de instanciación. En
 SWI-Prolog 9, un valor del tipo base pero fuera del rango —`must_be(nonneg, -1)`,
 `must_be(between(1, 10), 11)`— produce también un `type_error`, no un
 `domain_error`; cuando el dominio importa, se verifica aparte y se produce con
-`domain_error/2`, como `leer_edad/2`.
+`domain_error/2`, como `leer_edad/2`, en la [sección 25.5](#255-fallo-o-error).
 
 !!! example "Patrón 31 — Validar al entrar"
     **Problema.** Un predicado público recibe argumentos de otros módulos o de
@@ -183,7 +221,7 @@ SWI-Prolog 9, un valor del tipo base pero fuera del rango —`must_be(nonneg, -1
     lejos de su causa.
 
     **Versión ingenua.** No validar, y dejar que el primer predicado
-    predefinido que tropiece con el valor produzca un error que habla de
+    predefinido que reciba el valor produzca un error que habla de
     `is/2` o de `atom_length/2`.
 
     **Patrón.** Al principio de cada predicado público, `must_be/2` para cada
@@ -193,7 +231,7 @@ SWI-Prolog 9, un valor del tipo base pero fuera del rango —`must_be(nonneg, -1
 
     **Cuándo no usarlo.** En los predicados que funcionan en varios modos: una
     validación de `+` rompe el modo `-`. Y en las relaciones puras, donde un
-    tipo incorrecto es simplemente un caso en que la relación no se cumple.
+    tipo incorrecto es un caso en que la relación no se cumple.
 
 ## 25.5 Fallo o error
 
@@ -257,14 +295,14 @@ Un programa que abre un archivo, una conexión o cualquier recurso debe
 cerrarlo, tanto si el trabajo termina bien como si falla o produce un error.
 `setup_call_cleanup(Preparar, Objetivo, Limpiar)` lo garantiza: ejecuta
 `Preparar`, después `Objetivo`, y `Limpiar` siempre que `Preparar` se haya
-cumplido, pase lo que pase con `Objetivo`.
+cumplido, en cualquiera de los tres desenlaces de `Objetivo`.
 
 <!-- ejemplo: capitulo-25/limpieza.pl predicado: usar/2 usar_sin_limpieza/2 contar_lineas/2 consulta: contar_lineas("uno\ndos\ntres", N). -->
 ```prolog
 %!  usar(+Recurso, :Objetivo) is semidet.
 %
-%   Abre Recurso, ejecuta Objetivo una vez y cierra Recurso, pase lo que pase
-%   con Objetivo: éxito, falla o error.
+%   Abre Recurso, ejecuta Objetivo una vez y cierra Recurso, en cualquiera
+%   de los tres desenlaces de Objetivo: éxito, falla o error.
 usar(Recurso, Objetivo) :-
     setup_call_cleanup(abrir(Recurso),
                        once(Objetivo),
@@ -301,15 +339,19 @@ N = 3.
 ```
 
 `abrir/1` y `cerrar/1` simulan un recurso con un hecho dinámico. Sin
-`setup_call_cleanup/3`, el error de `X is 1/0` salta por encima de `cerrar/1`,
-y el recurso queda abierto. `contar_lineas/2` usa un stream de verdad, sobre
-una cadena. `open_string/2`, que la [sección 15.7](../capitulo-15-control/index.md#157-bucles-por-falla) usa para probar el menú, abre
+`setup_call_cleanup/3`, el error de `X is 1/0` interrumpe la ejecución antes
+de `cerrar/1`, y el recurso queda abierto. `contar_lineas/2` usa un stream
+real, sobre una cadena. `open_string/2`, que la [sección 15.7](../capitulo-15-control/index.md#157-bucles-por-falla) usa para probar el menú, abre
 el stream; `read_line_to_string(Stream, Linea)` lee la línea siguiente, sin el
 salto de línea, y da el átomo `end_of_file` cuando no quedan líneas;
 `close(Stream)` cierra el stream y libera lo que ocupa. Con un archivo, el
 stream lo da `open(Archivo, read, Stream)`, y el resto no cambia. El
 [capítulo 27](../capitulo-27-archivos-streams-y-formatos/index.md) trata a fondo los streams, los archivos y sus opciones. Como los
 streams no están permitidos en SWISH, este ejemplo es solo local.
+
+!!! question "Actividad"
+    Consultar `usar(r1, fail).` y después `abierto(R).`; repetir con
+    `usar_sin_limpieza(r1, fail).`
 
 !!! example "Patrón 32 — Recurso con limpieza garantizada"
     **Problema.** Un recurso —un archivo, un stream, una conexión, un estado
@@ -360,6 +402,14 @@ términos, que no cambian si se corrige la redacción. Y el texto se puede
 traducir o cambiar en un solo lugar: `prolog:message//1` es `multifile`, y
 cualquier módulo puede agregarle reglas. Un error no capturado se escribe con
 el mismo mecanismo, que es el que produce las líneas `ERROR:` del toplevel.
+
+Antes de escribir un mensaje, `print_message/2` llama a
+`message_hook(+Termino, +Nivel, +Lineas)`, un predicado `multifile` del módulo
+`user`, con las líneas que `prolog:message//1` ya produjo; si el gancho se
+cumple, el mensaje no se escribe. Una prueba lo usa para registrar el término
+de una advertencia sin leer la salida: el
+[ejercicio 5 del capítulo 26](../capitulo-26-pruebas-y-depuracion/soluciones.md#5)
+captura así la advertencia de `comprobar_datos/0`.
 
 ## 25.8 Leer un mensaje de SWI-Prolog
 
@@ -432,8 +482,8 @@ R = rechazada(alumno_inexistente).
 
 La diferencia entre las dos consultas es la del criterio de la [sección 25.5](#255-fallo-o-error).
 Un legajo que no es un entero es un error del que llama: el encabezado pide un
-entero. Un legajo que no existe es una respuesta del dominio: el programa sabe
-qué contestar, y lo hace con `rechazada(Motivo)`.
+entero. Un legajo que no existe es una respuesta del dominio: el programa
+tiene una respuesta prevista, `rechazada(Motivo)`.
 
 `ejecutar/2`, en `comandos`, valida que recibe un texto y captura los errores
 de las operaciones, para que el lenguaje de comandos siempre responda:
@@ -528,6 +578,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | `setup_call_cleanup/3` | la limpieza se ejecuta siempre |
 | `open/3`, `read_line_to_string/2`, `close/1` | abrir un archivo, leer una línea, cerrar el stream: lo mínimo para la limpieza; el [capítulo 27](../capitulo-27-archivos-streams-y-formatos/index.md) los trata a fondo |
 | `print_message/2`, `prolog:message//1` | mensajes con nivel, con el texto separado del término |
+| `message_hook/3` | intercepta un mensaje antes de que se escriba; si se cumple, lo suprime |
 | `number_string/2` | convierte entre un número y su texto; falla con un texto que no es un número |
 | `text_to_string/2`, `char_type/2` | un texto como cadena; el tipo de un carácter (en las soluciones) |
 | **Patrones 30, 31, 32** | capturar lo justo y relanzar; validar al entrar; recurso con limpieza garantizada |

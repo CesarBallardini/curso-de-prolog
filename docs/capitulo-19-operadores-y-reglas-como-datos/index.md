@@ -23,7 +23,7 @@ Al terminar el capítulo, el lector puede:
   cláusulas de Prolog.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **0:50 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:00 h**.
     Resolver los 6 ejercicios marcados con ★: **1:41 h**.
     Resolver los 12 ejercicios del final: **3:41 h**.
 
@@ -105,8 +105,8 @@ B = 3^2.
 `2^(3^2)`. `es_padre_de` es `xfx`: ninguno de sus lados admite otro
 `es_padre_de`, y `a es_padre_de b es_padre_de c` es un error de sintaxis.
 
-Los operadores predefinidos que este capítulo usa como referencia son cinco
-precedencias; `current_op/3` da la lista completa:
+De los operadores predefinidos, la tabla reúne las cinco precedencias que
+este capítulo usa como referencia; `current_op/3` da la lista completa:
 
 | Precedencia | Tipo | Operadores |
 |---|---|---|
@@ -179,8 +179,16 @@ El archivo `experto_atras.pl` tiene además `hipotesis/1`, las conclusiones
 finales que el sistema busca —los seis animales—, y `caso/2`, las
 observaciones de cinco animales de ejemplo:
 
-<!-- ejemplo: capitulo-19/experto_atras.pl predicado: caso/2 consulta: caso(1, Obs), identificar(Obs, Animal). -->
+<!-- ejemplo: capitulo-19/experto_atras.pl predicado: hipotesis/1 caso/2 consulta: caso(1, Obs), identificar(Obs, Animal). -->
 ```prolog
+% hipotesis(H): H es una de las conclusiones finales que el sistema busca.
+hipotesis(guepardo).
+hipotesis(tigre).
+hipotesis(jirafa).
+hipotesis(cebra).
+hipotesis(pinguino).
+hipotesis(avestruz).
+
 % caso(N, Observaciones): las observaciones de un animal de ejemplo.
 caso(1, [tiene_pelo, come_carne, color_leonado, manchas_oscuras]).
 caso(2, [da_leche, tiene_cascos, rayas_negras]).
@@ -347,8 +355,42 @@ materias que el alumno aprobó y cursa, `requisito(R)` es cada correlativa de
 la materia pedida, y `vacantes(N)` los lugares que quedan. `situacion/3`
 traduce la base de datos a ese vocabulario: reúne con `findall/3` las
 observaciones de `observacion/3`, un predicado con una cláusula por cada
-forma. La regla v3 usa la negación `no`, un operador más, `op(770, fy, no)`,
-y `prueba/3` es el de la [sección 19.4](#194-el-interprete-y-la-pregunta-como) con una cláusula para ella:
+forma:
+
+<!-- ejemplo: capitulo-19/inscripciones.pl predicado: situacion/3 observacion/3 consulta: situacion(102, am2, Obs). -->
+```prolog
+%!  situacion(+Legajo:integer, +Materia:atom, -Observaciones:list) is det.
+%
+%   Observaciones describe la situación del alumno Legajo frente a Materia
+%   en el vocabulario de las reglas: la lista de las observaciones de
+%   observacion/3, en el orden de sus cláusulas.
+situacion(Legajo, Materia, Observaciones) :-
+    findall(Obs, observacion(Legajo, Materia, Obs), Observaciones).
+
+%!  observacion(+Legajo:integer, +Materia:atom, -Obs) is nondet.
+%
+%   Obs es una observación sobre el alumno Legajo y la materia Materia:
+%   materia(Materia); aprobada(M) por cada materia que el alumno aprobó;
+%   cursando(M) por cada una que cursa; requisito(R) por cada correlativa de
+%   Materia; y vacantes(N), los lugares que quedan.
+observacion(_, Materia, materia(Materia)).
+observacion(Legajo, _, aprobada(M)) :-
+    aprobada(Legajo, M, _).
+observacion(Legajo, _, cursando(M)) :-
+    cursa(Legajo, M).
+observacion(_, Materia, requisito(R)) :-
+    correlativa(Materia, R).
+observacion(_, Materia, vacantes(N)) :-
+    vacantes(Materia, N).
+```
+
+```prolog
+?- situacion(102, am2, Obs).
+Obs = [materia(am2), aprobada(log), requisito(am1), requisito(alg), vacantes(25)].
+```
+
+La regla v3 usa la negación `no`, un operador más, `op(770, fy, no)`, y
+`prueba/3` es el de la [sección 19.4](#194-el-interprete-y-la-pregunta-como) con una cláusula para ella:
 
 <!-- ejemplo: capitulo-19/inscripciones.pl fragmento: prueba(no Meta, Observaciones, no Meta) :- .. \+ prueba(Meta, Observaciones, _). consulta: motivos_de_rechazo(102, am2, Motivos). -->
 ```prolog
@@ -423,12 +465,14 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
    operador, con una precedencia que permita escribir
    `si a y b o c entonces d`, y las cláusulas del intérprete. Unir las reglas
    r1 y r2 en una sola.
-5. **(3)** Hacer que el intérprete reciba la base de reglas como argumento, un
-   predicado de dos argumentos, y escribir una segunda base: por qué un auto
-   no arranca. Usar el mismo intérprete con las dos bases.
+5. **(3)** Hacer que el intérprete reciba como argumento el nombre de la base
+   de reglas —un predicado de dos argumentos, nombre de la regla y regla, que
+   se llama con `call/3`—, y escribir una segunda base: por qué un auto no
+   arranca. Usar el mismo intérprete con las dos bases.
 6. ★ **(2)** Predecir qué ocurre después de `op(700, xfx, ->)` al leer
    `( X > 0 -> t ; e )` y `( a, b -> c ; d )`, y comprobarlo con
-   `term_string/2` y `write_canonical/1`. Restaurar la declaración,
+   `term_string/2`, que lee un término de una cadena con los operadores
+   vigentes, y `write_canonical/1`. Restaurar la declaración,
    `op(1050, xfy, ->)`, y explicar por qué los operadores de Prolog no se
    redefinen.
 7. ★ **(2)** Escribir `explicar(Arbol, Sangria)`, que escribe el árbol de una
@@ -464,7 +508,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | precedencia | de 1 a 1200; el operador de mayor precedencia es el principal del término |
 | tipo | `xfx`, `xfy`, `yfx`, `fx`, `fy`, `xf`, `yf`: la posición, y con `y` el lado que admite la misma precedencia |
 | `write_canonical/1` | escribe un término sin operadores, para ver su estructura |
-| `term_string/2` | lee un término de una cadena con los operadores vigentes, o lo escribe en ella (en las soluciones) |
+| `term_string/2` | lee un término de una cadena con los operadores vigentes, o lo escribe en ella |
 | reglas como datos | términos con operadores propios, que un intérprete lee y prueba |
 | `prueba/3` | una cláusula por cada forma de condición; el tercer argumento es el árbol de la prueba |
 | `no` en el intérprete | una condición se cumple cuando no se puede probar, con `\+` |

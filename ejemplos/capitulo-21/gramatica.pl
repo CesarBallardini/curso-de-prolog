@@ -54,8 +54,8 @@ siguiente(C), [C] --> [C].
 
 %!  palabra_o_numero(-T)// is semidet.
 %
-%   T es numero si el próximo código es un dígito, o palabra si no. Mira el
-%   código con siguiente//1, sin consumirlo.
+%   T es numero si el próximo código es un dígito, o palabra si no. Examina
+%   el código con siguiente//1, sin consumirlo.
 palabra_o_numero(T) -->
     siguiente(C),
     { code_type(C, digit) -> T = numero ; T = palabra }.

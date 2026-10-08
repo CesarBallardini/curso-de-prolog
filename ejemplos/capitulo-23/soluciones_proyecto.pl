@@ -512,8 +512,8 @@ horario_minimo(Capacidad, Dias, Horario) :-
 %!  horario_separado(+Dias:integer, +Capacidad:integer, -Horario:list(pair))
 %!      is nondet.
 %
-%   Como horario/3, con dos días al menos entre los exámenes de dos materias
-%   con un alumno en común.
+%   Como horario/3, con una diferencia de al menos dos días entre los
+%   exámenes de dos materias con un alumno en común.
 horario_separado(Dias, Capacidad, Horario) :-
     findall(M-_, materia(M, _, _), Horario),
     pairs_values(Horario, Ds),
@@ -563,18 +563,20 @@ dominio_de_examen(Dias, Aulas, Capacidades, examen(M, Dia, Aula)) :-
     element(Aula, Capacidades, Capacidad),
     N #=< Capacidad.
 
-%!  examenes_en_dias_distintos(+Horario:list, +Conflicto:pair) is det.
+%!  examenes_en_dias_distintos(+Horario:list, +Conflicto:pair) is semidet.
 %
-%   Las dos materias de Conflicto rinden en días distintos.
+%   Las dos materias de Conflicto rinden en días distintos. Falla si los
+%   dominios de los dos días no admiten valores distintos.
 examenes_en_dias_distintos(Horario, M1-M2) :-
     memberchk(examen(M1, D1, _), Horario),
     memberchk(examen(M2, D2, _), Horario),
     D1 #\= D2.
 
-%!  turnos_distintos(+Horario:list) is det.
+%!  turnos_distintos(+Horario:list) is semidet.
 %
 %   Dos exámenes no ocupan la misma aula el mismo día: cada par Dia-Aula se
-%   codifica como un número distinto.
+%   codifica como un número distinto. Falla si hay más exámenes que pares
+%   Dia-Aula posibles.
 turnos_distintos(Horario) :-
     maplist([examen(_, D, A), T]>>(T #= D * 100 + A), Horario, Turnos),
     all_different(Turnos).

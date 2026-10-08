@@ -114,8 +114,8 @@ edades(Pedido) :-
 %
 %   Ejecuta Objetivo, que responde el pedido. Si produce un error de tipo o
 %   de dominio, responde 400; si es de existencia, 404; si falla, como
-%   cuando al cuerpo le falta un campo, 400. Los demás errores siguen su
-%   camino, y el servidor responde 500.
+%   cuando al cuerpo le falta un campo, 400. Los demás errores se propagan
+%   sin cambios, y el servidor responde 500.
 responder(Objetivo) :-
     catch(( Objetivo
           ->  true

@@ -27,7 +27,7 @@ test(ab_invertida_analiza, [nondet]) :-
 test(ab_invertida_no_genera, true(R == inference_limit_exceeded)) :-
     call_with_inference_limit(phrase(ab_invertida, _), 1000000, R).
 
-% Ejercicio 3: la traducción a mano responde lo mismo que la gramática.
+% Ejercicio 3: la traducción explícita responde lo mismo que la gramática.
 test(traduccion, true(N1-N2 == luis-luis)) :-
     phrase(saludo_a(N1), `hola luis`),
     saludo_a_traducido(N2, `hola luis`, []).
@@ -89,6 +89,11 @@ test(enumeracion, [nondet, true(L == [ana, luis, eva])]) :-
 
 test(enumeracion_uno, [nondet, true(L == [ana])]) :-
     phrase(enumeracion(L), `ana`).
+
+% Al generar, csym//1 deja una alternativa que no termina: once/1 la descarta.
+test(enumeracion_generar, true(A == 'ana, luis y eva')) :-
+    once(phrase(enumeracion([ana, luis, eva]), Cs)),
+    atom_codes(A, Cs).
 
 % Ejercicio 12
 test(problema, true(V =:= 36)) :-

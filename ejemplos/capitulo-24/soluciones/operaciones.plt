@@ -10,6 +10,6 @@ test(inscribir, [ setup(estado(E)), cleanup(restaurar(E)),
 
 % reglas no se importó: aprobada/3 no está disponible.
 test(solo_operaciones, [error(existence_error(procedure, _), _)]) :-
-    call(aprobada(_, _, _)).
+    aprobada(_, _, _).
 
 :- end_tests(operaciones).

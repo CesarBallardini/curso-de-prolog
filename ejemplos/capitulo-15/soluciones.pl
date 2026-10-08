@@ -423,3 +423,38 @@ escribir_termino(Termino) :-
     ->  true
     ;   format("~w~n", [Termino])
     ).
+
+% --- Ejercicio 18 ----------------------------------------------------------
+
+%!  propiedad(?Nombre:atom, +N:integer) is nondet.
+%
+%   N cumple la propiedad Nombre: par, positivo o mayor_que_10.
+propiedad(par, N) :-
+    0 =:= N mod 2.
+propiedad(positivo, N) :-
+    N > 0.
+propiedad(mayor_que_10, N) :-
+    N > 10.
+
+%!  cumple(+N:integer) is det.
+%
+%   Escribe una línea por cada propiedad que N cumple, y ninguna si no cumple
+%   ninguna. *-> conserva todas las respuestas de la condición y el bucle por
+%   falla las recorre; ignore/1 da una respuesta en los dos casos.
+cumple(N) :-
+    ignore(( propiedad(P, N)
+           *-> format("~w~n", [P]),
+               fail
+           ;   format("ninguna~n") )).
+
+%!  presentar(+P) is det.
+%
+%   Escribe el nombre de P y, si se conoce, su edad: presentar/1 de
+%   condicional.pl con un condicional en lugar de ignore/1.
+presentar(P) :-
+    format("~w", [P]),
+    (   edad(P, A)
+    ->  format(" (~d años)", [A])
+    ;   true
+    ),
+    nl.

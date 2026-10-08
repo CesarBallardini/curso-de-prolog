@@ -26,7 +26,7 @@ test(si, true(R == si)) :-
 test(no, true(R == no)) :-
     responder("no\n", In, preguntar_si_no(In, "¿Seguir?", R), _).
 
-% Una respuesta que no sirve: un aviso, y la pregunta otra vez.
+% Una respuesta no válida: un aviso, y la pregunta otra vez.
 test(repetir, true(R-S == si-"¿Seguir? (s/n) Responder s o n.\n\c
                                 ¿Seguir? (s/n) ")) :-
     responder("tal vez\nsí\n", In, preguntar_si_no(In, "¿Seguir?", R), S).

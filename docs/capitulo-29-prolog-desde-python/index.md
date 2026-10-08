@@ -12,7 +12,7 @@ mantenido por el equipo de SWI-Prolog. Funciona en las dos direcciones: Python
 consulta a Prolog, y Prolog llama a funciones de Python. El capítulo presenta
 la instalación, las consultas, la forma en que cruzan los datos y los errores,
 y las pruebas de los dos lados. El proyecto recibe un informe escrito en
-Python sobre las reglas de siempre.
+Python sobre las reglas del proyecto.
 
 ## Objetivos del capítulo
 
@@ -37,8 +37,8 @@ Al terminar el capítulo, el lector puede:
 
 Conviene dejar una parte de un programa de Python en Prolog cuando esa parte
 es un conjunto de reglas: condiciones de una beca, correlatividades,
-permisos, validaciones de una configuración. Las reglas cambian más seguido
-que el resto del programa, y en Prolog se leen como se enuncian. También
+permisos, validaciones de una configuración. Las reglas cambian con más
+frecuencia que el resto del programa, y en Prolog se leen como se enuncian. También
 cuando una consulta tiene varias respuestas —todos los alumnos que pueden
 inscribirse—, o cuando el problema es una búsqueda: un horario, un
 rompecabezas, un camino.
@@ -69,7 +69,8 @@ que Janus inicia no encuentra sus archivos y se detiene con el mensaje
 En el curso, Janus está en el grupo de dependencias `apendice-a`, y los
 ejemplos del capítulo se ejecutan con `make appendix`, que usa pytest.
 `conftest.py`, el archivo de configuración de pytest del capítulo, define
-`SWI_HOME_DIR` si falta, preguntándole a `swipl` dónde está instalado:
+`SWI_HOME_DIR` si falta, tomándolo de la salida de
+`swipl --dump-runtime-variables`:
 
 <!-- ejemplo: capitulo-29/conftest.py fragmento: def _directorio_de_swipl .. os.environ['SWI_HOME_DIR'] = directorio -->
 ```python
@@ -234,8 +235,8 @@ como `f(x)` o `rechazada(falta(am1))` no tiene un equivalente en Python, y la
 consulta que lo devuelve produce un error. Hay dos formas de resolverlo, las
 dos del lado de Prolog: convertirlo en un dato que cruce —un dict, una lista,
 un texto—, o envolverlo en `prolog/1`. Un término envuelto llega a Python
-como un objeto `janus.Term`, que Python no puede mirar por dentro pero puede
-guardar y devolver a Prolog, donde vuelve a ser el término original:
+como un objeto `janus.Term`, cuyo contenido Python no examina, pero que
+puede guardar y devolver a Prolog, donde vuelve a ser el término original:
 
 ```python
 termino = janus.query_once('X = prolog(f(x, [a]))')['X']
@@ -265,8 +266,9 @@ consultas.ficha('ana')  # {'nombre': 'ana', 'edad': 41, 'hijos': ['luis', 'eva']
 ## 29.6 Errores
 
 Una consulta que falla y una que produce un error llegan a Python de forma
-distinta. La que falla devuelve `{'truth': False}`; la que produce un error
-lanza la excepción `janus.PrologError`, cuyo atributo `term` es el término de
+distinta. La que falla devuelve `truth` en `False`, con `None` en cada
+variable de la consulta; la que produce un error lanza la excepción
+`janus.PrologError`, cuyo atributo `term` es el término de
 error de Prolog, como un `janus.Term`, y cuyo texto es el mensaje:
 
 ```python
@@ -374,8 +376,8 @@ def test_plunit(programa):
 ```
 
 `make appendix` ejecuta pytest sobre el directorio del capítulo, con los
-ejemplos y las soluciones: 63 pruebas,
-trece de ellas baterías completas de plunit.
+ejemplos y las soluciones: 63 pruebas, trece de ellas baterías completas de
+plunit.
 
 ## 29.8 Python desde Prolog
 

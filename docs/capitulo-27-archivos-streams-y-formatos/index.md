@@ -1,17 +1,17 @@
 # Capítulo 27 — Archivos, streams y formatos
 
 Hasta aquí, los datos de cada programa estaban en el propio programa, como
-hechos, y los resultados se leían en la terminal. Un programa que se usa de
-verdad lee los datos de archivos que otros escriben, en formatos que otros
-eligen —CSV, JSON—, y deja sus resultados en archivos que otros leen.
+hechos, y los resultados se leían en la terminal. Un programa en uso lee
+los datos de archivos que otros escriben, en formatos que otros eligen —CSV,
+JSON—, y deja sus resultados en archivos que otros leen.
 
 Este capítulo presenta los streams, la forma en que SWI-Prolog lee y escribe
 cualquier cosa: la terminal, un archivo, una cadena. Sobre ellos, la lectura
 de términos, de líneas y de archivos completos; una gramática aplicada
 directamente a un archivo; los formatos CSV y JSON; los ajustes de un
-programa; y los hechos que se guardan solos. El proyecto recibe un módulo
-nuevo, el único que toca archivos: importa alumnos y materias, guarda y
-recupera su estado, y escribe informes en columnas.
+programa; y los hechos que persisten en un archivo. El proyecto recibe un
+módulo nuevo, el único que toca archivos: importa alumnos y materias, guarda
+y recupera su estado, y escribe informes en columnas.
 
 ## Objetivos del capítulo
 
@@ -23,8 +23,8 @@ Al terminar el capítulo, el lector puede:
 - escribir términos que se vuelven a leer, e informes en columnas;
 - convertir datos de CSV y de JSON en términos al leerlos, y términos en esos
   formatos al escribirlos;
-- dar a un programa ajustes que se leen de un archivo, y hechos que se guardan
-  solos.
+- dar a un programa ajustes que se leen de un archivo, y hechos que persisten
+  en un archivo.
 
 !!! info "Tiempo estimado"
     Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:29 h**.
@@ -168,8 +168,19 @@ N = 4.
 
 Cuando el archivo cabe en memoria, `read_file_to_string/3` lo lee completo,
 de una vez, y los predicados del [capítulo 11](../capitulo-11-texto/index.md#115-dividir-y-unir) lo dividen. `lineas_no_vacias/2` lo
-divide con `split_string(Texto, "\n", "\r", Todas)` y descarta las cadenas
-vacías:
+divide con `split_string/4` y descarta las cadenas vacías:
+
+<!-- ejemplo: capitulo-27/archivos.pl predicado: lineas_no_vacias/2 consulta: lineas_no_vacias(archivos('texto.txt'), L). -->
+```prolog
+%!  lineas_no_vacias(+Archivo, -Lineas:list(string)) is det.
+%
+%   Lineas son las líneas de Archivo que no están vacías, leídas del archivo
+%   completo de una sola vez.
+lineas_no_vacias(Archivo, Lineas) :-
+    read_file_to_string(Archivo, Texto, [encoding(utf8)]),
+    split_string(Texto, "\n", "\r", Todas),
+    exclude(==(""), Todas, Lineas).
+```
 
 ```prolog
 ?- lineas_no_vacias(archivos('texto.txt'), L).
@@ -305,8 +316,8 @@ directorios:
 archivos_del_directorio(Nombres) :-
     absolute_file_name(archivos('.'), Directorio, [file_type(directory)]),
     directory_files(Directorio, Todos),
-    exclude([N]>>sub_atom(N, 0, _, _, '.'), Todos, Sinpuntos),
-    sort(Sinpuntos, Nombres).
+    exclude([N]>>sub_atom(N, 0, _, _, '.'), Todos, SinPuntos),
+    sort(SinPuntos, Nombres).
 ```
 
 ```prolog
@@ -472,8 +483,25 @@ dividiendo líneas por comas.
 
 `csv_write_file/3` hace lo inverso: recibe una lista de términos `row(...)` y
 escribe una fila por término, con comillas donde hacen falta.
-`notas_csv/2`, de `formatos.pl`, convierte cada par `Legajo-Materia-Nota` en
-`row(Legajo, Materia, Nota)` y escribe el archivo con un encabezado.
+`notas_csv/2`, de `formatos.pl`, convierte cada término `Legajo-Materia-Nota`
+en `row(Legajo, Materia, Nota)` y escribe el archivo con un encabezado:
+
+<!-- ejemplo: capitulo-27/formatos.pl predicado: notas_csv/2 fila_nota/2 consulta: alumnos_csv(archivos('alumnos.csv'), Alumnos). -->
+```prolog
+%!  notas_csv(+Archivo, +Notas:list) is det.
+%
+%   Escribe en Archivo un CSV con una fila de encabezado y una fila por cada
+%   término Legajo-Materia-Nota de Notas.
+notas_csv(Archivo, Notas) :-
+    maplist(fila_nota, Notas, Filas),
+    csv_write_file(Archivo, [row(legajo, materia, nota)|Filas],
+                   [encoding(utf8)]).
+
+%!  fila_nota(+Nota, -Fila) is det.
+%
+%   Fila es la fila de CSV del término Legajo-Materia-Nota.
+fila_nota(Legajo-Materia-Nota, row(Legajo, Materia, Nota)).
+```
 
 ## 27.7 JSON
 
@@ -583,7 +611,7 @@ JSON:
     El núcleo trabaja solo con términos, y se prueba sin archivos.
 
     **Cuándo no usarlo.** Cuando el programa solo pasa los datos de un lado a
-    otro sin mirarlos, como un servicio que reenvía un JSON: convertirlos no
+    otro sin examinarlos, como un servicio que reenvía un JSON: convertirlos no
     agrega nada.
 
 !!! question "Actividad"
@@ -640,13 +668,14 @@ los ajustes de un archivo, con un término `setting(Modulo:Nombre, Valor)` por
 ajuste, y `save_settings/1` los escribe. `list_settings/0` muestra todos, con
 su valor y su descripción. `restore_setting/1` devuelve un ajuste a su valor
 por omisión; las pruebas que cambian un ajuste lo llaman en su `cleanup`.
-Como los ajustes se declaran en un módulo, desde otro se nombran con el módulo: el proyecto declara `nota_minima` en `datos`,
-y su archivo de ajustes dice `setting(datos:nota_minima, 7)`.
+Como los ajustes se declaran en un módulo, desde otro se nombran con el
+módulo: el proyecto declara `nota_minima` en `datos`, y su archivo de ajustes
+dice `setting(datos:nota_minima, 7)`.
 
 ## 27.10 Hechos que se guardan solos: `library(persistency)`
 
 La [sección 20.10](../capitulo-20-base-de-datos-dinamica/index.md#2010-persistir-hechos) guardaba los hechos dinámicos escribiéndolos con
-`listing/1`. `library(persistency)` lo hace sola: cada `assert` y cada
+`listing/1`. `library(persistency)` lo automatiza: cada `assert` y cada
 `retract` se agrega a un archivo en el momento, y al volver a abrir el
 programa los hechos se recuperan.
 
@@ -871,7 +900,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     `yaml_write/2`.
 11. **(2)** Declarar un ajuste `ancho`, el ancho de la primera columna de
     `tabla/1`, y escribir la tabla con ese ancho. Cambiarlo y guardarlo con
-    `save_settings/1`. ¿Qué escribe el archivo?
+    `save_settings/1`. ¿Qué contiene el archivo?
 12. ★ **(3)** En el proyecto, escribir `guardar_hechos/1` y `cargar_hechos/1`,
     que guardan el estado como hechos, uno por línea —`inscripcion(...)`,
     `vacantes(...)`, `operaciones(...)`—, en lugar de un solo término.
@@ -894,15 +923,15 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | `read_term/3` | el término siguiente; `end_of_file` al final; `variable_names/1` |
 | `read_line_to_string/2`, `read_file_to_string/3` | una línea, o el archivo completo |
 | `portray_clause/2`, `writeq/2`, `format/3` | escribir para volver a leer, y para una persona |
-| `file_search_path/2`, `absolute_file_name/3` | alias de rutas |
+| `file_search_path/2`, `absolute_file_name/3`, `prolog_load_context/2` | alias de rutas; el directorio del archivo que se carga |
 | `directory_file_path/3`, `file_directory_name/2`, `file_name_extension/3` | unir y separar directorio, nombre y extensión |
 | `tmp_file/2`, `delete_file/1` | un archivo temporal para una prueba, y su borrado |
 | `phrase_from_file/3` | una gramática sobre un archivo |
 | `csv_read_file/3`, `csv_write_file/3` | CSV como términos |
 | `json_read_dict/3`, `atom_json_dict/3`, `:<` | JSON como dicts |
 | `yaml_read/2`, `yaml_write/2` | YAML, con la misma representación |
-| `setting/4`, `set_setting/2`, `load_settings/1`, `restore_setting/1` | ajustes con tipo y valor por omisión; volver al valor por omisión |
-| `persistent/1`, `db_attach/2` | hechos que se guardan solos |
+| `setting/4`, `set_setting/2`, `load_settings/1`, `restore_setting/1`, `list_settings/0` | ajustes con tipo y valor por omisión; volver al valor por omisión; listarlos |
+| `persistent/1`, `db_attach/2`, `db_detach/0`, `db_sync/1` | hechos que persisten en un archivo |
 | `directory_files/2` | los nombres de las entradas de un directorio, incluidos `.` y `..` |
 | `read_file_to_codes/3` | el contenido de un archivo como lista de códigos; con `type(binary)`, sus bytes |
 | `save_settings/1` | escribe los ajustes en un archivo |

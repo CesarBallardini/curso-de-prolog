@@ -26,6 +26,12 @@ La segunda muestra qué poda el condicional: la condición es la conjunción
 usa la primera. La tercera falla porque no hay rama `Si_no`. La cuarta es una
 disyunción sin condicional: da una respuesta por cada alternativa.
 
+Las dos consultas de la actividad de la [sección 15.2](index.md#152-y-lo-que-poda) siguen la misma
+regla. La primera tiene dos respuestas, `X = a, Y = 1` y `X = a, Y = 2`: el
+condicional poda la condición, no `Entonces`. La segunda tiene una,
+`X = Y, Y = b`: la condición es la conjunción `member(X, [a, b]), X \== a`, y
+su primera respuesta ya descarta `a`.
+
 ## 2
 
 <!-- ejemplo: capitulo-15/soluciones.pl predicado: no/1 una_vez/1 ignorar/1 consulta: una_vez(member(X, [a, b])). -->
@@ -94,6 +100,27 @@ salida se liga dentro de la rama que eligió la condición. La `descuento/2` de 
 completas; la versión con condicional evalúa cada condición una sola vez y no
 deja alternativas pendientes.
 
+La `clasificar/2` de la actividad de la [sección 15.3](index.md#153-los-casos-del-capitulo-9-reescritos) queda como `signo/2`
+de `condicional.pl`:
+
+<!-- ejemplo: capitulo-15/condicional.pl predicado: signo/2 -->
+```prolog
+%!  signo(+N:number, -S:atom) is det.
+%!  signo(+N:number, +S:atom) is semidet.
+%
+%   S es negativo, cero o positivo, según N.
+signo(N, S) :-
+    (   N < 0
+    ->  S = negativo
+    ;   N =:= 0
+    ->  S = cero
+    ;   S = positivo
+    ).
+```
+
+`signo(-3, positivo)` responde `false.`, que la prueba `signo_ligado_falso` de
+`condicional.plt` verifica.
+
 ## 4
 
 <!-- ejemplo: capitulo-15/soluciones.pl predicado: valor_absoluto/2 consulta: valor_absoluto(-5, A). -->
@@ -109,9 +136,9 @@ valor_absoluto(X, A) :-
     ).
 ```
 
-Un modo, `valor_absoluto(+X, ?A) is semidet`: con `A` libre hay una respuesta, y
-con `A` ligada se comprueba. Las pruebas de `soluciones.plt` cubren un número
-negativo y uno positivo.
+Dos modos, como `maximo/3` en la [sección 14.5](../capitulo-14-estilo-y-documentacion/index.md#145-orden-de-los-argumentos-y-estabilidad): con `A` libre hay
+exactamente una respuesta (`det`); con `A` ligada se comprueba (`semidet`). Las
+pruebas de `soluciones.plt` cubren los dos modos.
 
 ## 5
 
@@ -156,7 +183,7 @@ primera_aprobada(Legajo, Materia) :-
 respuesta. Dentro de `aprobada/3` cambiaría la relación para todos los que la
 usan: `aprobada(101, M, N)` dejaría de enumerar las materias aprobadas, y
 `inscripcion_posible/3`, que pregunta por una materia en particular, no se vería
-afectada, pero cualquier informe que necesite todas sí. Es el [Patrón 6](../patrones.md#6-una-respuesta-en-el-borde).
+afectada; cualquier informe que necesite todas, sí. Es el [Patrón 6](../patrones.md#6-una-respuesta-en-el-borde).
 
 ## 7
 
@@ -248,9 +275,9 @@ sumando(I, N, Hasta, S) :-
 ```
 
 Las dos versiones escriben lo mismo. Solo la recursión sirve para
-`suma_hasta/2`: un bucle por falla deshace las ligaduras en cada vuelta, y no hay
-dónde ir acumulando la suma. La recursión lleva el acumulador de vuelta en
-vuelta, como en el [capítulo 8](../capitulo-08-aritmetica/index.md). Es el límite que señala el [Patrón 7](../patrones.md#7-bucle-por-falla): el bucle
+`suma_hasta/2`: un bucle por falla deshace las ligaduras en cada iteración, y no
+hay dónde ir acumulando la suma. La recursión lleva el acumulador de llamada en
+llamada, como en el [capítulo 8](../capitulo-08-aritmetica/index.md). Es el límite que señala el [Patrón 7](../patrones.md#7-bucle-por-falla): el bucle
 por falla sirve para efectos, no para resultados.
 
 ## 10
@@ -343,9 +370,9 @@ respuestas de `correlativa(am2, R)` en una lista. El [capítulo 17](../capitulo-
 reúne a partir de los hechos, y `requisitos/2` deja de ser necesario.
 
 `no_aprobados/3` recibe la lista como **primer** argumento. Con el legajo
-primero, la primera versión dejaba una alternativa pendiente en cada paso: el
-legajo es el mismo en todas las llamadas, y SWI-Prolog, que distingue las
-cláusulas por el primer argumento, no podía descartar la de la lista vacía. El
+primero, cada paso dejaría una alternativa pendiente: el legajo es el mismo en
+todas las llamadas, y SWI-Prolog, que distingue las cláusulas por el primer
+argumento, no podría descartar la de la lista vacía. El
 [capítulo 16](../capitulo-16-rendimiento/index.md) explica ese mecanismo, la indexación, y el [Patrón 9](../patrones.md#9-el-argumento-que-indexa-primero) lo convierte en
 regla.
 
@@ -450,10 +477,11 @@ categoria_pura(P, C) :-
 ```
 
 `library(reif)` reifica la igualdad y la pertenencia, pero no las comparaciones
-aritméticas: `menor_t/3` las reifica a mano, con `</2`, y por eso no es pura.
+aritméticas: `menor_t/3` las reifica con un condicional sobre `</2`, y por eso
+no es pura.
 Con `A` libre, `A < 4` produce un error de instanciación en lugar de considerar
 los dos casos. `categoria_pura/2` funciona porque `edad(P, A)` siempre liga `A`
-antes de la comparación, pero el predicado no gana nada respecto de la versión
+antes de la comparación, pero el predicado no admite más modos que la versión
 con `->`.
 
 Una comparación aritmética que considera los dos casos necesita una
@@ -610,3 +638,78 @@ In = <stream>(...).
 Con el mismo límite de 200 inferencias, la versión corregida termina y
 `call_with_inference_limit/3` liga `R` con `!`: el objetivo se cumplió sin
 dejar alternativas.
+
+## 18
+
+<!-- ejemplo: capitulo-15/soluciones.pl predicado: propiedad/2 cumple/1 consulta: cumple(12). -->
+```prolog
+%!  propiedad(?Nombre:atom, +N:integer) is nondet.
+%
+%   N cumple la propiedad Nombre: par, positivo o mayor_que_10.
+propiedad(par, N) :-
+    0 =:= N mod 2.
+propiedad(positivo, N) :-
+    N > 0.
+propiedad(mayor_que_10, N) :-
+    N > 10.
+
+%!  cumple(+N:integer) is det.
+%
+%   Escribe una línea por cada propiedad que N cumple, y ninguna si no cumple
+%   ninguna. *-> conserva todas las respuestas de la condición y el bucle por
+%   falla las recorre; ignore/1 da una respuesta en los dos casos.
+cumple(N) :-
+    ignore(( propiedad(P, N)
+           *-> format("~w~n", [P]),
+               fail
+           ;   format("ninguna~n") )).
+```
+
+```prolog
+?- cumple(12).
+par
+positivo
+mayor_que_10
+true.
+
+?- cumple(-3).
+ninguna
+true.
+```
+
+`*->` conserva todas las respuestas de la condición, y el bucle por falla las
+recorre: después de escribir cada propiedad, `fail` pide la siguiente. Cuando se
+agotan, el condicional falla; cuando no hay ninguna, la rama `Si_no` escribe
+`ninguna` y se cumple. `ignore/1` da al predicado una respuesta en los dos casos
+sin dejar alternativas pendientes: con una disyunción `( … ; true )` en su
+lugar, `cumple(-3)` respondería `true ;` y dejaría la alternativa `true`
+pendiente.
+
+Con `->` en lugar de `*->`, la condición usa solo su primera respuesta:
+`cumple(12)` escribiría `par` y nada más, porque el `fail` que sigue ya no
+encuentra otra respuesta de la condición; `cumple(-3)` escribiría `ninguna`
+igual.
+
+`presentar/1` sin `ignore/1` es el condicional que `ignore/1` abrevia,
+`( Objetivo -> true ; true )`, con el efecto opcional en la rama `Entonces`:
+
+<!-- ejemplo: capitulo-15/soluciones.pl predicado: presentar/1 consulta: presentar(marta). -->
+```prolog
+%!  presentar(+P) is det.
+%
+%   Escribe el nombre de P y, si se conoce, su edad: presentar/1 de
+%   condicional.pl con un condicional en lugar de ignore/1.
+presentar(P) :-
+    format("~w", [P]),
+    (   edad(P, A)
+    ->  format(" (~d años)", [A])
+    ;   true
+    ),
+    nl.
+```
+
+```prolog
+?- presentar(marta).
+marta
+true.
+```

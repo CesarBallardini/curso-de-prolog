@@ -1,7 +1,7 @@
 :- encoding(utf8).
 
-% Pruebas del programa completo (capítulo 25): los módulos cargados juntos. Cada
-% módulo tiene sus propias pruebas; estas verifican que trabajan juntos.
+% Pruebas del programa completo (capítulo 25): los módulos cargados juntos.
+% Cada módulo tiene sus propias pruebas; estas verifican que trabajan juntos.
 
 :- begin_tests(inscripciones).
 

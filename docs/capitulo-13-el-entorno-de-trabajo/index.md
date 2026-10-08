@@ -108,7 +108,7 @@ true.
 La salida tiene tres partes. La primera advertencia es consecuencia de la
 edición: el hecho nuevo quedó lejos de los otros hechos de `padre/2`, y
 SWI-Prolog lo señala porque las cláusulas de un predicado separadas suelen ser
-un error de tipeo. La línea con `%` informa que se recompiló el archivo. La
+consecuencia de una edición: un hecho agregado lejos de los demás. La línea con `%` informa que se recompiló el archivo. La
 última advertencia no tiene que ver con la edición: al terminar, `make/0`
 revisa los predicados que se llaman y no están definidos en ninguna parte, y
 encuentra `persona/1`, que `nieto/2` llama. La [sección 13.5](#135-verificar-antes-de-entregar) vuelve sobre esa
@@ -132,8 +132,9 @@ true.
 ```
 
 Sirve para confirmar qué versión de un predicado está cargada después de varios
-`make.`, y para ver los hechos agregados durante la ejecución, que no están en
-ningún archivo.
+`make.`, y para ver los hechos agregados durante la ejecución
+([capítulo 20](../capitulo-20-base-de-datos-dinamica/index.md)), que no están
+en ningún archivo.
 
 ### Buscar en el manual
 
@@ -148,7 +149,6 @@ predicado:
 ```text
 % ISO atom_length/2          True if Atom is an atom of Length characters.
 % ISO atom_chars/2           Similar to atom_codes/2, but CharList is a list ...
-% ISO number_chars/2         Similar to atom_chars/2, but converts between a ...
 ...
 true.
 ```
@@ -179,7 +179,7 @@ programa.
 
 Una preferencia útil es el editor que abre `edit/1`. `edit(abuelo)` abre el
 archivo donde está definido `abuelo/2`, en la línea de su primera cláusula, y
-al cerrarse el editor ejecuta `make/0`. Por defecto usa el editor de la
+al cerrarse el editor ejecuta `make/0`. Si no se configura, usa el editor de la
 variable de entorno `EDITOR`, o el Bloc de notas en Windows. El siguiente
 `init.pl` lo cambia por Visual Studio Code:
 
@@ -197,8 +197,8 @@ variable de entorno `EDITOR`, o el Bloc de notas en Windows. El siguiente
 prolog_edit:edit_command(code, '"%e" --wait --goto "%f:%d"').
 ```
 
-`edit/1` no conoce la línea de comandos de Visual Studio Code, y el archivo se
-la indica agregando una cláusula a `prolog_edit:edit_command/2`, un predicado
+`edit/1` no tiene registrada la línea de comandos de Visual Studio Code, y el
+archivo se la indica agregando una cláusula a `prolog_edit:edit_command/2`, un predicado
 de la biblioteca de edición declarado para eso. `--goto` abre el archivo en la
 línea del predicado, y `--wait` hace que el comando espere a que se cierre el
 archivo: sin esa opción, `edit/1` ejecutaría `make/0` inmediatamente, antes de
@@ -231,8 +231,8 @@ el servidor de lenguaje `lsp_server` en su repositorio de GitHub
 code --profile Prolog --install-extension prolog-lsp-2.2.7.vsix
 ```
 
-La extensión no tiene opciones: arranca `swipl` desde el `PATH` y le pide que
-cargue `library(lsp_server)`.
+La extensión no tiene opciones: arranca `swipl` desde el `PATH` con la orden de
+cargar `library(lsp_server)`.
 
 **La asociación de archivos.** En las preferencias del perfil (*Preferencias:
 abrir configuración de usuario (JSON)*) se declara que `.pl` y `.plt` son
@@ -401,7 +401,20 @@ true.
 
 La advertencia indica el archivo, la línea y la columna de la llamada, y la
 cláusula que la contiene. `list_undefined/0` hace solo la primera de esas
-revisiones, que es la que `make/0` repite al terminar.
+revisiones, que es la que `make/0` repite al terminar:
+
+```prolog
+?- list_undefined.
+```
+
+```text
+Warning: The predicates below are not defined. If these are defined
+Warning: at runtime using assert/1, use :- dynamic Name/Arity.
+Warning:
+Warning: persona/1, which is referenced by
+Warning:        .../revision.pl:29:4: 1-st clause of nieto/2
+true.
+```
 
 !!! example "Patrón 1 — Editar, recargar, probar"
     **Problema.** Después de modificar un archivo, el toplevel sigue ejecutando
@@ -409,7 +422,7 @@ revisiones, que es la que `make/0` repite al terminar.
     predicado.
 
     **Versión ingenua.** Salir de `swipl` y volver a entrar después de cada
-    cambio, y probar a mano algunas consultas.
+    cambio, y repetir algunas consultas una por una.
 
     **Patrón.** El toplevel queda abierto toda la sesión. Cada cambio sigue el
     mismo ciclo: editar y guardar; `make.`; `run_tests.`; y `check.` antes de
@@ -535,8 +548,10 @@ representación por una que distingue los dos casos en la estructura del términ
 Todavía no hay reglas que probar, pero sí hechos que deben ser coherentes entre
 sí: toda inscripción debe corresponder a un alumno y a una materia existentes,
 y toda nota debe ser un entero de 1 a 10 o `null`. `inscripciones.plt` lo
-verifica con las herramientas de la parte I: cada prueba busca un
-contraejemplo, y declara con `[fail]` que no debe encontrarlo.
+verifica con las herramientas de la parte I. Cuatro pruebas buscan un
+contraejemplo y declaran con `[fail]` que no debe existir; las otras dos,
+`las_materias_de_ana` y `requisitos_de_bases_de_datos`, comprueban con
+`all(...)` respuestas conocidas.
 
 ```prolog
 % Ninguna inscripción nombra un legajo que no existe.

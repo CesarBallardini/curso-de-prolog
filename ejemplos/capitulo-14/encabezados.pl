@@ -5,7 +5,8 @@
 % Cada predicado usa un signo de modo que la parte I no necesitaba: ++ (el
 % argumento debe llegar completamente instanciado), -- (debe llegar libre) y
 % @ (no se instancia más de lo que llega). suma_lista/2 declara además su
-% determinación con det/1, que SWI-Prolog verifica en cada llamada.
+% determinación con det/1, que SWI-Prolog verifica en cada llamada, y
+% primero/1 muestra el error de $/1 cuando su objetivo deja una alternativa.
 %
 %?- suma_lista([3, 1, 4], S).
 %?- primer_multiplo(7, 50, N).
@@ -37,3 +38,11 @@ primer_multiplo(De, Desde, N) :-
 %   dos.
 mismo_termino(A, B) :-
     A == B.
+
+%!  primero(-X) is det.
+%
+%   X es el primer elemento de [a, b, c]. $/1 exige que member/2 no deje
+%   alternativas, y member/2 las deja: la llamada produce un error en lugar
+%   de responder.
+primero(X) :-
+    $(member(X, [a, b, c])).

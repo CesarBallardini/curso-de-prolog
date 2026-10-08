@@ -81,4 +81,24 @@ test(mejores_igual, true(R1 == R2)) :-
     mejores(3, R1),
     mejores_2(3, R2).
 
+% Ejercicio 17: el orden estándar contra el orden de aparición.
+test(carreras_ordenadas, true(Cs == [civil, industrial, sistemas])) :-
+    carreras(Cs).
+
+test(carreras_con_aggregate_all, true(Cs == [civil, industrial, sistemas])) :-
+    carreras_2(Cs).
+
+test(carreras_en_orden, true(Cs == [sistemas, civil, industrial])) :-
+    carreras_en_orden(Cs).
+
+% Ejercicio 18: tres páginas de tres filas y una más allá de la última.
+test(primera_pagina, true(Fs == [juan-68, marta-68, ana-41])) :-
+    pagina(1, 3, Fs).
+
+test(ultima_pagina, true(Fs == [sofia-3])) :-
+    pagina(3, 3, Fs).
+
+test(pagina_inexistente, true(Fs == [])) :-
+    pagina(4, 3, Fs).
+
 :- end_tests(soluciones).

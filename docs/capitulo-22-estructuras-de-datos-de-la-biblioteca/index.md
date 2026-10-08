@@ -1,6 +1,6 @@
 # Capítulo 22 — Estructuras de datos de la biblioteca
 
-La parte I escribió a mano los predicados de listas —`largo/2`, `pegar/3`,
+La parte I escribió sus propios predicados de listas —`largo/2`, `pegar/3`,
 `dar_vuelta/2`—, porque escribirlos es la forma de entender la recursión. Un
 programa profesional no los vuelve a escribir: usa los de la biblioteca, que
 están probados, documentados y optimizados. Lo mismo vale para las estructuras
@@ -28,7 +28,7 @@ Al terminar el capítulo, el lector puede:
   un conjunto de visitados.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:20 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:30 h**.
     Resolver los 6 ejercicios marcados con ★: **1:53 h**.
     Resolver los 16 ejercicios del final: **4:58 h**.
 
@@ -83,8 +83,14 @@ igualdad, y `compare(Orden, A, B)` da `<`, `=` o `>`. El
 
 ## 22.3 Ordenar
 
-<!-- ejemplo: capitulo-22/orden.pl predicado: por_edad/1 por_edad_descendente/1 edades_distintas/1 consulta: por_edad(L). -->
+<!-- ejemplo: capitulo-22/orden.pl predicado: edades/1 por_edad/1 por_edad_descendente/1 edades_distintas/1 consulta: por_edad(L). -->
 ```prolog
+%!  edades(-Pares:list(pair)) is det.
+%
+%   Pares son los pares Persona-Edad de la base, en el orden de los hechos.
+edades(Pares) :-
+    findall(P-E, edad(P, E), Pares).
+
 %!  por_edad(-Pares:list(pair)) is det.
 %
 %   Pares son los pares Persona-Edad ordenados por edad, de menor a mayor;
@@ -119,7 +125,8 @@ L = [juan-68, marta-68, ana-41, pedro-39, luis-12, eva-8].
 L = [8, 12, 39, 41, 68].
 ```
 
-`sort/2`, que usa `edades_distintas/1`, viene del [capítulo 17](../capitulo-17-todas-las-soluciones/index.md). Cuatro
+`sort/2`, que `edades_distintas/1` usa, se presentó en el
+[capítulo 17](../capitulo-17-todas-las-soluciones/index.md). Cuatro
 predicados ordenan, y se distinguen por qué hacen con los repetidos:
 
 | Predicado | Orden | Repetidos |
@@ -273,8 +280,9 @@ Hijos = [luis, eva].
 ```
 
 `list_to_assoc/2` construye el árbol, `get_assoc/3` busca, `put_assoc/4`
-agrega o reemplaza, y `assoc_to_list/2`, `assoc_to_keys/2` y `assoc_to_values/2`
-lo recorren en orden de clave. Un assoc es un término: `put_assoc/4` no
+agrega o reemplaza, `del_assoc(Clave, Assoc0, Valor, Assoc)` quita una clave,
+y `assoc_to_list/2`, `assoc_to_keys/2` y `assoc_to_values/2` lo recorren en
+orden de clave. Un assoc es un término: `put_assoc/4` no
 modifica el árbol que recibe, sino que construye uno nuevo, que comparte con
 el anterior todo lo que no cambió. `group_pairs_by_key/2` agrupa pares
 consecutivos con la misma clave: `[juan-ana, juan-pedro]` se vuelve
@@ -295,9 +303,9 @@ escrito en C y cuenta como una inferencia, aunque recorra la lista entera. Para
 comparar predicados de la biblioteca es necesario medir el tiempo, no solo las
 inferencias del [capítulo 16](../capitulo-16-rendimiento/index.md).
 
-`library(rbtrees)` ofrece lo mismo con árboles rojinegros, con una interfaz
-parecida (`rb_new/1`, `rb_insert/4`, `rb_lookup/3`) y algunas operaciones más,
-como borrar una clave.
+`library(rbtrees)` ofrece lo mismo con árboles rojinegros y una interfaz
+parecida (`rb_new/1`, `rb_insert/4`, `rb_lookup/3`, `rb_delete/3`), con otro
+equilibrio entre el costo de buscar y el de insertar.
 
 !!! example "Patrón 24 — Tabla de búsqueda con `assoc`"
     **Problema.** Un programa busca muchas veces valores por una clave: la
@@ -350,7 +358,7 @@ Las operaciones de `library(lists)` sobre listas comunes —`intersection/3`,
 `subtract/3`— hacen lo mismo recorriendo una lista por cada elemento de la
 otra. Con conjuntos grandes, la diferencia es la de la sección anterior.
 `library(nb_set)` ofrece conjuntos que se modifican en su lugar, para
-acumular muchos elementos dentro de un bucle; se usan poco.
+acumular muchos elementos dentro de un bucle; este curso no los usa.
 
 ## 22.7 Dicts
 
@@ -409,6 +417,10 @@ Esa expansión tiene una consecuencia: dentro de una lambda, `P.edad` se evalúa
 en la cláusula que contiene la lambda, antes de que `P` tenga valor, y produce
 un error de instanciación. El ejercicio 7 lo muestra. Una clave inexistente
 produce un error con la notación funcional, y `get_dict/3` falla.
+
+!!! question "Actividad"
+    Predecir y comprobar: `persona(ana, D), get_dict(altura, D, V).` y
+    `persona(ana, D), V = D.altura.`
 
 Los dicts son la representación natural de los objetos de JSON; el
 [capítulo 27](../capitulo-27-archivos-streams-y-formatos/index.md) los lee y los escribe, y el [capítulo 30](../capitulo-30-servicios-web-rest/index.md) los usa en un servicio web.
@@ -511,6 +523,11 @@ visitados los reconozca. La búsqueda es **a lo ancho**: examina primero todos
 los estados a una acción, después los que están a dos, y así; por eso el
 primer plan que encuentra es uno de los más cortos.
 
+!!! question "Actividad"
+    Contar los sucesores de `estado([[c, a], [b]], vacia)` con
+    `aggregate_all(count, sucesor(estado([[c, a], [b]], vacia), _, _), N)` y
+    explicar por qué ninguno es `soltar` ni `apilar`.
+
 <!-- ejemplo: capitulo-22/bloques.pl predicado: plan/3 a_lo_ancho/4 consulta: plan(estado([[c, a], [b]], vacia), estado([[a, b, c]], vacia), Plan). -->
 ```prolog
 %!  plan(+Inicial, +Meta, -Plan:list) is semidet.
@@ -569,22 +586,23 @@ sola vez, y la búsqueda termina aunque el grafo de estados tenga ciclos
     visitados que no se vuelven a encolar. A lo ancho, el primer plan es uno
     de los más cortos.
 
-    **Cuándo no usarlo.** Cuando el espacio de estados es enorme y hace falta
-    una heurística que guíe la búsqueda, como en el [capítulo 40](../capitulo-40-busqueda-y-planificacion/index.md); o
+    **Cuándo no usarlo.** Cuando el espacio de estados es demasiado grande
+    para recorrerlo y hace falta una heurística que guíe la búsqueda, como en
+    el [capítulo 40](../capitulo-40-busqueda-y-planificacion/index.md); o
     cuando el problema se modela mejor con restricciones
     ([capítulo 23](../capitulo-23-programacion-con-restricciones/index.md)).
 
 !!! success "Criterios de calidad"
     | Criterio | En este capítulo |
     |---|---|
-    | C4 | los predicados que ordenan son `det`: `por_edad/1`, `ranking/1` y `plan/3` no dejan alternativas, y sus pruebas no declaran `nondet` |
+    | C4 | `por_edad/1` y `ranking/1` son `det`, y `plan/3` `semidet`: ninguno deja alternativas pendientes, y sus pruebas no declaran `nondet` |
     | C6 | el azar está en un solo predicado, `minas_al_azar/4`; `tablero/4` recibe las minas como argumento y es una relación; las pruebas de lo aleatorio fijan la semilla en `setup` |
 
 ## 22.11 Buscaminas: el tablero como tabla de búsqueda
 
-Los capítulos [17](../capitulo-17-todas-las-soluciones/index.md) y [18](../capitulo-18-orden-superior/index.md) representaron el tablero con hechos `mina/2`. Un juego de
-verdad necesita tableros distintos en cada partida, que se construyen durante
-la ejecución, y consulta el valor de una celda muchas veces: es el [Patrón 24](../patrones.md#24-tabla-de-busqueda-con-assoc).
+Los capítulos [17](../capitulo-17-todas-las-soluciones/index.md) y [18](../capitulo-18-orden-superior/index.md) representaron el tablero con hechos `mina/2`. Un juego
+completo necesita un tablero distinto en cada partida, que se construye
+durante la ejecución, y consulta el valor de una celda muchas veces: es el [Patrón 24](../patrones.md#24-tabla-de-busqueda-con-assoc).
 Un tablero es `tablero(Filas, Columnas, Celdas)`, con `Celdas` un assoc de cada
 celda a `mina` o a la cantidad de minas vecinas, calculada una sola vez.
 
@@ -622,6 +640,10 @@ valor(tablero(_, _, Celdas), Celda, Valor) :-
     get_assoc(Celda, Celdas, Valor).
 ```
 
+`vecina/4`, en el mismo archivo, enumera las celdas que rodean a una dentro
+del tablero: es la del [capítulo 18](../capitulo-18-orden-superior/index.md)
+con la celda y su vecina como pares `Fila-Columna`. `mostrar/1`, también del
+archivo, escribe el tablero con `*` en las minas:
 `tablero(3, 4, [1-1, 2-3], T), mostrar(T)` escribe:
 
 ```text
@@ -716,7 +738,6 @@ materias_de(Indice, Legajo, Materias) :-
 ```prolog
 ?- ranking(R).
 R = [101-8.5, 104-8, 103-6, 106-4.5, 102-4].
-
 ```
 
 Con el índice de `indice_por_alumno(I)`, `materias_de(I, 104, M)` da
@@ -811,7 +832,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | pares y `keysort/2` | `Clave-Valor`; ordenar por la clave, de forma estable |
 | `library(pairs)`: `map_list_to_pairs/3`, `pairs_keys_values/3`, `pairs_keys/2`, `pairs_values/2`, `group_pairs_by_key/2` | armar pares, separar claves y valores, agrupar los valores de claves consecutivas iguales |
 | `clumped/2` | las rachas de elementos iguales consecutivos, como pares `Elemento-Cantidad`; después de `msort/2`, las frecuencias |
-| `library(assoc)` | árbol balanceado de búsqueda: `list_to_assoc/2`, `get_assoc/3`, `put_assoc/4`; `empty_assoc/1` (en las soluciones); `assoc_to_keys/2`, `assoc_to_values/2` |
+| `library(assoc)` | árbol balanceado de búsqueda: `list_to_assoc/2`, `get_assoc/3`, `put_assoc/4`, `del_assoc/4`; `empty_assoc/1` (en las soluciones); `assoc_to_keys/2`, `assoc_to_values/2` |
 | `library(ordsets)`: `list_to_ord_set/2`, `ord_union/3`, `ord_intersection/3`, `ord_subtract/3`, `ord_memberchk/2`, `ord_add_element/3` | conjuntos como listas ordenadas: conversión desde una lista, unión, intersección, diferencia, pertenencia, agregado |
 | dicts | `_{clave: valor}`, `get_dict/3`, `put_dict/4`, `D.clave` |
 | `option/3` | una opción de una lista, con valor por omisión |
@@ -830,4 +851,4 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | El tablero en la terminal, con un tablero al azar | [capítulo 28](../capitulo-28-programas-de-linea-de-comandos/index.md) |
 | Dicts en un servicio web | [capítulo 30](../capitulo-30-servicios-web-rest/index.md) |
 | Búsqueda con heurísticas; el mundo de bloques con análisis de medios y fines | [capítulo 40](../capitulo-40-busqueda-y-planificacion/index.md) |
-| Los juegos de dos jugadores | [capítulo 41](../capitulo-41-juegos/index.md) |
+| La búsqueda en un espacio de estados, en los juegos de dos jugadores | [capítulo 41](../capitulo-41-juegos/index.md) |

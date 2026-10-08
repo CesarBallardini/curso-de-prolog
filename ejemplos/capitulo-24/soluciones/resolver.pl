@@ -3,7 +3,7 @@
 % Capítulo 24 - Solución del ejercicio 11: la deducción del Buscaminas como
 % módulo.
 %
-% El modelo de restricciones del capítulo 22. Usa vecina/4 del módulo
+% El modelo de restricciones del capítulo 23. Usa vecina/4 del módulo
 % tablero en lugar de definir la suya.
 %
 % solo-local: SWISH no admite módulos propios en un programa.
@@ -33,10 +33,11 @@ deducir(Lineas, Total, Seguras, Minas) :-
     sum(Bs, #=, Total),
     clasificar(Ocultas, Seguras, Minas).
 
-%!  modelo(+Lineas:list(string), -Ocultas:list(pair)) is det.
+%!  modelo(+Lineas:list(string), -Ocultas:list(pair)) is semidet.
 %
 %   Ocultas son pares Celda-B, uno por celda oculta, con B en 0..1 y
-%   restringido por los números de las celdas descubiertas.
+%   restringido por los números de las celdas descubiertas. Falla si algún
+%   número no se puede cumplir.
 modelo(Lineas, Ocultas) :-
     length(Lineas, Filas),
     Lineas = [Primera|_],

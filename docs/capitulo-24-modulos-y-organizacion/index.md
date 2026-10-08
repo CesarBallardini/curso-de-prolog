@@ -19,7 +19,8 @@ organizada en módulos. El proyecto se divide en cinco.
 
 Al terminar el capítulo, el lector puede:
 
-- escribir un módulo con su interfaz, e importarlo entero o en parte;
+- escribir un módulo con su interfaz, importarlo entero o en parte, y
+  reexportarlo;
 - calificar una llamada con el nombre del módulo, y explicar la autocarga;
 - declarar los meta-predicados de un módulo, y explicar qué ocurre si no se
   declaran;
@@ -30,7 +31,7 @@ Al terminar el capítulo, el lector puede:
 !!! info "Tiempo estimado"
     Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **0:42 h**.
     Resolver los 6 ejercicios marcados con ★: **1:53 h**.
-    Resolver los 13 ejercicios del final: **3:47 h**.
+    Resolver los 15 ejercicios del final: **4:00 h**.
 
 ## 24.1 Por qué módulos
 
@@ -47,6 +48,14 @@ curso ya encontró:
 - las pruebas de plunit corren en su propio módulo, y por eso el
   [capítulo 20](../capitulo-20-base-de-datos-dinamica/index.md) tuvo que calificar `assertz(user:padre(z, w))`.
 
+Al consultar un segundo archivo que define `p/1`:
+
+```text
+Warning: …/a2.pl:1:
+Warning:    Redefined static procedure p/1
+Warning:    Previously defined at …/a1.pl:1
+```
+
 Un módulo separa lo que ofrece de cómo lo hace. Es la misma idea de los
 encabezados del [capítulo 14](../capitulo-14-estilo-y-documentacion/index.md), aplicada a un conjunto de predicados: la
 interfaz se declara, y lo que no se declara se puede cambiar sin avisar.
@@ -54,7 +63,8 @@ interfaz se declara, y lo que no se declara se puede cambiar sin avisar.
 ## 24.2 `:- module/2` y `:- use_module/1,2`
 
 Un módulo empieza con la directiva `module(Nombre, Exporta)`, antes que
-cualquier otra cláusula. `Exporta` es la lista de los predicados de su
+cualquier otra cláusula; en los archivos del curso solo la precede la
+directiva `encoding/1`. `Exporta` es la lista de los predicados de su
 interfaz, con su aridad; los no terminales de una gramática se escriben con
 `//`.
 
@@ -84,7 +94,16 @@ como si estuvieran definidos allí. El nombre es el del archivo, sin la
 extensión, relativo al archivo que lo carga. `use_module/2` importa solo una
 parte: `:- use_module(library(lists), [append/3, last/2]).` importa esos dos.
 También admite `except(Lista)`, para importar todo menos algunos, y
-`append/3 as pegar`, para importar con otro nombre.
+`append/3 as pegar`, para importar con otro nombre:
+
+<!-- contexto: capitulo-24/soluciones/renombrar.pl -->
+```text
+?- use_module(library(lists), [append/3 as pegar]).
+true.
+
+?- pegar([a], [b], L).
+L = [a, b].
+```
 
 <!-- ejemplo: capitulo-24/inscripciones/reglas.pl fragmento: :- module(reglas .. requisitos_guardados/2. consulta: inscripcion_posible(102, am2, Resultado). -->
 ```prolog
@@ -227,7 +246,7 @@ justamente lo que ocurre en un programa organizado en módulos.
 
 Un programa se divide en módulos siguiendo sus responsabilidades, y cada
 módulo importa los que necesita. Las dependencias forman un grafo sin ciclos:
-un módulo de más abajo no conoce a los de más arriba.
+un módulo de más abajo no depende de los de más arriba.
 
 ```mermaid
 flowchart BT
@@ -242,7 +261,7 @@ flowchart BT
 
 Un archivo principal carga todos los módulos, y es lo que carga quien usa el
 programa. `:- initialization(Objetivo)` ejecuta un objetivo cuando termina de
-cargarse el archivo; el proyecto lo usa para revisar los datos:
+cargarse el archivo; el proyecto lo usa para verificar los datos:
 
 <!-- ejemplo: capitulo-24/inscripciones/inscripciones.pl fragmento: :- use_module(datos) .. initialization(comprobar_datos). consulta: ejecutar("inscribir a 104 en sintaxis", Respuesta). -->
 ```prolog
@@ -259,13 +278,21 @@ Cada módulo tiene su propio archivo de pruebas, que se carga junto con él: las
 pruebas de `reglas` no necesitan cargar el lenguaje de comandos. Un archivo de
 pruebas ve los predicados exportados por el módulo que prueba; si necesita los
 de otro módulo, lo importa, como `reglas.plt`, que importa `datos` para usar
-`estado/1` y `restaurar/1`:
+`estado/1` y `restaurar/1`, e `informes` para `inscriptos/2`:
 
 ```prolog
 % Las pruebas cargan los módulos que usan además del que prueban.
 :- use_module(datos).
 :- use_module(informes).
 ```
+
+La importación no es transitiva: `informes` importa `reglas`, y no recibe por
+eso lo que `reglas` importa de `datos`; para usar `alumno/4` importa `datos`
+también, como muestra la tabla de la
+[sección 24.8](#248-el-proyecto-cinco-modulos). Un módulo que ofrece la
+interfaz de otro, además de la propia, lo declara con `:- reexport(Archivo).`
+o `:- reexport(Archivo, Lista).`: importa y vuelve a exportar; un módulo que
+solo reexporta hace de fachada, y los ejercicios 8 y 13 escriben dos.
 
 !!! question "Actividad"
     Quitar `:- use_module(datos).` de `reglas.plt` y ejecutar sus pruebas con
@@ -277,15 +304,26 @@ de otro módulo, lo importa, como `reglas.plt`, que importa `datos` para usar
 La biblioteca de SWI-Prolog es un conjunto de módulos: `library(lists)` es el
 archivo `lists.pl` del directorio de la biblioteca, que exporta `append/3` y
 los demás. `library(Nombre)` es un **alias**: un nombre que se resuelve en un
-directorio, definido con `file_search_path/2`. Un programa puede definir sus
-propios alias; el ejercicio 10 define uno para el directorio del proyecto.
+directorio, definido con `file_search_path/2`:
+
+```text
+?- file_search_path(library, D).
+D = app_config(lib) ;
+D = swi(library) ;
+D = swi(library/clp) ;
+…
+```
+
+Las respuestas siguientes dependen de la instalación. Un programa puede
+definir sus propios alias; el ejercicio 10 define uno para el directorio del
+proyecto.
 
 Los **packs** son bibliotecas que no vienen con SWI-Prolog y se instalan
 aparte. El [capítulo 15](../capitulo-15-control/index.md) instaló `reif` con `pack_install(reif)`, y el
 [capítulo 13](../capitulo-13-el-entorno-de-trabajo/index.md), `lsp_server`. `pack_list/1` busca packs por nombre,
 `pack_info/1` describe uno instalado, y `pack_remove/1` lo quita. Un pack se
 usa como cualquier módulo de la biblioteca: `:- use_module(library(reif)).`.
-Antes de instalar uno, conviene revisar su licencia y su versión, como el
+Antes de instalar uno, conviene verificar su licencia y su versión, como el
 [capítulo 13](../capitulo-13-el-entorno-de-trabajo/index.md) hizo con `lsp_server`.
 
 ## 24.7 Módulos y SWISH
@@ -409,6 +447,11 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 12. **(2)** Importar `append/3` con el nombre `pegar/3`.
 13. **(2)** Escribir un módulo `consultas` que reúna, con `reexport/1`, los
     informes y el calendario.
+14. **(1)** Con `set_prolog_flag(autoload, false).` al comienzo de la sesión,
+    cargar `informes.pl` con `use_module/1` y consultar `ranking(R).` ¿Qué
+    error se produce, y qué directiva lo resuelve?
+15. **(1)** Escribir en `inscripciones.pl` una directiva `initialization/1`
+    que informe cuántas inscripciones hay al terminar la carga.
 
 ## Resumen
 

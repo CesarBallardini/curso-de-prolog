@@ -27,7 +27,7 @@ test(por_longitud_estable, true(L == [[x], [y], [a, b]])) :-
 
 % Ejercicio 4
 test(anagramas, true(L == [amor, mora, ramo])) :-
-    anagramas(roma, [amor, mora, ramo, rama, roma], L).
+    anagramas(roma, [amor, mora, ramo, rama, roma, aroma], L).
 
 % Ejercicio 5
 test(escuela, true(L2-L1-L3 == [eva, luis]-[ana]-[])) :-

@@ -37,7 +37,7 @@ saludo_a(N) -->
 
 %!  saludo_a_traducido(?N, ?S0, ?S) is nondet.
 %
-%   La traducción de saludo_a//1 escrita a mano: los códigos de "hola " al
+%   La traducción de saludo_a//1 escrita sin -->: los códigos de "hola " al
 %   principio de S0, y el nombre en lo que sigue.
 saludo_a_traducido(N, S0, S) :-
     S0 = [0'h, 0'o, 0'l, 0'a, 0' |S1],
@@ -271,10 +271,10 @@ nombre_de_mes(Mes) -->
 
 % --- Ejercicio 11 -------------------------------------------------------------
 
-%!  enumeracion(-Nombres:list)// is semidet.
+%!  enumeracion(?Nombres:list)// is semidet.
 %
 %   Los nombres separados por comas, con y antes del último: "ana",
-%   "ana y luis", "ana, luis y eva". Solo analiza: csym//1 no genera.
+%   "ana y luis", "ana, luis y eva", en los dos sentidos.
 enumeracion([N]) -->
     csym(N).
 enumeracion([N1, N2]) -->

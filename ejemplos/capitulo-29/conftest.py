@@ -1,4 +1,4 @@
-"""Configuración de pytest para los ejemplos del capítulo 28.
+"""Configuración de pytest para los ejemplos del capítulo 29.
 
 Janus inicia un Prolog dentro del proceso de Python. En Windows necesita la
 variable SWI_HOME_DIR con el directorio de SWI-Prolog; si no está definida, se

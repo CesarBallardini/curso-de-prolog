@@ -25,7 +25,7 @@ fallaría en una máquina más lenta o cargada sin que el programa haya cambiado
 
 `pegar/3` no tiene acumulador y aun así corre en espacio constante: la condición
 no es tener un acumulador, sino que no quede nada por hacer después de la
-llamada recursiva. La plantilla 12 construye el resultado en la cabeza, antes de
+llamada recursiva. La [plantilla 12](../plantillas.md#12-construir-una-lista-durante-el-recorrido-de-otra) construye el resultado en la cabeza, antes de
 la llamada.
 
 ## 3
@@ -55,13 +55,13 @@ en la [sección 16.2](index.md#162-la-pila-y-la-recursion).
 
 ## 4
 
-El acumulador es el primer argumento: en las dos cláusulas es un número, y la
-tabla del primer argumento no las distingue. Al llegar a la lista vacía, la
-primera cláusula responde y la segunda queda pendiente: `contar(0, [a, b, c], N)`
-responde `N = 3 ;` y después `false.` SWI-Prolog construye a pedido una tabla
-para el segundo argumento, y por eso las alternativas no se acumulan en cada
-paso; queda solo la del final, que alcanza para que el predicado no cumpla su
-`det`.
+El acumulador es el primer argumento, y en las dos cabezas es una variable: la
+tabla del primer argumento no tiene con qué distinguirlas. Mientras la lista no
+está vacía, la primera cláusula no unifica y la segunda es la última: no queda
+nada pendiente, y por eso la pila no crece (0 MB adicionales con 300 000
+elementos). Al llegar a la lista vacía, la primera cláusula responde y la
+segunda queda pendiente: `contar(0, [a, b, c], N)` responde `N = 3 ;` y después
+`false.`, lo que basta para que el predicado no cumpla su `det`.
 
 <!-- ejemplo: capitulo-16/soluciones.pl predicado: contar_bien/2 contar_desde/3 consulta: contar_bien([a, b, c], N). -->
 ```prolog
@@ -106,11 +106,13 @@ todos_estan_corte([X|Resto], L) :-
     todos_estan_corte(Resto, L).
 ```
 
-Con 300 000 elementos buscados, `todos_estan_corte/2` no ocupa memoria adicional,
-contra los 131 MB de `todos_estan/2`. El corte es **verde**: el conjunto de
+Con la lista de `copias(300000, a, B)` de `indexacion.pl` como buscados,
+`statistics(stack, S)` antes y después de `todos_estan_corte(B, [a, b])` no
+cambia, contra los 134 MB que crece con `todos_estan(B, [a, b])`. El corte es
+**verde**: el conjunto de
 respuestas es el mismo —la relación se cumple o no—, y lo que desaparece son las
 repeticiones que `todos_estan/2` producía cuando un elemento aparecía varias
-veces en la lista. Es la misma solución que `memberchk/2`, escrita a mano.
+veces en la lista. Es la misma solución que `memberchk/2`, escrita de manera explícita.
 
 ## 6
 
@@ -129,6 +131,12 @@ aprobada_rapida: 7 inferencias
 
 La predicción se cumple: el costo de la lenta crece en proporción a los datos,
 y el de la rápida es constante.
+
+La actividad de la [sección 16.5](index.md#165-el-orden-de-los-objetivos-medido) muestra el mismo crecimiento un paso
+antes: con 500 alumnos, `aprobada_lenta/2` usa 756 inferencias y con 5 000,
+7 506, porque recorre todas las inscripciones de la materia y hay una por
+alumno; `aprobada_rapida/2` usa 7 en los dos casos, porque la indexación
+encuentra al alumno por su nombre y solo quedan sus cinco inscripciones.
 
 ## 7
 
@@ -187,6 +195,10 @@ intermedias. Con `dar_vuelta_acc/2` y un millón de elementos, el perfil muestra
 decenas de milisegundos: la optimización de la última llamada reutiliza la
 misma llamada para todo el recorrido, y el profiler, que cuenta entradas a
 predicados, ve una sola.
+
+En la actividad de la [sección 16.8](index.md#168-el-profiler), de una ejecución a otra cambian el
+tiempo total y los porcentajes, que dependen de la máquina y del momento; las
+2 000 entradas de `append/3`, una por elemento, no cambian.
 
 ## 10
 

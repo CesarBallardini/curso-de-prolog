@@ -2,7 +2,7 @@
 
 Es el único módulo del paquete que usa Janus. La partida viaja entre los dos
 lenguajes como un janus.Term, que el adaptador guarda y devuelve en cada
-jugada sin mirarlo.
+jugada sin examinarlo.
 """
 
 from pathlib import Path

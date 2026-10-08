@@ -21,12 +21,13 @@ lista vacía: `janus.query` no devuelve ninguna respuesta.
 
 ```python
 janus.query_once('padre(juan, X), X = pedro')  # {'truth': True, 'X': 'pedro'}
-janus.query_once('padre(juan, X), X = luis')  # {'truth': False}
+janus.query_once('padre(juan, X), X = luis')  # {'truth': False, 'X': None}
 ```
 
 `query_once` devuelve la primera respuesta de la conjunción completa: el
 backtracking pasa de `ana` a `pedro` antes de responder. Cuando la consulta no
-se cumple, el diccionario solo tiene `truth`, sin las variables.
+se cumple, `truth` es `False` y cada variable de la consulta queda con el
+valor `None`.
 
 ## 3
 
@@ -110,6 +111,15 @@ término compuesto que no cruza a Python; su nombre, un átomo, sí. `_Formal`
 queda fuera de la respuesta por empezar con `_`, y `error.term`, el
 `janus.Term` de la excepción, vuelve a Prolog como el término original.
 
+**Actividad de la [sección 29.5](index.md#295-como-cruzan-los-datos)**: los
+elementos de la respuesta son de tipo `str`, `str`, `int`, `float`, `tuple`
+(`('a', 1)`) y `dict`. `X = f(x)` y `X = f(_)` lanzan `janus.PrologError`
+con el mensaje ``Domain error: `py_term' expected, found `f(x)'`` (con la
+variable sin instanciar en el segundo caso), y `X = _` lanza la misma
+excepción con `Arguments are not sufficiently instantiated`. El error se
+evita envolviendo el término, `X = prolog(f(x))`, que llega como un
+`janus.Term`, o nombrando la variable `_X`, que no cruza a Python.
+
 ## 8
 
 ```python
@@ -150,9 +160,16 @@ Con `"uno dos tres cuatro cinco"` y un ancho de 9, las líneas son
 `['uno dos', tres, cuatro, cinco]`: las cadenas de Python llegan a Prolog como
 átomos. El argumento con nombre se escribe `width = Ancho`.
 
+**Actividad de la [sección 29.8](index.md#298-python-desde-prolog)**: con
+`library(janus)` cargada, `py_call(math:sqrt(2), X)` responde
+`X = 1.4142135623730951`. Si la carga falla en Windows con
+`path('python3.dll') does not exist`, el directorio de la instalación de
+Python en el `PATH` resuelve la carga, y la consulta responde igual en una
+terminal nueva.
+
 ## 11
 
-<!-- ejemplo: capitulo-29/soluciones.pl predicado: a_json/2 consulta: envolver("uno dos tres cuatro cinco", 9, Lineas). -->
+<!-- ejemplo: capitulo-29/soluciones.pl predicado: a_json/2 consulta: a_json(_{b: 1, a: [1, 2], c: "x"}, Texto). -->
 ```prolog
 %!  a_json(+Dict:dict, -Texto:atom) is det.
 %

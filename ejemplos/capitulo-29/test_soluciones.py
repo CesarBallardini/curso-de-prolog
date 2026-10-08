@@ -1,4 +1,4 @@
-"""Pruebas de las soluciones del capítulo 28."""
+"""Pruebas de las soluciones del capítulo 29."""
 
 from pathlib import Path
 

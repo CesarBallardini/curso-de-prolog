@@ -2,7 +2,7 @@
 
 % Capítulo 26 - Solución del ejercicio 11: probar lo que usa el azar.
 %
-% El tablero del capítulo 21. Las pruebas, en soluciones_buscaminas.plt, fijan
+% El tablero del capítulo 22. Las pruebas, en soluciones_buscaminas.plt, fijan
 % la semilla para comparar con un resultado conocido, y recorren muchas
 % semillas para comprobar propiedades que valen para cualquier tablero.
 %

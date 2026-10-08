@@ -44,7 +44,8 @@ caso(101, pp, rechazada(ya_la_cursa)).
 caso(102, am2, rechazada(falta(am1))).
 caso(105, log, rechazada(sin_vacantes)).
 
-test(inscripcion_posible, [forall(caso(L, M, Esperado)), true(R == Esperado)]) :-
+test(inscripcion_posible,
+     [forall(caso(L, M, Esperado)), true(R == Esperado)]) :-
     inscripcion_posible(L, M, R).
 
 :- end_tests(tabla_de_inscripciones).

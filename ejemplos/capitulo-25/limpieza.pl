@@ -5,7 +5,7 @@
 % abrir/1 y cerrar/1 simulan un recurso, como un archivo o una conexión:
 % abierto/1 registra los que están abiertos. usar/2 abre el recurso, ejecuta
 % el objetivo y lo cierra, tanto si el objetivo tiene éxito como si falla o
-% produce un error. contar_lineas/2 hace lo mismo con un stream de verdad,
+% produce un error. contar_lineas/2 hace lo mismo con un stream real,
 % sobre una cadena.
 %
 % solo-local: el sandbox de SWISH no permite abrir streams, ni sobre cadenas.
@@ -29,8 +29,8 @@ cerrar(Recurso) :-
 
 %!  usar(+Recurso, :Objetivo) is semidet.
 %
-%   Abre Recurso, ejecuta Objetivo una vez y cierra Recurso, pase lo que pase
-%   con Objetivo: éxito, falla o error.
+%   Abre Recurso, ejecuta Objetivo una vez y cierra Recurso, en cualquiera
+%   de los tres desenlaces de Objetivo: éxito, falla o error.
 usar(Recurso, Objetivo) :-
     setup_call_cleanup(abrir(Recurso),
                        once(Objetivo),
