@@ -82,6 +82,9 @@ docs/                     el curso; un directorio por capítulo, con index.md y 
   plantillas.md             las formas de programa de la parte I, reunidas
   patrones.md               los patrones de las partes II a IV (se regenera con make patterns w=1)
   lecturas.md               las lecturas complementarias
+  asistente.md              «Preguntar al curso»: qué hace el panel de preguntas y cómo busca
+  javascripts/assistant/    el panel de preguntas, que corre en el navegador de quien lee
+  vendor/                   KaTeX (fórmulas) y mermaid (diagramas), con sus licencias MIT: el sitio y los PDF no dependen de un CDN
   pdf.md                    el apéndice B: los enlaces a los PDF de cada capítulo
 ejemplos/                 los ejemplos, un directorio por capítulo
   capitulo-01/familia.pl    el programa
@@ -89,6 +92,9 @@ ejemplos/                 los ejemplos, un directorio por capítulo
 diapositivas/             las diapositivas de cada capítulo: capitulo-01.md (fuente) y capitulo-01.odp
   imagenes/capitulo-01/     sus ilustraciones; imagenes/CREDITOS.md, las fotografías y sus licencias
 tools/                    las herramientas (en inglés)
+  assistant/                el panel de preguntas: sus palabras de búsqueda (keywords.json), la herramienta
+                            que las prepara y reúne (keywords.py), el hook que escribe el índice del sitio
+                            (index_hook.py), la evaluación de la búsqueda y las pruebas del panel (tests/)
 references/               material de consulta: cursos, banco de ejercicios, pares SQL/Prolog
 books/                    las conversiones a Markdown de los libros fuente (los PDF no se versionan)
 .github/workflows/        la integración continua y la publicación del sitio
@@ -335,20 +341,21 @@ make clean-pdf   # borrar los PDF generados
 
 ## Objetivos de make
 
-`make` sin argumentos lista todos los objetivos. Qué hace cada uno:
+`make` sin argumentos, o `make help`, lista todos los objetivos. Qué hace cada uno:
 
 | Objetivo | Qué hace |
 |---|---|
 | **Entorno** | |
 | `make install` | Crea `.venv` exactamente desde `uv.lock` e instala los hooks de git (pre-commit, mensaje del commit, nombre de la rama). |
 | `make browser` | Descarga el Chromium headless que usan los PDF y las pruebas de páginas web con Playwright. |
+| `make vendor` | Descarga de npm las bibliotecas que el sitio sirve por su cuenta, KaTeX y mermaid, en las versiones que fija `tools/vendor.toml`, verifica su integridad y las copia en `docs/vendor/`. Ya están en el repositorio: hace falta solo para cambiar una versión o restaurar los archivos. Requiere red. |
 | **Ejemplos y texto** | |
 | `make test` | Carga cada `.pl` con su `.plt` y ejecuta sus pruebas plunit; un `Warning:` cuenta como falla. `e=familia` o `e=capitulo-09` limita la corrida. |
 | `make swish` | Verifica con `library(sandbox)` que cada ejemplo se puede ejecutar en SWISH, o que declara con `% solo-local:` por qué no. |
 | `make sync` | Copia al texto todos los bloques que declaran que vienen de `ejemplos/`. |
 | `make transcripts` | Ejecuta cada consulta `?- …` del texto y compara la cantidad de respuestas y el terminador con lo que muestra la página. |
 | `make time` | Recalcula las tres cifras de tiempo de cada capítulo y avisa cuáles se apartan de las publicadas; con `-v`, muestra las del modelo. |
-| `make math` | Analiza cada fórmula con el mismo KaTeX que carga el sitio. |
+| `make math` | Analiza cada fórmula con el mismo KaTeX que carga el sitio, el que está en `docs/vendor/katex-0.16.11/` (los PDF usan esos mismos archivos). |
 | `make appendix` | Ejecuta las pruebas de pytest de los capítulos con Python: 29 (Janus), 30 y 31 (los clientes de los servicios) y 36 (las páginas web, con Playwright). |
 | `make windows` | Ejecuta las pruebas de las ventanas XPCE del capítulo 36 con `swipl-win`. Solo en la máquina propia: CI no tiene XPCE. |
 | `make sql` | Ejecuta los pares de consultas SQL y Prolog del banco (`references/ejercicios/sql-prolog/`) y compara los resultados. |
@@ -360,7 +367,9 @@ make clean-pdf   # borrar los PDF generados
 | `make patterns` | Verifica que `docs/patrones.md` coincide con los recuadros «Patrón» de los capítulos; `make patterns w=1` lo regenera. |
 | **Sitio y PDF** | |
 | `make docs` | Construye el sitio en `site/` con `--strict`: una advertencia es un error. No genera los PDF: enlaza solo los que ya existen. |
-| `make mermaid` | Construye el sitio y dibuja cada diagrama mermaid en Chromium, como lo ve un lector: falla si un diagrama no se dibuja, sale vacío o muestra `<br/>` o una entidad HTML como texto, y avisa si un rótulo queda cortado, dos nodos se superponen o el diagrama se achica tanto que no se lee. `e=capitulo-05` limita la corrida; `--shots DIR`, por línea de comandos, guarda una imagen de cada diagrama. Requiere red (mermaid viene de su CDN). |
+| `make mermaid` | Construye el sitio y dibuja cada diagrama mermaid en Chromium, como lo ve un lector: falla si un diagrama no se dibuja, sale vacío o muestra `<br/>` o una entidad HTML como texto, y avisa si un rótulo queda cortado, dos nodos se superponen o el diagrama se achica tanto que no se lee. `e=capitulo-05` limita la corrida; `--shots DIR`, por línea de comandos, guarda una imagen de cada diagrama. Usa el mermaid que el sitio incluye en `docs/vendor/`, sin red. |
+| `make assistant-test` | Construye el sitio y ejecuta las pruebas del panel «Preguntar al curso»: unitarias, de integración sobre el sitio construido, y e2e con Playwright en un navegador real (el módulo de búsqueda y las especificaciones Gherkin del panel). `m=unit`, `m=integration`, `m=e2e` o `m=bdd` elige un grupo; `b=firefox` cambia de navegador; `k=` filtra por nombre. |
+| `make assistant-evaluate` | Mide la búsqueda del panel con un conjunto de preguntas a ciegas (`s=` el directorio con `truth.json` y `out.json`; `k=` otro archivo de palabras de búsqueda): aciertos en el primer lugar y entre los cinco primeros, con y sin palabras de búsqueda. |
 | `make docs-serve` | Sirve el sitio en la máquina propia y lo recarga con cada cambio; `DIRECCION=` cambia la dirección. |
 | `make pdf` | Genera el PDF de cada capítulo y de sus soluciones, solo los que cambiaron. Se ejecuta antes de `make docs` para un sitio con todos los PDF. |
 | `make pldoc` | Regenera las páginas PlDoc de los ejemplos que enlaza el capítulo 14. |
@@ -371,8 +380,10 @@ make clean-pdf   # borrar los PDF generados
 | **Python** | |
 | `make lint` | Ejecuta ruff (reglas y formato) sobre todo el Python del repositorio, sin modificar nada. |
 | `make format` | Aplica el formato de ruff y las correcciones que ruff hace solo. |
+| `make types` | Verifica los tipos de las herramientas del panel de preguntas (`tools/assistant/`) con pyright y pyrefly. |
 | **Conjunto y limpieza** | |
 | `make check` | Todo lo que tiene que estar verde antes de un commit (detalle en «Verificación»). |
+| `make vendor-check` | Verifica, sin red, que `docs/vendor/` coincide con `tools/vendor.toml` y `tools/vendor.lock.json` y que `mkdocs.yml` carga esas versiones. Forma parte de `make check`. |
 | `make clean` | Borra `site/` y los restos de Python. |
 | `make clean-pdf`, `make clean-pldoc` | Borran los PDF y las páginas PlDoc generados. |
 
@@ -389,6 +400,7 @@ orden, de lo más barato a lo más costoso:
 | `make swish` | cada ejemplo es aceptado por el sandbox de SWISH, o declara por qué no puede serlo |
 | `make transcripts` | cada consulta `?- …` del texto se ejecuta y se comparan la cantidad de respuestas y el terminador |
 | `make math`, `make time` | las fórmulas y las cifras de tiempo |
+| `make vendor-check` | `docs/vendor/` coincide con lo que fijan `tools/vendor.toml` y `tools/vendor.lock.json`, y `mkdocs.yml` carga esas versiones (sin red) |
 | comparación de bloques | el texto coincide con los archivos de `ejemplos/` (sin modificar nada) |
 | `make docs` | el sitio se construye con `--strict` |
 
@@ -402,8 +414,9 @@ make test e=capitulo-09    # un capítulo completo
 make transcripts e=capitulo-07
 ```
 
-`make check` no incluye `make lint`, `make appendix` ni `make windows`: se
-ejecutan aparte, cuando se tocó Python, un capítulo con Python o las ventanas.
+`make check` no incluye `make lint`, `make types`, `make appendix`,
+`make assistant-test` ni `make windows`: se ejecutan aparte, cuando se tocó
+Python, el panel de preguntas, un capítulo con Python o las ventanas.
 Los PDF no se versionan: CI los regenera y los publica junto con el sitio.
 
 La integración continua se divide en cuatro flujos, cada uno con su insignia
@@ -415,8 +428,9 @@ Ejemplos y la construcción de los PDF de un pull request verifican solo los
 capítulos que un cambio puede afectar. `tools/ci-parts.py` asigna cada archivo
 modificado a su capítulo y agrega los capítulos cuyos ejemplos o páginas cargan
 archivos de uno modificado; esas dependencias se leen de las fuentes en cada
-ejecución. Un cambio en `tools/`, `.github/`, el `Makefile`, `pyproject.toml`,
-`uv.lock` o `ruff.toml` selecciona todos los capítulos, y uno que no pertenece a
+ejecución. Un cambio en `tools/` (salvo `tools/assistant/`, que solo leen la
+construcción del sitio y las pruebas del panel), `.github/`, el `Makefile`,
+`pyproject.toml`, `uv.lock` o `ruff.toml` selecciona todos los capítulos, y uno que no pertenece a
 ningún capítulo (`docs/licencia.md`, `mkdocs.yml`, este archivo) no selecciona
 ninguno. Ejemplos corre un trabajo por parte del libro, en paralelo, y el
 trabajo `resultado` resume todos en una sola verificación. Los lunes, y a mano
@@ -431,7 +445,7 @@ make pdf e="capitulo-05 capitulo-07"                            # los PDF de dos
 |---|---|
 | **Ejemplos** | `make test`, `make transcripts` y `make swish` de los capítulos seleccionados, un trabajo por parte; `make appendix` cuando se selecciona el capítulo 29, 30, 31 o 36; `make lint` siempre |
 | **Texto** | `make part-1`, `check-part-2 --strict`, `make shown`, `make links`, `make patterns`, `make math`, `make time`, la comparación de bloques, `make docs` y el dibujo de cada diagrama mermaid (`tools/check-mermaid.py`) |
-| **PDF y sitio** | `make pdf` y el sitio, con los PDF de cada capítulo y las diapositivas; en un pull request, solo los PDF de los capítulos seleccionados; en `main`, todos y la publicación |
+| **PDF y sitio** | `make pdf` y el sitio, con los PDF de cada capítulo y las diapositivas, y las pruebas del panel «Preguntar al curso» (`tools/assistant`); en un pull request, solo los PDF de los capítulos seleccionados; en `main`, todos y la publicación |
 | **Diapositivas** | `make slides-check`; solo cuando cambia algo de lo que dependen los mazos |
 
 ## Flujo de trabajo con git

@@ -32,6 +32,8 @@ dev = [
     "ruff",
     "pre-commit",
     "commitizen",
+    "pyright>=1.1.414",
+    "pyrefly>=1.3.2",
 ]
 # Solo el apendice A. Janus embebe el SWI-Prolog instalado en la maquina, asi
 # que su instalacion falla donde no haya `swipl`: por eso es un grupo aparte y
@@ -45,6 +47,7 @@ apendice-a = [
 # through Playwright, which the book already depends on for the PDFs.
 assistant = [
     "pytest",
+    "pytest-bdd>=9.0.0",
 ]
 
 [tool.commitizen]

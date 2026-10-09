@@ -1,0 +1,9 @@
+# Second type checker, run alongside pyright on purpose: two inference engines over the same code tend
+# to catch different things. Only the course assistant's tools are typed; the other scripts of tools/
+# are not checked.
+#
+# pyrefly is young and its config schema evolves: check https://pyrefly.org/ for the current keys.
+
+project-includes = ["tools/assistant"]
+search-path = ["tools/assistant", "tools/assistant/tests"]
+python-version = "3.14"

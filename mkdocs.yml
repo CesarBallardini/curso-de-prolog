@@ -83,17 +83,32 @@ hooks:
   - tools/swish_links.py
   - tools/pdf_links.py
   - tools/slides_files.py
+  - tools/assistant/index_hook.py
 
 extra_css:
   - estilos/swish.css
-  # KaTeX typesets the logic formulas of chapter 11. Fetched from a CDN, like
-  # mermaid, rather than vendoring the library and its fonts.
-  - https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css
+  - estilos/assistant.css
+  # KaTeX typesets the logic formulas. Vendored in docs/vendor/katex-0.16.11/
+  # (the npm package's minified files and its woff2 fonts, MIT licence), so the
+  # formulas do not depend on a CDN; tools/katex_pdf.py reads the same files.
+  - vendor/katex-0.16.11/katex.min.css
 
 extra_javascript:
   - javascripts/katex.js
-  - https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js
-  - https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js
+  - vendor/katex-0.16.11/katex.min.js
+  - vendor/katex-0.16.11/contrib/auto-render.min.js
+  # Mermaid draws the diagrams. Vendored in docs/vendor/mermaid-11.17.2/ (MIT licence): Material
+  # fetches mermaid@11 from unpkg only when no `mermaid` global exists, so loading this copy first
+  # keeps the diagrams off the CDN. Deferred: it runs before Material draws, without blocking the page.
+  # It is on every page because instant navigation does not run the scripts of the next page.
+  - path: vendor/mermaid-11.17.2/mermaid.min.js
+    defer: true
+  # The site search lists its results in the order of the course, not by relevance.
+  - javascripts/search-order.js
+  # The course assistant (docs/asistente.md): the panel and, imported by it, the Web Worker, the
+  # retrieval module and the index that tools/assistant/index_hook.py writes when the site is built.
+  - path: javascripts/assistant/panel.js
+    type: module
 
 markdown_extensions:
   - abbr
@@ -140,6 +155,7 @@ nav:
   - Plantillas: plantillas.md
   - Patrones: patrones.md
   - Lecturas complementarias: lecturas.md
+  - Preguntar al curso: asistente.md
   - Parte I — Introducción:
       - Capítulo 1 — La primera hora:
           - capitulo-01-la-primera-hora/index.md

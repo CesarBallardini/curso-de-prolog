@@ -99,6 +99,11 @@ jobs:
       - name: Build the site
         run: make docs
 
+      # The course assistant in a real browser (Chromium): its panel, its links, what it sends. It
+      # reads the site just built; the index comes from tools/assistant/index_hook.py, run by the build.
+      - name: Test the assistant
+        run: uv run --frozen --group assistant pytest tools/assistant/tests
+
       - name: Upload the site
         if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v5

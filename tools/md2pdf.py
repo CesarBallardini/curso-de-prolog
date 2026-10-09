@@ -22,6 +22,7 @@ from pathlib import Path
 
 import katex_pdf
 import swish_links
+import vendor
 from markdown.extensions.toc import slugify, unique
 from markdown_it import MarkdownIt
 from mdit_py_plugins.admon import admon_plugin
@@ -206,10 +207,10 @@ def to_html(text):
     return md.render(text)
 
 
-# Mermaid is fetched from a CDN rather than vendored: the alternative is three
-# megabytes of JavaScript in the repository for the few chapters that draw a
-# diagram. It only runs when a page actually has one.
-MERMAID = 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js'
+# Mermaid is vendored, the same file the site serves. The page that becomes the PDF
+# is built with `set_content()` and has no base URL, so the script is inlined, and
+# only when the page actually has a diagram.
+MERMAID = vendor.library_directory('mermaid') / 'mermaid.min.js'
 DRAWN = "() => !document.querySelector('pre.mermaid:not([data-processed])')"
 
 
@@ -221,7 +222,7 @@ def document(body, css):
     mermaid = ''
     if has_diagrams(body):
         mermaid = (
-            f'<script src="{MERMAID}"></script>\n'
+            f'<script>{MERMAID.read_text(encoding="utf-8")}</script>\n'
             "<script>mermaid.initialize({startOnLoad: true, theme: 'neutral', "
             'flowchart: {wrappingWidth: 280}});</script>'
         )
@@ -260,7 +261,7 @@ def to_pdf(html_text, output):
             except PlaywrightTimeout:
                 browser.close()
                 raise SystemExit(
-                    f'the mermaid diagrams were not drawn in 30 seconds: check that {MERMAID} can be reached'
+                    f'the mermaid diagrams were not drawn in 30 seconds ({MERMAID.parent.name}, vendored)'
                 ) from None
         if katex_pdf.has_formulas(html_text):
             # A formula left untypeset would print as its LaTeX source.
@@ -269,7 +270,7 @@ def to_pdf(html_text, output):
             except PlaywrightTimeout:
                 browser.close()
                 raise SystemExit(
-                    f'KaTeX did not typeset the formulas in 30 seconds: check that {katex_pdf.BASE} can be reached'
+                    f'KaTeX did not typeset the formulas in 30 seconds ({katex_pdf.DIR.name}, vendored)'
                 ) from None
         page.pdf(
             path=output,

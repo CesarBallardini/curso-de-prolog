@@ -20,7 +20,9 @@ A changed file selects:
   `diapositivas/capitulo-NN.*` or `diapositivas/imagenes/capitulo-NN/...` (the
   decks' transcripts run in `make transcripts` too);
 - every chapter, when it is something the checks themselves run on: `tools/`,
-  `.github/`, the `Makefile`, `pyproject.toml`, `uv.lock` or `ruff.toml`;
+  `.github/`, the `Makefile`, `pyproject.toml`, `uv.lock` or `ruff.toml`; the
+  course assistant's directory (`tools/assistant/`) is the exception, because only
+  the site build and the assistant's own tests read them;
 - nothing otherwise (`docs/licencia.md`, `mkdocs.yml`, `README.md`, `books/`,
   `references/`...): no example, test or transcript reads them.
 
@@ -63,6 +65,8 @@ PYTHON_CHAPTERS = {29, 30, 31, 36}
 
 # What the checks run on: a change here can change any result.
 SHARED_DIRS = ('tools/', '.github/')
+# The course assistant's directory: no example, test or transcript reads it.
+ASSISTANT_PATHS = ('tools/assistant/',)
 SHARED_FILES = {'Makefile', 'pyproject.toml', 'uv.lock', 'ruff.toml'}
 
 CHANGED_CHAPTER = re.compile(
@@ -152,7 +156,9 @@ def select(files: list[str] | None, known: set[int]) -> tuple[set[int], str]:
     """The chapters the files select directly, and why."""
     if files is None:
         return set(known), '--all, or a base that cannot be compared'
-    shared = [f for f in files if f.startswith(SHARED_DIRS) or f in SHARED_FILES]
+    shared = [
+        f for f in files if (f.startswith(SHARED_DIRS) and not f.startswith(ASSISTANT_PATHS)) or f in SHARED_FILES
+    ]
     if shared:
         return set(known), f'shared file {shared[0]}'
     direct = set()

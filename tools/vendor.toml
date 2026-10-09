@@ -1,0 +1,38 @@
+# The third-party libraries the site serves itself, so that a reader's browser, the PDF build and CI
+# never fetch them from a CDN. `make vendor` downloads each pinned release from npm, refuses a tarball
+# whose integrity differs from the one below, copies the listed files into docs/vendor/<name>-<version>/
+# and records their hashes in tools/vendor.lock.json; `make vendor-check` compares the committed files
+# with those hashes without the network.
+#
+# To change a version: edit `version`, `tarball` and `integrity` here (npm view <name>@<version> dist),
+# run `make vendor`, then update the versioned paths in mkdocs.yml, which `make vendor-check` verifies.
+#
+# `files` maps a path of the package (a glob is allowed) to the directory it goes to, relative to the
+# library's directory.
+
+[katex]
+version = "0.16.11"
+tarball = "https://registry.npmjs.org/katex/-/katex-0.16.11.tgz"
+integrity = "sha512-RQrI8rlHY92OLf3rho/Ts8i/XvjgguEjOkO1BEXcU3N8BqPpSzBNwV/G0Ukr+P/l3ivvJUE/Fa/CwbS6HesGNQ=="
+license = "MIT"
+
+[katex.files]
+"LICENSE" = "."
+"dist/katex.min.css" = "."
+"dist/katex.min.js" = "."
+"dist/contrib/auto-render.min.js" = "contrib"
+# The stylesheet lists woff2 first for every font; the woff and ttf copies are fallbacks no current
+# browser, nor the Chromium that prints the PDFs, ever loads.
+"dist/fonts/*.woff2" = "fonts"
+
+[mermaid]
+# 11.x, the major version Material for MkDocs loads and the course's diagrams were checked with.
+version = "11.17.2"
+tarball = "https://registry.npmjs.org/mermaid/-/mermaid-11.17.2.tgz"
+integrity = "sha512-V6K3C8EBdEsPFZXSKMJe6ppQOENxuHARr9GvHX4hh47lAbhMRD9qf4oEK7LoaRQxULMa80/qt5gHO73aCleBBg=="
+license = "MIT"
+
+[mermaid.files]
+"LICENSE" = "."
+# The self-contained build: the ES-module build in dist/chunks/ is not needed.
+"dist/mermaid.min.js" = "."

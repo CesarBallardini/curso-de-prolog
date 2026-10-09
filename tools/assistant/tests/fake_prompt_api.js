@@ -36,7 +36,9 @@
         },
       });
     },
-    destroy() {},
+    destroy() {
+      state.calls.push({ method: 'destroy' });
+    },
   };
 
   window.LanguageModel = {
