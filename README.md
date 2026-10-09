@@ -443,7 +443,7 @@ make pdf e="capitulo-05 capitulo-07"                            # los PDF de dos
 
 | Flujo | Qué verifica |
 |---|---|
-| **Ejemplos** | `make test`, `make transcripts` y `make swish` de los capítulos seleccionados, un trabajo por parte; `make appendix` cuando se selecciona el capítulo 29, 30, 31 o 36; `make lint` siempre |
+| **Ejemplos** | `make test`, `make transcripts` y `make swish` de los capítulos seleccionados, un trabajo por parte; `make appendix` cuando se selecciona el capítulo 29, 30, 31 o 36; `make lint`, `make types` y `make vendor-check` siempre |
 | **Texto** | `make part-1`, `check-part-2 --strict`, `make shown`, `make links`, `make patterns`, `make math`, `make time`, la comparación de bloques, `make docs` y el dibujo de cada diagrama mermaid (`tools/check-mermaid.py`) |
 | **PDF y sitio** | `make pdf` y el sitio, con los PDF de cada capítulo y las diapositivas, y las pruebas del panel «Preguntar al curso» (`tools/assistant`); en un pull request, solo los PDF de los capítulos seleccionados; en `main`, todos y la publicación |
 | **Diapositivas** | `make slides-check`; solo cuando cambia algo de lo que dependen los mazos |

@@ -295,9 +295,10 @@ diapositivas/%.mp4: diapositivas/%.odp tools/video.py
 vendor-check: ## Check docs/vendor/ against tools/vendor.lock.json and mkdocs.yml (no network)
 	$(UV) tools/vendor.py --check
 
+# The tests' imports (pytest-bdd, Playwright) are in the assistant group: without it pyright reports them missing.
 types: ## Type-check the course assistant's tools with pyright and pyrefly
-	$(UV) pyright
-	$(UV) pyrefly check
+	$(UV) --group assistant pyright
+	$(UV) --group assistant pyrefly check
 
 lint: ## Check formatting and lint rules without touching any file
 	$(UV) ruff check .

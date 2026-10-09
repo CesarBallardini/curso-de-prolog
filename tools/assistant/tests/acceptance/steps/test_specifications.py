@@ -290,7 +290,7 @@ def scrolls(student: Student) -> None:
 
 @when(parsers.parse('the student switches the site to "{label}"'))
 def switches_scheme(student: Student, label: str) -> None:
-    scheme = cast('str | None', student.page.locator('body').get_attribute('data-md-color-scheme'))
+    scheme = student.page.locator('body').get_attribute('data-md-color-scheme')
     student.page.locator(f'label[title="{label}"]:visible').first.click()
     expect(student.page.locator('body')).not_to_have_attribute('data-md-color-scheme', scheme or '')
 

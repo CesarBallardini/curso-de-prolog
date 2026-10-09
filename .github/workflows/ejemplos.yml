@@ -1,7 +1,8 @@
 # The course's main promise: every example runs, and prints what the text says
 # it prints. The plunit tests of every example, every transcript of the book
 # against SWI-Prolog 9, the SWISH sandbox (the «▶ Abrir en SWISH» links), the
-# Python side of chapters 29 to 31 and 36, and the lint of the tooling.
+# Python side of chapters 29 to 31 and 36, and the lint of the tooling, with the
+# types of the course assistant's tools and the vendored libraries of the site.
 #
 # Checking the whole book takes about twelve minutes, and most changes touch one
 # or two chapters. So a run checks only the chapters a change can affect, one
@@ -136,6 +137,14 @@ jobs:
 
       - name: Lint the tooling
         run: make lint
+
+      # pyright and pyrefly over tools/assistant/ (pyrightconfig.json, pyrefly.toml).
+      - name: Type-check the course assistant's tools
+        run: make types
+
+      # docs/vendor/ against tools/vendor.lock.json and mkdocs.yml; no network.
+      - name: Check the vendored libraries
+        run: make vendor-check
 
   # One check with a name that does not depend on which parts ran, for branch
   # protection to require. A job that was skipped because nothing asked for it
