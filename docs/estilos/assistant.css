@@ -1,0 +1,163 @@
+/* Panel of the course assistant (docs/javascripts/assistant/panel.js). Colours are Material's own
+   variables, so the light and dark schemes apply without further rules. */
+.assistant-launcher {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 4;
+  padding: 0.6rem 1rem;
+  border: 0;
+  border-radius: 2rem;
+  background: var(--md-primary-fg-color);
+  color: var(--md-primary-bg-color);
+  font: inherit;
+  cursor: pointer;
+  box-shadow: var(--md-shadow-z2);
+}
+
+.assistant-dialog {
+  position: fixed;
+  inset: auto 1rem 1rem auto;
+  box-sizing: border-box;
+  width: min(34rem, calc(100vw - 2rem));
+  height: min(40rem, calc(100vh - 2rem));
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 0.4rem;
+  background: var(--md-default-bg-color);
+  color: var(--md-default-fg-color);
+  box-shadow: var(--md-shadow-z3);
+}
+
+.assistant-dialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+
+.assistant-dialog::backdrop {
+  background: rgb(0 0 0 / 40%);
+}
+
+.assistant-dialog header,
+.assistant-dialog form {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.8rem;
+}
+
+.assistant-dialog header {
+  justify-content: space-between;
+  background: var(--md-primary-fg-color);
+  color: var(--md-primary-bg-color);
+}
+
+.assistant-dialog h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.assistant-dialog button,
+.assistant-dialog input {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid currentcolor;
+  border-radius: 0.2rem;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+}
+
+.assistant-dialog form button {
+  background: var(--md-primary-fg-color);
+  color: var(--md-primary-bg-color);
+  border-color: var(--md-primary-fg-color);
+}
+
+.assistant-dialog input {
+  flex: 1;
+  min-width: 0;
+  background: var(--md-default-bg-color);
+}
+
+.assistant-dialog button {
+  cursor: pointer;
+}
+
+.assistant-dialog :focus-visible,
+.assistant-launcher:focus-visible {
+  outline: 3px solid var(--md-accent-fg-color);
+  outline-offset: 2px;
+}
+
+.assistant-status {
+  flex: none;
+  margin: 0;
+  padding: 0.4rem 0.8rem;
+}
+
+.assistant-dialog [role="log"] {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 0.8rem;
+}
+
+.assistant-dialog article {
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--md-default-fg-color--lightest);
+}
+
+.assistant-question {
+  margin: 0;
+  font-weight: 700;
+}
+
+.assistant-dialog blockquote {
+  margin: 0.6rem 0;
+  padding: 0.2rem 0.8rem;
+  border-left: 4px solid var(--md-primary-fg-color);
+  font-size: 0.9em;
+}
+
+.assistant-dialog blockquote pre {
+  margin: 0.4rem 0;
+  padding: 0.5rem;
+  overflow-x: auto;
+  background: var(--md-code-bg-color);
+  color: var(--md-code-fg-color);
+}
+
+.assistant-dialog blockquote footer {
+  font-size: 0.85em;
+}
+
+.assistant-dialog mark {
+  background: var(--md-typeset-mark-color);
+  color: inherit;
+  text-decoration: underline;
+}
+
+.assistant-dialog section[aria-label] {
+  margin: 0.6rem 0;
+  padding: 0.2rem 0.8rem;
+  border: 1px dashed var(--md-default-fg-color--light);
+}
+
+.assistant-note {
+  font-size: 0.8em;
+  font-style: italic;
+}
+
+@media (max-width: 600px) {
+  .assistant-dialog {
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    border: 0;
+    border-radius: 0;
+  }
+}

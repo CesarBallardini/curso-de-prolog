@@ -22,6 +22,7 @@ from pathlib import Path
 
 import katex_pdf
 import swish_links
+import vendor
 from markdown.extensions.toc import slugify, unique
 from markdown_it import MarkdownIt
 from mdit_py_plugins.admon import admon_plugin
@@ -206,10 +207,10 @@ def to_html(text):
     return md.render(text)
 
 
-# Mermaid is fetched from a CDN rather than vendored: the alternative is three
-# megabytes of JavaScript in the repository for the few chapters that draw a
-# diagram. It only runs when a page actually has one.
-MERMAID = 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js'
+# Mermaid is vendored, the same file the site serves. The page that becomes the PDF
+# is built with `set_content()` and has no base URL, so the script is inlined, and
+# only when the page actually has a diagram.
+MERMAID = vendor.library_directory('mermaid') / 'mermaid.min.js'
 DRAWN = "() => !document.querySelector('pre.mermaid:not([data-processed])')"
 
 
@@ -221,7 +222,7 @@ def document(body, css):
     mermaid = ''
     if has_diagrams(body):
         mermaid = (
-            f'<script src="{MERMAID}"></script>\n'
+            f'<script>{MERMAID.read_text(encoding="utf-8")}</script>\n'
             "<script>mermaid.initialize({startOnLoad: true, theme: 'neutral', "
             'flowchart: {wrappingWidth: 280}});</script>'
         )
@@ -247,12 +248,18 @@ def document(body, css):
     )
 
 
-def to_pdf(html_text, output):
+def to_pdf(html_text, output, diagrams, formulas):
+    """Print the page to a PDF, once its diagrams and formulas, when it has them, are drawn.
+
+    Whether it has them is decided from the chapter's body, as `document()` decides what to include:
+    the page itself also holds the inlined mermaid and KaTeX scripts, whose code contains the very
+    markers `has_diagrams` and `has_formulas` look for.
+    """
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch()
         page = browser.new_page()
         page.set_content(html_text, wait_until='networkidle')
-        if has_diagrams(html_text):
+        if diagrams:
             # Nothing is printed until every diagram has been drawn, or the PDF
             # would carry the source of the diagram instead of the diagram.
             try:
@@ -260,16 +267,16 @@ def to_pdf(html_text, output):
             except PlaywrightTimeout:
                 browser.close()
                 raise SystemExit(
-                    f'the mermaid diagrams were not drawn in 30 seconds: check that {MERMAID} can be reached'
+                    f'the mermaid diagrams were not drawn in 30 seconds ({MERMAID.parent.name}, vendored)'
                 ) from None
-        if katex_pdf.has_formulas(html_text):
+        if formulas:
             # A formula left untypeset would print as its LaTeX source.
             try:
                 page.wait_for_function(katex_pdf.TYPESET, timeout=30000)
             except PlaywrightTimeout:
                 browser.close()
                 raise SystemExit(
-                    f'KaTeX did not typeset the formulas in 30 seconds: check that {katex_pdf.BASE} can be reached'
+                    f'KaTeX did not typeset the formulas in 30 seconds ({katex_pdf.DIR.name}, vendored)'
                 ) from None
         page.pdf(
             path=output,
@@ -335,7 +342,8 @@ def main():
     css = Path(args.css)
     output = args.output or str(source.with_suffix('.pdf'))
     body = chapter_body(source)
-    to_pdf(document(body, css.read_text(encoding='utf-8') if css.exists() else ''), output)
+    html_text = document(body, css.read_text(encoding='utf-8') if css.exists() else '')
+    to_pdf(html_text, output, diagrams=has_diagrams(body), formulas=katex_pdf.has_formulas(body))
     print(f'PDF written: {output}')
     return 0
 

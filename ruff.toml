@@ -35,6 +35,8 @@ max-complexity = 15
 "tools/**" = ["D"]
 "references/**" = ["D"]
 "ejemplos/**" = ["D", "S101"]
+# pytest asserts with assert.
+"tools/assistant/**" = ["S101"]
 
 [format]
 quote-style = "single"

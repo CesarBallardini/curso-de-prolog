@@ -7,7 +7,11 @@
 // which is what has to be matched. Writing "\[" would leave a bare [ and make
 // KaTeX typeset every bracket and parenthesis on the page, including the ones
 // in the navigation menu.
+//
+// When the CDN cannot be reached, KaTeX is missing and the formulas stay as their source. Throwing here
+// instead would end Material's document$ stream for every other subscriber, the colour switch among them.
 document$.subscribe(({ body }) => {
+  if (typeof renderMathInElement !== "function") return;
   renderMathInElement(body, {
     delimiters: [
       { left: "$$", right: "$$", display: true },

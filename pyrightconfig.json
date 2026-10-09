@@ -1,0 +1,12 @@
+{
+  "include": ["tools/assistant"],
+  "exclude": ["**/__pycache__", ".venv"],
+  "extraPaths": ["tools/assistant", "tools/assistant/tests"],
+  "venvPath": ".",
+  "venv": ".venv",
+  "pythonVersion": "3.14",
+  "typeCheckingMode": "standard",
+  "reportUnusedImport": "error",
+  "reportOptionalMemberAccess": "error",
+  "reportIncompatibleMethodOverride": "error"
+}

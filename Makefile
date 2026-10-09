@@ -27,8 +27,8 @@ PDFS      := $(PDFS_CAP) $(PDFS_SOL)
 # is. When it does not come from the environment, ask swipl itself.
 SWI_HOME_DIR ?= $(shell swipl --dump-runtime-variables 2>/dev/null | sed -n 's/^PLBASE="\(.*\)";/\1/p')
 
-.PHONY: help install browser test swish part-1 transcripts math time sync sql appendix windows \
-        docs docs-serve mermaid pdf pldoc clean-pldoc slides slides-pdf slides-check video lint format check clean clean-pdf
+.PHONY: help install vendor vendor-check browser test swish part-1 transcripts math time sync sql appendix windows \
+        docs docs-serve mermaid assistant-test assistant-evaluate pdf pldoc clean-pldoc slides slides-pdf slides-check video lint format types check clean clean-pdf
 
 help: ## List the available targets
 	@echo "Curso de Prolog"
@@ -42,6 +42,11 @@ help: ## List the available targets
 install: ## Build .venv from uv.lock and install the git hooks
 	uv sync --frozen
 	$(UV) pre-commit install
+
+# KaTeX and mermaid are committed in docs/vendor/, so nothing else needs this: it is for changing a
+# version in tools/vendor.toml, or restoring the files. Needs the network (the npm registry).
+vendor: ## Download the libraries the site serves itself (tools/vendor.toml) into docs/vendor/
+	$(UV) tools/vendor.py
 
 browser: ## Fetch the headless Chromium the PDFs need
 	$(UV) playwright install chromium
@@ -132,9 +137,22 @@ PLDOC      := $(addsuffix /index.html,$(PLDOC_DIRS))
 docs: $(PLDOC) ## Build the site into site/ (a warning is an error; no PDFs, see make pdf)
 	$(UV) mkdocs build --strict
 
-# Needs the network: Material fetches mermaid from its CDN, as a reader's browser does.
+# Draws with the mermaid the site vendors (docs/vendor/), as a reader's browser does.
 mermaid: docs ## Build the site and draw every mermaid diagram in Chromium (one chapter: make mermaid e=capitulo-05)
 	$(UV) tools/check-mermaid.py $(e)
+
+# The course assistant's tests (tools/assistant/tests): unit tests, integration tests over the built site,
+# and the e2e Playwright tests: the retrieval module in a browser and the widget's Gherkin specifications.
+# Serves site/ itself; needs no network. m= selects by marker (unit, integration, e2e, bdd),
+# b=firefox changes the browser, k= filters by name.
+assistant-test: docs ## Build the site and run the assistant's tests (m=unit|integration|e2e|bdd, b=firefox, k=)
+	$(UV) --group assistant pytest tools/assistant/tests --browser $(or $(b),chromium) $(if $(m),-m "$(m)") $(if $(k),-k "$(k)")
+
+# Scores the assistant's retrieval (the production JavaScript module, in Chromium) on a blind question
+# set made with tools/assistant/keywords.py: s=<directory with truth.json and out.json>, k=<another
+# keywords file>. Needs the site built (make docs).
+assistant-evaluate: ## Score the assistant's retrieval on a blind question set (s=<directory>, k=<keywords file>)
+	$(UV) tools/assistant/evaluate.py $(s) $(if $(k),--keywords $(k)) --boosts 1 3
 
 docs-serve: ## Serve the site locally with live reload
 	$(UV) mkdocs serve --dev-addr $(DIRECCION)
@@ -274,6 +292,14 @@ diapositivas/%.mp4: diapositivas/%.odp tools/video.py
 
 ## --- Verification ----------------------------------------------------------
 
+vendor-check: ## Check docs/vendor/ against tools/vendor.lock.json and mkdocs.yml (no network)
+	$(UV) tools/vendor.py --check
+
+# The tests' imports (pytest-bdd, Playwright) are in the assistant group: without it pyright reports them missing.
+types: ## Type-check the course assistant's tools with pyright and pyrefly
+	$(UV) --group assistant pyright
+	$(UV) --group assistant pyrefly check
+
 lint: ## Check formatting and lint rules without touching any file
 	$(UV) ruff check .
 	$(UV) ruff format --check .
@@ -285,7 +311,7 @@ format: ## Fix formatting and whatever ruff can fix on its own
 # The order runs cheapest to dearest, and in the order that explains a failure
 # best: first the part I rule (static), then the examples, then the sandbox,
 # then the text matching the examples, and the site last.
-check: part-1 part-2 shown links patterns test swish transcripts math time ## Everything that has to be green before a commit
+check: part-1 part-2 shown links patterns test swish transcripts math time vendor-check ## Everything that has to be green before a commit
 	$(UV) tools/sync-examples.py
 	$(MAKE) docs
 

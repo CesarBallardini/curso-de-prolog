@@ -5,16 +5,23 @@ default_install_hook_types:
   - commit-msg
   - pre-push
 
+# Third-party libraries the site serves itself (tools/vendor.py) stay byte for byte as published:
+# end-of-file-fixer and trailing-whitespace would rewrite a minified script, and mermaid.min.js has
+# spaces at line ends inside its strings. `make vendor-check` verifies them against their hashes.
+exclude: ^docs/vendor/
+
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
     hooks:
       # The PDFs under books/ are in .gitignore; this is the second barrier, in
-      # case one gets in with `git add -f`. The limit is 3 MB because the slide
-      # decks (diapositivas/*.odp, up to 2.3 MB) and the single-file book
-      # conversions under books/ are versioned on purpose.
+      # case one gets in with `git add -f`. The limit is 4 MB because some large
+      # files are versioned on purpose: the slide decks (diapositivas/*.odp, up
+      # to 2.3 MB), the single-file book conversions under books/, and mermaid
+      # (docs/vendor/mermaid-*/mermaid.min.js, 3.5 MB), which the site serves
+      # itself instead of fetching it from a CDN.
       - id: check-added-large-files
-        args: ["--maxkb=3000"]
+        args: ["--maxkb=4096"]
       - id: check-ast
       - id: check-case-conflict
       - id: check-json

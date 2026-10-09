@@ -9,7 +9,7 @@ A formula the renderer cannot parse does not fail the build: KaTeX is told
 dropping it silently. That is the right behaviour while writing and the wrong
 one to publish, so this looks for those formulas before they get there.
 
-It runs KaTeX itself, from the same pinned version the site and the PDF load,
+It runs KaTeX itself, the same vendored files the site and the PDF load,
 rather than reimplementing a LaTeX parser.
 
 Exits 1 if any formula is rejected.
@@ -29,7 +29,7 @@ if TYPE_CHECKING:
 # $$…$$ first, so that the inline pass never sees the halves of a display block.
 DISPLAY = re.compile(r'\$\$(.+?)\$\$', re.S)
 INLINE = re.compile(r'(?<!\$)\$(?!\$)(.+?)(?<!\$)\$(?!\$)')
-KATEX = f'{katex_pdf.BASE}/katex.min.js'
+KATEX = katex_pdf.SCRIPT
 
 
 def formulas(page: Path):
@@ -60,7 +60,7 @@ def main() -> int:
         browser = playwright.chromium.launch()
         page = browser.new_page()
         page.goto('about:blank')
-        page.add_script_tag(url=KATEX)
+        page.add_script_tag(path=KATEX)
         page.wait_for_function("() => typeof window.katex === 'object'", timeout=30000)
         rejected = page.evaluate(
             """(items) => items.map(([file, line, display, tex]) => {

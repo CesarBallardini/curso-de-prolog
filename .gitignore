@@ -37,3 +37,7 @@ ejemplos/**/*.tgz
 # PlDoc writes to html/ by default when run on a directory without an output folder;
 # the course's pages come from `make pldoc` into docs/<chapter>/pldoc/ instead.
 /html/
+
+# The work directory of tools/assistant/keywords.py: inputs and answers of the agents that write the
+# assistant's search keywords, and blind question sets.
+/.assistant-work/

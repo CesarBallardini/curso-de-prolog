@@ -7,8 +7,8 @@
     uv run tools/check-mermaid.py --shots DIR           also save a PNG of every diagram
 
 The site is served over HTTP from a thread of this script, and each page that has a
-```mermaid block is loaded the way a reader loads it: Material fetches mermaid from its
-CDN and draws each diagram into a shadow root. That root is closed, so an init script
+```mermaid block is loaded the way a reader loads it: Material draws each diagram, with
+the mermaid the site vendors (docs/vendor/), into a shadow root. That root is closed, so an init script
 opens it before the page runs; nothing else of the page is touched.
 
 A diagram FAILS when mermaid could not draw it (the block is left as text, or the SVG is
@@ -18,8 +18,7 @@ wider than its box (clipped), nodes drawn on top of each other, or a diagram sca
 so far that its text is hard to read. Each diagram is reported as the file:line of its block in docs/, matched
 by order on the page. Console errors of a page are reported with the page.
 
-Needs the network (the mermaid script comes from unpkg) and Chromium
-(`make browser`). Exits 1 if any diagram fails.
+Needs Chromium (`make browser`), not the network. Exits 1 if any diagram fails.
 """
 
 import argparse

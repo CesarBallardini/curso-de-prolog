@@ -4,21 +4,43 @@ Kept apart from `md2pdf.py` so the mermaid and the KaTeX arrangements read as
 two independent things, which is what they are: a chapter may have diagrams,
 formulas, both or neither.
 
-The version is pinned. An unpinned `katex@0` would let a future release change
-the spacing of every formula in the book between one PDF build and the next.
+KaTeX is vendored in docs/vendor/ (tools/vendor.toml pins it), the same files
+the site serves, so a PDF never depends on a CDN. The page that becomes the PDF is built
+with `set_content()` and has no base URL, so a relative link to those files
+would load nothing: the script and the stylesheet are inlined, and the fonts go
+into the stylesheet as data: URIs.
+
+The version is pinned in tools/vendor.toml: another release could change the
+spacing of every formula in the book between one PDF build and the next.
 """
 
-VERSION = '0.16.11'
-BASE = f'https://cdn.jsdelivr.net/npm/katex@{VERSION}/dist'
+import base64
+import re
+
+import vendor
+
+DIR = vendor.library_directory('katex')
+SCRIPT = DIR / 'katex.min.js'
+
+
+def inline_fonts(css):
+    """The stylesheet with each woff2 font embedded; the other formats are fallbacks never loaded."""
+
+    def embed(match):
+        data = base64.b64encode((DIR / 'fonts' / match.group(1)).read_bytes()).decode()
+        return f'url(data:font/woff2;base64,{data})'
+
+    return re.sub(r'url\(fonts/([^)]+\.woff2)\)', embed, css)
+
 
 # KaTeX renders synchronously, so unlike mermaid there is nothing to poll for:
 # once `renderMathInElement` returns, the formulas are in the page. What does
 # have to be waited for is the CSS and its fonts, and `wait_until='networkidle'`
 # already covers that. The flag is set all the same, so the wait below can tell
-# "typeset" from "the script never arrived".
-TAGS = f"""<link rel="stylesheet" href="{BASE}/katex.min.css">
-<script defer src="{BASE}/katex.min.js"></script>
-<script defer src="{BASE}/contrib/auto-render.min.js"></script>
+# "typeset" from "the script never ran".
+TAGS = f"""<style>{inline_fonts((DIR / 'katex.min.css').read_text(encoding='utf-8'))}</style>
+<script>{SCRIPT.read_text(encoding='utf-8')}</script>
+<script>{(DIR / 'contrib' / 'auto-render.min.js').read_text(encoding='utf-8')}</script>
 <script>
   window.addEventListener('DOMContentLoaded', () => {{
     renderMathInElement(document.body, {{
