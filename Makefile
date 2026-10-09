@@ -28,7 +28,7 @@ PDFS      := $(PDFS_CAP) $(PDFS_SOL)
 SWI_HOME_DIR ?= $(shell swipl --dump-runtime-variables 2>/dev/null | sed -n 's/^PLBASE="\(.*\)";/\1/p')
 
 .PHONY: help install browser test swish part-1 transcripts math time sync sql appendix windows \
-        docs docs-serve mermaid pdf pldoc clean-pldoc slides slides-pdf slides-check video lint format check clean clean-pdf
+        docs docs-serve mermaid assistant-e2e pdf pldoc clean-pldoc slides slides-pdf slides-check video lint format check clean clean-pdf
 
 help: ## List the available targets
 	@echo "Curso de Prolog"
@@ -135,6 +135,13 @@ docs: $(PLDOC) ## Build the site into site/ (a warning is an error; no PDFs, see
 # Needs the network: Material fetches mermaid from its CDN, as a reader's browser does.
 mermaid: docs ## Build the site and draw every mermaid diagram in Chromium (one chapter: make mermaid e=capitulo-05)
 	$(UV) tools/check-mermaid.py $(e)
+
+# The course assistant in a browser: the panel, its links and passages, the
+# written answer with a fake of Chrome's Prompt API, and that no question leaves
+# the page. Serves site/ itself; needs no network. Not part of `make check` until
+# the widget exists. One browser: make assistant-e2e b=firefox; some tests: k=findall.
+assistant-e2e: docs ## Build the site and run the assistant's end-to-end tests (Playwright; b=firefox, k=<pytest -k>)
+	$(UV) --group assistant pytest tools/assistant --browser $(or $(b),chromium) $(if $(k),-k "$(k)")
 
 docs-serve: ## Serve the site locally with live reload
 	$(UV) mkdocs serve --dev-addr $(DIRECCION)

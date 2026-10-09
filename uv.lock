@@ -204,6 +204,9 @@ apendice-a = [
     { name = "pytest" },
     { name = "windows-curses", marker = "sys_platform == 'win32'" },
 ]
+assistant = [
+    { name = "pytest" },
+]
 dev = [
     { name = "commitizen" },
     { name = "pre-commit" },
@@ -225,6 +228,7 @@ apendice-a = [
     { name = "pytest" },
     { name = "windows-curses", marker = "sys_platform == 'win32'", specifier = ">=2.4.2" },
 ]
+assistant = [{ name = "pytest" }]
 dev = [
     { name = "commitizen" },
     { name = "pre-commit" },
