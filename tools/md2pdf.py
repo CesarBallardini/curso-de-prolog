@@ -248,12 +248,18 @@ def document(body, css):
     )
 
 
-def to_pdf(html_text, output):
+def to_pdf(html_text, output, diagrams, formulas):
+    """Print the page to a PDF, once its diagrams and formulas, when it has them, are drawn.
+
+    Whether it has them is decided from the chapter's body, as `document()` decides what to include:
+    the page itself also holds the inlined mermaid and KaTeX scripts, whose code contains the very
+    markers `has_diagrams` and `has_formulas` look for.
+    """
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch()
         page = browser.new_page()
         page.set_content(html_text, wait_until='networkidle')
-        if has_diagrams(html_text):
+        if diagrams:
             # Nothing is printed until every diagram has been drawn, or the PDF
             # would carry the source of the diagram instead of the diagram.
             try:
@@ -263,7 +269,7 @@ def to_pdf(html_text, output):
                 raise SystemExit(
                     f'the mermaid diagrams were not drawn in 30 seconds ({MERMAID.parent.name}, vendored)'
                 ) from None
-        if katex_pdf.has_formulas(html_text):
+        if formulas:
             # A formula left untypeset would print as its LaTeX source.
             try:
                 page.wait_for_function(katex_pdf.TYPESET, timeout=30000)
@@ -336,7 +342,8 @@ def main():
     css = Path(args.css)
     output = args.output or str(source.with_suffix('.pdf'))
     body = chapter_body(source)
-    to_pdf(document(body, css.read_text(encoding='utf-8') if css.exists() else ''), output)
+    html_text = document(body, css.read_text(encoding='utf-8') if css.exists() else '')
+    to_pdf(html_text, output, diagrams=has_diagrams(body), formulas=katex_pdf.has_formulas(body))
     print(f'PDF written: {output}')
     return 0
 
