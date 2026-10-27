@@ -83,7 +83,7 @@ class Section(NamedTuple):
 
 
 def is_solutions(location: Location) -> bool:
-    """A solutions page: its last path segment, not a substring (chapter 17 is «Todas las soluciones»)."""
+    """A solutions page: its last path segment, not a substring (chapter 18 is «Todas las soluciones»)."""
     return location.split('#')[0].rstrip('/').split('/')[-1] == 'soluciones'
 
 
@@ -173,7 +173,7 @@ def pack[T](items: Iterable[T], size: Callable[[T], int], limit: int) -> list[li
 
 
 # Where each part of the course starts, as in tools/ci-parts.py; the rest are patterns and templates.
-PARTS: list[tuple[str, int]] = [('I', 1), ('II', 13), ('III', 32), ('IV', 43)]
+PARTS: list[tuple[str, int]] = [('I', 1), ('II', 14), ('III', 33), ('IV', 44)]
 OUTSIDE_PARTS = 'patterns/templates'
 
 

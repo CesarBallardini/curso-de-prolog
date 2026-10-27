@@ -2,123 +2,124 @@
 
 :- begin_tests(soluciones).
 
+% clause/2, que obtiene las cláusulas de un predicado,
+% se presenta en el capítulo 34.
+% Ejercicio 1: la secuencia del enunciado, desde una base vacía. Las pruebas
+% corren en su propio módulo, y por eso los hechos llevan user:.
+test(ejercicio_1, [ setup(( retractall(user:q(_, _)),
+                            retractall(user:p(_)) )),
+                    cleanup(( retractall(user:q(_, _)),
+                              retractall(user:p(_)) )),
+                    true(Q1-Q2-Q3-P == [x-y, a-b, 1-2]-[x-y, a-b]-[]-1) ]) :-
+    assertz(user:q(a, b)),
+    assertz(user:q(1, 2)),
+    asserta(user:q(x, y)),
+    findall(X-Y, q(X, Y), Q1),
+    retract(user:q(1, 2)),
+    assertz(user:(p(Z) :- h(Z))),
+    findall(X-Y, q(X, Y), Q2),
+    \+ ( retract(user:q(_, _)), fail ),
+    findall(X-Y, q(X, Y), Q3),
+    aggregate_all(count, clause(user:p(_), _), P).
+
 % Ejercicio 2
-test(ab, [nondet]) :-
-    phrase(ab, [a, a, b, b]).
+test(nadie_nada_bien, [fail]) :-
+    nada_bien(_).
 
-test(ab_vacia, [fail]) :-
-    phrase(ab, []).
+% Ejercicio 3: el recorrido ve los números del comienzo.
+test(forall_y_assertz, [ cleanup(( retractall(user:numero(_)),
+                                   forall(member(N, [1, 2, 3]),
+                                          assertz(user:numero(N))) )),
+                         true(L == [1, 2, 3, 2, 3, 4]) ]) :-
+    forall(numero(N), ( M is N + 1, assertz(user:numero(M)) )),
+    findall(N, numero(N), L).
 
-test(ab_por_longitud, all(L == [[a, b], [a, a, b, b], [a, a, a, b, b, b]])) :-
-    between(1, 6, N),
-    length(L, N),
-    phrase(ab, L).
+test(retract_en_un_bucle, [ cleanup(( retractall(user:numero(_)),
+                                      forall(member(N, [1, 2, 3]),
+                                             assertz(user:numero(N))) )),
+                            true(L == []) ]) :-
+    forall(numero(N), retract(user:numero(N))),
+    findall(N, numero(N), L).
 
-% Ejercicio 6: ab//0 genera las listas de menor a mayor; con las reglas
-% invertidas, la generación no da ninguna respuesta.
-test(ab_genera, true(L == [a, a, b, b])) :-
-    once(( phrase(ab, L), L = [a, a|_] )).
+% Ejercicio 4: la secuencia con semilla 13.
+test(aleatorios, [ setup(( retractall(user:semilla(_)),
+                           assertz(user:semilla(13)) )),
+                   true(L == [4, 7, 8, 5, 6, 9]) ]) :-
+    primeros_aleatorios(6, 10, L).
 
-test(ab_invertida_analiza, [nondet]) :-
-    phrase(ab_invertida, [a, a, b, b]).
+% Ejercicio 5
+test(cuenta, [ setup(iniciar_cuenta), cleanup(iniciar_cuenta),
+               true(S == 70) ]) :-
+    depositar(100),
+    extraer(30),
+    saldo(S).
 
-% call_with_inference_limit/3, que acota las inferencias,
-% se presenta en el capítulo 26.
-test(ab_invertida_no_genera, true(R == inference_limit_exceeded)) :-
-    call_with_inference_limit(phrase(ab_invertida, _), 1000000, R).
+test(saldo_insuficiente, [ setup(iniciar_cuenta), cleanup(iniciar_cuenta),
+                           true(S == 100) ]) :-
+    depositar(100),
+    \+ extraer(500),
+    saldo(S).
 
-% Ejercicio 3: la traducción explícita responde lo mismo que la gramática.
-test(traduccion, true(N1-N2 == luis-luis)) :-
-    phrase(saludo_a(N1), `hola luis`),
-    saludo_a_traducido(N2, `hola luis`, []).
+test(monto_negativo, [ setup(iniciar_cuenta), cleanup(iniciar_cuenta),
+                       fail ]) :-
+    depositar(-5).
 
-% Ejercicio 4
-test(concordancia, [nondet]) :-
-    phrase(frase, [los, perros, ladran]).
+test(cuenta_cerrada, [ setup(iniciar_cuenta), cleanup(iniciar_cuenta),
+                       fail ]) :-
+    cerrar_cuenta,
+    depositar(5).
 
-test(sin_concordancia, [fail]) :-
-    phrase(frase, [los, perros, ladra]).
+% Ejercicio 6
+test(suma_hasta, [ setup(olvidar_sumas), cleanup(olvidar_sumas),
+                   true(S == 5050) ]) :-
+    suma_hasta(100, S).
 
-test(todas_las_frases, true(N == 4)) :-
-    aggregate_all(count, phrase(frase, _), N).
+test(suma_guardada, [ setup(olvidar_sumas), cleanup(olvidar_sumas),
+                      true(N == 99) ]) :-
+    suma_hasta(100, _),
+    aggregate_all(count, suma_guardada(_, _), N).
 
-% Ejercicio 5: solo las oraciones verdaderas.
-test(oraciones_verdaderas,
-     all(H == [padre(juan, ana), padre(juan, pedro),
-               madre(marta, ana), madre(marta, pedro)])) :-
-    phrase(oracion_verdadera(H), _).
-
-test(oracion_falsa, [fail]) :-
-    phrase(oracion_verdadera(_), [ana, es, la, madre, de, juan]).
-
-% Ejercicio 7
-test(recorridos, true(P-S-O == [a, b, c]-[b, a, c]-[b, c, a])) :-
-    A = nodo(a, nodo(b, nil, nil), nodo(c, nil, nil)),
-    phrase(preorden(A), P),
-    phrase(simetrico(A), S),
-    phrase(postorden(A), O).
-
+% with_output_to/2, que captura la salida, se presenta en el capítulo 28.
 % Ejercicio 8
-test(balanceado) :-
-    phrase(balanceado, `{[a(b)]c}`).
+test(como, [ setup((reiniciar, encadenar)), cleanup(reiniciar),
+             true(L == ["abuelo(juan,sofia): por abuelo",
+                        "  padre(juan,ana): dato inicial",
+                        "  progenitor(ana,sofia): por progenitor_m",
+                        "    madre(ana,sofia): dato inicial",
+                        ""]) ]) :-
+    with_output_to(string(S), como(abuelo(juan, sofia))),
+    split_string(S, "\n", "", L).
 
-test(cruzado, [fail]) :-
-    phrase(balanceado, `([)]`).
-
-test(sin_cerrar, [fail]) :-
-    phrase(balanceado, `((a)`).
+test(como_sin_hecho, [ setup(reiniciar), fail ]) :-
+    como(abuelo(juan, sofia)).
 
 % Ejercicio 9
-test(expresion, true(V =:= 11)) :-
-    phrase(expresion(V), `2+3*4-6/2`).
+test(tio_o_tia, [ setup((reiniciar, encadenar)), cleanup(reiniciar),
+                  all(T-S == [ana-luis, ana-eva, pedro-sofia]) ]) :-
+    hecho(tio_o_tia(T, S)).
 
-test(expresion_izquierda, true(V =:= 5)) :-
-    phrase(expresion(V), `10-3-2`).
+test(primos, [ setup((reiniciar, encadenar)), cleanup(reiniciar),
+               true(L == [eva-sofia, luis-sofia, sofia-eva, sofia-luis]) ]) :-
+    setof(A-B, hecho(primos(A, B)), L).
 
-% Ejercicio 10
-test(fecha_larga, [nondet, true(F == fecha(2026, 9, 24))]) :-
-    phrase(fecha_larga(F), `24 de septiembre de 2026`).
+test(punto_fijo, [ setup((reiniciar, encadenar)), cleanup(reiniciar),
+                   true(N == 41) ]) :-
+    aggregate_all(count, hecho(_), N).
 
-test(fecha_larga_generar, true(A == '1 de enero de 2027')) :-
-    phrase(fecha_larga(fecha(2027, 1, 1)), Cs),
-    atom_codes(A, Cs).
+% Ejercicio 10: tres rondas, y los mismos hechos que de a uno.
+test(rondas, [ setup(reiniciar), cleanup(reiniciar), true(R-N == 3-41) ]) :-
+    encadenar_por_rondas(R),
+    aggregate_all(count, hecho(_), N).
 
-% Ejercicio 11
-test(enumeracion, [nondet, true(L == [ana, luis, eva])]) :-
-    phrase(enumeracion(L), `ana, luis y eva`).
-
-test(enumeracion_uno, [nondet, true(L == [ana])]) :-
-    phrase(enumeracion(L), `ana`).
-
-% Al generar, csym//1 deja una alternativa que no termina: once/1 la descarta.
-test(enumeracion_generar, true(A == 'ana, luis y eva')) :-
-    once(phrase(enumeracion([ana, luis, eva]), Cs)),
-    atom_codes(A, Cs).
-
-% Ejercicio 12
-test(problema, true(V =:= 36)) :-
-    phrase(problema(V), `cuanto es 5 mas 13 por 2`).
-
-test(problema_mal_escrito, [fail]) :-
-    phrase(problema(_), `cuanto es 5 mas`).
-
-% Ejercicio 13
-test(lista_de_enteros, true(L == [1, 2, 3])) :-
-    phrase(lista_de_enteros(L), `[1, 2, 3]`).
-
-test(lista_generar, true(A == '[4, 5]')) :-
-    phrase(lista_de_enteros([4, 5]), Cs),
-    atom_codes(A, Cs).
-
-% Ejercicio 17: la regla no consume el código que examina.
-test(empieza_con_mayuscula, true(A == 'Ana')) :-
-    phrase(empieza_con_mayuscula, `Ana`, Resto),
-    atom_codes(A, Resto).
-
-test(empieza_con_minuscula, [fail]) :-
-    phrase(empieza_con_mayuscula, `ana`, _).
-
-test(empieza_vacia, [fail]) :-
-    phrase(empieza_con_mayuscula, ``, _).
+% msort/2, que ordena sin eliminar repetidos, se presenta en el capítulo 23.
+test(mismos_hechos, [ cleanup(reiniciar), true(L1 == L2) ]) :-
+    reiniciar,
+    encadenar,
+    findall(H, hecho(H), H1),
+    msort(H1, L1),
+    reiniciar,
+    encadenar_por_rondas(_),
+    findall(H, hecho(H), H2),
+    msort(H2, L2).
 
 :- end_tests(soluciones).

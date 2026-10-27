@@ -1,17 +1,15 @@
 :- encoding(utf8).
 
-% Capítulo 23 - El proyecto Inscripciones: el calendario de exámenes.
+% Capítulo 23 - El proyecto Inscripciones: el ranking y un índice por alumno.
 %
-% Respecto del capítulo 22, horario/3 asigna un día a cada examen: dos
-% materias con un alumno en común no pueden tener el examen el mismo día, y
-% cada día no puede tener más alumnos rindiendo que la capacidad del aula. Es
-% un modelo de restricciones: una variable por materia, su dominio, las
-% restricciones y el etiquetado al final.
+% Respecto del capítulo 22, mejores/2 se calcula con ranking/1, que ordena los
+% promedios con sort/4 en lugar de order_by/2. indice_por_alumno/1 construye
+% un assoc de cada legajo a sus inscripciones, para consultar muchas veces
+% las materias de un alumno sin recorrer todas las inscripciones.
 %
-%?- horario(5, 6, Horario).
-%?- horario(4, 6, Horario).
+%?- ranking(R).
+%?- indice_por_alumno(I), materias_de(I, 101, Materias).
 
-:- use_module(library(clpfd)).
 :- use_module(library(dcg/basics)).
 
 :- meta_predicate
@@ -131,7 +129,7 @@ puede_inscribirse(Legajo, Materia) :-
 %
 %   El alumno llamado Nombre aprobó Materia. El primer objetivo es el que el
 %   nombre selecciona: con el orden inverso, la consulta recorre todas las
-%   inscripciones de la materia antes de mirar el nombre (sección 16.5).
+%   inscripciones de la materia antes de mirar el nombre (sección 17.5).
 aprobada_por_nombre(Nombre, Materia) :-
     alumno(Legajo, Nombre, _, _),
     aprobada(Legajo, Materia, _Nota).
@@ -437,61 +435,3 @@ realizar(promedio(L), Respuesta) :-
     ->  Respuesta = promedio(P)
     ;   Respuesta = sin_notas
     ).
-
-%!  horario(+Dias:integer, +Capacidad:integer, -Horario:list(pair)) is nondet.
-%
-%   Horario son pares Materia-Dia, con días de 1 a Dias, tales que dos
-%   materias con un alumno inscripto en común rinden en días distintos y la
-%   cantidad de alumnos que rinden cada día no supera Capacidad.
-horario(Dias, Capacidad, Horario) :-
-    findall(M-_, materia(M, _, _), Horario),
-    pairs_values(Horario, Ds),
-    Ds ins 1..Dias,
-    findall(M1-M2, conflicto(M1, M2), Conflictos),
-    maplist(dias_distintos(Horario), Conflictos),
-    numlist(1, Dias, Todos),
-    maplist(capacidad_del_dia(Horario, Capacidad), Todos),
-    label(Ds).
-
-%!  conflicto(?M1:atom, ?M2:atom) is nondet.
-%
-%   M1 y M2 son materias distintas, M1 antes que M2 en orden alfabético, con
-%   al menos un alumno inscripto en las dos. Una respuesta por par.
-conflicto(M1, M2) :-
-    materia(M1, _, _),
-    materia(M2, _, _),
-    M1 @< M2,
-    once(( inscripcion(L, M1, _),
-           inscripcion(L, M2, _) )).
-
-%!  dias_distintos(+Horario:list(pair), +Conflicto:pair) is semidet.
-%
-%   Las dos materias de Conflicto tienen el examen en días distintos.
-dias_distintos(Horario, M1-M2) :-
-    memberchk(M1-D1, Horario),
-    memberchk(M2-D2, Horario),
-    D1 #\= D2.
-
-%!  capacidad_del_dia(+Horario:list(pair), +Capacidad:integer, +Dia:integer)
-%!      is semidet.
-%
-%   Los alumnos inscriptos en las materias que rinden el día Dia no son más
-%   que Capacidad. Cada materia aporta sus inscriptos si su día es Dia: la
-%   comparación se refleja en una variable 0 o 1.
-capacidad_del_dia(Horario, Capacidad, Dia) :-
-    maplist(rinde_ese_dia(Dia), Horario, Rinden),
-    maplist(cantidad_de_inscriptos, Horario, Cantidades),
-    scalar_product(Cantidades, Rinden, #=<, Capacidad).
-
-%!  rinde_ese_dia(+Dia:integer, +MateriaDia:pair, -B) is det.
-%
-%   B es 1 si la materia rinde el día Dia, y 0 si no.
-rinde_ese_dia(Dia, _-D, B) :-
-    B #<==> (D #= Dia).
-
-%!  cantidad_de_inscriptos(+MateriaDia:pair, -N:integer) is det.
-%
-%   N es la cantidad de alumnos inscriptos en la materia.
-cantidad_de_inscriptos(M-_, N) :-
-    inscriptos(M, Legajos),
-    length(Legajos, N).

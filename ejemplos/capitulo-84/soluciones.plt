@@ -1,144 +1,168 @@
 :- encoding(utf8).
 
-% Pruebas de soluciones.pl.
-
 :- begin_tests(soluciones).
 
-% cerca(X, Y): X e Y difieren en menos de una millonésima.
-cerca(X, Y) :-
-    abs(X - Y) < 1.0e-6.
+% --- Ejercicio 1 ------------------------------------------------------------
 
-test(ej1_hechos, [true(Cs-R == [200, 200, 200, 200]-si)]) :-
-    cargar_hechos(registros('2026-10-01.log'), M),
-    findall(C, par_hechos(M, 5, C), Cs),
-    (   sin_respuesta_hechos(M, 397)
-    ->  R = si
-    ;   R = no
-    ).
+test(v1_fin_primero, true(Q == ["FIN", "a"])) :-
+    cribar(["FIN", "a"], "INICIO", "FIN", Q).
 
-test(ej1_pendientes, [true(P == [pendiente(1.0, a, get, '/x')])]) :-
-    registro_enganoso(Ts),
-    pendientes_de(Ts, P).
+test(v2_fin_primero, error(marcas(fin_sin_inicio(1)))) :-
+    cribar_seguro:cribar(["FIN", "a"], "INICIO", "FIN", _).
 
-test(ej1_hechos_no_lo_ven, [fail]) :-
-    registro_enganoso(Ts),
-    member(request(Id, _, _), Ts),
-    \+ member(completed(Id, _, _, _, _), Ts).
+test(v1_inicio_al_final, true(Q == ["a"])) :-
+    cribar(["a", "INICIO"], "INICIO", "FIN", Q).
 
-test(ej2_recurso, [true(R == '/alumnos')]) :-
-    recurso('/alumnos/123', R).
+test(v2_inicio_al_final, error(marcas(inicio_sin_fin(2)))) :-
+    cribar_seguro:cribar(["a", "INICIO"], "INICIO", "FIN", _).
 
-test(ej2_por_recurso,
-     [true(Rs-Ns == ['/sesion', '/materias', '/mis-inscripciones',
-                     '/alumnos', '/ranking']-[158, 122, 59, 46, 34])]) :-
-    por_recurso(registros('2026-10-01.log'), Filas),
-    findall(R, member(fila(R, _, _), Filas), Rs),
-    findall(N, member(fila(_, N, _), Filas), Ns).
+test(v1_secciones_vacias, true(Q == [])) :-
+    cribar(["INICIO", "FIN", "INICIO", "FIN"], "INICIO", "FIN", Q).
 
-test(ej2_escribir, [true(S == "recurso              pedidos  cpu (ms)\n/sesion                    2     50.00\n")]) :-
-    with_output_to(string(S), escribir_por_recurso([fila('/sesion', 2, 0.05)])).
+test(v2_secciones_vacias, true(Q == [])) :-
+    cribar_seguro:cribar(["INICIO", "FIN", "INICIO", "FIN"], "INICIO", "FIN",
+                         Q).
 
-test(ej3_combinada,
-     [true(P = pedido(_, ip(1, 2, 3, 4), get, '/a', 200, sin_medir))]) :-
-    phrase(linea_combinada(P),
-           `1.2.3.4 - - [01/Oct/2026:08:00:00 -0300] "GET /a HTTP/1.1" 200 9 "-" "curl/8.0"`).
+test(v1_sangria, true(Q == [" INICIO", "a", "FIN"])) :-
+    cribar([" INICIO", "a", "FIN"], "INICIO", "FIN", Q).
 
-test(ej3_comun) :-
-    phrase(linea_combinada(pedido(_, _, post, '/s', 401, sin_medir)),
-           `1.2.3.4 - - [01/Oct/2026:08:00:00 -0300] "POST /s HTTP/1.1" 401 36`).
+test(v2_sangria, error(marcas(fin_sin_inicio(3)))) :-
+    cribar_seguro:cribar([" INICIO", "a", "FIN"], "INICIO", "FIN", _).
 
-test(ej3_un_solo_agregado, [fail]) :-
-    phrase(linea_combinada(_),
-           `1.2.3.4 - - [01/Oct/2026:08:00:00 -0300] "GET /a HTTP/1.1" 200 9 "-"`).
+% --- Ejercicio 2 ------------------------------------------------------------
 
-test(ej4_presentes, [true(Hs == [8, 9, 10, 11, 12, 13, 14, 15, 16, 19])]) :-
-    leer_registro(registros('2026-10-01.log'), Ps),
-    metricas_presentes(Ps, Horas),
-    findall(H, member(hora(H, _), Horas), Hs).
+test(conservar, true(Q == ["b", "d", "e"])) :-
+    conservar(["a", "INICIO", "b", "FIN", "c", "INICIO", "d", "e", "FIN"],
+              "INICIO", "FIN", Q).
 
-test(ej4_sin_caida, [true(N == 6)]) :-
-    umbrales_de_referencia(mediana_mad(3.5), U),
-    anomalias_presentes(registros('2026-10-01.log'), U, As),
-    length(As, N),
-    assertion(\+ member(anomalia(_, pedidos, 0, _), As)).
+test(conservar_sin_secciones, true(Q == [])) :-
+    conservar(["a", "b"], "INICIO", "FIN", Q).
 
-test(ej5_mad_cero, [true(I == entre(0.0, 0.0))]) :-
-    valores_de_referencia(no_encontradas, Vs),
-    ajustar(mediana_mad(3.5), Vs, I).
+test(conservar_sin_fin, error(marcas(inicio_sin_fin(2)))) :-
+    conservar(["a", "INICIO", "b"], "INICIO", "FIN", _).
 
-test(ej5_minimo) :-
-    valores_de_referencia(no_encontradas, Vs),
-    ajustar_con_minimo(3.5, 1, Vs, entre(_, S)),
-    assertion(cerca(S, 3.5 / 0.6745)),
-    assertion(S < 10).
+test(conservar_y_cribar_reparten, true(L1 + L2 + 4 =:= L)) :-
+    Lineas = ["a", "INICIO", "b", "FIN", "c", "INICIO", "d", "e", "FIN"],
+    length(Lineas, L),
+    conservar(Lineas, "INICIO", "FIN", Q1),
+    cribar_seguro:cribar(Lineas, "INICIO", "FIN", Q2),
+    length(Q1, L1),
+    length(Q2, L2).
 
-test(ej6_cuantil, [true(L == 5)]) :-
-    ajustar_cuantil(0.5, [9, 1, 5, 3, 7], L).
+% --- Ejercicio 3 ------------------------------------------------------------
 
-test(ej6_umbrales, [true(P-F == 20-10)]) :-
-    umbrales_cuantil(0.95, [pedidos-menor(P), fallos-mayor(F), cpu-mayor(_)]).
+test(sangria, true(Q == ["a", "  c"])) :-
+    cribar_sangria(["a", "  INICIO", "b", "\tFIN", "  c"], "INICIO", "FIN",
+                   Q).
 
-test(ej7, [true(Cs == [-1, 1, 1, -1])]) :-
-    maplist([X, C]>>salida([-18, -56, 70], X, C),
-            [[1, 1], [4, 4], [12, 10], [40, 31]], Cs).
+test(sangria_sin_fin, error(marcas(inicio_sin_fin(2)))) :-
+    cribar_sangria(["a", " INICIO", "b"], "INICIO", "FIN", _).
 
-test(ej8_perfiles_diarios, [true(Ps == [perfil(a, dia, 3, 1),
-                                        perfil(b, dia, 1, 1)])]) :-
-    date_time_stamp(date(2026, 10, 1, 9, 30, 0, 10800, -, -), T9),
-    date_time_stamp(date(2026, 10, 1, 10, 5, 0, 10800, -, -), T10),
-    perfiles_diarios([ pedido(T9, b, post, '/sesion', 401, 0.1),
-                       pedido(T9, a, post, '/sesion', 401, 0.1),
-                       pedido(T9, a, post, '/sesion', 200, 0.1),
-                       pedido(T10, a, get, '/materias', 200, 0.1) ], Ps).
+test(sin_sangria, true(R == "x  y")) :-
+    sin_sangria(" \t x  y", R).
 
-test(ej8_entrenar, [true(N-P-C == 108-[-6, -50, 78]-[6, 2, 1, 0])]) :-
-    ejemplos_diarios(Es),
-    length(Es, N),
-    entrenar(1, Es, [0, 0, 0], P, C).
+% --- Ejercicio 4 ------------------------------------------------------------
 
-test(ej8_sospechosos,
-     [true(S3-S4 == [perfil(ip(198, 51, 100, 40), dia, 8, 8)]-
-                    [perfil(ip(198, 51, 100, 61), dia, 17, 17),
-                     perfil(ip(203, 0, 113, 7), dia, 60, 60)])]) :-
-    sospechosos_diarios([-6, -50, 78], registros('2026-09-30.log'), S3),
-    sospechosos_diarios([-6, -50, 78], registros('2026-10-01.log'), S4).
+test(secciones, true(R == [2-4, 6-9])) :-
+    secciones(["a", "INICIO", "b", "FIN", "c", "INICIO", "d", "e", "FIN"],
+              "INICIO", "FIN", R).
 
-test(ej9_repetidos, [true(N == 40)]) :-
-    repetidos(10, As),
-    length(As, N).
+test(secciones_examen, true(R == [9-13, 15-17])) :-
+    secciones_archivo('archivos/examen_soluciones.tex', "\\solstart",
+                      "\\solend", R).
 
-test(ej9_resumen, [true(N == 480)]) :-
-    repetidos(10, As),
-    resumir_en_paralelo(fallos, As, r(N, _, _, _)).
+% --- Ejercicio 5 ------------------------------------------------------------
 
-test(ej10_limites) :-
-    valores_de_referencia(fallos, Vs),
-    limites_ponderados(3, 0.1, Vs, Ls),
-    nth1(19, Ls, Antes),
-    nth1(20, Ls, Despues),
-    last(Ls, Ultimo),
-    assertion(Antes < 11),
-    assertion(Despues > 28),
-    assertion(Ultimo > 18),
-    assertion(Ultimo < 19).
+test(pares, true(Q == ["a", "c", "e"])) :-
+    cribar_pares(["a", "SOL", "b", "/SOL", "c", "NOTA", "d", "/NOTA", "e"],
+                 ["SOL"-"/SOL", "NOTA"-"/NOTA"], Q).
 
-test(ej10_ajustar) :-
-    valores_de_referencia(fallos, Vs),
-    ajustar_ponderado(3, 0.1, Vs, entre(_, S)),
-    limites_ponderados(3, 0.1, Vs, Ls),
-    last(Ls, L),
-    assertion(cerca(S, L)).
+test(pares_anidado, error(marcas(inicio_anidado(3, 2)))) :-
+    cribar_pares(["a", "SOL", "NOTA", "/NOTA", "/SOL"],
+                 ["SOL"-"/SOL", "NOTA"-"/NOTA"], _).
 
-test(ej10_constantes, [true(I == entre(4.0, 4.0))]) :-
-    ajustar_ponderado(3, 0.5, [4, 4, 4], I0),
-    I0 = entre(A, B),
-    I = entre(A, B).
+test(pares_fin_cruzado, error(marcas(fin_sin_inicio(3)))) :-
+    cribar_pares(["a", "SOL", "/NOTA", "/SOL"],
+                 ["SOL"-"/SOL", "NOTA"-"/NOTA"], _).
 
-test(ej4_metricas_anomalas,
-     [true(P == [10-pedidos, 10-fallos, 10-cpu, 12-cpu, 14-fallos, 14-cpu])]) :-
-    metricas_anomalas(mediana_mad(3.5), registros('2026-10-01.log'), P).
+test(pares_fin_sin_inicio, error(marcas(fin_sin_inicio(2)))) :-
+    cribar_pares(["a", "/NOTA"], ["SOL"-"/SOL", "NOTA"-"/NOTA"], _).
 
-test(ej8_entrenamiento_diario, [true(N-P-C == 108-[-6, -50, 78]-[6, 2, 1, 0])]) :-
-    entrenamiento_diario(N, P, C).
+test(pares_sin_fin, error(marcas(inicio_sin_fin(2)))) :-
+    cribar_pares(["a", "NOTA", "b"], ["SOL"-"/SOL", "NOTA"-"/NOTA"], _).
+
+test(pares_un_par_igual_que_v2, true(Q1 == Q2)) :-
+    Lineas = ["a", "INICIO", "b", "FIN", "c"],
+    cribar_pares(Lineas, ["INICIO"-"FIN"], Q1),
+    cribar_seguro:cribar(Lineas, "INICIO", "FIN", Q2).
+
+% --- Ejercicio 6 ------------------------------------------------------------
+
+test(decimales, true(As == ['2.0001', '0.0000', '10000000000.0000',
+                            '12.0000'])) :-
+    findall(A, ( member(X, [2.00005, -0.00004, 1.0e10, 12]),
+                 phrase(decimal(X), C),
+                 atom_codes(A, C) ),
+            As).
+
+% --- Ejercicios 7 y 8 -------------------------------------------------------
+
+test(lissajous) :-
+    curva(lissajous(3, 2, 0.5)),
+    definir(tikz, lissajous, lissajous(3, 2, 0.5), 0, 2*pi, 100, T),
+    sub_string(T, 0, _, _, "\\newcommand{\\lissajous}{\\draw (0.4794,0.0000)").
+
+test(hipocicloide_cierra) :-
+    muestra(hipocicloide(5, 3, 1), 0, 6*pi, 180, [X0-Y0|Ps]),
+    last(Ps, X1-Y1),
+    abs(X0 - X1) + abs(Y0 - Y1) < 1.0e-9.
+
+test(hipocicloide_inicio, true(P == 3-0)) :-
+    punto(hipocicloide(5, 3, 1), 0, X-Y),
+    P = X0-Y0,
+    X0 is round(X),
+    Y0 is round(Y).
+
+% La figura de las hipocicloides de la página de soluciones es la salida de
+% dibujar/2.
+test(figura_hipocicloides, true(Texto == Figura)) :-
+    source_file(user:dibujar(_, _), Programa),
+    file_directory_name(Programa, Directorio),
+    directory_file_path(Directorio, 'archivos/hipocicloides.curvas', Ruta),
+    curvas(Ruta, svg, Texto),
+    directory_file_path(Directorio,
+        '../../docs/capitulo-84-proyecto-procesamiento-textos/hipocicloides.svg',
+        Svg),
+    read_file_to_string(Svg, Figura, [encoding(utf8)]).
+
+% --- Ejercicio 9 ------------------------------------------------------------
+
+test(mensajes, true(Problemas == [nombre(c1), curva, intervalos(8.0),
+                                  curva])) :-
+    findall(P, ( member(T, [ curva(c1, circulo(0, 0, 1), 0, 1, 8),
+                             curva(c, circulo(0, 0, _), 0, 1, 8),
+                             curva(c, circulo(0, 0, 1), 0, 1, 8.0),
+                             curva(c, recta, 0, 1, 8) ]),
+                 catch(especificacion(T, 1, _),
+                       error(especificacion(1, P0), _),
+                       true),
+                 resumir(P0, P) ),
+            Problemas).
+
+%!  resumir(+Problema, -Resumen) is det.
+%
+%   Resumen es Problema, salvo curva(_), que se resume como curva.
+resumir(curva(_), curva) :-
+    !.
+resumir(P, P).
+
+% --- Ejercicio 10 -----------------------------------------------------------
+
+test(datos, true(T == "# dos curvas\n0.0000 1.0000\n2.0000 3.0000\n\n1.5000 -1.0000\n")) :-
+    datos([comentario("dos curvas"), curva(a, [0-1, 2-3]),
+           curva(b, [1.5-(-1)])], T).
+
+test(datos_sin_curvas, true(T == "# nada\n")) :-
+    datos([comentario("nada")], T).
 
 :- end_tests(soluciones).

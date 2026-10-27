@@ -2,21 +2,24 @@
 
 :- begin_tests(proyecto).
 
-test(simular, [nondet, true(Ss == [0, 0, 0, 1])]) :-
-    simular(sumador3, [1, 1, 0, 1, 0, 1], Ss).
+% Las tres partes quedan cargadas juntas, sin conflictos de nombres.
+test(inversa_exacta, [true(E == 0)]) :-
+    hilbert(4, racional, H),
+    inversa(H, I),
+    desvio(H, I, E).
 
-test(formula, [nondet, true(Ps == [[a, b], [a, ci, ~b], [b, ci, ~a]])]) :-
-    formula(sumador, co, F),
-    suma_de_productos(F, Ps).
+test(inversa_flotante, [true(E > 1)]) :-
+    hilbert(12, flotante, H),
+    inversa(H, I),
+    desvio(H, I, E).
 
-test(equivalentes) :-
-    equivalentes(sumador, sumador_mayoria).
+test(simbolico, [true(F == [cos(t), -sin(t) * -sin(f), -sin(t) * cos(f), 0])]) :-
+    rotacion(y, t, A),
+    rotacion(x, f, B),
+    producto_simbolico(A, B, [F|_]).
 
-test(ejecutar, [nondet, true(Ss == [[0, 0, 0], [1, 0, 0], [1, 1, 0]])]) :-
-    ejecutar(contador_gray, [0, 0, 0], [[], [], []], Ss).
-
-test(alcanzables, [true(N == 8)]) :-
-    alcanzables(contador_gray, [0, 0, 0], Es),
-    length(Es, N).
+test(horario, [true(Ultimo == '10:21'-ermita_vieja)]) :-
+    horario_con_carga(pradera_alta, ermita_vieja, 60, 8:00, H),
+    last(H, Ultimo).
 
 :- end_tests(proyecto).

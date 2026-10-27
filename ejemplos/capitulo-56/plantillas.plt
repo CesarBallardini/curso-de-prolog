@@ -2,50 +2,32 @@
 
 :- begin_tests(plantillas).
 
-test(palabras, Ps == ["cuanto", "ocupa", "notas.txt"]) :-
-    palabras("¿Cuánto ocupa notas.txt?", Ps).
+test(segmentos, all(X-Y == [[yo]-[bien]])) :-
+    coincide([X, estoy, Y], [yo, estoy, bien]).
 
-test(palabras_punto_interior, Ps == ["borra", "los", "archivos", ".tmp"]) :-
-    palabras("Borra los archivos .tmp.", Ps).
+test(segmento_vacio, [nondet, true(X-Y == []-[triste])]) :-
+    coincide([X, estoy, Y], [estoy, triste]).
 
-test(punto_solo_al_final, Ps == ["copia", "notas.txt", "de", "..", "a",
-                                  "respaldo"]) :-
-    palabras("Copia notas.txt de .. a respaldo.", Ps).
+test(dos_lugares, all(X-Y == [[a]-[b, y, c], [a, y, b]-[c]])) :-
+    coincide([X, y, Y], [a, y, b, y, c]).
 
-test(palabras_enie, Ps == ["que", "tamano", "tiene", "a.txt"]) :-
-    palabras("¿Qué tamaño tiene a.txt?", Ps).
+test(no_coincide, fail) :-
+    coincide([_, estoy, _], [soy, feliz]).
 
-test(simplificar, Ss == ["lista", "de", "informes"]) :-
-    simplificar(["muestrame", "los", "archivos", "de", "la", "carpeta",
-                 "informes", "por", "favor"], Ss).
+test(rellenar, true(T == "¿Por qué estás muy cansado?")) :-
+    rellenar(["¿Por qué estás ", [muy, cansado], "?"], T).
 
-test(simplificar_regla_larga, Ss == ["lista", "de", "informes"]) :-
-    simplificar(["que", "archivos", "hay", "en", "informes"], Ss).
+test(responder, true(R == "¿Por qué estás muy cansado?")) :-
+    responder("Hoy estoy muy cansado.", R).
 
-test(listar, O == listar("informes", todos)) :-
-    traducir("Muéstrame los archivos de la carpeta informes, por favor.", O).
+test(persona_sin_cambiar, true(R == "¿Por qué estás triste por mi \c
+                                     trabajo?")) :-
+    responder("Estoy triste por mi trabajo", R).
 
-test(listar_pregunta, O == listar("informes", todos)) :-
-    traducir("¿Qué archivos hay en informes?", O).
+test(familia, true(R == "Háblame más de tu familia.")) :-
+    responder("Mi madre no me escucha", R).
 
-test(contar, O == contar("informes", todos)) :-
-    traducir("¿Cuántos archivos hay en la carpeta informes?", O).
-
-test(copiar, O == copiar(archivo("notas.txt"), a("respaldo"))) :-
-    traducir("Copia el archivo notas.txt a la carpeta respaldo.", O).
-
-test(tamano, O == tamano(archivo("notas.txt"))) :-
-    traducir("¿Cuánto ocupa notas.txt?", O).
-
-test(salir, O == salir) :-
-    traducir("Salir", O).
-
-% La simplificación pierde el plural: la orden se entiende mal.
-test(plural_perdido, O == borrar(archivo(".tmp"))) :-
-    traducir("Borra los archivos .tmp", O).
-
-% Una forma nueva de decir la misma orden necesita otra plantilla.
-test(sin_plantilla, fail) :-
-    traducir("Copia notas.txt de informes a respaldo", _).
+test(ninguna, true(R == "Continúa, por favor.")) :-
+    responder("No sé", R).
 
 :- end_tests(plantillas).

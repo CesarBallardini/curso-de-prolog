@@ -2,491 +2,447 @@
 
 % Capítulo 74 - Soluciones de los ejercicios.
 %
-% Carga mejoras.pl (con él, etapas.pl, macros.pl, vista.pl y cubo.pl) y
-% descubrir.pl, sin modificarlos.
+% Carga la grilla web (que reexporta las versiones 5 y 4 y la
+% representación), la versión 2 y el llamado a examen, sin modificarlos.
 %
-% solo-local: carga otros archivos.
+% solo-local: carga otros archivos, y SWISH no permite cargar otro archivo.
 %
-%?- tipo_efecto("R U R' U'", Esquinas, Aristas).
-%?- leer_notacion_rep("(R' D' R D)2 U", Ms).
-%?- aristas_descubiertas(Probadas, N).
+%?- ejercicio_1(Choques, Tareas).
+%?- medir_grado(facultad(12), K).
+%?- oferta(cuatrimestre, O), horario_con_recursantes(O, [am1-am2, alg-pp], H).
 
-:- ensure_loaded(mejoras).
-:- ensure_loaded(descubrir).
+:- module(soluciones,
+          [ proyecto_de/2,
+            ejercicio_1/2,
+            construir_por_grado/2,
+            clases_por_grado/2,
+            medir_grado/2,
+            reparar/3,
+            horario_con_recursantes/3,
+            medir_etiquetado/3,
+            costo_docentes/3,
+            optimo_docentes/3,
+            cota_docentes/2,
+            primero_de_varios/3,
+            mejor_de_varios/4,
+            cuerpo_aula/4,
+            llamado_separado/3,
+            candidatos/2,
+            mostrar_llamado/1,
+            ver_reparacion/1,
+            ver_recursantes/2,
+            comparar_costos/2,
+            costos_de_varios/2,
+            ver_llamado_separado/1
+          ]).
 
-% --- Ejercicio 2: los giros de las capas del medio -------------------------
+:- use_module(library(clpfd)).
+:- use_module(library(http/http_dispatch)).
+:- use_module(library(http/html_write)).
+:- reexport(web).
+:- use_module(construir, [ ubicacion/3, compatible/3, contar_paso/0,
+                           incompatibles_en_orden/3 ]).
+:- use_module(examenes, [ proyecto_examenes/2, mostrar_llamado/1 ]).
+:- use_module(generar, [ candidatos/2 ]).
+:- use_module('../capitulo-32/inscripciones/datos', [correlativa/2]).
+:- use_module('../capitulo-32/inscripciones/horarios', [conflicto/2]).
+:- use_module('../capitulo-73/tareas', [repartir/3]).
 
-%!  destino_capa(+Eje, +K:integer, +I:integer, -J:integer) is det.
+:- http_handler(root(aula/Nombre), pagina_aula(Nombre), [method(get)]).
+
+% --- Ejercicio 1 --------------------------------------------------------------
+
+%!  proyecto_de(+Oferta, -Proyecto) is det.
 %
-%   Al girar la capa de coordenada K en la dirección de la cara Eje, la
-%   casilla I pasa al lugar de la casilla J.
-destino_capa(Eje, K, I, J) :-
-    cara(Eje, _, E),
-    casilla(I, _, P, N),
-    E = p(A, B, C),
-    P = p(X, Y, Z),
-    (   A * X + B * Y + C * Z =:= K
-    ->  rotar(E, P, P1),
-        rotar(E, N, N1),
-        casilla(J, _, P1, N1)
-    ;   J = I
+%   Proyecto es el proyecto de tareas.pl de Oferta: una tarea de duración
+%   1 por clase, sin precedencias, y un procesador por aula.
+proyecto_de(Oferta, proyecto(Tareas, [], NA)) :-
+    Oferta = oferta(_, _, Aulas, _),
+    findall(tarea(C, 1), clase(Oferta, C, _, _, _, _), Tareas),
+    length(Aulas, NA).
+
+%!  ejercicio_1(-Choques:list, -Tareas) is det.
+%
+%   Choques son los choques del horario de ejemplo con alg-2 en el
+%   momento 2 y log-2 en el momento 5, y Tareas es valido o invalido según
+%   lo que responde tareas:valido/2 sobre ese horario.
+ejercicio_1(Choques, Tareas) :-
+    oferta(cuatrimestre, O),
+    horario_ejemplo(H0),
+    selectchk(asignada(alg-2, 1, 9, 10), H0, asignada(alg-2, 1, 2, 3), H1),
+    selectchk(asignada(log-2, 2, 13, 14), H1, asignada(log-2, 2, 5, 6), H),
+    findall(C, choque(O, H, C), Choques),
+    proyecto_de(O, P),
+    (   tareas:valido(P, H)
+    ->  Tareas = valido
+    ;   Tareas = invalido
     ).
 
-%!  capa_calculada(+Eje, +Ks:list(integer), -Antes, -Despues) is det.
-%
-%   Antes y Despues son términos c/54 con las mismas variables: Despues
-%   es Antes con las capas de coordenadas Ks giradas alrededor de Eje.
-capa_calculada(Eje, Ks, Antes, Despues) :-
-    findall(J, ( between(1, 54, I),
-                 destino_capas(Eje, Ks, I, J) ),
-            Destinos),
-    length(Vs, 54),
-    Antes =.. [c|Vs],
-    pairs_keys_values(Pares, Destinos, Vs),
-    keysort(Pares, Ordenados),
-    pairs_values(Ordenados, Ws),
-    Despues =.. [c|Ws].
+% --- Ejercicio 3 --------------------------------------------------------------
 
-%!  destino_capas(+Eje, +Ks:list(integer), +I:integer, -J:integer) is det.
+%!  construir_por_grado(+Oferta, -Horario:list) is nondet.
 %
-%   J es el destino de la casilla I si su capa está en Ks; si no, I.
-destino_capas(Eje, Ks, I, J) :-
-    casilla(I, _, p(X, Y, Z), _),
-    cara(Eje, _, p(A, B, C)),
-    K is A * X + B * Y + C * Z,
-    (   memberchk(K, Ks)
-    ->  destino_capa(Eje, K, I, J)
-    ;   J = I
+%   Horario es un horario válido de Oferta, construido como en la versión
+%   2 con las clases ordenadas de más a menos clases incompatibles.
+construir_por_grado(Oferta, Horario) :-
+    clases_por_grado(Oferta, Clases),
+    en_orden(Oferta, Clases, [], Horario0),
+    msort(Horario0, Horario).
+
+%!  clases_por_grado(+Oferta, -Clases:list) is det.
+%
+%   Clases son las clases de Oferta de más a menos clases incompatibles
+%   con ellas; con el mismo grado, en el orden de la oferta.
+clases_por_grado(Oferta, Clases) :-
+    findall(G-C,
+            ( clase(Oferta, C, _, _, _, _),
+              aggregate_all(count,
+                            ( clase(Oferta, C2, _, _, _, _),
+                              C2 \== C,
+                              incompatibles_en_orden(Oferta, C, C2) ),
+                            N),
+              G is -N ),
+            Pares0),
+    keysort(Pares0, Pares),
+    pairs_values(Pares, Clases).
+
+%!  en_orden(+Oferta, +Clases:list, +Parcial:list, -Horario:list) is nondet.
+%
+%   Horario agrega a Parcial una ubicación compatible para cada clase de
+%   Clases, en ese orden.
+en_orden(_, [], Horario, Horario).
+en_orden(Oferta, [C|Cs], Parcial, Horario) :-
+    ubicacion(Oferta, C, Asignada),
+    compatible(Oferta, Asignada, Parcial),
+    contar_paso,
+    en_orden(Oferta, Cs, [Asignada|Parcial], Horario).
+
+%!  medir_grado(+Nombre, -K:integer) is semidet.
+%
+%   K es la cantidad de clases que ubica construir_por_grado/2 hasta el
+%   primer horario de la oferta de ejemplo Nombre.
+medir_grado(Nombre, K) :-
+    oferta(Nombre, Oferta),
+    nb_setval(pasos, 0),
+    once(construir_por_grado(Oferta, _)),
+    nb_getval(pasos, K),
+    nb_delete(pasos).
+
+% --- Ejercicio 4 --------------------------------------------------------------
+
+%!  reparar(+Oferta, +Horario0:list, -Horario:list) is det.
+%
+%   Horario es Horario0 después de mover, mientras haya un choque, una de
+%   sus dos clases a una ubicación compatible con todas las demás. Si
+%   ninguna de las dos se puede mover, Horario es el horario alcanzado,
+%   que puede tener todavía choques.
+reparar(Oferta, Horario0, Horario) :-
+    (   choque(Oferta, Horario0, Choque),
+        arg(I, Choque, C),
+        I =< 2,
+        selectchk(asignada(C, _, _, _), Horario0, Resto),
+        ubicacion(Oferta, C, Nueva),
+        compatible(Oferta, Nueva, Resto)
+    ->  reparar(Oferta, [Nueva|Resto], Horario)
+    ;   msort(Horario0, Horario)
     ).
 
-%!  term_expansion(+Termino, -Hechos:list) is semidet.
+% --- Ejercicio 5 --------------------------------------------------------------
+
+%!  horario_con_recursantes(+Oferta, +Pares:list, -Horario:list) is semidet.
 %
-%   generar_capas se reemplaza por un hecho giro_medio/3 y un hecho
-%   rotacion/3 por cada eje u, r y f.
-term_expansion(generar_capas, Hechos) :-
-    findall(giro_medio(Eje, A, D),
-            ( member(Eje, [u, r, f]), capa_calculada(Eje, [0], A, D) ),
-            Medios),
-    findall(rotacion(Eje, A, D),
-            ( member(Eje, [u, r, f]), capa_calculada(Eje, [-1, 0, 1], A, D) ),
-            Rotaciones),
-    append(Medios, Rotaciones, Hechos).
+%   Horario es el primer horario válido de Oferta en que, además, las
+%   clases de las dos materias de cada par M1-M2 de Pares ocupan momentos
+%   distintos.
+horario_con_recursantes(Oferta, Pares, Horario) :-
+    modelo(Oferta, conteo, Horario, vars(_, _, Ps)),
+    maplist(separar_materias(Horario), Pares),
+    once(labeling([ff], Ps)).
 
-generar_capas.
-
-%!  caras_uniformes(+Cubo) is semidet.
+%!  separar_materias(+Horario:list, +Par) is det.
 %
-%   Las nueve casillas de cada cara de Cubo tienen el mismo color.
-caras_uniformes(Cubo) :-
-    forall(between(0, 5, K),
-           ( Primera is 9 * K + 1,
-             arg(Primera, Cubo, Color),
-             forall(between(1, 9, D),
-                    ( I is 9 * K + D, arg(I, Cubo, Color) )) )).
+%   Cada clase de M1 tiene un momento distinto del de cada clase de M2,
+%   para el par M1-M2.
+separar_materias(Horario, M1-M2) :-
+    include(de_la_materia(M1), Horario, H1),
+    include(de_la_materia(M2), Horario, H2),
+    maplist(momento_de, H1, Ss1),
+    maplist(momento_de, H2, Ss2),
+    maplist(distinto_de_todos(Ss2), Ss1).
 
-%!  tres_capas(+Cara, +Opuesta) is semidet.
+%!  de_la_materia(+M, +Asignada) is semidet.
 %
-%   Girar Cara, la capa del medio de su eje y Opuesta en sentido inverso
-%   da la rotación del cubo entero sobre el eje de Cara.
-tres_capas(Cara, Opuesta) :-
-    resuelto(C0),
-    mover(Cara, C0, C1),
-    giro_medio(Cara, C1, C2),
-    mover(-Opuesta, C2, C3),
-    rotacion(Cara, C0, R),
-    C3 == R,
-    caras_uniformes(R).
+%   Asignada es de una clase de la materia M.
+de_la_materia(M, asignada(M-_, _, _, _)).
 
-% --- Ejercicio 3: repeticiones entre paréntesis ------------------------------
-
-%!  leer_notacion_rep(+Texto, -Movimientos:list) is semidet.
+%!  distinto_de_todos(+Ss:list, +S) is det.
 %
-%   Como leer_notacion/2, pero acepta además una secuencia entre
-%   paréntesis seguida de la cantidad de repeticiones: "(R U)3".
-leer_notacion_rep(Texto, Movimientos) :-
-    string_codes(Texto, Codigos),
-    phrase(grupos(Movimientos), Codigos).
+%   S es distinto de cada variable de Ss.
+distinto_de_todos(Ss, S) :-
+    maplist(#\=(S), Ss).
 
-%!  grupos(-Ms:list)// is det.
+% --- Ejercicio 6 --------------------------------------------------------------
+
+%!  medir_etiquetado(+Nombre, +Opcion, -Resultado) is det.
 %
-%   Ms son los movimientos de una sucesión de grupos separados por
-%   blancos: giros sueltos o secuencias entre paréntesis con repeticiones.
-grupos(Ms) -->
-    blancos,
-    grupo(G),
-    !,
-    grupos(Resto),
-    { append(G, Resto, Ms) }.
-grupos([]) --> blancos.
+%   Resultado es r(si, I) si el etiquetado del par momento-aula con la
+%   opción Opcion de labeling/2 encuentra un horario de la oferta de
+%   ejemplo Nombre (modelo simple) con I inferencias, o limite si pasa de
+%   veinte millones de inferencias.
+medir_etiquetado(Nombre, Opcion, Resultado) :-
+    oferta(Nombre, Oferta),
+    modelo(Oferta, simple, _, vars(_, _, Ps)),
+    statistics(inferences, I0),
+    call_with_inference_limit(once(labeling([Opcion], Ps)), 20000000, R),
+    statistics(inferences, I1),
+    (   R == inference_limit_exceeded
+    ->  Resultado = limite
+    ;   I is I1 - I0,
+        Resultado = r(si, I)
+    ).
 
-%!  grupo(-Ms:list)// is semidet.
+% --- Ejercicio 7 --------------------------------------------------------------
+
+%!  costo_docentes(+Oferta, +Horario:list, -Costo) is det.
 %
-%   Ms son los movimientos de un grupo: una secuencia entre paréntesis,
-%   repetida tantas veces como dice el dígito que la sigue, o un giro
-%   escrito en la notación de Singmaster.
-grupo(Ms) -->
-    "(", grupos(Interior), ")", !,
-    veces(N),
-    { length(Copias, N),
-      maplist(=(Interior), Copias),
-      append(Copias, Ms) }.
-grupo(Ms) --> escrito(Ms).
+%   Costo es la variable de la cantidad de días que viene cada docente,
+%   sumada sobre todos los docentes de Oferta.
+costo_docentes(Oferta, Horario, Costo) :-
+    Oferta = oferta(semana(Dias, Franjas), _, _, _),
+    findall(D, grupo(Oferta, docente(D)), Docentes),
+    numlist(1, Dias, Ds),
+    findall(D-Dia, ( member(D, Docentes), member(Dia, Ds) ), Claves),
+    maplist(viene(Oferta, Horario, Franjas), Claves, Bs),
+    sum(Bs, #=, Costo).
 
-%!  veces(-N:integer)// is det.
+%!  viene(+Oferta, +Horario:list, +Franjas:integer, +Clave, -B) is det.
 %
-%   N es el dígito, de 1 a 9, que sigue a un paréntesis; 1 si no hay
-%   dígito.
-veces(N) --> [C], { code_type(C, digit(N)), N > 0 }, !.
-veces(1) --> [].
+%   B es 1 si el docente de Clave, un par Docente-Dia, tiene alguna clase
+%   ese día, y 0 si no.
+viene(Oferta, Horario, Franjas, D-Dia, B) :-
+    include(en_grupo(Oferta, docente(D)), Horario, Suyas),
+    maplist(momento_de, Suyas, Ss),
+    maplist(ese_dia(Franjas, Dia), Ss, Bs),
+    sum(Bs, #=, N),
+    B #<==> (N #>= 1).
 
-% --- Ejercicio 4: esquinas y aristas ----------------------------------------
-
-%!  tipo_efecto(+Texto, -Esquinas:integer, -Aristas:integer) is semidet.
+%!  ese_dia(+Franjas:integer, +Dia:integer, +S, -B) is det.
 %
-%   Esquinas y Aristas son las esquinas y las aristas que mueve la
-%   secuencia de Texto.
-tipo_efecto(Texto, Esquinas, Aristas) :-
-    efecto_de(Texto, Piezas),
-    aggregate_all(count, ( member(P, Piezas), atom_length(P, 3) ), Esquinas),
-    aggregate_all(count, ( member(P, Piezas), atom_length(P, 2) ), Aristas).
+%   B es 1 si el momento S cae el día Dia, y 0 si no.
+ese_dia(Franjas, Dia, S, B) :-
+    B #<==> (S // Franjas #= Dia - 1).
 
-%!  capa_de_abajo_movida(+Texto) is semidet.
+%!  optimo_docentes(+Oferta, -Horario:list, -Costo:integer) is semidet.
 %
-%   La secuencia de Texto mueve alguna pieza de la capa de abajo.
-capa_de_abajo_movida(Texto) :-
-    efecto_de(Texto, Piezas),
-    member(P, Piezas),
-    sub_atom(P, 0, 1, _, 'D'),
+%   Horario es un horario válido de Oferta con la menor cantidad de días
+%   de docentes, Costo, acotada desde cota_docentes/2 hacia arriba.
+optimo_docentes(Oferta, Horario, Costo) :-
+    modelo(Oferta, conteo, Horario, vars(_, _, Ps)),
+    costo_docentes(Oferta, Horario, Costo),
+    cota_docentes(Oferta, Minimo),
+    fd_sup(Costo, Maximo),
+    between(Minimo, Maximo, Cota),
+    Costo #=< Cota,
+    once(labeling([ff], Ps)),
     !.
 
-% --- Ejercicio 5: leer el cubo desplegado -------------------------------------
-
-%!  leer_red(+Lineas:list(string), -Cubo) is semidet.
+%!  cota_docentes(+Oferta, -Cota:integer) is det.
 %
-%   Cubo es el cubo que red/2 escribe como Lineas. Falla si Lineas no
-%   tienen la forma de red/2.
-leer_red(Lineas, Cubo) :-
-    length(Lineas, 9),
-    functor(Cubo, c, 54),
-    foldl(leer_linea(Cubo), Lineas, 0, 9).
+%   Ningún horario de Oferta tiene menos de Cota días de docentes: cada
+%   docente viene al menos tantos días como clases tiene la materia suya
+%   de más clases, porque van en días distintos.
+cota_docentes(Oferta, Cota) :-
+    findall(N,
+            ( grupo(Oferta, docente(D)),
+              aggregate_all(max(K), clase(Oferta, _-K, _, _, D, _), N) ),
+            Ns),
+    sum_list(Ns, Cota).
 
-%!  leer_linea(+Cubo, +Linea:string, +F0:integer, -F:integer) is semidet.
+% --- Ejercicio 8 --------------------------------------------------------------
+
+%!  primero_de_varios(+Oferta, -Horario:list, -Costo:integer) is semidet.
 %
-%   La línea F0 del cubo desplegado liga las casillas que muestra; F es
-%   F0 + 1. Las líneas 0 a 2 son la cara u, 3 a 5 las caras del medio y
-%   6 a 8 la cara d.
-leer_linea(Cubo, Linea, F0, F) :-
-    split_string(Linea, " ", " ", Palabras0),
-    exclude(==(""), Palabras0, Palabras),
-    Fila is F0 mod 3,
-    (   F0 < 3
-    ->  Caras = [u]
-    ;   F0 < 6
-    ->  Caras = [l, f, r, b]
-    ;   Caras = [d]
-    ),
-    length(Caras, NC),
-    NL is 3 * NC,
-    length(Palabras, NL),
-    ligar_filas(Caras, Palabras, Cubo, Fila),
-    F is F0 + 1.
-
-%!  ligar_filas(+Caras:list, +Palabras:list, +Cubo, +Fila:integer) is det.
-%
-%   Liga la fila Fila de cada una de Caras con tres de Palabras.
-ligar_filas([], [], _, _).
-ligar_filas([Cara|Caras], [A, B, C|Palabras], Cubo, Fila) :-
-    cara(Cara, K, _),
-    foldl(ligar_casilla(Cubo, K, Fila), [A, B, C], 0, _),
-    ligar_filas(Caras, Palabras, Cubo, Fila).
-
-%!  ligar_casilla(+Cubo, +K, +Fila, +Letra:string, +C0, -C) is semidet.
-%
-%   La casilla de la cara K en Fila y la columna C0 tiene el color de
-%   Letra.
-ligar_casilla(Cubo, K, Fila, Letra, C0, C) :-
-    string_lower(Letra, Minuscula),
-    atom_string(Color, Minuscula),
-    cara(Color, _, _),
-    I is 9 * K + 3 * Fila + C0 + 1,
-    arg(I, Cubo, Color),
-    C is C0 + 1.
-
-% --- Ejercicio 6: el cubo en colores ------------------------------------------
-
-% fondo(Cara, Codigo): el código ANSI del color de fondo de Cara.
-fondo(u, 47).
-fondo(d, 43).
-fondo(f, 42).
-fondo(b, 44).
-fondo(r, 41).
-fondo(l, 45).
-
-%!  red_color(+Cubo, -Lineas:list(string)) is det.
-%
-%   Lineas es el cubo desplegado con cada casilla escrita como dos
-%   blancos sobre el color de su cara.
-red_color(Cubo, Lineas) :-
-    findall(L, ( between(0, 2, F), fila_color_sola(Cubo, u, F, L) ), Arriba),
-    findall(L, ( between(0, 2, F), fila_color_media(Cubo, F, L) ), Medio),
-    findall(L, ( between(0, 2, F), fila_color_sola(Cubo, d, F, L) ), Abajo),
-    append([Arriba, Medio, Abajo], Lineas).
-
-%!  fila_color_sola(+Cubo, +Cara, +F, -Linea:string) is det.
-%
-%   Linea es la fila F de Cara, corrida seis columnas.
-fila_color_sola(Cubo, Cara, F, Linea) :-
-    fila_color(Cubo, Cara, F, Fila),
-    string_concat("      ", Fila, Linea).
-
-%!  fila_color_media(+Cubo, +F, -Linea:string) is det.
-%
-%   Linea es la fila F de las caras l, f, r y b.
-fila_color_media(Cubo, F, Linea) :-
-    maplist(fila_color(Cubo), [l, f, r, b], [F, F, F, F], Filas),
-    atomic_list_concat(Filas, Atomo),
-    atom_string(Atomo, Linea).
-
-%!  fila_color(+Cubo, +Cara, +F, -Fila:string) is det.
-%
-%   Fila son las tres casillas de la fila F de Cara, con sus colores, y
-%   la secuencia que vuelve al color normal.
-fila_color(Cubo, Cara, F, Fila) :-
-    cara(Cara, K, _),
-    findall(S,
-            ( between(0, 2, C),
-              I is 9 * K + 3 * F + C + 1,
-              arg(I, Cubo, Color),
-              fondo(Color, Codigo),
-              format(string(S), "\e[~dm  ", [Codigo]) ),
-            Casillas),
-    atomic_list_concat(Casillas, A),
-    string_concat(A, "\e[0m", Fila).
-
-%!  mostrar_color(+Cubo) is det.
-%
-%   Escribe Cubo desplegado, en colores.
-mostrar_color(Cubo) :-
-    red_color(Cubo, Lineas),
-    forall(member(L, Lineas), writeln(L)).
-
-% --- Ejercicio 7: orientar es conjugar con una rotación ---
-
-%!  conjugada_por_rotacion(+Ms:list, -Antes, -Despues) is det.
-%
-%   Antes-Despues es la macro de deshacer la rotación del cubo entero
-%   sobre el eje vertical, aplicar Ms y volver a rotar: rotacion(u, C1,
-%   Antes) lleva C1 a Antes, así que leído en sentido inverso deshace la
-%   rotación.
-conjugada_por_rotacion(Ms, Antes, Despues) :-
-    rotacion(u, C1, Antes),
-    aplicar(Ms, C1, C2),
-    rotacion(u, C2, Despues).
-
-%!  orientar_es_conjugar(+Ms:list) is semidet.
-%
-%   orientar(1, Ms, Ms1) y Ms conjugada por la rotación del cubo sobre
-%   el eje vertical son la misma macro.
-orientar_es_conjugar(Ms) :-
-    orientar(1, Ms, Ms1),
-    compilar(Ms1, A-D1),
-    conjugada_por_rotacion(Ms, A, D2),
-    D1 == D2.
-
-% --- Ejercicio 8: el peso de cada etapa ---
-
-%!  por_etapa(+Semillas:integer, -Tabla:list) is det.
-%
-%   Tabla tiene, por cada etapa, E-media(M)-maximo(X): la media y el
-%   máximo de cuartos de vuelta que usa resolver/2 en esa etapa sobre las
-%   mezclas de 25 giros de las semillas 1 a Semillas.
-por_etapa(Semillas, Tabla) :-
-    findall(E-N,
-            ( between(1, Semillas, S),
-              mezcla(S, 25, Ms),
-              resuelto(C),
-              aplicar(Ms, C, C1),
-              resolver(C1, Pasos),
-              etapa(E, _),
-              aggregate_all(sum(L), ( member(paso(E, _, G), Pasos),
-                                      length(G, L) ), N) ),
+%   Horario es el de menor costo entre los primeros horarios de Oferta con
+%   cuatro opciones de etiquetado del par momento-aula: ff, ffc, leftmost
+%   y ff con los valores de mayor a menor.
+primero_de_varios(Oferta, Horario, Costo) :-
+    findall(C-H,
+            ( member(Opciones, [[ff], [ffc], [leftmost], [ff, down]]),
+              modelo(Oferta, conteo, H, vars(_, _, Ps)),
+              once(labeling(Opciones, Ps)),
+              evaluar(Oferta, H, C) ),
             Pares),
-    findall(E-media(M)-maximo(X),
-            ( etapa(E, _),
-              findall(N, member(E-N, Pares), Ns),
-              sum_list(Ns, Suma),
-              M is Suma / Semillas,
-              max_list(Ns, X) ),
-            Tabla).
+    keysort(Pares, [Costo-Horario|_]).
 
-% --- Ejercicio 9: sin dos giros de U seguidos ---------------------------------
-
-%!  colocar_podado(+Etapa, +Cubo, +Criterio, -Movimientos:list, -Cubo1)
-%!      is det.
+%!  mejor_de_varios(+Oferta, +Limite:integer, -Horario:list, -Garantia)
+%!      is semidet.
 %
-%   Como colocar/5, pero la búsqueda descarta las secuencias con dos
-%   candidatos seguidos que solo giran U.
-colocar_podado(Etapa, Cubo, Criterio, Movimientos, Cubo1) :-
-    colocar_propio(si, Etapa, Cubo, Criterio, Movimientos, Cubo1).
+%   Como mejor_con_limite/4, pero la mejora empieza por el horario de
+%   primero_de_varios/3.
+mejor_de_varios(Oferta, Limite, Horario, Garantia) :-
+    cota_inferior(Oferta, Cota),
+    primero_de_varios(Oferta, Primero, C0),
+    mejorar(Oferta, Limite, Cota, Primero, C0, Horario, Garantia).
 
-%!  colocar_sin_poda(+Etapa, +Cubo, +Criterio, -Movimientos:list, -Cubo1)
-%!      is det.
+% --- Ejercicio 9 --------------------------------------------------------------
+
+%!  pagina_aula(+Nombre:atom, +Pedido) is det.
 %
-%   La misma búsqueda que colocar_podado/5, sin la poda: la referencia
-%   para medirla.
-colocar_sin_poda(Etapa, Cubo, Criterio, Movimientos, Cubo1) :-
-    colocar_propio(no, Etapa, Cubo, Criterio, Movimientos, Cubo1).
-
-%!  colocar_propio(+Podar, +Etapa, +Cubo, +Criterio, -Movimientos:list,
-%!                 -Cubo1) is det.
-%
-%   Profundización iterativa sobre los candidatos de Etapa; con Podar =
-%   si, sin dos candidatos de solo U seguidos.
-colocar_propio(Podar, Etapa, Cubo, Criterio, Movimientos, Cubo1) :-
-    length(Plan, _),
-    podada(Plan, Podar, Etapa, no, Cubo, Cubo1),
-    Cubo1 = Criterio,
-    !,
-    append(Plan, Movimientos).
-
-%!  podada(?Plan:list, +Podar, +Etapa, +AnteriorU, +Cubo, -Cubo1)
-%!      is nondet.
-%
-%   Cubo1 es Cubo con los candidatos de Plan aplicados; con Podar = si,
-%   sin dos candidatos de solo U seguidos. AnteriorU dice si el candidato
-%   anterior era de solo U.
-podada([], _, _, _, Cubo, Cubo).
-podada([Ms|Plan], Podar, Etapa, AnteriorU, Cubo0, Cubo) :-
-    candidato(Etapa, Ms, Cubo0, Cubo1),
-    (   solo_u(Ms)
-    ->  \+ ( Podar == si, AnteriorU == si ),
-        EsU = si
-    ;   EsU = no
-    ),
-    podada(Plan, Podar, Etapa, EsU, Cubo1, Cubo).
-
-%!  solo_u(+Ms:list) is semidet.
-%
-%   Ms solo gira la cara u.
-solo_u(Ms) :-
-    forall(member(M, Ms), cara_de(M, u)).
-
-%!  resolver_con(+Colocar, +Cubo, -Pasos:list) is det.
-%
-%   Como resolver/2, colocando cada pieza con Colocar, colocar o
-%   colocar_podado.
-resolver_con(Colocar, Cubo, Pasos) :-
-    findall(E-P, ( etapa(E, Ps), member(P, Ps) ), Plan),
-    foldl(colocar_una(Colocar), Plan, Cubo-[]-Pasos, _-_-[]).
-
-%!  colocar_una(+Colocar, +EP, +Estado0, -Estado) is det.
-%
-%   Coloca la pieza P de la etapa E; el estado es
-%   Cubo-Colocadas-Pasos, con Pasos como lista abierta.
-colocar_una(Colocar, E-P, C0-Col0-[paso(E, P, Ms)|Pasos],
-            C1-[P|Col0]-Pasos) :-
-    criterio([P|Col0], Criterio),
-    call(Colocar, E, C0, Criterio, Ms, C1).
-
-%!  inferencias_resolver(+Colocar, +Semillas:integer, -Inferencias) is det.
-%
-%   Inferencias es el total de inferencias de resolver_con/3 sobre las
-%   mezclas de 25 giros de las semillas 1 a Semillas.
-inferencias_resolver(Colocar, Semillas, Inferencias) :-
-    findall(C1, ( between(1, Semillas, S),
-                  mezcla(S, 25, Ms),
-                  resuelto(C),
-                  aplicar(Ms, C, C1) ), Cubos),
-    statistics(inferences, I0),
-    forall(member(C1, Cubos), resolver_con(Colocar, C1, _)),
-    statistics(inferences, I1),
-    Inferencias is I1 - I0.
-
-% --- Ejercicio 10: tres aristas de arriba ------------------------------------
-
-%!  aristas_descubiertas(-Probadas:integer, -N:integer) is det.
-%
-%   N es la cantidad de conmutadores de A, de 1 a 3 cuartos de vuelta, con
-%   un cuarto de vuelta de U, que mueven exactamente tres aristas de la
-%   cara de arriba y nada más; Probadas, los conmutadores examinados.
-aristas_descubiertas(Probadas, N) :-
-    findall(Sirve,
-            ( between(1, 3, L),
-              length(A, L),
-              reducida(A),
-              member(B, [u, -u]),
-              conmutador(A, [B], S),
-              compilar(S, M),
-              efecto(M, Piezas),
-              (   tres_aristas_de_arriba(Piezas)
-              ->  Sirve = si
-              ;   Sirve = no
-              ) ),
-            Todas),
-    length(Todas, Probadas),
-    aggregate_all(count, member(si, Todas), N).
-
-%!  tres_aristas_de_arriba(+Piezas:list(atom)) is semidet.
-%
-%   Piezas son tres aristas de la cara de arriba.
-tres_aristas_de_arriba(Piezas) :-
-    length(Piezas, 3),
-    forall(member(P, Piezas),
-           ( atom_length(P, 2),
-             sub_atom(P, 0, 1, _, 'U') )).
-
-% --- Ejercicio 11: recordar lo aprendido ---
-
-:- dynamic aprendido/4.
-
-%!  colocar_aprendiendo(+Etapa, +Cubo, +Criterio, -Movimientos:list,
-%!                      -Cubo1) is det.
-%
-%   Como colocar/5, con los candidatos de Etapa más los aprendidos. Si
-%   la secuencia hallada tiene tres o más candidatos, se agrega compilada
-%   como un candidato aprendido de Etapa.
-colocar_aprendiendo(Etapa, Cubo, Criterio, Movimientos, Cubo1) :-
-    length(Plan, _),
-    con_aprendidos(Plan, Etapa, Cubo, Cubo1),
-    Cubo1 = Criterio,
-    !,
-    append(Plan, Movimientos),
-    length(Plan, L),
-    (   L >= 3
-    ->  compilar(Movimientos, A-D),
-        assertz(aprendido(Etapa, Movimientos, A, D))
-    ;   true
+%   GET /aula/Nombre: la ocupación del aula Nombre en el horario
+%   publicado, o 404 si no hay un aula con ese nombre.
+pagina_aula(Nombre, Pedido) :-
+    oferta(cuatrimestre, Oferta),
+    (   aula(Oferta, _, Nombre, _)
+    ->  optimo(Oferta, cotas, Horario, _),
+        cuerpo_aula(Oferta, Horario, Nombre, Cuerpo),
+        reply_html_page(title(Nombre), Cuerpo)
+    ;   http_404([], Pedido)
     ).
 
-%!  con_aprendidos(?Plan:list, +Etapa, +Cubo, -Cubo1) is nondet.
+%!  cuerpo_aula(+Oferta, +Horario:list, +Nombre, -Cuerpo:list) is semidet.
 %
-%   Cubo1 es Cubo con los candidatos de Plan aplicados; cada uno es un
-%   candidato de Etapa o uno aprendido.
-con_aprendidos([], _, Cubo, Cubo).
-con_aprendidos([Ms|Plan], Etapa, Cubo0, Cubo) :-
-    (   candidato(Etapa, Ms, Cubo0, Cubo1)
-    ;   aprendido(Etapa, Ms, Cubo0, Cubo1)
-    ),
-    con_aprendidos(Plan, Etapa, Cubo1, Cubo).
+%   Cuerpo es la página de la ocupación del aula Nombre en Horario: una
+%   tabla con una columna por día, una fila por franja y, en cada casilla,
+%   la clase que usa el aula. Falla si no hay un aula con ese nombre.
+cuerpo_aula(Oferta, Horario, Nombre,
+            [h1(Titulo), table([tr([th('Franja')|Encabezados])|Filas])]) :-
+    once(aula(Oferta, Numero, Nombre, _)),
+    Oferta = oferta(semana(Dias, Franjas), _, _, _),
+    format(atom(Titulo), "Aula ~w", [Nombre]),
+    numlist(1, Dias, Ds),
+    maplist(nombre_del_dia, Ds, Encabezados),
+    numlist(1, Franjas, Fs),
+    maplist(fila_aula(Oferta, Horario, Numero, Ds), Fs, Filas).
 
-%!  aprender(+Semillas:integer, -Aprendidos:integer, -Giros:integer,
-%!           -Inferencias:integer) is det.
+%!  nombre_del_dia(+Dia:integer, -Th) is det.
 %
-%   Resuelve en orden las mezclas de 25 giros de las semillas 1 a
-%   Semillas, aprendiendo. Aprendidos es la cantidad de candidatos nuevos,
-%   Giros el total de cuartos de vuelta e Inferencias el total de
-%   inferencias.
-aprender(Semillas, Aprendidos, Giros, Inferencias) :-
-    retractall(aprendido(_, _, _, _)),
-    statistics(inferences, I0),
-    findall(N, ( between(1, Semillas, S),
-                 mezcla(S, 25, Ms),
-                 resuelto(C),
-                 aplicar(Ms, C, C1),
-                 resolver_con(colocar_aprendiendo, C1, Pasos),
-                 giros(Pasos, G),
-                 length(G, N) ), Ns),
-    statistics(inferences, I1),
-    Inferencias is I1 - I0,
-    sum_list(Ns, Giros),
-    aggregate_all(count, aprendido(_, _, _, _), Aprendidos).
+%   Th es la celda de encabezado del día Dia.
+nombre_del_dia(Dia, th(Nombre)) :-
+    nth1(Dia, [lun, mar, mie, jue, vie], Nombre).
+
+%!  fila_aula(+Oferta, +Horario:list, +Numero:integer, +Dias:list,
+%!            +Franja:integer, -Tr) is det.
+%
+%   Tr es la fila de la franja Franja en la ocupación del aula Numero.
+fila_aula(Oferta, Horario, Numero, Dias, Franja, tr([th(Franja)|Celdas])) :-
+    maplist(celda_aula(Oferta, Horario, Numero, Franja), Dias, Celdas).
+
+%!  celda_aula(+Oferta, +Horario:list, +Numero:integer, +Franja:integer,
+%!             +Dia:integer, -Td) is det.
+%
+%   Td muestra la clase que usa el aula Numero en ese día y franja, o
+%   está vacía.
+celda_aula(Oferta, Horario, Numero, Franja, Dia, Td) :-
+    momento(Oferta, S, Dia, Franja),
+    (   memberchk(asignada(M-K, Numero, S, _), Horario)
+    ->  format(atom(Texto), "~w-~w", [M, K]),
+        Td = td(Texto)
+    ;   Td = td([])
+    ).
+
+% --- Ejercicio 10 -------------------------------------------------------------
+
+%!  llamado_separado(+Aulas:integer, -Calendario:list, -Dias:integer)
+%!      is semidet.
+%
+%   Como llamado_clpfd/3, pero entre dos exámenes en conflicto queda al
+%   menos un día libre.
+llamado_separado(Aulas, Calendario, Dias) :-
+    proyecto_examenes(Aulas, proyecto(Tareas, _, _)),
+    length(Tareas, N),
+    findall(M-_, member(tarea(M, _), Tareas), Pares),
+    pairs_values(Pares, Ds),
+    Ultimo is 2 * N,
+    Ds ins 0..Ultimo,
+    Tope is Ultimo + 1,
+    Dias in 1..Tope,
+    maplist(#>(Dias), Ds),
+    findall(R-M, correlativa(M, R), Correlativas),
+    maplist(antes(Pares), Correlativas),
+    findall(M1-M2, conflicto(M1, M2), Conflictos),
+    maplist(separados(Pares), Conflictos),
+    numlist(0, Ultimo, Todos),
+    findall(D-_, member(D, Todos), Cuentas),
+    pairs_values(Cuentas, Cs),
+    Cs ins 0..Aulas,
+    global_cardinality(Ds, Cuentas),
+    once(labeling([min(Dias), ff], [Dias|Ds])),
+    findall(tramo(M, D, F), ( member(M-D, Pares), F is D + 1 ), Tramos),
+    repartir(Aulas, Tramos, Calendario).
+
+%!  antes(+Pares:list, +Correlativa:pair) is det.
+%
+%   El examen de R va antes que el de M, para el par R-M.
+antes(Pares, R-M) :-
+    memberchk(R-DR, Pares),
+    memberchk(M-DM, Pares),
+    DR #< DM.
+
+%!  separados(+Pares:list, +Conflicto:pair) is det.
+%
+%   Entre los exámenes de las dos materias del Conflicto queda al menos un
+%   día libre.
+separados(Pares, M1-M2) :-
+    memberchk(M1-D1, Pares),
+    memberchk(M2-D2, Pares),
+    abs(D1 - D2) #>= 2.
+
+% --- Consultas de la página de soluciones -------------------------------------
+
+%!  ver_reparacion(-Cambios:list) is det.
+%
+%   Cambios son las asignaciones que reparar/3 agrega al horario de
+%   ejemplo después de pasar am2-1 al momento 0. Falla si el resultado no
+%   es un horario válido.
+ver_reparacion(Cambios) :-
+    oferta(cuatrimestre, O),
+    horario_ejemplo(H0),
+    selectchk(asignada(am2-1, 2, 2, 3), H0, asignada(am2-1, 2, 0, 1), H1),
+    reparar(O, H1, H),
+    horario_valido(O, H),
+    subtract(H, H0, Cambios).
+
+%!  ver_recursantes(+Pares:list, +Anio:integer) is semidet.
+%
+%   Escribe la grilla del año Anio en el horario de
+%   horario_con_recursantes/3 para la oferta cuatrimestre y Pares.
+ver_recursantes(Pares, Anio) :-
+    oferta(cuatrimestre, O),
+    horario_con_recursantes(O, Pares, H),
+    mostrar_anio(O, H, Anio).
+
+%!  comparar_costos(-Docentes, -Alumnos) is semidet.
+%
+%   Docentes es r(D, A) para el horario de la oferta cuatrimestre que
+%   minimiza los días de docentes, y Alumnos lo mismo para el que minimiza
+%   el costo de los alumnos: D, los días de docentes, y A, el costo de
+%   evaluar/3.
+comparar_costos(r(D1, A1), r(D2, A2)) :-
+    oferta(cuatrimestre, O),
+    optimo_docentes(O, H1, D1),
+    evaluar(O, H1, A1),
+    optimo(O, cotas, H2, A2),
+    costo_docentes(O, H2, D2).
+
+%!  costos_de_varios(+Nombre, -Costos:list) is det.
+%
+%   Costos tiene un par Opciones-Costo con el costo del primer horario de
+%   la oferta de ejemplo Nombre para cada etiquetado de
+%   primero_de_varios/3.
+costos_de_varios(Nombre, Costos) :-
+    oferta(Nombre, Oferta),
+    findall(Opciones-C,
+            ( member(Opciones, [[ff], [ffc], [leftmost], [ff, down]]),
+              modelo(Oferta, conteo, H, vars(_, _, Ps)),
+              once(labeling(Opciones, Ps)),
+              evaluar(Oferta, H, C) ),
+            Costos).
+
+%!  ver_llamado_separado(+Aulas:integer) is semidet.
+%
+%   Escribe el llamado de llamado_separado/3 con Aulas aulas y su cantidad
+%   de días.
+ver_llamado_separado(Aulas) :-
+    llamado_separado(Aulas, Calendario, Dias),
+    mostrar_llamado(Calendario),
+    format("días: ~w~n", [Dias]).

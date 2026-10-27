@@ -20,7 +20,7 @@ techniques» (1991), el artículo que la introducción de los
 [patrones](patrones.md) cita como antecedente.
 
 Un predicado rara vez sigue una sola plantilla: por lo general combina varias.
-`sin_los_vistos/3`, del [capítulo 15](capitulo-15-control/index.md#154-once1-e-ignore1), recorre una lista (plantilla 9),
+`sin_los_vistos/3`, del [capítulo 16](capitulo-16-control/index.md#164-once1-e-ignore1), recorre una lista (plantilla 9),
 construye el resultado a medida que la recorre (plantilla 12), lleva en un
 acumulador los elementos ya vistos (plantilla 13) y, para cada elemento, elige
 entre dos casos que no se superponen (plantilla 14, escrita con el condicional).
@@ -246,7 +246,7 @@ La lista resultante se escribe en la **cabeza**; no se construye en el cuerpo.
 Es la técnica llamada *construcción en la cabeza*. Cada llamada aporta el primer elemento del resultado, y la recursión completa el
 resto. Las dos partes que cambian de un predicado a otro son el caso base —qué
 resultado corresponde a la lista vacía— y la relación entre cada elemento y el
-que ocupa su lugar en el resultado. En `pegar/3`, el caso más simple, cada
+que ocupa su lugar en el resultado. En `concatenar/3`, el caso más simple, cada
 elemento pasa sin modificarse y el caso base entrega la segunda lista.
 
 Capítulo 7, [sección 7.5](capitulo-07-listas/index.md#75-construir-una-lista-durante-el-recorrido-de-otra).

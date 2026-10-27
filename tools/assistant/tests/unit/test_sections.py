@@ -17,8 +17,8 @@ if TYPE_CHECKING:
         ('capitulo-10-negacion-como-falla/soluciones/', True),
         ('capitulo-10-negacion-como-falla/soluciones/#ejercicio-3', True),
         ('capitulo-10-negacion-como-falla/soluciones', True),
-        ('capitulo-17-todas-las-soluciones/', False),
-        ('capitulo-17-todas-las-soluciones/#172-findall3', False),
+        ('capitulo-18-todas-las-soluciones/', False),
+        ('capitulo-18-todas-las-soluciones/#182-findall3', False),
         ('capitulo-10-negacion-como-falla/#soluciones', False),
         ('', False),
     ],
@@ -56,13 +56,13 @@ def test_pack_of_nothing_is_no_group() -> None:
     ('location', 'part'),
     [
         ('capitulo-01-la-primera-hora/', 'I'),
-        ('capitulo-12-prolog-y-la-logica/#121-x', 'I'),
-        ('capitulo-13-el-entorno-de-trabajo/', 'II'),
-        ('capitulo-31-ejecutables-y-distribucion/', 'II'),
-        ('capitulo-32-inspeccion-de-terminos/', 'III'),
-        ('capitulo-42-prolog-y-sql/odbc/', 'III'),
-        ('capitulo-43-proyecto-resolver-ecuaciones/', 'IV'),
-        ('capitulo-87-proyecto-preguntas-en-castellano/', 'IV'),
+        ('capitulo-13-prolog-y-la-logica/#131-x', 'I'),
+        ('capitulo-14-el-entorno-de-trabajo/', 'II'),
+        ('capitulo-32-ejecutables-y-distribucion/', 'II'),
+        ('capitulo-33-inspeccion-de-terminos/', 'III'),
+        ('capitulo-43-prolog-y-sql/odbc/', 'III'),
+        ('capitulo-44-proyecto-resolver-ecuaciones/', 'IV'),
+        ('capitulo-88-proyecto-preguntas-en-castellano/', 'IV'),
         ('patrones/#8-recursion-en-espacio-constante', course.OUTSIDE_PARTS),
         ('', course.OUTSIDE_PARTS),
     ],
@@ -83,11 +83,11 @@ def test_indexed_sections_leave_out_solutions_and_sections_without_text(tmp_path
         {'location': 'capitulo-01-a/#11-x', 'title': '1.1 X', 'text': '<p>Texto</p>'},
         {'location': 'capitulo-01-a/#vacia', 'title': 'Vacía', 'text': ''},
         {'location': 'capitulo-01-a/soluciones/#e1', 'title': 'Ejercicio 1', 'text': '<p>Solución</p>'},
-        {'location': 'capitulo-17-todas-las-soluciones/#172-findall3', 'title': '17.2', 'text': '<p>findall</p>'},
+        {'location': 'capitulo-18-todas-las-soluciones/#182-findall3', 'title': '18.2', 'text': '<p>findall</p>'},
     ]
     index.write_text(json.dumps({'docs': docs}), encoding='utf-8')
     sections = course.indexed_sections(index)
-    assert list(sections) == ['', 'capitulo-01-a/#11-x', 'capitulo-17-todas-las-soluciones/#172-findall3']
+    assert list(sections) == ['', 'capitulo-01-a/#11-x', 'capitulo-18-todas-las-soluciones/#182-findall3']
     assert sections['capitulo-01-a/#11-x'] == Section('1.1 X', 'Texto')
 
 

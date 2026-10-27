@@ -234,7 +234,7 @@ quedan alternativas sin explorar. Esta diferencia adquiere importancia en el [ca
 El árbol de derivación del [capítulo 5](../capitulo-05-como-responde-prolog/index.md) no muestra esta
 diferencia: `abuelo(juan, luis)` y `abuelo(juan, eva)` tienen el mismo árbol,
 y que Prolog deje o no una alternativa abierta depende de cómo indexa las
-cláusulas, tema de la [sección 16.3](../capitulo-16-rendimiento/index.md#163-indexacion).
+cláusulas, tema de la [sección 17.3](../capitulo-17-rendimiento/index.md#173-indexacion).
 
 !!! question "Actividad"
     ¿Por qué `abuelo(juan, eva).` responde `true.` y `abuelo(juan, luis).` deja

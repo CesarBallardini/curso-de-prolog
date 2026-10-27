@@ -100,4 +100,56 @@ test(prenda_corte_final, all(P == [unico-blanco-lino,
     prenda_corte_final(T, C, M),
     P = T-C-M.
 
+% Ejercicio 17: las cuatro formas del enunciado.
+test(identifica_maximo, all(Z == [maximo])) :-
+    identifica([1, 3, 4, 10, 99, 98, 23, 2], Z).
+
+test(identifica_minimo, all(Z == [minimo])) :-
+    identifica([34, 3, 6, 99, 100], Z).
+
+test(identifica_meseta, all(Z == [meseta])) :-
+    identifica([34, 35, 67, 67, 67, 30, 21], Z).
+
+test(identifica_sinorden, all(Z == [sinorden])) :-
+    identifica([23, 45, 46, 2, 1, 4], Z).
+
+% Sin subida antes de la cima no hay máximo.
+test(identifica_solo_baja, all(Z == [sinorden])) :-
+    identifica([5, 4, 3], Z).
+
+test(identifica_no_es_minimo, [fail]) :-
+    identifica([1, 3, 4, 10, 99, 98, 23, 2], minimo).
+
+% El corte de la plantilla 14 es rojo: con sinorden ya ligado, la última
+% cláusula lo acepta aunque la lista tenga un máximo.
+test(identifica_corte_rojo) :-
+    identifica([1, 3, 2], sinorden).
+
+% Ejercicio 18
+test(sust_borra, all(L == [[p, r, o, l, o, g]])) :-
+    sust([p, r, o, l, g, g, o, g, g, g], [g, g], [], L).
+
+test(sust_reemplaza, all(T == [[a, b, c, d, c, b, c, c]])) :-
+    sust([a, b, c, d, 1, a, b, c, 1, a], [1, a], [c], T).
+
+test(sust_sin_apariciones, all(L == [[1, 2, 3, 4, z]])) :-
+    sust([1, 2, 3, 4, z], [1, 2, 4], [a, b, c, d, e, f], L).
+
+test(sust_verifica, [nondet]) :-
+    sust([1, 0, 0, 1, 1], [2], [1, 1], [1, 0, 0, 1, 1]).
+
+test(sust_no_conserva, [fail]) :-
+    sust([a, b, a], [a], [x], [a, b, x]).
+
+% Ejercicio 19
+test(atomiza, all(X == [[5, s, p, q, r, 2]])) :-
+    atomiza([[[5, s], [p, q]], r, [2]], X).
+
+test(atomiza_verifica) :-
+    atomiza([1, [[2, a], 3], [4]], [1, 2, a, 3, 4]).
+
+% La unificación con [] después del corte impide aceptar un resultado falso.
+test(atomiza_vacia_ligada, [fail]) :-
+    atomiza([], [[]]).
+
 :- end_tests(soluciones).

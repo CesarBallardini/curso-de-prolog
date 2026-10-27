@@ -2,191 +2,158 @@
 
 :- begin_tests(soluciones).
 
-% cerca(Xs, Ys, Tol): las dos listas difieren en menos de Tol por
-% componente.
-cerca(Xs, Ys, Tol) :-
-    maplist([X, Y]>>(abs(X - Y) < Tol), Xs, Ys).
+test(menos_unario, [true(S == [-4])]) :-
+    ejecutar("x := -3 * 2; escribir 2 - -x", S).
 
-test(sin_limite_no_termina, [true(R == inference_limit_exceeded)]) :-
-    funcion(x ^ 2 = 2, F),
-    call_with_inference_limit(
-        iterar_sin_limite(paso_biseccion(F, x), 1.0e-20,
-                          intervalo(1.0, -1.0, 2.0), _),
-        1000000, R).
+test(menos_unario_arbol, [true(P == [escribir(bin(-, num(0),
+                                                  bin(-, num(0), id(x))))])]) :-
+    analizar("escribir - - x", P).
 
-test(sin_limite_termina, [true(N == 40)]) :-
-    funcion(x ^ 2 = 2, F),
-    iterar_sin_limite(paso_biseccion(F, x), 1.0e-12,
-                      intervalo(1.0, -1.0, 2.0), Xs),
-    length(Xs, N).
+test(repetir_arbol, [true(P == [repetir([escribir(id(i))],
+                                        rel(=, id(i), num(1)))])]) :-
+    analizar("repetir escribir i hasta i = 1", P).
 
-test(relativa, [true(abs(R - sqrt(2.0e12)) =< 1.0e-3)]) :-
-    biseccion_relativa(x ^ 2 = 2.0e12, x, 0-2.0e6, 1.0e-12, Xs),
-    last(Xs, R).
+test(repetir, [true(S == [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])]) :-
+    fuente_repetir(T),
+    ejecutar(T, S).
 
-test(relativa_como_absoluta_cerca_de_1, [true(N == 40)]) :-
-    biseccion_relativa(x ^ 2 = 2, x, 1-2, 1.0e-12, Xs),
-    length(Xs, N).
+test(repetir_compilado, [true(S == [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])]) :-
+    fuente_repetir(T),
+    correr(T, S).
 
-test(falsa_posicion, [true(N == 17)]) :-
-    falsa_posicion(x ^ 2 = 2, x, 1-2, 1.0e-12, Xs),
-    length(Xs, N),
-    last(Xs, R),
-    abs(R - sqrt(2)) =< 1.0e-12.
+test(repetir_una_vez, [true(S == [0])]) :-
+    ejecutar("repetir escribir i hasta i = 0", S).
 
-test(falsa_posicion_sin_cambio,
-     [error(domain_error(intervalo_con_cambio_de_signo, 2-3))]) :-
-    falsa_posicion(x ^ 2 = 2, x, 2-3, 1.0e-12, _).
+test(fusion, [true(Pasos-N == 69-18)]) :-
+    fuente_ejemplo(factorial, T),
+    compilar_fusion(T, O),
+    memberchk(saltar_si_no(>, 16), O),
+    maquina_medida(O, [120], Pasos, _),
+    length(O, N).
 
-test(derivar_coseno, [true(D == 1 - -1 * sin(x))]) :-
-    derivar_ampliado(x - cos(x), x, D).
+test(sin_fusion, [true(Pasos-N == 75-19)]) :-
+    fuente_ejemplo(factorial, T),
+    compilar_optimizado(T, O),
+    maquina_medida(O, [120], Pasos, _),
+    length(O, N).
 
-test(derivar_cadena,
-     [true(D == cos(x ^ 2) * (2 * x) + 2 * exp(2 * x) + 1 / x)]) :-
-    derivar_ampliado(sin(x ^ 2) + exp(2 * x) + log(x), x, D).
+test(fusion_como_el_interprete, [forall(fuente_ejemplo(_, T)),
+                                 true(S1 == S2)]) :-
+    compilar_fusion(T, O),
+    maquina(O, S1),
+    ejecutar(T, S2).
 
-test(derivar_otra, [error(domain_error(expresion_derivable, tan(x)))]) :-
-    derivar_ampliado(tan(x), x, _).
+test(pila_reordenada, [true(H0-H == 4-2)]) :-
+    compilar("x := a + (b + (c + d))", O0),
+    maquina_medida(O0, _, 8, H0),
+    compilar_optimizado("x := a + (b + (c + d))", O),
+    maquina_medida(O, _, 8, H).
 
-test(newton_ampliado, [true(abs(R - cos(R)) =< 1.0e-12)]) :-
-    newton_ampliado(x = cos(x), x, 1, 1.0e-12, Xs),
-    last(Xs, R).
+test(condicion, [true(C == rel(>, bin(+, bin(+, id(b), id(c)), id(a)),
+                               num(1)))]) :-
+    analizar("si 1 < a + (b + c) entonces escribir 1 fin", P0),
+    reordenar_condiciones(P0, [si(C, _, _)]),
+    pila_condicion(C, 2).
 
-test(newton_multiple, [true(N == 5)]) :-
-    newton_multiple((x - 1) ^ 2 * (x + 2) = 0, x, 2, 2, 1.0e-12, Xs),
-    length(Xs, N),
-    last(Xs, R),
-    abs(R - 1) =< 1.0e-12.
+test(espejo) :-
+    forall(espejo(Op, Op1),
+           forall(member(X-Y, [1-2, 2-2, 3-2]),
+                  (   comparar(Op, X, Y)
+                  ->  comparar(Op1, Y, X)
+                  ;   \+ comparar(Op1, Y, X)
+                  ))).
 
-test(jacobi, [true(N == 33)]) :-
-    jacobi([[4, 1, -1], [1, 5, 2], [2, -1, 6]], [3, 17, 18], [0, 0, 0],
-           1.0e-12, As),
-    length(As, N),
-    last(As, Xs),
-    cerca(Xs, [1, 2, 3], 1.0e-9).
+test(asociar, [true(E == bin(+, id(x), num(5)))]) :-
+    plegar_asociando(bin(+, bin(+, id(x), num(2)), num(3)), E).
 
-test(jacobi_primer_barrido, [true(X1 == [0.75, 3.4, 3.0])]) :-
-    jacobi([[4, 1, -1], [1, 5, 2], [2, -1, 6]], [3, 17, 18], [0, 0, 0],
-           1.0e-12, [X1|_]).
+test(asociar_resta, [true(E == id(x))]) :-
+    plegar_asociando(bin(-, bin(+, id(x), num(2)), num(2)), E).
 
-test(dominante) :-
-    diagonal_dominante([[4, 1, -1], [1, 5, 2], [2, -1, 6]]).
+test(marcas, [true(C == [apilar(1), escribir])]) :-
+    analizar("si 2 > 1 entonces escribir 1 sino escribir 2 fin", P),
+    generar(P, C0),
+    mirilla_completa(C0, C).
 
-test(no_dominante, [fail]) :-
-    diagonal_dominante([[1, 5, 2], [4, 1, -1], [2, -1, 6]]).
+test(a_texto, [true(T == 'x := (a - (b - c)) * d / 2')]) :-
+    analizar("x := (a - (b - c)) * d / 2", P),
+    a_texto(P, T).
 
-test(ordenar,
-     [true(Fs-Bs == [[4, 1, -1], [1, 5, 2], [2, -1, 6]]-[3, 17, 18])]) :-
-    ordenar_filas([[1, 5, 2], [4, 1, -1], [2, -1, 6]], [17, 3, 18], Fs, Bs).
+test(ida_y_vuelta, [forall(programa_ejemplo(_, P)), true(P1 == P)]) :-
+    a_texto(P, T),
+    analizar(T, P1).
 
-test(ordenar_imposible, [fail]) :-
-    ordenar_filas([[1, 1], [1, 1]], [2, 2], _, _).
+test(compartir, [true(P == [asignar(t_1, bin(+, id(a), id(b))),
+                            asignar(x, bin(-, bin(*, id(t_1), id(t_1)),
+                                           id(t_1)))])]) :-
+    analizar("x := (a + b) * (a + b) - (a + b)", P0),
+    compartir(P0, P).
 
-test(residuo_exacto, [true(R =:= 0)]) :-
-    residuo([[4, 1, -1], [1, 5, 2], [2, -1, 6]], [3, 17, 18], [1, 2, 3], R).
+test(compartir_anidadas, [true(P == [asignar(t_1, bin(+, id(a), id(b))),
+                                     asignar(t_2, bin(*, id(t_1), id(c))),
+                                     asignar(y, bin(+, id(t_2),
+                                                    id(t_2)))])]) :-
+    analizar("y := (a + b) * c + (a + b) * c", P0),
+    compartir(P0, P).
 
-test(residuo_lento, [true(Error > 5 * R)]) :-
-    gauss_seidel([[1, 0.95], [0.95, 1]], [1.95, 1.95], [0, 0], 1.0e-3, As),
-    last(As, Xs),
-    residuo([[1, 0.95], [0.95, 1]], [1.95, 1.95], Xs, R),
-    foldl([X, M0, M]>>(M is max(M0, abs(X - 1))), Xs, 0.0, Error).
+test(compartir_misma_salida, [true(S1 == S2)]) :-
+    analizar("a := 3; b := 4; x := (a + b) * (a + b); escribir x - (a + b)",
+             P0),
+    compartir(P0, P),
+    interpretar(P0, S1),
+    interpretar(P, S2).
 
-test(newton_sistema, [true(cerca([X, Y], [1.9318516525781364,
-                                           0.5176380902050416], 1.0e-9))]) :-
-    newton_sistema([x ^ 2 + y ^ 2 = 4, x * y = 1], x-y, 2-0.5, X-Y).
+test(medir, [true(R == [18-69-2, 19-75-2])]) :-
+    findall(N-P-M, ( member(C, [compilar_fusion, compilar_optimizado]),
+                     medir_ejemplo(factorial, C, N, P, M) ), R).
 
-test(newton_sistema_singular, [fail]) :-
-    newton_sistema([x + y = 1, 2 * x + 2 * y = 3], x-y, 0-0, _).
+test(modismo_fusion, all(C =@= [[saltar_si_no(<, L)]])) :-
+    modismo_fusion([comparar(<), saltar_si_cero(L)], C).
 
-test(raices, [true(cerca(Rs, [pi, 2 * pi, 3 * pi], 1.0e-9))]) :-
-    raices(sin(x) = 0, x, 1-10, 9, Rs).
+test(modismo_fusion_otro, all(C == [[apilar(3)]])) :-
+    modismo_fusion([apilar(1), apilar(2), sumar], C).
 
-test(raices_perdidas, [true(length(Rs, 1))]) :-
-    raices(sin(x) = 0, x, 1-10, 2, Rs).
+test(ciclo_medido, true(S-P-M == [3]-4-2)) :-
+    maquina_medida([apilar(1), apilar(2), sumar, escribir], S, P, M).
 
-test(raices_sin_tramos, [error(type_error(positive_integer, 0))]) :-
-    raices(sin(x) = 0, x, 1-10, 0, _).
+test(condicion_reordenada, true(C == rel(>, bin(+, id(b), id(c)), id(a)))) :-
+    condicion_reordenada(rel(<, id(a), bin(+, id(b), id(c))), C).
 
-test(iterar_relativa_mitades, [true(Xs == [0.5, 0.25, 0.125, 0.0625])]) :-
-    iterar_relativa(mitad, 0.1, 1.0, Xs).
+test(reasociar, true(T == x + 5)) :-
+    reasociar((x + 2) + 3, T).
 
-test(iterar_relativa_limite, [fail]) :-
-    iterar_relativa(mitad, 0.0, 1.0, _).
+test(regla_asociar_resta, true(T == x - 5)) :-
+    regla_asociar((x - 2) - 3, T).
 
-test(iterar_relativa_restantes, [fail]) :-
-    iterar_relativa(mitad, 0.1, 3, 1.0, _).
+test(regla_asociar_sin_constantes, fail) :-
+    regla_asociar(a + (b + c), _).
 
-% Secante por los extremos (1, -1) y (2, 2): corta en 4/3, donde la
-% función es negativa; queda la parte derecha.
-test(paso_falsa_posicion,
-     [true(E-C == falsa(1.3333333333333335, F, 2.0, 2.0, 1.3333333333333335)
-                  -1.3333333333333335)]) :-
-    paso_falsa_posicion(x ^ 2 - 2, x, falsa(1.0, -1.0, 2.0, 2.0, 1.0), E, C,
-                        _),
-    F is 1.3333333333333335 ^ 2 - 2.
+test(quitar_marcas, true(C == [apilar(1), saltar(L), etiqueta(L)])) :-
+    quitar_marcas([etiqueta(_), apilar(1), saltar(L), etiqueta(L)], C).
 
-test(paso_falsa_posicion_igual, [fail]) :-
-    paso_falsa_posicion(x ^ 2 - 2, x, falsa(1.0, 2.0, 2.0, 2.0, 1.0), _, _,
-                        _).
+test(marca_sin_uso) :-
+    marca_sin_uso([etiqueta(L), apilar(1)], etiqueta(L)).
 
-test(paso_newton_multiple, [true(X1 =:= 1.0)]) :-
-    paso_newton_multiple((x - 1) ^ 2, 2 * (x - 1), x, 2, 2.0, X1, X1, _).
+test(marca_usada, fail) :-
+    marca_sin_uso([etiqueta(L), saltar(L)], etiqueta(L)).
 
-test(paso_newton_multiple_nulo, [fail]) :-
-    paso_newton_multiple((x - 1) ^ 2, 2 * (x - 1), x, 2, 1.0, _, _, _).
+test(expresion_texto, true(T == '(a + 1) * b')) :-
+    expresion_texto(bin(*, bin(+, id(a), num(1)), id(b)), 0, T).
 
-test(barrido_jacobi, [true(Xs == [0.75, 3.4, 3.0])]) :-
-    barrido_jacobi([[4, 1, -1], [1, 5, 2], [2, -1, 6]], [3, 17, 18], [],
-                   [0, 0, 0], Xs).
+test(compartir_expresion,
+     true(N-Ts-E == 2-[asignar(t_1, bin(+, id(a), id(b)))]-
+                    bin(*, id(t_1), id(t_1)))) :-
+    compartir_expresion(bin(*, bin(+, id(a), id(b)), bin(+, id(a), id(b))),
+                        1, N, Ts, E).
 
-test(barrido_jacobi_diagonal_nula, [fail]) :-
-    barrido_jacobi([[0, 1], [1, 1]], [1, 2], [], [0, 0], _).
+test(repetidas, true(R == [bin(+, id(a), id(b))])) :-
+    repetidas(bin(*, bin(+, id(a), id(b)), bin(+, id(a), id(b))), R).
 
-test(paso_jacobi, [true(C =:= 3.4)]) :-
-    paso_jacobi([[4, 1, -1], [1, 5, 2], [2, -1, 6]], [3, 17, 18], [0, 0, 0],
-                Xs, Xs, C).
+test(sin_repetidas, true(R == [])) :-
+    repetidas(bin(+, id(a), id(b)), R).
 
-test(diagonal_dominante_desde_k) :-
-    diagonal_dominante([[1, 5, 2]], 1).
-
-test(sumar_absoluto, [true(S =:= 5)]) :-
-    sumar_absoluto(-3, 2, S).
-
-test(residuo_fila, [true(R =:= 2)]) :-
-    residuo_fila([1, 1], [1, 1], 4, 0.5, R).
-
-test(residuo_fila_conserva, [true(R =:= 7)]) :-
-    residuo_fila([1, 1], [1, 1], 2, 7, R).
-
-% Un paso de Newton para x + y = 3, x - y = 1 desde (0, 0) llega a la
-% solución exacta (2, 1), porque el sistema es lineal.
-test(paso_newton_sistema, [true(P-C == (2.0-1.0)-2.0)]) :-
-    paso_newton_sistema(x-y, (x + y - 3)-(x - y - 1), 1-1, 1-(-1), 0.0-0.0,
-                        P, P, C).
-
-test(paso_newton_sistema_singular, [fail]) :-
-    paso_newton_sistema(x-y, (x + y - 1)-(2 * x + 2 * y - 3), 1-1, 2-2,
-                        0.0-0.0, _, _, _).
-
-test(valor_en_punto, [true(V == 5.0)]) :-
-    valor_en_punto([x-1, y-2], x + 2 * y, V).
-
-test(raiz_en_tramo, [true(abs(R - pi) =< 1.0e-9)]) :-
-    raiz_en_tramo(sin(x) = 0, x, 1, 1, 2, R).
-
-test(raiz_en_tramo_sin_cambio, [fail]) :-
-    raiz_en_tramo(sin(x) = 0, x, 1, 1, 0, _).
-
-% Una raíz en el borde entre dos tramos aparece una sola vez.
-test(raices_borde, [true(cerca(Rs, [2], 1.0e-9))]) :-
-    raices(x ^ 2 = 4, x, 0-4, 2, Rs).
-
-test(raices_borde_izquierdo, [true(cerca(Rs, [0, pi], 1.0e-9))]) :-
-    raices(sin(x) = 0, x, 0-4, 2, Rs).
-
-% mitad(X0, X, X, Cambio): un paso que divide por dos.
-mitad(X0, X, X, Cambio) :-
-    X is X0 / 2,
-    Cambio is X0 - X.
+test(tablas, true(Ps == [(+)-1, (-)-1, (*)-2, (/)-2])) :-
+    findall(O-N, precedencia(O, N), Ps),
+    destino(saltar(x), x),
+    destino(saltar_si_cero(y), y).
 
 :- end_tests(soluciones).

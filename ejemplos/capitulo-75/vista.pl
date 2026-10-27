@@ -1,208 +1,193 @@
 :- encoding(utf8).
 
-% Capítulo 75 - Versión 4: el lazo a la vista.
+% Capítulo 75 - Versión 2: el cubo a la vista.
 %
-% El dibujo sigue el patrón de modelo de pantalla del capítulo 36:
-% lineas/3 es puro y da las líneas de texto; solo mostrar/2 escribe. Cada
-% casilla ocupa un carácter: O y # para las marcas, una esquina o un trazo
-% para las casillas por las que pasa la cuerda y un punto para las demás.
-% Entre dos casillas vecinas unidas por la cuerda va un trazo horizontal o
-% vertical. Las aristas del lazo, pares de casillas consecutivas, se
-% guardan en un conjunto ordenado.
+% red/2 arma, sin escribir nada, las líneas del cubo desplegado en forma
+% de cruz: la cara u arriba, las caras l, f, r y b en una fila y la cara
+% d abajo, cada casilla con la letra de su cara en mayúscula. caja/3, del
+% módulo pantalla del capítulo 37, la encierra en un recuadro, y
+% mostrar/1 es el único predicado que escribe. Las secuencias se leen y
+% se escriben en la notación de Singmaster: una letra por cara, un
+% apóstrofo para el giro inverso y un 2 para la media vuelta. mezcla/3
+% genera una mezcla reproducible a partir de una semilla.
 %
-% solo-local: carga unico.pl, que carga archivos de otro capítulo.
+% solo-local: carga cubo.pl y el módulo pantalla del capítulo 37.
 %
-%?- dibujar(csenki1).
-%?- mostrar(csenki2, []).
+%?- mostrar_giros("R U R' U'").
+%?- leer_notacion("F2 U' R", Ms).
+%?- mezcla(7, 6, Ms), escribir_notacion(Ms, T).
 
-:- ensure_loaded(unico).
-:- use_module(library(ordsets)).
+:- ensure_loaded(cubo).
+:- use_module('../capitulo-37/texto/pantalla', [caja/3]).
 
-%!  aristas(+Lazo:list, -Aristas:list) is det.
-%
-%   Aristas es el conjunto ordenado de los pares P-Q, con P @< Q, de
-%   casillas consecutivas de Lazo, incluido el par que lo cierra.
-aristas([], []).
-aristas([Primera|Resto], Aristas) :-
-    append([Primera|Resto], [Primera], Cerrado),
-    pares(Cerrado, Pares),
-    sort(Pares, Aristas).
+% --- El cubo desplegado ----------------------------------------------------
 
-%!  pares(+Casillas:list, -Pares:list) is det.
+%!  red(+Cubo, -Lineas:list(string)) is det.
 %
-%   Pares son los pares ordenados de casillas consecutivas de Casillas.
-pares([P|Ps], Pares) :-
-    pares(Ps, P, Pares).
+%   Lineas es el cubo desplegado en cruz, una fila de casillas por línea.
+red(Cubo, Lineas) :-
+    findall(L, ( between(0, 2, F), fila_sola(Cubo, u, F, L) ), Arriba),
+    findall(L, ( between(0, 2, F), fila_media(Cubo, F, L) ), Medio),
+    findall(L, ( between(0, 2, F), fila_sola(Cubo, d, F, L) ), Abajo),
+    append([Arriba, Medio, Abajo], Lineas).
 
-%!  pares(+Casillas:list, +Anterior, -Pares:list) is det.
+%!  fila_sola(+Cubo, +Cara, +F:integer, -Linea:string) is det.
 %
-%   Pares son los pares ordenados de casillas consecutivas de
-%   [Anterior|Casillas]. La indexación por el primer argumento distingue
-%   la lista vacía y no deja alternativas pendientes.
-pares([], _, []).
-pares([Q|Qs], P, [Par|Pares]) :-
-    (   P @< Q
-    ->  Par = P-Q
-    ;   Par = Q-P
-    ),
-    pares(Qs, Q, Pares).
+%   Linea es la fila F de Cara, corrida a la altura de la cara f.
+fila_sola(Cubo, Cara, F, Linea) :-
+    fila(Cubo, Cara, F, Fila),
+    string_concat("       ", Fila, Linea).
 
-%!  lineas(+Nombre, +Lazo:list, -Lineas:list(string)) is det.
+%!  fila_media(+Cubo, +F:integer, -Linea:string) is det.
 %
-%   Lineas son las líneas de texto del tablero Nombre con el lazo Lazo
-%   dibujado; con Lazo vacío, solo el tablero y sus marcas.
-lineas(Nombre, Lazo, Lineas) :-
-    problema(Nombre, Filas, Columnas, _),
-    aristas(Lazo, Aristas),
-    numlist(1, Filas, Fs),
-    foldl(lineas_de_fila(Nombre, Filas, Columnas, Aristas), Fs, Lineas, []).
+%   Linea es la fila F de las caras l, f, r y b, una al lado de la otra.
+fila_media(Cubo, F, Linea) :-
+    maplist(fila(Cubo), [l, f, r, b], [F, F, F, F], Filas),
+    atomic_list_concat(Filas, '  ', Atomo),
+    atom_string(Atomo, Linea).
 
-%!  lineas_de_fila(+Nombre, +Filas, +Columnas, +Aristas, +F, -Lineas,
-%!                 ?Resto) is det.
+%!  fila(+Cubo, +Cara, +F:integer, -Fila:string) is det.
 %
-%   Lineas, hasta Resto, son la línea de las casillas de la fila F y, si
-%   no es la última, la de los trazos verticales que la unen con la
-%   siguiente.
-lineas_de_fila(Nombre, Filas, Columnas, Aristas, F, [Casillas|Lineas], Resto) :-
-    numlist(1, Columnas, Cs),
-    foldl(casilla_y_trazo(Nombre, Columnas, Aristas, F), Cs, Partes, []),
-    atomics_to_string(Partes, Casillas),
-    (   F =:= Filas
-    ->  Lineas = Resto
-    ;   F1 is F + 1,
-        maplist(vertical(Aristas, F, F1), Cs, Verticales),
-        atomic_list_concat(Verticales, ' ', Abajo0),
-        sin_espacios_finales(Abajo0, Abajo),
-        Lineas = [Abajo|Resto]
-    ).
+%   Fila son las tres casillas de la fila F de Cara, en mayúsculas.
+fila(Cubo, Cara, F, Fila) :-
+    cara(Cara, K, _),
+    findall(Letra,
+            ( between(0, 2, C),
+              I is 9 * K + 3 * F + C + 1,
+              arg(I, Cubo, Color),
+              upcase_atom(Color, Letra) ),
+            Letras),
+    atomic_list_concat(Letras, ' ', Atomo),
+    atom_string(Atomo, Fila).
 
-%!  sin_espacios_finales(+Texto, -Recortado:string) is det.
+%!  mostrar(+Cubo) is det.
 %
-%   Recortado es Texto sin los espacios del final.
-sin_espacios_finales(Texto, Recortado) :-
-    atom_codes(Texto, Codigos),
-    reverse(Codigos, Invertidos),
-    quitar_espacios(Invertidos, Invertidos1),
-    reverse(Invertidos1, Codigos1),
-    string_codes(Recortado, Codigos1).
+%   Escribe Cubo desplegado, dentro de un recuadro.
+mostrar(Cubo) :-
+    red(Cubo, Lineas),
+    caja("", Lineas, Caja),
+    forall(member(Linea, Caja), writeln(Linea)).
 
-%!  quitar_espacios(+Codigos:list, -Resto:list) is det.
+% --- La notación de Singmaster ---------------------------------------------
+
+%!  leer_notacion(+Texto, -Movimientos:list) is semidet.
 %
-%   Resto es Codigos sin los espacios del principio.
-quitar_espacios([0' |Codigos], Resto) :-
+%   Movimientos son los giros escritos en Texto, separados por blancos:
+%   "R" es r, "R'" es -r y "R2" es r, r. Falla si Texto no está en la
+%   notación.
+leer_notacion(Texto, Movimientos) :-
+    string_codes(Texto, Codigos),
+    phrase(escritos(Grupos), Codigos),
+    append(Grupos, Movimientos).
+
+%!  escritos(-Gs:list)// is det.
+%
+%   Gs son los grupos de movimientos de los giros escritos, separados por
+%   blancos.
+escritos([G|Gs]) --> blancos, escrito(G), !, escritos(Gs).
+escritos([]) --> blancos.
+
+%!  escrito(-Ms:list)// is semidet.
+%
+%   Ms son los movimientos de un giro: la letra de una cara y su sufijo.
+escrito(Ms) --> [C], { letra_cara(C, Cara) }, sufijo(Cara, Ms).
+
+%!  sufijo(+Cara, -Ms:list)// is det.
+%
+%   Ms son los movimientos de Cara según el sufijo: apóstrofo, el giro
+%   inverso; 2, dos giros; sin sufijo, uno.
+sufijo(Cara, [-Cara]) --> "'", !.
+sufijo(Cara, [Cara, Cara]) --> "2", !.
+sufijo(Cara, [Cara]) --> [].
+
+%!  blancos// is det.
+%
+%   Consume los blancos que siguen.
+blancos --> " ", !, blancos.
+blancos --> [].
+
+%!  letra_cara(?Codigo, ?Cara) is nondet.
+%
+%   Codigo es la letra mayúscula de Cara en la notación.
+letra_cara(Codigo, Cara) :-
+    cara(Cara, _, _),
+    upcase_atom(Cara, Letra),
+    char_code(Letra, Codigo).
+
+%!  escribir_notacion(+Movimientos:list, -Texto:string) is det.
+%
+%   Texto es Movimientos en la notación; dos cuartos de vuelta seguidos
+%   de la misma cara se escriben como una media vuelta.
+escribir_notacion(Movimientos, Texto) :-
+    agrupar(Movimientos, Palabras),
+    atomic_list_concat(Palabras, ' ', Atomo),
+    atom_string(Atomo, Texto).
+
+%!  agrupar(+Movimientos:list, -Palabras:list(atom)) is det.
+%
+%   Palabras es Movimientos en la notación, un giro por palabra.
+agrupar([], []).
+agrupar([M, M|Ms], [P|Ps]) :-
     !,
-    quitar_espacios(Codigos, Resto).
-quitar_espacios(Codigos, Codigos).
+    cara_de(M, Cara),
+    upcase_atom(Cara, Letra),
+    atom_concat(Letra, '2', P),
+    agrupar(Ms, Ps).
+agrupar([-Cara|Ms], [P|Ps]) :-
+    !,
+    upcase_atom(Cara, Letra),
+    atom_concat(Letra, '''', P),
+    agrupar(Ms, Ps).
+agrupar([Cara|Ms], [Letra|Ps]) :-
+    upcase_atom(Cara, Letra),
+    agrupar(Ms, Ps).
 
-%!  casilla_y_trazo(+Nombre, +Columnas, +Aristas, +F, +C, -Partes,
-%!                  ?Resto) is det.
+%!  cara_de(+Movimiento, -Cara) is det.
 %
-%   Partes, hasta Resto, son el carácter de la casilla F-C y, si no es la
-%   última columna, el trazo horizontal o el espacio que la sigue.
-casilla_y_trazo(Nombre, Columnas, Aristas, F, C, [Caracter|Partes], Resto) :-
-    caracter(Nombre, Aristas, F-C, Caracter),
-    (   C =:= Columnas
-    ->  Partes = Resto
-    ;   C1 is C + 1,
-        (   ord_memberchk((F-C)-(F-C1), Aristas)
-        ->  Partes = ['─'|Resto]
-        ;   Partes = [' '|Resto]
-        )
-    ).
+%   Cara es la cara que gira Movimiento.
+cara_de(-Cara, Cara) :-
+    !.
+cara_de(Cara, Cara).
 
-%!  vertical(+Aristas, +F, +F1, +C, -Partes) is det.
+% --- Mezclas reproducibles --------------------------------------------------
+
+%!  mezcla(+Semilla:integer, +N:integer, -Movimientos:list) is det.
 %
-%   Partes es el trazo vertical entre F-C y F1-C, o un espacio si el lazo
-%   no los une.
-vertical(Aristas, F, F1, C, Partes) :-
-    (   ord_memberchk((F-C)-(F1-C), Aristas)
-    ->  Partes = '│'
-    ;   Partes = ' '
-    ).
+%   Movimientos son N giros elegidos al azar a partir de Semilla, sin dos
+%   giros seguidos de la misma cara.
+mezcla(Semilla, N, Movimientos) :-
+    mezcla(N, ninguna, Semilla, Movimientos).
 
-%!  caracter(+Nombre, +Aristas, +Pos, -Caracter) is det.
+%!  mezcla(+N:integer, +Anterior, +S:integer, -Movimientos:list) is det.
 %
-%   Caracter es O o # si hay una marca en Pos; si no, el trazo que forman
-%   las dos aristas del lazo que tocan Pos, o un punto si no lo toca.
-caracter(Nombre, Aristas, Pos, Caracter) :-
-    (   marca(Nombre, Pos, Clase)
-    ->  simbolo(Clase, Caracter)
-    ;   aggregate_all(sum(P), ( direccion(Aristas, Pos, D), peso(D, P) ),
-                      Suma),
-        trazo(Suma, Caracter)
-    ).
+%   Movimientos son N giros al azar desde el estado S del generador; el
+%   primero no gira la cara Anterior.
+mezcla(0, _, _, []) :-
+    !.
+mezcla(N, Anterior, S0, [M|Ms]) :-
+    findall(G, ( cara(Cara, _, _), Cara \== Anterior,
+                 member(G, [Cara, -Cara]) ), Giros),
+    length(Giros, L),
+    azar(L, K, S0, S),
+    nth0(K, Giros, M),
+    cara_de(M, Cara),
+    N1 is N - 1,
+    mezcla(N1, Cara, S, Ms).
 
-% simbolo(Clase, Caracter): las marcas de Clase se dibujan con Caracter.
-simbolo(circulo, 'O').
-simbolo(numeral, '#').
-
-%!  direccion(+Aristas, +Pos, -D) is nondet.
+%!  azar(+N:integer, -K:integer, +S0:integer, -S:integer) is det.
 %
-%   El lazo sale de Pos hacia D: arriba, abajo, izquierda o derecha.
-direccion(Aristas, F-C, arriba) :-
-    F0 is F - 1,
-    ord_memberchk((F0-C)-(F-C), Aristas).
-direccion(Aristas, F-C, abajo) :-
-    F1 is F + 1,
-    ord_memberchk((F-C)-(F1-C), Aristas).
-direccion(Aristas, F-C, izquierda) :-
-    C0 is C - 1,
-    ord_memberchk((F-C0)-(F-C), Aristas).
-direccion(Aristas, F-C, derecha) :-
-    C1 is C + 1,
-    ord_memberchk((F-C)-(F-C1), Aristas).
+%   K es un entero entre 0 y N - 1 obtenido del estado S0 de un generador
+%   congruencial lineal; S es el estado siguiente.
+azar(N, K, S0, S) :-
+    S is (1103515245 * S0 + 12345) mod 2147483648,
+    K is (S >> 16) mod N.
 
-% peso(D, P): la dirección D cuenta P en la suma que identifica un trazo;
-% cada dirección es un bit distinto, así que la suma determina el par.
-peso(arriba, 1).
-peso(abajo, 2).
-peso(izquierda, 4).
-peso(derecha, 8).
-
-% trazo(Suma, Caracter): una casilla de la que el lazo sale hacia las
-% direcciones cuyos pesos suman Suma se dibuja con Caracter.
-trazo(0, '·').
-trazo(3, '│').
-trazo(12, '─').
-trazo(5, '┘').
-trazo(9, '└').
-trazo(6, '┐').
-trazo(10, '┌').
-
-%!  mostrar(+Nombre, +Lazo:list) is det.
+%!  mostrar_giros(+Texto) is semidet.
 %
-%   Escribe las líneas de lineas/3, una por renglón.
-mostrar(Nombre, Lazo) :-
-    lineas(Nombre, Lazo, Lineas),
-    forall(member(Linea, Lineas), writeln(Linea)).
-
-%!  cubre(+Nombre, +Lazo:list) is semidet.
-%
-%   Lazo pasa por todas las casillas del tablero Nombre.
-cubre(Nombre, Lazo) :-
-    problema(Nombre, Filas, Columnas, _),
-    length(Lazo, N),
-    N =:= Filas * Columnas.
-
-%!  cobertura(+Nombre, -Distintos:integer, -Cubren:integer) is det.
-%
-%   Distintos es la cantidad de lazos distintos del tablero Nombre y
-%   Cubren, cuántos de ellos pasan por todas sus casillas.
-cobertura(Nombre, Distintos, Cubren) :-
-    distintos(Nombre, Formas),
-    length(Formas, Distintos),
-    include(cubre(Nombre), Formas, Completos),
-    length(Completos, Cubren).
-
-%!  dibujar(+Nombre) is det.
-%
-%   Escribe cada lazo distinto del tablero Nombre, en el orden de sus
-%   formas canónicas, con una línea en blanco entre uno y otro.
-dibujar(Nombre) :-
-    distintos(Nombre, Formas),
-    forall(nth1(I, Formas, Forma),
-           ( (   I > 1
-             ->  nl
-             ;   true
-             ),
-             mostrar(Nombre, Forma) )).
+%   Escribe el cubo resuelto con los giros de Texto aplicados. Falla si
+%   Texto no está en la notación.
+mostrar_giros(Texto) :-
+    leer_notacion(Texto, Movimientos),
+    resuelto(C),
+    aplicar(Movimientos, C, C1),
+    mostrar(C1).

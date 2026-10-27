@@ -1,39 +1,31 @@
 :- encoding(utf8).
 
-% Capítulo 78 - La poda alfa-beta y la profundización progresiva del
-% capítulo 41, en un módulo.
+% Capítulo 78 - La vuelta a casa con A*, del capítulo 41, en un módulo.
 %
-% profundizacion.pl del capítulo 41 no es un módulo: se carga dentro del
-% módulo capitulo41, sin copiarlo. Trae alfabeta/6, profundizar/6 y el
-% ta-te-ti. Las búsquedas llaman a la descripción del juego, inicial/2,
-% jugada/4, turno/3, fin/3, valor_final/3, evaluar/3 y completa/4, dentro de
-% ese módulo; declararlas multifile antes de cargar el archivo permite que
-% nim.pl y kalah.pl agreguen las cláusulas de sus juegos sin tocar el
-% capítulo 41.
+% wumpus.pl del capítulo 41 no es un módulo: se carga con load_files/2 y
+% el nombre de un módulo delante del archivo, sin copiarlo. Su problema
+% vuelta(Desde, Seguras) lleva al agente a la entrada, (1, 1), pasando solo
+% por las celdas de Seguras; buscar/5, con la estrategia
+% mejor(a_estrella), da el camino más corto.
 %
 % solo-local: carga un archivo de otro capítulo, y SWISH no permite cargar
 % otro archivo.
 %
-%?- inicial(tateti(3), P), alfabeta(tateti(3), P, 2, J, V, N).
+%?- vuelta(2-3, [1-1, 1-2, 2-1, 2-2, 2-3, 3-2], Plan, Costo, K).
 
 :- module(capitulo41,
-          [ alfabeta/6,
-            profundizar/6,
-            inicial/2,
-            jugada/4,
-            turno/3,
-            fin/3,
-            valor_final/3,
-            evaluar/3
+          [ vuelta/5
           ]).
 
-:- multifile
-    inicial/2,
-    jugada/4,
-    turno/3,
-    fin/3,
-    valor_final/3,
-    evaluar/3,
-    completa/4.
+:- load_files(capitulo41:'../capitulo-41/wumpus', []).
 
-:- load_files(capitulo41:'../capitulo-41/profundizacion', []).
+%!  vuelta(+Desde, +Seguras:list, -Plan:list, -Costo:integer,
+%!         -Expandidos:integer) is semidet.
+%
+%   Plan es el camino más corto de Desde a (1, 1) por las celdas de Seguras,
+%   hallado con el A* del capítulo 41: una lista de acciones ir(Celda).
+%   Costo es su longitud y Expandidos, los nodos que expandió la búsqueda.
+%   Falla si no hay camino.
+vuelta(Desde, Seguras, Plan, Costo, Expandidos) :-
+    buscar(mejor(a_estrella), vuelta(Desde, Seguras), Plan, Costo,
+           Expandidos).

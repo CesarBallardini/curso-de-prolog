@@ -1,322 +1,252 @@
 :- encoding(utf8).
 
-% Capítulo 62 - Soluciones de los ejercicios 2, 4, 6, 8, 9, 10, 11 y 12.
+% Capítulo 62 - Soluciones de los ejercicios.
 %
-% Cada solución usa los módulos del capítulo sin modificarlos: comparacion
-% carga todas las versiones, resolucion agrega el demostrador
-% proposicional, y verificador.pl, que no es un módulo, se carga aparte.
+% Carga la máquina terminada, maquina.pl. Los programas objeto de los
+% ejercicios son listas de cláusulas que se pasan a medir_clausulas/4 y a
+% resolver_clausulas/3 de almacen.pl; nativas/3 los ejecuta con Prolog,
+% como respuestas_nativas/3. Las versiones traza, sin_rastro y aritmetica
+% de los ejercicios 6, 9 y 10 están en soluciones_traza.pl,
+% soluciones_sin_rastro.pl y soluciones_aritmetica.pl.
 %
-% solo-local: carga los módulos del capítulo, y SWISH no admite módulos
-% propios.
+% solo-local: carga maquina.pl.
 %
-%?- clasificar("(p → q) ∨ (q → p)", C).
-%?- decidir("(p → q) → (q → p)", V).
+%?- medir_tipos(Segundo, Primero).
+%?- transformado(disyuncion, signo(-2, S)).
 
-:- use_module(library(lists)).
+:- ensure_loaded(maquina).
 :- use_module(library(apply)).
-:- use_module(library(ordsets)).
-:- use_module(comparacion).
-:- use_module(resolucion).
-:- ensure_loaded(verificador).
-:- use_module(modelos).
+:- use_module(library(assoc)).
+:- use_module(library(lists)).
+:- use_module(library(modules)).
+:- use_module(almacen,
+              [ medir_clausulas/4,
+                resolver_clausulas/3,
+                compilar_clausula/2,
+                desreferenciar/3,
+                reconstruir/3,
+                renombrar/3,
+                unificar/5
+              ]).
 
-% --- Ejercicio 2 ---------------------------------------------------------
-
-%!  clasificar(+Texto, -Clase) is det.
+%!  nativas(+Clausulas:list, +Meta, -Respuestas:list) is det.
 %
-%   Clase es tautologia, contradiccion o contingente, según la fórmula
-%   sin cuantificadores que Texto escribe: una contradicción es una
-%   fórmula cuya negación es una tautología.
-clasificar(Texto, Clase) :-
-    leer_formula(Texto, F),
-    (   tautologia(clpb, F)
-    ->  Clase = tautologia
-    ;   tautologia(clpb, no(F))
-    ->  Clase = contradiccion
-    ;   Clase = contingente
+%   Respuestas son las instancias de Meta que Prolog obtiene con las
+%   Clausulas cargadas en un módulo temporal.
+nativas(Clausulas, Meta, Respuestas) :-
+    in_temporary_module(Modulo,
+                        forall(member(C, Clausulas), assertz(Modulo:C)),
+                        findall(Meta, Modulo:Meta, Respuestas)).
+
+% Ejercicio 4
+
+% tipos(Cs): hechos tipo(Valor, Tipo), con el tipo en el segundo argumento.
+tipos([ (tipo(1, entero) :- true),
+        (tipo(2, entero) :- true),
+        (tipo(3, entero) :- true),
+        (tipo(a, atomo) :- true),
+        (tipo(b, atomo) :- true)
+      ]).
+
+% tipos_invertidos(Cs): los mismos hechos, con el tipo primero.
+tipos_invertidos([ (tipo(entero, 1) :- true),
+                   (tipo(entero, 2) :- true),
+                   (tipo(entero, 3) :- true),
+                   (tipo(atomo, a) :- true),
+                   (tipo(atomo, b) :- true)
+                 ]).
+
+%!  medir_tipos(-Segundo:list, -Primero:list) is det.
+%
+%   Segundo y Primero son las medidas, en la versión 5, de buscar los
+%   enteros con el tipo en el segundo y en el primer argumento.
+medir_tipos(Segundo, Primero) :-
+    tipos(Cs1),
+    medir_clausulas(indice, Cs1, tipo(_, entero), Segundo),
+    tipos_invertidos(Cs2),
+    medir_clausulas(indice, Cs2, tipo(entero, _), Primero).
+
+% Ejercicio 5
+
+%!  unificar_con_prueba(+X, +Y, +Marca:integer, +Estado0, -Estado)
+%!      is semidet.
+%
+%   Como unificar/5 de almacen.pl, con la prueba de ocurrencia: falla si
+%   una celda se liga a un término que la contiene.
+unificar_con_prueba(X0, Y0, Marca, Estado0, Estado) :-
+    Estado0 = Almacen-_,
+    desreferenciar(X0, Almacen, X),
+    desreferenciar(Y0, Almacen, Y),
+    (   X == Y
+    ->  Estado = Estado0
+    ;   X = '$v'(N)
+    ->  \+ ocurre(N, Y, Almacen),
+        ligar_celda(N, Y, Marca, Estado0, Estado)
+    ;   Y = '$v'(N)
+    ->  \+ ocurre(N, X, Almacen),
+        ligar_celda(N, X, Marca, Estado0, Estado)
+    ;   compound(X),
+        compound(Y),
+        compound_name_arity(X, Nombre, Aridad),
+        compound_name_arity(Y, Nombre, Aridad),
+        compound_name_arguments(X, Nombre, Xs),
+        compound_name_arguments(Y, Nombre, Ys),
+        foldl(unificar_con_prueba_argumento(Marca), Xs, Ys, Estado0, Estado)
     ).
 
-% --- Ejercicio 4 ---------------------------------------------------------
-
-%!  clausulas_def(+F, -Clausulas:list) is det.
+%!  unificar_con_prueba_argumento(+Marca:integer, +X, +Y, +Estado0,
+%!                                -Estado) is semidet.
 %
-%   Clausulas es la forma clausal definicional de F, una fórmula sin
-%   cuantificadores: satisfacible si y solo si F lo es. Cada conjunción y
-%   cada disyunción de la forma normal negada recibe un átomo d(N) y las
-%   cláusulas que dicen que d(N) implica la subfórmula.
-clausulas_def(F, Clausulas) :-
-    fnn(F, G),
-    definir(G, 1, _, L, Cs),
-    maplist(sort, [[L]|Cs], Clausulas).
+%   unificar_con_prueba/5 con los argumentos en el orden de foldl/5.
+unificar_con_prueba_argumento(Marca, X, Y, Estado0, Estado) :-
+    unificar_con_prueba(X, Y, Marca, Estado0, Estado).
 
-%!  definir(+G, +N0:integer, -N:integer, -L, -Cs:list) is det.
+%!  ocurre(+N:integer, +Termino, +Almacen) is semidet.
 %
-%   L es el literal que representa a G, en forma normal negada, y Cs las
-%   cláusulas que lo definen; N0 y N numeran los átomos nuevos.
-definir(at(A), N, N, +A, []).
-definir(no(at(A)), N, N, -A, []).
-definir(y(A, B), N0, N, +d(N0), [[-d(N0), LA], [-d(N0), LB]|Cs]) :-
-    N1 is N0 + 1,
-    definir(A, N1, N2, LA, CA),
-    definir(B, N2, N, LB, CB),
-    append(CA, CB, Cs).
-definir(o(A, B), N0, N, +d(N0), [[-d(N0), LA, LB]|Cs]) :-
-    N1 is N0 + 1,
-    definir(A, N1, N2, LA, CA),
-    definir(B, N2, N, LB, CB),
-    append(CA, CB, Cs).
+%   La celda N aparece en Termino, con las ligaduras del Almacen.
+ocurre(N, Termino0, Almacen) :-
+    desreferenciar(Termino0, Almacen, Termino),
+    (   Termino = '$v'(M)
+    ->  M =:= N
+    ;   compound(Termino),
+        arg(_, Termino, Argumento),
+        ocurre(N, Argumento, Almacen)
+    ).
 
-%!  cadena(+N:integer, -Texto:string) is det.
-%
-%   Texto es la disyunción de N conjunciones a1 ∧ b1 ∨ … ∨ aN ∧ bN.
-cadena(N, Texto) :-
-    numlist(1, N, Is),
-    maplist([I, T]>>format(string(T), "a~w ∧ b~w", [I, I]), Is, Ts),
-    atomic_list_concat(Ts, ' ∨ ', A),
-    atom_string(A, Texto).
-
-%!  comparar_def(+N:integer, -Distribucion:integer, -Definicional:integer)
+%!  ligar_celda(+N:integer, +Valor, +Marca:integer, +Estado0, -Estado)
 %!      is det.
 %
-%   Cantidad de cláusulas de las dos formas clausales de cadena(N).
-comparar_def(N, D, E) :-
-    cadena(N, T),
-    leer_formula(T, F),
-    clausulas(F, C1),
-    length(C1, D),
-    clausulas_def(F, C2),
-    length(C2, E).
-
-% --- Ejercicio 6 ---------------------------------------------------------
-
-%!  primer_error(+Prueba, -K) is det.
-%
-%   K es el número del primer paso incorrecto de Prueba; ninguno si todos
-%   son correctos y el último produce la cláusula vacía, e incompleta si
-%   todos son correctos y ninguno la produce.
-primer_error(prueba(Clausulas, Pasos), K) :-
-    primer_error(Pasos, Clausulas, 1, K).
-
-%!  primer_error(+Pasos:list, +Clausulas:list, +I:integer, -K) is det.
-%
-%   Como primer_error/2; I es el número del primer paso de Pasos.
-primer_error([], Clausulas, _, K) :-
-    (   last(Clausulas, [])
-    ->  K = ninguno
-    ;   K = incompleta
-    ).
-primer_error([Paso|Pasos], Clausulas, I, K) :-
-    (   paso_correcto(Paso, Clausulas, C)
-    ->  append(Clausulas, [C], Clausulas1),
-        I1 is I + 1,
-        primer_error(Pasos, Clausulas1, I1, K)
-    ;   K = I
+%   Liga la celda N a Valor, y la anota en el rastro si es anterior a
+%   Marca.
+ligar_celda(N, Valor, Marca, Almacen0-Rastro0, Almacen-Rastro) :-
+    put_assoc(N, Almacen0, Valor, Almacen),
+    (   N < Marca
+    ->  Rastro = [N|Rastro0]
+    ;   Rastro = Rastro0
     ).
 
-% --- Ejercicio 8 ---------------------------------------------------------
+% Ejercicio 7
 
-%!  clausulas_alcance(+F, -Clausulas:list) is det.
+%!  transformar(+Clausulas0:list, -Clausulas:list) is det.
 %
-%   Como clausulas_fo/2, pero skolemiza antes de la forma prenexa: cada
-%   término de Skolem depende solo de las variables universales cuyo
-%   cuantificador rodea al existencial.
-clausulas_alcance(F, Clausulas) :-
-    fnn(F, G0),
-    renombrar(G0, G),
-    skolemizar_fnn(G, [], 1, _, H),
-    prenexa(H, _, Matriz),
-    fnc(Matriz, Clausulas).
+%   Clausulas son las Clausulas0 con cada disyunción (A ; B) y cada
+%   negación \+ G de los cuerpos reemplazadas por la llamada a un predicado
+%   auxiliar nuevo, cuyas cláusulas siguen a la que lo usa.
+transformar(Clausulas0, Clausulas) :-
+    foldl(transformar_clausula, Clausulas0, Grupos, 0, _),
+    append(Grupos, Clausulas).
 
-%!  skolemizar_fnn(+G, +Us:list, +N0:integer, -N:integer, -H) is det.
+%!  transformar_clausula(+Clausula0, -Clausulas:list, +N0:integer,
+%!                       -N:integer) is det.
 %
-%   H es G, en forma normal negada, sin cuantificadores existenciales:
-%   cada variable existencial se liga a skN(Us…), donde Us son las
-%   variables universales que la rodean.
-skolemizar_fnn(at(A), _, N, N, at(A)).
-skolemizar_fnn(no(A), _, N, N, no(A)).
-skolemizar_fnn(y(A, B), Us, N0, N, y(HA, HB)) :-
-    skolemizar_fnn(A, Us, N0, N1, HA),
-    skolemizar_fnn(B, Us, N1, N, HB).
-skolemizar_fnn(o(A, B), Us, N0, N, o(HA, HB)) :-
-    skolemizar_fnn(A, Us, N0, N1, HA),
-    skolemizar_fnn(B, Us, N1, N, HB).
-skolemizar_fnn(todo(X, F), Us, N0, N, todo(X, H)) :-
-    append(Us, [X], Us1),
-    skolemizar_fnn(F, Us1, N0, N, H).
-skolemizar_fnn(existe(X, F), Us, N0, N, H) :-
-    skolemizar([existe(X)], Us, N0, N1),
-    skolemizar_fnn(F, Us, N1, N, H).
+%   Clausulas son Clausula0 transformada y sus auxiliares; N0 y N cuentan
+%   los auxiliares creados antes y después.
+transformar_clausula((Cabeza :- Cuerpo0), [(Cabeza :- Cuerpo)|Auxiliares],
+                     N0, N) :-
+    transformar_cuerpo(Cuerpo0, Cuerpo, Auxiliares, [], N0, N).
 
-%!  skolemizar(+Prefijo:list, +Us:list, +N0:integer, -N:integer) is det.
+%!  transformar_cuerpo(+Cuerpo0, -Cuerpo, -Auxiliares:list, ?Resto:list,
+%!                     +N0:integer, -N:integer) is det.
 %
-%   Liga cada existencial del Prefijo a un término de las variables Us.
-skolemizar([], _, N, N).
-skolemizar([existe(X)|P], Us, N0, N) :-
-    atom_concat(sk, N0, Nombre),
-    (   Us == []
-    ->  X = Nombre
-    ;   compound_name_arguments(X, Nombre, Us)
-    ),
-    N1 is N0 + 1,
-    skolemizar(P, Us, N1, N).
-
-% --- Ejercicio 9 ---------------------------------------------------------
-
-%!  refutar_unitaria(+Clausulas:list, +Max:integer, -Pasos:list) is semidet.
-%
-%   Pasos es la refutación más corta, de a lo sumo Max pasos, en la que
-%   uno de los dos padres de cada paso tiene un solo literal.
-refutar_unitaria(Clausulas, Max, Pasos) :-
-    between(0, Max, N),
-    length(Pasos, N),
-    derivar_unitaria(Pasos, Clausulas),
-    !.
-
-%!  derivar_unitaria(?Pasos:list, +Clausulas:list) is nondet.
-%
-%   Como derivar/2 de resolucion.pl, con un padre unitario en cada paso.
-%   La condición es un condicional y no una disyunción: con los dos
-%   padres unitarios, la disyunción daría cada derivación dos veces.
-derivar_unitaria([], Clausulas) :-
-    memberchk([], Clausulas).
-derivar_unitaria([r(I, J, R)|Pasos], Clausulas) :-
-    nth1(J, Clausulas, C2),
-    nth1(I, Clausulas, C1),
-    I < J,
-    (   C1 = [_]
-    ->  true
-    ;   C2 = [_]
-    ),
-    resolvente(C1, C2, R),
-    \+ memberchk(R, Clausulas),
-    append(Clausulas, [R], Clausulas1),
-    derivar_unitaria(Pasos, Clausulas1).
-
-% --- Ejercicio 10 --------------------------------------------------------
-
-%!  decidir(+Texto, -Veredicto) is det.
-%
-%   Veredicto es teorema(Prueba), con una refutación de a lo sumo 10
-%   pasos de la negación de la fórmula que Texto escribe, o
-%   contraejemplo(A), con una asignación que la hace falsa. Si no hay
-%   ninguna de las dos, la refutación necesita más de 10 pasos, y el
-%   Veredicto es desconocido.
-decidir(Texto, Veredicto) :-
-    leer_formula(Texto, F),
-    (   demostrar(Texto, 10, Prueba)
-    ->  Veredicto = teorema(Prueba)
-    ;   once(contraejemplo(F, A))
-    ->  Veredicto = contraejemplo(A)
-    ;   Veredicto = desconocido
+%   Cuerpo es Cuerpo0 sin disyunciones ni negaciones; Auxiliares-Resto es
+%   la lista diferencia de las cláusulas auxiliares creadas.
+transformar_cuerpo(Cuerpo0, Cuerpo, Auxiliares, Resto, N0, N) :-
+    (   var(Cuerpo0)
+    ->  Cuerpo = Cuerpo0,
+        Auxiliares = Resto,
+        N = N0
+    ;   Cuerpo0 = (A0, B0)
+    ->  transformar_cuerpo(A0, A, Auxiliares, Medio, N0, N1),
+        transformar_cuerpo(B0, B, Medio, Resto, N1, N),
+        Cuerpo = (A, B)
+    ;   Cuerpo0 = (A0 ; B0)
+    ->  auxiliar(o, Cuerpo0, N0, N1, Cuerpo),
+        transformar_cuerpo(A0, A, Auxiliares1, Medio, N1, N2),
+        transformar_cuerpo(B0, B, Medio, Resto, N2, N),
+        Auxiliares = [(Cuerpo :- A), (Cuerpo :- B)|Auxiliares1]
+    ;   Cuerpo0 = (\+ G0)
+    ->  auxiliar(no, Cuerpo0, N0, N1, Cuerpo),
+        transformar_cuerpo(G0, G, Auxiliares1, Resto, N1, N),
+        Auxiliares = [(Cuerpo :- G, !, fail), (Cuerpo :- true)|Auxiliares1]
+    ;   Cuerpo = Cuerpo0,
+        Auxiliares = Resto,
+        N = N0
     ).
 
-%!  valor_en(+F, +A:list, -V) is det.
+%!  auxiliar(+Prefijo:atom, +Meta, +N0:integer, -N:integer, -Llamada)
+%!      is det.
 %
-%   V, 0 o 1, es el valor de F, sin cuantificadores, con la asignación A
-%   de pares Átomo-Valor.
-valor_en(at(P), A, V) :-
-    memberchk(P-V, A).
-valor_en(no(F), A, V) :-
-    valor_en(F, A, W),
-    V is 1 - W.
-valor_en(y(F, G), A, V) :-
-    valor_en(F, A, VF),
-    valor_en(G, A, VG),
-    V is min(VF, VG).
-valor_en(o(F, G), A, V) :-
-    valor_en(F, A, VF),
-    valor_en(G, A, VG),
-    V is max(VF, VG).
-valor_en(si(F, G), A, V) :-
-    valor_en(F, A, VF),
-    valor_en(G, A, VG),
-    V is max(1 - VF, VG).
-valor_en(sii(F, G), A, V) :-
-    valor_en(F, A, VF),
-    valor_en(G, A, VG),
-    (   VF =:= VG
-    ->  V = 1
-    ;   V = 0
-    ).
+%   Llamada es la llamada al auxiliar número N = N0 + 1, con las variables
+%   de Meta como argumentos; su nombre es '$' seguido del Prefijo y de N.
+auxiliar(Prefijo, Meta, N0, N, Llamada) :-
+    N is N0 + 1,
+    format(atom(Nombre), "$~w~d", [Prefijo, N]),
+    term_variables(Meta, Variables),
+    Llamada =.. [Nombre|Variables].
 
-% --- Ejercicio 11 --------------------------------------------------------
+% disyuncion(Cs): un programa con una disyunción y una negación.
+disyuncion([ (signo(X, S) :- ( X < 0, S = negativo
+                              ; X =:= 0, S = cero
+                              ; S = positivo
+                              )),
+             (persona(ana) :- true),
+             (persona(luis) :- true),
+             (casado(luis) :- true),
+             (soltero(P) :- persona(P), \+ casado(P))
+           ]).
 
-%!  saturar(+Clausulas:list, -Niveles:integer, -Resultado) is det.
+% corte_en_disyuncion(Cs): un corte dentro de una disyunción, y una
+% cláusula más del mismo predicado.
+corte_en_disyuncion([ (p(X) :- ( X = 1, ! ; X = 2 )),
+                      (p(3) :- true)
+                    ]).
+
+%!  transformado(+Programa:atom, ?Meta) is nondet.
 %
-%   Resultado es refutada si la saturación por niveles de las Clausulas,
-%   sin variables, llega a la cláusula vacía, y saturada si llega a un
-%   nivel sin resolventes nuevos; Niveles es la cantidad de niveles
-%   calculados. Un resolvente subsumido por una cláusula anterior no se
-%   agrega.
-saturar(Clausulas, Niveles, Resultado) :-
-    saturar(Clausulas, 0, Niveles, Resultado).
+%   Meta se prueba en la versión 5 con el Programa, disyuncion o
+%   corte_en_disyuncion, transformado.
+transformado(Programa, Meta) :-
+    call(Programa, Clausulas0),
+    transformar(Clausulas0, Clausulas),
+    resolver_clausulas(indice, Clausulas, Meta).
 
-%!  saturar(+Clausulas:list, +N0:integer, -N:integer, -Resultado) is det.
+% Ejercicios 8 y 11
+
+% acumuladores(Cs): invertir/3 y longitud/3 con acumulador.
+acumuladores([ (invertir_acc(L, R) :- invertir(L, [], R)),
+               (invertir([], R, R) :- true),
+               (invertir([X|Xs], R0, R) :- invertir(Xs, [X|R0], R)),
+               (invertir_acc_hasta(N, R) :- lista_hasta(N, L),
+                                            invertir_acc(L, R)),
+               (longitud_acc(L, N) :- longitud(L, 0, N)),
+               (longitud([], N, N) :- true),
+               (longitud([_|Xs], N0, N) :- N1 is N0 + 1,
+                                           longitud(Xs, N1, N)),
+               (longitud_acc_hasta(N, K) :- lista_hasta(N, L),
+                                            longitud_acc(L, K))
+             ]).
+
+%!  medir_con_acumuladores(+Meta, -Medidas:list) is det.
 %
-%   Como saturar/3; N0 es la cantidad de niveles ya calculados.
-saturar(Clausulas, N, N, refutada) :-
-    memberchk([], Clausulas),
-    !.
-saturar(Clausulas, N0, N, Resultado) :-
-    findall(R,
-            ( append(_, [C1|Resto], Clausulas),
-              member(C2, Resto),
-              resolvente(C1, C2, R),
-              \+ subsumida(R, Clausulas)
-            ),
-            Rs0),
-    sort(Rs0, Rs),
-    (   Rs == []
-    ->  N = N0,
-        Resultado = saturada
-    ;   append(Clausulas, Rs, Clausulas1),
-        N1 is N0 + 1,
-        saturar(Clausulas1, N1, N, Resultado)
-    ).
+%   Medidas son las medidas de Meta en la versión 5, con el programa
+%   listas y los predicados con acumulador.
+medir_con_acumuladores(Meta, Medidas) :-
+    programa(listas, Listas),
+    acumuladores(Acumuladores),
+    append(Listas, Acumuladores, Clausulas),
+    medir_clausulas(indice, Clausulas, Meta, Medidas).
 
-%!  subsumida(+R:list, +Clausulas:list) is semidet.
+%!  pasos_de(+Meta, -Pasos:integer) is det.
 %
-%   Alguna de las Clausulas, sin variables, está contenida en R.
-subsumida(R, Clausulas) :-
-    member(C, Clausulas),
-    ord_subset(C, R),
-    !.
+%   Pasos son los pasos de Meta en la versión 5, como los mide
+%   medir_con_acumuladores/2.
+pasos_de(Meta, Pasos) :-
+    medir_con_acumuladores(Meta, Medidas),
+    memberchk(pasos-Pasos, Medidas).
 
-% --- Ejercicio 12 --------------------------------------------------------
-
-%!  modelo_minimo(+Clausulas:list, -Modelo:list) is nondet.
+%!  metas_de(+Meta, -Metas:integer) is det.
 %
-%   Modelo es un modelo de las Clausulas que construye modelo/2 y del que
-%   ningún subconjunto propio es un modelo. Puede dar dos veces el mismo
-%   modelo, si modelo/2 lo construye por dos caminos.
-modelo_minimo(Clausulas, Modelo) :-
-    modelo(Clausulas, Modelo),
-    \+ ( subconjunto_propio(Modelo, Menor),
-         es_modelo(Clausulas, Menor)
-       ).
-
-%!  es_modelo(+Clausulas:list, +Modelo:list) is semidet.
-%
-%   Ninguna de las Clausulas está violada en el Modelo.
-es_modelo(Clausulas, Modelo) :-
-    \+ ( member(C, Clausulas),
-         modelos:violada(C, Modelo, _)
-       ).
-
-%!  subconjunto_propio(+Conjunto:list, -Subconjunto:list) is nondet.
-%
-%   Subconjunto es un subconjunto de Conjunto con al menos un elemento
-%   menos, en el mismo orden.
-subconjunto_propio(Conjunto, Subconjunto) :-
-    subconjunto(Conjunto, Subconjunto),
-    Subconjunto \== Conjunto.
-
-%!  subconjunto(+Conjunto:list, -Subconjunto:list) is multi.
-%
-%   Subconjunto tiene algunos de los elementos de Conjunto, en el mismo
-%   orden.
-subconjunto([], []).
-subconjunto([X|Xs], [X|Ys]) :-
-    subconjunto(Xs, Ys).
-subconjunto([_|Xs], Ys) :-
-    subconjunto(Xs, Ys).
+%   Metas es el largo máximo de la resolvente de Meta en la versión 5.
+metas_de(Meta, Metas) :-
+    medir_con_acumuladores(Meta, Medidas),
+    memberchk(metas-Metas, Medidas).

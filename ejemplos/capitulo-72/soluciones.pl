@@ -2,247 +2,354 @@
 
 % Capítulo 72 - Soluciones de los ejercicios.
 %
-% Carga el planificador terminado (que reexporta las versiones 2 a 4 y la
-% representación), la planificación por lista y la búsqueda del capítulo
-% 40, sin modificarlos. La solución del ejercicio 8, que define otro
-% espacio de estados, está en soluciones_estados.pl.
+% El archivo carga juego.pl, que carga las búsquedas de las versiones 2, 4
+% y 5 y los problemas del mapa, las torres de Hanoi y el ta-te-ti, sin
+% modificarlos. Los problemas nuevos agregan cláusulas a primitivo/2,
+% expansion/4 y estimacion/3, que son multifile.
 %
-% solo-local: carga otros archivos, y SWISH no permite cargar otro archivo.
+% solo-local: carga otros archivos.
 %
-%?- ejemplo(casa, P0), con_procesadores(P0, 3, P), cota_inferior(P, B).
-%?- ejemplo(coffman, P), mejor_de_todas(P, D).
-%?- ejemplo(coffman, P), criticas(P, Ts).
-%?- forall(variante(N, P, _), (por_colas(P, D), writeln(N-D))).
+%?- profundizando(rio(cero), ruta(alamos, islas), A, L), costo(A, C).
+%?- contar_arboles(rio(cero), ruta(alamos, paso), N).
 
-:- module(soluciones,
-          [ con_procesadores/3,
-            curva/3,
-            mejor_de_todas/2,
-            cabeza/3,
-            criticas/2,
-            suma/3,
-            comparar_voraz/2,
-            optimo_ida/4,
-            regla/2,
-            mostrar_con_regla/2,
-            errores/2,
-            por_colas/2
-          ]).
+:- ensure_loaded(juego).
 
-:- reexport(planificador).
-:- use_module(lista).
-:- use_module(busqueda).
-:- reexport(anomalias, [variante/3]).
+:- multifile primitivo/2, expansion/4, estimacion/3.
 
-% --- Ejercicios 1 y 7 ---------------------------------------------------------
+% --- Ejercicio 3: límite de profundidad y profundización progresiva -------
 
-%!  con_procesadores(+Proyecto0, +N:integer, -Proyecto) is det.
+%!  resolver_limitado(+Problema, +Nodo, +Limite:integer, -Arbol) is nondet.
 %
-%   Proyecto tiene las tareas y las precedencias de Proyecto0, con N
-%   procesadores.
-con_procesadores(proyecto(Tareas, Precedencias, _), N,
-                 proyecto(Tareas, Precedencias, N)).
+%   Arbol es un árbol solución de Nodo en el que ningún camino de la raíz a
+%   una hoja pasa por más de Limite nodos expandidos. No lleva ancestros:
+%   el límite basta para que la búsqueda termine.
+resolver_limitado(Problema, Nodo, _, meta(Nodo)) :-
+    primitivo(Problema, Nodo).
+resolver_limitado(Problema, Nodo, Limite, Arbol) :-
+    Limite > 0,
+    expansion(Problema, Nodo, Tipo, Hijos),
+    L1 is Limite - 1,
+    limitado(Tipo, Problema, Nodo, Hijos, L1, Arbol).
 
-%!  curva(+Proyecto, +Ns:list, -Duraciones:list) is det.
+%!  limitado(+Tipo, +Problema, +Nodo, +Hijos:list, +Limite:integer,
+%!           -Arbol) is nondet.
 %
-%   Duraciones tiene, para cada cantidad de procesadores N de Ns, un par
-%   N-D con la duración óptima D de Proyecto con N procesadores.
-curva(Proyecto, Ns, Duraciones) :-
-    maplist(duracion_con(Proyecto), Ns, Duraciones).
+%   Arbol es un árbol solución de Nodo, de Tipo o o y, con los hijos
+%   resueltos dentro de Limite.
+limitado(o, Problema, Nodo, Hijos, L, o(Nodo, A-C)) :-
+    member(Hijo-C, Hijos),
+    resolver_limitado(Problema, Hijo, L, A).
+limitado(y, Problema, Nodo, Hijos, L, y(Nodo, Arcos)) :-
+    maplist(arco_limitado(Problema, L), Hijos, Arcos).
 
-%!  duracion_con(+Proyecto, +N:integer, -Par) is det.
+%!  arco_limitado(+Problema, +Limite:integer, +Hijo, -Arco) is nondet.
 %
-%   Par es N-D, con D la duración óptima de Proyecto con N procesadores.
-duracion_con(Proyecto0, N, N-D) :-
-    con_procesadores(Proyecto0, N, Proyecto),
-    optimo(Proyecto, combinada, C, _),
-    duracion(C, D).
+%   Arco es A-C con un árbol A del hijo Hijo-C dentro de Limite.
+arco_limitado(Problema, L, Hijo-C, A-C) :-
+    resolver_limitado(Problema, Hijo, L, A).
 
-% --- Ejercicio 2 --------------------------------------------------------------
-
-%!  mejor_de_todas(+Proyecto, -D:integer) is det.
+%!  profundizando(+Problema, +Nodo, -Arbol, -Limite:integer) is semidet.
 %
-%   D es la menor duración que da la planificación por lista de Proyecto
-%   entre todas las prioridades posibles: una por cada permutación de las
-%   tareas.
-mejor_de_todas(Proyecto, D) :-
-    findall(T, tarea(Proyecto, T, _), Tareas),
-    aggregate_all(min(D0),
-                  ( permutation(Tareas, Lista),
-                    por_lista(Proyecto, ordenadas(Lista), C),
-                    duracion(C, D0) ),
-                  D).
+%   Arbol es el primer árbol solución de Nodo con el menor Limite posible,
+%   hasta 20. Falla si no hay ninguno con ese límite.
+profundizando(Problema, Nodo, Arbol, Limite) :-
+    between(1, 20, Limite),
+    resolver_limitado(Problema, Nodo, Limite, Arbol),
+    !.
 
-% --- Ejercicio 3 --------------------------------------------------------------
+% --- Ejercicio 4: cuántos árboles solución hay -----------------------------
 
-%!  cabeza(+Proyecto, +Tarea, -Cabeza:integer) is det.
+%!  contar_arboles(+Problema, +Nodo, -N:integer) is det.
 %
-%   Cabeza es el momento más temprano en que puede empezar Tarea si sobran
-%   procesadores: 0 si no tiene predecesoras y, si las tiene, el mayor fin
-%   más temprano de ellas.
-cabeza(Proyecto, Tarea, Cabeza) :-
-    findall(F,
-            ( precede(Proyecto, Antes, Tarea),
-              cabeza(Proyecto, Antes, C),
-              tarea(Proyecto, Antes, D),
-              F is C + D ),
-            Fines),
-    max_list([0|Fines], Cabeza).
+%   N es la cantidad de árboles solución de Nodo que no repiten un nodo en
+%   un mismo camino desde la raíz.
+contar_arboles(Problema, Nodo, N) :-
+    contar(Problema, Nodo, [], N).
 
-%!  criticas(+Proyecto, -Tareas:list) is det.
+%!  contar(+Problema, +Nodo, +Ancestros:list, -N:integer) is det.
 %
-%   Tareas son las tareas críticas de Proyecto: aquellas cuya cabeza más
-%   cola es la mayor cola del proyecto, de modo que demorar cualquiera de
-%   ellas demora el final aunque sobren procesadores.
-criticas(Proyecto, Tareas) :-
-    findall(C, ( tarea(Proyecto, T, _), cola(Proyecto, T, C) ), Colas),
-    max_list(Colas, Largo),
-    findall(T,
-            ( tarea(Proyecto, T, _),
-              cabeza(Proyecto, T, Cabeza),
-              cola(Proyecto, T, Cola),
-              Cabeza + Cola =:= Largo ),
-            Tareas).
+%   N es la cantidad de árboles solución de Nodo que no pasan por ninguno
+%   de Ancestros: la suma de los de sus hijos en un nodo O, y el producto
+%   en un nodo Y.
+contar(Problema, Nodo, Ancestros, N) :-
+    (   memberchk(Nodo, Ancestros)
+    ->  N = 0
+    ;   primitivo(Problema, Nodo)
+    ->  N = 1
+    ;   expansion(Problema, Nodo, Tipo, Hijos)
+    ->  maplist(contar_hijo(Problema, [Nodo|Ancestros]), Hijos, Ns),
+        (   Tipo == o
+        ->  sum_list(Ns, N)
+        ;   foldl(multiplicar, Ns, 1, N)
+        )
+    ;   N = 0
+    ).
 
-% --- Ejercicio 4 --------------------------------------------------------------
-
-%!  suma(+Proyecto, +Estado, -H:integer) is det.
+%!  contar_hijo(+Problema, +Ancestros:list, +Hijo, -N:integer) is det.
 %
-%   H es la suma de las duraciones de las tareas pendientes de Estado: una
-%   heurística que estima de más, porque ignora que las tareas corren en
-%   paralelo.
-suma(Proyecto, e(Pendientes, _, _), H) :-
-    foldl(sumar(Proyecto), Pendientes, 0, H).
+%   N es la cantidad de árboles del hijo Hijo-C.
+contar_hijo(Problema, Ancestros, Hijo-_, N) :-
+    contar(Problema, Hijo, Ancestros, N).
 
-%!  sumar(+Proyecto, +Tarea, +S0:integer, -S:integer) is det.
+%!  multiplicar(+X:integer, +P0:integer, -P:integer) is det.
 %
-%   S es S0 más la duración de Tarea.
-sumar(Proyecto, Tarea, S0, S) :-
-    tarea(Proyecto, Tarea, D),
-    S is S0 + D.
+%   P es P0 por X.
+multiplicar(X, P0, P) :-
+    P is P0 * X.
 
-% --- Ejercicio 5 --------------------------------------------------------------
+% --- Ejercicio 5: un peaje en la barca --------------------------------------
 
-%!  comparar_voraz(+Ns:list, -Filas:list) is det.
+%!  primitivo(+Problema, +Nodo) is semidet.
 %
-%   Filas tiene, para cada N de Ns, un término
-%   N-voraz(D1, K1)-optimo(D2, K2) con la duración y los estados
-%   expandidos de la búsqueda voraz y de A* sobre taller(N), las dos con
-%   la heurística combinada.
-comparar_voraz(Ns, Filas) :-
-    maplist(fila_voraz, Ns, Filas).
+%   peaje(E, Peaje) tiene los nodos primitivos del mapa.
+primitivo(peaje(_, _), Nodo) :-
+    primitivo(rio(cero), Nodo).
 
-%!  fila_voraz(+N:integer, -Fila) is det.
+%!  expansion(+Problema, +Nodo, -Tipo, -Hijos:list) is semidet.
 %
-%   Fila compara la búsqueda voraz con A* sobre taller(N).
-fila_voraz(N, N-voraz(D1, K1)-optimo(D2, K2)) :-
-    ejemplo(taller(N), P),
-    voraz(P, combinada, C1, K1),
-    duracion(C1, D1),
-    optimo(P, combinada, C2, K2),
-    duracion(C2, D2).
+%   Las expansiones del mapa, con Peaje sumado a los arcos de la barca.
+expansion(peaje(E, Peaje), Nodo, Tipo, Hijos) :-
+    expansion(rio(E), Nodo, Tipo, Hijos0),
+    maplist(cobrar(Peaje), Hijos0, Hijos).
 
-% --- Ejercicio 6 --------------------------------------------------------------
-
-%!  optimo_ida(+Proyecto, +Heuristica, -D:integer, -Expandidos:integer)
-%!      is semidet.
+%!  estimacion(+Problema, +Nodo, -H:integer) is det.
 %
-%   D es la duración óptima de Proyecto según IDA* del capítulo 40, con
-%   Heuristica, el nombre de un predicado visible en este módulo;
-%   Expandidos cuenta los estados expandidos en todas las iteraciones.
-optimo_ida(Proyecto, Heuristica, D, Expandidos) :-
-    ida_estrella(problema(espacio, datos(Proyecto, soluciones:Heuristica)),
-                 _, D, Expandidos).
+%   La estimación E del mapa, que el peaje no hace exagerar.
+estimacion(peaje(E, _), Nodo, H) :-
+    estimacion(rio(E), Nodo, H).
 
-% --- Ejercicio 9 --------------------------------------------------------------
-
-%!  regla(+D:integer, -Linea:string) is det.
+%!  cobrar(+Peaje:number, +Hijo0, -Hijo) is det.
 %
-%   Linea es la regla de un diagrama de duración D: el número de cada
-%   múltiplo de 5 hasta D, en la columna de ese momento. Los diagramas de
-%   lineas/3 empiezan después de tres columnas y usan dos por unidad.
-regla(D, Linea) :-
-    Ultima is D - D mod 5,
-    numlist(0, Ultima, Momentos),
-    include(multiplo_de_5, Momentos, Marcas),
-    foldl(marca, Marcas, "   ", Linea).
+%   Hijo es Hijo0 con Peaje sumado al costo del arco si cruza en barca.
+cobrar(Peaje, Hijo-C0, Hijo-C) :-
+    (   Hijo = cruce(_, barca, _)
+    ->  C is C0 + Peaje
+    ;   C = C0
+    ).
 
-%!  multiplo_de_5(+N:integer) is semidet.
+% --- Ejercicio 6: una estimación que exagera --------------------------------
+
+%!  primitivo(+Problema, +Nodo) is semidet.
 %
-%   N es múltiplo de 5.
-multiplo_de_5(N) :-
-    N mod 5 =:= 0.
+%   doble tiene los nodos primitivos del mapa.
+primitivo(doble, Nodo) :-
+    primitivo(rio(cero), Nodo).
 
-%!  marca(+T:integer, +Linea0:string, -Linea:string) is det.
+%!  expansion(+Problema, +Nodo, -Tipo, -Hijos:list) is semidet.
 %
-%   Linea es Linea0 completada con blancos hasta la columna del momento T,
-%   seguida del número T.
-marca(T, Linea0, Linea) :-
-    Columna is 3 + 2 * T,
-    string_length(Linea0, Largo),
-    Blancos is max(0, Columna - Largo),
-    format(string(Linea), "~s~*c~w", [Linea0, Blancos, 0'\s, T]).
+%   doble tiene las expansiones del mapa.
+expansion(doble, Nodo, Tipo, Hijos) :-
+    expansion(rio(cero), Nodo, Tipo, Hijos).
 
-%!  mostrar_con_regla(+Proyecto, +Calendario:list) is det.
+%!  estimacion(+Problema, +Nodo, -H:integer) is det.
 %
-%   Escribe la regla, el diagrama de Gantt de Calendario y su duración.
-mostrar_con_regla(Proyecto, Calendario) :-
-    duracion(Calendario, D),
-    regla(D, Regla),
-    format("~s~n", [Regla]),
-    mostrar(Proyecto, Calendario).
+%   H es el doble de la distancia en línea recta: puede exagerar.
+estimacion(doble, Nodo, H) :-
+    estimacion(rio(distancia), Nodo, H0),
+    H is 2 * H0.
 
-% --- Ejercicio 10 -------------------------------------------------------------
-
-%!  errores(+Proyecto, -Errores:list) is det.
+%!  comparar_doble(-Distintos:integer, -Exceso:integer, -K1:integer,
+%!                 -K2:integer) is det.
 %
-%   Errores son los defectos de la representación de Proyecto, en este
-%   orden: repetida(T) por cada tarea que aparece más de una vez,
-%   duracion(T, D) por cada duración que no es un entero positivo,
-%   desconocida(T) por cada tarea de una precedencia que no está entre las
-%   tareas, procesadores(N) si N no es un entero positivo, y ciclo si las
-%   precedencias forman uno. Errores es [] si el proyecto es correcto.
-errores(Proyecto, Errores) :-
-    Proyecto = proyecto(Tareas, Precedencias, N),
-    findall(T, member(tarea(T, _), Tareas), Nombres),
-    msort(Nombres, Ordenados),
-    clumped(Ordenados, Veces),
-    findall(repetida(T), ( member(T-K, Veces), K > 1 ), E1),
-    findall(duracion(T, D),
-            ( member(tarea(T, D), Tareas),
-              \+ ( integer(D), D > 0 ) ),
-            E2),
-    findall(desconocida(T),
-            ( member(antes(A, B), Precedencias),
-              member(T, [A, B]),
-              \+ memberchk(T, Nombres) ),
-            E3a),
-    sort(E3a, E3),
-    (   integer(N),
-        N > 0
-    ->  E4 = []
-    ;   E4 = [procesadores(N)]
+%   Sobre los 169 pares de pueblos, Distintos es la cantidad en que la
+%   estimación doble no da el costo mínimo, Exceso la suma de lo que se
+%   pasa, y K1 y K2 las expansiones totales con la distancia y con el
+%   doble.
+comparar_doble(Distintos, Exceso, K1, K2) :-
+    findall(C1-C2-E1-E2,
+            ( pueblo(X, _, _, _),
+              pueblo(Y, _, _, _),
+              mejor(rio(distancia), ruta(X, Y), _, C1, E1),
+              mejor(doble, ruta(X, Y), _, C2, E2) ),
+            Rs),
+    aggregate_all(count, ( member(C1-C2-_-_, Rs), C1 =\= C2 ), Distintos),
+    aggregate_all(sum(C2 - C1), member(C1-C2-_-_, Rs), Exceso),
+    aggregate_all(sum(E1), member(_-_-E1-_, Rs), K1),
+    aggregate_all(sum(E2), member(_-_-_-E2, Rs), K2).
+
+% --- Ejercicio 7: el costo de un árbol compartido --------------------------
+
+%!  costo_compartido(+Arbol, -Costo:number) is det.
+%
+%   Costo es el costo de Arbol, calculado una sola vez por nodo: sirve para
+%   los árboles de compartido/4, en los que un mismo nodo tiene siempre el
+%   mismo subárbol.
+costo_compartido(Arbol, Costo) :-
+    empty_assoc(M0),
+    costo_m(Arbol, Costo, M0, _).
+
+%!  costo_m(+Arbol, -Costo:number, +M0, -M) is det.
+%
+%   Costo es el costo de Arbol; M0 y M asocian cada nodo ya calculado con
+%   su costo.
+costo_m(Arbol, Costo, M0, M) :-
+    raiz(Arbol, Nodo),
+    (   get_assoc(Nodo, M0, Costo)
+    ->  M = M0
+    ;   costo_nodo(Arbol, Costo, M0, M1),
+        put_assoc(Nodo, M1, Costo, M)
+    ).
+
+%!  costo_nodo(+Arbol, -Costo:number, +M0, -M) is det.
+%
+%   Costo es el costo de Arbol, con sus hijos calculados por costo_m/4.
+costo_nodo(meta(_), 0, M, M).
+costo_nodo(o(_, A-C), Costo, M0, M) :-
+    costo_m(A, CA, M0, M),
+    Costo is C + CA.
+costo_nodo(y(_, Arcos), Costo, M0, M) :-
+    foldl(costo_arco, Arcos, 0-M0, Costo-M).
+
+%!  costo_arco(+Arco, +S0, -S) is det.
+%
+%   S0 y S son Suma-Memoria; S suma el costo del arco A-C y el de A.
+costo_arco(A-C, S0-M0, S-M) :-
+    costo_m(A, CA, M0, M),
+    S is S0 + C + CA.
+
+%!  comparar_costos(+N:integer, -I1:integer, -I2:integer) is det.
+%
+%   I1 e I2 son las inferencias de costo/2 y de costo_compartido/2 sobre el
+%   árbol compartido de la torre de N discos.
+comparar_costos(N, I1, I2) :-
+    compartido(hanoi, torre(N, a, c), Arbol, _),
+    call_time(costo(Arbol, C), T1),
+    call_time(costo_compartido(Arbol, C), T2),
+    get_dict(inferences, T1, I1),
+    get_dict(inferences, T2, I2).
+
+% --- Ejercicio 8: la estrategia como árbol ---------------------------------
+
+%!  mostrar_estrategia(+Busqueda, +Tablero:list) is semidet.
+%
+%   Escribe con mostrar/1 el árbol de la estrategia ganadora de x que halla
+%   Busqueda en la posición de Tablero. Falla si no hay estrategia.
+mostrar_estrategia(Busqueda, Tablero) :-
+    buscar_estrategia(Busqueda, gana(tateti(3), x), mueve(pos(Tablero, x)),
+                      si(Arbol), _),
+    mostrar(Arbol).
+
+% --- Ejercicio 9: las respuestas a la esquina -------------------------------
+
+%!  respuestas_a_la_esquina(-Rs:list) is det.
+%
+%   Rs tiene un R-Resultado por cada respuesta R de o a x en la casilla 1:
+%   Resultado es el tamaño de la menor estrategia ganadora de x, o
+%   ninguna.
+respuestas_a_la_esquina(Rs) :-
+    findall(R-Resultado,
+            ( between(2, 9, R),
+              posicion_esquina(R, P),
+              (   mejor(gana(tateti(3), x), mueve(P), _, C, _)
+              ->  Resultado = C
+              ;   Resultado = ninguna
+              ) ),
+            Rs).
+
+%!  posicion_esquina(+R:integer, -P) is det.
+%
+%   P es la posición con x en 1 y o en R, en la que mueve x.
+posicion_esquina(R, pos(T, x)) :-
+    length(T, 9),
+    foldl(casilla_esquina(R), T, 1, _).
+
+%!  casilla_esquina(+R:integer, -M, +I0:integer, -I:integer) is det.
+%
+%   M es la marca de la casilla I0: x en 1, o en R y v en las demás.
+casilla_esquina(R, M, I0, I) :-
+    (   I0 =:= 1
+    ->  M = x
+    ;   I0 =:= R
+    ->  M = o
+    ;   M = v
     ),
-    (   E3 == [],
-        \+ orden_topologico(Proyecto, _)
-    ->  E5 = [ciclo]
-    ;   E5 = []
-    ),
-    append([E1, E2, E3, E4, E5], Errores).
+    I is I0 + 1.
 
-% --- Ejercicio 12 -------------------------------------------------------------
+% --- Ejercicio 11: tres búsquedas en las mismas posiciones -----------------
 
-%!  por_colas(+Proyecto, -D:integer) is semidet.
+%!  medir_esquina(-Rs:list) is det.
 %
-%   D es la duración del calendario por lista de Proyecto con la prioridad
-%   de mayor cola primero. Falla si las precedencias forman un ciclo.
-por_colas(Proyecto, D) :-
-    orden_topologico(Proyecto, _),
-    findall(C-T,
-            ( tarea(Proyecto, T, _),
-              cola(Proyecto, T, C) ),
-            Pares0),
-    sort(1, @>=, Pares0, Pares),
-    pairs_values(Pares, Lista),
-    por_lista(Proyecto, ordenadas(Lista), Calendario),
-    duracion(Calendario, D).
+%   Rs tiene un R-[K1, K2, K3] por cada respuesta R de o a x en la casilla
+%   1: los nodos que expanden la búsqueda en profundidad, la de
+%   subproblemas compartidos y la de mejor primero.
+medir_esquina(Rs) :-
+    findall(R-Ks,
+            ( between(2, 9, R),
+              posicion_esquina(R, pos(T, x)),
+              findall(K,
+                      ( member(B, [profundidad, compartido, mejor]),
+                        estrategia(B, T, _, K) ),
+                      Ks) ),
+            Rs).
+
+% --- Ejercicio 12: integración simbólica ------------------------------------
+
+% Los nodos son int(E), «hallar una primitiva de E», y las transformaciones
+% que se le aplican; cada transformación cuesta 1.
+
+%!  primitivo(+Problema, +Nodo) is semidet.
+%
+%   int(E) es primitivo si E tiene una primitiva inmediata.
+primitivo(integral, int(E)) :-
+    inmediata(E, _).
+
+%!  expansion(+Problema, +Nodo, -Tipo, -Hijos:list) is semidet.
+%
+%   int(E) es un nodo O con una transformación por hijo; cada
+%   transformación es un nodo Y con las integrales que deja.
+expansion(integral, int(E), o, Hijos) :-
+    \+ inmediata(E, _),
+    findall(T-1, transformacion(E, T), Hijos).
+expansion(integral, suma(A, B), y, [int(A)-0, int(B)-0]).
+expansion(integral, factor(_, F), y, [int(F)-0]).
+expansion(integral, distribuir(E), y, [int(E)-0]).
+
+% estimacion(P, N, H): sin información, la estimación es cero.
+estimacion(integral, _, 0).
+
+%!  inmediata(+E, -F) is semidet.
+%
+%   F es una primitiva de E que se escribe sin transformar E.
+inmediata(K, K*x) :-
+    number(K).
+inmediata(x, x^2/2).
+inmediata(x^N, x^N1/N1) :-
+    number(N),
+    N =\= -1,
+    N1 is N + 1.
+inmediata(sin(x), -cos(x)).
+inmediata(cos(x), sin(x)).
+inmediata(exp(x), exp(x)).
+
+%!  transformacion(+E, -T) is nondet.
+%
+%   T es una transformación aplicable a E: separar una suma, sacar un
+%   factor constante o distribuir un producto sobre una suma.
+transformacion(A+B, suma(A, B)).
+transformacion(K*F, factor(K, F)) :-
+    number(K).
+transformacion(A*(B+C), distribuir(A*B+A*C)).
+transformacion((A+B)*C, distribuir(A*C+B*C)).
+
+%!  primitiva(+Arbol, -F) is det.
+%
+%   F es la primitiva que describe Arbol, un árbol solución de int(E).
+primitiva(meta(int(E)), F) :-
+    inmediata(E, F).
+primitiva(o(int(_), A-_), F) :-
+    primitiva(A, F).
+primitiva(y(suma(_, _), [A-_, B-_]), FA + FB) :-
+    primitiva(A, FA),
+    primitiva(B, FB).
+primitiva(y(factor(K, _), [A-_]), K * F) :-
+    primitiva(A, F).
+primitiva(y(distribuir(_), [A-_]), F) :-
+    primitiva(A, F).
+
+%!  integrar(+E, -F, -Costo:integer) is semidet.
+%
+%   F es una primitiva de E, hallada con la búsqueda mejor primero con
+%   Costo transformaciones. Falla si las reglas no alcanzan.
+integrar(E, F, Costo) :-
+    mejor(integral, int(E), Arbol, Costo, _),
+    primitiva(Arbol, F).

@@ -18,7 +18,7 @@ sus pruebas plunit. El que SWISH puede ejecutar incluye un enlace «▶ Abrir en
 SWISH» que transporta el código fuente completo dentro de la URL, sin ningún
 servicio propio; el que no, muestra en su lugar el motivo. La parte I y la
 mayor parte de la II se siguen en el navegador, sin ninguna instalación. Desde
-el capítulo 24, que presenta los módulos, muchos ejemplos requieren una
+el capítulo 25, que presenta los módulos, muchos ejemplos requieren una
 instalación local de SWI-Prolog, y también la mayor parte de los de la parte
 IV, cuyos proyectos cargan módulos y archivos de otros capítulos.
 
@@ -28,9 +28,9 @@ cita, y no se los reproduce.
 
 ## Estado
 
-**El curso está completo**: 87 capítulos en cuatro partes —I, Introducción
-(1 a 12); II, Prolog para programadores (13 a 31); III, Lo avanzado (32 a 42,
-con Prolog y SQL en el 42); IV, Proyectos (43 a 87)—, cada uno con texto,
+**El curso está completo**: 88 capítulos en cuatro partes —I, Introducción
+(1 a 13); II, Prolog para programadores (14 a 32); III, Lo avanzado (33 a 43,
+con Prolog y SQL en el 43); IV, Proyectos (44 a 88)—, cada uno con texto,
 ejercicios, soluciones, ejemplos con sus pruebas y PDF. El catálogo reúne 103
 patrones, y hay diapositivas de los capítulos 1 a 7. El autor revisó los
 capítulos 1 a 7; los demás están en revisión.
@@ -48,22 +48,22 @@ capítulos 1 a 7; los demás están en revisión.
   `make transcripts` las informa como errores, de modo que el curso se escribe
   y se verifica con la versión 9.
 - GNU make. En Windows, los comandos se ejecutan desde Git Bash.
-- El pack `reif` de SWI-Prolog, que usa el capítulo 15 (`if_/3`). Se instala
-  una vez, como lo instala cada lector (sección 15.9 del curso) y como lo hace
+- El pack `reif` de SWI-Prolog, que usa el capítulo 16 (`if_/3`). Se instala
+  una vez, como lo instala cada lector (sección 16.9 del curso) y como lo hace
   CI.
 - El Chromium headless que descarga `make browser`: genera los PDF y, con
-  Playwright, ejecuta las pruebas de las páginas web del capítulo 36.
+  Playwright, ejecuta las pruebas de las páginas web del capítulo 37.
 - Opcionales:
-  - Docker (capítulo 31, la imagen del servicio);
-  - `swipl-win` con XPCE (las ventanas del capítulo 36, `make windows`, y las
-    herramientas gráficas de los capítulos 16 y 26; viene con la instalación
+  - Docker (capítulo 32, la imagen del servicio);
+  - `swipl-win` con XPCE (las ventanas del capítulo 37, `make windows`, y las
+    herramientas gráficas de los capítulos 17 y 27; viene con la instalación
     de SWI-Prolog en Windows, no con el paquete `swi-prolog-nox` de Linux);
   - una terminal que interprete las secuencias ANSI, para los programas a
-    pantalla completa de los capítulos 36, 41 y 44;
+    pantalla completa de los capítulos 37, 42 y 45;
   - el controlador ODBC de SQLite, para las pruebas que ejecutan SQL de los
-    capítulos 42 y 87: en Linux, `unixodbc`, `libsqliteodbc` y
+    capítulos 43 y 88: en Linux, `unixodbc`, `libsqliteodbc` y
     `swi-prolog-odbc`; en Windows, el instalador que describe la sección «El
-    controlador ODBC en Windows» del capítulo 42. Sin él, esas pruebas quedan
+    controlador ODBC en Windows» del capítulo 43. Sin él, esas pruebas quedan
     bloqueadas con un aviso.
 
 La preparación, una sola vez después de clonar el repositorio:
@@ -71,7 +71,7 @@ La preparación, una sola vez después de clonar el repositorio:
 ```bash
 make install        # .venv desde uv.lock y los hooks de git
 make browser        # Chromium headless: los PDF y las pruebas de páginas web
-swipl -g "pack_install(reif, [interactive(false)])" -t halt   # el pack del capítulo 15
+swipl -g "pack_install(reif, [interactive(false)])" -t halt   # el pack del capítulo 16
 make                # la lista de objetivos, con una línea cada uno
 ```
 
@@ -157,7 +157,7 @@ manera manual.
 comentario de contexto indica ese archivo sin generar ningún bloque:
 
 ```markdown
-<!-- contexto: capitulo-67/subsuncion.pl -->
+<!-- contexto: capitulo-68/subsuncion.pl -->
 ```
 
 ## Criterios de redacción
@@ -176,8 +176,8 @@ registro descriptivo y técnico:
 
 Todos los capítulos tienen la misma estructura: objetivos, secciones numeradas
 con actividades intercaladas, ejercicios con nivel de dificultad, resumen y una
-tabla de los temas que se retoman. Desde el capítulo 32 cada capítulo termina
-con sus «Referencias», y el 87 reemplaza la tabla por el cierre del curso.
+tabla de los temas que se retoman. Desde el capítulo 33 cada capítulo termina
+con sus «Referencias», y el 88 reemplaza la tabla por el cierre del curso.
 
 ## Tareas frecuentes
 
@@ -228,7 +228,7 @@ qué presenta cada capítulo.
 make check       # las reglas del curso, las pruebas, SWISH, las transcripciones y el sitio estricto
 make lint        # ruff, si se tocó algún archivo Python
 make appendix    # si se tocó un capítulo con Python (29 a 31, 36)
-make windows     # si se tocó el capítulo 36: las ventanas, solo en la máquina propia
+make windows     # si se tocó el capítulo 37: las ventanas, solo en la máquina propia
 ```
 
 ### Corregir el formato del código Python
@@ -333,7 +333,7 @@ Pages. También se puede ejecutar a mano desde la pestaña *Actions* del reposit
 ### Otras tareas
 
 ```bash
-make pldoc       # regenerar la documentación PlDoc que enlaza el capítulo 14
+make pldoc       # regenerar la documentación PlDoc que enlaza el capítulo 15
 make sql         # verificar los pares SQL/Prolog del banco de ejercicios
 make clean       # borrar site/ y los restos de Python
 make clean-pdf   # borrar los PDF generados
@@ -357,11 +357,11 @@ make clean-pdf   # borrar los PDF generados
 | `make time` | Recalcula las tres cifras de tiempo de cada capítulo y avisa cuáles se apartan de las publicadas; con `-v`, muestra las del modelo. |
 | `make math` | Analiza cada fórmula con el mismo KaTeX que carga el sitio, el que está en `docs/vendor/katex-0.16.11/` (los PDF usan esos mismos archivos). |
 | `make appendix` | Ejecuta las pruebas de pytest de los capítulos con Python: 29 (Janus), 30 y 31 (los clientes de los servicios) y 36 (las páginas web, con Playwright). |
-| `make windows` | Ejecuta las pruebas de las ventanas XPCE del capítulo 36 con `swipl-win`. Solo en la máquina propia: CI no tiene XPCE. |
+| `make windows` | Ejecuta las pruebas de las ventanas XPCE del capítulo 37 con `swipl-win`. Solo en la máquina propia: CI no tiene XPCE. |
 | `make sql` | Ejecuta los pares de consultas SQL y Prolog del banco (`references/ejercicios/sql-prolog/`) y compara los resultados. |
 | **Reglas del curso** | |
-| `make part-1` | Verifica que los capítulos 1 a 12 no usan ningún predicado de la parte II. |
-| `make part-2` | Verifica que los capítulos 13 a 87 no usan un predicado antes del capítulo que lo presenta (lo declara su tabla «Resumen»). |
+| `make part-1` | Verifica que los capítulos 1 a 13 no usan ningún predicado de la parte II. |
+| `make part-2` | Verifica que los capítulos 14 a 88 no usan un predicado antes del capítulo que lo presenta (lo declara su tabla «Resumen»). |
 | `make shown` | Verifica que cada predicado que consulta una transcripción se muestra en su página, o que la página nombra su archivo. |
 | `make links` | Verifica que cada mención de un capítulo, una sección o un patrón en el texto es un enlace. |
 | `make patterns` | Verifica que `docs/patrones.md` coincide con los recuadros «Patrón» de los capítulos; `make patterns w=1` lo regenera. |
@@ -372,7 +372,7 @@ make clean-pdf   # borrar los PDF generados
 | `make assistant-evaluate` | Mide la búsqueda del panel con un conjunto de preguntas a ciegas (`s=` el directorio con `truth.json` y `out.json`; `k=` otro archivo de palabras de búsqueda): aciertos en el primer lugar y entre los cinco primeros, con y sin palabras de búsqueda. |
 | `make docs-serve` | Sirve el sitio en la máquina propia y lo recarga con cada cambio; `DIRECCION=` cambia la dirección. |
 | `make pdf` | Genera el PDF de cada capítulo y de sus soluciones, solo los que cambiaron. Se ejecuta antes de `make docs` para un sitio con todos los PDF. |
-| `make pldoc` | Regenera las páginas PlDoc de los ejemplos que enlaza el capítulo 14. |
+| `make pldoc` | Regenera las páginas PlDoc de los ejemplos que enlaza el capítulo 15. |
 | `make slides` | Genera las diapositivas de cada capítulo (`diapositivas/capitulo-NN.odp`) desde su fuente Markdown. Requiere Pandoc y LibreOffice; no forma parte de `make check`. |
 | `make slides-pdf` | Exporta cada juego de diapositivas a PDF (`diapositivas/capitulo-NN.pdf`), después de regenerar el `.odp` si hace falta. |
 | `make slides-check` | Verifica que el `.odp` y el `.pdf` de cada mazo coincidan con su fuente (las mismas diapositivas, con los mismos títulos, y una página por diapositiva) y que sus transcripciones coincidan con SWI-Prolog. No requiere Pandoc ni LibreOffice. |
@@ -437,13 +437,13 @@ trabajo `resultado` resume todos en una sola verificación. Los lunes, y a mano
 desde la pestaña *Actions*, Ejemplos verifica el libro completo.
 
 ```bash
-uv run tools/ci-parts.py --files ejemplos/capitulo-42/base.pl   # qué se verificaría
+uv run tools/ci-parts.py --files ejemplos/capitulo-43/base.pl   # qué se verificaría
 make pdf e="capitulo-05 capitulo-07"                            # los PDF de dos capítulos
 ```
 
 | Flujo | Qué verifica |
 |---|---|
-| **Ejemplos** | `make test`, `make transcripts` y `make swish` de los capítulos seleccionados, un trabajo por parte; `make appendix` cuando se selecciona el capítulo 29, 30, 31 o 36; `make lint`, `make types` y `make vendor-check` siempre |
+| **Ejemplos** | `make test`, `make transcripts` y `make swish` de los capítulos seleccionados, un trabajo por parte; `make appendix` cuando se selecciona el capítulo 30, 31, 32 o 37; `make lint`, `make types` y `make vendor-check` siempre |
 | **Texto** | `make part-1`, `check-part-2 --strict`, `make shown`, `make links`, `make patterns`, `make math`, `make time`, la comparación de bloques, `make docs` y el dibujo de cada diagrama mermaid (`tools/check-mermaid.py`) |
 | **PDF y sitio** | `make pdf` y el sitio, con los PDF de cada capítulo y las diapositivas, y las pruebas del panel «Preguntar al curso» (`tools/assistant`); en un pull request, solo los PDF de los capítulos seleccionados; en `main`, todos y la publicación |
 | **Diapositivas** | `make slides-check`; solo cuando cambia algo de lo que dependen los mazos |

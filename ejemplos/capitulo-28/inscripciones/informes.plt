@@ -69,7 +69,7 @@ test(mostrar_informe,
 test(ranking, true(R == [101-8.5, 104-8, 103-6, 106-4.5, 102-4])) :-
     ranking(R).
 
-% mejores/2 da el mismo resultado que con order_by/2 en el capítulo 17.
+% mejores/2 da el mismo resultado que con order_by/2 en el capítulo 18.
 test(mejores_con_sort, true(R == [101-8.5, 104-8])) :-
     mejores(2, R).
 

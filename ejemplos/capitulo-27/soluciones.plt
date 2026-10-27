@@ -2,117 +2,31 @@
 
 :- begin_tests(soluciones).
 
-% Ejercicio 1.
-test(contar_terminos, true(N == 4)) :-
-    contar_terminos(archivos('hechos.txt'), N).
+% Ejercicio 9: preguntar a las partes.
+test(longitud_mal_vacia, true(N == 1)) :-
+    longitud_mal([], N).
 
-% Ejercicio 2: agregar no borra lo anterior.
-test(agregar_termino, [ setup(tmp_file(terminos, F)),
-                        cleanup(delete_file(F)),
-                        true(T == [a(1), b]) ]) :-
-    agregar_termino(F, a(1)),
-    agregar_termino(F, b),
-    leer_terminos(F, T).
+test(longitud, true(N-M == 0-2)) :-
+    longitud([], N),
+    longitud([a, b], M).
 
-% Ejercicio 3.
-test(copiar_en_mayusculas,
-     [ setup(tmp_file(salida, F)),
-       cleanup(delete_file(F)),
-       true(S == "HOLA MUNDO\nSEGUNDA LINEA\n\nTERCERA\n") ]) :-
-    copiar_en_mayusculas(archivos('texto.txt'), F),
-    read_file_to_string(F, S, [encoding(utf8)]).
+% Ejercicio 10
+test(hermanos_mal_falla, [fail]) :-
+    hermanos_mal(ana, pedro).
 
-% Ejercicio 4.
-test(linea_mas_larga, true(L == "segunda linea")) :-
-    linea_mas_larga(archivos('texto.txt'), L).
+test(hermanos_recortado, [nondet]) :-
+    hermanos_recortado(ana, pedro).
 
-% Ejercicio 5: con un archivo donde las palabras se repiten.
-test(frecuencias, [ setup(tmp_file(texto, F)),
-                    cleanup(delete_file(F)),
-                    true(P == ["a"-3, "b"-2, "c"-1]) ]) :-
-    setup_call_cleanup(open(F, write, S, [encoding(utf8)]),
-                       format(S, "b a c~na b~n  a~n", []),
-                       close(S)),
-    frecuencias(F, P).
+test(hermanos, all(H == [pedro])) :-
+    hermanos(ana, H).
 
-% Ejercicio 6.
-test(archivos_con_extension, true(N == ['alumnos.csv'])) :-
-    archivos_con_extension(csv, N).
+% Ejercicio 14: un límite para una consulta que no termina. Un límite de
+% inferencias no depende de la velocidad de la máquina.
+test(no_termina, true(R == inference_limit_exceeded)) :-
+    call_with_inference_limit(natural(-1), 100000, R).
 
-test(sin_archivos_con_extension, true(N == [])) :-
-    archivos_con_extension(xml, N).
-
-% Ejercicio 7: legajos y años de ingreso, alternados.
-test(numeros_del_archivo, true(Primeros == [101, 2023, 102, 2024])) :-
-    numeros_del_archivo(archivos('alumnos.csv'), Numeros),
-    length(Numeros, 14),
-    length(Primeros, 4),
-    append(Primeros, _, Numeros).
-
-% Ejercicio 8: escribir y volver a leer da los mismos alumnos.
-test(alumnos_a_csv, [ setup(tmp_file(alumnos, F)),
-                      cleanup(delete_file(F)),
-                      true(Leidos == Alumnos) ]) :-
-    alumnos_csv(archivos('alumnos.csv'), Alumnos),
-    alumnos_a_csv(Alumnos, F),
-    alumnos_csv(F, Leidos).
-
-% Ejercicio 9.
-test(materias_validadas, true(N == 7)) :-
-    materias_json_validado(archivos('materias.json'), M),
-    length(M, N).
-
-test(materia_sin_anio,
-     [ setup(tmp_file(materias, F)),
-       cleanup(delete_file(F)),
-       error(domain_error(objeto_materia, _{codigo: am1, nombre: x})) ]) :-
-    setup_call_cleanup(open(F, write, S, [encoding(utf8)]),
-                       write(S, '[{"codigo": "am1", "nombre": "x"}]'),
-                       close(S)),
-    materias_json_validado(F, _).
-
-% Ejercicio 10.
-test(materias_a_yaml, true(Primeras == ["- anio: 1", "  codigo: am1",
-                                        "  nombre: analisis_1"])) :-
-    materias_a_yaml(archivos('materias.json'), Texto),
-    split_string(Texto, "\n", "", [A, B, C|_]),
-    Primeras = [A, B, C].
-
-% Ejercicio 11.
-test(tabla_ajustable, [ setup(set_setting(user:ancho, 10)),
-                        cleanup(restore_setting(user:ancho)),
-                        true(S == "Legajo    Nombre        Promedio\n\c
-                                   101       ana               8.50\n") ]) :-
-    with_output_to(string(S), tabla_ajustable([101-ana-8.5])).
-
-test(ajuste_guardado, [ setup(( set_setting(user:ancho, 10),
-                                tmp_file(ajustes, F) )),
-                        cleanup(( restore_setting(user:ancho),
-                                  delete_file(F) )),
-                        true(T == [setting(user:ancho, 10)]) ]) :-
-    save_settings(F),
-    leer_terminos(F, T).
-
-% Ejercicio 16: lo marcado se recupera al volver a asociar el archivo.
-test(asistencias_recuperadas,
-     [ setup(tmp_file(asistencias, F)),
-       cleanup(delete_file(F)),
-       true(Fechas == ['2026-03-02', '2026-03-09']) ]) :-
-    abrir_asistencias(F),
-    marcar_asistencia(101, '2026-03-09'),
-    marcar_asistencia(101, '2026-03-02'),
-    marcar_asistencia(101, '2026-03-02'),
-    marcar_asistencia(102, '2026-03-02'),
-    cerrar_asistencias,
-    asistencias_de(101, []),
-    abrir_asistencias(F),
-    asistencias_de(101, Fechas),
-    cerrar_asistencias.
-
-test(asistencia_tipo, [ setup(( tmp_file(asistencias, F),
-                                abrir_asistencias(F) )),
-                        cleanup(( cerrar_asistencias, delete_file(F) )),
-                        error(type_error(integer, ana)) ]) :-
-    marcar_asistencia(ana, '2026-03-02').
+test(con_limite, [timeout(5)]) :-
+    natural(3),
+    !.
 
 :- end_tests(soluciones).

@@ -27,7 +27,7 @@ Al terminar el capítulo, el lector puede:
 !!! info "Tiempo estimado"
     Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **0:55 h**.
     Resolver los 6 ejercicios marcados con ★: **2:00 h**.
-    Resolver los 15 ejercicios del final: **5:00 h**.
+    Resolver los 16 ejercicios del final: **5:20 h**.
 
 ## 5.1 Dos órdenes
 
@@ -46,7 +46,7 @@ decisión tomada e intenta la alternativa siguiente.
 Que el orden sea fijo tiene una consecuencia directa: **el orden de búsqueda
 queda determinado por quien escribe el programa**. Dos programas con el mismo
 significado lógico pueden comportarse de manera muy distinta según el orden de
-sus cláusulas y objetivos. Más detalles de esto se darán en las secciones [5.4](#54-el-orden-de-las-clausulas-determina-el-orden-de-las-respuestas) y [5.5](#55-el-orden-de-los-objetivos-determina-el-trabajo), y el [capítulo 16](../capitulo-16-rendimiento/index.md) lo retoma desde el punto de vista del rendimiento.
+sus cláusulas y objetivos. Más detalles de esto se darán en las secciones [5.4](#54-el-orden-de-las-clausulas-determina-el-orden-de-las-respuestas) y [5.5](#55-el-orden-de-los-objetivos-determina-el-trabajo), y el [capítulo 17](../capitulo-17-rendimiento/index.md) lo retoma desde el punto de vista del rendimiento.
 Esas dos secciones llegan, sobre el árbol de derivación de la
 [sección 5.2](#52-el-arbol-de-derivacion), a dos conclusiones:
 
@@ -286,7 +286,7 @@ Los tres diagramas explican los pasos de diferente manera:
 | las **cajas** | por dónde entra y sale la ejecución de **un** objetivo |
 
 El modelo de cajas se retoma en el [capítulo 9](../capitulo-09-backtracking-y-corte/index.md), donde se muestra que el corte
-inhabilita la puerta Redo de algunas cajas, y en el [capítulo 26](../capitulo-26-pruebas-y-depuracion/index.md), junto con las
+inhabilita la puerta Redo de algunas cajas, y en el [capítulo 27](../capitulo-27-pruebas-y-depuracion/index.md), junto con las
 demás herramientas para examinar un programa en ejecución.
 
 ## 5.4 El orden de las cláusulas determina el orden de las respuestas
@@ -558,7 +558,7 @@ De este análisis se derivan dos criterios de escritura:
     simultáneamente, un conjunto de aserciones lógicas (interpretación lógica)
     y un procedimiento que se ejecuta (interpretación procedimental);
     el orden no modifica lo primero, pero determina lo segundo. El
-    [capítulo 12](../capitulo-12-prolog-y-la-logica/index.md) analiza esta dualidad desde el punto de vista de la lógica.
+    [capítulo 13](../capitulo-13-prolog-y-la-logica/index.md) analiza esta dualidad desde el punto de vista de la lógica.
 
 ## Ejercicios
 
@@ -653,6 +653,32 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 15. **(3)** ¿Puede un árbol tener infinitas hojas de éxito y, sin embargo,
     responder la primera consulta sin dificultad? Construir un ejemplo con
     `natural/1` del [capítulo 6](../capitulo-06-recursion/index.md), o explicar por qué no es posible.
+16. **(2)** El programa siguiente define la relación «hermana política»
+    (cuñada): X es hermana política de Y cuando X es la mujer de un hermano
+    de Y.
+
+    ```prolog
+    hijo(antonio, juan).
+    hijo(enrique, juan).
+    mujer(belen, enrique).
+    distinto(enrique, antonio).
+    hermana_politica(X, Y) :-
+        mujer(X, Z),
+        hermano(Z, Y).
+    hermano(X, Y) :-
+        hijo(X, Z),
+        hijo(Y, Z),
+        distinto(X, Y).
+    ```
+
+    Dibujar el árbol de derivación de `?- hermana_politica(C, X).` con el
+    modelo de la [sección 5.2](#52-el-arbol-de-derivacion): las cláusulas
+    numeradas R1 a R6 en el orden en que están escritas, cada arco con su
+    cláusula y su sustitución, las sustituciones numeradas en el orden del
+    recorrido y las ramas que fallan dibujadas hasta su hoja. La consulta y
+    las dos reglas usan el nombre `X`: cada uso de una regla necesita
+    variables nuevas. ¿Cuántas respuestas tiene la consulta? Comprobarlo con
+    `trace` y ejecutando la consulta.
 
 ## Resumen
 
@@ -672,6 +698,6 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 |---|---|
 | Recursión que termina, y cómo garantizar la terminación | [capítulo 6](../capitulo-06-recursion/index.md) |
 | Poda deliberada de ramas del árbol, con el corte | [capítulo 9](../capitulo-09-backtracking-y-corte/index.md) |
-| Los programas como afirmaciones lógicas, con independencia de su ejecución | [capítulo 12](../capitulo-12-prolog-y-la-logica/index.md) |
-| Elección del orden de los objetivos para mejorar el rendimiento | [capítulo 16](../capitulo-16-rendimiento/index.md) |
-| `trace` con todos sus comandos, y el resto del depurador | [capítulo 26](../capitulo-26-pruebas-y-depuracion/index.md) |
+| Los programas como afirmaciones lógicas, con independencia de su ejecución | [capítulo 13](../capitulo-13-prolog-y-la-logica/index.md) |
+| Elección del orden de los objetivos para mejorar el rendimiento | [capítulo 17](../capitulo-17-rendimiento/index.md) |
+| `trace` con todos sus comandos, y el resto del depurador | [capítulo 27](../capitulo-27-pruebas-y-depuracion/index.md) |

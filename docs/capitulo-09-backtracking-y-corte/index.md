@@ -27,7 +27,7 @@ Al terminar el capítulo, el lector puede:
 !!! info "Tiempo estimado"
     Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:00 h**.
     Resolver los 7 ejercicios marcados con ★: **2:00 h**.
-    Resolver los 16 ejercicios del final: **5:20 h**.
+    Resolver los 19 ejercicios del final: **6:15 h**.
 
 ## 9.1 Un programa que produce respuestas de más
 
@@ -540,7 +540,7 @@ false.
 La técnica se aplica a problemas de mucha mayor escala que la búsqueda de
 múltiplos: ubicar reinas en un tablero, resolver un sudoku, asignar horarios.
 Cambian el generador y la condición; la estructura es siempre la misma. El
-[capítulo 40](../capitulo-40-busqueda-y-planificacion/index.md) la retoma con problemas de mayor complejidad, y el [capítulo 23](../capitulo-23-programacion-con-restricciones/index.md)
+[capítulo 41](../capitulo-41-busqueda-y-planificacion/index.md) la retoma con problemas de mayor complejidad, y el [capítulo 24](../capitulo-24-programacion-con-restricciones/index.md)
 presenta una técnica que la hace mucho más eficiente.
 
 ## Ejercicios
@@ -673,6 +673,32 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     `color(C)` y al final del cuerpo. Explicar cada resultado con las reglas de
     la [sección 9.3](#93-que-poda-exactamente), e indicar en cuáles de los cuatro
     casos se llega a la tercera cláusula.
+17. **(2)** Una secuencia de números se clasifica por su forma: `maximo` si
+    crece y después decrece, `minimo` si decrece y después crece, `meseta` si
+    crece, se mantiene constante en dos o más valores y decrece, y `sinorden`
+    en cualquier otro caso:
+
+    ```text
+      maximo        minimo         meseta
+        /\          \    /          ____
+       /  \          \  /          /    \
+      /    \          \/          /      \
+    ```
+
+    Escribir `identifica(Datos, Secuencia)` con la plantilla 14. Por ejemplo,
+    `[1, 3, 4, 10, 99, 98, 23, 2]` es `maximo`, `[34, 3, 6, 99, 100]` es
+    `minimo`, `[34, 35, 67, 67, 67, 30, 21]` es `meseta` y
+    `[23, 45, 46, 2, 1, 4]` es `sinorden`.
+18. **(2)** Escribir `sust(L1, P1, P2, L2)`, con todos sus argumentos listas:
+    `L2` resulta de reemplazar en `L1` cada aparición de la secuencia `P1` por
+    la secuencia `P2`. `sust([p, r, o, l, g, g, o, g, g, g], [g, g], [], L)` da
+    `L = [p, r, o, l, o, g]`, y
+    `sust([a, b, c, d, 1, a, b, c, 1, a], [1, a], [c], T)` da
+    `T = [a, b, c, d, c, b, c, c]`.
+19. **(2)** Escribir `atomiza(Xs, Ys)`: `Ys` tiene los elementos de `Xs` que no
+    son listas, de todos los niveles de anidamiento y en el mismo orden.
+    `atomiza([[[5, s], [p, q]], r, [2]], X)` da `X = [5, s, p, q, r, 2]`. Para
+    distinguir una lista de un elemento hace falta el corte.
 
 ## Resumen
 
@@ -692,8 +718,8 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | Tema | Se retoma en |
 |---|---|
 | `\+`, que se define internamente con un corte | [capítulo 10](../capitulo-10-negacion-como-falla/index.md) |
-| `->` y `;`, que expresan lo mismo con otra notación | [capítulo 15](../capitulo-15-control/index.md) |
-| Cuándo el corte mejora el rendimiento y cuándo lo perjudica | [capítulo 16](../capitulo-16-rendimiento/index.md) |
-| Generar y probar con restricciones, que descarta antes de generar | [capítulo 23](../capitulo-23-programacion-con-restricciones/index.md) |
-| Búsquedas de mayor escala: reinas y laberintos | [capítulo 40](../capitulo-40-busqueda-y-planificacion/index.md) |
-| Juegos: la búsqueda con un adversario | [capítulo 41](../capitulo-41-juegos/index.md) |
+| `->` y `;`, que expresan lo mismo con otra notación | [capítulo 16](../capitulo-16-control/index.md) |
+| Cuándo el corte mejora el rendimiento y cuándo lo perjudica | [capítulo 17](../capitulo-17-rendimiento/index.md) |
+| Generar y probar con restricciones, que descarta antes de generar | [capítulo 24](../capitulo-24-programacion-con-restricciones/index.md) |
+| Búsquedas de mayor escala: reinas y laberintos | [capítulo 41](../capitulo-41-busqueda-y-planificacion/index.md) |
+| Juegos: la búsqueda con un adversario | [capítulo 42](../capitulo-42-juegos/index.md) |

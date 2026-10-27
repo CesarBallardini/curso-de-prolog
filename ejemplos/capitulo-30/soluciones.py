@@ -1,75 +1,71 @@
-"""Capítulo 30 - Soluciones de los ejercicios 6 y 13, del lado de Python.
+"""Capítulo 30 - Soluciones de los ejercicios 1, 3, 4, 6, 7 y 12, del lado de Python.
 
-El ejercicio 6 usa cliente.py. El 13 es un cliente del servicio del proyecto
-con las mismas funciones y excepciones que inscripciones_py.py del capítulo
-29: quien lo usa no nota si las reglas están en el mismo proceso, con Janus,
-o del otro lado de la red.
+Usan familia.pl, que carga consultas.cargar(), y el proyecto, que carga
+inscripciones_py.cargar(). Los valores de entrada viajan siempre como
+ligaduras.
 """
 
-import json
-import urllib.error
-import urllib.request
+from pathlib import Path
 
-import cliente
+import janus_swi as janus
+
+AQUI = Path(__file__).parent
+
+# --- Ejercicio 1 ---------------------------------------------------------------
+
+
+def hijos_de(persona):
+    """Devuelve la lista de los hijos de persona, en el orden de los hechos."""
+    return [respuesta['H'] for respuesta in janus.query('padre(P, H)', {'P': persona})]
+
+
+# --- Ejercicio 3 ---------------------------------------------------------------
+
+HERMANO = r"""
+hermano(A, B) :-
+    padre(P, A),
+    padre(P, B),
+    A \== B.
+"""
+
+
+def hermanos_de(persona):
+    """Devuelve los hermanos de persona, con la regla hermano/2 cargada desde el texto."""
+    janus.consult('hermanos', HERMANO)
+    return [respuesta['H'] for respuesta in janus.query('hermano(P, H)', {'P': persona})]
+
+
+# --- Ejercicio 4 ---------------------------------------------------------------
+
+
+def edad_o_cero(persona):
+    """Devuelve la edad de persona, o 0 si no se conoce."""
+    return janus.apply_once('user', 'edad_de', persona, fail=0)
+
 
 # --- Ejercicio 6 ---------------------------------------------------------------
 
 
-def ficha_o_none(base, persona):
-    """Devuelve la ficha de persona, o None si el servidor no la conoce."""
-    try:
-        return cliente.ficha(base, persona)
-    except cliente.PersonaDesconocidaError:
-        return None
+def mayores_de_edad(personas):
+    """Devuelve los nombres de las personas, diccionarios con nombre y edad, de 18 o más."""
+    consulta = 'member(_D, L), get_dict(edad, _D, _E), _E >= 18, get_dict(nombre, _D, N)'
+    return [respuesta['N'] for respuesta in janus.query(consulta, {'L': personas})]
 
 
-# --- Ejercicio 13 --------------------------------------------------------------
+# --- Ejercicio 7 ---------------------------------------------------------------
 
 
-class InscripcionRechazadaError(Exception):
-    """Las reglas no permiten la inscripción; motivo dice por qué."""
-
-    def __init__(self, legajo, materia, motivo):
-        """Guarda el pedido y el motivo del rechazo."""
-        super().__init__(f'{legajo} en {materia}: {motivo}')
-        self.motivo = motivo
+def clase_de_error(error):
+    """Devuelve el nombre del error formal de un janus.PrologError, o None si no es error/2."""
+    consulta = 'E = error(_Formal, _), functor(_Formal, Nombre, _)'
+    respuesta = janus.query_once(consulta, {'E': error.term})
+    return respuesta['Nombre'] if respuesta['truth'] else None
 
 
-class DatoInvalidoError(ValueError):
-    """Un dato no tiene el tipo que esperan las reglas: el servicio respondió 400."""
+# --- Ejercicio 12 --------------------------------------------------------------
 
 
-class Inscripciones:
-    """Un cliente del servicio de Inscripciones, en la dirección base."""
-
-    def __init__(self, base):
-        """Guarda la dirección base del servicio, como 'http://127.0.0.1:8080'."""
-        self.base = base
-
-    def _pedir(self, ruta, datos=None):
-        """Hace el pedido; devuelve el código de estado y el cuerpo leído como JSON."""
-        cuerpo = None if datos is None else json.dumps(datos).encode('utf-8')
-        pedido = urllib.request.Request(  # noqa: S310
-            f'{self.base}{ruta}', data=cuerpo, headers={'Content-Type': 'application/json'}
-        )
-        try:
-            with urllib.request.urlopen(pedido) as respuesta:  # noqa: S310
-                return respuesta.status, json.load(respuesta)
-        except urllib.error.HTTPError as error:
-            return error.code, json.load(error)
-
-    def ranking(self):
-        """Devuelve el ranking: una lista de diccionarios con legajo, nombre y promedio."""
-        return self._pedir('/ranking')[1]
-
-    def materias(self):
-        """Devuelve las materias: diccionarios con codigo, nombre, anio e inscriptos."""
-        return self._pedir('/materias')[1]
-
-    def inscribir(self, legajo, materia):
-        """Inscribe al alumno legajo en materia, o lanza una de las dos excepciones."""
-        codigo, cuerpo = self._pedir('/inscripciones', {'legajo': legajo, 'materia': materia})
-        if codigo == 400:
-            raise DatoInvalidoError(cuerpo['error'])
-        if codigo != 201:
-            raise InscripcionRechazadaError(legajo, materia, cuerpo['motivo'])
+def inscriptos(materia):
+    """Devuelve los inscriptos en materia: diccionarios con legajo y nombre."""
+    janus.consult(str(AQUI / 'soluciones_proyecto.pl'))
+    return janus.query_once('inscriptos_py(M, A)', {'M': materia})['A']

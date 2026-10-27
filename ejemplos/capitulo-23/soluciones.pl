@@ -1,217 +1,176 @@
 :- encoding(utf8).
 
-% Capítulo 23 - Soluciones de los ejercicios 2 a 11. Las de los ejercicios 12
-% y 13 están en soluciones_buscaminas.pl, y las de 14 a 16 en
-% soluciones_proyecto.pl.
+% Capítulo 23 - Soluciones de los ejercicios 1 a 9 y 16. Las de los ejercicios
+% 10 y 11 están en soluciones_bloques.pl, las de 12 y 13 en
+% soluciones_buscaminas.pl, y las de 14 y 15 en soluciones_proyecto.pl.
 %
-%?- celsius_fahrenheit(C, 212).
-%?- cambio(37, Monedas).
-%?- sudoku([[1, _, _, _], [_, _, 3, _], [_, 4, _, _], [_, _, _, 2]]).
-
-:- use_module(library(clpfd)).
-
-% --- Ejercicio 2 ----------------------------------------------------------
-
-%!  celsius_fahrenheit(?C:integer, ?F:integer) is nondet.
-%
-%   C grados Celsius son F grados Fahrenheit: F = C * 9 / 5 + 32, con los
-%   dos enteros.
-celsius_fahrenheit(C, F) :-
-    5 * F #= 9 * C + 160.
+%?- por_longitud([[a, b, c], [d], [e, f]], L).
+%?- anagramas(roma, [amor, mora, ramo, rama], L).
+%?- formatear_nombre(ana, [mayusculas(true), prefijo('Sra. ')], T).
 
 % --- Ejercicio 3 ----------------------------------------------------------
 
-%!  cambio(+Monto:integer, -Monedas:list(integer)) is semidet.
+%!  por_longitud(+Listas:list(list), -Ordenadas:list(list)) is det.
 %
-%   Monedas es [U, C, D]: U monedas de 1, C de 5 y D de 10 que suman Monto,
-%   con la menor cantidad de monedas.
-cambio(Monto, [U, C, D]) :-
-    [U, C, D] ins 0..Monto,
-    U + 5 * C + 10 * D #= Monto,
-    Total #= U + C + D,
-    once(labeling([min(Total)], [U, C, D])).
+%   Ordenadas son las Listas de la más corta a la más larga; con la misma
+%   longitud, en el orden original.
+por_longitud(Listas, Ordenadas) :-
+    map_list_to_pairs(length, Listas, Pares),
+    keysort(Pares, Ordenados),
+    pairs_values(Ordenados, Ordenadas).
 
 % --- Ejercicio 4 ----------------------------------------------------------
 
-%!  cuadrado_magico(-Filas:list(list(integer))) is nondet.
+%!  anagramas(+Palabra:atom, +Candidatas:list, -Anagramas:list) is det.
 %
-%   Filas son las tres filas de un cuadrado mágico de 3 x 3 con los números
-%   del 1 al 9: filas, columnas y diagonales suman 15.
-cuadrado_magico([[A, B, C], [D, E, F], [G, H, I]]) :-
-    Vs = [A, B, C, D, E, F, G, H, I],
-    Vs ins 1..9,
-    all_different(Vs),
-    maplist([X, Y, Z]>>(X + Y + Z #= 15),
-            [A, D, G, A, B, C, A, C], [B, E, H, D, E, F, E, E],
-            [C, F, I, G, H, I, I, G]),
-    label(Vs).
+%   Anagramas son las Candidatas que tienen las mismas letras que Palabra,
+%   en otro orden. Palabra misma no es su propio anagrama.
+anagramas(Palabra, Candidatas, Anagramas) :-
+    letras(Palabra, Letras),
+    include([C]>>( C \== Palabra, letras(C, Letras) ), Candidatas,
+            Anagramas).
+
+%!  letras(+Palabra:atom, -Letras:list) is det.
+%
+%   Letras son los caracteres de Palabra ordenados, con los repetidos.
+letras(Palabra, Letras) :-
+    atom_chars(Palabra, Caracteres),
+    msort(Caracteres, Letras).
 
 % --- Ejercicio 5 ----------------------------------------------------------
 
-%!  sudoku(?Filas:list(list(integer))) is nondet.
+%!  agregar_alumno(+Grado:integer, +Nombre:atom, +Escuela0, -Escuela) is det.
 %
-%   Filas es un sudoku de 4 x 4 resuelto: cada fila, cada columna y cada
-%   cuadro de 2 x 2 tienen los números del 1 al 4.
-sudoku(Filas) :-
-    Filas = [[A, B, C, D], [E, F, G, H], [I, J, K, L], [M, N, O, P]],
-    append(Filas, Vs),
-    Vs ins 1..4,
-    maplist(all_different, Filas),
-    transpose(Filas, Columnas),
-    maplist(all_different, Columnas),
-    maplist(all_different, [[A, B, E, F], [C, D, G, H],
-                            [I, J, M, N], [K, L, O, P]]),
-    label(Vs).
+%   Escuela es Escuela0, un assoc de cada grado a un conjunto ordenado de
+%   nombres, con Nombre agregado al Grado.
+agregar_alumno(Grado, Nombre, Escuela0, Escuela) :-
+    (   get_assoc(Grado, Escuela0, Nombres0)
+    ->  true
+    ;   Nombres0 = []
+    ),
+    ord_add_element(Nombres0, Nombre, Nombres),
+    put_assoc(Grado, Escuela0, Nombres, Escuela).
+
+%!  alumnos_de(+Escuela, +Grado:integer, -Nombres:list(atom)) is det.
+%
+%   Nombres son los alumnos del Grado, en orden alfabético; la lista vacía si
+%   no tiene ninguno.
+alumnos_de(Escuela, Grado, Nombres) :-
+    (   get_assoc(Grado, Escuela, Encontrados)
+    ->  Nombres = Encontrados
+    ;   Nombres = []
+    ).
+
+%!  escuela(+Altas:list(pair), -Escuela) is det.
+%
+%   Escuela es la escuela que resulta de agregar cada alta Grado-Nombre, en
+%   orden, a una escuela vacía.
+escuela(Altas, Escuela) :-
+    empty_assoc(Vacia),
+    foldl([G-N, E0, E]>>agregar_alumno(G, N, E0, E), Altas, Vacia, Escuela).
 
 % --- Ejercicio 6 ----------------------------------------------------------
 
-%!  dos_de_cada(-Xs:list(integer)) is nondet.
+%!  por_valor(+Pares:list(pair), -Ordenados:list(pair)) is det.
 %
-%   Xs son seis valores entre 1 y 3, con exactamente dos de cada uno.
-dos_de_cada(Xs) :-
-    length(Xs, 6),
-    Xs ins 1..3,
-    global_cardinality(Xs, [1-2, 2-2, 3-2]),
-    label(Xs).
+%   Ordenados son los Pares de menor a mayor valor, con los repetidos:
+%   comparar_valor/3 nunca responde =.
+por_valor(Pares, Ordenados) :-
+    predsort(comparar_valor, Pares, Ordenados).
+
+%!  comparar_valor(-Orden, +A:pair, +B:pair) is det.
+%
+%   Orden es < si el valor de A es menor o igual que el de B, y > si no.
+comparar_valor(Orden, _-VA, _-VB) :-
+    (   VA =< VB
+    ->  Orden = (<)
+    ;   Orden = (>)
+    ).
 
 % --- Ejercicio 7 ----------------------------------------------------------
 
-%!  exactamente(?N:integer, ?Xs:list(integer), +V:integer) is nondet.
+%!  la_mayor(+Personas:list(dict), -Mayor:dict) is semidet.
 %
-%   Exactamente N elementos de Xs son iguales a V.
-exactamente(N, Xs, V) :-
-    maplist({V}/[X, B]>>(B #<==> (X #= V)), Xs, Bs),
-    sum(Bs, #=, N).
+%   Mayor es el dict de mayor edad de Personas; con empate, el primero. Falla
+%   con la lista vacía.
+la_mayor([Primera|Resto], Mayor) :-
+    foldl(la_mayor_de_dos, Resto, Primera, Mayor).
 
-%!  dados_con_dos_seis(-Cantidad:integer) is det.
+%!  la_mayor_de_dos(+P:dict, +Hasta:dict, -Mayor:dict) is det.
 %
-%   Cantidad es la cantidad de resultados de tirar tres dados en los que
-%   salen exactamente dos seis.
-dados_con_dos_seis(Cantidad) :-
-    Dados = [_, _, _],
-    Dados ins 1..6,
-    exactamente(2, Dados, 6),
-    aggregate_all(count, label(Dados), Cantidad).
+%   Mayor es P si es mayor que Hasta, o Hasta si no. La notación funcional
+%   se expande en la cláusula que la contiene: dentro de una lambda, se
+%   evaluaría antes de que la lambda reciba P.
+la_mayor_de_dos(P, Hasta, Mayor) :-
+    (   P.edad > Hasta.edad
+    ->  Mayor = P
+    ;   Mayor = Hasta
+    ).
 
 % --- Ejercicio 8 ----------------------------------------------------------
 
-%!  to_go_out(-Letras:list(integer)) is det.
+%!  formatear_nombre(+Nombre:atom, +Opciones:list, -Texto:atom) is det.
 %
-%   Letras son los dígitos de T, O, G y U, distintos entre sí, tales que
-%   TO + GO = OUT, sin ceros a la izquierda.
-to_go_out([T, O, G, U]) :-
-    Letras = [T, O, G, U],
-    Letras ins 0..9,
-    all_different(Letras),
-    T #\= 0,
-    G #\= 0,
-    O #\= 0,
-    10 * T + O + 10 * G + O #= 100 * O + 10 * U + T,
-    label(Letras).
-
-%!  soluciones_sin_ceros(-Con:integer, -Sin:integer) is det.
-%
-%   Con es la cantidad de soluciones de SEND + MORE = MONEY que exigen que S
-%   y M no sean cero, y Sin la cantidad sin esa exigencia.
-soluciones_sin_ceros(Con, Sin) :-
-    aggregate_all(count, send_more_money_con(true), Con),
-    aggregate_all(count, send_more_money_con(false), Sin).
-
-%!  send_more_money_con(+SinCeros:boolean) is nondet.
-%
-%   Una solución de SEND + MORE = MONEY; con SinCeros en true, S y M no son
-%   cero. Se llama distinto de send_more_money/1 del capítulo, que da las
-%   letras de la única solución.
-send_more_money_con(SinCeros) :-
-    Letras = [S, E, N, D, M, O, R, Y],
-    Letras ins 0..9,
-    all_different(Letras),
-    (   SinCeros == true
-    ->  S #\= 0,
-        M #\= 0
-    ;   true
+%   Texto es Nombre con las Opciones: mayusculas(B), si se escribe en
+%   mayúsculas, false si falta; prefijo(P), el texto que va antes, '' si
+%   falta.
+formatear_nombre(Nombre, Opciones, Texto) :-
+    option(mayusculas(Mayusculas), Opciones, false),
+    option(prefijo(Prefijo), Opciones, ''),
+    (   Mayusculas == true
+    ->  upcase_atom(Nombre, Base)
+    ;   Base = Nombre
     ),
-              1000 * S + 100 * E + 10 * N + D
-    +         1000 * M + 100 * O + 10 * R + E
-    #= 10000 * M + 1000 * O + 100 * N + 10 * E + Y,
-    label(Letras).
+    atom_concat(Prefijo, Base, Texto).
 
 % --- Ejercicio 9 ----------------------------------------------------------
 
-% provincia(P): P es una de las provincias del mapa del capítulo.
-provincia(san_juan).
-provincia(mendoza).
-provincia(san_luis).
-provincia(la_rioja).
-provincia(cordoba).
-provincia(la_pampa).
-provincia(neuquen).
-provincia(rio_negro).
-
-% limita(A, B): las provincias A y B tienen un límite en común.
-limita(san_juan, la_rioja).
-limita(san_juan, mendoza).
-limita(san_juan, san_luis).
-limita(mendoza, san_luis).
-limita(mendoza, la_pampa).
-limita(mendoza, neuquen).
-limita(san_luis, la_rioja).
-limita(san_luis, cordoba).
-limita(san_luis, la_pampa).
-limita(la_rioja, cordoba).
-limita(cordoba, la_pampa).
-limita(la_pampa, neuquen).
-limita(la_pampa, rio_negro).
-limita(neuquen, rio_negro).
-
-%!  colorear_gyp(+K:integer, -Colores:list(pair)) is nondet.
+%!  sorteo(+Cantidad:integer, +Hasta:integer, -Numeros:list(integer)) is det.
 %
-%   La relación de colorear/2 del capítulo, con generar y probar: a cada
-%   provincia se le asigna un color con between/3, y después se comprueban
-%   todos los límites.
-colorear_gyp(K, Colores) :-
-    findall(P-_, provincia(P), Colores),
-    maplist({K}/[_-C]>>between(1, K, C), Colores),
-    \+ ( limita(A, B),
-         memberchk(A-X, Colores),
-         memberchk(B-X, Colores) ).
+%   Numeros son Cantidad números distintos entre 1 y Hasta, elegidos al azar,
+%   en el orden en que salieron.
+sorteo(Cantidad, Hasta, Numeros) :-
+    randseq(Cantidad, Hasta, Numeros).
 
-% --- Ejercicio 10 ---------------------------------------------------------
+% --- Ejercicio 16 ---------------------------------------------------------
 
-%!  reinas(+Opciones:list, +N:integer, -Qs:list(integer)) is nondet.
+%!  insertar_mal(+Clave, +Arbol0, -Arbol) is det.
 %
-%   Las N reinas del capítulo, con las Opciones de labeling/2.
-reinas(Opciones, N, Qs) :-
-    length(Qs, N),
-    Qs ins 1..N,
-    seguras(Qs),
-    labeling(Opciones, Qs).
+%   Arbol es Arbol0 con Clave agregada. Versión incorrecta, la del
+%   enunciado: las cláusulas recursivas devuelven el árbol del subárbol, sin
+%   el nodo que lo contiene, y la última no liga Arbol.
+insertar_mal(Clave, vacio, n(vacio, Clave, vacio)).
+insertar_mal(Clave, n(Izq, Clave0, _), Arbol) :-
+    Clave @< Clave0,
+    insertar_mal(Clave, Izq, Arbol).
+insertar_mal(Clave, n(_, Clave0, Der), Arbol) :-
+    Clave @> Clave0,
+    insertar_mal(Clave, Der, Arbol).
+insertar_mal(Clave, n(_, Clave, _), _).
 
-%!  seguras(+Qs:list) is semidet.
+%!  insertar(+Clave, +Arbol0, -Arbol) is det.
 %
-%   Ninguna reina de Qs ataca a otra.
-seguras([]).
-seguras([Q|Qs]) :-
-    no_ataca(Q, Qs, 1),
-    seguras(Qs).
+%   Arbol es el árbol de búsqueda Arbol0 con Clave agregada; si Clave ya
+%   está, Arbol es igual a Arbol0. El árbol es vacio o n(Izq, Clave, Der).
+insertar(Clave, Arbol0, Arbol) :-
+    insertar_en(Arbol0, Clave, Arbol).
 
-%!  no_ataca(+Q, +Qs:list, +D:integer) is semidet.
+%!  insertar_en(+Arbol0, +Clave, -Arbol) is det.
 %
-%   La reina Q no ataca a las de Qs, la primera D columnas a su derecha.
-no_ataca(_, [], _).
-no_ataca(Q, [Q1|Qs], D) :-
-    Q #\= Q1,
-    abs(Q - Q1) #\= D,
-    D1 is D + 1,
-    no_ataca(Q, Qs, D1).
+%   El recorrido de insertar/3, con el árbol como primer argumento para que
+%   la indexación distinga vacio de n/3.
+insertar_en(vacio, Clave, n(vacio, Clave, vacio)).
+insertar_en(n(Izq, Clave0, Der), Clave, Arbol) :-
+    compare(Orden, Clave, Clave0),
+    insertar_segun(Orden, Clave, n(Izq, Clave0, Der), Arbol).
 
-% --- Ejercicio 11 ---------------------------------------------------------
-
-%!  todos_distintos(+Xs:list) is semidet.
+%!  insertar_segun(+Orden, +Clave, +Nodo, -Arbol) is det.
 %
-%   Los elementos de Xs son distintos entre sí, con dif/2: vale para
-%   cualquier término, y con variables se posterga.
-todos_distintos([]).
-todos_distintos([X|Xs]) :-
-    maplist(dif(X), Xs),
-    todos_distintos(Xs).
+%   Arbol es Nodo con Clave agregada, según el Orden de Clave respecto de la
+%   clave de Nodo: un nodo nuevo con el subárbol que cambió, o el mismo Nodo
+%   si la clave ya está.
+insertar_segun(<, Clave, n(Izq, Clave0, Der), n(Izq1, Clave0, Der)) :-
+    insertar_en(Izq, Clave, Izq1).
+insertar_segun(=, _, Nodo, Nodo).
+insertar_segun(>, Clave, n(Izq, Clave0, Der), n(Izq, Clave0, Der1)) :-
+    insertar_en(Der, Clave, Der1).

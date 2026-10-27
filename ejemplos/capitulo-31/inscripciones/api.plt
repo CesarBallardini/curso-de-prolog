@@ -111,14 +111,4 @@ test(legajo_de_otro_tipo, true(C == 400)) :-
 test(cuerpo_incompleto, true(C == 400)) :-
     inscribir_por_http(_{legajo: 104}, C, _).
 
-% Con alcance publico, el servicio también responde: en esta máquina, por
-% la misma dirección local.
-test(alcance_publico, [ setup(iniciar_api(P, publico)),
-                        cleanup(detener_api(P)),
-                        true(C == 200) ]) :-
-    format(atom(Url), "http://127.0.0.1:~w/ranking", [P]),
-    setup_call_cleanup(http_open(Url, S, [status_code(C)]),
-                       read_string(S, _, _),
-                       close(S)).
-
 :- end_tests(api).

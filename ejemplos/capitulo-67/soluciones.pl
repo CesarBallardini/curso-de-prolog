@@ -1,400 +1,291 @@
 :- encoding(utf8).
 
-% Capítulo 67 - Soluciones de los ejercicios 2 a 11.
+% Capítulo 67 - Soluciones de los ejercicios 2 a 12.
 %
-% Carga la versión 5, que reexporta las anteriores, y agrega los
-% predicados que piden los ejercicios. Los que modifican un predicado
-% interno de una versión lo hacen sobre una copia con otro nombre.
+% Carga las versiones 2 y 5, que cargan las demás, y agrega métodos de
+% combinación con cláusulas multifile de evidencia.
 %
-% solo-local: carga módulos del capítulo, que cargan archivos de otros
-% capítulos.
+% solo-local: carga el sistema experto del capítulo 34, y SWISH no admite
+% módulos propios.
 %
-%?- lgg_lista([abuelo(juan, eva), abuelo(juan, luis), abuelo(pedro, sofia)], G).
-%?- aprender_asc_corta(abuelo, H, N).
+%?- atenuacion(0.7, Filas).
+%?- member(M, [mycin, conman]), grado(mamifero, [tiene_pelo-0.6,
+%?-        da_leche-0.6], M, P).
+%?- costo_minimo(C).
+
+:- module(soluciones,
+          [ atenuacion/2,
+            y_no/4,
+            dos_reglas/2,
+            mas_probable/3,
+            arbol_excluyentes/2,
+            costo_minimo/1,
+            promedio_ponderado/2,
+            escribir_arbol/1,
+            consultar_con_grado/5,
+            fuerza_estimada/4
+          ]).
 
 :- use_module(library(apply)).
 :- use_module(library(lists)).
-:- use_module(recursion).
+:- use_module(library(pairs)).
+:- use_module(library(aggregate)).
+:- reexport(cotas).
+:- reexport(compilado).
 
-% Ejercicio 2
+% Ejercicio 2 ---------------------------------------------------------------
 
-%!  lgg_lista(+Ts:list, -G) is det.
+%!  atenuacion(+G:float, -Filas:list) is det.
 %
-%   G es la lgg de todos los términos de la lista no vacía Ts: la lgg del
-%   primero con el segundo, la de ese resultado con el tercero, y así.
-lgg_lista([T|Ts], G) :-
-    foldl(lgg_con, Ts, T, G).
+%   Filas tiene, para mamifero, carnivoro y guepardo, un término
+%   Meta-[I, C, L]: su grado con los métodos independiente, conservador y
+%   liberal cuando las cuatro observaciones del caso 1 tienen grado G.
+atenuacion(G, Filas) :-
+    caso(1, Os),
+    maplist(con_grado(G), Os, Gs),
+    findall(Meta-Ps,
+            ( member(Meta, [mamifero, carnivoro, guepardo]),
+              findall(P, ( member(M, [independiente, conservador,
+                                      liberal]),
+                           grado(Meta, Gs, M, P) ),
+                      Ps) ),
+            Filas).
 
-%!  lgg_con(+T, +G0, -G) is det.
+%!  con_grado(+G:float, ?Hecho, ?Par) is det.
 %
-%   G es la lgg de G0 y T.
-lgg_con(T, G0, G) :-
-    lgg(G0, T, G).
+%   Par es Hecho con grado G.
+con_grado(G, Hecho, Hecho-G).
 
-% Ejercicio 3
+% Ejercicio 3 ---------------------------------------------------------------
 
-%!  reducida(+C0, -C) is det.
+evidencia:metodo(mycin).
+evidencia:metodo(conman).
+
+% MYCIN, según Merritt, y CONMAN, según Covington: y toma el mínimo; o
+% acumula como la independencia en MYCIN y toma el máximo en CONMAN.
+evidencia:y(mycin, P1, P2, P) :-
+    evidencia:y(liberal, P1, P2, P).
+evidencia:y(conman, P1, P2, P) :-
+    evidencia:y(liberal, P1, P2, P).
+evidencia:o(mycin, P1, P2, P) :-
+    evidencia:o(independiente, P1, P2, P).
+evidencia:o(conman, P1, P2, P) :-
+    evidencia:o(conservador, P1, P2, P).
+
+% Ejercicio 4 ---------------------------------------------------------------
+
+%!  y_no(+Metodo, +PA:float, +PB:float, -P:float) is det.
 %
-%   C es la cláusula C0 sin los literales redundantes: se quita un
-%   literal si la cláusula actual subsume a la que queda sin él. C y C0
-%   se subsumen mutuamente.
-reducida((H :- B0), (H :- B)) :-
-    sin_redundantes(B0, [], H, B).
+%   P es el grado de «A y no B» cuando A tiene grado PA y B grado PB: el
+%   grado de no B es 1 - PB. P tiene cuatro decimales.
+y_no(Metodo, PA, PB, P) :-
+    PNoB is 1 - PB,
+    y(Metodo, PA, PNoB, P0),
+    P is round(P0 * 10000) / 10000.0.
 
-%!  sin_redundantes(+Pendientes:list, +Guardados:list, +H, -B:list) is det.
+% Ejercicio 5 ---------------------------------------------------------------
+
+%!  dos_reglas(+Metodo, -P:float) is det.
 %
-%   B son los Guardados, en orden inverso, seguidos de los Pendientes que
-%   no son redundantes.
-sin_redundantes([], Guardados, _, B) :-
-    reverse(Guardados, B).
-sin_redundantes([L|Ls], Guardados, H, B) :-
-    reverse(Guardados, G),
-    append(G, [L|Ls], Actual),
-    append(G, Ls, Sin),
-    (   subsume((H :- Actual), (H :- Sin))
-    ->  sin_redundantes(Ls, Guardados, H, B)
-    ;   sin_redundantes(Ls, [L|Guardados], H, B)
-    ).
+%   P es el grado de a con las reglas a(P) :- b(P2), P is P2 * 0.6 y
+%   a(P) :- c(P), con b seguro y c de grado 0.8; con cuatro decimales.
+dos_reglas(Metodo, P) :-
+    y(Metodo, 0.6, 1.0, PB),
+    combinar(o, Metodo, [PB, 0.8], P0),
+    P is round(P0 * 10000) / 10000.0.
 
-% Ejercicio 4
+% Ejercicio 6 ---------------------------------------------------------------
 
-%!  reducir_corta(+C0, +Negs:list, +M:list, -C) is semidet.
+%!  mas_probable(+Observaciones:list, +Metodo, -Hipotesis) is semidet.
 %
-%   C es la más corta de las reducciones de C0 con el cuerpo en su orden y
-%   en el inverso; la primera, si tienen la misma longitud. Falla si C0
-%   cubre un negativo.
-reducir_corta((H :- B0), Negs, M, C) :-
-    reducir((H :- B0), Negs, M, C1),
-    reverse(B0, B1),
-    reducir((H :- B1), Negs, M, C2),
-    C1 = (_ :- L1),
-    C2 = (_ :- L2),
-    length(L1, N1),
-    length(L2, N2),
-    (   N2 < N1
-    ->  C = C2
-    ;   C = C1
-    ).
-
-%!  aprender_asc_corta(+Relacion, -H:list, -N:integer) is det.
-%
-%   aprender_asc/3 con reducir_corta/4 en lugar de reducir/4.
-aprender_asc_corta(Relacion, H, N) :-
-    aprender_asc_con(reducir_corta, Relacion, H, N).
-
-%!  aprender_asc_con(:Reducir, +Relacion, -H:list, -N:integer) is det.
-%
-%   aprender_asc/3 con el predicado Reducir, llamado como
-%   call(Reducir, C0, Negs, M, C), en lugar de reducir/4.
-aprender_asc_con(Reducir, Relacion, H, N) :-
-    ejemplos(Relacion, Pos, Negs),
-    modelo_fondo(M),
-    cubrir_con(Pos, Reducir, Negs, M, H, 0, N).
-
-%!  cubrir_con(+Pos:list, :Reducir, +Negs:list, +M:list, -H:list,
-%!             +N0:integer, -N:integer) is det.
-%
-%   El algoritmo de cobertura de la versión 3, con Reducir.
-cubrir_con([], _, _, _, [], N, N).
-cubrir_con([P|Ps], Reducir, Negs, M, H, N0, N) :-
-    Pos = [P|Ps],
-    findall(C0, ( append(_, [E1|Resto], Pos),
-                  member(E2, Resto),
-                  rlgg(E1, E2, M, C0) ),
-            Rlggs),
-    length(Rlggs, K),
-    N1 is N0 + K,
-    findall(Cubiertos-C,
-            ( member(C0, Rlggs),
-              call(Reducir, C0, Negs, M, C),
-              include(cubre_en(C, M), Pos, Cs),
-              length(Cs, Cubiertos) ),
-            Candidatas),
-    (   sort(1, @>=, Candidatas, [_-C|_])
-    ->  exclude(cubre_en(C, M), Pos, Resto),
-        H = [C|H1],
-        cubrir_con(Resto, Reducir, Negs, M, H1, N1, N)
-    ;   findall((E :- []), member(E, Pos), H),
-        N = N1
-    ).
-
-%!  cubre_en(+C, +M:list, +E) is semidet.
-%
-%   La cláusula C cubre el ejemplo E en el modelo M.
-cubre_en(C, M, E) :-
-    cubre(C, E, M).
-
-% Ejercicio 6
-
-% nuevos(Hechos): tomas, hijo de juan y marta, en el modelo de fondo.
-nuevos([varon(tomas), padre(juan, tomas), madre(marta, tomas),
-        progenitor(juan, tomas), progenitor(marta, tomas)]).
-
-%!  modelo_con_tomas(-M:list) is det.
-%
-%   M es el modelo de fondo con los hechos de tomas, ordenado.
-modelo_con_tomas(M) :-
-    modelo_fondo(M0),
-    nuevos(Nuevos),
-    append(M0, Nuevos, M1),
-    sort(M1, M).
-
-%!  hermano_con_tomas(-Pos:list, -H:list, -N:integer) is det.
-%
-%   Pos son los positivos de hermano/2 en la familia con tomas, y H la
-%   hipótesis de ascendente/5 para ellos; N es la cantidad de rlgg.
-hermano_con_tomas(Pos, H, N) :-
-    modelo_con_tomas(M),
-    personas_de(M, Personas),
-    findall(hermano(A, B),
-            ( member(varon(A), M),
-              member(progenitor(P, A), M),
-              member(progenitor(P, B), M),
-              A \== B ),
-            Pos0),
-    sort(Pos0, Pos),
-    findall(hermano(A, B),
-            ( member(A, Personas),
-              member(B, Personas),
-              \+ memberchk(hermano(A, B), Pos) ),
-            Negs),
-    ascendente(Pos, Negs, M, H, N).
-
-%!  rlgg_con_distintos(-Hechos:integer, -Literales:integer) is det.
-%
-%   Hechos es la cantidad de átomos del modelo con tomas y los hechos
-%   distintos(X, Y) de cada par de personas distintas, y Literales la de
-%   literales enlazados de la rlgg de hermano(pedro, ana) y
-%   hermano(pedro, tomas) en ese modelo.
-rlgg_con_distintos(Hechos, Literales) :-
-    modelo_con_tomas(M0),
-    personas_de(M0, Personas),
-    findall(distintos(X, Y),
-            ( member(X, Personas),
-              member(Y, Personas),
-              X \== Y ),
-            Distintos),
-    append(M0, Distintos, M1),
-    sort(M1, M),
-    length(M, Hechos),
-    rlgg(hermano(pedro, ana), hermano(pedro, tomas), M, (_ :- B)),
-    length(B, Literales).
-
-%!  personas_de(+M:list, -Personas:list) is det.
-%
-%   Personas son las que el modelo M declara varón o mujer, ordenadas.
-personas_de(M, Personas) :-
-    findall(P, ( member(varon(P), M)
-               ; member(mujer(P), M) ),
-            Ps),
-    sort(Ps, Personas).
-
-% Ejercicio 7
-
-%!  generadas_sin_poda(+E, +Negs:list, +M:list, +L:list, +D:integer,
-%!                     -N:integer) is det.
-%
-%   N es la cantidad de cláusulas que genera la búsqueda de la versión 4
-%   desde la cláusula más general de E, con profundidad D, sin descartar
-%   las que dejan de cubrir E: se detiene en la primera consistente que
-%   cubre E.
-generadas_sin_poda(E, Negs, M, L, D, N) :-
-    functor(E, Nombre, Aridad),
-    functor(H, Nombre, Aridad),
-    sin_poda(D, (H :- []), E, Negs, M, L, _, 0, N).
-
-%!  sin_poda(+D:integer, +C, +E, +Negs:list, +M:list, +L:list, -R,
-%!           +N0:integer, -N:integer) is det.
-%
-%   buscar/6 de la versión 4 sin el filtro de los hijos.
-sin_poda(D, C, E, Negs, M, L, R, N0, N) :-
-    (   cubre(C, E, M),
-        \+ cubre_alguno(C, Negs, M)
-    ->  R = encontrada(C),
-        N = N0
-    ;   D > 0
-    ->  findall(S, refinar(L, C, S), Hijos),
-        length(Hijos, K),
-        N1 is N0 + K,
-        D1 is D - 1,
-        sin_poda_en(Hijos, D1, E, Negs, M, L, R, N1, N)
-    ;   R = ninguna,
-        N = N0
-    ).
-
-%!  sin_poda_en(+Cs:list, +D:integer, +E, +Negs:list, +M:list, +L:list,
-%!              -R, +N0:integer, -N:integer) is det.
-%
-%   sin_poda/9 sobre cada cláusula de Cs, en orden, hasta encontrar una.
-sin_poda_en([], _, _, _, _, _, ninguna, N, N).
-sin_poda_en([C|Cs], D, E, Negs, M, L, R, N0, N) :-
-    sin_poda(D, C, E, Negs, M, L, R1, N0, N1),
-    (   R1 = encontrada(_)
-    ->  R = R1,
-        N = N1
-    ;   sin_poda_en(Cs, D, E, Negs, M, L, R, N1, N)
-    ).
-
-% Ejercicio 10
-
-%!  verdadero_ordenado(?B:list, +M:list) is nondet.
-%
-%   Como verdadero/2 de la versión 3, pero prueba primero el literal que
-%   unifica con menos átomos de M (el primero, si empatan), y falla en
-%   cuanto uno no unifica con ninguno.
-verdadero_ordenado([], _).
-verdadero_ordenado([L|Ls], M) :-
-    findall(K-I, ( nth1(I, [L|Ls], Literal),
-                   aggregate_all(count, member(Literal, M), K) ),
-            Cuentas),
-    min_member(Kmin-Imin, Cuentas),
-    Kmin > 0,
-    nth1(Imin, [L|Ls], Elegido, Resto),
-    member(Elegido, M),
-    verdadero_ordenado(Resto, M).
-
-%!  cubre_ordenado(+C, +E, +M:list) is semidet.
-%
-%   cubre/3 con verdadero_ordenado/2.
-cubre_ordenado((H :- B), E, M) :-
-    \+ \+ ( H = E,
-            verdadero_ordenado(B, M) ).
-
-%!  reducir_ordenado(+C0, +Negs:list, +M:list, -C) is semidet.
-%
-%   reducir/4 de la versión 3 con cubre_ordenado/3.
-reducir_ordenado((H :- B0), Negs, M, (H :- B)) :-
-    \+ cubre_algun_ordenado((H :- B0), Negs, M),
-    quitar_ordenado(B0, [], H, Negs, M, B).
-
-%!  cubre_algun_ordenado(+C, +Negs:list, +M:list) is semidet.
-%
-%   C cubre algún ejemplo de Negs, probado con cubre_ordenado/3.
-cubre_algun_ordenado(C, Negs, M) :-
-    member(N, Negs),
-    cubre_ordenado(C, N, M),
-    !.
-
-%!  quitar_ordenado(+Pendientes:list, +Guardados:list, +H, +Negs:list,
-%!                  +M:list, -B:list) is det.
-%
-%   quitar/6 de la versión 3 con cubre_ordenado/3.
-quitar_ordenado([], Guardados, _, _, _, B) :-
-    reverse(Guardados, B).
-quitar_ordenado([L|Ls], Guardados, H, Negs, M, B) :-
-    reverse(Guardados, G),
-    append(G, Ls, Sin),
-    (   cubre_algun_ordenado((H :- Sin), Negs, M)
-    ->  quitar_ordenado(Ls, [L|Guardados], H, Negs, M, B)
-    ;   quitar_ordenado(Ls, Guardados, H, Negs, M, B)
-    ).
-
-% Ejercicio 11
-
-%!  mejor_en_haz(+K:integer, +E, +Pos:list, +Negs:list, +M:list, +L:list,
-%!               +Max:integer, -R, +N0:integer, -N:integer) is det.
-%
-%   Como mejor_clausula/9, pero solo se refinan las K cláusulas de cada
-%   nivel que cubren más ejemplos de Pos.
-mejor_en_haz(K, E, Pos, Negs, M, L, Max, R, N0, N) :-
-    functor(E, Nombre, Aridad),
-    functor(H, Nombre, Aridad),
-    haz(0, K, Max, [(H :- [])], E-Pos-Negs-M-L, R, N0, N).
-
-%!  haz(+D:integer, +K:integer, +Max:integer, +Frontera:list, +Problema,
-%!      -R, +N0:integer, -N:integer) is det.
-%
-%   nivel/7 de la versión 5 con la frontera recortada a K cláusulas. Las
-%   consistentes se buscan entre todas las cláusulas del nivel, antes de
-%   recortarlo.
-haz(D, K, Max, Frontera, E-Pos-Negs-M-L, R, N0, N) :-
-    exclude(cubre_algun_negativo(Negs, M), Frontera, Consistentes),
-    (   Consistentes = [_|_]
-    ->  mejores(Consistentes, Pos, M, [C|_]),
-        R = encontrada(C),
-        N = N0
-    ;   D < Max
-    ->  mejores(Frontera, Pos, M, Ordenadas),
-        primeros(K, Ordenadas, Haz),
-        findall(S, ( member(C0, Haz),
-                     refinar(L, C0, S) ),
-                Todos),
-        length(Todos, T),
-        N1 is N0 + T,
-        include(cubre_ej(E, M), Todos, Siguiente),
-        D1 is D + 1,
-        haz(D1, K, Max, Siguiente, E-Pos-Negs-M-L, R, N1, N)
-    ;   R = ninguna,
-        N = N0
-    ).
-
-%!  cubre_algun_negativo(+Negs:list, +M:list, +C) is semidet.
-%
-%   C cubre un ejemplo de Negs.
-cubre_algun_negativo(Negs, M, C) :-
-    cubre_alguno(C, Negs, M).
-
-%!  cubre_ej(+E, +M:list, +C) is semidet.
-%
-%   La cláusula C cubre el ejemplo E en el modelo M.
-cubre_ej(E, M, C) :-
-    cubre(C, E, M).
-
-%!  mejores(+Cs:list, +Pos:list, +M:list, -Ordenadas:list) is det.
-%
-%   Ordenadas son las cláusulas de Cs de la que cubre más ejemplos de Pos
-%   a la que cubre menos; las que cubren lo mismo, en su orden.
-mejores(Cs, Pos, M, Ordenadas) :-
-    findall(P-C, ( member(C, Cs),
-                   include(cubre_en(C, M), Pos, Cubiertos),
-                   length(Cubiertos, P) ),
+%   Hipotesis es la de mayor grado con Metodo; entre las empatadas, la
+%   primera de hipotesis/1. Falla si ninguna tiene grado mayor que 0.
+mas_probable(Observaciones, Metodo, Hipotesis) :-
+    findall(P-H,
+            ( hipotesis(H),
+              grado(H, Observaciones, Metodo, P),
+              P > 0 ),
             Pares),
-    sort(1, @>=, Pares, Ordenados),
-    findall(C, member(_-C, Ordenados), Ordenadas).
+    Pares \== [],
+    pairs_keys(Pares, Ps),
+    max_list(Ps, Maximo),
+    once(member(Maximo-Hipotesis, Pares)).
 
-%!  primeros(+K:integer, +Xs:list, -Ys:list) is det.
+% Ejercicio 7 ---------------------------------------------------------------
+
+% excluyentes(A, B): las preguntas A y B no pueden tener las dos un sí.
+excluyentes(vuela, no_vuela).
+excluyentes(no_vuela, vuela).
+
+%!  arbol_excluyentes(+Estrategia, -Arbol) is det.
 %
-%   Ys son los primeros K elementos de Xs, o todos si son menos.
-primeros(K, Xs, Ys) :-
-    length(Xs, N),
-    (   N =< K
-    ->  Ys = Xs
-    ;   length(Ys, K),
-        append(Ys, _, Xs)
+%   Arbol es el árbol de Estrategia construido sabiendo qué preguntas se
+%   excluyen: un sí a una descarta las reglas que tienen la otra.
+arbol_excluyentes(Estrategia, Arbol) :-
+    colapsadas(Reglas),
+    findall(H-Os, prototipo(H, Os), Prototipos),
+    construir_excl(Estrategia, Reglas, Prototipos, Arbol).
+
+%!  construir_excl(+Estrategia, +Reglas:list, +Prototipos:list,
+%!                 -Arbol) is det.
+%
+%   Como construir/4 de arbol.pl, con la rama del sí sin las reglas que
+%   tienen una pregunta excluida por la respondida.
+construir_excl(Estrategia, Reglas, Prototipos, Arbol) :-
+    (   Reglas == []
+    ->  Arbol = hoja(ninguna)
+    ;   memberchk(H-[], Reglas)
+    ->  Arbol = hoja(H)
+    ;   arbol:elegir(Estrategia, Reglas, Prototipos, P),
+        Arbol = pregunta(P, Si, No),
+        findall(Q, excluyentes(P, Q), Excluidas),
+        exclude(con_alguna(Excluidas), Reglas, Compatibles),
+        maplist(arbol:sin_pregunta(P), Compatibles, ReglasSi),
+        exclude(arbol:con_pregunta(P), Reglas, ReglasNo),
+        partition(arbol:prototipo_si(P), Prototipos, PSi, PNo),
+        construir_excl(Estrategia, ReglasSi, PSi, Si),
+        construir_excl(Estrategia, ReglasNo, PNo, No)
     ).
 
-%!  aprender_haz(+K:integer, +Relacion, -H:list, -N:integer) is det.
+%!  con_alguna(+Preguntas:list, +Regla) is semidet.
 %
-%   aprender_rec/3 con la búsqueda en haz de ancho K.
-aprender_haz(K, Relacion, H, N) :-
-    ejemplos(Relacion, Pos, Negs),
-    modelo_fondo(Fondo),
-    ord_union(Fondo, Pos, M),
-    lenguaje(L0),
-    append(L0, [Relacion/2], L),
-    cubrir_haz(Pos, K, Negs, M, L, H, 0, N).
+%   Regla tiene alguna de Preguntas.
+con_alguna(Preguntas, Regla) :-
+    once(( member(Q, Preguntas),
+           arbol:con_pregunta(Q, Regla) )).
 
-%!  cubrir_haz(+Pos:list, +K:integer, +Negs:list, +M:list, +L:list,
-%!             -H:list, +N0:integer, -N:integer) is det.
-%
-%   El algoritmo de cobertura de la versión 5 con mejor_en_haz/10.
-cubrir_haz([], _, _, _, _, [], N, N).
-cubrir_haz([E|Es], K, Negs, M, L, [C|H], N0, N) :-
-    mejor_en_haz(K, E, Es, Negs, M, L, 3, R, N0, N1),
-    (   R = encontrada(C)
-    ->  exclude(cubre_en(C, M), Es, Resto)
-    ;   C = (E :- []),
-        Resto = Es
-    ),
-    cubrir_haz(Resto, K, Negs, M, L, H, N1, N).
+% Ejercicio 8 ---------------------------------------------------------------
 
-%!  reducir_antepasado(:Reducir, -C) is semidet.
+%!  costo_minimo(-C:integer) is det.
 %
-%   C es la rlgg de antepasado(juan, luis) y antepasado(pedro, sofia),
-%   con los positivos en el modelo, reducida con Reducir.
-reducir_antepasado(Reducir, C) :-
-    ejemplos(antepasado, Pos, Negs),
-    modelo_fondo(Fondo),
-    ord_union(Fondo, Pos, M),
-    rlgg(antepasado(juan, luis), antepasado(pedro, sofia), M, C0),
-    call(Reducir, C0, Negs, M, C).
+%   C es la menor suma de preguntas, sobre los prototipos, que alcanza un
+%   árbol para las reglas colapsadas.
+costo_minimo(C) :-
+    colapsadas(Reglas),
+    findall(H-Os, prototipo(H, Os), Prototipos),
+    costo(Reglas, Prototipos, C).
+
+:- table costo/3.
+
+%!  costo(+Reglas:list, +Prototipos:list, -C:integer) is det.
+%
+%   C es la menor suma de preguntas para llevar Prototipos a su hoja en
+%   un árbol de Reglas: cada pregunta del nodo cuenta una vez por cada
+%   prototipo que llega a él.
+costo(Reglas, Prototipos, C) :-
+    (   (   Prototipos == []
+        ;   Reglas == []
+        ;   memberchk(_-[], Reglas)
+        )
+    ->  C = 0
+    ;   foldl(agregar_preguntas, Reglas, [], Candidatas),
+        length(Prototipos, N),
+        findall(C1,
+                ( member(P, Candidatas),
+                  maplist(arbol:sin_pregunta(P), Reglas, ReglasSi),
+                  exclude(arbol:con_pregunta(P), Reglas, ReglasNo),
+                  partition(arbol:prototipo_si(P), Prototipos, PSi, PNo),
+                  costo(ReglasSi, PSi, CSi),
+                  costo(ReglasNo, PNo, CNo),
+                  C1 is N + CSi + CNo ),
+                Cs),
+        min_list(Cs, C)
+    ).
+
+% Ejercicio 9 ---------------------------------------------------------------
+
+% frecuencia(H, F): de cada 100 animales que se consultan, F son H.
+frecuencia(guepardo, 10).
+frecuencia(tigre, 10).
+frecuencia(jirafa, 5).
+frecuencia(cebra, 15).
+frecuencia(pinguino, 40).
+frecuencia(avestruz, 20).
+
+%!  promedio_ponderado(+Arbol, -Promedio:float) is det.
+%
+%   Promedio es la cantidad media de preguntas de Arbol sobre los
+%   prototipos, pesado cada uno por la frecuencia de su hipótesis
+%   repartida entre sus reglas colapsadas; con dos decimales.
+promedio_ponderado(Arbol, Promedio) :-
+    findall(W-N,
+            ( prototipo(H, Os),
+              frecuencia(H, F),
+              aggregate_all(count, colapsada(H, _), K),
+              W is F / K,
+              consultar(Arbol, lista(Os), _, Ps),
+              length(Ps, N) ),
+            Pares),
+    foldl(sumar_pesado, Pares, 0-0, Pesos-Suma),
+    Promedio is round(100 * Suma / Pesos) / 100.0.
+
+%!  sumar_pesado(+Par, +Acumulado, -Acumulado1) is det.
+%
+%   Suma el peso W y el producto W * N del Par W-N al Acumulado.
+sumar_pesado(W-N, W0-S0, W1-S1) :-
+    W1 is W0 + W,
+    S1 is S0 + W * N.
+
+% Ejercicio 10 --------------------------------------------------------------
+
+%!  escribir_arbol(+Archivo) is det.
+%
+%   Escribe en Archivo las cláusulas de nodo/3 y un responde/2 que busca
+%   la pregunta entre las observaciones: un programa que no necesita ni
+%   las reglas ni el árbol.
+escribir_arbol(Archivo) :-
+    setup_call_cleanup(
+        open(Archivo, write, S, [encoding(utf8)]),
+        with_output_to(S, escribir_clausulas),
+        close(S)).
+
+%!  escribir_clausulas is det.
+%
+%   Escribe en la salida actual los operadores, nodo/3 y responde/2.
+escribir_clausulas :-
+    format(":- op(780, xfy, y).~n~n"),
+    forall(clause(compilado:nodo(N, F, H), Cuerpo),
+           portray_clause((nodo(N, F, H) :- Cuerpo))),
+    portray_clause((responde(lista(Os), P) :-
+                        (   P = (O y C)
+                        ->  memberchk(O, Os),
+                            call(C)
+                        ;   memberchk(P, Os)
+                        ))).
+
+% Ejercicio 11 --------------------------------------------------------------
+
+%!  consultar_con_grado(+Arbol, +Observaciones:list, +Umbral:float,
+%!                      -Hipotesis, -P:float) is det.
+%
+%   Recorre Arbol respondiendo que sí a una pregunta cuya observación
+%   tiene grado de al menos Umbral; P es el grado de la Hipotesis de la
+%   hoja con el método independiente, o 0.0 si es ninguna.
+consultar_con_grado(Arbol, Observaciones, Umbral, Hipotesis, P) :-
+    include(supera(Umbral), Observaciones, Seguras),
+    pairs_keys(Seguras, Hechos),
+    consultar(Arbol, lista(Hechos), Hipotesis, _),
+    (   Hipotesis == ninguna
+    ->  P = 0.0
+    ;   grado(Hipotesis, Observaciones, independiente, P)
+    ).
+
+%!  supera(+Umbral:float, +Par) is semidet.
+%
+%   El grado del Par Hecho-Grado es al menos Umbral.
+supera(Umbral, _-G) :-
+    G >= Umbral.
+
+% Ejercicio 12 --------------------------------------------------------------
+
+%!  fuerza_estimada(+Exitos:integer, +Total:integer, -F:float,
+%!                  -Error:float) is det.
+%
+%   F es la fracción Exitos / Total, que estima la fuerza de una regla, y
+%   Error su error estándar, la raíz de F (1 - F) / Total; los dos con
+%   tres decimales.
+fuerza_estimada(Exitos, Total, F, Error) :-
+    F0 is Exitos / Total,
+    E0 is sqrt(F0 * (1 - F0) / Total),
+    F is round(1000 * F0) / 1000.0,
+    Error is round(1000 * E0) / 1000.0.

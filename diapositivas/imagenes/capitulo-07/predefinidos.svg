@@ -7,15 +7,15 @@
   <rect x="10.0" y="50.0" width="940.0" height="60.0" rx="6" fill="#EAF1F8"/>
   <text x="24.0" y="88.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve" font-weight="bold">member(X, L)</text>
   <text x="250.0" y="88.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">X es un elemento de L</text>
-  <text x="740.0" y="88.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">esta_en/2</text>
+  <text x="740.0" y="88.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">pertenece/2</text>
   <rect x="10.0" y="120.0" width="940.0" height="60.0" rx="6" fill="#FFFFFF"/>
   <text x="24.0" y="158.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve" font-weight="bold">length(L, N)</text>
   <text x="250.0" y="158.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">L tiene N elementos</text>
-  <text x="740.0" y="158.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">largo/2</text>
+  <text x="740.0" y="158.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">longitud/2</text>
   <rect x="10.0" y="190.0" width="940.0" height="60.0" rx="6" fill="#EAF1F8"/>
   <text x="24.0" y="228.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve" font-weight="bold">append(A, B, C)</text>
   <text x="250.0" y="228.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">C es A seguida de B</text>
-  <text x="740.0" y="228.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">pegar/3</text>
+  <text x="740.0" y="228.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">concatenar/3</text>
   <rect x="10.0" y="260.0" width="940.0" height="60.0" rx="6" fill="#FFFFFF"/>
   <text x="24.0" y="298.0" font-family="Consolas, DejaVu Sans Mono, monospace" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve" font-weight="bold">reverse(L, R)</text>
   <text x="250.0" y="298.0" font-family="Verdana, DejaVu Sans, sans-serif" font-size="21" fill="#1F2933" text-anchor="start" xml:space="preserve">R es L en orden inverso</text>

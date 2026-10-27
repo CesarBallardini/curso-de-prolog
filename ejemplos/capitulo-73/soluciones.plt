@@ -1,106 +1,123 @@
 :- encoding(utf8).
 
-:- use_module(library(clpfd)).
-
 :- begin_tests(soluciones).
 
-test(ejercicio_1, [true(Ch-T == [ mismo_momento(log-1, log-2),
-                                  mismo_dia(alg-1, alg-2),
-                                  mismo_dia(log-1, log-2) ]-invalido)]) :-
-    ejercicio_1(Ch, T).
+test(casa_tres, [true(R-Ca-B-D == 12-27-27-27)]) :-
+    ejemplo(casa, P0),
+    con_procesadores(P0, 3, P),
+    inicial(datos(P, combinada), E),
+    reparto(P, E, R),
+    camino(P, E, Ca),
+    cota_inferior(P, B),
+    planificar(P, 1000000, C, optima(por_lista)),
+    duracion(C, D).
 
-test(proyecto_de, [true(N-A == 16-3)]) :-
-    oferta(cuatrimestre, O),
-    proyecto_de(O, proyecto(Ts, [], A)),
-    length(Ts, N).
+test(mejor_de_todas, [true(D == 33)]) :-
+    ejemplo(coffman, P),
+    mejor_de_todas(P, D).
 
-test(candidatos, [true(K == 10460353203)]) :-
-    candidatos(materias([am1, alg, log], 3, 3), K).
+test(cabezas, [true(L == [t1-0, t2-0, t3-0, t4-4, t5-4, t6-2, t7-2])]) :-
+    ejemplo(coffman, P),
+    findall(T-C, ( tarea(P, T, _), cabeza(P, T, C) ), L).
 
-test(grado_primero, [true(C == am1-1)]) :-
-    oferta(cuatrimestre, O),
-    clases_por_grado(O, [C|_]).
+test(criticas, [true(Ts == [t1, t4, t5])]) :-
+    ejemplo(coffman, P),
+    criticas(P, Ts).
 
-test(grado, [true(K == 15)]) :-
-    medir_grado(facultad(6), K).
+test(criticas_casa, [true(Ts == [cimientos, paredes, techo, revoque,
+                                 pintura])]) :-
+    ejemplo(casa, P),
+    criticas(P, Ts).
 
-test(construir_por_grado) :-
-    oferta(cuatrimestre, O),
-    once(construir_por_grado(O, H)),
-    horario_valido(O, H).
+test(suma, [true(D-K == 33-7)]) :-
+    ejemplo(coffman, P),
+    optimo(P, suma, C, K),
+    valido(P, C),
+    duracion(C, D).
 
-test(reparar, [true(C == [asignada(am1-1, 1, 2, 3), asignada(am2-1, 2, 0, 1)])]) :-
-    ver_reparacion(C).
+test(comparar_voraz,
+     [true(F == [ 6-voraz(16, 23)-optimo(15, 29),
+                  12-voraz(30, 15)-optimo(26, 43) ])]) :-
+    comparar_voraz([6, 12], F).
 
-test(reparar_valido) :-
-    oferta(cuatrimestre, O),
-    horario_ejemplo(H0),
-    reparar(O, H0, H),
-    msort(H0, H).
+test(ida, [true(L == [24-11, 24-9, 28-1022, 28-24])]) :-
+    findall(D-K,
+            ( member(E, [coffman, casa]),
+              member(H, [reparto, combinada]),
+              ejemplo(E, P),
+              optimo_ida(P, H, D, K) ),
+            L).
 
-test(recursantes) :-
-    oferta(cuatrimestre, O),
-    horario_con_recursantes(O, [am1-am2, alg-pp], H),
-    horario_valido(O, H),
-    forall(( member(asignada(am1-_, _, S, _), H),
-             member(asignada(am2-_, _, S2, _), H) ),
-           S =\= S2).
+test(curva, [true(L == [1-36, 2-28, 3-27, 4-27])]) :-
+    ejemplo(casa, P),
+    curva(P, [1, 2, 3, 4], L).
 
-test(etiquetado, [true(R = r(si, _))]) :-
-    medir_etiquetado(facultad(6), ff, R).
+test(curva_coffman, [true(L == [1-70, 2-35, 3-24, 4-24])]) :-
+    ejemplo(coffman, P),
+    curva(P, [1, 2, 3, 4], L).
 
-test(cota_docentes, [true(C == 9)]) :-
-    oferta(cuatrimestre, O),
-    cota_docentes(O, C).
+test(regla, [true(R == "   0         5         10")]) :-
+    regla(12, R).
 
-test(comparar_costos, [true(D-A == r(9, 10)-r(10, 8))]) :-
-    comparar_costos(D, A).
+test(errores, [true(E == [repetida(a), duracion(b, 0), desconocida(x),
+                          procesadores(0)])]) :-
+    errores(proyecto([tarea(a, 1), tarea(a, 2), tarea(b, 0)],
+                     [antes(a, x), antes(b, b)], 0), E).
 
-test(costo_docentes, [true(C == 9)]) :-
-    oferta(cuatrimestre, O),
-    horario_ejemplo(H0),
-    findall(asignada(Cl, Au, _, _), member(asignada(Cl, Au, _, _), H0), H),
-    costo_docentes(O, H, C),
-    maplist(fijar(H0), H).
+test(errores_ciclo, [true(E == [ciclo])]) :-
+    errores(proyecto([tarea(a, 1), tarea(b, 2)],
+                     [antes(a, b), antes(b, a)], 2), E).
 
-test(primero_de_varios, [true(C == 11)]) :-
-    oferta(facultad(6), O),
-    primero_de_varios(O, H, C),
-    horario_valido(O, H).
+test(sin_errores, [true(E == [])]) :-
+    ejemplo(coffman, P),
+    errores(P, E).
 
-test(cuerpo_aula, [true(Fila == tr([th(1), td('am1-1'), td('am1-2'), td('am1-3'),
-                                    td([]), td([])]))]) :-
-    oferta(cuatrimestre, O),
-    horario_ejemplo(H),
-    cuerpo_aula(O, H, a1, [_, table([_, Fila|_])]).
+test(suma_estado, [true(H == 24)]) :-
+    ejemplo(coffman, P),
+    suma(P, e([t1, t4], [0, 0, 0], []), H).
 
-test(aula_inexistente, [fail]) :-
-    oferta(cuatrimestre, O),
-    horario_ejemplo(H),
-    cuerpo_aula(O, H, b9, _).
+test(sumar, [true(S == 23)]) :-
+    ejemplo(coffman, P),
+    soluciones:sumar(P, t4, 3, S).
 
-test(llamado_separado, [true(D == 9)]) :-
-    llamado_separado(2, C, D),
-    sin_separacion(C).
+test(multiplo_de_5) :-
+    soluciones:multiplo_de_5(10).
 
-test(llamado_separado_una_aula, [true(D == 9)]) :-
-    llamado_separado(1, _, D).
+test(no_multiplo_de_5, [fail]) :-
+    soluciones:multiplo_de_5(7).
 
-%!  fijar(+Horario0:list, +Asignada) is det.
-%
-%   El momento de Asignada es el de su clase en Horario0.
-fijar(Horario0, asignada(C, _, S, _)) :-
-    memberchk(asignada(C, _, S0, _), Horario0),
-    S #= S0.
+test(marca, [true(L == "abc        4")]) :-
+    soluciones:marca(4, "abc", L).
 
-%!  sin_separacion(+Calendario:list) is semidet.
-%
-%   Entre los exámenes de cada par de materias en conflicto de Calendario
-%   queda al menos un día.
-sin_separacion(Calendario) :-
-    forall(horarios:conflicto(M1, M2),
-           ( memberchk(asignada(M1, _, D1, _), Calendario),
-             memberchk(asignada(M2, _, D2, _), Calendario),
-             abs(D1 - D2) >= 2 )).
+test(duracion_con, [true(R == 2-35)]) :-
+    ejemplo(coffman, P),
+    soluciones:duracion_con(P, 2, R).
+
+test(fila_voraz, [true(F == 6-voraz(16, 23)-optimo(15, 29))]) :-
+    soluciones:fila_voraz(6, F).
+
+% La regla va sobre el calendario: una línea más que mostrar/2.
+test(mostrar_con_regla, [true(N1 =:= N0 + 1)]) :-
+    ejemplo(coffman, P),
+    calendario_coffman(C),
+    with_output_to(string(S1), mostrar_con_regla(P, C)),
+    with_output_to(string(S0), mostrar(P, C)),
+    split_string(S1, [10], "", L1),
+    split_string(S0, [10], "", L0),
+    length(L1, N1),
+    length(L0, N0).
+
+test(por_colas, [true(Ds == [ base-12, otra_lista-12,
+                              sin_dos_precedencias-12, mas_cortas-10,
+                              cuatro_procesadores-12 ])]) :-
+    findall(N-D, ( variante(N, P, _), por_colas(P, D) ), Ds).
+
+test(por_colas_coffman, [true(D == 33)]) :-
+    ejemplo(coffman, P),
+    por_colas(P, D).
+
+test(por_colas_ciclo, [fail]) :-
+    por_colas(proyecto([tarea(a, 1), tarea(b, 1)],
+                       [antes(a, b), antes(b, a)], 1), _).
 
 :- end_tests(soluciones).

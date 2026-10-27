@@ -21,7 +21,7 @@ that number of arguments is a data functor (`estado(...)`, `date(A, M, D)`), an 
 function (`log(X)` inside `is/2`) or a local helper, and is ignored. A dict method call
 (`D.put(edad, 42)`) is not a call.
 
-    ./tools/check-part-2.py [--strict] [capitulo-17 ...]
+    ./tools/check-part-2.py [--strict] [capitulo-18 ...]
 """
 
 import re
@@ -48,7 +48,7 @@ IGNORE = {
     'uninstantiation_error',
     'catch', 'throw', 'call', 'not',
     # library predicates whose names the course uses only as data functors, with the
-    # library's arity: chapter 36's state menu(N, Vista, A), never library(tty)'s menu/3
+    # library's arity: chapter 37's state menu(N, Vista, A), never library(tty)'s menu/3
     'menu',
 }  # fmt: skip
 CODE_BLOCK = re.compile(r'^```prolog\n(?P<code>.*?)^```', re.M | re.S)

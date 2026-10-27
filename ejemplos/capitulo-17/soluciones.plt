@@ -2,103 +2,60 @@
 
 :- begin_tests(soluciones).
 
-% Ejercicio 2
-test(nietos_de_juan, true(N == [sofia, luis, eva])) :-
-    nietos_de(juan, N).
+% Ejercicio 3
+test(suma_acc, true(S == 8)) :-
+    suma_lista_acc([3, 1, 4], S).
 
-% Ejercicio 3: con P^, una respuesta por abuelo.
-test(abuelos_con_nietos, all(A-N == [juan-[sofia, luis, eva]])) :-
-    abuelos_con_nietos(A, N).
+% Ejercicio 4: sin nondet, porque ya no deja alternativas.
+test(contar_bien, true(N == 3)) :-
+    contar_bien([a, b, c], N).
 
-% Ejercicio 4
-test(edades_ordenadas, true(E == [3, 8, 12, 39, 41, 68])) :-
-    edades_ordenadas(E).
+% Ejercicio 5: el corte deja la relación en semidet, sin alternativas.
+test(todos_estan_corte) :-
+    todos_estan_corte([a, b], [a, b, c]).
 
-test(edades_ordenadas_2, true(E == [3, 8, 12, 39, 41, 68])) :-
-    edades_ordenadas_2(E).
+test(falta_uno, [fail]) :-
+    todos_estan_corte([a, z], [a, b, c]).
 
-% Ejercicio 5
-test(materias_de_primer_anio, true(M == [am1, alg, log])) :-
-    materia_de_anio(1, M).
+% Ejercicio 7: las dos dan lo mismo; la de la izquierda cuesta mucho más.
+test(aplanar_igual, true(L1 == L2)) :-
+    aplanar_izq([[a, b], [c], [], [d, e]], L1),
+    aplanar_der([[a, b], [c], [], [d, e]], L2).
 
-test(un_anio_sin_materias, true(M == [])) :-
-    materia_de_anio(4, M).
+% maplist/2, que aplica un predicado a cada elemento,
+% se presenta en el capítulo 19.
+test(aplanar_izq_cuesta_mas, true(Izq > 100 * Der)) :-
+    length(Listas, 1000),
+    maplist(diez, Listas),
+    inferencias(aplanar_izq(Listas, _), Izq),
+    inferencias(aplanar_der(Listas, _), Der).
 
-% Ejercicio 6
-test(faltan_los_dos_requisitos, true(F == [am1, alg])) :-
-    requisitos_faltantes_2(102, am2, F).
+% diez(L): L es la lista de 1 a 10; arma las mil listas de la prueba.
+diez(L) :-
+    numlist(1, 10, L).
 
-% Ejercicio 7: con empate, cada versión elige a una persona distinta.
-test(menor_edad, true(Q-E == sofia-3)) :-
-    menor_edad(Q, E).
+% Ejercicio 15: las dos versiones cuentan lo mismo y no dejan alternativas.
+% El comportamiento de la pila se observa con árboles de un millón de nodos,
+% fuera de las pruebas.
+test(hojas_una, true(N == 1)) :-
+    hojas(hoja, N).
 
-test(mayor_con_aggregate_all, true(Q == juan)) :-
-    aggregate_all(max(E, P), edad(P, E), max(_, Q)).
+test(hojas_iguales, true(N1-N2 == 3-3)) :-
+    A = nodo(nodo(hoja, hoja), hoja),
+    hojas(A, N1),
+    hojas_acc(A, N2).
 
-test(mayor_con_max_member, true(Q-E == marta-68)) :-
-    mayor_edad_2(Q, E).
+test(hojas_peine_derecho, true(N1-N2 == 11-11)) :-
+    peine_derecho(10, A),
+    hojas(A, N1),
+    hojas_acc(A, N2).
 
-% Ejercicio 8: la prueba que el capítulo 13 no podía escribir.
-test(sin_inscripciones_repetidas, [fail]) :-
-    inscripcion(L, M, E),
-    aggregate_all(count, inscripcion(L, M, E), N),
-    1 < N.
+test(hojas_peine_izquierdo, true(N1-N2 == 11-11)) :-
+    peine_izquierdo(10, A),
+    hojas(A, N1),
+    hojas_acc(A, N2).
 
-% Ejercicio 9: diego (104) aprobó todo; ana cursa una; gabriela, nada.
-test(diego_aprobo_todo) :-
-    todos_aprobados(104).
-
-test(ana_no, [fail]) :-
-    todos_aprobados(101).
-
-test(gabriela_sin_inscripciones, [fail]) :-
-    todos_aprobados(107).
-
-% Ejercicio 10
-test(cantidad_en_am1, true(N == 5)) :-
-    cantidad_por_materia(am1, N).
-
-% Ejercicio 11
-test(mejor_de_logica, true(L-N == 101-10)) :-
-    mejor_de_materia(log, L, N).
-
-% with_output_to/2, que captura la salida, se presenta en el capítulo 27.
-% Ejercicio 13
-test(listar_inscriptos_en_pp, true(S == "101 ana\n104 diego\n")) :-
-    with_output_to(string(S), listar_inscriptos(pp)).
-
-% Ejercicio 14
-test(tablero, true(L == ["*2110", "12*10", "12221", "1*11*", "11111"])) :-
-    tablero_texto(L).
-
-% Ejercicio 15
-test(mejores_por_carrera,
-     all(C-L == [civil-103, industrial-106, sistemas-101])) :-
-    los_mejores_de_cada_carrera(C, L).
-
-% Ejercicio 16: las dos versiones dan el mismo ranking.
-test(mejores_igual, true(R1 == R2)) :-
-    mejores(3, R1),
-    mejores_2(3, R2).
-
-% Ejercicio 17: el orden estándar contra el orden de aparición.
-test(carreras_ordenadas, true(Cs == [civil, industrial, sistemas])) :-
-    carreras(Cs).
-
-test(carreras_con_aggregate_all, true(Cs == [civil, industrial, sistemas])) :-
-    carreras_2(Cs).
-
-test(carreras_en_orden, true(Cs == [sistemas, civil, industrial])) :-
-    carreras_en_orden(Cs).
-
-% Ejercicio 18: tres páginas de tres filas y una más allá de la última.
-test(primera_pagina, true(Fs == [juan-68, marta-68, ana-41])) :-
-    pagina(1, 3, Fs).
-
-test(ultima_pagina, true(Fs == [sofia-3])) :-
-    pagina(3, 3, Fs).
-
-test(pagina_inexistente, true(Fs == [])) :-
-    pagina(4, 3, Fs).
+test(peine_derecho_forma, true(A == nodo(hoja, nodo(hoja, hoja)))) :-
+    peine_derecho(2, A).
 
 :- end_tests(soluciones).

@@ -1,297 +1,297 @@
 :- encoding(utf8).
 
-% Capítulo 38 - Soluciones de los ejercicios 1, 2, 3, 9, 10, 11, 12, 13 y
-% 14: modelos, base de Herbrand, estratos, semántica bien fundada, modelos
-% estables y evaluación semi-ingenua. Usa los evaluadores de semantica.pl,
-% y nombra con generado/2 los programas que construye como datos.
+% Capítulo 38 - Soluciones de los ejercicios 2, 4, 6, 7, 10, 11 y 12.
 %
-% solo-local: carga semantica.pl con ensure_loaded/1, y SWISH no permite
-% cargar otro archivo.
+% solo-local: SWISH no permite crear hilos, colas, mutex, transacciones ni
+% motores.
 %
-%?- modelos(lluvia, [calle_mojada, llueve, riego], Ms).
-%?- base_herbrand(lluvia, B).
-%?- bien_fundado(paridad, V, I).
-%?- estables_de([(p :- \+ q), (q :- \+ p)], Ms).
+%?- respuestas_en_hilo(X, member(X, [a, b, c]), L).
+%?- tuberia([1, 2, 3], S).
+%?- emparejar(3, multiplo(2), multiplo(5), P).
 
-:- ensure_loaded(semantica).
+:- dynamic contador/1, saldo/2.
 
-:- multifile generado/2.
+% contador(N): el valor del contador del ejercicio 6.
+contador(0).
 
-%!  generado(+Programa, -Clausulas:list) is semidet.
+% saldo(Cuenta, Monto): el saldo de cada cuenta del ejercicio 7.
+saldo(a, 1000).
+saldo(b, 1000).
+saldo(c, 1000).
+saldo(d, 1000).
+
+% --- Ejercicio 2 -----------------------------------------------------------
+
+%!  respuestas_en_hilo(?Plantilla, :Meta, -Lista:list) is det.
 %
-%   Los programas de estas soluciones: paridad, juego(Juego) (los
-%   movimientos de Juego solamente), alcanzables(N) y cadena_doble(N).
-generado(paridad, Clausulas) :-
-    paridad(Clausulas).
-generado(juego(Juego), Clausulas) :-
-    del_juego(Juego, Clausulas).
-generado(alcanzables(N), Clausulas) :-
-    alcanzables(N, Clausulas).
-generado(cadena_doble(N), Clausulas) :-
-    cadena_doble(N, Clausulas).
-
-%!  modelos_de(+Clausulas:list, +Atomos:list, -Modelos:list) is det.
-%
-%   Modelos son los subconjuntos de Atomos que son modelos de Clausulas,
-%   cada uno ordenado, en el orden en que subconjunto/2 los genera.
-modelos_de(Clausulas, Atomos, Modelos) :-
-    findall(I,
-            ( subconjunto(Atomos, I),
-              es_modelo_de(Clausulas, I) ),
-            Modelos).
-
-%!  modelos(+Programa, +Atomos:list, -Modelos:list) is det.
-%
-%   modelos_de/3 con las cláusulas del programa llamado Programa.
-modelos(Programa, Atomos, Modelos) :-
-    clausulas(Programa, Clausulas),
-    modelos_de(Clausulas, Atomos, Modelos).
-
-%!  subconjunto(+Conjunto:list, -Sub:list) is multi.
-%
-%   Sub es un subconjunto de Conjunto, con los elementos en el mismo orden.
-%   Una respuesta por subconjunto: primero los que tienen el primer
-%   elemento.
-subconjunto([], []).
-subconjunto([X|Xs], [X|Ys]) :-
-    subconjunto(Xs, Ys).
-subconjunto([_|Xs], Ys) :-
-    subconjunto(Xs, Ys).
-
-%!  minimales(+Modelos:list, -Minimales:list) is det.
-%
-%   Minimales son los de Modelos que no contienen estrictamente a ningún
-%   otro de Modelos.
-minimales(Modelos, Minimales) :-
-    include(minimal(Modelos), Modelos, Minimales).
-
-%!  minimal(+Modelos:list, +M:list) is semidet.
-%
-%   Ningún otro de Modelos está contenido en M.
-minimal(Modelos, M) :-
-    \+ ( member(N, Modelos),
-         N \== M,
-         ord_subset(N, M) ).
-
-%!  base_herbrand_de(+Clausulas:list, -Base:list) is det.
-%
-%   Base es la base de Herbrand de Clausulas, un programa sin functores: los
-%   átomos que se forman con sus predicados y sus constantes, ordenados.
-base_herbrand_de(Clausulas, Base) :-
-    findall(C, ( member(Clausula, Clausulas),
-                 constante(Clausula, C) ),
-            Cs0),
-    sort(Cs0, Constantes),
-    findall(P, ( member(Clausula, Clausulas),
-                 atomo_de(Clausula, A),
-                 indicador(A, P) ),
-            Ps0),
-    sort(Ps0, Predicados),
-    findall(Atomo,
-            ( member(Nombre/Aridad, Predicados),
-              length(Argumentos, Aridad),
-              maplist(elegida(Constantes), Argumentos),
-              Atomo =.. [Nombre|Argumentos] ),
-            Base0),
-    sort(Base0, Base).
-
-%!  base_herbrand(+Programa, -Base:list) is det.
-%
-%   Base es la base de Herbrand del programa llamado Programa.
-base_herbrand(Programa, Base) :-
-    clausulas(Programa, Clausulas),
-    base_herbrand_de(Clausulas, Base).
-
-%!  atomo_de(+Clausula, -Atomo) is nondet.
-%
-%   Atomo es la cabeza de Clausula o un átomo de su cuerpo, positivo o
-%   negado; las comparaciones no cuentan.
-atomo_de(Cabeza :- _, Cabeza).
-atomo_de(_ :- Cuerpo, Atomo) :-
-    conjuncion_lista(Cuerpo, Literales),
-    member(Literal, Literales),
-    (   Literal = (\+ Atomo)
-    ->  true
-    ;   atomo(Literal),
-        Atomo = Literal
+%   Lista es findall(Plantilla, Meta, Lista), calculada en un hilo nuevo y
+%   recibida por la cola del hilo que llama. Si Meta lanza una excepción,
+%   se lanza también aquí.
+respuestas_en_hilo(Plantilla, Meta, Lista) :-
+    thread_self(Yo),
+    thread_create(responder(Yo, Plantilla, Meta), Id),
+    thread_get_message(respuestas(Id, R)),
+    thread_join(Id, _),
+    (   R = ok(Lista0)
+    ->  Lista = Lista0
+    ;   R = error(E),
+        throw(E)
     ).
 
-%!  constante(+Clausula, -C) is nondet.
+%!  responder(+Destino, ?Plantilla, :Meta) is det.
 %
-%   C es un argumento sin variables de un átomo de Clausula.
-constante(Clausula, C) :-
-    atomo_de(Clausula, Atomo),
-    Atomo =.. [_|Argumentos],
-    member(C, Argumentos),
-    atomic(C).
+%   Envía a Destino respuestas(Yo, ok(Lista)), con Lista las respuestas de
+%   Meta, o respuestas(Yo, error(E)) si Meta lanza E. Yo es este hilo.
+responder(Destino, Plantilla, Meta) :-
+    thread_self(Yo),
+    catch(( findall(Plantilla, Meta, Lista),
+            R = ok(Lista) ),
+          E,
+          R = error(E)),
+    thread_send_message(Destino, respuestas(Yo, R)).
 
-%!  elegida(+Constantes:list, -C) is nondet.
-%
-%   C es una de Constantes.
-elegida(Constantes, C) :-
-    member(C, Constantes).
+% --- Ejercicio 4 -----------------------------------------------------------
 
-%!  paridad(-Clausulas:list) is det.
+%!  tuberia(+Xs:list(number), -Suma:number) is det.
 %
-%   Clausulas es el programa del ejercicio 10: par/1 sobre los números del
-%   0 al 6, con sigue/2.
-paridad(Clausulas) :-
-    findall(sigue(M, N) :- true,
-            ( between(1, 6, N),
-              M is N - 1 ),
-            Hechos),
-    append([ [ (par(0) :- true),
-               (par(N) :- sigue(M, N), \+ par(M)) ],
-             Hechos ],
-           Clausulas).
+%   Suma es la suma de los cuadrados de Xs. Un hilo eleva al cuadrado y
+%   otro suma; los une una cola, y el hilo que llama pone los números en
+%   otra.
+tuberia(Xs, Suma) :-
+    thread_self(Yo),
+    message_queue_create(Numeros),
+    message_queue_create(Cuadrados),
+    thread_create(cuadrar(Numeros, Cuadrados), Id1),
+    thread_create(sumar_cola(Cuadrados, 0, Yo), Id2),
+    forall(member(X, Xs), thread_send_message(Numeros, dato(X))),
+    thread_send_message(Numeros, fin),
+    thread_get_message(suma(Suma)),
+    thread_join(Id1, _),
+    thread_join(Id2, _),
+    message_queue_destroy(Numeros),
+    message_queue_destroy(Cuadrados).
 
-%!  alternancia_de(+Clausulas:list, -Pasos:list) is det.
+%!  cuadrar(+Entrada, +Salida) is det.
 %
-%   Pasos son los pares V-P del punto fijo alternado, desde V vacío: los
-%   verdaderos de cada paso y los posibles que se calculan con ellos, hasta
-%   que los verdaderos no cambian.
-alternancia_de(Clausulas, Pasos) :-
-    alternancia_de(Clausulas, [], Pasos).
-
-%!  alternancia_de(+Clausulas:list, +V0:list, -Pasos:list) is det.
-%
-%   Pasos son los pares V-P del punto fijo alternado, desde los verdaderos
-%   V0.
-alternancia_de(Clausulas, V0, [V0-P0|Pasos]) :-
-    reducido(Clausulas, V0, P0),
-    reducido(Clausulas, P0, V1),
-    (   V1 == V0
-    ->  Pasos = []
-    ;   alternancia_de(Clausulas, V1, Pasos)
+%   Por cada dato(X) de Entrada envía dato(Y), con Y el cuadrado de X, a
+%   Salida; al recibir fin, envía fin y termina.
+cuadrar(Entrada, Salida) :-
+    thread_get_message(Entrada, M),
+    (   M = dato(X)
+    ->  Y is X * X,
+        thread_send_message(Salida, dato(Y)),
+        cuadrar(Entrada, Salida)
+    ;   thread_send_message(Salida, fin)
     ).
 
-%!  alternancia(+Programa, -Pasos:list) is det.
+%!  sumar_cola(+Entrada, +S0:number, +Destino) is det.
 %
-%   alternancia_de/2 con las cláusulas del programa llamado Programa.
-alternancia(Programa, Pasos) :-
-    clausulas(Programa, Clausulas),
-    alternancia_de(Clausulas, Pasos).
-
-%!  estables_de(+Clausulas:list, -Modelos:list) is det.
-%
-%   Modelos son los modelos estables de Clausulas: los M tales que el
-%   modelo reducido con las negaciones evaluadas contra M es M. Los
-%   candidatos son los subconjuntos de lo posible, reducido(Clausulas, [],
-%   P).
-estables_de(Clausulas, Modelos) :-
-    reducido(Clausulas, [], Posibles),
-    findall(M,
-            ( subconjunto(Posibles, M),
-              reducido(Clausulas, M, M) ),
-            Modelos).
-
-%!  estables(+Programa, -Modelos:list) is det.
-%
-%   Modelos son los modelos estables del programa llamado Programa.
-estables(Programa, Modelos) :-
-    clausulas(Programa, Clausulas),
-    estables_de(Clausulas, Modelos).
-
-%!  del_juego(+Juego, -Clausulas:list) is det.
-%
-%   Clausulas son las del programa juego con los movimientos de Juego
-%   solamente.
-del_juego(Juego, Clausulas) :-
-    clausulas(juego, Todas),
-    exclude(de_otro_juego(Juego), Todas, Clausulas).
-
-%!  de_otro_juego(+Juego, +Clausula) is semidet.
-%
-%   Clausula es un movimiento de un juego distinto de Juego.
-de_otro_juego(Juego, mueve(Otro, _, _) :- true) :-
-    Otro \== Juego.
-
-%!  alcanzables(+N:integer, -Clausulas:list) is det.
-%
-%   Clausulas son las de alcanza/1, los nodos a los que se llega desde el 0,
-%   sobre los N arcos en fila de cadena/2.
-alcanzables(N, Clausulas) :-
-    cadena(N, Cadena),
-    include(es_arco, Cadena, Arcos),
-    append(Arcos,
-           [ (alcanza(Y) :- arco(0, Y)),
-             (alcanza(Y) :- alcanza(Z), arco(Z, Y)) ],
-           Clausulas).
-
-%!  es_arco(+Clausula) is semidet.
-%
-%   Clausula es un hecho arco/2.
-es_arco(arco(_, _) :- true).
-
-%!  semi_ingenua_estricta_de(+Clausulas:list, +I0:list, -M:list,
-%!                            -Costo) is det.
-%
-%   El mismo M que semi_ingenua_de/4, sin derivaciones repetidas: en cada
-%   paso, una derivación se cuenta en la primera posición del cuerpo que usa
-%   un átomo nuevo. Los átomos anteriores se toman de los viejos, y los
-%   posteriores de todos.
-semi_ingenua_estricta_de(Clausulas, I0, M, Costo) :-
-    derivar(Clausulas, I0, I0, Cabezas),
-    length(Cabezas, D),
-    sort(Cabezas, T),
-    ord_subtract(T, I0, Nuevos),
-    ord_union(I0, Nuevos, I1),
-    estricta(Clausulas, I0, I1, Nuevos, M, costo(1, D), Costo).
-
-%!  semi_ingenua_estricta(+Programa, +I0:list, -M:list, -Costo) is det.
-%
-%   semi_ingenua_estricta_de/4 con las cláusulas del programa llamado
-%   Programa.
-semi_ingenua_estricta(Programa, I0, M, Costo) :-
-    clausulas(Programa, Clausulas),
-    semi_ingenua_estricta_de(Clausulas, I0, M, Costo).
-
-%!  estricta(+Clausulas:list, +Viejos:list, +I:list, +Nuevos:list, -M:list,
-%!           +Costo0, -Costo) is det.
-%
-%   Continúa la evaluación estricta desde I: Viejos es la interpretación del
-%   paso anterior, y Nuevos los átomos que ese paso agregó. Costo0 es el
-%   costo acumulado hasta aquí, y Costo el total al llegar a M.
-estricta(Clausulas, Viejos, I, Nuevos, M, costo(P0, D0), Costo) :-
-    (   Nuevos == []
-    ->  M = I,
-        Costo = costo(P0, D0)
-    ;   findall(Cabeza,
-                ( member(Cabeza :- Cuerpo, Clausulas),
-                  conjuncion_lista(Cuerpo, Literales),
-                  append(Antes, [Literal|Despues], Literales),
-                  atomo(Literal),
-                  member(Literal, Nuevos),
-                  viejos(Antes, Viejos, I),
-                  cumple_todos(Despues, I),
-                  must_be(ground, Cabeza) ),
-                Cabezas),
-        length(Cabezas, D),
-        P is P0 + 1,
-        D1 is D0 + D,
-        sort(Cabezas, T),
-        ord_subtract(T, I, Nuevos1),
-        ord_union(I, Nuevos1, I1),
-        estricta(Clausulas, I, I1, Nuevos1, M, costo(P, D1), Costo)
+%   Suma los dato(X) de Entrada a S0; al recibir fin, envía suma(S) a
+%   Destino y termina.
+sumar_cola(Entrada, S0, Destino) :-
+    thread_get_message(Entrada, M),
+    (   M = dato(X)
+    ->  S1 is S0 + X,
+        sumar_cola(Entrada, S1, Destino)
+    ;   thread_send_message(Destino, suma(S0))
     ).
 
-%!  viejos(+Literales:list, +Viejos:list, +I:list) is nondet.
-%
-%   Cada uno de Literales es verdadero con sus átomos en Viejos; los
-%   negados se evalúan contra I.
-viejos([], _, _).
-viejos([L|Ls], Viejos, I) :-
-    cumple(L, Viejos, I),
-    viejos(Ls, Viejos, I).
+% --- Ejercicio 6 -----------------------------------------------------------
 
-%!  cadena_doble(+N:integer, -Clausulas:list) is det.
+%!  sumar_cas(-N:integer) is det.
 %
-%   Clausulas son los N arcos en fila de cadena/2 con camino/2 definido por
-%   dos llamadas recursivas.
-cadena_doble(N, Clausulas) :-
-    cadena(N, Cadena),
-    include(es_arco, Cadena, Arcos),
-    append(Arcos,
-           [ (camino(X, Y) :- arco(X, Y)),
-             (camino(X, Y) :- camino(X, Z), camino(Z, Y)) ],
-           Clausulas).
+%   Suma uno a contador/1 con transaction/3: lee el valor fuera del mutex y
+%   lo reemplaza solo si sigue siendo el que leyó; si no, repite. N es el
+%   valor nuevo.
+sumar_cas(N) :-
+    repeat,
+    transaction(( contador(N0),
+                  N is N0 + 1 ),
+                ( retract(contador(N0)),
+                  assertz(contador(N)) ),
+                contador),
+    !.
+
+%!  sumar_en_hilos(+Hilos:integer, +Veces:integer, -Final:integer) is det.
+%
+%   Pone el contador en cero, corre Hilos hilos que llaman Veces veces a
+%   sumar_cas/1, y Final es el valor que queda.
+sumar_en_hilos(Hilos, Veces, Final) :-
+    retractall(contador(_)),
+    assertz(contador(0)),
+    length(Ids, Hilos),
+    maplist(hilo_sumador(Veces), Ids),
+    maplist(thread_join, Ids, _),
+    contador(Final).
+
+%!  hilo_sumador(+Veces:integer, -Id) is det.
+%
+%   Id es un hilo que llama Veces veces a sumar_cas/1.
+hilo_sumador(Veces, Id) :-
+    thread_create(forall(between(1, Veces, _), sumar_cas(_)), Id).
+
+% --- Ejercicio 7 -----------------------------------------------------------
+
+%!  mover(+Desde:atom, +Hacia:atom, +Monto:integer) is det.
+%
+%   Resta Monto del saldo de Desde y lo suma al de Hacia, sin protección.
+mover(Desde, Hacia, Monto) :-
+    retract(saldo(Desde, S0)),
+    S is S0 - Monto,
+    assertz(saldo(Desde, S)),
+    retract(saldo(Hacia, T0)),
+    T is T0 + Monto,
+    assertz(saldo(Hacia, T)).
+
+%!  transferir_ingenuo(+Desde:atom, +Hacia:atom, +Monto:integer) is det.
+%
+%   Toma el mutex de Desde y después el de Hacia. Dos hilos que transfieren
+%   en sentidos opuestos pueden esperarse para siempre.
+transferir_ingenuo(Desde, Hacia, Monto) :-
+    with_mutex(Desde,
+               with_mutex(Hacia, mover(Desde, Hacia, Monto))).
+
+%!  transferir(+Desde:atom, +Hacia:atom, +Monto:integer) is det.
+%
+%   Toma los dos mutex siempre en el orden de sus nombres: ningún hilo
+%   espera un mutex que tiene otro hilo que a su vez espera el suyo.
+transferir(Desde, Hacia, Monto) :-
+    msort([Desde, Hacia], [Primero, Segundo]),
+    with_mutex(Primero,
+               with_mutex(Segundo, mover(Desde, Hacia, Monto))).
+
+%!  opuestas(:Transferir, +Veces:integer, -Resultado) is det.
+%
+%   Un hilo transfiere Veces veces de a a b, y otro de b a a, con
+%   Transferir. Resultado es terminaron si los dos terminan en 5 segundos,
+%   o detenidos si no; en ese caso los hilos quedan esperando.
+opuestas(Transferir, Veces, Resultado) :-
+    thread_self(Yo),
+    thread_create(repetir(Transferir, a, b, Veces, Yo), _, [detached(true)]),
+    thread_create(repetir(Transferir, b, a, Veces, Yo), _, [detached(true)]),
+    (   thread_get_message(Yo, listo, [timeout(5)]),
+        thread_get_message(Yo, listo, [timeout(5)])
+    ->  Resultado = terminaron
+    ;   Resultado = detenidos
+    ).
+
+%!  repetir(:Transferir, +Desde, +Hacia, +Veces:integer, +Destino) is det.
+%
+%   Transfiere 1 de Desde a Hacia Veces veces y envía listo a Destino.
+repetir(Transferir, Desde, Hacia, Veces, Destino) :-
+    forall(between(1, Veces, _), call(Transferir, Desde, Hacia, 1)),
+    thread_send_message(Destino, listo).
+
+%!  al_azar(+Hilos:integer, +Veces:integer, -Total:integer, -Hechos:integer)
+%!      is det.
+%
+%   Hilos hilos hacen Veces transferencias cada uno con transferir/3, entre
+%   cuentas y montos al azar. Total es la suma de los saldos al terminar, y
+%   Hechos la cantidad de hechos saldo/2.
+al_azar(Hilos, Veces, Total, Hechos) :-
+    length(Ids, Hilos),
+    maplist(hilo_al_azar(Veces), Ids),
+    maplist(thread_join, Ids, _),
+    aggregate_all(sum(S), saldo(_, S), Total),
+    aggregate_all(count, saldo(_, _), Hechos).
+
+%!  hilo_al_azar(+Veces:integer, -Id) is det.
+%
+%   Id es un hilo que hace Veces transferencias al azar entre cuentas
+%   distintas.
+hilo_al_azar(Veces, Id) :-
+    thread_create(forall(between(1, Veces, _),
+                         ( random_member(D, [a, b, c, d]),
+                           random_member(H, [a, b, c, d]),
+                           D \== H
+                         ->  random_between(1, 10, M),
+                             transferir(D, H, M)
+                         ;   true )),
+                  Id).
+
+% --- Ejercicio 10 ----------------------------------------------------------
+
+%!  posicion_extremos(+Lista:list, :Condicion, -Pos:integer) is semidet.
+%
+%   Pos es la posición, desde 1, de un elemento de Lista que cumple
+%   Condicion: el primero desde el principio o el primero desde el final,
+%   según qué búsqueda termine antes. Falla si ninguno la cumple.
+posicion_extremos(Lista, Condicion, Pos) :-
+    first_solution(Pos, [ desde_el_principio(Lista, Condicion, Pos),
+                          desde_el_final(Lista, Condicion, Pos) ],
+                   []).
+
+%!  desde_el_principio(+Lista:list, :Condicion, -Pos:integer) is semidet.
+%
+%   Pos es la posición del primer elemento de Lista que cumple Condicion.
+desde_el_principio(Lista, Condicion, Pos) :-
+    nth1(Pos, Lista, X),
+    call(Condicion, X),
+    !.
+
+%!  desde_el_final(+Lista:list, :Condicion, -Pos:integer) is semidet.
+%
+%   Pos es la posición del último elemento de Lista que cumple Condicion.
+desde_el_final(Lista, Condicion, Pos) :-
+    reverse(Lista, Invertida),
+    length(Lista, N),
+    nth1(I, Invertida, X),
+    call(Condicion, X),
+    !,
+    Pos is N + 1 - I.
+
+% --- Ejercicio 11 ----------------------------------------------------------
+
+%!  multiplo(+K:integer, -M:integer) is multi.
+%
+%   M es un múltiplo positivo de K, en orden creciente, sin fin.
+multiplo(K, M) :-
+    between(1, inf, N),
+    M is K * N.
+
+%!  emparejar(+N:integer, :Gen1, :Gen2, -Pares:list) is det.
+%
+%   Pares son los primeros N pares X-Y, con X la i-ésima respuesta de
+%   call(Gen1, X) e Y la i-ésima de call(Gen2, Y); menos, si alguno de los
+%   dos generadores se termina antes.
+emparejar(N, Gen1, Gen2, Pares) :-
+    setup_call_cleanup(( engine_create(X, call(Gen1, X), M1),
+                         engine_create(Y, call(Gen2, Y), M2) ),
+                       pares(N, M1, M2, Pares),
+                       ( engine_destroy(M1),
+                         engine_destroy(M2) )).
+
+%!  pares(+N:integer, +M1, +M2, -Pares:list) is det.
+%
+%   Pares son los N pares siguientes de las respuestas de M1 y M2.
+pares(N, M1, M2, Pares) :-
+    (   N > 0,
+        engine_next(M1, X),
+        engine_next(M2, Y)
+    ->  Pares = [X-Y|Resto],
+        N1 is N - 1,
+        pares(N1, M1, M2, Resto)
+    ;   Pares = []
+    ).
+
+% --- Ejercicio 12 ----------------------------------------------------------
+
+%!  nuevo_generador(-Motor) is det.
+%
+%   Motor da los identificadores id(1), id(2), ... de a uno.
+nuevo_generador(Motor) :-
+    engine_create(Id, identificador(1, Id), Motor).
+
+%!  identificador(+N:integer, -Id) is multi.
+%
+%   Id es id(N), id(N + 1), ..., en ese orden, sin fin.
+identificador(N, id(N)).
+identificador(N, Id) :-
+    N1 is N + 1,
+    identificador(N1, Id).
+
+%!  siguiente_id(+Motor, -Id) is det.
+%
+%   Id es el identificador siguiente de Motor.
+siguiente_id(Motor, Id) :-
+    engine_next(Motor, Id).

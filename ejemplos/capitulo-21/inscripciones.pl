@@ -1,17 +1,18 @@
 :- encoding(utf8).
 
-% Capítulo 21 - El proyecto Inscripciones: un lenguaje de comandos.
+% Capítulo 21 - El proyecto Inscripciones: inscribir y dar de baja durante la
+% ejecución.
 %
-% Respecto del capítulo 20, ejecutar/2 recibe un comando escrito en texto,
-% como "inscribir a 104 en sintaxis", lo analiza con dos gramáticas y lo
-% ejecuta. palabras//1 separa el texto en palabras y números; comando//1
-% relaciona esa lista con un término, como inscribir(104, ssl), y sirve
-% también para generar el texto de un comando.
+% Respecto del capítulo 19, inscripcion/3 y vacantes/2 son dinámicos:
+% inscribir/3 y dar_de_baja/2 los modifican, y son los únicos predicados que
+% lo hacen. operaciones/1 cuenta las operaciones realizadas.
+% requisitos_de/2 calcula todos los requisitos de una materia, directos e
+% indirectos, y guarda el resultado: las correlatividades no cambian durante
+% la ejecución. estado/1 y restaurar/1 permiten a las pruebas dejar la base
+% como la encontraron.
 %
-%?- ejecutar("inscribir a 104 en sintaxis", Respuesta).
-%?- ejecutar("listar analisis_1", Respuesta).
-
-:- use_module(library(dcg/basics)).
+%?- inscribir(104, ssl, R), inscriptos(ssl, L).
+%?- requisitos_de(bd, Requisitos).
 
 :- meta_predicate
     informe(2, +, -).
@@ -130,7 +131,7 @@ puede_inscribirse(Legajo, Materia) :-
 %
 %   El alumno llamado Nombre aprobó Materia. El primer objetivo es el que el
 %   nombre selecciona: con el orden inverso, la consulta recorre todas las
-%   inscripciones de la materia antes de examinar el nombre (sección 16.5).
+%   inscripciones de la materia antes de examinar el nombre (sección 17.5).
 aprobada_por_nombre(Nombre, Materia) :-
     alumno(Legajo, Nombre, _, _),
     aprobada(Legajo, Materia, _Nota).
@@ -326,86 +327,3 @@ restaurar(estado(Inscripciones, Vacantes, Operaciones)) :-
     maplist(assertz, Inscripciones),
     maplist(assertz, Vacantes),
     assertz(operaciones(Operaciones)).
-
-%!  ejecutar(+Texto:string, -Respuesta) is det.
-%
-%   Analiza el comando Texto y lo ejecuta. Respuesta es el resultado:
-%   aceptada o rechazada(Motivo) para una inscripción, baja o
-%   rechazada(no_la_cursa) para una baja, inscriptos(Legajos) para un
-%   listado, promedio(P) o sin_notas para un promedio, y no_entendido si el
-%   texto no es un comando.
-ejecutar(Texto, Respuesta) :-
-    string_codes(Texto, Codigos),
-    (   phrase(palabras(Palabras), Codigos),
-        phrase(comando(Comando), Palabras)
-    ->  realizar(Comando, Respuesta)
-    ;   Respuesta = no_entendido
-    ).
-
-%!  palabras(-Palabras:list)// is det.
-%
-%   Palabras son las palabras y los números del texto, separados por
-%   blancos. Una palabra es un átomo; un número, un entero.
-palabras([P|Ps]) -->
-    blanks,
-    palabra(P),
-    !,
-    palabras(Ps).
-palabras([]) -->
-    blanks.
-
-%!  palabra(-P)// is semidet.
-%
-%   P es un entero, si el texto empieza con dígitos, o un átomo formado por
-%   letras, dígitos y guiones bajos.
-palabra(N) -->
-    integer(N),
-    !.
-palabra(A) -->
-    csym(A).
-
-%!  comando(?Comando)// is nondet.
-%
-%   La lista de palabras de Comando: inscribir(Legajo, Materia),
-%   baja(Legajo, Materia), listar(Materia) o promedio(Legajo). Las materias
-%   se escriben con su nombre, no con su código.
-comando(inscribir(L, M)) -->
-    [inscribir, a], legajo(L), [en], materia_por_nombre(M).
-comando(baja(L, M)) -->
-    [dar, de, baja, a], legajo(L), [en], materia_por_nombre(M).
-comando(listar(M)) -->
-    [listar], materia_por_nombre(M).
-comando(promedio(L)) -->
-    [promedio, de], legajo(L).
-
-%!  legajo(?L)// is semidet.
-%
-%   El legajo de un alumno.
-legajo(L) -->
-    [L],
-    { alumno(L, _, _, _) }.
-
-%!  materia_por_nombre(?Codigo)// is semidet.
-%
-%   El nombre de la materia de código Codigo.
-materia_por_nombre(Codigo) -->
-    [Nombre],
-    { materia(Codigo, Nombre, _) }.
-
-%!  realizar(+Comando, -Respuesta) is det.
-%
-%   Ejecuta Comando, ya analizado, y da su Respuesta.
-realizar(inscribir(L, M), Respuesta) :-
-    inscribir(L, M, Respuesta).
-realizar(baja(L, M), Respuesta) :-
-    (   dar_de_baja(L, M)
-    ->  Respuesta = baja
-    ;   Respuesta = rechazada(no_la_cursa)
-    ).
-realizar(listar(M), inscriptos(Legajos)) :-
-    inscriptos(M, Legajos).
-realizar(promedio(L), Respuesta) :-
-    (   promedio_de_alumno(L, P)
-    ->  Respuesta = promedio(P)
-    ;   Respuesta = sin_notas
-    ).

@@ -46,7 +46,7 @@ El encabezado es `primero_y_ultimo(?L, ?P, ?U) is nondet`. Con `L` ligada, `P`
 y `U` reciben el primero y el último, y la respuesta es una o ninguna: la lista
 vacía no tiene ninguno de los dos. Con `L` libre, la relación también tiene
 sentido, y el encabezado lo registra con `?`: `last/2` enumera listas cada vez
-más largas que empiezan con `P` y terminan con `U`, sin fin, como `esta_en/2` en
+más largas que empiezan con `P` y terminan con `U`, sin fin, como `pertenece/2` en
 la advertencia de la [sección 7.6](index.md#76-una-relacion-varios-sentidos). Por eso el conteo es `nondet`, y la descripción
 advierte que en ese modo la enumeración no termina.
 
@@ -160,16 +160,16 @@ Principio, produce L". `append/3` responde esa consulta en sentido inverso.
 
 ## 7
 
-<!-- ejemplo: capitulo-07/soluciones.pl predicado: dar_vuelta/2 consulta: dar_vuelta([ana, luis, eva], R). -->
+<!-- ejemplo: capitulo-07/soluciones.pl predicado: reversa/2 consulta: reversa([ana, luis, eva], R). -->
 ```prolog
-%!  dar_vuelta(+L, -R) is det.
-%!  dar_vuelta(-L, +R) is semidet.
+%!  reversa(+L, -R) is det.
+%!  reversa(-L, +R) is semidet.
 %
 %   R es L en orden inverso, sin usar reverse/2. Con L libre, después de la
 %   respuesta no termina.
-dar_vuelta([], []).
-dar_vuelta([X|Resto], R) :-
-    dar_vuelta(Resto, RestoAlReves),
+reversa([], []).
+reversa([X|Resto], R) :-
+    reversa(Resto, RestoAlReves),
     append(RestoAlReves, [X], R).
 ```
 
@@ -177,10 +177,10 @@ Invierte el resto y concatena el primer elemento **al final**. Es correcta, y es
 la versión que se obtiene de manera más directa.
 
 La segunda línea del encabezado registra el otro modo: con `R` ligada y `L`
-libre hay una respuesta, `dar_vuelta(L, [a, b])` da `L = [b, a]`, pero al pedir
+libre hay una respuesta, `reversa(L, [a, b])` da `L = [b, a]`, pero al pedir
 otra el predicado no termina, como `duplicar/2` del ejercicio 13.
 
-Tiene una desventaja, que se analiza en el [capítulo 16](../capitulo-16-rendimiento/index.md): por cada elemento,
+Tiene una desventaja, que se analiza en el [capítulo 17](../capitulo-17-rendimiento/index.md): por cada elemento,
 `append/3` recorre nuevamente toda la lista para agregarlo al final. Con listas
 largas, el costo es significativo. La versión eficiente usa un acumulador, y se
 presenta en el [capítulo 8](../capitulo-08-aritmetica/index.md).
@@ -248,6 +248,43 @@ Usa dos `append/3` y ninguna recursión. El primero descarta un prefijo de `L` y
 conserva el resto en `Atras`; el segundo exige que `Atras` comience con `S`. En
 conjunto expresan: "en alguna posición de L, de manera contigua, están los
 elementos de S".
+
+Si no se exige que los elementos sean contiguos, sino solo que aparezcan en `L`
+en el mismo orden, la relación es la de **subsecuencia**, y se escribe con
+recursión:
+
+<!-- ejemplo: capitulo-07/soluciones.pl predicado: es_subsecuencia/2 consulta: es_subsecuencia([ana, eva], [ana, luis, eva]). -->
+```prolog
+%!  es_subsecuencia(?S, +L) is nondet.
+%
+%   Los elementos de S aparecen en L en el mismo orden, no necesariamente
+%   contiguos. Con S libre, enumera cada subsecuencia de L una sola vez.
+es_subsecuencia([], []).
+es_subsecuencia([X|Resto], [X|Otros]) :-
+    es_subsecuencia(Resto, Otros).
+es_subsecuencia(S, [_|Otros]) :-
+    es_subsecuencia(S, Otros).
+```
+
+La primera cláusula dice que la lista vacía es la única subsecuencia de la lista
+vacía. La segunda toma el primer elemento de `L` para `S`; la tercera lo
+saltea. Recorrer `L` decidiendo, elemento por elemento, si se toma o se saltea
+produce cada subsecuencia una sola vez:
+
+```prolog
+?- es_subsecuencia([ana, eva], [ana, luis, eva]).
+true ;
+false.
+
+?- es_subsecuencia([eva, ana], [ana, luis, eva]).
+false.
+
+?- es_subsecuencia(S, [a, b]).
+S = [a, b] ;
+S = [a] ;
+S = [b] ;
+S = [].
+```
 
 ## 10
 
@@ -409,14 +446,14 @@ flowchart TD
 
 | Consulta | Resultado |
 |---|---|
-| `pegar([a], [b], R).` | una respuesta, `R = [a, b]`, y termina sin alternativas |
-| `pegar(A, [b], [a, b]).` | una respuesta, `A = [a]`, pero deja una alternativa abierta |
-| `pegar([a], B, [a, b]).` | una respuesta, `B = [b]` |
-| `pegar(A, B, [a, b]).` | tres respuestas: las tres particiones |
+| `concatenar([a], [b], R).` | una respuesta, `R = [a, b]`, y termina sin alternativas |
+| `concatenar(A, [b], [a, b]).` | una respuesta, `A = [a]`, pero deja una alternativa abierta |
+| `concatenar([a], B, [a, b]).` | una respuesta, `B = [b]` |
+| `concatenar(A, B, [a, b]).` | tres respuestas: las tres particiones |
 
 Las cuatro terminan, porque en todas hay una lista completa por la cual
 recorrer: la primera o la tercera. La advertencia de la [sección 7.6](index.md#76-una-relacion-varios-sentidos) se aplica al
-caso que no está en esta tabla, `pegar(A, B, C)` con las tres sin determinar,
+caso que no está en esta tabla, `concatenar(A, B, C)` con las tres sin determinar,
 que produce particiones sin fin.
 
 La segunda consulta requiere una observación: responde `A = [a] ;` y recién al pedir otra
@@ -425,23 +462,23 @@ haya otra respuesta.
 
 <!-- contexto: capitulo-07/recorrer.pl -->
 ```prolog
-?- pegar(A, [b], [a, b]).
+?- concatenar(A, [b], [a, b]).
 A = [a] ;
 false.
 ```
 
-El árbol de derivación, con las dos cláusulas de `pegar/3` numeradas R1 y R2
+El árbol de derivación, con las dos cláusulas de `concatenar/3` numeradas R1 y R2
 como en la [sección 7.5](index.md#75-construir-una-lista-durante-el-recorrido-de-otra),
 muestra esa alternativa. En la raíz solo unifica R2, porque R1 exigiría que
 `[b]` y `[a, b]` fueran la misma lista. En el segundo nodo unifican las dos: R1
 da la respuesta, y R2 queda pendiente; al pedir otra respuesta, esa rama llega
-a `pegar(RestoA₂, [b], [])`, donde ninguna cabeza unifica:
+a `concatenar(RestoA₂, [b], [])`, donde ninguna cabeza unifica:
 
 ```mermaid
 flowchart TD
-    A["pegar(A, [b], [a, b])"] -- "R2. θ₁ = {&nbsp;A/[a|RestoA], X/a, B/[b], RestoC/[b]&nbsp;}" --> B["pegar(RestoA, [b], [b])"]
+    A["concatenar(A, [b], [a, b])"] -- "R2. θ₁ = {&nbsp;A/[a|RestoA], X/a, B/[b], RestoC/[b]&nbsp;}" --> B["concatenar(RestoA, [b], [b])"]
     B -- "R1. θ₂ = {&nbsp;RestoA/[], B₂/[b]&nbsp;}" --> S(["consulta vacía<br/>A = [a|RestoA] = [a]"])
-    B -- "R2. θ₃ = {&nbsp;RestoA/[b|RestoA₂], X₂/b, B₂/[b], RestoC₂/[]&nbsp;}" --> C["pegar(RestoA₂, [b], [])"]
+    B -- "R2. θ₃ = {&nbsp;RestoA/[b|RestoA₂], X₂/b, B₂/[b], RestoC₂/[]&nbsp;}" --> C["concatenar(RestoA₂, [b], [])"]
     C --> F(["falla"])
 ```
 
@@ -536,7 +573,7 @@ N = 3.
 ```
 
 `a` aparece dos veces, y la consulta inversa da una respuesta por cada
-aparición, en el orden de la lista. Es la misma situación de `esta_en/2` en la
+aparición, en el orden de la lista. Es la misma situación de `pertenece/2` en la
 [sección 7.3](index.md#73-recorrer-una-lista): una respuesta por cada
 demostración. Por eso el encabezado declara `nondet` y no `semidet`: con la
 materia dada, una lista con repeticiones produce más de una posición.
@@ -591,3 +628,448 @@ y no unifica con `[a, b, c]`, cuyo final es `[]`: las dos coinciden en `a` y en
 `b`, y la unificación falla al comparar `c` con `[c]`. Un predicado que recorre
 listas con las plantillas del capítulo falla sobre ese término, porque al llegar
 a `c` no lo alcanza ni el caso base `[]` ni el caso recursivo `[X|Resto]`.
+
+## 19
+
+<!-- ejemplo: capitulo-07/soluciones.pl predicado: suffix/2 consulta: suffix(S, [a1, b1, c1, d1]). -->
+```prolog
+%!  suffix(?Xs, +Ys) is nondet.
+%
+%   Xs es un sufijo de Ys: los últimos elementos de Ys, en el mismo orden.
+%   Con Xs libre, enumera los sufijos de Ys del más largo al más corto.
+suffix(Xs, Xs).
+suffix(Xs, [_|Ys]) :-
+    suffix(Xs, Ys).
+```
+
+El nombre y el orden de los argumentos son los del programa 3.13 de
+*The Art of Prolog*, de Sterling y Shapiro. La primera cláusula dice que toda
+lista es sufijo de sí misma; la segunda descarta el primer elemento y busca el
+sufijo en el resto. Es la plantilla 10 con la condición en la cabeza: la
+búsqueda termina cuando `Xs` es igual a la lista que se recorre.
+
+```prolog
+?- suffix([b1, c1], [a1, b1, c1, d1]).
+false.
+
+?- suffix(S, [a1, b1, c1, d1]).
+S = [a1, b1, c1, d1] ;
+S = [b1, c1, d1] ;
+S = [c1, d1] ;
+S = [d1] ;
+S = [] ;
+false.
+```
+
+`[b1, c1]` está en la lista, contiguo y en orden, pero no al final: es una
+sublista, como en el ejercicio 9, y no un sufijo. Los sufijos aparecen del más
+largo al más corto porque la cláusula que responde, la primera, se intenta en
+cada nivel antes de descartar otro elemento. El `false.` final es el intento de
+la segunda cláusula sobre `[]`, que no unifica con `[_|Ys]`.
+
+Como `empieza_con/2` del ejercicio 6, el sufijo también se obtiene con
+`append/3` y sin recursión: `Xs` es sufijo de `Ys` si alguna lista seguida de
+`Xs` da `Ys`, es decir, `append(_, Xs, Ys)`. Sterling y Shapiro dan las dos
+versiones; las respuestas son las mismas y en el mismo orden.
+
+## 20
+
+<!-- ejemplo: capitulo-07/soluciones.pl predicado: adjacent/3 consulta: adjacent(X, Y, [a, b, c]). -->
+```prolog
+%!  adjacent(?X, ?Y, +Zs) is nondet.
+%
+%   X e Y son elementos adyacentes de Zs: Y está inmediatamente después de X.
+adjacent(X, Y, Zs) :-
+    append(_, [X, Y|_], Zs).
+```
+
+Es la regla que Sterling y Shapiro escriben con `append/3` en
+*The Art of Prolog*. El patrón `[X, Y|_]` del segundo argumento exige que la
+parte final de `Zs` empiece con `X` seguido de `Y`, y `append/3`, consultado en
+sentido inverso, prueba todas las maneras de partir `Zs`:
+
+```prolog
+?- adjacent(X, Y, [a, b, c]).
+X = a,
+Y = b ;
+X = b,
+Y = c ;
+false.
+```
+
+Dos respuestas: una lista de tres elementos tiene dos pares de elementos
+contiguos. La relación tiene orden, `Y` va después de `X`, de modo que
+`adjacent(c, b, [a, b, c])` responde `false.` Para la relación simétrica, se
+consulta en los dos órdenes.
+
+## 21
+
+<!-- ejemplo: capitulo-07/soluciones.pl predicado: selecciona/3 permuta/2 consulta: permuta([a, b, c], P). -->
+```prolog
+%!  selecciona(?X, +Xs, ?Ys) is nondet.
+%!  selecciona(?X, ?Xs, +Ys) is nondet.
+%
+%   Ys es Xs sin una de las apariciones de X: una respuesta por cada
+%   aparición. Con Ys dada y Xs libre, inserta X en cada posición de Ys.
+selecciona(X, [X|Xs], Xs).
+selecciona(X, [Y|Ys], [Y|Zs]) :-
+    selecciona(X, Ys, Zs).
+
+%!  permuta(+Xs, ?Ys) is nondet.
+%
+%   Ys es una permutación de Xs: elige el primer elemento con selecciona/3 y
+%   permuta el resto. Una lista de n elementos distintos da n! respuestas.
+permuta([], []).
+permuta(Xs, [Z|Zs]) :-
+    selecciona(Z, Xs, Ys),
+    permuta(Ys, Zs).
+```
+
+`selecciona/3` es el `select/3` del programa 3.19 de *The Art of Prolog*, con
+el mismo orden de argumentos; SWI-Prolog ya tiene un `select/3` predefinido, y
+por eso el curso usa el nombre en castellano. Lo mismo ocurre con `permuta/2`,
+que es el `permutation/2` del programa 3.20.
+
+**a.** `selecciona/3` es `sacar/3` del ejercicio 8 sin la condición `Otro \== X`.
+Sin esa condición, la segunda cláusula también se intenta cuando el primer
+elemento es `X`, y el recorrido sigue hasta las apariciones siguientes:
+
+```prolog
+?- selecciona(E, [a, b, c, d, a], L).
+E = a,
+L = [b, c, d, a] ;
+E = b,
+L = [a, c, d, a] ;
+E = c,
+L = [a, b, d, a] ;
+E = d,
+L = [a, b, c, a] ;
+E = a,
+L = [a, b, c, d] ;
+false.
+```
+
+`a` aparece dos veces en las respuestas, una por cada aparición en la
+lista; las dos listas resultantes son distintas.
+
+**b.** Con la segunda lista dada y la primera libre, `selecciona/3` **inserta** el
+elemento en cada posición posible:
+
+```prolog
+?- selecciona(x, L, [a, b]).
+L = [x, a, b] ;
+L = [a, x, b] ;
+L = [a, b, x] ;
+false.
+```
+
+Es la misma relación leída en sentido inverso: `[a, b]` es lo que queda de
+`L` al quitarle una `x`. La primera cláusula pone `x` al principio; la
+segunda conserva el primer elemento de `[a, b]` y vuelve a plantear la
+inserción en el resto. Sterling y Shapiro definen así su `insert/3`.
+
+**c.** `permuta/2` elige con `selecciona/3` qué elemento va primero, de todas las
+maneras posibles, y permuta lo que queda. Para tres elementos hay tres
+elecciones del primero y, para cada una, dos permutaciones del resto:
+
+```prolog
+?- permuta([a, b, c], P).
+P = [a, b, c] ;
+P = [a, c, b] ;
+P = [b, a, c] ;
+P = [b, c, a] ;
+P = [c, a, b] ;
+P = [c, b, a] ;
+false.
+```
+
+Sterling y Shapiro escriben la cláusula recursiva antes que el caso base;
+aquí el caso base va primero, como en el resto del curso, y las respuestas
+no cambian, porque `[]` no unifica con una lista no vacía. Si la lista
+tiene elementos repetidos, las permutaciones se repiten:
+`permuta([a, a], P)` da dos veces `P = [a, a]`, una por cada `a` elegida en
+primer lugar. Con la primera lista libre, `selecciona/3` genera listas sin
+fin, y por eso el encabezado exige `+Xs`.
+
+## 22
+
+<!-- ejemplo: capitulo-07/soluciones.pl predicado: substitute/4 consulta: substitute(b, 9, [a, b, c, d, b, b, c, 1], L). -->
+```prolog
+%!  substitute(+X, +Y, +Xs, -Ys) is det.
+%
+%   Ys es Xs con cada aparición de X reemplazada por Y.
+substitute(_, _, [], []).
+substitute(X, Y, [X|Xs], [Y|Ys]) :-
+    substitute(X, Y, Xs, Ys).
+substitute(X, Y, [Z|Xs], [Z|Ys]) :-
+    Z \== X,
+    substitute(X, Y, Xs, Ys).
+```
+
+El nombre y el orden de los argumentos son los del ejercicio 3.3(i) de
+*The Art of Prolog*. Es la plantilla 12 con dos casos para cada elemento: si es
+`X`, en el resultado va `Y`; si no lo es, va el mismo elemento. La condición
+`Z \== X` cumple el mismo papel que en `sacar/3`: sin ella, la tercera cláusula
+también aceptaría una aparición de `X` y la dejaría sin reemplazar.
+
+```prolog
+?- substitute(b, 9, [a, b, c, d, b, b, c, 1], L).
+L = [a, 9, c, d, 9, 9, c, 1] ;
+false.
+
+?- substitute(0, a, [a, z], [a, z]).
+true ;
+false.
+
+?- substitute(a, x, [a, b, a, c], [a, b, x, c]).
+false.
+```
+
+La segunda consulta se cumple porque `0` no aparece en la lista, y no hay nada
+que reemplazar. La tercera falla porque la primera `a` quedó sin reemplazar: es
+la respuesta que la condición `\==` impide. El `;` y el `false.` de las dos
+primeras no indican otra respuesta: corresponden a la tercera cláusula, que
+queda por intentar después de cada uso de la segunda, como la rama de R2 en la
+[solución 8](#8).
+
+## 23
+
+<!-- ejemplo: capitulo-07/soluciones.pl predicado: elimina/3 consulta: elimina([a, b, c, b, d], b, L). -->
+```prolog
+%!  elimina(+Xs, +X, -Ys) is det.
+%
+%   Ys es Xs sin ninguna aparición de X.
+elimina([], _, []).
+elimina([X|Xs], X, Ys) :-
+    elimina(Xs, X, Ys).
+elimina([Y|Xs], X, [Y|Ys]) :-
+    Y \== X,
+    elimina(Xs, X, Ys).
+```
+
+Es el `delete/3` del programa 3.18 de *The Art of Prolog*, con el mismo orden de
+argumentos: primero la lista, después el elemento. SWI-Prolog tiene un
+`delete/3` predefinido, y por eso el curso usa el nombre en castellano.
+
+```prolog
+?- elimina([a, b, c, b, d], b, L).
+L = [a, c, d] ;
+false.
+
+?- elimina([a, b, c], c, [a, b]).
+true ;
+false.
+```
+
+La diferencia con `sacar/3` del ejercicio 8 está en la segunda cláusula. En
+`sacar/3`, cuando el primer elemento es el buscado, el resultado es el resto
+**tal como está**, y la recursión termina. En `elimina/3` la recursión continúa
+sobre el resto, de modo que también se eliminan las apariciones siguientes; por
+eso `elimina/3` necesita el caso base `[]`, que `sacar/3` no tiene: llegar al
+final de la lista no es un fracaso, sino el fin del recorrido. Por la misma
+razón, `elimina([a, b], z, L)` responde `L = [a, b]`, mientras que
+`sacar(z, [a, b], R)` falla.
+
+## 24
+
+<!-- ejemplo: capitulo-07/soluciones.pl predicado: ocurre/2 consulta: ocurre(E, [1, [a, b], [d, [a, 2]], 6]). -->
+```prolog
+%!  ocurre(?X, +L) is nondet.
+%
+%   X aparece en algún nivel de L, que puede contener listas anidadas: es
+%   un elemento de L o aparece en un elemento de L que es una lista. Una
+%   respuesta por cada aparición; las listas internas también son respuestas.
+ocurre(X, [X|_]).
+ocurre(X, [Lista|_]) :-
+    ocurre(X, Lista).
+ocurre(X, [_|Resto]) :-
+    ocurre(X, Resto).
+```
+
+Es `pertenece/2` de la [sección 7.3](index.md#73-recorrer-una-lista) con una
+cláusula más, la segunda, que desciende **dentro** del primer elemento. Esa
+cláusula no necesita averiguar si el elemento es una lista: si no lo es, como
+`1` o `d`, la llamada `ocurre(X, 1)` no unifica con ninguna cabeza, porque las
+tres esperan una lista no vacía, y la rama falla. La primera cláusula, por su
+parte, responde con el elemento completo, sea o no una lista; por eso las
+listas internas también son respuestas:
+
+```prolog
+?- ocurre(E, [1, [a, b], [d, [a, 2]], 6]).
+E = 1 ;
+E = [a, b] ;
+E = a ;
+E = b ;
+E = [d, [a, 2]] ;
+E = d ;
+E = [a, 2] ;
+E = a ;
+E = 2 ;
+E = 6 ;
+false.
+
+?- ocurre(a, [1, [a, b], [d, [a, 2]], 6]).
+true ;
+true ;
+false.
+```
+
+El orden de las respuestas es el de las cláusulas: primero el elemento, después
+lo que hay dentro de él, después el resto de la lista. `a` tiene dos respuestas
+porque aparece dos veces, una en `[a, b]` y otra en `[a, 2]`: cada respuesta es
+una demostración distinta, como `pertenece(ana, [ana, ana])` en la
+[sección 7.3](index.md#73-recorrer-una-lista). La lista debe llegar completa y
+sin variables, como indica el `+L` del encabezado: con una variable como
+elemento, la segunda cláusula la trataría como una lista sin determinar y
+generaría listas sin fin.
+
+## 25
+
+<!-- ejemplo: capitulo-07/soluciones.pl predicado: arbol_ejemplo/1 binary_tree/1 tree_member/2 lista_hojas/2 consulta: arbol_ejemplo(T), lista_hojas(T, Hojas). -->
+```prolog
+% arbol_ejemplo(T): T es el árbol binario de ejemplo.
+arbol_ejemplo(tree(1, tree(2, void, tree(4, void, void)),
+                   tree(3, tree(5, tree(7, void, void), void),
+                        tree(6, void, void)))).
+
+%!  binary_tree(+T) is semidet.
+%
+%   T es un árbol binario: void, o tree(Elemento, Izquierdo, Derecho) con
+%   dos árboles binarios como subárboles.
+binary_tree(void).
+binary_tree(tree(_, Left, Right)) :-
+    binary_tree(Left),
+    binary_tree(Right).
+
+%!  tree_member(?X, +T) is nondet.
+%
+%   X es el elemento de alguno de los nodos del árbol binario T. Enumera los
+%   elementos en preorden: el nodo, después el subárbol izquierdo y después
+%   el derecho.
+tree_member(X, tree(X, _, _)).
+tree_member(X, tree(_, Left, _)) :-
+    tree_member(X, Left).
+tree_member(X, tree(_, _, Right)) :-
+    tree_member(X, Right).
+
+%!  lista_hojas(+T, -Hojas) is det.
+%
+%   Hojas es la lista de los elementos de las hojas de T, de izquierda a
+%   derecha. Una hoja es un nodo con los dos subárboles vacíos; las dos
+%   últimas cláusulas excluyen ese caso con \==.
+lista_hojas(void, []).
+lista_hojas(tree(X, void, void), [X]).
+lista_hojas(tree(_, Left, Right), Hojas) :-
+    Left \== void,
+    lista_hojas(Left, HojasL),
+    lista_hojas(Right, HojasR),
+    append(HojasL, HojasR, Hojas).
+lista_hojas(tree(_, void, Right), Hojas) :-
+    Right \== void,
+    lista_hojas(Right, Hojas).
+```
+
+La representación, `tree(Elemento, Izquierdo, Derecho)` y `void`, y los nombres
+`binary_tree/1` y `tree_member/2` son los de los programas 3.23 y 3.24 de
+*The Art of Prolog*. `lista_hojas/2` no está en el
+libro.
+
+**a.** `binary_tree/1` tiene un caso por cada forma de un árbol, como un predicado
+sobre listas tiene uno por cada forma de una lista. La diferencia es que la
+cláusula recursiva hace **dos** llamadas, una por subárbol:
+
+```prolog
+?- binary_tree(tree(1, void, hoja)).
+false.
+```
+
+Falla porque `hoja` no es `void` ni un término `tree/3`.
+
+**b.** `tree_member/2` tiene tres cláusulas: el elemento está en el nodo, en el
+subárbol izquierdo o en el derecho. Con `X` libre, la primera cláusula da el
+nodo antes de descender, y la segunda se intenta antes que la tercera; por
+eso los elementos del árbol de ejemplo aparecen en el orden
+1, 2, 4, 3, 5, 7, 6, el del recorrido en preorden del ejercicio 26. Sobre un
+árbol más pequeño:
+
+```prolog
+?- tree_member(X, tree(a, tree(b, void, void), tree(c, void, void))).
+X = a ;
+X = b ;
+X = c ;
+false.
+```
+
+**c.** Una hoja es `tree(X, void, void)`, y su lista es `[X]`. Una hoja también
+unifica con la cabeza `tree(_, Left, Right)` del caso general, y ese caso,
+sobre dos subárboles vacíos, produciría una segunda respuesta, `[]`. Las dos
+últimas cláusulas lo impiden con `\==`: la tercera exige un subárbol
+izquierdo no vacío, y la cuarta, un izquierdo vacío y un derecho no vacío.
+Entre las cuatro cubren cada forma de árbol una sola vez:
+
+```prolog
+?- arbol_ejemplo(T), lista_hojas(T, Hojas).
+T = tree(1, tree(2, void, tree(4, void, void)), tree(3, tree(5, tree(7, void, void), void), tree(6, void, void))),
+Hojas = [4, 7, 6] ;
+false.
+```
+
+El `;` y el `false.` corresponden a las cláusulas que quedan por intentar
+sobre la última hoja, cuyas condiciones `\==` fallan: la respuesta es una
+sola.
+
+## 26
+
+<!-- ejemplo: capitulo-07/soluciones.pl predicado: preorder/2 inorder/2 postorder/2 consulta: arbol_ejemplo(T), preorder(T, Pre). -->
+```prolog
+%!  preorder(+T, -Xs) is det.
+%
+%   Xs es el recorrido en preorden de T: el nodo, el subárbol izquierdo y el
+%   derecho.
+preorder(void, []).
+preorder(tree(X, L, R), Xs) :-
+    preorder(L, Ls),
+    preorder(R, Rs),
+    append([X|Ls], Rs, Xs).
+
+%!  inorder(+T, -Xs) is det.
+%
+%   Xs es el recorrido en inorden de T: el subárbol izquierdo, el nodo y el
+%   derecho.
+inorder(void, []).
+inorder(tree(X, L, R), Xs) :-
+    inorder(L, Ls),
+    inorder(R, Rs),
+    append(Ls, [X|Rs], Xs).
+
+%!  postorder(+T, -Xs) is det.
+%
+%   Xs es el recorrido en postorden de T: el subárbol izquierdo, el derecho
+%   y el nodo.
+postorder(void, []).
+postorder(tree(X, L, R), Xs) :-
+    postorder(L, Ls),
+    postorder(R, Rs),
+    append(Rs, [X], Rs1),
+    append(Ls, Rs1, Xs).
+```
+
+Son los tres recorridos del programa 3.27 de *The Art of Prolog*, con los mismos
+nombres. Los tres tienen la misma estructura: recorren los dos subárboles y unen
+los resultados con `append/3`. Solo cambia el lugar del elemento del nodo:
+delante de los dos subárboles, entre ellos o detrás de ellos. El recorrido del
+árbol vacío es la lista vacía.
+
+```prolog
+?- arbol_ejemplo(T), preorder(T, Pre), inorder(T, In), postorder(T, Post).
+T = tree(1, tree(2, void, tree(4, void, void)), tree(3, tree(5, tree(7, void, void), void), tree(6, void, void))),
+Pre = [1, 2, 4, 3, 5, 7, 6],
+In = [2, 4, 1, 7, 5, 3, 6],
+Post = [4, 2, 7, 5, 6, 3, 1].
+```
+
+La respuesta termina en punto: en cada llamada, `void` y `tree/3` no unifican
+entre sí, de modo que solo una cláusula se aplica, y `append/3`, con la primera
+lista completa, tiene una sola respuesta. En `postorder/2` el nodo se agrega al
+final del recorrido derecho con `append(Rs, [X], Rs1)`, como en `reversa/2`
+del ejercicio 7.

@@ -1,7 +1,7 @@
 :- encoding(utf8).
 
-% Pruebas de Inscripciones (capítulo 15): las del capítulo 14, y un caso por
-% cada resultado de inscripcion_posible/3.
+% Pruebas de Inscripciones (capítulo 15): las de datos del capítulo 14, con el
+% estado nuevo, y una prueba por modo de cada regla (Patrón 2).
 
 :- begin_tests(inscripciones).
 
@@ -60,43 +60,5 @@ test(quienes_cursan, all(L-M == [101-pp, 103-am2, 105-am1])) :-
 
 test(ana_cursa_paradigmas) :-
     cursa(101, pp).
-
-% --- inscripcion_posible/3 -------------------------------------------------
-
-% Un modo, det: una respuesta y sin alternativas pendientes.
-test(diego_puede_cursar_sintaxis, true(R == aceptada)) :-
-    inscripcion_posible(104, ssl, R).
-
-test(bruno_puede_recursar_algebra, true(R == aceptada)) :-
-    inscripcion_posible(102, alg, R).
-
-test(alumno_inexistente, true(R == rechazada(alumno_inexistente))) :-
-    inscripcion_posible(999, am1, R).
-
-test(materia_inexistente, true(R == rechazada(materia_inexistente))) :-
-    inscripcion_posible(101, quimica, R).
-
-test(ana_ya_aprobo_logica, true(R == rechazada(ya_aprobada))) :-
-    inscripcion_posible(101, log, R).
-
-test(ana_ya_cursa_paradigmas, true(R == rechazada(ya_la_cursa))) :-
-    inscripcion_posible(101, pp, R).
-
-% Bruno desaprobó análisis 1 y álgebra: el motivo es el primer requisito.
-test(bruno_no_aprobo_los_requisitos, true(R == rechazada(falta(am1)))) :-
-    inscripcion_posible(102, am2, R).
-
-test(logica_sin_vacantes, true(R == rechazada(sin_vacantes))) :-
-    inscripcion_posible(105, log, R).
-
-% Estabilidad: con el resultado ligado a un valor falso, falla.
-test(resultado_ligado_falso, [fail]) :-
-    inscripcion_posible(102, am2, aceptada).
-
-test(puede_inscribirse) :-
-    puede_inscribirse(104, ssl).
-
-test(no_puede_inscribirse, [fail]) :-
-    puede_inscribirse(102, am2).
 
 :- end_tests(inscripciones).

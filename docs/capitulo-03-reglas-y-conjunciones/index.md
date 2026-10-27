@@ -234,7 +234,7 @@ anterior. A luis le gusta una sola cosa, de modo que comenzar por él deja menos
 alternativas por explorar. Con seis hechos la diferencia es imperceptible; en
 programas de mayor tamaño puede determinar que una consulta termine en un
 tiempo razonable o que no termine. El
-[capítulo 16](../capitulo-16-rendimiento/index.md) trata este tema.
+[capítulo 17](../capitulo-17-rendimiento/index.md) trata este tema.
 
 ## 3.3 Reglas
 
@@ -315,7 +315,7 @@ de las hojas dicen `Quien = juan`, y el árbol no las distingue de las demás.
 
 Este comportamiento es general: la cantidad de respuestas no es la cantidad de
 soluciones distintas, sino la cantidad de demostraciones. Es posible eliminar
-los duplicados, pero requiere herramientas que se presentan en el [capítulo 17](../capitulo-17-todas-las-soluciones/index.md).
+los duplicados, pero requiere herramientas que se presentan en el [capítulo 18](../capitulo-18-todas-las-soluciones/index.md).
 
 ### Varias cláusulas expresan una disyunción
 
@@ -721,7 +721,7 @@ La salida tiene la siguiente forma:
 ```
 
 Todos los ejemplos de este curso tienen su archivo de pruebas, y todas las
-pruebas pasan antes de que el ejemplo se incorpore al texto. El [capítulo 26](../capitulo-26-pruebas-y-depuracion/index.md)
+pruebas pasan antes de que el ejemplo se incorpore al texto. El [capítulo 27](../capitulo-27-pruebas-y-depuracion/index.md)
 presenta las demás opciones de plunit; por ahora son suficientes `all`, `[fail]`
 y `[nondet]`.
 
@@ -829,6 +829,6 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | Unificación: cómo se determina que dos términos coinciden | [capítulo 4](../capitulo-04-terminos-y-unificacion/index.md) |
 | El orden de búsqueda, representado como árbol de derivación | [capítulo 5](../capitulo-05-como-responde-prolog/index.md) |
 | Reglas que se invocan a sí mismas | [capítulo 6](../capitulo-06-recursion/index.md) |
-| El costo de cada ordenamiento de los objetivos | [capítulo 16](../capitulo-16-rendimiento/index.md) |
+| El costo de cada ordenamiento de los objetivos | [capítulo 17](../capitulo-17-rendimiento/index.md) |
 | `\==`, y el efecto de comparar antes de que las variables tengan valor | [capítulo 10](../capitulo-10-negacion-como-falla/index.md) |
-| plunit en detalle, con sus demás opciones | [capítulo 26](../capitulo-26-pruebas-y-depuracion/index.md) |
+| plunit en detalle, con sus demás opciones | [capítulo 27](../capitulo-27-pruebas-y-depuracion/index.md) |

@@ -1,527 +1,320 @@
 :- encoding(utf8).
 
-% Capítulo 41 - Soluciones de los ejercicios 3, 4, 5, 6, 9 y 11.
+% Capítulo 41 - Soluciones de los ejercicios 3, 4, 5, 7 y 8.
 %
-% Cada solución es un juego nuevo que delega en los del capítulo, o una
-% búsqueda nueva sobre los mismos predicados. minimax/6, alfabeta/6, el
-% árbol de ejemplo y el ta-te-ti están copiados al final.
+% El archivo repite el bucle con visitados de visitados.pl, con una
+% estrategia más, anchura_lista (ejercicio 5), y el problema de las jarras,
+% para cargarse solo. Los problemas nuevos son rio (ejercicio 3) y
+% misioneros (ejercicio 4). recorrido_caballo/2 (ejercicio 7) usa la lista
+% de las casillas que quedan, y mas_cortos/2 (ejercicio 8) la idea de
+% iterativo/2.
 %
-%?- minimax(plano(3), pos([x,o,x, v,x,o, v,o,v], x), 9, J, V, N).
-%?- negamax(arbol, a, 3, J, V, N).
+%?- buscar(anchura, rio, Plan, Costo, Expandidos).
+%?- buscar(anchura, misioneros, Plan, Costo, Expandidos).
+%?- recorrido_caballo(5, R).
+%?- mas_cortos(jarras(4, 3, 2), Planes).
 
-% Los juegos definen los mismos predicados en varios lugares del archivo.
-:- discontiguous inicial/2, jugada/4, turno/3, fin/3, valor_final/3.
+:- use_module(library(heaps)).
+:- use_module(library(assoc)).
 
-% --- Ejercicio 3: victorias que valen lo mismo -----------------------------
+% --- Ejercicio 3: el granjero, el lobo, la cabra y la col --------------------
 
-%!  inicial(+Juego, -Posicion) is det.
+% Un estado del río es r(G, L, C, K): la orilla, i o d, del granjero, el
+% lobo, la cabra y la col.
+
+%!  inicial(+Problema, -Estado) is det.
 %
-%   Posicion es la de partida de Juego: en plano(N), la de tateti(N).
-inicial(plano(N), P) :-
-    inicial(tateti(N), P).
+%   Estado es el estado de partida de Problema.
+inicial(rio, r(i, i, i, i)).
+inicial(misioneros, m(3, 3, i)).
+inicial(jarras(_, _, _), j(0, 0)).
 
-%!  jugada(+Juego, +Posicion, ?Casilla:integer, -Siguiente) is nondet.
+%!  meta(+Problema, +Estado) is semidet.
 %
-%   Siguiente es la posición que resulta de marcar Casilla en Posicion,
-%   como en tateti(N).
-jugada(plano(N), P, J, P1) :-
-    jugada(tateti(N), P, J, P1).
-
-%!  turno(+Juego, +Posicion, -Lado) is det.
-%
-%   Lado es el que mueve en Posicion, como en tateti(N).
-turno(plano(N), P, Lado) :-
-    turno(tateti(N), P, Lado).
-
-%!  fin(+Juego, +Posicion, -Resultado) is semidet.
-%
-%   La partida terminó en Posicion con Resultado: en plano(N), plano(R) con
-%   el resultado R de tateti(N). Falla si la partida sigue.
-fin(plano(N), P, plano(R)) :-
-    fin(tateti(N), P, R).
-
-%!  valor_final(+Resultado, +Posicion, -Valor:integer) is det.
-%
-%   Valor es el de una partida terminada, para x: 0 el empate, 100 si gana
-%   x y -100 si gana o, sin contar las casillas vacías.
-valor_final(plano(empate), _, 0).
-valor_final(plano(gana(J)), _, V) :-
-    signo(J, S),
-    V is S * 100.
-
-% --- Ejercicio 4: negamax ---------------------------------------------------
-
-%!  negamax(+Juego, +Posicion, +Profundidad:integer, -Jugada, -Valor,
-%!          -Nodos:integer) is det.
-%
-%   Como minimax/6, con un solo caso para los dos jugadores: internamente,
-%   el valor de una posición se mide desde el punto de vista del que mueve.
-%   Valor es, como en minimax/6, desde el punto de vista de max.
-negamax(Juego, Posicion, Profundidad, Jugada, Valor, Nodos) :-
-    turno(Juego, Posicion, Lado),
-    signo_lado(Lado, S),
-    nega(Juego, Posicion, Lado, Profundidad, Jugada, V, 0, Nodos),
-    Valor is S * V.
-
-%!  nega(+Juego, +Posicion, +Lado, +Profundidad:integer, -Jugada, -Valor,
-%!       +N0:integer, -N:integer) is det.
-%
-%   Valor es el valor de Posicion para Lado, el jugador que mueve en ella.
-%   Los valores de las posiciones siguientes, que son del rival, se toman
-%   con el signo cambiado, y siempre se elige el máximo.
-nega(Juego, Posicion, Lado, Profundidad, Jugada, Valor, N0, N) :-
-    N1 is N0 + 1,
-    signo_lado(Lado, S),
-    (   fin(Juego, Posicion, Resultado)
-    ->  valor_final(Resultado, Posicion, V),
-        Valor is S * V,
-        Jugada = ninguna,
-        N = N1
-    ;   Profundidad =:= 0
-    ->  evaluar(Juego, Posicion, V),
-        Valor is S * V,
-        Jugada = ninguna,
-        N = N1
-    ;   findall(J-P, jugada(Juego, Posicion, J, P), [J1-P1|Hijos]),
-        otro_lado(Lado, Rival),
-        Profundidad1 is Profundidad - 1,
-        nega(Juego, P1, Rival, Profundidad1, _, V1, N1, N2),
-        W1 is -V1,
-        mejor_nega(Hijos, Juego, Rival, Profundidad1, J1, W1, Jugada, Valor,
-                   N2, N)
+%   Estado es un estado buscado de Problema.
+meta(rio, r(d, d, d, d)).
+meta(misioneros, m(0, 0, d)).
+meta(jarras(_, _, M), j(A, B)) :-
+    (   A =:= M
+    ->  true
+    ;   B =:= M
     ).
 
-%!  mejor_nega(+Hijos:list, +Juego, +Rival, +Profundidad:integer, +J0,
-%!             +V0, -Jugada, -Valor, +N0:integer, -N:integer) is det.
+%!  sucesor(+Problema, +Estado, -Accion, -Siguiente, -Costo) is nondet.
 %
-%   Jugada y Valor son los de la jugada de mayor valor, con el signo
-%   cambiado del que tiene para Rival, entre J0 y las de Hijos.
-mejor_nega([], _, _, _, Jugada, Valor, Jugada, Valor, N, N).
-mejor_nega([J-P|Hijos], Juego, Rival, Profundidad, J0, V0, Jugada, Valor,
-           N0, N) :-
-    nega(Juego, P, Rival, Profundidad, _, V1, N0, N1),
-    V is -V1,
-    (   V > V0
-    ->  mejor_nega(Hijos, Juego, Rival, Profundidad, J, V, Jugada, Valor,
-                   N1, N)
-    ;   mejor_nega(Hijos, Juego, Rival, Profundidad, J0, V0, Jugada, Valor,
-                   N1, N)
-    ).
+%   Accion lleva de Estado a Siguiente con costo Costo.
+sucesor(rio, r(G, L, C, K), cruzar(Quien), Siguiente, 1) :-
+    otra(G, G1),
+    pasajero(Quien, r(G, L, C, K), G1, Siguiente),
+    segura(Siguiente).
+sucesor(misioneros, m(M, C, B), cruzan(DM, DC), m(M1, C1, B1), 1) :-
+    member(DM-DC, [1-0, 2-0, 0-1, 0-2, 1-1]),
+    (   B == i
+    ->  M1 is M - DM,
+        C1 is C - DC,
+        B1 = d
+    ;   M1 is M + DM,
+        C1 is C + DC,
+        B1 = i
+    ),
+    between(0, 3, M1),
+    between(0, 3, C1),
+    a_salvo(M1, C1),
+    M2 is 3 - M1,
+    C2 is 3 - C1,
+    a_salvo(M2, C2).
+sucesor(jarras(C1, _, _), j(A, B), llenar(1), j(C1, B), Costo) :-
+    A < C1,
+    Costo is C1 - A.
+sucesor(jarras(_, C2, _), j(A, B), llenar(2), j(A, C2), Costo) :-
+    B < C2,
+    Costo is C2 - B.
+sucesor(jarras(_, _, _), j(A, B), vaciar(1), j(0, B), A) :-
+    A > 0.
+sucesor(jarras(_, _, _), j(A, B), vaciar(2), j(A, 0), B) :-
+    B > 0.
+sucesor(jarras(_, C2, _), j(A, B), pasar(1, 2), j(A1, B1), Costo) :-
+    Costo is min(A, C2 - B),
+    Costo > 0,
+    A1 is A - Costo,
+    B1 is B + Costo.
+sucesor(jarras(C1, _, _), j(A, B), pasar(2, 1), j(A1, B1), Costo) :-
+    Costo is min(B, C1 - A),
+    Costo > 0,
+    A1 is A + Costo,
+    B1 is B - Costo.
 
-% signo_lado(L, S): el valor de max se multiplica por S para el lado L.
-signo_lado(max, 1).
-signo_lado(min, -1).
+% otra(O1, O2): O2 es la orilla opuesta a O1.
+otra(i, d).
+otra(d, i).
 
-% otro_lado(L, R): R es el lado contrario de L.
-otro_lado(max, min).
-otro_lado(min, max).
-
-% --- Ejercicio 5: el árbol con las ramas de la raíz invertidas -------------
-
-inicial(invertido, a).
-
-jugada(invertido, P, H, H) :-
-    (   P == a
-    ->  member(H, [c, b])
-    ;   rama(P, H)
-    ).
-
-turno(invertido, P, Lado) :-
-    mueve(P, Lado).
-
-fin(invertido, P, hoja(V)) :-
-    hoja(P, V).
-
-% --- Ejercicio 6: las líneas de un tablero de N por N ----------------------
-
-%!  linea(+N:integer, -Casillas:list(integer)) is nondet.
+%!  pasajero(?Quien, +Estado, +Orilla, -Siguiente) is nondet.
 %
-%   Casillas son las de una fila, una columna o una diagonal de un tablero
-%   de N por N, en orden: primero las filas, después las columnas, después
-%   la diagonal principal y la otra.
-linea(N, Casillas) :-
-    numlist(1, N, Is),
-    (   between(1, N, F),
-        maplist(casilla(N, F), Is, Casillas)
-    ;   between(1, N, C),
-        maplist(casilla_columna(N, C), Is, Casillas)
-    ;   maplist(diagonal(N), Is, Casillas)
-    ;   maplist(antidiagonal(N), Is, Casillas)
+%   El granjero cruza a Orilla, solo o con Quien, que estaba en su misma
+%   orilla, y el río queda en Siguiente.
+pasajero(solo, r(_, L, C, K), G1, r(G1, L, C, K)).
+pasajero(lobo, r(G, G, C, K), G1, r(G1, G1, C, K)).
+pasajero(cabra, r(G, L, G, K), G1, r(G1, L, G1, K)).
+pasajero(col, r(G, L, C, G), G1, r(G1, L, C, G1)).
+
+%!  segura(+Estado) is semidet.
+%
+%   En Estado, la cabra no queda sin el granjero con el lobo ni con la col.
+segura(r(G, L, C, K)) :-
+    \+ ( C == L, C \== G ),
+    \+ ( C == K, C \== G ).
+
+% --- Ejercicio 4: misioneros y caníbales -------------------------------------
+
+% Un estado es m(M, C, B): los misioneros y los caníbales en la orilla de
+% partida, y la orilla del bote.
+
+%!  a_salvo(+M:integer, +C:integer) is semidet.
+%
+%   En una orilla con M misioneros y C caníbales, los caníbales no superan
+%   a los misioneros, o no hay misioneros.
+a_salvo(M, C) :-
+    (   M =:= 0
+    ->  true
+    ;   M >= C
     ).
 
-%!  casilla(+N:integer, +Fila:integer, +Columna:integer, -Casilla:integer)
+% --- La búsqueda con visitados ---------------------------------------------
+
+%!  buscar(+Estrategia, +Problema, -Plan:list, -Costo:number,
+%!         -Expandidos:integer) is semidet.
+%
+%   Plan lleva del estado inicial de Problema a un estado meta con costo
+%   Costo; Expandidos es la cantidad de nodos que la búsqueda expandió.
+%   Estrategia es profundidad, anchura, anchura_lista (ejercicio 5: la
+%   cola como lista cerrada) o mejor(costo). Falla si la frontera se vacía
+%   sin llegar a una meta.
+buscar(Estrategia, Problema, Plan, Costo, Expandidos) :-
+    inicial(Problema, Estado),
+    frontera_inicial(Estrategia, Problema, nodo(Estado, [], 0), Frontera),
+    list_to_assoc([Estado-0], Vistos),
+    bucle(Estrategia, Problema, Frontera, Vistos, 0, nodo(_, Camino, Costo),
+          Expandidos),
+    reverse(Camino, Plan).
+
+%!  bucle(+Estrategia, +Problema, +Frontera, +Vistos, +K0:integer,
+%!        -Solucion, -K:integer) is semidet.
+%
+%   Solucion es el primer nodo meta que se extrae de Frontera; Vistos da, para
+%   cada estado visto, el menor costo con que se llegó a él; K es K0 más la
+%   cantidad de nodos expandidos hasta sacar Solucion.
+bucle(Estrategia, Problema, Frontera0, Vistos0, K0, Solucion, K) :-
+    sacar(Estrategia, Frontera0, Nodo, Frontera1),
+    Nodo = nodo(Estado, _, G),
+    (   get_assoc(Estado, Vistos0, Mejor),
+        G > Mejor
+    ->  bucle(Estrategia, Problema, Frontera1, Vistos0, K0, Solucion, K)
+    ;   meta(Problema, Estado)
+    ->  Solucion = Nodo,
+        K = K0
+    ;   K1 is K0 + 1,
+        hijos(Problema, Nodo, Hijos0),
+        nuevos(Hijos0, Vistos0, Hijos, Vistos1),
+        agregar(Estrategia, Problema, Hijos, Frontera1, Frontera2),
+        bucle(Estrategia, Problema, Frontera2, Vistos1, K1, Solucion, K)
+    ).
+
+%!  nuevos(+Hijos0:list, +Vistos0, -Hijos:list, -Vistos) is det.
+%
+%   Hijos son los nodos de Hijos0 cuyo estado no se vio, o se vio con un
+%   costo mayor; Vistos es Vistos0 con el costo de cada uno.
+nuevos([], Vistos, [], Vistos).
+nuevos([Hijo|Hijos0], Vistos0, Hijos, Vistos) :-
+    Hijo = nodo(Estado, _, G),
+    (   get_assoc(Estado, Vistos0, G0),
+        G0 =< G
+    ->  Hijos = Hijos1,
+        Vistos1 = Vistos0
+    ;   put_assoc(Estado, Vistos0, G, Vistos1),
+        Hijos = [Hijo|Hijos1]
+    ),
+    nuevos(Hijos0, Vistos1, Hijos1, Vistos).
+
+%!  hijos(+Problema, +Nodo, -Hijos:list) is det.
+%
+%   Hijos son los nodos de los estados que siguen al de Nodo, cada uno con
+%   su camino y su costo. findall/3 reúne solo las transiciones: el camino
+%   de cada hijo se arma afuera, y comparte el de Nodo en lugar de copiarlo.
+hijos(Problema, nodo(Estado, Camino, G), Hijos) :-
+    findall(t(Accion, Siguiente, Costo),
+            sucesor(Problema, Estado, Accion, Siguiente, Costo),
+            Transiciones),
+    maplist(hijo(Camino, G), Transiciones, Hijos).
+
+%!  hijo(+Camino:list, +G:number, +Transicion, -Hijo) is det.
+%
+%   Hijo es el nodo al que lleva Transicion desde un nodo con Camino y G.
+hijo(Camino, G, t(Accion, Siguiente, Costo),
+     nodo(Siguiente, [Accion|Camino], G1)) :-
+    G1 is G + Costo.
+
+% --- Las fronteras ------------------------------------------------------------
+
+%!  frontera_inicial(+Estrategia, +Problema, +Nodo, -Frontera) is det.
+%
+%   Frontera tiene solo a Nodo, con la estructura de datos de Estrategia.
+frontera_inicial(Estrategia, Problema, Nodo, Frontera) :-
+    vacia(Estrategia, Vacia),
+    agregar(Estrategia, Problema, [Nodo], Vacia, Frontera).
+
+%!  vacia(+Estrategia, -Frontera) is det.
+%
+%   Frontera es la frontera vacía de Estrategia: una pila, una cola o un
+%   montículo.
+vacia(profundidad, []).
+vacia(anchura, cola(0, F, F)).
+vacia(anchura_lista, []).
+vacia(mejor(_), Monticulo) :-
+    empty_heap(Monticulo).
+
+%!  sacar(+Estrategia, +Frontera0, -Nodo, -Frontera) is semidet.
+%
+%   Nodo es el próximo nodo de Frontera0 según Estrategia, y Frontera lo
+%   que queda. Falla si Frontera0 está vacía.
+sacar(profundidad, [Nodo|Pila], Nodo, Pila).
+sacar(anchura, Cola0, Nodo, Cola) :-
+    desencolar(Nodo, Cola0, Cola).
+sacar(anchura_lista, [Nodo|Cola], Nodo, Cola).
+sacar(mejor(_), Monticulo0, Nodo, Monticulo) :-
+    get_from_heap(Monticulo0, _, Nodo, Monticulo).
+
+%!  agregar(+Estrategia, +Problema, +Nodos:list, +Frontera0, -Frontera)
 %!      is det.
 %
-%   Casilla es el número de la casilla en Fila y Columna, contadas desde 1.
-casilla(N, Fila, Columna, Casilla) :-
-    Casilla is (Fila - 1) * N + Columna.
+%   Frontera es Frontera0 con Nodos agregados según Estrategia.
+agregar(profundidad, _, Nodos, Pila0, Pila) :-
+    append(Nodos, Pila0, Pila).
+agregar(anchura, _, Nodos, Cola0, Cola) :-
+    foldl(encolar, Nodos, Cola0, Cola).
+agregar(anchura_lista, _, Nodos, Cola0, Cola) :-
+    append(Cola0, Nodos, Cola).
+agregar(mejor(Criterio), Problema, Nodos, Monticulo0, Monticulo) :-
+    foldl(al_monticulo(Criterio, Problema), Nodos, Monticulo0, Monticulo).
 
-%!  casilla_columna(+N:integer, +Columna:integer, +Fila:integer,
-%!                  -Casilla:integer) is det.
-%
-%   Como casilla/4, con la columna antes que la fila.
-casilla_columna(N, Columna, Fila, Casilla) :-
-    casilla(N, Fila, Columna, Casilla).
-
-%!  diagonal(+N:integer, +I:integer, -Casilla:integer) is det.
-%
-%   Casilla es la de la fila I en la diagonal principal.
-diagonal(N, I, Casilla) :-
-    casilla(N, I, I, Casilla).
-
-%!  antidiagonal(+N:integer, +I:integer, -Casilla:integer) is det.
-%
-%   Casilla es la de la fila I en la otra diagonal.
-antidiagonal(N, I, Casilla) :-
-    Columna is N + 1 - I,
-    casilla(N, I, Columna, Casilla).
-
-% --- Ejercicio 9: el juego de restar ----------------------------------------
-
-inicial(restar(K), r(K, x)).
-
-jugada(restar(_), r(K, J), S, r(K1, Otro)) :-
-    between(1, 3, S),
-    S =< K,
-    K1 is K - S,
-    otro(J, Otro).
-
-turno(restar(_), r(_, J), Lado) :-
-    lado(J, Lado).
-
-fin(restar(_), r(0, J), restar(gana(Otro))) :-
-    otro(J, Otro).
-
-valor_final(restar(gana(J)), _, V) :-
-    signo(J, S),
-    V is S * 100.
-
-%!  perdedoras(+Maximo:integer, -Pilas:list(integer)) is det.
-%
-%   Pilas son las pilas de 1 a Maximo fichas en las que pierde el que
-%   mueve, según la poda buscada hasta el final.
-perdedoras(Maximo, Pilas) :-
-    findall(K, ( between(1, Maximo, K),
-                 alfabeta(restar(K), r(K, x), K, _, V, _),
-                 V < 0 ), Pilas).
-
-% --- Ejercicio 11: la poda tabulada ------------------------------------------
-
-:- table acotado_tabulado/5.
-
-%!  acotado_tabulado(+Juego, +Posicion, +Alfa, +Beta, -Valor) is det.
-%
-%   Como acotado/9 de la poda, hasta el final de la partida y sin la
-%   jugada ni el contador, tabulado con las cotas como argumentos.
-acotado_tabulado(Juego, Posicion, Alfa, Beta, Valor) :-
-    (   fin(Juego, Posicion, Resultado)
-    ->  valor_final(Resultado, Posicion, Valor)
-    ;   findall(P, jugada(Juego, Posicion, _, P), Siguientes),
-        turno(Juego, Posicion, Lado),
-        cotas_tabuladas(Siguientes, Juego, Lado, Alfa, Beta, Valor)
-    ).
-
-%!  cotas_tabuladas(+Posiciones:list, +Juego, +Lado, +Alfa, +Beta, -Valor)
+%!  al_monticulo(+Criterio, +Problema, +Nodo, +Monticulo0, -Monticulo)
 %!      is det.
 %
-%   Como cotas/11 de la poda, sobre acotado_tabulado/5.
-cotas_tabuladas([], _, Lado, Alfa, Beta, Valor) :-
-    propia(Lado, Alfa, Beta, Valor).
-cotas_tabuladas([P|Ps], Juego, Lado, Alfa, Beta, Valor) :-
-    acotado_tabulado(Juego, P, Alfa, Beta, V),
-    (   poda(Lado, V, Alfa, Beta)
-    ->  Valor = V
-    ;   estrecha(Lado, V, Alfa, Beta, Alfa1, Beta1)
-    ->  cotas_tabuladas(Ps, Juego, Lado, Alfa1, Beta1, Valor)
-    ;   cotas_tabuladas(Ps, Juego, Lado, Alfa, Beta, Valor)
-    ).
+%   Monticulo es Monticulo0 con Nodo, con la prioridad que le da Criterio.
+al_monticulo(Criterio, Problema, Nodo, Monticulo0, Monticulo) :-
+    prioridad(Criterio, Problema, Nodo, Prioridad),
+    add_to_heap(Monticulo0, Prioridad, Nodo, Monticulo).
 
-%!  tablas_de_la_poda(-Cantidad:integer) is det.
+%!  prioridad(+Criterio, +Problema, +Nodo, -Prioridad:number) is det.
 %
-%   Cantidad es la cantidad de tablas de acotado_tabulado/5.
-tablas_de_la_poda(Cantidad) :-
-    aggregate_all(count,
-                  ( current_table(Variante, _),
-                    Variante = acotado_tabulado(_, _, _, _, _) ),
-                  Cantidad).
+%   Prioridad es el valor de Nodo según Criterio; se extrae primero el menor.
+%   Con costo, es el costo del camino: la búsqueda de costo uniforme.
+prioridad(costo, _, nodo(_, _, G), G).
 
-%!  evaluar(+Juego, +Posicion, -Valor:number) is det.
+%!  encolar(+X, +Cola0, -Cola) is det.
 %
-%   La evaluación nula: 0 para cualquier posición que no terminó.
-evaluar(_, _, 0).
+%   Cola es Cola0 con X al final: la cola con contador del capítulo 35.
+encolar(X, cola(N, Frente, [X|Fondo]), cola(N1, Frente, Fondo)) :-
+    N1 is N + 1.
 
-% --- Minimax, copiado de minimax.pl -----------------------------------------
-
-%!  minimax(+Juego, +Posicion, +Profundidad:integer, -Jugada, -Valor,
-%!          -Nodos:integer) is det.
+%!  desencolar(-X, +Cola0, -Cola) is semidet.
 %
-%   Valor es el valor minimax de Posicion buscando Profundidad jugadas
-%   hacia adelante, y Jugada la primera de las mejores jugadas, o ninguna
-%   si la partida terminó o Profundidad es 0. Nodos es la cantidad de
-%   posiciones visitadas.
-minimax(Juego, Posicion, Profundidad, Jugada, Valor, Nodos) :-
-    valor(Juego, Posicion, Profundidad, Jugada, Valor, 0, Nodos).
+%   X es el primero de Cola0, y Cola el resto. Falla si Cola0 está vacía.
+desencolar(X, cola(N, [X|Frente], Fondo), cola(N1, Frente, Fondo)) :-
+    N > 0,
+    N1 is N - 1.
 
-%!  valor(+Juego, +Posicion, +Profundidad:integer, -Jugada, -Valor,
-%!        +N0:integer, -N:integer) is det.
+
+% --- Ejercicio 7: el recorrido del caballo ------------------------------------
+
+%!  recorrido_caballo(+N:integer, -Recorrido:list) is nondet.
 %
-%   Como minimax/6; N es N0 más los nodos visitados.
-valor(Juego, Posicion, Profundidad, Jugada, Valor, N0, N) :-
-    N1 is N0 + 1,
-    (   fin(Juego, Posicion, Resultado)
-    ->  valor_final(Resultado, Posicion, Valor),
-        Jugada = ninguna,
-        N = N1
-    ;   Profundidad =:= 0
-    ->  evaluar(Juego, Posicion, Valor),
-        Jugada = ninguna,
-        N = N1
-    ;   findall(J-P, jugada(Juego, Posicion, J, P), [J1-P1|Hijos]),
-        turno(Juego, Posicion, Lado),
-        Profundidad1 is Profundidad - 1,
-        valor(Juego, P1, Profundidad1, _, V1, N1, N2),
-        mejor(Hijos, Juego, Lado, Profundidad1, J1, V1, Jugada, Valor,
-              N2, N)
-    ).
+%   Recorrido es un recorrido del caballo por un tablero de N x N que
+%   empieza en 1-1 y pasa una vez por cada casilla.
+recorrido_caballo(N, [1-1|Recorrido]) :-
+    findall(F-C, ( between(1, N, F), between(1, N, C) ), Casillas),
+    selectchk(1-1, Casillas, Libres),
+    saltar(1-1, Libres, Recorrido).
 
-%!  mejor(+Hijos:list, +Juego, +Lado, +Profundidad:integer, +J0, +V0,
-%!        -Jugada, -Valor, +N0:integer, -N:integer) is det.
+%!  saltar(+Casilla, +Libres:list, -Recorrido:list) is nondet.
 %
-%   Jugada y Valor son los de la mejor jugada para Lado entre J0, de valor
-%   V0, y las de Hijos, pares Jugada-Posicion. Ante un empate queda la
-%   primera.
-mejor([], _, _, _, Jugada, Valor, Jugada, Valor, N, N).
-mejor([J-P|Hijos], Juego, Lado, Profundidad, J0, V0, Jugada, Valor,
-      N0, N) :-
-    valor(Juego, P, Profundidad, _, V, N0, N1),
-    (   mejora(Lado, V, V0)
-    ->  mejor(Hijos, Juego, Lado, Profundidad, J, V, Jugada, Valor, N1, N)
-    ;   mejor(Hijos, Juego, Lado, Profundidad, J0, V0, Jugada, Valor,
-              N1, N)
-    ).
+%   Recorrido pasa una vez por cada casilla de Libres, empezando con un
+%   salto desde Casilla.
+saltar(_, [], []).
+saltar(Casilla, Libres, [Siguiente|Recorrido]) :-
+    salto(Casilla, Siguiente),
+    select(Siguiente, Libres, Libres1),
+    saltar(Siguiente, Libres1, Recorrido).
 
-%!  mejora(+Lado, +V:number, +V0:number) is semidet.
+%!  salto(+Casilla, -Destino) is nondet.
 %
-%   Para Lado, el valor V es mejor que V0: mayor si Lado es max, menor si
-%   es min.
-mejora(max, V, V0) :-
-    V > V0.
-mejora(min, V, V0) :-
-    V < V0.
+%   Destino está a un salto de caballo de Casilla, dentro o fuera del
+%   tablero; select/3 descarta las que no están libres.
+salto(F-C, F1-C1) :-
+    member(DF-DC, [1-2, 2-1, 2-(-1), 1-(-2), -1-(-2), -2-(-1), -2-1, -1-2]),
+    F1 is F + DF,
+    C1 is C + DC.
 
-% --- La poda alfa-beta, copiado de alfabeta.pl ------------------------------
+% --- Ejercicio 8: todos los planes más cortos -------------------------------
 
-%!  alfabeta(+Juego, +Posicion, +Profundidad:integer, -Jugada, -Valor,
-%!           -Nodos:integer) is det.
+%!  mas_cortos(+Problema, -Planes:list) is det.
 %
-%   Valor es el valor minimax de Posicion buscando Profundidad jugadas
-%   hacia adelante, y Jugada la primera de las mejores jugadas, o ninguna
-%   si la partida terminó o Profundidad es 0: los mismos que da minimax/6.
-%   Nodos es la cantidad de posiciones visitadas.
-alfabeta(Juego, Posicion, Profundidad, Jugada, Valor, Nodos) :-
-    acotado(Juego, Posicion, Profundidad, -inf, inf, Jugada, Valor, 0, Nodos).
+%   Planes son todos los planes de longitud mínima de Problema. Como
+%   iterativo/2, no termina si Problema no tiene solución.
+mas_cortos(Problema, Planes) :-
+    inicial(Problema, Estado),
+    length(Plan0, _),
+    desde(Problema, Estado, Plan0),
+    !,
+    length(Plan0, Longitud),
+    length(Plan, Longitud),
+    findall(Plan, desde(Problema, Estado, Plan), Planes).
 
-%!  acotado(+Juego, +Posicion, +Profundidad:integer, +Alfa, +Beta,
-%!          -Jugada, -Valor, +N0:integer, -N:integer) is det.
+%!  desde(+Problema, +Estado, ?Plan:list) is nondet.
 %
-%   Valor es el valor minimax V de Posicion si queda entre Alfa y Beta. Si
-%   no, es una cota que basta para descartar la posición: un valor menor o
-%   igual que Alfa si V =< Alfa, mayor o igual que Beta si V >= Beta. N es
-%   N0 más los nodos visitados.
-acotado(Juego, Posicion, Profundidad, Alfa, Beta, Jugada, Valor, N0, N) :-
-    N1 is N0 + 1,
-    (   fin(Juego, Posicion, Resultado)
-    ->  valor_final(Resultado, Posicion, Valor),
-        Jugada = ninguna,
-        N = N1
-    ;   Profundidad =:= 0
-    ->  evaluar(Juego, Posicion, Valor),
-        Jugada = ninguna,
-        N = N1
-    ;   findall(J-P, jugada(Juego, Posicion, J, P), Hijos),
-        turno(Juego, Posicion, Lado),
-        Profundidad1 is Profundidad - 1,
-        cotas(Hijos, Juego, Lado, Profundidad1, Alfa, Beta, ninguna,
-              Jugada, Valor, N1, N)
-    ).
-
-%!  cotas(+Hijos:list, +Juego, +Lado, +Profundidad:integer, +Alfa, +Beta,
-%!        +J0, -Jugada, -Valor, +N0:integer, -N:integer) is det.
-%
-%   Busca las jugadas de Hijos, pares Jugada-Posicion, con las cotas Alfa y
-%   Beta, que se estrechan a medida que aparecen jugadas mejores para Lado.
-%   J0 es la mejor jugada hasta el momento. Si una jugada alcanza la cota
-%   del rival, las demás no se buscan: es la poda.
-cotas([], _, Lado, _, Alfa, Beta, Jugada, Jugada, Valor, N, N) :-
-    propia(Lado, Alfa, Beta, Valor).
-cotas([J-P|Hijos], Juego, Lado, Profundidad, Alfa, Beta, J0, Jugada, Valor,
-      N0, N) :-
-    acotado(Juego, P, Profundidad, Alfa, Beta, _, V, N0, N1),
-    (   poda(Lado, V, Alfa, Beta)
-    ->  Jugada = J,
-        Valor = V,
-        N = N1
-    ;   estrecha(Lado, V, Alfa, Beta, Alfa1, Beta1)
-    ->  cotas(Hijos, Juego, Lado, Profundidad, Alfa1, Beta1, J, Jugada,
-              Valor, N1, N)
-    ;   cotas(Hijos, Juego, Lado, Profundidad, Alfa, Beta, J0, Jugada,
-              Valor, N1, N)
-    ).
-
-%!  propia(+Lado, +Alfa, +Beta, -Valor) is det.
-%
-%   Valor es la cota de Lado: Alfa para max, Beta para min. Al terminar las
-%   jugadas, es el valor de la mejor, o la cota que ninguna superó.
-propia(max, Alfa, _, Alfa).
-propia(min, _, Beta, Beta).
-
-%!  poda(+Lado, +V:number, +Alfa, +Beta) is semidet.
-%
-%   Una jugada de valor V alcanza la cota del rival: con ella, max obtiene
-%   al menos Beta, que min ya evita por otro camino; min obtiene a lo sumo
-%   Alfa, que max ya evita.
-poda(max, V, _, Beta) :-
-    V >= Beta.
-poda(min, V, Alfa, _) :-
-    V =< Alfa.
-
-%!  estrecha(+Lado, +V:number, +Alfa, +Beta, -Alfa1, -Beta1) is semidet.
-%
-%   V mejora la cota de Lado, que pasa a ser V. Falla si no la mejora.
-estrecha(max, V, Alfa, Beta, V, Beta) :-
-    V > Alfa.
-estrecha(min, V, Alfa, Beta, Alfa, V) :-
-    V < Beta.
-
-% --- El árbol de ejemplo, copiado de minimax.pl -----------------------------
-
-% rama(P, H): en el árbol de ejemplo, de la posición P se pasa a H.
-rama(a, b).
-rama(a, c).
-rama(b, d).
-rama(b, e).
-rama(c, f).
-rama(c, g).
-rama(d, d1).
-rama(d, d2).
-rama(e, e1).
-rama(e, e2).
-rama(f, f1).
-rama(f, f2).
-rama(g, g1).
-rama(g, g2).
-
-% hoja(P, V): P es una hoja del árbol, de valor V.
-hoja(d1, 3).
-hoja(d2, 5).
-hoja(e1, 6).
-hoja(e2, 9).
-hoja(f1, 1).
-hoja(f2, 2).
-hoja(g1, 8).
-hoja(g2, 4).
-
-% mueve(P, L): en la posición P del árbol le toca a L, max o min.
-mueve(a, max).
-mueve(b, min).
-mueve(c, min).
-mueve(d, max).
-mueve(e, max).
-mueve(f, max).
-mueve(g, max).
-
-inicial(arbol, a).
-
-jugada(arbol, P, H, H) :-
-    rama(P, H).
-
-turno(arbol, P, Lado) :-
-    mueve(P, Lado).
-
-fin(arbol, P, hoja(V)) :-
-    hoja(P, V).
-
-valor_final(hoja(V), _, V).
-
-% --- El ta-te-ti, copiado de tateti.pl --------------------------------------
-
-%!  inicial(+Juego, -Posicion) is det.
-%
-%   Posicion es la de partida de Juego: el tablero vacío, y mueve x.
-inicial(tateti(N), pos(Tablero, x)) :-
-    Casillas is N * N,
-    length(Tablero, Casillas),
-    maplist(=(v), Tablero).
-
-%!  jugada(+Juego, +Posicion, ?Casilla:integer, -Siguiente) is nondet.
-%
-%   Siguiente es la posición que resulta de que el jugador de turno en
-%   Posicion marque Casilla, una casilla vacía. No comprueba si la partida
-%   terminó: las búsquedas llaman antes a fin/3.
-jugada(tateti(_), pos(Tablero0, Jugador), Casilla, pos(Tablero, Otro)) :-
-    nth1(Casilla, Tablero0, v, Resto),
-    nth1(Casilla, Tablero, Jugador, Resto),
-    otro(Jugador, Otro).
-
-% otro(J, K): K es el rival de J.
-otro(x, o).
-otro(o, x).
-
-%!  turno(+Juego, +Posicion, -Lado) is det.
-%
-%   Lado es max si en Posicion mueve x, que busca los valores altos, y min
-%   si mueve o.
-turno(tateti(_), pos(_, Jugador), Lado) :-
-    lado(Jugador, Lado).
-
-% lado(J, L): el jugador J es L, max o min.
-lado(x, max).
-lado(o, min).
-
-%!  fin(+Juego, +Posicion, -Resultado) is semidet.
-%
-%   La partida terminó en Posicion con Resultado: gana(J) si J completó una
-%   línea, o empate si el tablero está lleno. Falla si la partida sigue.
-fin(Juego, pos(Tablero, _), Resultado) :-
-    lineas(Juego, Lineas),
-    (   member([C|Cs], Lineas),
-        marca(Tablero, J, C),
-        J \== v,
-        maplist(marca(Tablero, J), Cs)
-    ->  Resultado = gana(J)
-    ;   \+ memberchk(v, Tablero),
-        Resultado = empate
-    ).
-
-%!  marca(+Tablero:list, ?Marca, +Casilla:integer) is semidet.
-%
-%   Marca es lo que hay en Casilla: x, o o v.
-marca(Tablero, Marca, Casilla) :-
-    nth1(Casilla, Tablero, Marca).
-
-% lineas(Juego, Lineas): Lineas son las filas, las columnas y las dos
-% diagonales del tablero de Juego, cada una como la lista de sus casillas.
-lineas(tateti(3), [[1, 2, 3], [4, 5, 6], [7, 8, 9],
-                   [1, 4, 7], [2, 5, 8], [3, 6, 9],
-                   [1, 5, 9], [3, 5, 7]]).
-lineas(tateti(4), [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12],
-                   [13, 14, 15, 16],
-                   [1, 5, 9, 13], [2, 6, 10, 14], [3, 7, 11, 15],
-                   [4, 8, 12, 16],
-                   [1, 6, 11, 16], [4, 7, 10, 13]]).
-
-%!  valor_final(+Resultado, +Posicion, -Valor:integer) is det.
-%
-%   Valor es el de una partida terminada, para x: 0 el empate, y 100 más la
-%   cantidad de casillas vacías si gana x, con el signo cambiado si gana o.
-%   Las casillas vacías premian ganar antes.
-valor_final(empate, _, 0).
-valor_final(gana(J), pos(Tablero, _), Valor) :-
-    include(==(v), Tablero, Vacias),
-    length(Vacias, K),
-    signo(J, S),
-    Valor is S * (100 + K).
-
-% signo(J, S): S es 1 si J es x, que maximiza, y -1 si es o, que minimiza.
-signo(x, 1).
-signo(o, -1).
+%   Plan lleva de Estado a un estado meta de Problema. Con la longitud de
+%   Plan fijada, termina.
+desde(Problema, Estado, []) :-
+    meta(Problema, Estado).
+desde(Problema, Estado, [Accion|Plan]) :-
+    sucesor(Problema, Estado, Accion, Siguiente, _),
+    desde(Problema, Siguiente, Plan).

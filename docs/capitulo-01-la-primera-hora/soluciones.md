@@ -272,7 +272,7 @@ descartó la posibilidad de que la haya. El árbol de derivación del
 [capítulo 5](../capitulo-05-como-responde-prolog/index.md) no muestra esta diferencia: las dos consultas tienen el
 mismo árbol —dos ramas desde `padre(juan, P)`, una que falla y otra que llega a
 la consulta vacía—, y que Prolog deje o no una alternativa abierta depende de
-cómo indexa las cláusulas, tema de la [sección 16.3](../capitulo-16-rendimiento/index.md#163-indexacion).
+cómo indexa las cláusulas, tema de la [sección 17.3](../capitulo-17-rendimiento/index.md#173-indexacion).
 
 ## 14
 

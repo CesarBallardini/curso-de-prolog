@@ -2,496 +2,401 @@
 
 % Capítulo 77 - Soluciones de los ejercicios.
 %
-% Carga las versiones del capítulo sin modificarlas. Los predicados que
-% no exportan se llaman con el nombre del módulo delante.
+% Carga robot.pl, laberinto.pl, caballo.pl y recorrido.pl sin modificarlos.
+% Los problemas nuevos se definen en este módulo con inicial/2, meta/2,
+% sucesor/5 y heuristica/3, y se resuelven con las búsquedas del capítulo
+% 40 escribiendo soluciones:Problema.
 %
-% solo-local: carga otros archivos.
+% solo-local: carga archivos que cargan las búsquedas del capítulo 41.
 %
-%?- mayor_distancia(D).
-%?- conocimiento_final(1, K), frontera(K, F).
+%?- comparar_giros(patio, 28-8, 32-8, K1, K2).
 
 :- module(soluciones,
-          [ distancia/3,
-            mayor_distancia/1,
-            jugada_estricta/5,
-            conocimiento_final/2,
-            seguras_por_reglas2/2,
-            comparar_reglas2/2,
-            satisfacible/1,
-            seguras_dpll/2,
-            comparar_dpll/2,
-            barrer_umbrales/2,
-            mundo_sembrado/3,
-            medir_tamano/3,
-            cazar_k/4,
-            medir_caza_k/3,
-            soluble/1,
-            contar_solubles/2,
-            jugar_humano/2,
-            tiene_oro/2
+          [ comparar_giros/5,
+            camino8/5,
+            cantidad_minimos/4,
+            ida_con_tabla/4,
+            camino_ida_con_tabla/5,
+            salida_manhattan/3,
+            salida_h3/3,
+            estimacion_h3/3,
+            sobreestimaciones/2,
+            distancias/3,
+            saltos_minimos/4,
+            admisible/2,
+            recorrido_cerrado/3
           ]).
 
-:- use_module(library(lists)).
-:- use_module(library(apply)).
-:- use_module(library(aggregate)).
-:- use_module(library(ordsets)).
-:- use_module(library(dcg/basics)).
-:- use_module(azar).
-:- reexport(cueva).
-:- reexport(enfoques).
-:- reexport(riesgo).
-:- reexport(cazador).
-:- reexport(temporal).
+:- use_module(library(assoc)).
+:- use_module(library(pairs)).
+:- reexport(giros).
+:- reexport(laberinto).
+:- reexport(caballo).
+:- reexport(recorrido).
+:- use_module(capitulo41).
 
-% --- Ejercicio 2 ------------------------------------------------------------
+% --- Ejercicio 2: un giro obligado ------------------------------------------
 
-%!  distancia(+A, +B, -D:integer) is det.
+%!  inicial(+Problema, -Estado) is det.
 %
-%   D es la cantidad mínima de túneles de la sala A a la sala B.
-distancia(A, B, D) :-
-    distancia_([A], [A], B, 0, D).
+%   El estado inicial de los problemas de este archivo, tomado del problema
+%   del que cada uno es una variante.
+inicial(giros2(P, D, H), E) :-
+    giros:inicial(giros(P, D, H), E).
+inicial(ruta8(_, D, _), D).
+inicial(salir_m(Filas), E) :-
+    laberinto:inicial(salir(Filas, cero), E).
+inicial(salir_h3(Filas), E) :-
+    laberinto:inicial(salir(Filas, cero), E).
 
-%!  distancia_(+Nivel:list, +Vistas:list, +B, +D0:integer, -D:integer)
-%!      is det.
+%!  meta(+Problema, +Estado) is semidet.
 %
-%   Búsqueda en anchura por niveles: Nivel son las salas a distancia D0.
-distancia_(Nivel, Vistas, B, D0, D) :-
-    (   memberchk(B, Nivel)
-    ->  D = D0
-    ;   findall(V,
-                ( member(S, Nivel), tunel(S, V), \+ memberchk(V, Vistas) ),
-                Vs0),
-        sort(Vs0, Siguiente),
-        append(Vistas, Siguiente, Vistas1),
-        D1 is D0 + 1,
-        distancia_(Siguiente, Vistas1, B, D1, D)
+%   La meta de los problemas de este archivo.
+meta(giros2(P, D, H), E) :-
+    giros:meta(giros(P, D, H), E).
+meta(ruta8(_, _, H), H).
+meta(salir_m(Filas), E) :-
+    laberinto:meta(salir(Filas, cero), E).
+meta(salir_h3(Filas), E) :-
+    laberinto:meta(salir(Filas, cero), E).
+
+%!  sucesor(+Problema, +Estado, -Accion, -Siguiente, -Costo) is nondet.
+%
+%   Las transiciones de los problemas de este archivo.
+sucesor(giros2(P, D, H), E, A, S, C) :-
+    giros:sucesor(giros(P, D, H), E, A, S, C).
+sucesor(ruta8(Plano, _, _), Celda, Vecina, Vecina, 1) :-
+    vecina8(Plano, Celda, Vecina).
+sucesor(salir_m(Filas), E, A, S, C) :-
+    laberinto:sucesor(salir(Filas, cero), E, A, S, C).
+sucesor(salir_h3(Filas), E, A, S, C) :-
+    laberinto:sucesor(salir(Filas, cero), E, A, S, C).
+
+%!  heuristica(+Problema, +Estado, -H:number) is det.
+%
+%   Las heurísticas de los problemas de este archivo; ninguna estima de más.
+heuristica(giros2(_, _, X2-Y2), c(X-Y, _), H) :-
+    manhattan(X-Y, X2-Y2, D),
+    (   X =\= X2,
+        Y =\= Y2
+    ->  H is 10 * D + 1
+    ;   H is 10 * D
+    ).
+heuristica(ruta8(_, _, X2-Y2), X-Y, H) :-
+    H is max(abs(X - X2), abs(Y - Y2)).
+heuristica(salir_m(Filas), g(F, P), H) :-
+    length(Filas, N),
+    last(Filas, [Q]),
+    H is abs(P - Q) + N - F.
+heuristica(salir_h3(Filas), G, H) :-
+    length(Filas, N),
+    last(Filas, [Q]),
+    h3(Filas, G, g(N, Q), H).
+
+%!  comparar_giros(+Plano, +Desde, +Hasta, -K1:integer, -K2:integer)
+%!      is semidet.
+%
+%   K1 y K2 son los nodos que A* expande con giros, con la heurística del
+%   capítulo y con la que suma el giro obligado; los dos caminos cuestan
+%   lo mismo.
+comparar_giros(Plano, Desde, Hasta, K1, K2) :-
+    camino_con_giros(Plano, Desde, Hasta, _, C, K1),
+    buscar(mejor(a_estrella), soluciones:giros2(Plano, Desde, Hasta), _, C,
+           K2).
+
+% --- Ejercicio 3: ocho direcciones -------------------------------------------
+
+%!  vecina8(+Plano, +Celda, -Vecina) is nondet.
+%
+%   Vecina es una celda libre junto a Celda en una de las ocho direcciones;
+%   en diagonal, solo si las dos celdas por las que pasaría la esquina
+%   también están libres.
+vecina8(Plano, Celda, Vecina) :-
+    vecina(Plano, Celda, _, Vecina).
+vecina8(Plano, X-Y, X1-Y1) :-
+    member(DX-DY, [1-1, 1-(-1), (-1)-1, (-1)-(-1)]),
+    X1 is X + DX,
+    Y1 is Y + DY,
+    libre(Plano, X1, Y1),
+    libre(Plano, X1, Y),
+    libre(Plano, X, Y1).
+
+%!  camino8(+Plano, +Desde, +Hasta, -Pasos:integer, -Expandidos:integer)
+%!      is semidet.
+%
+%   Pasos es la menor cantidad de pasos de Desde a Hasta en ocho
+%   direcciones, hallada con A* y la distancia de Chebyshev.
+camino8(Plano, Desde, Hasta, Pasos, Expandidos) :-
+    buscar(mejor(a_estrella), soluciones:ruta8(Plano, Desde, Hasta), _,
+           Pasos, Expandidos).
+
+% --- Ejercicio 4: cuántos caminos más cortos --------------------------------
+
+%!  cantidad_minimos(+Plano, +Desde, +Hasta, -N:integer) is semidet.
+%
+%   N es la cantidad de caminos de largo mínimo de Desde a Hasta: una
+%   búsqueda en anchura por niveles que suma, para cada celda, los caminos
+%   que llegan a ella desde el nivel anterior. Falla si no hay camino.
+cantidad_minimos(Plano, Desde, Hasta, N) :-
+    list_to_assoc([Desde-1], Nivel),
+    list_to_assoc([Desde-si], Vistas),
+    niveles(Plano, Nivel, Vistas, Hasta, N).
+
+%!  niveles(+Plano, +Nivel, +Vistas, +Hasta, -N:integer) is semidet.
+%
+%   Nivel da, para cada celda a la misma distancia, cuántos caminos mínimos
+%   llegan a ella.
+niveles(Plano, Nivel, Vistas, Hasta, N) :-
+    (   get_assoc(Hasta, Nivel, N0)
+    ->  N = N0
+    ;   assoc_to_list(Nivel, Pares),
+        Pares \== [],
+        findall(V-K,
+                ( member(C-K, Pares),
+                  vecina(Plano, C, _, V),
+                  \+ get_assoc(V, Vistas, _) ),
+                Llegadas),
+        keysort(Llegadas, Ordenadas),
+        group_pairs_by_key(Ordenadas, Grupos),
+        findall(V-S, ( member(V-Ks, Grupos), sum_list(Ks, S) ), Siguiente),
+        list_to_assoc(Siguiente, Nivel1),
+        foldl(ver, Siguiente, Vistas, Vistas1),
+        niveles(Plano, Nivel1, Vistas1, Hasta, N)
     ).
 
-%!  mayor_distancia(-D:integer) is det.
+%!  ver(+Par, +Vistas0, -Vistas) is det.
 %
-%   D es la mayor distancia entre dos salas de la cueva.
-mayor_distancia(D) :-
-    aggregate_all(max(X), ( sala(A), sala(B), distancia(A, B, X) ), D).
+%   Vistas es Vistas0 con la celda del Par.
+ver(V-_, Vistas0, Vistas) :-
+    put_assoc(V, Vistas0, si, Vistas).
 
-% --- Ejercicio 3 ------------------------------------------------------------
+% --- Ejercicio 5: IDA* con una tabla ------------------------------------------
 
-%!  jugada_estricta(+Orden, +E0, -E, -Resultado, -Mensajes:list) is det.
+%!  ida_con_tabla(+Problema, -Plan:list, -Costo:number, -Expandidos:integer)
+%!      is semidet.
 %
-%   Como jugada/5, pero una ruta que pasa por la sala del jugador o repite
-%   la sala de dos pasos antes se rechaza con el mensaje ruta_invalida.
-jugada_estricta(disparar(Ruta), E0, E, Resultado, Mensajes) :-
-    E0 = j(J, _, _, _, _, _),
-    (   memberchk(J, Ruta)
-    ;   append(_, [A, _, A|_], [J|Ruta])
-    ),
-    !,
-    E = E0,
-    Resultado = sigue,
-    Mensajes = [ruta_invalida].
-jugada_estricta(Orden, E0, E, Resultado, Mensajes) :-
-    jugada(Orden, E0, E, Resultado, Mensajes).
+%   Como ida_estrella/4 del capítulo 41, pero cada iteración recuerda en un
+%   assoc el menor costo con que llegó a cada estado y no vuelve a expandir
+%   un estado al que llega con un costo igual o mayor: lo que había debajo
+%   ya se exploró con la misma cota y más margen.
+ida_con_tabla(Problema, Plan, Costo, Expandidos) :-
+    capitulo41:inicial(Problema, Estado),
+    capitulo41:heuristica(Problema, Estado, Cota),
+    iteracion_t(Problema, Estado, Cota, 0, Plan, Costo, Expandidos).
 
-% --- Ejercicio 4 ------------------------------------------------------------
-
-%!  conocimiento_final(+Semilla:integer, -K) is det.
+%!  iteracion_t(+Problema, +Estado, +Cota:number, +K0:integer, -Plan:list,
+%!              -Costo:number, -K:integer) is semidet.
 %
-%   K es el conocimiento del agente prudente al terminar su partida en el
-%   mundo sembrado con Semilla: las celdas que visitó, en orden, con sus
-%   percepciones.
-conocimiento_final(Semilla, K) :-
-    mundo_sembrado(Semilla, M),
-    jugar(M, final(_, _, Acciones)),
-    findall(C, member(ir(C), Acciones), Cs),
-    foldl(enfoques:agregar_nueva, Cs, [1-1], Celdas),
-    maplist(enfoques:con_percepciones(M), Celdas, Vs),
-    conocer(4, Vs, K).
-
-% --- Ejercicio 5 ------------------------------------------------------------
-
-%!  seguras_por_reglas2(+K, -Seguras:list) is det.
-%
-%   Las celdas que prueban seguras las reglas de enfoques.pl más la regla
-%   de dos hedores.
-seguras_por_reglas2(K, Seguras) :-
-    enfoques:sin_visitar(K, Cs),
-    include(segura2(K), Cs, Seguras).
-
-%!  segura2(+K, +C) is semidet.
-%
-%   Las reglas, con la de dos hedores, prueban que C es segura.
-segura2(K, C) :-
-    enfoques:sin_pozo(K, C),
-    (   enfoques:sin_wumpus(K, C)
-    ->  true
-    ;   dos_hedores(K, W),
-        W \== C
+%   Busca con Cota, y si no encuentra un plan, con la cota siguiente.
+iteracion_t(Problema, Estado, Cota, K0, Plan, Costo, K) :-
+    list_to_assoc([Estado-0], T0),
+    acotada_t(Problema, Estado, 0, Cota, T0, _, Resultado, K0, K1),
+    (   Resultado = plan(Plan, Costo)
+    ->  K = K1
+    ;   Resultado = cota(Siguiente),
+        Siguiente \== infinito,
+        iteracion_t(Problema, Estado, Siguiente, K1, Plan, Costo, K)
     ).
 
-%!  dos_hedores(+K, -W) is semidet.
+%!  acotada_t(+Problema, +Estado, +G:number, +Cota:number, +T0, -T,
+%!            -Resultado, +K0:integer, -K:integer) is det.
 %
-%   Dos celdas visitadas con hedor tienen una sola vecina común sin
-%   visitar que no está descartada por una vecina visitada sin hedor: el
-%   wumpus está en W.
-dos_hedores(K, W) :-
-    K = c(N, _, _, _, _, _, _),
-    once(( enfoques:percibio(K, A, hedor),
-           enfoques:percibio(K, B, hedor),
-           A @< B,
-           findall(D,
-                   ( vecina(N, A, D),
-                     vecina(N, B, D),
-                     \+ enfoques:visitada(K, D),
-                     \+ ( vecina(N, D, E),
-                          enfoques:visitada(K, E),
-                          \+ enfoques:percibio(K, E, hedor) ) ),
-                   [W]) )).
-
-%!  comparar_reglas2(+Semillas:list, -Resultado) is det.
-%
-%   Resultado es r(Seguras, Distintas) de seguras_por_reglas2/2 en las
-%   instantáneas de Semillas, frente a los mundos consistentes.
-comparar_reglas2(Semillas, r(Seguras, Distintas)) :-
-    instantaneas(Semillas, Ks),
-    maplist(seguras_por_reglas2, Ks, Ss),
-    maplist(seguras, Ks, Rs),
-    maplist(length, Ss, Ls),
-    sum_list(Ls, Seguras),
-    foldl(enfoques:contar_distinta, Ss, Rs, 0, Distintas).
-
-% --- Ejercicio 6 ------------------------------------------------------------
-
-%!  satisfacible(+Clausulas:list) is semidet.
-%
-%   Las Clausulas, listas de literales +A y -A sin variables, tienen un
-%   modelo: DPLL con propagación unitaria y separación de casos.
-satisfacible(Clausulas) :-
-    (   Clausulas == []
-    ->  true
-    ;   memberchk([], Clausulas)
-    ->  fail
-    ;   member([L], Clausulas)
-    ->  asignar(L, Clausulas, Resto),
-        satisfacible(Resto)
-    ;   Clausulas = [[L|_]|_],
-        (   asignar(L, Clausulas, Resto)
-        ;   opuesto(L, M),
-            asignar(M, Clausulas, Resto)
-        ),
-        satisfacible(Resto)
-    ->  true
+%   Como acotada/8 del capítulo 41, con la tabla T0 de los menores costos
+%   en lugar del rastro del camino.
+acotada_t(Problema, Estado, G, Cota, T0, T, Resultado, K0, K) :-
+    capitulo41:heuristica(Problema, Estado, H),
+    F is G + H,
+    (   F > Cota
+    ->  Resultado = cota(F),
+        T = T0,
+        K = K0
+    ;   capitulo41:meta(Problema, Estado)
+    ->  Resultado = plan([], G),
+        T = T0,
+        K = K0
+    ;   K1 is K0 + 1,
+        findall(t(A, S, C),
+                capitulo41:sucesor(Problema, Estado, A, S, C),
+                Ts),
+        probar_t(Ts, Problema, G, Cota, T0, T, infinito, Resultado, K1, K)
     ).
 
-%!  asignar(+L, +Clausulas:list, -Resto:list) is det.
+%!  probar_t(+Ts:list, +Problema, +G:number, +Cota:number, +T0, -T,
+%!           +Menor, -Resultado, +K0:integer, -K:integer) is det.
 %
-%   Resto son las Clausulas con L verdadero: sin las que contienen L, y
-%   sin el opuesto de L en las demás.
-asignar(L, Clausulas, Resto) :-
-    opuesto(L, M),
-    exclude(memberchk(L), Clausulas, Sin),
-    maplist(quitar(M), Sin, Resto).
-
-%!  quitar(+M, +C0:list, -C:list) is det.
-%
-%   C es la cláusula C0 sin el literal M.
-quitar(M, C0, C) :-
-    exclude(==(M), C0, C).
-
-%!  opuesto(+L, -M) is det.
-%
-%   M es el literal opuesto de L.
-opuesto(+A, -A).
-opuesto(-A, +A).
-
-%!  clausulas_conocimiento(+K, -Cs:list) is det.
-%
-%   Cs es el conocimiento K en forma clausal: celdas visitadas sin
-%   peligros, cada percepción como disyunción de los peligros vecinos o
-%   como su ausencia, y exactamente un wumpus.
-clausulas_conocimiento(K, Cs) :-
-    K = c(N, _, Vs, _, _, _, _),
-    findall([-P], ( member(C-_, Vs),
-                    member(P, [pozo(C), wumpus(C)]) ), Libres),
-    findall(Cl,
-            ( member(C-Ps, Vs),
-              member(Senal-Peligro, [brisa-pozo, hedor-wumpus]),
-              findall(A, ( vecina(N, C, V), A =.. [Peligro, V] ), As),
-              (   memberchk(Senal, Ps)
-              ->  findall(+A, member(A, As), Cl)
-              ;   member(A, As),
-                  Cl = [-A]
-              ) ),
-            Percepciones),
-    findall(X-Y, ( between(1, N, X), between(1, N, Y) ), Todas),
-    findall(+wumpus(C), member(C, Todas), AlMenosUno),
-    findall([-wumpus(A), -wumpus(B)],
-            ( member(A, Todas), member(B, Todas), A @< B ),
-            ASumoUno),
-    append([Libres, Percepciones, [AlMenosUno], ASumoUno], Cs).
-
-%!  seguras_dpll(+K, -Seguras:list) is det.
-%
-%   Seguras son las celdas sin visitar C para las que el conocimiento con
-%   pozo(C) y el conocimiento con wumpus(C) son insatisfacibles.
-seguras_dpll(K, Seguras) :-
-    clausulas_conocimiento(K, Cs),
-    enfoques:sin_visitar(K, Celdas),
-    include(segura_dpll(Cs), Celdas, Seguras).
-
-%!  segura_dpll(+Cs:list, +C) is semidet.
-%
-%   Cs no tiene modelo con un pozo ni con el wumpus en C.
-segura_dpll(Cs, C) :-
-    \+ satisfacible([[+pozo(C)]|Cs]),
-    \+ satisfacible([[+wumpus(C)]|Cs]).
-
-%!  comparar_dpll(+Semillas:list, -Resultado) is det.
-%
-%   Resultado es r(Seguras, Distintas, Inferencias) de seguras_dpll/2 en
-%   las instantáneas de Semillas.
-comparar_dpll(Semillas, r(Seguras, Distintas, Inferencias)) :-
-    instantaneas(Semillas, Ks),
-    statistics(inferences, I0),
-    maplist(seguras_dpll, Ks, Ss),
-    statistics(inferences, I1),
-    Inferencias is I1 - I0,
-    maplist(seguras, Ks, Rs),
-    maplist(length, Ss, Ls),
-    sum_list(Ls, Seguras),
-    foldl(enfoques:contar_distinta, Ss, Rs, 0, Distintas).
-
-% --- Ejercicio 7 ------------------------------------------------------------
-
-%!  barrer_umbrales(+Semillas:list, -Resultados:list) is det.
-%
-%   Resultados son pares Umbral-r(Oro, Muertes, SinOro, Media) para los
-%   umbrales 0.1 a 0.9.
-barrer_umbrales(Semillas, Resultados) :-
-    findall(U-R,
-            ( between(1, 9, I),
-              U is I / 10,
-              medir(riesgo(U), Semillas, R) ),
-            Resultados).
-
-% --- Ejercicio 8 ------------------------------------------------------------
-
-%!  mundo_sembrado(+N:integer, +Semilla:integer, -M) is det.
-%
-%   Como mundo_sembrado/2, en una cueva de N x N.
-mundo_sembrado(N, Semilla, mundo(N, Pozos, Wumpus, Oro)) :-
-    findall(X-Y, ( between(1, N, X), between(1, N, Y), X-Y \== 1-1 ),
-            Celdas),
-    foldl(grilla:tal_vez_pozo, Celdas, Pozos0, Semilla, S1),
-    exclude(==(sin_pozo), Pozos0, Pozos),
-    elegir(Celdas, Wumpus, S1, S2),
-    elegir(Celdas, Oro, S2, _).
-
-%!  medir_tamano(+N:integer, +Semillas:list, -Resultado) is det.
-%
-%   Resultado es r(Oro, Inferencias, Frontera): los oros del agente
-%   prudente en las cuevas de N x N de Semillas, las inferencias medias
-%   por partida y la mayor frontera de sus instantáneas.
-medir_tamano(N, Semillas, r(Oro, Media, MaxF)) :-
-    statistics(inferences, I0),
-    findall(Fin-Cs,
-            ( member(S, Semillas),
-              mundo_sembrado(N, S, M),
-              jugar(M, final(Fin, _, As)),
-              findall(C, member(ir(C), As), Cs) ),
-            Partidas),
-    statistics(inferences, I1),
-    length(Semillas, L),
-    Media is round((I1 - I0) / L),
-    aggregate_all(count, member(salio(si)-_, Partidas), Oro),
-    aggregate_all(max(F),
-                  ( member(S, Semillas),
-                    mundo_sembrado(N, S, M),
-                    jugar(M, final(_, _, As)),
-                    findall(C, member(ir(C), As), Cs),
-                    foldl(enfoques:agregar_nueva, Cs, [1-1], Celdas),
-                    append(Prefijo, _, Celdas),
-                    Prefijo \== [],
-                    maplist(enfoques:con_percepciones(M), Prefijo, Vs),
-                    conocer(N, Vs, K),
-                    frontera(K, Fr),
-                    length(Fr, F) ),
-                  MaxF).
-
-% --- Ejercicio 9 ------------------------------------------------------------
-
-%!  cazar_k(+Kmax:integer, +Semilla:integer, -Resultado, -Ordenes:list)
-%!      is det.
-%
-%   Como cazar/3, pero el agente dispara cuando el wumpus puede estar en a
-%   lo sumo Kmax salas, hacia la primera.
-cazar_k(Kmax, Semilla, Resultado, Ordenes) :-
-    nueva_partida(Semilla, E),
-    observacion(E, obs(S, _, Avisos, Flechas)),
-    K = k(S, [S-Avisos], [S-Avisos], [], Flechas),
-    turno_k(Kmax, 100, E, K, Resultado, Ordenes).
-
-%!  turno_k(+Kmax:integer, +N:integer, +E, +K, -Resultado, -Ordenes:list)
-%!      is det.
-%
-%   Juega a lo sumo N jugadas con la regla de disparo de Kmax salas.
-turno_k(_, 0, _, _, limite, []) :-
-    !.
-turno_k(Kmax, N, E0, K0, Resultado, [Orden|Ordenes]) :-
-    decidir_k(Kmax, K0, Orden),
-    jugada(Orden, E0, E, R, Ms),
-    (   R == sigue
-    ->  observacion(E, Obs),
-        cazador:aprender(Orden, Ms, Obs, K0, K),
-        N1 is N - 1,
-        turno_k(Kmax, N1, E, K, Resultado, Ordenes)
-    ;   Resultado = R,
-        Ordenes = []
-    ).
-
-%!  decidir_k(+Kmax:integer, +K, -Orden) is det.
-%
-%   Dispara hacia la primera sala posible del wumpus si hay a lo sumo Kmax;
-%   si no, decide como el agente de cazador.pl.
-decidir_k(Kmax, K, Orden) :-
-    K = k(Sala, _, _, _, Flechas),
-    mundos(K, wumpus, 1, Wumpus),
-    append(Wumpus, Ws0),
-    sort(Ws0, Ws),
-    length(Ws, NW),
-    (   Flechas > 0,
-        NW > 0,
-        NW =< Kmax
-    ->  Ws = [Blanco|_],
-        once(cazador:camino(Sala, Blanco, _, Ruta)),
-        Orden = disparar(Ruta)
-    ;   cazador:decidir(K, Orden)
-    ).
-
-%!  medir_caza_k(+Kmax:integer, +Semillas:list, -Resultados:list) is det.
-%
-%   Como medir_caza/2, con cazar_k/4.
-medir_caza_k(Kmax, Semillas, Resultados) :-
-    findall(R, ( member(S, Semillas), cazar_k(Kmax, S, R, _) ), Rs),
-    msort(Rs, Ordenados),
-    clumped(Ordenados, Resultados).
-
-% --- Ejercicio 10 -----------------------------------------------------------
-
-%!  soluble(+M) is semidet.
-%
-%   En el mundo M, el oro está en una celda sin pozo a la que se llega
-%   desde (1, 1) sin pasar por pozos.
-soluble(mundo(N, Pozos, _, Oro)) :-
-    \+ memberchk(Oro, Pozos),
-    alcanzable(N, Pozos, [1-1], [1-1], Oro).
-
-%!  alcanzable(+N:integer, +Pozos:list, +Frontera:list, +Vistas:list,
-%!             +Meta) is semidet.
-%
-%   Meta se alcanza desde las celdas de Frontera sin pasar por Pozos.
-alcanzable(N, Pozos, Frontera, Vistas, Meta) :-
-    (   memberchk(Meta, Frontera)
-    ->  true
-    ;   findall(V,
-                ( member(C, Frontera),
-                  vecina(N, C, V),
-                  \+ memberchk(V, Pozos),
-                  \+ memberchk(V, Vistas) ),
-                Vs0),
-        sort(Vs0, Siguiente),
-        Siguiente \== [],
-        append(Vistas, Siguiente, Vistas1),
-        alcanzable(N, Pozos, Siguiente, Vistas1, Meta)
-    ).
-
-%!  contar_solubles(+Semillas:list, -N:integer) is det.
-%
-%   N es la cantidad de mundos solubles entre los de Semillas.
-contar_solubles(Semillas, N) :-
-    aggregate_all(count,
-                  ( member(S, Semillas),
-                    mundo_sembrado(S, M),
-                    soluble(M) ),
-                  N).
-
-% --- Ejercicio 11 -----------------------------------------------------------
-
-%!  jugar_humano(+In, +M) is det.
-%
-%   Juega el mundo M con las acciones que llegan, una por línea, por el
-%   stream In, hasta que la partida termina o la entrada se acaba.
-jugar_humano(In, M) :-
-    estado_inicial(E),
-    humano(In, M, E, [], 0).
-
-%!  humano(+In, +M, +E, +Extras:list, +P0:integer) is det.
-%
-%   Muestra las percepciones del estado E, lee una acción y la ejecuta.
-humano(In, M, E0, Extras, P0) :-
-    E0 = e(C, _, _, _),
-    percepciones(M, E0, Ps0),
-    append(Ps0, Extras, Ps),
-    format("Estás en la celda ~w.~n", [C]),
-    forall(member(P, Ps), ( texto_percepcion(P, T), format("~w~n", [T]) )),
-    format("> "),
-    read_line_to_string(In, Linea),
-    (   Linea == end_of_file
-    ->  true
-    ;   string_codes(Linea, Codigos),
-        phrase(accion(A), Codigos),
-        catch(actuar(M, A, E0, E, Extras1, Fin),
-              error(domain_error(celda_vecina, _), _), fail)
-    ->  grilla:costo(A, Fin, Costo),
-        P is P0 + Costo,
-        (   Fin == sigue
-        ->  humano(In, M, E, Extras1, P)
-        ;   texto_fin(Fin, T),
-            format("~w Tu puntaje es ~w.~n", [T, P])
+%   Prueba las transiciones Ts en orden; salta las que llegan a un estado
+%   ya alcanzado con un costo menor o igual.
+probar_t([], _, _, _, T, T, Menor, cota(Menor), K, K).
+probar_t([t(A, S, C)|Ts], Problema, G, Cota, T0, T, Menor0, Resultado,
+         K0, K) :-
+    G1 is G + C,
+    (   get_assoc(S, T0, G0),
+        G0 =< G1
+    ->  probar_t(Ts, Problema, G, Cota, T0, T, Menor0, Resultado, K0, K)
+    ;   put_assoc(S, T0, G1, T1),
+        acotada_t(Problema, S, G1, Cota, T1, T2, R, K0, K1),
+        (   R = plan(Plan, Costo)
+        ->  Resultado = plan([A|Plan], Costo),
+            T = T2,
+            K = K1
+        ;   R = cota(F),
+            capitulo41:menor(F, Menor0, Menor),
+            probar_t(Ts, Problema, G, Cota, T2, T, Menor, Resultado, K1, K)
         )
-    ;   format("No entiendo. Escribe ir X Y, tomar, ~w~n",
-               ["disparar y una dirección, o salir."]),
-        humano(In, M, E0, Extras, P0)
     ).
 
-%!  accion(-A)// is semidet.
+%!  camino_ida_con_tabla(+Plano, +Desde, +Hasta, -Pasos:integer,
+%!                       -Expandidos:integer) is semidet.
 %
-%   Una acción escrita.
-accion(ir(X-Y)) -->
-    blanks, "ir", blank, blanks, integer(X), blank, blanks, integer(Y),
-    blanks.
-accion(tomar) -->
-    blanks, "tomar", blanks.
-accion(salir) -->
-    blanks, "salir", blanks.
-accion(disparar(D)) -->
-    blanks, "disparar", blank, blanks, string_without(" ", Cs), blanks,
-    { atom_codes(D, Cs),
-      memberchk(D, [norte, sur, este, oeste]) }.
+%   Pasos es el largo del camino más corto, hallado con ida_con_tabla/4.
+camino_ida_con_tabla(Plano, Desde, Hasta, Pasos, Expandidos) :-
+    ida_con_tabla(robot:ruta(Plano, Desde, Hasta, manhattan), _, Pasos,
+                  Expandidos).
 
-% texto_percepcion(P, T): T es lo que se le dice al jugador que percibe P.
-texto_percepcion(hedor, 'Sientes un hedor.').
-texto_percepcion(brisa, 'Sientes una brisa.').
-texto_percepcion(brillo, 'Ves un brillo.').
-texto_percepcion(golpe, 'Chocas contra una pared.').
-texto_percepcion(grito, 'Oyes un grito.').
+% --- Ejercicios 7 y 8: otras heurísticas para el laberinto -------------------
 
-% texto_fin(Fin, T): T es el mensaje final de la partida que terminó en Fin.
-texto_fin(salio(si), 'Sales de la cueva con el oro.').
-texto_fin(salio(no), 'Sales de la cueva sin el oro.').
-texto_fin(murio(pozo), 'Caes en un pozo.').
-texto_fin(murio(wumpus), 'El wumpus te come.').
-
-% --- Ejercicio 12 -------------------------------------------------------------
-
-%!  tiene_oro(+H, +T:integer) is semidet.
+%!  salida_manhattan(+Laberinto, -Costo:integer, -Expandidos:integer)
+%!      is semidet.
 %
-%   En el momento T de la historia H el agente lleva el oro: en un momento
-%   anterior lo tomó mientras percibía el brillo. Ninguna acción lo suelta,
-%   así que una vez tomado se conserva.
-tiene_oro(H, T) :-
-    T > 0,
-    T0 is T - 1,
-    (   hizo(H, tomar, T0),
-        percibio(H, brillo, T0)
-    ->  true
-    ;   tiene_oro(H, T0)
-    ).
+%   Costo es el del recorrido más corto del Laberinto, hallado con A* y la
+%   distancia horizontal más la cantidad de filas que faltan.
+salida_manhattan(Laberinto, Costo, Expandidos) :-
+    laberinto(Laberinto, Filas),
+    buscar(mejor(a_estrella), soluciones:salir_m(Filas), _, Costo,
+           Expandidos).
+
+%!  salida_h3(+Laberinto, -Costo:number, -Expandidos:integer) is semidet.
+%
+%   Como salida_manhattan/3, con la heurística H3: vuelos en tres tramos.
+salida_h3(Laberinto, Costo, Expandidos) :-
+    laberinto(Laberinto, Filas),
+    buscar(mejor(a_estrella), soluciones:salir_h3(Filas), _, Costo,
+           Expandidos).
+
+%!  estimacion_h3(+Laberinto, +X, -H:number) is det.
+%
+%   H es lo que estima H3 de la compuerta X a la salida del Laberinto.
+estimacion_h3(Laberinto, X, H) :-
+    laberinto(Laberinto, Filas),
+    heuristica(salir_h3(Filas), X, H).
+
+%!  h3(+Filas:list, +X, +Y, -H:number) is det.
+%
+%   H es la mayor, sobre los pares de filas intermedias, de la menor
+%   longitud de un vuelo de X a Y en tres tramos rectos que pasa por una
+%   compuerta de cada fila; si no hay dos filas intermedias, es la
+%   estimación vuelo del capítulo.
+h3(Filas, X, Y, H) :-
+    X = g(F1, _),
+    Y = g(F2, _),
+    laberinto:estimacion(vuelo, Filas, X, Y, H2),
+    findall(V,
+            ( between(F1, F2, R1), R1 > F1,
+              between(R1, F2, R2), R2 > R1, R2 < F2,
+              vuelo3(Filas, X, Y, R1, R2, V) ),
+            Vs),
+    max_list([H2|Vs], H).
+
+%!  vuelo3(+Filas:list, +X, +Y, +R1:integer, +R2:integer, -V:number)
+%!      is det.
+%
+%   V es el vuelo más corto de X a Y que pasa por una compuerta de la fila
+%   R1 y después por una de la fila R2.
+vuelo3(Filas, X, Y, R1, R2, V) :-
+    nth1(R1, Filas, Fila1),
+    nth1(R2, Filas, Fila2),
+    aggregate_all(min(D),
+                  ( member(P, Fila1),
+                    member(Q, Fila2),
+                    laberinto:recta(X, g(R1, P), D1),
+                    laberinto:recta(g(R1, P), g(R2, Q), D2),
+                    laberinto:recta(g(R2, Q), Y, D3),
+                    D is D1 + D2 + D3 ),
+                  V).
+
+% --- Ejercicios 9 y 10: medir las heurísticas del caballo ---------------------
+
+%!  distancias(+N:integer, +Desde, -Distancias) is det.
+%
+%   Distancias es un assoc con la cantidad mínima de saltos del caballo
+%   desde Desde hasta cada casilla del tablero de N x N, calculada en
+%   anchura por niveles.
+distancias(N, Desde, Distancias) :-
+    list_to_assoc([Desde-0], D0),
+    capas(N, [Desde], 0, D0, Distancias).
+
+%!  capas(+N:integer, +Nivel:list, +K:integer, +D0, -D) is det.
+%
+%   Nivel son las casillas a K saltos; D agrega a D0 las que siguen.
+capas(_, [], _, D, D) :-
+    !.
+capas(N, Nivel, K, D0, D) :-
+    K1 is K + 1,
+    findall(S,
+            ( member(C, Nivel),
+              salto(N, C, S, _),
+              \+ get_assoc(S, D0, _) ),
+            Ss0),
+    sort(Ss0, Ss),
+    foldl(con_distancia(K1), Ss, D0, D1),
+    capas(N, Ss, K1, D1, D).
+
+%!  saltos_minimos(+N:integer, +A, +B, -D:integer) is semidet.
+%
+%   D es la menor cantidad de saltos del caballo de A a B en el tablero de
+%   N x N. Falla si no se puede llegar.
+saltos_minimos(N, A, B, D) :-
+    distancias(N, A, Ds),
+    get_assoc(B, Ds, D).
+
+%!  con_distancia(+K:integer, +S, +D0, -D) is det.
+%
+%   D es D0 con la casilla S a K saltos.
+con_distancia(K, S, D0, D) :-
+    put_assoc(S, D0, K, D).
+
+%!  sobreestimaciones(+Heuristica, -Pares:list) is det.
+%
+%   Pares son los pares Desde-Hasta de casillas del tablero de 8 x 8,
+%   Desde antes que Hasta en el orden estándar, en los que la Heuristica
+%   estima más saltos que los necesarios.
+sobreestimaciones(Heuristica, Pares) :-
+    findall(A-B,
+            ( casilla8(A),
+              distancias(8, A, Ds),
+              casilla8(B),
+              A @< B,
+              get_assoc(B, Ds, D),
+              estimar(Heuristica, A, B, H),
+              H > D ),
+            Pares).
+
+%!  admisible(+N:integer, +Heuristica) is semidet.
+%
+%   La Heuristica no estima de más para ningún par de casillas del tablero
+%   de N x N.
+admisible(N, Heuristica) :-
+    forall(( between(1, N, X), between(1, N, Y) ),
+           ( distancias(N, X-Y, Ds),
+             forall(gen_assoc(B, Ds, D),
+                    ( estimar(Heuristica, X-Y, B, H),
+                      H =< D )) )).
+
+%!  casilla8(-C) is multi.
+%
+%   C es una casilla del tablero de 8 x 8.
+casilla8(X-Y) :-
+    between(1, 8, X),
+    between(1, 8, Y).
+
+% --- Ejercicio 11: el recorrido cerrado -------------------------------------
+
+%!  recorrido_cerrado(+N:integer, +Desde, -Camino:list) is nondet.
+%
+%   Camino es un recorrido del caballo por el tablero de N x N que empieza
+%   en Desde y termina a un salto de Desde, hallado con la regla de
+%   Warnsdorff.
+recorrido_cerrado(N, Desde, Camino) :-
+    recorrido(warnsdorff, N, Desde, Camino),
+    last(Camino, Ultima),
+    salto(N, Ultima, Desde, _).

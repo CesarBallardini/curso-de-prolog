@@ -2,401 +2,262 @@
 
 % Capítulo 76 - Soluciones de los ejercicios.
 %
-% Carga robot.pl, laberinto.pl, caballo.pl y recorrido.pl sin modificarlos.
-% Los problemas nuevos se definen en este módulo con inicial/2, meta/2,
-% sucesor/5 y heuristica/3, y se resuelven con las búsquedas del capítulo
-% 40 escribiendo soluciones:Problema.
+% Carga tablero.pl (y con él vista.pl, unico.pl, lazo.pl y tramos.pl) y
+% representantes.pl (y con él tipos.pl y enigma.pl), sin modificarlos.
 %
-% solo-local: carga archivos que cargan las búsquedas del capítulo 40.
+% solo-local: carga archivos de este capítulo y del capítulo 41.
 %
-%?- comparar_giros(patio, 28-8, 32-8, K1, K2).
+%?- costo_por_semilla(csenki1, Filas).
+%?- orbitas(cruz, Os), length(Os, N).
+%?- lazo_recto(recto, Lazos), length(Lazos, N).
+%?- conjetura(20).
 
-:- module(soluciones,
-          [ comparar_giros/5,
-            camino8/5,
-            cantidad_minimos/4,
-            ida_con_tabla/4,
-            camino_ida_con_tabla/5,
-            salida_manhattan/3,
-            salida_h3/3,
-            estimacion_h3/3,
-            sobreestimaciones/2,
-            distancias/3,
-            saltos_minimos/4,
-            admisible/2,
-            recorrido_cerrado/3
-          ]).
+:- ensure_loaded(tablero).
+:- ensure_loaded(representantes).
 
-:- use_module(library(assoc)).
-:- use_module(library(pairs)).
-:- reexport(giros).
-:- reexport(laberinto).
-:- reexport(caballo).
-:- reexport(recorrido).
-:- use_module(capitulo40).
+% --- Ejercicio 2 ----------------------------------------------------------
 
-% --- Ejercicio 2: un giro obligado ------------------------------------------
-
-%!  inicial(+Problema, -Estado) is det.
+%!  costo_por_semilla(+Nombre, -Filas:list) is det.
 %
-%   El estado inicial de los problemas de este archivo, tomado del problema
-%   del que cada uno es una variante.
-inicial(giros2(P, D, H), E) :-
-    giros:inicial(giros(P, D, H), E).
-inicial(ruta8(_, D, _), D).
-inicial(salir_m(Filas), E) :-
-    laberinto:inicial(salir(Filas, cero), E).
-inicial(salir_h3(Filas), E) :-
-    laberinto:inicial(salir(Filas, cero), E).
+%   Filas tiene un término s(Marca, Tramos, Inferencias) por cada marca
+%   del tablero Nombre: Tramos es la cantidad de tramos que salen de ella
+%   e Inferencias, lo que cuesta buscar los lazos desde ella.
+costo_por_semilla(Nombre, Filas) :-
+    findall(s(M, T, I),
+            ( marca(Nombre, M, _),
+              aggregate_all(count, tramo(Nombre, M, _, _), T),
+              statistics(inferences, I0),
+              lazos_desde(Nombre, M, _),
+              statistics(inferences, I1),
+              I is I1 - I0 ),
+            Filas).
 
-%!  meta(+Problema, +Estado) is semidet.
+% --- Ejercicio 3 ----------------------------------------------------------
+
+%!  simetrias_propias(+Nombre, -Ss:list) is det.
 %
-%   La meta de los problemas de este archivo.
-meta(giros2(P, D, H), E) :-
-    giros:meta(giros(P, D, H), E).
-meta(ruta8(_, _, H), H).
-meta(salir_m(Filas), E) :-
-    laberinto:meta(salir(Filas, cero), E).
-meta(salir_h3(Filas), E) :-
-    laberinto:meta(salir(Filas, cero), E).
+%   Ss son las simetrías que llevan el tablero Nombre a sí mismo.
+simetrias_propias(Nombre, Ss) :-
+    imagen(identidad, Nombre, Propia),
+    findall(S, ( simetria(S, _), imagen(S, Nombre, Propia) ), Ss).
 
-%!  sucesor(+Problema, +Estado, -Accion, -Siguiente, -Costo) is nondet.
+%!  orbitas(+Nombre, -Orbitas:list) is det.
 %
-%   Las transiciones de los problemas de este archivo.
-sucesor(giros2(P, D, H), E, A, S, C) :-
-    giros:sucesor(giros(P, D, H), E, A, S, C).
-sucesor(ruta8(Plano, _, _), Celda, Vecina, Vecina, 1) :-
-    vecina8(Plano, Celda, Vecina).
-sucesor(salir_m(Filas), E, A, S, C) :-
-    laberinto:sucesor(salir(Filas, cero), E, A, S, C).
-sucesor(salir_h3(Filas), E, A, S, C) :-
-    laberinto:sucesor(salir(Filas, cero), E, A, S, C).
+%   Orbitas agrupa las formas canónicas de los lazos del tablero Nombre:
+%   dos lazos están en la misma órbita si una simetría propia del tablero
+%   lleva uno al otro. Cada órbita es una lista ordenada.
+orbitas(Nombre, Orbitas) :-
+    problema(Nombre, Fs, Cs, _),
+    simetrias_propias(Nombre, Ss),
+    distintos(Nombre, Lazos),
+    maplist(orbita(Ss, Fs, Cs), Lazos, Orbitas0),
+    sort(Orbitas0, Orbitas).
 
-%!  heuristica(+Problema, +Estado, -H:number) is det.
-%
-%   Las heurísticas de los problemas de este archivo; ninguna estima de más.
-heuristica(giros2(_, _, X2-Y2), c(X-Y, _), H) :-
-    manhattan(X-Y, X2-Y2, D),
-    (   X =\= X2,
-        Y =\= Y2
-    ->  H is 10 * D + 1
-    ;   H is 10 * D
-    ).
-heuristica(ruta8(_, _, X2-Y2), X-Y, H) :-
-    H is max(abs(X - X2), abs(Y - Y2)).
-heuristica(salir_m(Filas), g(F, P), H) :-
-    length(Filas, N),
-    last(Filas, [Q]),
-    H is abs(P - Q) + N - F.
-heuristica(salir_h3(Filas), G, H) :-
-    length(Filas, N),
-    last(Filas, [Q]),
-    h3(Filas, G, g(N, Q), H).
-
-%!  comparar_giros(+Plano, +Desde, +Hasta, -K1:integer, -K2:integer)
-%!      is semidet.
-%
-%   K1 y K2 son los nodos que A* expande con giros, con la heurística del
-%   capítulo y con la que suma el giro obligado; los dos caminos cuestan
-%   lo mismo.
-comparar_giros(Plano, Desde, Hasta, K1, K2) :-
-    camino_con_giros(Plano, Desde, Hasta, _, C, K1),
-    buscar(mejor(a_estrella), soluciones:giros2(Plano, Desde, Hasta), _, C,
-           K2).
-
-% --- Ejercicio 3: ocho direcciones -------------------------------------------
-
-%!  vecina8(+Plano, +Celda, -Vecina) is nondet.
-%
-%   Vecina es una celda libre junto a Celda en una de las ocho direcciones;
-%   en diagonal, solo si las dos celdas por las que pasaría la esquina
-%   también están libres.
-vecina8(Plano, Celda, Vecina) :-
-    vecina(Plano, Celda, _, Vecina).
-vecina8(Plano, X-Y, X1-Y1) :-
-    member(DX-DY, [1-1, 1-(-1), (-1)-1, (-1)-(-1)]),
-    X1 is X + DX,
-    Y1 is Y + DY,
-    libre(Plano, X1, Y1),
-    libre(Plano, X1, Y),
-    libre(Plano, X, Y1).
-
-%!  camino8(+Plano, +Desde, +Hasta, -Pasos:integer, -Expandidos:integer)
-%!      is semidet.
-%
-%   Pasos es la menor cantidad de pasos de Desde a Hasta en ocho
-%   direcciones, hallada con A* y la distancia de Chebyshev.
-camino8(Plano, Desde, Hasta, Pasos, Expandidos) :-
-    buscar(mejor(a_estrella), soluciones:ruta8(Plano, Desde, Hasta), _,
-           Pasos, Expandidos).
-
-% --- Ejercicio 4: cuántos caminos más cortos --------------------------------
-
-%!  cantidad_minimos(+Plano, +Desde, +Hasta, -N:integer) is semidet.
-%
-%   N es la cantidad de caminos de largo mínimo de Desde a Hasta: una
-%   búsqueda en anchura por niveles que suma, para cada celda, los caminos
-%   que llegan a ella desde el nivel anterior. Falla si no hay camino.
-cantidad_minimos(Plano, Desde, Hasta, N) :-
-    list_to_assoc([Desde-1], Nivel),
-    list_to_assoc([Desde-si], Vistas),
-    niveles(Plano, Nivel, Vistas, Hasta, N).
-
-%!  niveles(+Plano, +Nivel, +Vistas, +Hasta, -N:integer) is semidet.
-%
-%   Nivel da, para cada celda a la misma distancia, cuántos caminos mínimos
-%   llegan a ella.
-niveles(Plano, Nivel, Vistas, Hasta, N) :-
-    (   get_assoc(Hasta, Nivel, N0)
-    ->  N = N0
-    ;   assoc_to_list(Nivel, Pares),
-        Pares \== [],
-        findall(V-K,
-                ( member(C-K, Pares),
-                  vecina(Plano, C, _, V),
-                  \+ get_assoc(V, Vistas, _) ),
-                Llegadas),
-        keysort(Llegadas, Ordenadas),
-        group_pairs_by_key(Ordenadas, Grupos),
-        findall(V-S, ( member(V-Ks, Grupos), sum_list(Ks, S) ), Siguiente),
-        list_to_assoc(Siguiente, Nivel1),
-        foldl(ver, Siguiente, Vistas, Vistas1),
-        niveles(Plano, Nivel1, Vistas1, Hasta, N)
-    ).
-
-%!  ver(+Par, +Vistas0, -Vistas) is det.
-%
-%   Vistas es Vistas0 con la celda del Par.
-ver(V-_, Vistas0, Vistas) :-
-    put_assoc(V, Vistas0, si, Vistas).
-
-% --- Ejercicio 5: IDA* con una tabla ------------------------------------------
-
-%!  ida_con_tabla(+Problema, -Plan:list, -Costo:number, -Expandidos:integer)
-%!      is semidet.
-%
-%   Como ida_estrella/4 del capítulo 40, pero cada iteración recuerda en un
-%   assoc el menor costo con que llegó a cada estado y no vuelve a expandir
-%   un estado al que llega con un costo igual o mayor: lo que había debajo
-%   ya se exploró con la misma cota y más margen.
-ida_con_tabla(Problema, Plan, Costo, Expandidos) :-
-    capitulo40:inicial(Problema, Estado),
-    capitulo40:heuristica(Problema, Estado, Cota),
-    iteracion_t(Problema, Estado, Cota, 0, Plan, Costo, Expandidos).
-
-%!  iteracion_t(+Problema, +Estado, +Cota:number, +K0:integer, -Plan:list,
-%!              -Costo:number, -K:integer) is semidet.
-%
-%   Busca con Cota, y si no encuentra un plan, con la cota siguiente.
-iteracion_t(Problema, Estado, Cota, K0, Plan, Costo, K) :-
-    list_to_assoc([Estado-0], T0),
-    acotada_t(Problema, Estado, 0, Cota, T0, _, Resultado, K0, K1),
-    (   Resultado = plan(Plan, Costo)
-    ->  K = K1
-    ;   Resultado = cota(Siguiente),
-        Siguiente \== infinito,
-        iteracion_t(Problema, Estado, Siguiente, K1, Plan, Costo, K)
-    ).
-
-%!  acotada_t(+Problema, +Estado, +G:number, +Cota:number, +T0, -T,
-%!            -Resultado, +K0:integer, -K:integer) is det.
-%
-%   Como acotada/8 del capítulo 40, con la tabla T0 de los menores costos
-%   en lugar del rastro del camino.
-acotada_t(Problema, Estado, G, Cota, T0, T, Resultado, K0, K) :-
-    capitulo40:heuristica(Problema, Estado, H),
-    F is G + H,
-    (   F > Cota
-    ->  Resultado = cota(F),
-        T = T0,
-        K = K0
-    ;   capitulo40:meta(Problema, Estado)
-    ->  Resultado = plan([], G),
-        T = T0,
-        K = K0
-    ;   K1 is K0 + 1,
-        findall(t(A, S, C),
-                capitulo40:sucesor(Problema, Estado, A, S, C),
-                Ts),
-        probar_t(Ts, Problema, G, Cota, T0, T, infinito, Resultado, K1, K)
-    ).
-
-%!  probar_t(+Ts:list, +Problema, +G:number, +Cota:number, +T0, -T,
-%!           +Menor, -Resultado, +K0:integer, -K:integer) is det.
-%
-%   Prueba las transiciones Ts en orden; salta las que llegan a un estado
-%   ya alcanzado con un costo menor o igual.
-probar_t([], _, _, _, T, T, Menor, cota(Menor), K, K).
-probar_t([t(A, S, C)|Ts], Problema, G, Cota, T0, T, Menor0, Resultado,
-         K0, K) :-
-    G1 is G + C,
-    (   get_assoc(S, T0, G0),
-        G0 =< G1
-    ->  probar_t(Ts, Problema, G, Cota, T0, T, Menor0, Resultado, K0, K)
-    ;   put_assoc(S, T0, G1, T1),
-        acotada_t(Problema, S, G1, Cota, T1, T2, R, K0, K1),
-        (   R = plan(Plan, Costo)
-        ->  Resultado = plan([A|Plan], Costo),
-            T = T2,
-            K = K1
-        ;   R = cota(F),
-            capitulo40:menor(F, Menor0, Menor),
-            probar_t(Ts, Problema, G, Cota, T2, T, Menor, Resultado, K1, K)
-        )
-    ).
-
-%!  camino_ida_con_tabla(+Plano, +Desde, +Hasta, -Pasos:integer,
-%!                       -Expandidos:integer) is semidet.
-%
-%   Pasos es el largo del camino más corto, hallado con ida_con_tabla/4.
-camino_ida_con_tabla(Plano, Desde, Hasta, Pasos, Expandidos) :-
-    ida_con_tabla(robot:ruta(Plano, Desde, Hasta, manhattan), _, Pasos,
-                  Expandidos).
-
-% --- Ejercicios 7 y 8: otras heurísticas para el laberinto -------------------
-
-%!  salida_manhattan(+Laberinto, -Costo:integer, -Expandidos:integer)
-%!      is semidet.
-%
-%   Costo es el del recorrido más corto del Laberinto, hallado con A* y la
-%   distancia horizontal más la cantidad de filas que faltan.
-salida_manhattan(Laberinto, Costo, Expandidos) :-
-    laberinto(Laberinto, Filas),
-    buscar(mejor(a_estrella), soluciones:salir_m(Filas), _, Costo,
-           Expandidos).
-
-%!  salida_h3(+Laberinto, -Costo:number, -Expandidos:integer) is semidet.
-%
-%   Como salida_manhattan/3, con la heurística H3: vuelos en tres tramos.
-salida_h3(Laberinto, Costo, Expandidos) :-
-    laberinto(Laberinto, Filas),
-    buscar(mejor(a_estrella), soluciones:salir_h3(Filas), _, Costo,
-           Expandidos).
-
-%!  estimacion_h3(+Laberinto, +X, -H:number) is det.
-%
-%   H es lo que estima H3 de la compuerta X a la salida del Laberinto.
-estimacion_h3(Laberinto, X, H) :-
-    laberinto(Laberinto, Filas),
-    heuristica(salir_h3(Filas), X, H).
-
-%!  h3(+Filas:list, +X, +Y, -H:number) is det.
-%
-%   H es la mayor, sobre los pares de filas intermedias, de la menor
-%   longitud de un vuelo de X a Y en tres tramos rectos que pasa por una
-%   compuerta de cada fila; si no hay dos filas intermedias, es la
-%   estimación vuelo del capítulo.
-h3(Filas, X, Y, H) :-
-    X = g(F1, _),
-    Y = g(F2, _),
-    laberinto:estimacion(vuelo, Filas, X, Y, H2),
-    findall(V,
-            ( between(F1, F2, R1), R1 > F1,
-              between(R1, F2, R2), R2 > R1, R2 < F2,
-              vuelo3(Filas, X, Y, R1, R2, V) ),
-            Vs),
-    max_list([H2|Vs], H).
-
-%!  vuelo3(+Filas:list, +X, +Y, +R1:integer, +R2:integer, -V:number)
+%!  orbita(+Ss:list, +Fs:integer, +Cs:integer, +Lazo:list, -Orbita:list)
 %!      is det.
 %
-%   V es el vuelo más corto de X a Y que pasa por una compuerta de la fila
-%   R1 y después por una de la fila R2.
-vuelo3(Filas, X, Y, R1, R2, V) :-
-    nth1(R1, Filas, Fila1),
-    nth1(R2, Filas, Fila2),
-    aggregate_all(min(D),
-                  ( member(P, Fila1),
-                    member(Q, Fila2),
-                    laberinto:recta(X, g(R1, P), D1),
-                    laberinto:recta(g(R1, P), g(R2, Q), D2),
-                    laberinto:recta(g(R2, Q), Y, D3),
-                    D is D1 + D2 + D3 ),
-                  V).
+%   Orbita son las formas canónicas de las imágenes de Lazo por las
+%   simetrías Ss, sin repetir.
+orbita(Ss, Fs, Cs, Lazo, Orbita) :-
+    maplist(imagen_de_lazo(Fs, Cs, Lazo), Ss, Imagenes),
+    sort(Imagenes, Orbita).
 
-% --- Ejercicios 9 y 10: medir las heurísticas del caballo ---------------------
-
-%!  distancias(+N:integer, +Desde, -Distancias) is det.
+%!  imagen_de_lazo(+Fs:integer, +Cs:integer, +Lazo:list, +S, -Forma:list)
+%!      is det.
 %
-%   Distancias es un assoc con la cantidad mínima de saltos del caballo
-%   desde Desde hasta cada casilla del tablero de N x N, calculada en
-%   anchura por niveles.
-distancias(N, Desde, Distancias) :-
-    list_to_assoc([Desde-0], D0),
-    capas(N, [Desde], 0, D0, Distancias).
+%   Forma es la forma canónica de la imagen de Lazo por S.
+imagen_de_lazo(Fs, Cs, Lazo, S, Forma) :-
+    lazo_imagen(S, Fs, Cs, Lazo, Forma).
 
-%!  capas(+N:integer, +Nivel:list, +K:integer, +D0, -D) is det.
+% --- Ejercicio 4 ----------------------------------------------------------
+
+%!  leer_tablero(+Lineas:list(string), -Filas:integer, -Columnas:integer,
+%!               -Marcas:list) is det.
 %
-%   Nivel son las casillas a K saltos; D agrega a D0 las que siguen.
-capas(_, [], _, D, D) :-
-    !.
-capas(N, Nivel, K, D0, D) :-
+%   Lineas es el dibujo de un tablero sin lazo, como el de
+%   mostrar(Nombre, []): una línea de casillas por fila y una línea vacía
+%   entre fila y fila. Filas y Columnas son sus dimensiones y Marcas sus
+%   marcas, en el orden de lectura.
+leer_tablero(Lineas, Filas, Columnas, Marcas) :-
+    exclude(==(""), Lineas, DeCasillas),
+    length(DeCasillas, Filas),
+    DeCasillas = [Primera|_],
+    split_string(Primera, " ", "", Simbolos),
+    length(Simbolos, Columnas),
+    foldl(marcas_de_fila, DeCasillas, Listas, 1, _),
+    append(Listas, Marcas).
+
+%!  marcas_de_fila(+Linea:string, -Marcas:list, +F:integer, -F1:integer)
+%!      is det.
+%
+%   Marcas son las marcas de la fila F, cuyas casillas dibuja Linea; F1 es
+%   F + 1.
+marcas_de_fila(Linea, Marcas, F, F1) :-
+    F1 is F + 1,
+    split_string(Linea, " ", "", Simbolos),
+    findall(Marca,
+            ( nth1(C, Simbolos, Simbolo),
+              atom_string(Caracter, Simbolo),
+              simbolo(Clase, Caracter),
+              clase(Marca, Clase, F-C) ),
+            Marcas).
+
+% --- Ejercicio 5 ----------------------------------------------------------
+
+% recto(Filas, Columnas, Marcas): el tablero del lazo recto de Csenki.
+recto(6, 6, [2-2, 2-4, 3-1, 3-4, 4-3, 5-3, 5-5, 6-4]).
+
+% El mismo tablero como problema/4, para dibujarlo con mostrar/2.
+problema(recto6, 6, 6, [ circulo(2-2), circulo(2-4), circulo(3-1),
+                         circulo(3-4), circulo(4-3), circulo(5-3),
+                         circulo(5-5), circulo(6-4) ]).
+
+%!  lazo_recto(+Nombre, -Lazos:list) is det.
+%
+%   Lazos son los lazos del tablero recto Nombre que pasan por todas las
+%   casillas y atraviesan cada marca sin girar. Como ninguna marca puede
+%   estar en una esquina, el lazo gira en 1-1: empieza allí, sigue por
+%   1-2 y termina en 2-1, con lo que cada lazo aparece una sola vez.
+lazo_recto(Nombre, Lazos) :-
+    call(Nombre, Filas, Columnas, Marcas),
+    Total is Filas * Columnas,
+    findall([1-1|Camino],
+            camino_recto(t(Filas, Columnas, Marcas, Total), 1-1, 1-2,
+                         [1-2, 1-1], 2, Camino),
+            Lazos).
+
+%!  camino_recto(+T, +Anterior, +Actual, +Visitadas:list, +K:integer,
+%!               -Camino:list) is nondet.
+%
+%   Camino sigue desde Actual, a la que se llegó desde Anterior, por
+%   casillas no visitadas hasta completar las del tablero y terminar en
+%   2-1, vecina de 1-1. K es la cantidad de casillas visitadas. En una
+%   marca, la casilla siguiente sigue la línea de Anterior y Actual.
+camino_recto(t(_, _, Marcas, Total), Anterior, Actual, _, Total, [Actual]) :-
+    Actual == 2-1,
+    recta_si_marca(Marcas, Anterior, Actual, 1-1).
+camino_recto(T, Anterior, Actual, Visitadas, K, [Actual|Camino]) :-
+    T = t(Filas, Columnas, Marcas, Total),
+    K < Total,
+    vecina(Filas, Columnas, Actual, Siguiente),
+    \+ memberchk(Siguiente, Visitadas),
+    recta_si_marca(Marcas, Anterior, Actual, Siguiente),
     K1 is K + 1,
-    findall(S,
-            ( member(C, Nivel),
-              salto(N, C, S, _),
-              \+ get_assoc(S, D0, _) ),
-            Ss0),
-    sort(Ss0, Ss),
-    foldl(con_distancia(K1), Ss, D0, D1),
-    capas(N, Ss, K1, D1, D).
+    camino_recto(T, Actual, Siguiente, [Siguiente|Visitadas], K1, Camino).
 
-%!  saltos_minimos(+N:integer, +A, +B, -D:integer) is semidet.
+%!  vecina(+Filas:integer, +Columnas:integer, +Pos, -Vecina) is nondet.
 %
-%   D es la menor cantidad de saltos del caballo de A a B en el tablero de
-%   N x N. Falla si no se puede llegar.
-saltos_minimos(N, A, B, D) :-
-    distancias(N, A, Ds),
-    get_assoc(B, Ds, D).
+%   Vecina es una casilla del tablero que comparte un lado con Pos.
+vecina(Filas, Columnas, F-C, F1-C1) :-
+    member(DF-DC, [0-1, 1-0, 0-(-1), (-1)-0]),
+    F1 is F + DF,
+    C1 is C + DC,
+    between(1, Filas, F1),
+    between(1, Columnas, C1).
 
-%!  con_distancia(+K:integer, +S, +D0, -D) is det.
+%!  recta_si_marca(+Marcas:list, +A, +B, +C) is semidet.
 %
-%   D es D0 con la casilla S a K saltos.
-con_distancia(K, S, D0, D) :-
-    put_assoc(S, D0, K, D).
+%   Si B es una marca, A, B y C están alineadas.
+recta_si_marca(Marcas, F0-C0, B, F2-C2) :-
+    (   memberchk(B, Marcas)
+    ->  B = F1-C1,
+        F1 - F0 =:= F2 - F1,
+        C1 - C0 =:= C2 - C1
+    ;   true
+    ).
 
-%!  sobreestimaciones(+Heuristica, -Pares:list) is det.
+% --- Ejercicio 7 ----------------------------------------------------------
+
+%!  cantidad_desarreglos(+N:integer, -D:integer) is det.
 %
-%   Pares son los pares Desde-Hasta de casillas del tablero de 8 x 8,
-%   Desde antes que Hasta en el orden estándar, en los que la Heuristica
-%   estima más saltos que los necesarios.
-sobreestimaciones(Heuristica, Pares) :-
-    findall(A-B,
-            ( casilla8(A),
-              distancias(8, A, Ds),
-              casilla8(B),
-              A @< B,
-              get_assoc(B, Ds, D),
-              estimar(Heuristica, A, B, H),
-              H > D ),
-            Pares).
+%   D es la cantidad de desarreglos de 1..N, por la recurrencia
+%   D(N) = (N - 1)(D(N - 1) + D(N - 2)), con D(1) = 0 y D(2) = 1. N
+%   debe ser al menos 1.
+cantidad_desarreglos(N, D) :-
+    cantidad_desarreglos(N, D, _).
 
-%!  admisible(+N:integer, +Heuristica) is semidet.
+%!  cantidad_desarreglos(+N:integer, -D:integer, -DAnterior:integer) is det.
 %
-%   La Heuristica no estima de más para ningún par de casillas del tablero
-%   de N x N.
-admisible(N, Heuristica) :-
-    forall(( between(1, N, X), between(1, N, Y) ),
-           ( distancias(N, X-Y, Ds),
-             forall(gen_assoc(B, Ds, D),
-                    ( estimar(Heuristica, X-Y, B, H),
-                      H =< D )) )).
+%   D es la cantidad de desarreglos de 1..N y DAnterior la de 1..N-1 (1
+%   para N = 1: la permutación vacía). N debe ser al menos 1.
+cantidad_desarreglos(N, D, D1) :-
+    (   N =:= 1
+    ->  D = 0,
+        D1 = 1
+    ;   N1 is N - 1,
+        cantidad_desarreglos(N1, D1, D2),
+        D is N1 * (D1 + D2)
+    ).
 
-%!  casilla8(-C) is multi.
+% --- Ejercicio 8 ----------------------------------------------------------
+
+%!  particion_libre(+N:integer, -Partes:list(integer)) is nondet.
 %
-%   C es una casilla del tablero de 8 x 8.
-casilla8(X-Y) :-
-    between(1, 8, X),
-    between(1, 8, Y).
+%   Partes es una partición de N en partes cualesquiera, de menor a mayor.
+particion_libre(N, Partes) :-
+    particion(N, 1, Partes).
 
-% --- Ejercicio 11: el recorrido cerrado -------------------------------------
+% --- Ejercicio 9 ----------------------------------------------------------
 
-%!  recorrido_cerrado(+N:integer, +Desde, -Camino:list) is nondet.
+%!  conjugacion_verificada(+N:integer) is semidet.
 %
-%   Camino es un recorrido del caballo por el tablero de N x N que empieza
-%   en Desde y termina a un salto de Desde, hallado con la regla de
-%   Warnsdorff.
-recorrido_cerrado(N, Desde, Camino) :-
-    recorrido(warnsdorff, N, Desde, Camino),
-    last(Camino, Ultima),
-    salto(N, Ultima, Desde, _).
+%   Para cada desarreglo de 1..N cuyo patrón tiene filas distintas, su
+%   total es el del representante de su tipo.
+conjugacion_verificada(N) :-
+    forall(tablero(N, P, _, T),
+           ( tipo(P, Tipo), total_de_tipo(Tipo, T) )).
+
+% --- Ejercicio 10 ---------------------------------------------------------
+
+%!  polinomio(+N:integer, -T:integer) is det.
+%
+%   T es N²(N² + 4)/8, la conjetura para el máximo con N par.
+polinomio(N, T) :-
+    T is N * N * (N * N + 4) // 8.
+
+%!  conjetura(+Hasta:integer) is semidet.
+%
+%   Para cada N par de 4 a Hasta, el máximo de maximo_representantes/3 es
+%   el de polinomio/2 y lo alcanza el tipo de N/2 ciclos de longitud 2.
+conjetura(Hasta) :-
+    forall(( between(2, Hasta, N), N mod 2 =:= 0, N >= 4 ),
+           ( maximo_representantes(N, T, _),
+             polinomio(N, T),
+             K is N // 2,
+             length(Doses, K),
+             maplist(=(2), Doses),
+             total_de_tipo(Doses, T) )).
+
+% --- Ejercicio 11 ---------------------------------------------------------
+
+%!  lineas_matriz(+M:list(list(integer)), -Lineas:list(string)) is det.
+%
+%   Lineas son las filas de M con cada número alineado a la derecha en una
+%   columna del ancho del número más largo, más un espacio.
+lineas_matriz(M, Lineas) :-
+    append(M, Todos),
+    max_list(Todos, Mayor),
+    format(string(Texto), "~d", [Mayor]),
+    string_length(Texto, Ancho0),
+    Ancho is Ancho0 + 1,
+    maplist(linea_matriz(Ancho), M, Lineas).
+
+%!  linea_matriz(+Ancho:integer, +Fila:list(integer), -Linea:string) is det.
+%
+%   Linea es Fila con cada número alineado a la derecha en Ancho columnas.
+linea_matriz(Ancho, Fila, Linea) :-
+    foldl(celda_matriz(Ancho), Fila, "", Linea).
+
+%!  celda_matriz(+Ancho:integer, +X:integer, +L0:string, -L:string) is det.
+%
+%   L es L0 seguido de X alineado a la derecha en Ancho columnas.
+celda_matriz(Ancho, X, L0, L) :-
+    format(string(Celda), "~t~d~*|", [X, Ancho]),
+    string_concat(L0, Celda, L).
+
+%!  mostrar_matriz(+M:list(list(integer))) is det.
+%
+%   Escribe las líneas de lineas_matriz/2, una por renglón.
+mostrar_matriz(M) :-
+    lineas_matriz(M, Lineas),
+    forall(member(L, Lineas), writeln(L)).

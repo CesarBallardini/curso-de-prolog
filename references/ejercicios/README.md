@@ -51,85 +51,86 @@ ese; las demás lo tienen como capítulo adicional.
 | 9 | Backtracking y corte | 87 | 64 | 26 | 57 | 4 |
 | 10 | Negación como falla | 137 | 65 | 42 | 83 | 12 |
 | 11 | Texto | 74 | 44 | 16 | 45 | 13 |
-| 12 | Prolog y la lógica | 85 | 43 | 20 | 42 | 23 |
+| 12 | Ejercicios integradores | 0 | 0 | 0 | 0 | 0 |
+| 13 | Prolog y la lógica | 85 | 43 | 20 | 42 | 23 |
 | | **Parte II** | | | | | |
-| 13 | El entorno de trabajo | 10 | 6 | 9 | 1 | 0 |
-| 14 | Estilo y documentación | 8 | 2 | 3 | 5 | 0 |
-| 15 | Control | 34 | 2 | 15 | 17 | 2 |
-| 16 | Rendimiento | 42 | 3 | 15 | 24 | 3 |
-| 17 | Todas las soluciones | 150 | 70 | 20 | 104 | 26 |
-| 18 | Orden superior | 38 | 22 | 9 | 28 | 1 |
-| 19 | Operadores y reglas como datos | 0 | 0 | 0 | 0 | 0 |
-| 20 | Base de datos dinámica | 43 | 19 | 6 | 21 | 16 |
-| 21 | Gramáticas (DCG) | 65 | 47 | 7 | 32 | 26 |
-| 22 | Estructuras de datos de la biblioteca | 113 | 26 | 22 | 65 | 26 |
-| 23 | Programación con restricciones | 63 | 29 | 4 | 31 | 28 |
-| 24 | Módulos y organización | 1 | 0 | 0 | 0 | 1 |
-| 25 | Errores y excepciones | 1 | 0 | 0 | 1 | 0 |
-| 26 | Pruebas y depuración | 5 | 0 | 3 | 2 | 0 |
-| 27 | Archivos, streams y formatos | 17 | 12 | 2 | 9 | 6 |
-| 28 | Programas de línea de comandos | 16 | 6 | 3 | 7 | 6 |
-| 29 | Prolog desde Python | 0 | 0 | 0 | 0 | 0 |
-| 30 | Servicios web (REST) | 0 | 0 | 0 | 0 | 0 |
-| 31 | Ejecutables y distribución | 0 | 0 | 0 | 0 | 0 |
+| 14 | El entorno de trabajo | 10 | 6 | 9 | 1 | 0 |
+| 15 | Estilo y documentación | 8 | 2 | 3 | 5 | 0 |
+| 16 | Control | 34 | 2 | 15 | 17 | 2 |
+| 17 | Rendimiento | 42 | 3 | 15 | 24 | 3 |
+| 18 | Todas las soluciones | 150 | 70 | 20 | 104 | 26 |
+| 19 | Orden superior | 38 | 22 | 9 | 28 | 1 |
+| 20 | Operadores y reglas como datos | 0 | 0 | 0 | 0 | 0 |
+| 21 | Base de datos dinámica | 43 | 19 | 6 | 21 | 16 |
+| 22 | Gramáticas (DCG) | 65 | 47 | 7 | 32 | 26 |
+| 23 | Estructuras de datos de la biblioteca | 113 | 26 | 22 | 65 | 26 |
+| 24 | Programación con restricciones | 63 | 29 | 4 | 31 | 28 |
+| 25 | Módulos y organización | 1 | 0 | 0 | 0 | 1 |
+| 26 | Errores y excepciones | 1 | 0 | 0 | 1 | 0 |
+| 27 | Pruebas y depuración | 5 | 0 | 3 | 2 | 0 |
+| 28 | Archivos, streams y formatos | 17 | 12 | 2 | 9 | 6 |
+| 29 | Programas de línea de comandos | 16 | 6 | 3 | 7 | 6 |
+| 30 | Prolog desde Python | 0 | 0 | 0 | 0 | 0 |
+| 31 | Servicios web (REST) | 0 | 0 | 0 | 0 | 0 |
+| 32 | Ejecutables y distribución | 0 | 0 | 0 | 0 | 0 |
 | | **Parte III** | | | | | |
-| 32 | Inspección de términos | 53 | 30 | 14 | 25 | 14 |
-| 33 | Introspección y metaintérpretes | 33 | 28 | 0 | 9 | 24 |
-| 34 | Estructuras incompletas y listas diferencia | 30 | 16 | 0 | 17 | 13 |
-| 35 | Transformación de programas y compilación | 9 | 7 | 0 | 0 | 9 |
-| 36 | Interfaces de usuario | 0 | 0 | 0 | 0 | 0 |
-| 37 | Concurrencia y paralelismo | 1 | 1 | 0 | 1 | 0 |
-| 38 | Semántica de los programas lógicos | 0 | 0 | 0 | 0 | 0 |
-| 39 | Tabulación | 18 | 3 | 1 | 6 | 11 |
-| 40 | Búsqueda y planificación | 62 | 38 | 3 | 22 | 37 |
-| 41 | Juegos | 3 | 3 | 0 | 0 | 3 |
-| 42 | Prolog y SQL | 126 | 87 | 46 | 63 | 17 |
+| 33 | Inspección de términos | 53 | 30 | 14 | 25 | 14 |
+| 34 | Introspección y metaintérpretes | 33 | 28 | 0 | 9 | 24 |
+| 35 | Estructuras incompletas y listas diferencia | 30 | 16 | 0 | 17 | 13 |
+| 36 | Transformación de programas y compilación | 9 | 7 | 0 | 0 | 9 |
+| 37 | Interfaces de usuario | 0 | 0 | 0 | 0 | 0 |
+| 38 | Concurrencia y paralelismo | 1 | 1 | 0 | 1 | 0 |
+| 39 | Semántica de los programas lógicos | 0 | 0 | 0 | 0 | 0 |
+| 40 | Tabulación | 18 | 3 | 1 | 6 | 11 |
+| 41 | Búsqueda y planificación | 62 | 38 | 3 | 22 | 37 |
+| 42 | Juegos | 3 | 3 | 0 | 0 | 3 |
+| 43 | Prolog y SQL | 126 | 87 | 46 | 63 | 17 |
 | | **Parte IV** | | | | | |
-| 43 | Proyecto: resolver ecuaciones | 0 | 0 | 0 | 0 | 0 |
-| 44 | Proyecto: una aventura de texto | 0 | 0 | 0 | 0 | 0 |
-| 45 | Proyecto: un compilador | 0 | 0 | 0 | 0 | 0 |
-| 46 | Proyecto: métodos numéricos | 0 | 0 | 0 | 0 | 0 |
-| 47 | Proyecto: aritmética racional y matrices | 0 | 0 | 0 | 0 | 0 |
-| 48 | Proyecto: circuitos lógicos | 0 | 0 | 0 | 0 | 0 |
-| 49 | Proyecto: diagnóstico por abducción | 0 | 0 | 0 | 0 | 0 |
-| 50 | Proyecto: la FFT simbólica | 0 | 0 | 0 | 0 | 0 |
-| 51 | Proyecto: autómatas y expresiones regulares | 0 | 0 | 0 | 0 | 0 |
-| 52 | Proyecto: un intérprete perezoso de reescritura de términos | 0 | 0 | 0 | 0 | 0 |
-| 53 | Proyecto: morfología del castellano | 0 | 0 | 0 | 0 | 0 |
-| 54 | Proyecto: traducción castellano–inglés | 0 | 0 | 0 | 0 | 0 |
-| 55 | Proyecto: diálogos por plantillas | 0 | 0 | 0 | 0 | 0 |
-| 56 | Proyecto: órdenes en castellano | 0 | 0 | 0 | 0 | 0 |
-| 57 | Proyecto: un intérprete funcional | 0 | 0 | 0 | 0 | 0 |
-| 58 | Proyecto: interpretación abstracta | 0 | 0 | 0 | 0 | 0 |
-| 59 | Proyecto: análisis de programas | 0 | 0 | 0 | 0 | 0 |
-| 60 | Proyecto: un intérprete dirigido por patrones | 0 | 0 | 0 | 0 | 0 |
-| 61 | Proyecto: una máquina de Prolog | 0 | 0 | 0 | 0 | 0 |
-| 62 | Proyecto: un demostrador de teoremas | 0 | 0 | 0 | 0 | 0 |
-| 63 | Proyecto: un sistema de producción | 0 | 0 | 0 | 0 | 0 |
-| 64 | Proyecto: el algoritmo Rete | 0 | 0 | 0 | 0 | 0 |
-| 65 | Proyecto: razonamiento rebatible | 0 | 0 | 0 | 0 | 0 |
-| 66 | Proyecto: evidencia y árboles de decisión | 0 | 0 | 0 | 0 | 0 |
-| 67 | Proyecto: aprender reglas de ejemplos | 0 | 0 | 0 | 0 | 0 |
-| 68 | Proyecto: espacios de versiones y generalización por explicación | 0 | 0 | 0 | 0 | 0 |
-| 69 | Proyecto: un perceptrón | 0 | 0 | 0 | 0 | 0 |
-| 70 | Proyecto: planificación por regresión | 0 | 0 | 0 | 0 | 0 |
-| 71 | Proyecto: grafos Y/O | 0 | 0 | 0 | 0 | 0 |
-| 72 | Proyecto: planificación de tareas | 0 | 0 | 0 | 0 | 0 |
-| 73 | Proyecto: horarios para Inscripciones | 0 | 0 | 0 | 0 | 0 |
-| 74 | Proyecto: el cubo de Rubik | 0 | 0 | 0 | 0 | 0 |
-| 75 | Proyecto: rompecabezas con simetrías | 0 | 0 | 0 | 0 | 0 |
-| 76 | Proyecto: robots, laberintos y el caballo | 0 | 0 | 0 | 0 | 0 |
-| 77 | Proyecto: el mundo del Wumpus | 0 | 0 | 0 | 0 | 0 |
-| 78 | Proyecto: Kalah, Mastermind y Nim | 0 | 0 | 0 | 0 | 0 |
-| 79 | Proyecto: un lenguaje de consejos para el ajedrez | 0 | 0 | 0 | 0 | 0 |
-| 80 | Proyecto: el etiquetado de Waltz | 0 | 0 | 0 | 0 | 0 |
-| 81 | Proyecto: una colección de problemas | 0 | 0 | 0 | 0 | 0 |
-| 82 | Proyecto: criptografía | 0 | 0 | 0 | 0 | 0 |
-| 83 | Proyecto: procesamiento de textos | 0 | 0 | 0 | 0 | 0 |
-| 84 | Proyecto: análisis de registros | 0 | 0 | 0 | 0 | 0 |
-| 85 | Proyecto: un motor Datalog | 0 | 0 | 0 | 0 | 0 |
-| 86 | Proyecto: un mini-SQL en Prolog | 0 | 0 | 0 | 0 | 0 |
-| 87 | Proyecto: preguntas en castellano | 0 | 0 | 0 | 0 | 0 |
+| 44 | Proyecto: resolver ecuaciones | 0 | 0 | 0 | 0 | 0 |
+| 45 | Proyecto: una aventura de texto | 0 | 0 | 0 | 0 | 0 |
+| 46 | Proyecto: un compilador | 0 | 0 | 0 | 0 | 0 |
+| 47 | Proyecto: métodos numéricos | 0 | 0 | 0 | 0 | 0 |
+| 48 | Proyecto: aritmética racional y matrices | 0 | 0 | 0 | 0 | 0 |
+| 49 | Proyecto: circuitos lógicos | 0 | 0 | 0 | 0 | 0 |
+| 50 | Proyecto: diagnóstico por abducción | 0 | 0 | 0 | 0 | 0 |
+| 51 | Proyecto: la FFT simbólica | 0 | 0 | 0 | 0 | 0 |
+| 52 | Proyecto: autómatas y expresiones regulares | 0 | 0 | 0 | 0 | 0 |
+| 53 | Proyecto: un intérprete perezoso de reescritura de términos | 0 | 0 | 0 | 0 | 0 |
+| 54 | Proyecto: morfología del castellano | 0 | 0 | 0 | 0 | 0 |
+| 55 | Proyecto: traducción castellano–inglés | 0 | 0 | 0 | 0 | 0 |
+| 56 | Proyecto: diálogos por plantillas | 0 | 0 | 0 | 0 | 0 |
+| 57 | Proyecto: órdenes en castellano | 0 | 0 | 0 | 0 | 0 |
+| 58 | Proyecto: un intérprete funcional | 0 | 0 | 0 | 0 | 0 |
+| 59 | Proyecto: interpretación abstracta | 0 | 0 | 0 | 0 | 0 |
+| 60 | Proyecto: análisis de programas | 0 | 0 | 0 | 0 | 0 |
+| 61 | Proyecto: un intérprete dirigido por patrones | 0 | 0 | 0 | 0 | 0 |
+| 62 | Proyecto: una máquina de Prolog | 0 | 0 | 0 | 0 | 0 |
+| 63 | Proyecto: un demostrador de teoremas | 0 | 0 | 0 | 0 | 0 |
+| 64 | Proyecto: un sistema de producción | 0 | 0 | 0 | 0 | 0 |
+| 65 | Proyecto: el algoritmo Rete | 0 | 0 | 0 | 0 | 0 |
+| 66 | Proyecto: razonamiento rebatible | 0 | 0 | 0 | 0 | 0 |
+| 67 | Proyecto: evidencia y árboles de decisión | 0 | 0 | 0 | 0 | 0 |
+| 68 | Proyecto: aprender reglas de ejemplos | 0 | 0 | 0 | 0 | 0 |
+| 69 | Proyecto: espacios de versiones y generalización por explicación | 0 | 0 | 0 | 0 | 0 |
+| 70 | Proyecto: un perceptrón | 0 | 0 | 0 | 0 | 0 |
+| 71 | Proyecto: planificación por regresión | 0 | 0 | 0 | 0 | 0 |
+| 72 | Proyecto: grafos Y/O | 0 | 0 | 0 | 0 | 0 |
+| 73 | Proyecto: planificación de tareas | 0 | 0 | 0 | 0 | 0 |
+| 74 | Proyecto: horarios para Inscripciones | 0 | 0 | 0 | 0 | 0 |
+| 75 | Proyecto: el cubo de Rubik | 0 | 0 | 0 | 0 | 0 |
+| 76 | Proyecto: rompecabezas con simetrías | 0 | 0 | 0 | 0 | 0 |
+| 77 | Proyecto: robots, laberintos y el caballo | 0 | 0 | 0 | 0 | 0 |
+| 78 | Proyecto: el mundo del Wumpus | 0 | 0 | 0 | 0 | 0 |
+| 79 | Proyecto: Kalah, Mastermind y Nim | 0 | 0 | 0 | 0 | 0 |
+| 80 | Proyecto: un lenguaje de consejos para el ajedrez | 0 | 0 | 0 | 0 | 0 |
+| 81 | Proyecto: el etiquetado de Waltz | 0 | 0 | 0 | 0 | 0 |
+| 82 | Proyecto: una colección de problemas | 0 | 0 | 0 | 0 | 0 |
+| 83 | Proyecto: criptografía | 0 | 0 | 0 | 0 | 0 |
+| 84 | Proyecto: procesamiento de textos | 0 | 0 | 0 | 0 | 0 |
+| 85 | Proyecto: análisis de registros | 0 | 0 | 0 | 0 | 0 |
+| 86 | Proyecto: un motor Datalog | 0 | 0 | 0 | 0 | 0 |
+| 87 | Proyecto: un mini-SQL en Prolog | 0 | 0 | 0 | 0 | 0 |
+| 88 | Proyecto: preguntas en castellano | 0 | 0 | 0 | 0 | 0 |
 
 ## Capítulo 1 — La primera hora
 
@@ -313,7 +314,11 @@ ese; las demás lo tienen como capítulo adicional.
 - [swish-tutoriales.md](swish-tutoriales.md): **SWISH-38<sup>1</sup>**
 - [universidades-en.md](universidades-en.md): UNI-CAM-7.5<sup>2</sup>, UNI-CAM-7.6<sup>3</sup>, UNI-POR-2.2<sup>2</sup>, UNI-POR-2.6<sup>2</sup>, UNI-POR-2.12<sup>2</sup>
 
-## Capítulo 12 — Prolog y la lógica
+## Capítulo 12 — Ejercicios integradores
+
+Sin entradas.
+
+## Capítulo 13 — Prolog y la lógica
 
 - [art-of-prolog.md](art-of-prolog.md): AoP-3.1-2<sup>3</sup>, AoP-3.5-2<sup>1</sup>, AoP-3.5-3<sup>2</sup>, AoP-3.5-4<sup>2</sup>, AoP-3.5-5<sup>3</sup>, AoP-P-3.32<sup>2</sup>
 - [bratko.md](bratko.md): BRA-2<sup>1</sup>
@@ -328,14 +333,14 @@ ese; las demás lo tienen como capítulo adicional.
 - [swish-tutoriales.md](swish-tutoriales.md): SWISH-63<sup>2</sup>
 - [universidades-en.md](universidades-en.md): **UNI-CAM-3.2<sup>2</sup>**, **UNI-RWTH-1.2<sup>1</sup>**, **UNI-RWTH-1.3<sup>3</sup>**, UNI-RWTH-2.1b–e<sup>3</sup>, **UNI-RWTH-2.2<sup>3</sup>**, **UNI-RWTH-2.3<sup>3</sup>**, **UNI-RWTH-3.1<sup>2</sup>**, **UNI-RWTH-3.2<sup>3</sup>**, **UNI-RWTH-3.3<sup>1</sup>**, UNI-RWTH-3.4<sup>2</sup>, **UNI-RWTH-4.1<sup>2</sup>**, **UNI-RWTH-4.2<sup>3</sup>**, **UNI-RWTH-4.3<sup>2</sup>**, **UNI-RWTH-4.5<sup>3</sup>**, **UNI-RWTH-5<sup>3</sup>**, UNI-RWTH-6<sup>3</sup>, **UNI-POR-2.5<sup>3</sup>**, UNI-CSUS-P4<sup>1</sup>, **UNI-CSUS-U5<sup>2</sup>**, **UNI-CSUS-U6<sup>2</sup>**, UNI-CSUS-C1<sup>1</sup>
 
-## Capítulo 13 — El entorno de trabajo
+## Capítulo 14 — El entorno de trabajo
 
 - [clocksin-mellish.md](clocksin-mellish.md): **CM-5.11<sup>1</sup>**, **CM-6.4<sup>1</sup>**, **CM-6.16<sup>1</sup>**, **CM-8.3<sup>2</sup>**, **CM-8.9<sup>1</sup>**
 - [learn-prolog-now.md](learn-prolog-now.md): LPN-PS1.1<sup>1</sup>, LPN-PS2.3<sup>1</sup>
 - [newthinktank.md](newthinktank.md): NTT-1<sup>1</sup>
 - [swish-tutoriales.md](swish-tutoriales.md): SWISH-1<sup>1</sup>, **SWISH-65<sup>1</sup>**
 
-## Capítulo 14 — Estilo y documentación
+## Capítulo 15 — Estilo y documentación
 
 - [art-of-prolog.md](art-of-prolog.md): **AoP-14.3-4<sup>2</sup>**
 - [bratko.md](bratko.md): BRA-3.3<sup>2</sup>, **BRA-8<sup>2</sup>**
@@ -344,7 +349,7 @@ ese; las demás lo tienen como capítulo adicional.
 - [power-of-prolog.md](power-of-prolog.md): POP-07<sup>1</sup>, POP-09<sup>2</sup>
 - [prolog-y-sql.md](prolog-y-sql.md): SQL-6<sup>2</sup>
 
-## Capítulo 15 — Control
+## Capítulo 16 — Control
 
 - [art-of-prolog.md](art-of-prolog.md): AoP-8.3-3<sup>1</sup>, AoP-10.1-2<sup>2</sup>, AoP-12.5-1<sup>1</sup>, AoP-14.1-1<sup>1</sup>
 - [clocksin-mellish.md](clocksin-mellish.md): CM-5.9<sup>2</sup>, CM-6.1<sup>1</sup>, **CM-6.10<sup>2</sup>**, **CM-6.11<sup>2</sup>**, CM-6.12<sup>1</sup>, CM-7.36<sup>2</sup>
@@ -359,7 +364,7 @@ ese; las demás lo tienen como capítulo adicional.
 - [swish-tutoriales.md](swish-tutoriales.md): SWISH-56<sup>1</sup>
 - [universidades-en.md](universidades-en.md): UNI-CAM-11.6<sup>2</sup>
 
-## Capítulo 16 — Rendimiento
+## Capítulo 17 — Rendimiento
 
 - [art-of-prolog.md](art-of-prolog.md): AoP-3.2-4<sup>2</sup>, AoP-5.3-1<sup>2</sup>, AoP-5.3-2<sup>2</sup>, AoP-5.3-3<sup>2</sup>, AoP-8.3-1<sup>1</sup>, AoP-8.3-2<sup>1</sup>, AoP-P-3.20<sup>2</sup>
 - [bratko.md](bratko.md): BRA-8<sup>2</sup>
@@ -373,7 +378,7 @@ ese; las demás lo tienen como capítulo adicional.
 - [swish-tutoriales.md](swish-tutoriales.md): SWISH-52<sup>2</sup>, SWISH-64<sup>2</sup>
 - [universidades-en.md](universidades-en.md): **UNI-CAM-5.2<sup>1</sup>**, UNI-CAM-5.3<sup>1</sup>, **UNI-CAM-5.9<sup>2</sup>**, UNI-CAM-7.7<sup>2</sup>, UNI-CAM-14.6<sup>2</sup>, UNI-POR-4.4<sup>2</sup>, UNI-POR-5.7<sup>3</sup>, UNI-POR-5.16<sup>3</sup>, UNI-428-2<sup>1</sup>
 
-## Capítulo 17 — Todas las soluciones
+## Capítulo 18 — Todas las soluciones
 
 - [art-of-prolog.md](art-of-prolog.md): AoP-2.2-3<sup>2</sup>, **AoP-16.1-1<sup>1</sup>**, **AoP-16.2-2<sup>2</sup>**, **AoP-16.2-4<sup>3</sup>**, **AoP-P-16.2<sup>1</sup>**
 - [bratko.md](bratko.md): BRA-6<sup>2</sup>
@@ -390,7 +395,7 @@ ese; las demás lo tienen como capítulo adicional.
 - [swish-tutoriales.md](swish-tutoriales.md): **SWISH-30<sup>2</sup>**, SWISH-37<sup>2</sup>, SWISH-42<sup>2</sup>, **SWISH-44<sup>2</sup>**, **SWISH-47<sup>2</sup>**, **SWISH-48<sup>2</sup>**, SWISH-50<sup>2</sup>, SWISH-55<sup>1</sup>
 - [universidades-en.md](universidades-en.md): **UNI-CAM-11.9<sup>2</sup>**, **UNI-CAM-11.10<sup>3</sup>**, UNI-CAM-17.1<sup>3</sup>, UNI-RWTH-10.3<sup>3</sup>, **UNI-POR-4.1<sup>2</sup>**, **UNI-POR-4.6<sup>2</sup>**, **UNI-POR-5.13<sup>1</sup>**
 
-## Capítulo 18 — Orden superior
+## Capítulo 19 — Orden superior
 
 - [art-of-prolog.md](art-of-prolog.md): AoP-9.2-5<sup>2</sup>, AoP-14.3-3<sup>2</sup>, **AoP-P-16.8<sup>1</sup>**
 - [bratko.md](bratko.md): **BRA-3.3<sup>2</sup>**
@@ -405,11 +410,11 @@ ese; las demás lo tienen como capítulo adicional.
 - [simply-logical.md](simply-logical.md): **SL-3.14<sup>2</sup>**
 - [universidades-en.md](universidades-en.md): **UNI-RWTH-9.2<sup>2</sup>**, **UNI-RWTH-9.3<sup>2</sup>**, UNI-POR-3.6<sup>1</sup>
 
-## Capítulo 19 — Operadores y reglas como datos
+## Capítulo 20 — Operadores y reglas como datos
 
 Sin entradas.
 
-## Capítulo 20 — Base de datos dinámica
+## Capítulo 21 — Base de datos dinámica
 
 - [art-of-prolog.md](art-of-prolog.md): **AoP-12.3-1<sup>3</sup>**, **AoP-12.5-1<sup>1</sup>**
 - [bratko.md](bratko.md): BRA-6<sup>2</sup>, BRA-15<sup>3</sup>
@@ -427,7 +432,7 @@ Sin entradas.
 - [swish-tutoriales.md](swish-tutoriales.md): SWISH-46<sup>2</sup>, **SWISH-50<sup>2</sup>**, **SWISH-55<sup>1</sup>**
 - [universidades-en.md](universidades-en.md): **UNI-CAM-17.1<sup>3</sup>**, **UNI-POR-2.9<sup>3</sup>**
 
-## Capítulo 21 — Gramáticas (DCG)
+## Capítulo 22 — Gramáticas (DCG)
 
 - [art-of-prolog.md](art-of-prolog.md): AoP-19.1-1<sup>3</sup>, **AoP-19.1-2<sup>3</sup>**, **AoP-19.1-3<sup>2</sup>**, **AoP-19.1-4<sup>2</sup>**, AoP-19.2-1 a AoP-19.2-3<sup>3</sup>, **AoP-19.3-1<sup>2</sup>**, **AoP-19.3-2<sup>3</sup>**, AoP-24-1, AoP-24-2<sup>3</sup>, **AoP-P-19.6<sup>1</sup>**
 - [bratko.md](bratko.md): **BRA-21<sup>2</sup>**
@@ -441,7 +446,7 @@ Sin entradas.
 - [swish-tutoriales.md](swish-tutoriales.md): **SWISH-59<sup>2</sup>**
 - [universidades-en.md](universidades-en.md): **UNI-RWTH-11.2<sup>3</sup>**, **UNI-POR-2.11<sup>2</sup>**
 
-## Capítulo 22 — Estructuras de datos de la biblioteca
+## Capítulo 23 — Estructuras de datos de la biblioteca
 
 - [art-of-prolog.md](art-of-prolog.md): AoP-3.3-5<sup>2</sup>, AoP-3.3-6<sup>3</sup>, AoP-3.3-7<sup>3</sup>, AoP-3.4-4<sup>1</sup>, AoP-8.2-4<sup>3</sup>, AoP-13.3-1<sup>2</sup>, **AoP-14.1-7<sup>3</sup>**, **AoP-14.2-1<sup>2</sup>**, AoP-14.2-2<sup>3</sup>, AoP-16.2-4<sup>3</sup>, **AoP-16.2-5<sup>3</sup>**, **AoP-20.1-1<sup>2</sup>**, **AoP-20.1-2<sup>2</sup>**, **AoP-20.1-3<sup>3</sup>**, AoP-20.1-4<sup>3</sup>, **AoP-P-20.2<sup>2</sup>**
 - [bratko.md](bratko.md): **BRA-9<sup>2</sup>**, **BRA-10<sup>3</sup>**
@@ -458,7 +463,7 @@ Sin entradas.
 - [swish-tutoriales.md](swish-tutoriales.md): SWISH-5<sup>1</sup>, SWISH-20<sup>2</sup>, SWISH-28<sup>1</sup>, SWISH-37<sup>2</sup>
 - [universidades-en.md](universidades-en.md): UNI-CAM-4.6<sup>2</sup>, UNI-CAM-13.3<sup>2</sup>, UNI-CAM-13.4<sup>2</sup>, UNI-CAM-14.3<sup>2</sup>, UNI-CAM-14.4<sup>2</sup>, UNI-CAM-14.5<sup>2</sup>, **UNI-CAM-14.6<sup>2</sup>**, UNI-CAM-14.8<sup>2</sup>, UNI-POR-2.8<sup>3</sup>, **UNI-POR-2.12<sup>2</sup>**, **UNI-POR-3.10<sup>2</sup>**, UNI-POR-3.11<sup>2</sup>, UNI-POR-3.16<sup>2</sup>, **UNI-POR-5.16<sup>3</sup>**, UNI-428-3<sup>2</sup>, UNI-428-9<sup>2</sup>, UNI-428-10<sup>1</sup>, UNI-428-11<sup>2</sup>
 
-## Capítulo 23 — Programación con restricciones
+## Capítulo 24 — Programación con restricciones
 
 - [art-of-prolog.md](art-of-prolog.md): AoP-14.1-3<sup>1</sup>, AoP-14.1-4<sup>3</sup>, AoP-14.1-5<sup>3</sup>, AoP-14.1-6<sup>2</sup>, AoP-P-14.4<sup>2</sup>
 - [bratko.md](bratko.md): BRA-4<sup>2</sup>, **BRA-7<sup>3</sup>**, **BRA-19<sup>3</sup>**
@@ -474,20 +479,20 @@ Sin entradas.
 - [swish-tutoriales.md](swish-tutoriales.md): **SWISH-62<sup>3</sup>**, **SWISH-63<sup>2</sup>**
 - [universidades-en.md](universidades-en.md): UNI-CAM-5.6<sup>2</sup>, UNI-CAM-5.8<sup>2</sup>, UNI-CAM-7.3<sup>2</sup>, UNI-CAM-7.4<sup>2</sup>, UNI-CAM-15.1<sup>2</sup>, **UNI-CAM-16.1<sup>2</sup>**, **UNI-CAM-16.2<sup>2</sup>**, **UNI-CAM-16.3<sup>2</sup>**, **UNI-CAM-16.4<sup>3</sup>**, UNI-POR-2.7<sup>2</sup>, UNI-POR-2.10<sup>3</sup>, **UNI-POR-5.8<sup>2</sup>**, **UNI-POR-5.9<sup>2</sup>**, **UNI-POR-5.10<sup>3</sup>**, UNI-POR-5.12<sup>2</sup>
 
-## Capítulo 24 — Módulos y organización
+## Capítulo 25 — Módulos y organización
 
 - [learn-prolog-now.md](learn-prolog-now.md): LPN-PS12.1<sup>3</sup>
 
-## Capítulo 25 — Errores y excepciones
+## Capítulo 26 — Errores y excepciones
 
 - [exercism.md](exercism.md): EXM-phone-number<sup>2</sup>
 
-## Capítulo 26 — Pruebas y depuración
+## Capítulo 27 — Pruebas y depuración
 
 - [clocksin-mellish.md](clocksin-mellish.md): CM-6.16<sup>1</sup>, CM-8.6<sup>1</sup>, CM-8.7<sup>2</sup>, CM-8.8<sup>1</sup>
 - [newthinktank.md](newthinktank.md): NTT-16<sup>2</sup>
 
-## Capítulo 27 — Archivos, streams y formatos
+## Capítulo 28 — Archivos, streams y formatos
 
 - [art-of-prolog.md](art-of-prolog.md): **AoP-12.4-2<sup>2</sup>**
 - [clocksin-mellish.md](clocksin-mellish.md): CM-5.4<sup>1</sup>, **CM-5.5<sup>2</sup>**, **CM-5.6<sup>2</sup>**, **CM-5.7<sup>2</sup>**, **CM-5.8<sup>2</sup>**, **CM-5.9<sup>2</sup>**, **CM-5.10<sup>2</sup>**, CM-6.11<sup>2</sup>, CM-7.38<sup>3</sup>
@@ -497,7 +502,7 @@ Sin entradas.
 - [prolog-y-sql.md](prolog-y-sql.md): SQL-24<sup>3</sup>
 - [universidades-en.md](universidades-en.md): **UNI-RWTH-10.3<sup>3</sup>**
 
-## Capítulo 28 — Programas de línea de comandos
+## Capítulo 29 — Programas de línea de comandos
 
 - [art-of-prolog.md](art-of-prolog.md): AoP-12.1-1<sup>2</sup>, **AoP-12.4-1<sup>2</sup>**
 - [clocksin-mellish.md](clocksin-mellish.md): **CM-5.4<sup>1</sup>**, CM-5.5<sup>2</sup>, CM-5.6<sup>2</sup>, CM-11.6<sup>3</sup>, CM-11.21<sup>3</sup>, CM-11.24<sup>3</sup>
@@ -507,19 +512,19 @@ Sin entradas.
 - [swish-tutoriales.md](swish-tutoriales.md): **SWISH-56<sup>1</sup>**
 - [universidades-en.md](universidades-en.md): UNI-POR-2.9<sup>3</sup>, **UNI-POR-5.14<sup>2</sup>**, UNI-CSUS-P3<sup>1</sup>
 
-## Capítulo 29 — Prolog desde Python
+## Capítulo 30 — Prolog desde Python
 
 Sin entradas.
 
-## Capítulo 30 — Servicios web (REST)
+## Capítulo 31 — Servicios web (REST)
 
 Sin entradas.
 
-## Capítulo 31 — Ejecutables y distribución
+## Capítulo 32 — Ejecutables y distribución
 
 Sin entradas.
 
-## Capítulo 32 — Inspección de términos
+## Capítulo 33 — Inspección de términos
 
 - [art-of-prolog.md](art-of-prolog.md): AoP-9.1-1<sup>2</sup>, **AoP-9.2-1<sup>2</sup>**, **AoP-9.2-2<sup>2</sup>**, **AoP-9.2-3<sup>2</sup>**, **AoP-9.2-4<sup>2</sup>**, **AoP-9.2-5<sup>2</sup>**, **AoP-10.1-1<sup>2</sup>**, **AoP-10.1-2<sup>2</sup>**, AoP-11.3-2<sup>1</sup>, AoP-11.4-1<sup>2</sup>, **AoP-16.3-1<sup>3</sup>**, **AoP-23-1 a AoP-23-5<sup>3</sup>**
 - [bratko.md](bratko.md): **BRA-6<sup>2</sup>**
@@ -534,7 +539,7 @@ Sin entradas.
 - [swish-tutoriales.md](swish-tutoriales.md): SWISH-2<sup>1</sup>, SWISH-3<sup>1</sup>, SWISH-61<sup>3</sup>
 - [universidades-en.md](universidades-en.md): **UNI-CAM-5.6<sup>2</sup>**, UNI-RWTH-1.3<sup>3</sup>, **UNI-RWTH-2.1b–e<sup>3</sup>**, **UNI-RWTH-10.1<sup>3</sup>**, UNI-POR-2.5<sup>3</sup>, UNI-POR-3.4<sup>1</sup>, UNI-POR-4.3<sup>1</sup>, **UNI-POR-5.6<sup>3</sup>**
 
-## Capítulo 33 — Introspección y metaintérpretes
+## Capítulo 34 — Introspección y metaintérpretes
 
 - [art-of-prolog.md](art-of-prolog.md): **AoP-17.2-1 a AoP-17.2-5<sup>2</sup>**, **AoP-17.4-1 a AoP-17.4-3<sup>3</sup>**, **AoP-19.2-1 a AoP-19.2-3<sup>3</sup>**, **AoP-P-17.5<sup>3</sup>**
 - [bratko.md](bratko.md): **BRA-15<sup>3</sup>**, **BRA-16<sup>3</sup>**, **BRA-20<sup>3</sup>**, BRA-22<sup>3</sup>
@@ -545,7 +550,7 @@ Sin entradas.
 - [swish-tutoriales.md](swish-tutoriales.md): **SWISH-57<sup>3</sup>**
 - [universidades-en.md](universidades-en.md): **UNI-RWTH-10.2<sup>3</sup>**, UNI-POR-5.2<sup>2</sup>
 
-## Capítulo 34 — Estructuras incompletas y listas diferencia
+## Capítulo 35 — Estructuras incompletas y listas diferencia
 
 - [art-of-prolog.md](art-of-prolog.md): AoP-5.2-2<sup>2</sup>, **AoP-15.1-1<sup>3</sup>**, **AoP-15.1-2<sup>2</sup>**, **AoP-15.1-3<sup>2</sup>**, **AoP-15.2-2<sup>3</sup>**, **AoP-15.2-3<sup>3</sup>**, **AoP-15.2-4<sup>3</sup>**, **AoP-16.2-3<sup>2</sup>**
 - [bratko.md](bratko.md): BRA-8<sup>2</sup>
@@ -556,7 +561,7 @@ Sin entradas.
 - [simply-logical.md](simply-logical.md): **SL-3.13<sup>3</sup>**
 - [universidades-en.md](universidades-en.md): **UNI-CAM-14.1<sup>2</sup>**, **UNI-CAM-14.2<sup>2</sup>**, **UNI-CAM-14.7<sup>3</sup>**, UNI-CAM-14.9<sup>3</sup>, UNI-CAM-14.10<sup>3</sup>, **UNI-RWTH-11.1<sup>3</sup>**, UNI-RWTH-11.2<sup>3</sup>, UNI-POR-2.4<sup>2</sup>, **UNI-POR-4.5<sup>3</sup>**
 
-## Capítulo 35 — Transformación de programas y compilación
+## Capítulo 36 — Transformación de programas y compilación
 
 - [art-of-prolog.md](art-of-prolog.md): **AoP-18.1-1, AoP-18.2-1, AoP-18.2-2, AoP-18.3-1<sup>3</sup>**, **AoP-19.1-1<sup>3</sup>**, AoP-19.2-1 a AoP-19.2-3<sup>3</sup>, **AoP-24-1, AoP-24-2<sup>3</sup>**
 - [clocksin-mellish.md](clocksin-mellish.md): **CM-9.5<sup>3</sup>**, **CM-11.14<sup>3</sup>**
@@ -564,19 +569,19 @@ Sin entradas.
 - [simply-logical.md](simply-logical.md): SL-3.13<sup>3</sup>
 - [universidades-en.md](universidades-en.md): **UNI-POR-5.7<sup>3</sup>**
 
-## Capítulo 36 — Interfaces de usuario
+## Capítulo 37 — Interfaces de usuario
 
 Sin entradas.
 
-## Capítulo 37 — Concurrencia y paralelismo
+## Capítulo 38 — Concurrencia y paralelismo
 
 - [exercism.md](exercism.md): **EXM-parallel-letter-frequency<sup>2</sup>**
 
-## Capítulo 38 — Semántica de los programas lógicos
+## Capítulo 39 — Semántica de los programas lógicos
 
 Sin entradas.
 
-## Capítulo 39 — Tabulación
+## Capítulo 40 — Tabulación
 
 - [art-of-prolog.md](art-of-prolog.md): AoP-12.3-1<sup>3</sup>
 - [endriss.md](endriss.md): END-3.4<sup>2</sup>
@@ -589,7 +594,7 @@ Sin entradas.
 - [prolog-y-sql.md](prolog-y-sql.md): SQL-21<sup>2</sup>, SQL-22<sup>3</sup>, SQL-28<sup>3</sup>, PAR-37<sup>3</sup>, PAR-38<sup>3</sup>, PAR-48<sup>3</sup>
 - [swish-tutoriales.md](swish-tutoriales.md): **SWISH-64<sup>2</sup>**
 
-## Capítulo 40 — Búsqueda y planificación
+## Capítulo 41 — Búsqueda y planificación
 
 - [art-of-prolog.md](art-of-prolog.md): AoP-14.1-2<sup>3</sup>, AoP-14.2-1<sup>2</sup>, **AoP-14.2-2<sup>3</sup>**, **AoP-14.3-5<sup>3</sup>**, **AoP-16.2-1<sup>3</sup>**, AoP-20.1-1<sup>2</sup>, AoP-20.1-2<sup>2</sup>, AoP-20.1-3<sup>3</sup>, **AoP-20.1-4<sup>3</sup>**, **AoP-20.1-5<sup>3</sup>**, AoP-P-20.2<sup>2</sup>
 - [bratko.md](bratko.md): BRA-4<sup>2</sup>, **BRA-11<sup>3</sup>**, **BRA-12<sup>3</sup>**, **BRA-13<sup>3</sup>**, **BRA-14<sup>3</sup>**, **BRA-17<sup>3</sup>**, **BRA-18<sup>3</sup>**
@@ -603,12 +608,12 @@ Sin entradas.
 - [swish-tutoriales.md](swish-tutoriales.md): **SWISH-61<sup>3</sup>**
 - [universidades-en.md](universidades-en.md): **UNI-CAM-12.1<sup>1</sup>**, UNI-CAM-12.3<sup>2</sup>, UNI-CAM-13.1<sup>1</sup>, **UNI-CAM-13.2<sup>1</sup>**, **UNI-CAM-13.3<sup>2</sup>**, **UNI-CAM-13.4<sup>2</sup>**, **UNI-CAM-13.5<sup>3</sup>**, **UNI-POR-2.8<sup>3</sup>**, UNI-POR-4.1<sup>2</sup>, **UNI-POR-4.8<sup>2</sup>**, **UNI-POR-5.11<sup>2</sup>**, **UNI-POR-5.12<sup>2</sup>**, UNI-428-12<sup>2</sup>
 
-## Capítulo 41 — Juegos
+## Capítulo 42 — Juegos
 
 - [bratko.md](bratko.md): **BRA-22<sup>3</sup>**
 - [clocksin-mellish.md](clocksin-mellish.md): **CM-11.7<sup>3</sup>**, **CM-11.15<sup>3</sup>**
 
-## Capítulo 42 — Prolog y SQL
+## Capítulo 43 — Prolog y SQL
 
 - [art-of-prolog.md](art-of-prolog.md): AoP-2.1-1<sup>1</sup>, AoP-2.1-2<sup>1</sup>, AoP-2.2-1<sup>1</sup>, AoP-2.2-2<sup>2</sup>, AoP-2.2-3<sup>2</sup>, AoP-2.2-4<sup>1</sup>, AoP-2.3-1<sup>1</sup>, **AoP-2.4-P<sup>1</sup>**, AoP-P-2.2<sup>2</sup>, AoP-P-14.10<sup>2</sup>, AoP-P-16.2<sup>1</sup>
 - [clocksin-mellish.md](clocksin-mellish.md): CM-11.26<sup>3</sup>
@@ -618,182 +623,182 @@ Sin entradas.
 - [swish-tutoriales.md](swish-tutoriales.md): SWISH-33<sup>1</sup>, SWISH-34<sup>1</sup>, SWISH-35<sup>1</sup>, SWISH-36<sup>1</sup>, **SWISH-37<sup>2</sup>**, SWISH-38<sup>1</sup>, SWISH-39<sup>1</sup>, SWISH-40<sup>1</sup>, SWISH-41<sup>2</sup>, SWISH-42<sup>2</sup>, SWISH-43<sup>1</sup>, SWISH-44<sup>2</sup>, SWISH-45<sup>1</sup>, SWISH-46<sup>2</sup>, SWISH-47<sup>2</sup>, SWISH-48<sup>2</sup>, SWISH-49<sup>2</sup>, SWISH-50<sup>2</sup>, SWISH-53<sup>1</sup>
 - [universidades-en.md](universidades-en.md): UNI-CAM-11.1–11.3<sup>1</sup>, UNI-CAM-11.4<sup>1</sup>, UNI-CAM-11.5<sup>1</sup>, UNI-CAM-11.6<sup>2</sup>, UNI-CAM-11.7<sup>2</sup>, UNI-CAM-11.8<sup>2</sup>, UNI-CAM-11.9<sup>2</sup>, UNI-CAM-11.10<sup>3</sup>, **UNI-POR-5.15<sup>2</sup>**
 
-## Capítulo 43 — Proyecto: resolver ecuaciones
+## Capítulo 44 — Proyecto: resolver ecuaciones
 
 Sin entradas.
 
-## Capítulo 44 — Proyecto: una aventura de texto
+## Capítulo 45 — Proyecto: una aventura de texto
 
 Sin entradas.
 
-## Capítulo 45 — Proyecto: un compilador
+## Capítulo 46 — Proyecto: un compilador
 
 Sin entradas.
 
-## Capítulo 46 — Proyecto: métodos numéricos
+## Capítulo 47 — Proyecto: métodos numéricos
 
 Sin entradas.
 
-## Capítulo 47 — Proyecto: aritmética racional y matrices
+## Capítulo 48 — Proyecto: aritmética racional y matrices
 
 Sin entradas.
 
-## Capítulo 48 — Proyecto: circuitos lógicos
+## Capítulo 49 — Proyecto: circuitos lógicos
 
 Sin entradas.
 
-## Capítulo 49 — Proyecto: diagnóstico por abducción
+## Capítulo 50 — Proyecto: diagnóstico por abducción
 
 Sin entradas.
 
-## Capítulo 50 — Proyecto: la FFT simbólica
+## Capítulo 51 — Proyecto: la FFT simbólica
 
 Sin entradas.
 
-## Capítulo 51 — Proyecto: autómatas y expresiones regulares
+## Capítulo 52 — Proyecto: autómatas y expresiones regulares
 
 Sin entradas.
 
-## Capítulo 52 — Proyecto: un intérprete perezoso de reescritura de términos
+## Capítulo 53 — Proyecto: un intérprete perezoso de reescritura de términos
 
 Sin entradas.
 
-## Capítulo 53 — Proyecto: morfología del castellano
+## Capítulo 54 — Proyecto: morfología del castellano
 
 Sin entradas.
 
-## Capítulo 54 — Proyecto: traducción castellano–inglés
+## Capítulo 55 — Proyecto: traducción castellano–inglés
 
 Sin entradas.
 
-## Capítulo 55 — Proyecto: diálogos por plantillas
+## Capítulo 56 — Proyecto: diálogos por plantillas
 
 Sin entradas.
 
-## Capítulo 56 — Proyecto: órdenes en castellano
+## Capítulo 57 — Proyecto: órdenes en castellano
 
 Sin entradas.
 
-## Capítulo 57 — Proyecto: un intérprete funcional
+## Capítulo 58 — Proyecto: un intérprete funcional
 
 Sin entradas.
 
-## Capítulo 58 — Proyecto: interpretación abstracta
+## Capítulo 59 — Proyecto: interpretación abstracta
 
 Sin entradas.
 
-## Capítulo 59 — Proyecto: análisis de programas
+## Capítulo 60 — Proyecto: análisis de programas
 
 Sin entradas.
 
-## Capítulo 60 — Proyecto: un intérprete dirigido por patrones
+## Capítulo 61 — Proyecto: un intérprete dirigido por patrones
 
 Sin entradas.
 
-## Capítulo 61 — Proyecto: una máquina de Prolog
+## Capítulo 62 — Proyecto: una máquina de Prolog
 
 Sin entradas.
 
-## Capítulo 62 — Proyecto: un demostrador de teoremas
+## Capítulo 63 — Proyecto: un demostrador de teoremas
 
 Sin entradas.
 
-## Capítulo 63 — Proyecto: un sistema de producción
+## Capítulo 64 — Proyecto: un sistema de producción
 
 Sin entradas.
 
-## Capítulo 64 — Proyecto: el algoritmo Rete
+## Capítulo 65 — Proyecto: el algoritmo Rete
 
 Sin entradas.
 
-## Capítulo 65 — Proyecto: razonamiento rebatible
+## Capítulo 66 — Proyecto: razonamiento rebatible
 
 Sin entradas.
 
-## Capítulo 66 — Proyecto: evidencia y árboles de decisión
+## Capítulo 67 — Proyecto: evidencia y árboles de decisión
 
 Sin entradas.
 
-## Capítulo 67 — Proyecto: aprender reglas de ejemplos
+## Capítulo 68 — Proyecto: aprender reglas de ejemplos
 
 Sin entradas.
 
-## Capítulo 68 — Proyecto: espacios de versiones y generalización por explicación
+## Capítulo 69 — Proyecto: espacios de versiones y generalización por explicación
 
 Sin entradas.
 
-## Capítulo 69 — Proyecto: un perceptrón
+## Capítulo 70 — Proyecto: un perceptrón
 
 Sin entradas.
 
-## Capítulo 70 — Proyecto: planificación por regresión
+## Capítulo 71 — Proyecto: planificación por regresión
 
 Sin entradas.
 
-## Capítulo 71 — Proyecto: grafos Y/O
+## Capítulo 72 — Proyecto: grafos Y/O
 
 Sin entradas.
 
-## Capítulo 72 — Proyecto: planificación de tareas
+## Capítulo 73 — Proyecto: planificación de tareas
 
 Sin entradas.
 
-## Capítulo 73 — Proyecto: horarios para Inscripciones
+## Capítulo 74 — Proyecto: horarios para Inscripciones
 
 Sin entradas.
 
-## Capítulo 74 — Proyecto: el cubo de Rubik
+## Capítulo 75 — Proyecto: el cubo de Rubik
 
 Sin entradas.
 
-## Capítulo 75 — Proyecto: rompecabezas con simetrías
+## Capítulo 76 — Proyecto: rompecabezas con simetrías
 
 Sin entradas.
 
-## Capítulo 76 — Proyecto: robots, laberintos y el caballo
+## Capítulo 77 — Proyecto: robots, laberintos y el caballo
 
 Sin entradas.
 
-## Capítulo 77 — Proyecto: el mundo del Wumpus
+## Capítulo 78 — Proyecto: el mundo del Wumpus
 
 Sin entradas.
 
-## Capítulo 78 — Proyecto: Kalah, Mastermind y Nim
+## Capítulo 79 — Proyecto: Kalah, Mastermind y Nim
 
 Sin entradas.
 
-## Capítulo 79 — Proyecto: un lenguaje de consejos para el ajedrez
+## Capítulo 80 — Proyecto: un lenguaje de consejos para el ajedrez
 
 Sin entradas.
 
-## Capítulo 80 — Proyecto: el etiquetado de Waltz
+## Capítulo 81 — Proyecto: el etiquetado de Waltz
 
 Sin entradas.
 
-## Capítulo 81 — Proyecto: una colección de problemas
+## Capítulo 82 — Proyecto: una colección de problemas
 
 Sin entradas.
 
-## Capítulo 82 — Proyecto: criptografía
+## Capítulo 83 — Proyecto: criptografía
 
 Sin entradas.
 
-## Capítulo 83 — Proyecto: procesamiento de textos
+## Capítulo 84 — Proyecto: procesamiento de textos
 
 Sin entradas.
 
-## Capítulo 84 — Proyecto: análisis de registros
+## Capítulo 85 — Proyecto: análisis de registros
 
 Sin entradas.
 
-## Capítulo 85 — Proyecto: un motor Datalog
+## Capítulo 86 — Proyecto: un motor Datalog
 
 Sin entradas.
 
-## Capítulo 86 — Proyecto: un mini-SQL en Prolog
+## Capítulo 87 — Proyecto: un mini-SQL en Prolog
 
 Sin entradas.
 
-## Capítulo 87 — Proyecto: preguntas en castellano
+## Capítulo 88 — Proyecto: preguntas en castellano
 
 Sin entradas.

@@ -1,351 +1,237 @@
 :- encoding(utf8).
 
-% Capítulo 21 - Soluciones de los ejercicios 1 a 13 y 17. Las de los
-% ejercicios 14 a 16, sobre el proyecto, están en soluciones_proyecto.pl.
+% Capítulo 21 - Soluciones de los ejercicios 1 a 10. Las de los ejercicios 11
+% y 12 están en soluciones_wumpus.pl, y las de 13 a 15 en
+% soluciones_proyecto.pl.
 %
-%?- phrase(oracion_verdadera(H), P).
-%?- phrase(expresion(V), `2+3*4-6/2`).
-%?- string_codes("cuanto es 5 mas 13 por 2", Cs), phrase(problema(V), Cs).
+%?- iniciar_cuenta, depositar(100), extraer(30), saldo(S).
+%?- olvidar_sumas, suma_hasta(100, S).
+%?- reiniciar, encadenar, como(abuelo(juan, sofia)).
 
-:- use_module(library(dcg/basics)).
-:- use_module(library(dcg/high_order)).
+:- dynamic q/2, p/1, h/1, vive_cerca_del_agua/1, numero/1, semilla/1,
+    cuenta/1, suma_guardada/2, hecho/1, derivado/3.
 
 % --- Ejercicio 2 --------------------------------------------------------------
 
-%!  ab// is nondet.
+%!  nada_bien(?P) is nondet.
 %
-%   Una o más a seguidas de la misma cantidad de b.
-ab --> [a], [b].
-ab --> [a], ab, [b].
+%   P nada bien: vive cerca del agua y sabe nadar. vive_cerca_del_agua/1 es
+%   dinámico y todavía no tiene hechos: la consulta falla en lugar de
+%   producir un error.
+nada_bien(P) :-
+    vive_cerca_del_agua(P),
+    sabe_nadar(P).
 
-%!  ab_invertida// is nondet.
-%
-%   El mismo lenguaje que ab//0, con las reglas en el orden inverso
-%   (ejercicio 6). Analiza bien, pero no genera: la primera regla es siempre
-%   la recursiva, y la generación no llega nunca a una lista completa.
-ab_invertida --> [a], ab_invertida, [b].
-ab_invertida --> [a], [b].
+% sabe_nadar(P): P sabe nadar.
+sabe_nadar(ana).
+sabe_nadar(luis).
 
 % --- Ejercicio 3 --------------------------------------------------------------
 
-%!  saludo_a(?N)// is nondet.
-%
-%   Los códigos de "hola " seguidos del nombre N.
-saludo_a(N) -->
-    "hola ",
-    nombre(N).
-
-%!  saludo_a_traducido(?N, ?S0, ?S) is nondet.
-%
-%   La traducción de saludo_a//1 escrita sin -->: los códigos de "hola " al
-%   principio de S0, y el nombre en lo que sigue.
-saludo_a_traducido(N, S0, S) :-
-    S0 = [0'h, 0'o, 0'l, 0'a, 0' |S1],
-    nombre(N, S1, S).
-
-%!  nombre(?N)// is nondet.
-%
-%   Los códigos de uno de los nombres conocidos.
-nombre(ana)  --> "ana".
-nombre(luis) --> "luis".
+% numero(N): los números del ejercicio.
+numero(1).
+numero(2).
+numero(3).
 
 % --- Ejercicio 4 --------------------------------------------------------------
 
-%!  frase// is nondet.
+% semilla(S): la semilla del generador; cambia en cada número generado.
+semilla(13).
+
+%!  aleatorio(+R:integer, -N:integer) is det.
 %
-%   Un sujeto y un verbo que concuerdan en número: "el perro ladra" o "los
-%   perros ladran", como listas de palabras.
-frase -->
-    sujeto(Numero),
-    verbo(Numero).
+%   N es un número entre 1 y R calculado a partir de la semilla, que se
+%   reemplaza por la siguiente: (125 * S + 1) mod 4096.
+aleatorio(R, N) :-
+    retract(semilla(S)),
+    N is S mod R + 1,
+    S1 is (125 * S + 1) mod 4096,
+    assertz(semilla(S1)).
 
-%!  sujeto(?Numero)// is nondet.
+%!  primeros_aleatorios(+Cantidad:integer, +R:integer, -L:list) is det.
 %
-%   Un artículo y un sustantivo en singular o en plural.
-sujeto(Numero) -->
-    articulo(Numero),
-    sustantivo(Numero).
-
-% articulo(Numero)//: el artículo de ese número.
-articulo(singular) --> [el].
-articulo(plural)   --> [los].
-
-% sustantivo(Numero)//: un sustantivo de ese número.
-sustantivo(singular) --> [perro].
-sustantivo(plural)   --> [perros].
-sustantivo(singular) --> [gato].
-sustantivo(plural)   --> [gatos].
-
-% verbo(Numero)//: un verbo conjugado en ese número.
-verbo(singular) --> [ladra].
-verbo(plural)   --> [ladran].
+%   L son los próximos Cantidad números de aleatorio(R, N).
+primeros_aleatorios(Cantidad, R, L) :-
+    length(L, Cantidad),
+    maplist(aleatorio(R), L).
 
 % --- Ejercicio 5 --------------------------------------------------------------
 
-% persona(P): P es una de las personas de las que se puede hablar.
-persona(juan).
-persona(ana).
-persona(pedro).
-persona(marta).
-
-% padre(P, H): P es el padre de H.
-padre(juan, ana).
-padre(juan, pedro).
-% madre(M, H): M es la madre de H.
-madre(marta, ana).
-madre(marta, pedro).
-
-%!  oracion_verdadera(?Hecho)// is nondet.
+%!  iniciar_cuenta is det.
 %
-%   Una oración de la sección 21.1 que afirma Hecho, siempre que Hecho sea
-%   uno de los hechos de la base.
-oracion_verdadera(Hecho) -->
-    nombre_de_persona(A),
-    [es],
-    relacion(A, B, Hecho),
-    [de],
-    nombre_de_persona(B),
-    { verdadero(Hecho) }.
+%   Abre una cuenta con saldo 0, o la vuelve a abrir si ya estaba abierta.
+iniciar_cuenta :-
+    retractall(cuenta(_)),
+    assertz(cuenta(0)).
 
-%!  verdadero(+Hecho) is semidet.
+%!  cerrar_cuenta is semidet.
 %
-%   Hecho es uno de los hechos de padre/2 o de madre/2. Una cláusula por
-%   relación, en lugar de call/1: el sandbox de SWISH no acepta llamar un
-%   objetivo que no conoce de antemano.
-verdadero(padre(A, B)) :-
-    padre(A, B).
-verdadero(madre(A, B)) :-
-    madre(A, B).
+%   Cierra la cuenta. Falla si no hay una cuenta abierta.
+cerrar_cuenta :-
+    retract(cuenta(_)).
 
-% relacion(A, B, Hecho)//: el artículo y el sustantivo de una relación.
-relacion(A, B, padre(A, B)) --> [el, padre].
-relacion(A, B, madre(A, B)) --> [la, madre].
-
-%!  nombre_de_persona(?P)// is nondet.
+%!  depositar(+Monto:number) is semidet.
 %
-%   El nombre de una persona conocida.
-nombre_de_persona(P) -->
-    [P],
-    { persona(P) }.
+%   Suma Monto al saldo. Falla si la cuenta está cerrada o si Monto no es
+%   positivo.
+depositar(Monto) :-
+    Monto > 0,
+    retract(cuenta(Saldo0)),
+    Saldo is Saldo0 + Monto,
+    assertz(cuenta(Saldo)).
 
-% --- Ejercicio 7 --------------------------------------------------------------
-
-%!  preorden(+Arbol)// is det.
+%!  extraer(+Monto:number) is semidet.
 %
-%   Los nombres de los nodos de Arbol, cada uno antes que sus subárboles. Un
-%   árbol es nil o nodo(Nombre, Izquierdo, Derecho).
-preorden(nil) --> [].
-preorden(nodo(Nombre, I, D)) -->
-    [Nombre],
-    preorden(I),
-    preorden(D).
+%   Resta Monto del saldo. Falla si la cuenta está cerrada, si Monto no es
+%   positivo o si el saldo no alcanza; en esos casos el saldo no cambia.
+extraer(Monto) :-
+    Monto > 0,
+    cuenta(Saldo0),
+    Saldo0 >= Monto,
+    retract(cuenta(Saldo0)),
+    Saldo is Saldo0 - Monto,
+    assertz(cuenta(Saldo)).
 
-%!  simetrico(+Arbol)// is det.
+%!  saldo(-Saldo:number) is semidet.
 %
-%   Los nombres de los nodos de Arbol, cada uno entre sus dos subárboles.
-simetrico(nil) --> [].
-simetrico(nodo(Nombre, I, D)) -->
-    simetrico(I),
-    [Nombre],
-    simetrico(D).
+%   Saldo es el saldo de la cuenta. Falla si la cuenta está cerrada.
+saldo(Saldo) :-
+    cuenta(Saldo).
 
-%!  postorden(+Arbol)// is det.
+% --- Ejercicio 6 --------------------------------------------------------------
+
+%!  suma_hasta(+N:integer, -S:integer) is det.
 %
-%   Los nombres de los nodos de Arbol, cada uno después de sus subárboles.
-postorden(nil) --> [].
-postorden(nodo(Nombre, I, D)) -->
-    postorden(I),
-    postorden(D),
-    [Nombre].
+%   S es la suma de los enteros de 1 a N, con N mayor o igual que 1. Cada
+%   suma calculada se guarda en suma_guardada/2.
+suma_hasta(N, S) :-
+    (   suma_guardada(N, S0)
+    ->  S = S0
+    ;   N =:= 1
+    ->  S = 1
+    ;   N1 is N - 1,
+        suma_hasta(N1, S1),
+        S0 is S1 + N,
+        assertz(suma_guardada(N, S0)),
+        S = S0
+    ).
 
-% --- Ejercicio 8 --------------------------------------------------------------
-
-%!  balanceado// is semidet.
+%!  olvidar_sumas is det.
 %
-%   Los paréntesis, corchetes y llaves del texto están bien anidados; los
-%   demás códigos se ignoran.
-balanceado -->
-    balanceado([]).
+%   Borra las sumas guardadas.
+olvidar_sumas :-
+    retractall(suma_guardada(_, _)).
 
-%!  balanceado(+Abiertos:list)// is semidet.
+% --- Ejercicios 8 a 10: el sistema del texto, con dos reglas más ------------
+
+% inicial(F): F es uno de los hechos con los que empieza la base.
+inicial(padre(juan, ana)).
+inicial(padre(juan, pedro)).
+inicial(padre(pedro, luis)).
+inicial(padre(pedro, eva)).
+inicial(madre(marta, ana)).
+inicial(madre(marta, pedro)).
+inicial(madre(ana, sofia)).
+
+% regla(Nombre, Condiciones, Conclusion): si se cumplen todas las
+% Condiciones, Conclusion es un hecho. tio_o_tia y primos son del ejercicio 9.
+regla(progenitor_p, [padre(P, H)],                   progenitor(P, H)).
+regla(progenitor_m, [madre(M, H)],                   progenitor(M, H)).
+regla(abuelo,       [padre(A, P), progenitor(P, N)], abuelo(A, N)).
+regla(hermanos,     [progenitor(P, A), progenitor(P, B), A \== B],
+                                                     hermanos(A, B)).
+regla(antepasado_1, [progenitor(A, D)],              antepasado(A, D)).
+regla(antepasado_2, [progenitor(A, H), antepasado(H, D)], antepasado(A, D)).
+regla(tio_o_tia,    [hermanos(T, P), progenitor(P, S)], tio_o_tia(T, S)).
+regla(primos,       [progenitor(P, A), hermanos(P, Q), progenitor(Q, B)],
+                                                     primos(A, B)).
+
+%!  reiniciar is det.
 %
-%   Abiertos son los cierres que faltan, el próximo primero.
-balanceado([]) -->
-    eos,
-    !.
-balanceado(Abiertos) -->
-    [C],
-    { apertura(C, Cierre) },
-    !,
-    balanceado([Cierre|Abiertos]).
-balanceado([Cierre|Abiertos]) -->
-    [Cierre],
-    !,
-    balanceado(Abiertos).
-balanceado(Abiertos) -->
-    [C],
-    { \+ apertura(C, _),
-      \+ apertura(_, C) },
-    balanceado(Abiertos).
+%   Deja en la base solo los hechos iniciales.
+reiniciar :-
+    retractall(hecho(_)),
+    retractall(derivado(_, _, _)),
+    forall(inicial(F), assertz(hecho(F))).
 
-% apertura(A, C): A abre un grupo que C cierra.
-apertura(0'(, 0')).
-apertura(0'[, 0']).
-apertura(0'{, 0'}).
-
-% --- Ejercicio 9 --------------------------------------------------------------
-
-%!  expresion(-V:number)// is semidet.
+%!  encadenar is det.
 %
-%   Una expresión con enteros, +, -, * y /, sin paréntesis. * y / se
-%   evalúan antes que + y -, y operadores de la misma precedencia, de
-%   izquierda a derecha.
-expresion(V) -->
-    termino(T),
-    sumas(T, V).
+%   El encadenamiento del texto: de a una conclusión por vez.
+encadenar :-
+    (   regla(Nombre, Condiciones, Conclusion),
+        maplist(se_cumple, Condiciones),
+        \+ hecho(Conclusion)
+    ->  assertz(hecho(Conclusion)),
+        assertz(derivado(Conclusion, Nombre, Condiciones)),
+        encadenar
+    ;   true
+    ).
 
-%!  sumas(+Hasta:number, -V:number)// is det.
+%!  se_cumple(+Condicion) is nondet.
 %
-%   V es Hasta con las sumas y restas que siguen aplicadas en orden.
-sumas(Hasta, V) -->
-    "+",
-    !,
-    termino(T),
-    { Ahora is Hasta + T },
-    sumas(Ahora, V).
-sumas(Hasta, V) -->
-    "-",
-    !,
-    termino(T),
-    { Ahora is Hasta - T },
-    sumas(Ahora, V).
-sumas(V, V) -->
-    [].
+%   Condicion es un hecho de la base, o una comparación A \== B que se
+%   cumple.
+se_cumple(A \== B) :-
+    A \== B.
+se_cumple(Condicion) :-
+    Condicion \= ( _ \== _ ),
+    hecho(Condicion).
 
-%!  termino(-V:number)// is semidet.
+%!  como(+Hecho) is semidet.
 %
-%   Un producto o cociente de enteros, de izquierda a derecha.
-termino(V) -->
-    integer(N),
-    productos(N, V).
+%   Escribe cómo se obtuvo Hecho: la regla y, debajo, cómo se obtuvo cada
+%   una de sus condiciones, hasta los hechos iniciales. Falla si Hecho no
+%   está en la base.
+como(Hecho) :-
+    hecho(Hecho),
+    como(Hecho, 0).
 
-%!  productos(+Hasta:number, -V:number)// is det.
+%!  como(+Hecho, +Sangria:integer) is det.
 %
-%   V es Hasta con los productos y cocientes que siguen aplicados en orden.
-productos(Hasta, V) -->
-    "*",
-    !,
-    integer(N),
-    { Ahora is Hasta * N },
-    productos(Ahora, V).
-productos(Hasta, V) -->
-    "/",
-    !,
-    integer(N),
-    { Ahora is Hasta / N },
-    productos(Ahora, V).
-productos(V, V) -->
-    [].
+%   Escribe la explicación de Hecho a partir de la columna Sangria.
+como(A \== B, Sangria) :-
+    format("~t~*|~w \\== ~w: se cumple~n", [Sangria, A, B]).
+como(Hecho, Sangria) :-
+    Hecho \= ( _ \== _ ),
+    (   derivado(Hecho, Regla, Condiciones)
+    ->  format("~t~*|~w: por ~w~n", [Sangria, Hecho, Regla]),
+        Siguiente is Sangria + 2,
+        forall(member(C, Condiciones), como(C, Siguiente))
+    ;   format("~t~*|~w: dato inicial~n", [Sangria, Hecho])
+    ).
 
-% --- Ejercicio 10 -------------------------------------------------------------
-
-%!  fecha_larga(?F)// is semidet.
+%!  encadenar_por_rondas(-Rondas:integer) is det.
 %
-%   El texto "24 de septiembre de 2026" de la fecha F = fecha(2026, 9, 24),
-%   en los dos sentidos.
-fecha_larga(fecha(Anio, Mes, Dia)) -->
-    integer(Dia),
-    " de ",
-    nombre_de_mes(Mes),
-    " de ",
-    integer(Anio).
+%   Agrega las conclusiones por rondas: en cada una, todas las que las reglas
+%   producen con los hechos del comienzo de la ronda. Rondas es la cantidad
+%   de rondas que agregaron algún hecho.
+encadenar_por_rondas(Rondas) :-
+    por_rondas(0, Rondas).
 
-%!  nombre_de_mes(?Mes:integer)// is semidet.
+%!  por_rondas(+Hechas:integer, -Rondas:integer) is det.
 %
-%   Los códigos del nombre del mes número Mes. atom//1 escribe el nombre al
-%   generar, y lo compara con la entrada al analizar.
-nombre_de_mes(Mes) -->
-    { nth1(Mes, [enero, febrero, marzo, abril, mayo, junio, julio, agosto,
-                 septiembre, octubre, noviembre, diciembre], Nombre) },
-    atom(Nombre).
+%   Rondas es Hechas más las rondas que todavía agregan algún hecho.
+por_rondas(Hechas, Rondas) :-
+    findall(Conclusion-Nombre-Condiciones,
+            ( regla(Nombre, Condiciones, Conclusion),
+              maplist(se_cumple, Condiciones),
+              \+ hecho(Conclusion) ),
+            Nuevos),
+    (   Nuevos == []
+    ->  Rondas = Hechas
+    ;   forall(member(Conclusion-Nombre-Condiciones, Nuevos),
+               agregar(Conclusion, Nombre, Condiciones)),
+        Siguiente is Hechas + 1,
+        por_rondas(Siguiente, Rondas)
+    ).
 
-% --- Ejercicio 11 -------------------------------------------------------------
-
-%!  enumeracion(?Nombres:list)// is semidet.
+%!  agregar(+Conclusion, +Nombre, +Condiciones:list) is det.
 %
-%   Los nombres separados por comas, con y antes del último: "ana",
-%   "ana y luis", "ana, luis y eva", en los dos sentidos.
-enumeracion([N]) -->
-    csym(N).
-enumeracion([N1, N2]) -->
-    csym(N1),
-    " y ",
-    csym(N2).
-enumeracion([N1, N2, N3|Ns]) -->
-    csym(N1),
-    ", ",
-    enumeracion([N2, N3|Ns]).
-
-% --- Ejercicio 12 -------------------------------------------------------------
-
-%!  problema(-V:number)// is semidet.
-%
-%   "cuanto es 5 mas 13 por 2": V es el resultado de las operaciones,
-%   aplicadas de izquierda a derecha, sin precedencia.
-problema(V) -->
-    "cuanto es ",
-    integer(N),
-    operaciones(N, V).
-
-%!  operaciones(+Hasta:number, -V:number)// is semidet.
-%
-%   V es Hasta con cada " operación número" que sigue aplicada en orden.
-operaciones(Hasta, V) -->
-    " ",
-    operacion(Op),
-    " ",
-    !,
-    integer(N),
-    { aplicar(Op, Hasta, N, Ahora) },
-    operaciones(Ahora, V).
-operaciones(V, V) -->
-    [].
-
-%!  operacion(?Op)// is nondet.
-%
-%   Los códigos de la palabra que nombra la operación Op.
-operacion(suma)     --> "mas".
-operacion(resta)    --> "menos".
-operacion(producto) --> "por".
-operacion(cociente) --> "dividido".
-
-%!  aplicar(+Op, +A:number, +B:number, -R:number) is det.
-%
-%   R es el resultado de la operación Op entre A y B.
-aplicar(suma, A, B, R)     :- R is A + B.
-aplicar(resta, A, B, R)    :- R is A - B.
-aplicar(producto, A, B, R) :- R is A * B.
-aplicar(cociente, A, B, R) :- R is A / B.
-
-% --- Ejercicio 13 -------------------------------------------------------------
-
-%!  lista_de_enteros(?L:list(integer))// is semidet.
-%
-%   "[1, 2, 3]": enteros entre corchetes, separados por coma y espacio.
-lista_de_enteros(L) -->
-    sequence("[", integer, ", ", "]", L).
-
-% --- Ejercicio 17 -------------------------------------------------------------
-
-%!  siguiente(-C)// is semidet.
-%
-%   C es el próximo elemento de la entrada, que no se consume: se devuelve a
-%   la entrada con el pushback. Es la de gramatica.pl.
-siguiente(C), [C] --> [C].
-
-%!  empieza_con_mayuscula// is semidet.
-%
-%   El próximo código de la entrada es una letra mayúscula. No lo consume.
-empieza_con_mayuscula -->
-    siguiente(C),
-    { code_type(C, upper) }.
+%   Agrega Conclusion a la base, si todavía no estaba: dos reglas, o dos
+%   formas de cumplir la misma, pueden producir el mismo hecho en una ronda.
+agregar(Conclusion, Nombre, Condiciones) :-
+    (   hecho(Conclusion)
+    ->  true
+    ;   assertz(hecho(Conclusion)),
+        assertz(derivado(Conclusion, Nombre, Condiciones))
+    ).

@@ -2,362 +2,496 @@
 
 % Capítulo 78 - Soluciones de los ejercicios.
 %
-% Carga nim.pl, candidatos.pl (que carga mastermind.pl) y kalah.pl sin
-% modificarlos. Los juegos nuevos de los ejercicios 3 y 10 agregan sus
-% cláusulas al módulo capitulo41, como nim.pl y kalah.pl.
+% Carga las versiones del capítulo sin modificarlas. Los predicados que
+% no exportan se llaman con el nombre del módulo delante.
 %
 % solo-local: carga otros archivos.
 %
-%?- segura_miseria([1, 1, 1]).
-%?- particion([0, 1, 2, 3], Clases).
+%?- mayor_distancia(D).
+%?- conocimiento_final(1, K), frontera(K, F).
 
-:- use_module(nim).
-:- use_module(candidatos).
-:- use_module(kalah).
-:- use_module(library(apply)).
+:- module(soluciones,
+          [ distancia/3,
+            mayor_distancia/1,
+            jugada_estricta/5,
+            conocimiento_final/2,
+            seguras_por_reglas2/2,
+            comparar_reglas2/2,
+            satisfacible/1,
+            seguras_dpll/2,
+            comparar_dpll/2,
+            barrer_umbrales/2,
+            mundo_sembrado/3,
+            medir_tamano/3,
+            cazar_k/4,
+            medir_caza_k/3,
+            soluble/1,
+            contar_solubles/2,
+            jugar_humano/2,
+            tiene_oro/2
+          ]).
+
 :- use_module(library(lists)).
-:- use_module(library(pairs)).
+:- use_module(library(apply)).
+:- use_module(library(aggregate)).
+:- use_module(library(ordsets)).
+:- use_module(library(dcg/basics)).
+:- use_module(azar).
+:- reexport(cueva).
+:- reexport(enfoques).
+:- reexport(riesgo).
+:- reexport(cazador).
+:- reexport(temporal).
 
-% --- Ejercicio 2: el Nim de la miseria ---------------------------------------
+% --- Ejercicio 2 ------------------------------------------------------------
 
-%!  ganadora_miseria(+Pilas:list(integer)) is semidet.
+%!  distancia(+A, +B, -D:integer) is det.
 %
-%   En el Nim en que pierde quien saca la última ficha, el que mueve en
-%   Pilas gana. Búsqueda tabulada sobre la forma de la posición.
-ganadora_miseria(Pilas) :-
-    forma(Pilas, Forma),
-    ganadora_miseria_forma(Forma).
+%   D es la cantidad mínima de túneles de la sala A a la sala B.
+distancia(A, B, D) :-
+    distancia_([A], [A], B, 0, D).
 
-:- table ganadora_miseria_forma/1.
-
-%!  ganadora_miseria_forma(+Forma:list(integer)) is semidet.
+%!  distancia_(+Nivel:list, +Vistas:list, +B, +D0:integer, -D:integer)
+%!      is det.
 %
-%   ganadora_miseria/1 sobre una forma. Sin fichas, el que mueve ganó: el
-%   rival sacó la última.
-ganadora_miseria_forma(Forma) :-
-    (   Forma == []
+%   Búsqueda en anchura por niveles: Nivel son las salas a distancia D0.
+distancia_(Nivel, Vistas, B, D0, D) :-
+    (   memberchk(B, Nivel)
+    ->  D = D0
+    ;   findall(V,
+                ( member(S, Nivel), tunel(S, V), \+ memberchk(V, Vistas) ),
+                Vs0),
+        sort(Vs0, Siguiente),
+        append(Vistas, Siguiente, Vistas1),
+        D1 is D0 + 1,
+        distancia_(Siguiente, Vistas1, B, D1, D)
+    ).
+
+%!  mayor_distancia(-D:integer) is det.
+%
+%   D es la mayor distancia entre dos salas de la cueva.
+mayor_distancia(D) :-
+    aggregate_all(max(X), ( sala(A), sala(B), distancia(A, B, X) ), D).
+
+% --- Ejercicio 3 ------------------------------------------------------------
+
+%!  jugada_estricta(+Orden, +E0, -E, -Resultado, -Mensajes:list) is det.
+%
+%   Como jugada/5, pero una ruta que pasa por la sala del jugador o repite
+%   la sala de dos pasos antes se rechaza con el mensaje ruta_invalida.
+jugada_estricta(disparar(Ruta), E0, E, Resultado, Mensajes) :-
+    E0 = j(J, _, _, _, _, _),
+    (   memberchk(J, Ruta)
+    ;   append(_, [A, _, A|_], [J|Ruta])
+    ),
+    !,
+    E = E0,
+    Resultado = sigue,
+    Mensajes = [ruta_invalida].
+jugada_estricta(Orden, E0, E, Resultado, Mensajes) :-
+    jugada(Orden, E0, E, Resultado, Mensajes).
+
+% --- Ejercicio 4 ------------------------------------------------------------
+
+%!  conocimiento_final(+Semilla:integer, -K) is det.
+%
+%   K es el conocimiento del agente prudente al terminar su partida en el
+%   mundo sembrado con Semilla: las celdas que visitó, en orden, con sus
+%   percepciones.
+conocimiento_final(Semilla, K) :-
+    mundo_sembrado(Semilla, M),
+    jugar(M, final(_, _, Acciones)),
+    findall(C, member(ir(C), Acciones), Cs),
+    foldl(enfoques:agregar_nueva, Cs, [1-1], Celdas),
+    maplist(enfoques:con_percepciones(M), Celdas, Vs),
+    conocer(4, Vs, K).
+
+% --- Ejercicio 5 ------------------------------------------------------------
+
+%!  seguras_por_reglas2(+K, -Seguras:list) is det.
+%
+%   Las celdas que prueban seguras las reglas de enfoques.pl más la regla
+%   de dos hedores.
+seguras_por_reglas2(K, Seguras) :-
+    enfoques:sin_visitar(K, Cs),
+    include(segura2(K), Cs, Seguras).
+
+%!  segura2(+K, +C) is semidet.
+%
+%   Las reglas, con la de dos hedores, prueban que C es segura.
+segura2(K, C) :-
+    enfoques:sin_pozo(K, C),
+    (   enfoques:sin_wumpus(K, C)
     ->  true
-    ;   once(( sacar(Forma, _, Pilas1),
-               forma(Pilas1, Forma1),
-               \+ ganadora_miseria_forma(Forma1) ))
+    ;   dos_hedores(K, W),
+        W \== C
     ).
 
-%!  segura_miseria(+Pilas:list(integer)) is semidet.
+%!  dos_hedores(+K, -W) is semidet.
 %
-%   Pilas es segura en el Nim de la miseria: si ninguna pila tiene más de
-%   una ficha, hay una cantidad impar de pilas de una ficha; si no, la
-%   suma de Nim es 0.
-segura_miseria(Pilas) :-
-    max_list([0|Pilas], Mayor),
-    (   Mayor =< 1
-    ->  sum_list(Pilas, Unos),
-        Unos mod 2 =:= 1
-    ;   segura(Pilas)
+%   Dos celdas visitadas con hedor tienen una sola vecina común sin
+%   visitar que no está descartada por una vecina visitada sin hedor: el
+%   wumpus está en W.
+dos_hedores(K, W) :-
+    K = c(N, _, _, _, _, _, _),
+    once(( enfoques:percibio(K, A, hedor),
+           enfoques:percibio(K, B, hedor),
+           A @< B,
+           findall(D,
+                   ( vecina(N, A, D),
+                     vecina(N, B, D),
+                     \+ enfoques:visitada(K, D),
+                     \+ ( vecina(N, D, E),
+                          enfoques:visitada(K, E),
+                          \+ enfoques:percibio(K, E, hedor) ) ),
+                   [W]) )).
+
+%!  comparar_reglas2(+Semillas:list, -Resultado) is det.
+%
+%   Resultado es r(Seguras, Distintas) de seguras_por_reglas2/2 en las
+%   instantáneas de Semillas, frente a los mundos consistentes.
+comparar_reglas2(Semillas, r(Seguras, Distintas)) :-
+    instantaneas(Semillas, Ks),
+    maplist(seguras_por_reglas2, Ks, Ss),
+    maplist(seguras, Ks, Rs),
+    maplist(length, Ss, Ls),
+    sum_list(Ls, Seguras),
+    foldl(enfoques:contar_distinta, Ss, Rs, 0, Distintas).
+
+% --- Ejercicio 6 ------------------------------------------------------------
+
+%!  satisfacible(+Clausulas:list) is semidet.
+%
+%   Las Clausulas, listas de literales +A y -A sin variables, tienen un
+%   modelo: DPLL con propagación unitaria y separación de casos.
+satisfacible(Clausulas) :-
+    (   Clausulas == []
+    ->  true
+    ;   memberchk([], Clausulas)
+    ->  fail
+    ;   member([L], Clausulas)
+    ->  asignar(L, Clausulas, Resto),
+        satisfacible(Resto)
+    ;   Clausulas = [[L|_]|_],
+        (   asignar(L, Clausulas, Resto)
+        ;   opuesto(L, M),
+            asignar(M, Clausulas, Resto)
+        ),
+        satisfacible(Resto)
+    ->  true
     ).
 
-% --- Ejercicio 3: la suma de Nim como evaluación -----------------------------
-
-% nim_suma(Pilas) es nim(Pilas) con una evaluación que no es nula: 50 si
-% la posición es buena para max según la suma de Nim, -50 si no.
-
-%!  capitulo41:inicial(+Juego, -Posicion) is det.
+%!  asignar(+L, +Clausulas:list, -Resto:list) is det.
 %
-%   nim_suma(Pilas) empieza como nim(Pilas).
-capitulo41:inicial(nim_suma(Pilas), P) :-
-    capitulo41:inicial(nim(Pilas), P).
+%   Resto son las Clausulas con L verdadero: sin las que contienen L, y
+%   sin el opuesto de L en las demás.
+asignar(L, Clausulas, Resto) :-
+    opuesto(L, M),
+    exclude(memberchk(L), Clausulas, Sin),
+    maplist(quitar(M), Sin, Resto).
 
-%!  capitulo41:jugada(+Juego, +Posicion, ?Jugada, -Siguiente) is nondet.
+%!  quitar(+M, +C0:list, -C:list) is det.
 %
-%   Las jugadas de nim_suma(Pilas) son las de nim(Pilas).
-capitulo41:jugada(nim_suma(Pilas), P, J, P1) :-
-    capitulo41:jugada(nim(Pilas), P, J, P1).
+%   C es la cláusula C0 sin el literal M.
+quitar(M, C0, C) :-
+    exclude(==(M), C0, C).
 
-%!  capitulo41:turno(+Juego, +Posicion, -Lado) is det.
+%!  opuesto(+L, -M) is det.
 %
-%   Como en nim(Pilas).
-capitulo41:turno(nim_suma(Pilas), P, Lado) :-
-    capitulo41:turno(nim(Pilas), P, Lado).
+%   M es el literal opuesto de L.
+opuesto(+A, -A).
+opuesto(-A, +A).
 
-%!  capitulo41:fin(+Juego, +Posicion, -Resultado) is semidet.
+%!  clausulas_conocimiento(+K, -Cs:list) is det.
 %
-%   Como en nim(Pilas).
-capitulo41:fin(nim_suma(Pilas), P, R) :-
-    capitulo41:fin(nim(Pilas), P, R).
+%   Cs es el conocimiento K en forma clausal: celdas visitadas sin
+%   peligros, cada percepción como disyunción de los peligros vecinos o
+%   como su ausencia, y exactamente un wumpus.
+clausulas_conocimiento(K, Cs) :-
+    K = c(N, _, Vs, _, _, _, _),
+    findall([-P], ( member(C-_, Vs),
+                    member(P, [pozo(C), wumpus(C)]) ), Libres),
+    findall(Cl,
+            ( member(C-Ps, Vs),
+              member(Senal-Peligro, [brisa-pozo, hedor-wumpus]),
+              findall(A, ( vecina(N, C, V), A =.. [Peligro, V] ), As),
+              (   memberchk(Senal, Ps)
+              ->  findall(+A, member(A, As), Cl)
+              ;   member(A, As),
+                  Cl = [-A]
+              ) ),
+            Percepciones),
+    findall(X-Y, ( between(1, N, X), between(1, N, Y) ), Todas),
+    findall(+wumpus(C), member(C, Todas), AlMenosUno),
+    findall([-wumpus(A), -wumpus(B)],
+            ( member(A, Todas), member(B, Todas), A @< B ),
+            ASumoUno),
+    append([Libres, Percepciones, [AlMenosUno], ASumoUno], Cs).
 
-%!  capitulo41:evaluar(+Juego, +Posicion, -Valor) is det.
+%!  seguras_dpll(+K, -Seguras:list) is det.
 %
-%   La evaluación de nim_suma/1, con valor_suma/3.
-capitulo41:evaluar(nim_suma(_), pilas(Pilas, J), Valor) :-
-    valor_suma(Pilas, J, Valor).
+%   Seguras son las celdas sin visitar C para las que el conocimiento con
+%   pozo(C) y el conocimiento con wumpus(C) son insatisfacibles.
+seguras_dpll(K, Seguras) :-
+    clausulas_conocimiento(K, Cs),
+    enfoques:sin_visitar(K, Celdas),
+    include(segura_dpll(Cs), Celdas, Seguras).
 
-%!  valor_suma(+Pilas:list(integer), +Jugador, -Valor:integer) is det.
+%!  segura_dpll(+Cs:list, +C) is semidet.
 %
-%   Valor es 50 si la posición es buena para max: segura con min por
-%   mover, o insegura con max por mover; -50 en los otros casos.
-valor_suma(Pilas, J, Valor) :-
-    suma_nim(Pilas, S),
-    (   ( S =:= 0, J == dos
-        ; S =\= 0, J == uno
-        )
-    ->  Valor = 50
-    ;   Valor = -50
-    ).
+%   Cs no tiene modelo con un pozo ni con el wumpus en C.
+segura_dpll(Cs, C) :-
+    \+ satisfacible([[+pozo(C)]|Cs]),
+    \+ satisfacible([[+wumpus(C)]|Cs]).
 
-% --- Ejercicio 5: la partición de un intento ---------------------------------
-
-%!  particion(+Intento:list, +Codigos:list, -Clases:list) is det.
+%!  comparar_dpll(+Semillas:list, -Resultado) is det.
 %
-%   Clases son los términos Toros-Vacas-K, en orden: K códigos de Codigos
-%   darían la respuesta Toros-Vacas a Intento.
-particion(Intento, Codigos, Clases) :-
-    findall(T-V, ( member(C, Codigos),
-                   respuesta(C, Intento, T, V) ),
-            Respuestas),
-    msort(Respuestas, Ordenadas),
-    clumped(Ordenadas, Clases).
+%   Resultado es r(Seguras, Distintas, Inferencias) de seguras_dpll/2 en
+%   las instantáneas de Semillas.
+comparar_dpll(Semillas, r(Seguras, Distintas, Inferencias)) :-
+    instantaneas(Semillas, Ks),
+    statistics(inferences, I0),
+    maplist(seguras_dpll, Ks, Ss),
+    statistics(inferences, I1),
+    Inferencias is I1 - I0,
+    maplist(seguras, Ks, Rs),
+    maplist(length, Ss, Ls),
+    sum_list(Ls, Seguras),
+    foldl(enfoques:contar_distinta, Ss, Rs, 0, Distintas).
 
-%!  particion(+Intento:list, -Clases:list) is det.
+% --- Ejercicio 7 ------------------------------------------------------------
+
+%!  barrer_umbrales(+Semillas:list, -Resultados:list) is det.
 %
-%   particion/3 sobre los 5040 códigos.
-particion(Intento, Clases) :-
-    candidatos(Codigos),
-    particion(Intento, Codigos, Clases).
-
-% --- Ejercicio 6: el intento que deja menos códigos en el peor caso ----------
-
-%!  adivinar_minimax(+Secreto:list, -Intentos:list) is det.
-%
-%   Como adivinar_candidatos/2, pero cada intento después del primero es
-%   el código posible cuya mayor clase es la menor; ante un empate, el
-%   primero.
-adivinar_minimax(Secreto, Intentos) :-
-    candidatos(Codigos),
-    minimax_entre(Codigos, [0, 1, 2, 3], Secreto, Intentos).
-
-%!  minimax_entre(+Codigos:list, +Intento:list, +Secreto:list,
-%!                -Intentos:list) is det.
-%
-%   Intentos empiezan con Intento, uno de Codigos, los códigos posibles.
-minimax_entre(Codigos, Intento, Secreto, [Intento|Intentos]) :-
-    respuesta(Secreto, Intento, T, V),
-    (   T =:= 4
-    ->  Intentos = []
-    ;   filtrar(Codigos, Intento, T, V, Codigos1),
-        mejor_intento(Codigos1, Siguiente),
-        minimax_entre(Codigos1, Siguiente, Secreto, Intentos)
-    ).
-
-%!  mejor_intento(+Codigos:list, -Intento:list) is det.
-%
-%   Intento es el código de Codigos cuya mayor clase sobre Codigos es la
-%   menor; ante un empate, el primero.
-mejor_intento(Codigos, Intento) :-
-    map_list_to_pairs(peor_clase(Codigos), Codigos, Pares),
-    keysort(Pares, [_-Intento|_]).
-
-%!  peor_clase(+Codigos:list, +Intento:list, -Mayor:integer) is det.
-%
-%   Mayor es la cantidad de códigos de la mayor clase de Intento.
-peor_clase(Codigos, Intento, Mayor) :-
-    particion(Intento, Codigos, Clases),
-    pairs_values(Clases, Ks),
-    max_list(Ks, Mayor).
-
-% --- Ejercicio 7: el Mastermind comercial ------------------------------------
-
-%!  codigo_colores(-Codigo:list(integer)) is multi.
-%
-%   Codigo son cuatro colores, del 1 al 6, que pueden repetirse: 1296
-%   códigos, en orden.
-codigo_colores([A, B, C, D]) :-
-    maplist(color, [A, B, C, D]).
-
-% color(C): C es uno de los seis colores.
-color(C) :-
-    between(1, 6, C).
-
-%!  respuesta_colores(+Secreto:list, +Intento:list, -Toros:integer,
-%!                    -Vacas:integer) is det.
-%
-%   Toros son las posiciones iguales; Vacas, los colores comunes, cada uno
-%   tantas veces como el menor de sus apariciones, menos los toros.
-respuesta_colores(Secreto, Intento, Toros, Vacas) :-
-    aggregate_all(count, ( nth1(I, Secreto, X), nth1(I, Intento, X) ), Toros),
-    aggregate_all(sum(M), ( color(C),
-                            veces(C, Secreto, N1),
-                            veces(C, Intento, N2),
-                            M is min(N1, N2) ),
-                  Comunes),
-    Vacas is Comunes - Toros.
-
-%!  veces(+X, +Lista:list, -N:integer) is det.
-%
-%   N es la cantidad de veces que X aparece en Lista.
-veces(X, Lista, N) :-
-    include(==(X), Lista, Xs),
-    length(Xs, N).
-
-%!  adivinar_colores(+Secreto:list, -Intentos:list) is det.
-%
-%   Intentos son los de la regla de la jugada consistente sobre los 1296
-%   códigos de colores, hasta el que acierta.
-adivinar_colores(Secreto, Intentos) :-
-    findall(C, codigo_colores(C), Codigos),
-    colores_entre(Codigos, Secreto, Intentos).
-
-%!  colores_entre(+Codigos:list, +Secreto:list, -Intentos:list) is det.
-%
-%   Como adivinar_entre/3 de candidatos.pl, con respuesta_colores/4.
-colores_entre([Intento|Codigos0], Secreto, [Intento|Intentos]) :-
-    respuesta_colores(Secreto, Intento, T, V),
-    (   T =:= 4
-    ->  Intentos = []
-    ;   include(explica_colores(Intento, T, V), Codigos0, Codigos),
-        colores_entre(Codigos, Secreto, Intentos)
-    ).
-
-%!  explica_colores(+Intento:list, +T:integer, +V:integer, +Codigo:list)
-%!      is semidet.
-%
-%   Si Codigo fuera el secreto, Intento recibiría T toros y V vacas.
-explica_colores(Intento, T, V, Codigo) :-
-    respuesta_colores(Codigo, Intento, T, V).
-
-%!  medir_colores(-Cuantos:list(pair), -Media:float) is det.
-%
-%   medir/4 de mastermind.pl sobre los 1296 códigos de colores.
-medir_colores(Cuantos, Media) :-
-    findall(C, codigo_colores(C), Secretos),
-    medir(adivinar_colores, Secretos, Cuantos, Media).
-
-% --- Ejercicio 8: la primera contradicción -----------------------------------
-
-%!  primera_contradiccion(+Respuestas:list, -K:integer) is semidet.
-%
-%   K es la posición en Respuestas de la primera respuesta después de la
-%   cual ningún código las explica a todas. Falla si no hay contradicción.
-primera_contradiccion(Respuestas, K) :-
-    candidatos(Codigos),
-    contradiccion(Respuestas, 1, Codigos, K).
-
-%!  contradiccion(+Respuestas:list, +I:integer, +Codigos:list, -K:integer)
-%!      is semidet.
-%
-%   Como primera_contradiccion/2, con I la posición de la primera de
-%   Respuestas y Codigos los que explican las anteriores.
-contradiccion([r(Intento, T, V)|Respuestas], I, Codigos0, K) :-
-    filtrar(Codigos0, Intento, T, V, Codigos),
-    (   Codigos == []
-    ->  K = I
-    ;   I1 is I + 1,
-        contradiccion(Respuestas, I1, Codigos, K)
-    ).
-
-% --- Ejercicio 10: Kalah con las piedras de cada lado ------------------------
-
-% kalah_piedras(N) es kalah(N) con otra evaluación: la diferencia de
-% kalahs más la mitad de la diferencia de las piedras en los hoyos.
-
-%!  capitulo41:inicial(+Juego, -Posicion) is det.
-%
-%   kalah_piedras(N) empieza como kalah(N).
-capitulo41:inicial(kalah_piedras(N), P) :-
-    capitulo41:inicial(kalah(N), P).
-
-%!  capitulo41:jugada(+Juego, +Posicion, ?Jugada, -Siguiente) is nondet.
-%
-%   Las jugadas de kalah_piedras(N) son las de kalah(N).
-capitulo41:jugada(kalah_piedras(N), P, J, P1) :-
-    capitulo41:jugada(kalah(N), P, J, P1).
-
-%!  capitulo41:turno(+Juego, +Posicion, -Lado) is det.
-%
-%   Como en kalah(N).
-capitulo41:turno(kalah_piedras(N), P, Lado) :-
-    capitulo41:turno(kalah(N), P, Lado).
-
-%!  capitulo41:fin(+Juego, +Posicion, -Resultado) is semidet.
-%
-%   Como en kalah(N).
-capitulo41:fin(kalah_piedras(N), P, R) :-
-    capitulo41:fin(kalah(N), P, R).
-
-%!  capitulo41:evaluar(+Juego, +Posicion, -Valor) is det.
-%
-%   La evaluación de kalah_piedras/1, con piedras/3.
-capitulo41:evaluar(kalah_piedras(_), k(T, J), Valor) :-
-    piedras(T, J, Valor).
-
-%!  piedras(+Tablero, +Jugador, -Valor:number) is det.
-%
-%   Valor es, desde sur, la diferencia de los kalahs más la mitad de la
-%   diferencia de las piedras de los hoyos, con Tablero visto desde
-%   Jugador.
-piedras(tablero(Mios, K, Suyos, L), J, Valor) :-
-    sum_list(Mios, A),
-    sum_list(Suyos, B),
-    V is K - L + (A - B) / 2,
-    (   J == sur
-    ->  Valor = V
-    ;   Valor is -V
-    ).
-
-%!  torneo(+Juegos:list, +Profundidades:list, -Resultados:list) is det.
-%
-%   Resultados son los términos r(Sur, Norte, Resultado) de las partidas
-%   de kalah(6) con Sur y Norte, pares Juego-Profundidad con distinto
-%   juego, como estrategias.
-torneo(Juegos, Profundidades, Resultados) :-
-    findall(r(GS-DS, GN-DN, R),
-            ( member(GS, Juegos), member(GN, Juegos), GS \== GN,
-              member(DS, Profundidades), member(DN, Profundidades),
-              partida(kalah(6), profundidad_en(GS, DS),
-                      profundidad_en(GN, DN), _, R) ),
+%   Resultados son pares Umbral-r(Oro, Muertes, SinOro, Media) para los
+%   umbrales 0.1 a 0.9.
+barrer_umbrales(Semillas, Resultados) :-
+    findall(U-R,
+            ( between(1, 9, I),
+              U is I / 10,
+              medir(riesgo(U), Semillas, R) ),
             Resultados).
 
-%!  profundidad_en(+Juego, +D:integer, +Juego0, +Posicion, -Jugada) is det.
-%
-%   La estrategia que busca D jugadas hacia adelante con la evaluación de
-%   Juego, aunque la partida sea de Juego0: los dos juegos tienen las
-%   mismas posiciones y jugadas.
-profundidad_en(Juego, D, _, Posicion, Jugada) :-
-    alfabeta(Juego, Posicion, D, Jugada, _, _).
+% --- Ejercicio 8 ------------------------------------------------------------
 
-%!  puntos(+Resultados:list, -Puntos:list(pair)) is det.
+%!  mundo_sembrado(+N:integer, +Semilla:integer, -M) is det.
 %
-%   Puntos son los pares Juego-P: una victoria vale 1 y un empate 0,5.
-puntos(Resultados, Puntos) :-
-    findall(G-P, ( member(r(GS-_, GN-_, R), Resultados),
-                   puntaje(R, GS, GN, G, P) ),
-            Todos),
-    keysort(Todos, Ordenados),
-    group_pairs_by_key(Ordenados, Grupos),
-    maplist(sumar_grupo, Grupos, Puntos).
+%   Como mundo_sembrado/2, en una cueva de N x N.
+mundo_sembrado(N, Semilla, mundo(N, Pozos, Wumpus, Oro)) :-
+    findall(X-Y, ( between(1, N, X), between(1, N, Y), X-Y \== 1-1 ),
+            Celdas),
+    foldl(grilla:tal_vez_pozo, Celdas, Pozos0, Semilla, S1),
+    exclude(==(sin_pozo), Pozos0, Pozos),
+    elegir(Celdas, Wumpus, S1, S2),
+    elegir(Celdas, Oro, S2, _).
 
-%!  puntaje(+Resultado, +GS, +GN, -G, -P:number) is nondet.
+%!  medir_tamano(+N:integer, +Semillas:list, -Resultado) is det.
 %
-%   El juego G obtiene P puntos en una partida de GS como sur y GN como
-%   norte.
-puntaje(gana(sur), GS, _, GS, 1).
-puntaje(gana(norte), _, GN, GN, 1).
-puntaje(empate, GS, GN, G, 0.5) :-
-    member(G, [GS, GN]).
+%   Resultado es r(Oro, Inferencias, Frontera): los oros del agente
+%   prudente en las cuevas de N x N de Semillas, las inferencias medias
+%   por partida y la mayor frontera de sus instantáneas.
+medir_tamano(N, Semillas, r(Oro, Media, MaxF)) :-
+    statistics(inferences, I0),
+    findall(Fin-Cs,
+            ( member(S, Semillas),
+              mundo_sembrado(N, S, M),
+              jugar(M, final(Fin, _, As)),
+              findall(C, member(ir(C), As), Cs) ),
+            Partidas),
+    statistics(inferences, I1),
+    length(Semillas, L),
+    Media is round((I1 - I0) / L),
+    aggregate_all(count, member(salio(si)-_, Partidas), Oro),
+    aggregate_all(max(F),
+                  ( member(S, Semillas),
+                    mundo_sembrado(N, S, M),
+                    jugar(M, final(_, _, As)),
+                    findall(C, member(ir(C), As), Cs),
+                    foldl(enfoques:agregar_nueva, Cs, [1-1], Celdas),
+                    append(Prefijo, _, Celdas),
+                    Prefijo \== [],
+                    maplist(enfoques:con_percepciones(M), Prefijo, Vs),
+                    conocer(N, Vs, K),
+                    frontera(K, Fr),
+                    length(Fr, F) ),
+                  MaxF).
 
-%!  sumar_grupo(+Grupo, -Par) is det.
+% --- Ejercicio 9 ------------------------------------------------------------
+
+%!  cazar_k(+Kmax:integer, +Semilla:integer, -Resultado, -Ordenes:list)
+%!      is det.
 %
-%   Par es G-Total, con Total la suma de los puntos del Grupo G-Ps.
-sumar_grupo(G-Ps, G-Total) :-
-    sum_list(Ps, Total).
+%   Como cazar/3, pero el agente dispara cuando el wumpus puede estar en a
+%   lo sumo Kmax salas, hacia la primera.
+cazar_k(Kmax, Semilla, Resultado, Ordenes) :-
+    nueva_partida(Semilla, E),
+    observacion(E, obs(S, _, Avisos, Flechas)),
+    K = k(S, [S-Avisos], [S-Avisos], [], Flechas),
+    turno_k(Kmax, 100, E, K, Resultado, Ordenes).
 
-% --- Ejercicio 11: el texto de una jugada de Nim -----------------------------
-
-%!  jugada_nim_texto(+Jugada, -Texto:string) is det.
+%!  turno_k(+Kmax:integer, +N:integer, +E, +K, -Resultado, -Ordenes:list)
+%!      is det.
 %
-%   Texto describe la jugada sacar(K, M) de la computadora.
-jugada_nim_texto(sacar(K, M), Texto) :-
-    (   M =:= 1
-    ->  format(string(Texto), "La computadora saca 1 ficha de la pila ~d.",
-               [K])
-    ;   format(string(Texto),
-               "La computadora saca ~d fichas de la pila ~d.", [M, K])
+%   Juega a lo sumo N jugadas con la regla de disparo de Kmax salas.
+turno_k(_, 0, _, _, limite, []) :-
+    !.
+turno_k(Kmax, N, E0, K0, Resultado, [Orden|Ordenes]) :-
+    decidir_k(Kmax, K0, Orden),
+    jugada(Orden, E0, E, R, Ms),
+    (   R == sigue
+    ->  observacion(E, Obs),
+        cazador:aprender(Orden, Ms, Obs, K0, K),
+        N1 is N - 1,
+        turno_k(Kmax, N1, E, K, Resultado, Ordenes)
+    ;   Resultado = R,
+        Ordenes = []
+    ).
+
+%!  decidir_k(+Kmax:integer, +K, -Orden) is det.
+%
+%   Dispara hacia la primera sala posible del wumpus si hay a lo sumo Kmax;
+%   si no, decide como el agente de cazador.pl.
+decidir_k(Kmax, K, Orden) :-
+    K = k(Sala, _, _, _, Flechas),
+    mundos(K, wumpus, 1, Wumpus),
+    append(Wumpus, Ws0),
+    sort(Ws0, Ws),
+    length(Ws, NW),
+    (   Flechas > 0,
+        NW > 0,
+        NW =< Kmax
+    ->  Ws = [Blanco|_],
+        once(cazador:camino(Sala, Blanco, _, Ruta)),
+        Orden = disparar(Ruta)
+    ;   cazador:decidir(K, Orden)
+    ).
+
+%!  medir_caza_k(+Kmax:integer, +Semillas:list, -Resultados:list) is det.
+%
+%   Como medir_caza/2, con cazar_k/4.
+medir_caza_k(Kmax, Semillas, Resultados) :-
+    findall(R, ( member(S, Semillas), cazar_k(Kmax, S, R, _) ), Rs),
+    msort(Rs, Ordenados),
+    clumped(Ordenados, Resultados).
+
+% --- Ejercicio 10 -----------------------------------------------------------
+
+%!  soluble(+M) is semidet.
+%
+%   En el mundo M, el oro está en una celda sin pozo a la que se llega
+%   desde (1, 1) sin pasar por pozos.
+soluble(mundo(N, Pozos, _, Oro)) :-
+    \+ memberchk(Oro, Pozos),
+    alcanzable(N, Pozos, [1-1], [1-1], Oro).
+
+%!  alcanzable(+N:integer, +Pozos:list, +Frontera:list, +Vistas:list,
+%!             +Meta) is semidet.
+%
+%   Meta se alcanza desde las celdas de Frontera sin pasar por Pozos.
+alcanzable(N, Pozos, Frontera, Vistas, Meta) :-
+    (   memberchk(Meta, Frontera)
+    ->  true
+    ;   findall(V,
+                ( member(C, Frontera),
+                  vecina(N, C, V),
+                  \+ memberchk(V, Pozos),
+                  \+ memberchk(V, Vistas) ),
+                Vs0),
+        sort(Vs0, Siguiente),
+        Siguiente \== [],
+        append(Vistas, Siguiente, Vistas1),
+        alcanzable(N, Pozos, Siguiente, Vistas1, Meta)
+    ).
+
+%!  contar_solubles(+Semillas:list, -N:integer) is det.
+%
+%   N es la cantidad de mundos solubles entre los de Semillas.
+contar_solubles(Semillas, N) :-
+    aggregate_all(count,
+                  ( member(S, Semillas),
+                    mundo_sembrado(S, M),
+                    soluble(M) ),
+                  N).
+
+% --- Ejercicio 11 -----------------------------------------------------------
+
+%!  jugar_humano(+In, +M) is det.
+%
+%   Juega el mundo M con las acciones que llegan, una por línea, por el
+%   stream In, hasta que la partida termina o la entrada se acaba.
+jugar_humano(In, M) :-
+    estado_inicial(E),
+    humano(In, M, E, [], 0).
+
+%!  humano(+In, +M, +E, +Extras:list, +P0:integer) is det.
+%
+%   Muestra las percepciones del estado E, lee una acción y la ejecuta.
+humano(In, M, E0, Extras, P0) :-
+    E0 = e(C, _, _, _),
+    percepciones(M, E0, Ps0),
+    append(Ps0, Extras, Ps),
+    format("Estás en la celda ~w.~n", [C]),
+    forall(member(P, Ps), ( texto_percepcion(P, T), format("~w~n", [T]) )),
+    format("> "),
+    read_line_to_string(In, Linea),
+    (   Linea == end_of_file
+    ->  true
+    ;   string_codes(Linea, Codigos),
+        phrase(accion(A), Codigos),
+        catch(actuar(M, A, E0, E, Extras1, Fin),
+              error(domain_error(celda_vecina, _), _), fail)
+    ->  grilla:costo(A, Fin, Costo),
+        P is P0 + Costo,
+        (   Fin == sigue
+        ->  humano(In, M, E, Extras1, P)
+        ;   texto_fin(Fin, T),
+            format("~w Tu puntaje es ~w.~n", [T, P])
+        )
+    ;   format("No entiendo. Escribe ir X Y, tomar, ~w~n",
+               ["disparar y una dirección, o salir."]),
+        humano(In, M, E0, Extras, P0)
+    ).
+
+%!  accion(-A)// is semidet.
+%
+%   Una acción escrita.
+accion(ir(X-Y)) -->
+    blanks, "ir", blank, blanks, integer(X), blank, blanks, integer(Y),
+    blanks.
+accion(tomar) -->
+    blanks, "tomar", blanks.
+accion(salir) -->
+    blanks, "salir", blanks.
+accion(disparar(D)) -->
+    blanks, "disparar", blank, blanks, string_without(" ", Cs), blanks,
+    { atom_codes(D, Cs),
+      memberchk(D, [norte, sur, este, oeste]) }.
+
+% texto_percepcion(P, T): T es lo que se le dice al jugador que percibe P.
+texto_percepcion(hedor, 'Sientes un hedor.').
+texto_percepcion(brisa, 'Sientes una brisa.').
+texto_percepcion(brillo, 'Ves un brillo.').
+texto_percepcion(golpe, 'Chocas contra una pared.').
+texto_percepcion(grito, 'Oyes un grito.').
+
+% texto_fin(Fin, T): T es el mensaje final de la partida que terminó en Fin.
+texto_fin(salio(si), 'Sales de la cueva con el oro.').
+texto_fin(salio(no), 'Sales de la cueva sin el oro.').
+texto_fin(murio(pozo), 'Caes en un pozo.').
+texto_fin(murio(wumpus), 'El wumpus te come.').
+
+% --- Ejercicio 12 -------------------------------------------------------------
+
+%!  tiene_oro(+H, +T:integer) is semidet.
+%
+%   En el momento T de la historia H el agente lleva el oro: en un momento
+%   anterior lo tomó mientras percibía el brillo. Ninguna acción lo suelta,
+%   así que una vez tomado se conserva.
+tiene_oro(H, T) :-
+    T > 0,
+    T0 is T - 1,
+    (   hizo(H, tomar, T0),
+        percibio(H, brillo, T0)
+    ->  true
+    ;   tiene_oro(H, T0)
     ).

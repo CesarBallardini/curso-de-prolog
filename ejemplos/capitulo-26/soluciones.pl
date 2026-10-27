@@ -1,92 +1,121 @@
 :- encoding(utf8).
 
-% Capítulo 26 - Soluciones de los ejercicios 9, 10, 12 y 14. Las de los
-% ejercicios sobre el proyecto están en soluciones_proyecto.pl, y la del 11
-% en soluciones_buscaminas.pl.
+% Capítulo 26 - Soluciones de los ejercicios 3 a 9. Las de los ejercicios 11
+% a 13, sobre el proyecto, están en soluciones_proyecto.pl.
 %
-% largo_mal/2 y hermanos_mal/2 tienen errores plantados; largo/2 y
-% hermanos/2 son las versiones corregidas. resumen_con_error/1 llama a un
-% predicado mal escrito, para el ejercicio 12: la consulta check. lo informa.
+% solo-local: el ejercicio 7 abre un stream, que el sandbox de SWISH no permite.
 %
-%?- largo_mal([a, b], N).
-%?- hermanos(ana, H).
+%?- leer_nota("7", N).
+%?- limpiar_telefono("(223) 456-7890", T).
 
-:- op(920, fy, *).
+:- use_module(library(error)).
 
-% --- Ejercicio 9 ------------------------------------------------------------
+% --- Ejercicio 3 ----------------------------------------------------------
 
-%!  largo_mal(+L:list, -N:integer) is det.
+%!  leer_nota(+Texto:text, -Nota:integer) is det.
 %
-%   Debería ser la cantidad de elementos de L; tiene un error plantado en el
-%   caso base.
-largo_mal([], 1).
-largo_mal([_|Resto], N) :-
-    largo_mal(Resto, N0),
-    N is N0 + 1.
+%   Nota es la nota escrita en Texto. Produce domain_error(nota, Texto) si
+%   el texto no es un entero entre 1 y 10.
+leer_nota(Texto, Nota) :-
+    must_be(text, Texto),
+    text_to_string(Texto, Cadena),
+    (   number_string(N, Cadena),
+        integer(N),
+        between(1, 10, N)
+    ->  Nota = N
+    ;   domain_error(nota, Texto)
+    ).
 
-%!  largo(+L:list, -N:integer) is det.
+% --- Ejercicio 4 ----------------------------------------------------------
+
+%!  seguro(:Objetivo, -Resultado) is det.
 %
-%   N es la cantidad de elementos de L: largo_mal/2 corregido.
-largo([], 0).
-largo([_|Resto], N) :-
-    largo(Resto, N0),
-    N is N0 + 1.
+%   Resultado es ok si Objetivo tiene éxito, falla si falla, y error(Formal)
+%   si produce un error, con la parte formal del término.
+seguro(Objetivo, Resultado) :-
+    catch(( once(Objetivo)
+          ->  Resultado = ok
+          ;   Resultado = falla
+          ),
+          error(Formal, _),
+          Resultado = error(Formal)).
 
-% --- Ejercicio 10 -----------------------------------------------------------
+% --- Ejercicio 5 ----------------------------------------------------------
 
-% padre(P, H): P es el padre de H.
-padre(juan, ana).
-padre(juan, pedro).
-padre(pedro, luis).
-padre(pedro, eva).
-
-%!  hermanos_mal(?A, ?B) is nondet.
+%!  promedio_seguro(+L:list(number), -P) is det.
 %
-%   Debería ser: A y B son hermanos, hijos del mismo padre y distintos. El
-%   error: el último objetivo compara con == en lugar de \==.
-hermanos_mal(A, B) :-
-    padre(P, A),
-    padre(P, B),
-    A == B.
+%   P es el promedio de L, o sin_datos si L está vacía. Solo se captura la
+%   división por cero; cualquier otro error, como un elemento que no es un
+%   número, se propaga.
+promedio_seguro(L, P) :-
+    catch(( sum_list(L, S),
+            length(L, N),
+            P is S / N ),
+          error(evaluation_error(zero_divisor), _),
+          P = sin_datos).
 
-%!  hermanos_recortado(?A, ?B) is nondet.
+% --- Ejercicio 6 ----------------------------------------------------------
+
+%!  rango(+Desde:integer, +Hasta:integer, -L:list(integer)) is det.
 %
-%   hermanos_mal/2 con el último objetivo tachado: responde, y por eso el
-%   error está en el objetivo tachado.
-hermanos_recortado(A, B) :-
-    padre(P, A),
-    padre(P, B),
-    * A == B.
+%   L son los enteros de Desde a Hasta. Produce un error de tipo si alguno
+%   no es un entero, y domain_error(rango, Desde-Hasta) si Desde > Hasta.
+rango(Desde, Hasta, L) :-
+    must_be(integer, Desde),
+    must_be(integer, Hasta),
+    (   Desde =< Hasta
+    ->  numlist(Desde, Hasta, L)
+    ;   domain_error(rango, Desde-Hasta)
+    ).
 
-%!  *(+Objetivo) is det.
+% --- Ejercicio 7 ----------------------------------------------------------
+
+%!  primera_linea(+Texto:string, -Linea:string) is det.
 %
-%   Tacha Objetivo: *G se cumple siempre, sin ejecutar G.
-*(_).
+%   Linea es la primera línea de Texto, o la cadena vacía si Texto está
+%   vacío. El stream se cierra aunque quede texto sin leer.
+primera_linea(Texto, Linea) :-
+    setup_call_cleanup(open_string(Texto, Stream),
+                       read_line_to_string(Stream, Leida),
+                       close(Stream)),
+    (   Leida == end_of_file
+    ->  Linea = ""
+    ;   Linea = Leida
+    ).
 
-%!  hermanos(?A, ?B) is nondet.
+% --- Ejercicio 8 ----------------------------------------------------------
+
+:- multifile prolog:message//1.
+
+%!  prolog:message(+Mensaje)// is semidet.
 %
-%   A y B son hermanos: hermanos_mal/2 corregido.
-hermanos(A, B) :-
-    padre(P, A),
-    padre(P, B),
-    A \== B.
+%   El texto del mensaje nota_invalida(N).
+prolog:message(nota_invalida(N)) -->
+    [ 'La nota ~w no es válida: debe ser un entero de 1 a 10'-[N] ].
 
-% --- Ejercicio 12 -----------------------------------------------------------
+% --- Ejercicio 9 ----------------------------------------------------------
 
-%!  resumen_con_error(-Texto:string) is det.
+%!  limpiar_telefono(+Texto:text, -Numero:string) is det.
 %
-%   Llama a promedo/2, que no existe: el nombre está mal escrito. Cargar el
-%   archivo no lo detecta; check/0 sí.
-resumen_con_error(Texto) :-
-    promedo([6, 9], P),
-    format(string(Texto), "Promedio: ~w", [P]).
-
-% --- Ejercicio 14 -----------------------------------------------------------
-
-%!  natural(?N) is nondet.
-%
-%   N es un número natural. Con N libre, genera 0, 1, 2, … sin terminar.
-natural(0).
-natural(N) :-
-    natural(N0),
-    N is N0 + 1.
+%   Numero son los diez dígitos del teléfono escrito en Texto, sin
+%   espacios, guiones, puntos ni paréntesis. Produce domain_error(telefono,
+%   Motivo) si el texto tiene letras, si no tiene diez dígitos, o si el
+%   código de área empieza con 0 o 1.
+limpiar_telefono(Texto, Numero) :-
+    must_be(text, Texto),
+    text_to_string(Texto, Cadena),
+    string_chars(Cadena, Caracteres),
+    (   member(C, Caracteres),
+        char_type(C, alpha)
+    ->  domain_error(telefono, letras)
+    ;   true
+    ),
+    include([Ch]>>char_type(Ch, digit(_)), Caracteres, Digitos),
+    length(Digitos, Cantidad),
+    (   Cantidad =\= 10
+    ->  domain_error(telefono, cantidad_de_digitos(Cantidad))
+    ;   Digitos = [Primero|_],
+        memberchk(Primero, ['0', '1'])
+    ->  domain_error(telefono, codigo_de_area(Primero))
+    ;   string_chars(Numero, Digitos)
+    ).

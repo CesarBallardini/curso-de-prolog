@@ -2,105 +2,116 @@
 
 :- begin_tests(soluciones).
 
-test(ejercicio_1, [true(S-J == [2, 0, 0]-[sacar(1, 2)])]) :-
-    maplist(suma_nim, [[3, 4, 5], [1, 4, 5], [2, 2, 7, 7]], S),
-    findall(X, jugada_segura([3, 4, 5], X), J).
+test(ejercicio_1, [true(M-C == [[1-2, 2-1], [1-2], [2-1]]-
+                               [desconocida, desconocida, desconocida])]) :-
+    conocer(4, [1-1-[brisa]], K),
+    mundos_pozos(K, M),
+    maplist(clasificar(K), [1-2, 2-2, 3-3], C).
 
-test(ejercicio_1_ganadoras, [true(G == [si, no, no])]) :-
-    findall(R, ( member(P, [[3, 4, 5], [1, 4, 5], [2, 2, 7, 7]]),
-                 ( ganadora_tabulada(P) -> R = si ; R = no ) ),
-            G).
+test(ejercicio_1_probabilidad, [true(abs(P - 5 / 9) < 1.0e-9)]) :-
+    conocer(4, [1-1-[brisa]], K),
+    probabilidad_pozo(K, 1-2, P).
 
-test(miseria, [true(L == [[1, 1, 1], [2, 2], [1, 2, 3]])]) :-
-    findall(P, ( member(P, [[1, 1, 1], [1, 1], [2, 2], [1, 2, 3], [3, 4, 5]]),
-                 segura_miseria(P) ),
-            L).
+test(distancia, [true(D == 2)]) :-
+    distancia(1, 3, D).
 
-test(miseria_sin_fichas) :-
-    ganadora_miseria([0, 0]).
+test(mayor_distancia, [true(D == 5)]) :-
+    mayor_distancia(D).
 
-%!  posicion3(-Posicion:list) is nondet.
-%
-%   Posicion son tres pilas de 0 a 7 fichas.
-posicion3([A, B, C]) :-
-    between(0, 7, A),
-    between(0, 7, B),
-    between(0, 7, C).
+test(estricta_jugador, [true(Ms == [ruta_invalida])]) :-
+    nueva_partida(7, E),
+    jugada_estricta(disparar([4, 5]), E, _, _, Ms).
 
-test(miseria_igual_regla, [true(Distintas == [])]) :-
-    findall(P, ( posicion3(P),
-                 \+ ( ganadora_miseria(P) -> \+ segura_miseria(P)
-                    ; segura_miseria(P) ) ),
-            Distintas).
+test(estricta_ida_y_vuelta, [true(Ms == [ruta_invalida])]) :-
+    nueva_partida(7, E),
+    jugada_estricta(disparar([4, 14, 4]), E, _, _, Ms).
 
-test(ejercicio_3, [true(J-V-N == sacar(5, 9)-50-26)]) :-
-    alfabeta(nim_suma([1, 3, 5, 7, 9]), pilas([1, 3, 5, 7, 9], uno), 1,
-             J, V, N).
+test(estricta_valida, [true(R == gana)]) :-
+    nueva_partida(7, E),
+    jugada_estricta(disparar([4, 3]), E, _, R, _).
 
-test(valor_suma, [true(Vs == [50, -50, -50, 50])]) :-
-    findall(V, ( member(P-J, [[1, 1]-dos, [1, 1]-uno, [1, 2]-dos,
-                              [1, 2]-uno]),
-                 valor_suma(P, J, V) ),
-            Vs).
+test(final, [true(F == [1-4, 2-3, 3-1, 3-2])]) :-
+    conocimiento_final(2, K),
+    frontera(K, F).
 
-test(ejercicio_4, [true(N == 728)]) :-
-    abolish_all_tables,
-    ganadora_tabulada([1, 3, 5, 7, 9]),
-    posiciones(N).
+test(reglas2, [true(R == r(192, 0))]) :-
+    numlist(1, 20, Ss),
+    comparar_reglas2(Ss, R).
 
-test(particion, [true(C == [0-0-360, 0-1-1440, 0-2-1260, 0-3-264, 0-4-9,
-                            1-0-480, 1-1-720, 1-2-216, 1-3-8, 2-0-180,
-                            2-1-72, 2-2-6, 3-0-24, 4-0-1])]) :-
-    particion([0, 1, 2, 3], C).
+test(dpll_sat, [true]) :-
+    satisfacible([[+p, +q], [-p], [+r, -q]]).
 
-% Después de dos respuestas quedan 83 códigos; el primero, 1547, deja en el
-% peor caso 27, y 1574, el elegido, 25.
-test(mejor_intento, [true(I-M == [1, 5, 7, 4]-25)]) :-
-    candidatos(Cs0),
-    filtrar(Cs0, [0, 1, 2, 3], 0, 1, Cs1),
-    filtrar(Cs1, [1, 4, 5, 6], 1, 2, Cs),
-    mejor_intento(Cs, I),
-    peor_clase(Cs, I, M).
+test(dpll_unsat, [fail]) :-
+    satisfacible([[+p, +q], [-p], [-q]]).
 
-test(peor_clase, [true(M == 1440)]) :-
-    candidatos(Cs),
-    peor_clase(Cs, [0, 1, 2, 3], M).
+test(dpll, [true(S-D == 83-0)]) :-
+    comparar_dpll([1, 2, 3, 4, 5], r(S, D, _)).
 
-test(colores, [true(T-V == 1-2)]) :-
-    respuesta_colores([1, 1, 2, 3], [1, 2, 1, 6], T, V).
+test(tamano, [true(M == mundo(5, [1-5, 2-3, 3-5, 4-1, 5-4], 4-2, 2-3))]) :-
+    mundo_sembrado(5, 1, M).
 
-test(colores_repetidos, [true(T-V == 0-1)]) :-
-    respuesta_colores([1, 2, 2, 2], [3, 1, 1, 1], T, V).
+% Con N = 4, los mundos son los de mundo_sembrado/2.
+test(tamano_4, [true(M1 == M2)]) :-
+    mundo_sembrado(4, 2, M1),
+    mundo_sembrado(2, M2).
 
-test(codigos_colores, [true(N == 1296)]) :-
-    aggregate_all(count, codigo_colores(_), N).
+test(solubles, [true(N == 77)]) :-
+    numlist(1, 100, Ss),
+    contar_solubles(Ss, N).
 
-test(adivinar_colores, [true(Is == [[1, 1, 1, 1], [1, 2, 2, 2],
-                                    [3, 1, 2, 3], [3, 2, 1, 4],
-                                    [4, 1, 3, 2], [4, 3, 2, 1]])]) :-
-    adivinar_colores([4, 3, 2, 1], Is).
+test(caza_k, [true(R == [gana-11, pierde(pozo)-1])]) :-
+    numlist(1, 12, Ss),
+    medir_caza_k(1, Ss, R).
 
-test(contradiccion, [true(K == 2)]) :-
-    primera_contradiccion([r([0, 1, 2, 3], 0, 0), r([4, 5, 6, 7], 0, 0),
-                           r([8, 9, 0, 1], 0, 0)], K).
+test(humano, [true(sub_string(S, _, _, _, "Tu puntaje es 992"))]) :-
+    mundo(figura_7_2, M),
+    setup_call_cleanup(
+        open_string("ir 1 2\nir 2 2\nir 2 3\ntomar\nir 2 2\nir 1 2\nir 1 1\n\
+salir\n", In),
+        with_output_to(string(S), jugar_humano(In, M)),
+        close(In)).
 
-test(sin_contradiccion, [fail]) :-
-    primera_contradiccion([r([0, 1, 2, 3], 0, 1)], _).
+test(distancia_niveles, [true(D == 2)]) :-
+    soluciones:distancia_([1], [1], 3, 0, D).
 
-test(ejercicio_9, [true(U-T == 3-tablero([1, 1, 0, 1, 1, 1], 3,
-                                         [1, 1, 1, 0, 3, 1], 0))]) :-
-    sembrar(3, tablero([0, 0, 13, 0, 0, 0], 0, [0, 0, 0, 0, 2, 0], 0), U, T0),
-    capturar(U, T0, T).
+test(segura2) :-
+    conocer(4, [1-1-[], 1-2-[], 1-3-[hedor], 2-2-[hedor]], K),
+    soluciones:segura2(K, 1-4).
 
-test(piedras, [true(V-W == 4-(-4))]) :-
-    piedras(tablero([2, 2, 2, 0, 0, 0], 5, [1, 1, 0, 0, 0, 0], 3), sur, V),
-    piedras(tablero([2, 2, 2, 0, 0, 0], 5, [1, 1, 0, 0, 0, 0], 3), norte, W).
+test(dos_hedores, [true(W == 2-3)]) :-
+    conocer(4, [1-1-[], 1-2-[], 1-3-[hedor], 2-2-[hedor]], K),
+    soluciones:dos_hedores(K, W).
 
-test(puntos, [true(P == [a-1.5, b-0.5])]) :-
-    puntos([r(a-2, b-2, gana(sur)), r(b-2, a-2, empate)], P).
+test(asignar, [true(R == [[+c], [+d]])]) :-
+    soluciones:asignar(+a, [[+a, +b], [-a, +c], [+d]], R).
 
-test(texto, [true(Ts == ["La computadora saca 3 fichas de la pila 2.",
-                         "La computadora saca 1 ficha de la pila 1."])]) :-
-    maplist(jugada_nim_texto, [sacar(2, 3), sacar(1, 1)], Ts).
+test(alcanzable) :-
+    soluciones:alcanzable(4, [2-1], [1-1], [1-1], 3-1).
+
+test(no_alcanzable, [fail]) :-
+    soluciones:alcanzable(4, [2-1, 1-2], [1-1], [1-1], 3-1).
+
+% Una sola lectura, aunque la gramática deja una alternativa abierta.
+test(accion_ir, [all(A == [ir(2-3)])]) :-
+    phrase(soluciones:accion(A), `ir 2 3`).
+
+test(accion_disparar, [true(A == disparar(norte))]) :-
+    phrase(soluciones:accion(A), `disparar norte`).
+
+test(accion_direccion_mala, [fail]) :-
+    phrase(soluciones:accion(_), `disparar arriba`).
+
+% En la partida traducida de la figura 7.2, la acción 10 es tomar.
+test(tiene_oro, [true(Ts == [11, 12, 13, 14, 15, 16, 17, 18])]) :-
+    mundo(figura_7_2, M),
+    jugar(M, final(_, _, Plan)),
+    traducir(Plan, p(1-1, este), As, _),
+    historia(M, As, H),
+    findall(T, ( between(0, 18, T), tiene_oro(H, T) ), Ts).
+
+test(tomar_sin_brillo, [fail]) :-
+    mundo(figura_7_2, M),
+    historia(M, [tomar], H),
+    tiene_oro(H, 1).
 
 :- end_tests(soluciones).

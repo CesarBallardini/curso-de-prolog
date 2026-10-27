@@ -2,118 +2,122 @@
 
 :- begin_tests(soluciones).
 
-test(tres, [true(Fs == [0, 0, 1, 0, 0, 1, 0, 0, 1])]) :-
-    figuras(tres, b, 9, Fs).
+test(ej2_equivalentes) :-
+    equivalentes(par_par, interseccion(a_par, b_par)).
 
-test(ceros_unos, [true(Fs == [0, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1])]) :-
-    figuras(ceros_unos, inicio, 12, Fs).
+test(ej2_palabras, [true(N == 8)]) :-
+    palabras(par_par, 4, Ws),
+    length(Ws, N).
 
-test(ceros_unos_infinita, [true(R = incompleta(_))]) :-
-    completa(ceros_unos, inicio, [0, 1, schwa], 500, R).
+test(ej3_sin_epsilon, [fail]) :-
+    epsilon(sin_epsilon(ciclo), _, _).
 
-test(cr, [true(Ss == [schwa, schwa, 1, x, 0, x, 1, blanco, 0])]) :-
-    cinta_de([schwa, schwa, 1, x, 0, x], 0, C0),
-    ejecutar(biblioteca, cr(fin, x), C0, 10000, detenida(fin, C)),
-    contenido(C, Ss).
+test(ej3_ciclo) :-
+    equivalentes(ciclo, sin_epsilon(ciclo)).
 
-test(ciclo, [throws(error(ciclo_de_alias(uno), _))]) :-
-    resolver_seguro(circular, uno, _, _).
+test(ej3_er) :-
+    equivalentes(er("(a|b)*abb"), sin_epsilon(er("(a|b)*abb"))).
 
-test(sin_ciclo, [true(Q-N == emite(b, 0)-1)]) :-
-    resolver_seguro(alterna, a, Q, N).
+test(ej3_contra, [true(Ws == [[b]])]) :-
+    equivalentes(contra, sin_epsilon(contra)),
+    palabras(sin_epsilon(contra), 1, Ws).
 
-test(alcanzable, [true(Xs == Ys)]) :-
-    findall(X, alcanzable(ii, b, [0, 1, schwa, x], X), Xs0),
-    sort(Xs0, Xs),
-    completa(ii, b, [0, 1, schwa, x], 100, tabla(Ys0, _)),
-    sort(Ys0, Ys).
+test(ej4_diferencia, [true(Ws == [[a, a, a], [a, a, b], [a, b, b],
+                                  [b, b, b]])]) :-
+    palabras(diferencia(er("a*b*"), er("(ab)*")), 3, Ws).
 
-test(sd_numero, [true(SD == "DADDCRDAA;DAADDRDAAA;DAAADDCCRDAAAA;DAAAADDRDA;")]) :-
-    sd_numero(SD, 31332531173113353111731113322531111731111335317).
+test(ej4_vacia, [forall(member(M, [termina_ab, multiplo3, er("a?b+")]))]) :-
+    vacio(diferencia(M, M)).
 
-test(ida_y_vuelta, [true(N == N0)]) :-
-    numero(ii, b, [0, 1, schwa, x], N0),
-    sd_numero(SD, N0),
-    sd_numero(SD, N).
+test(ej5_explosion, [true(Fs == [1-2-2, 2-4-4, 3-8-8, 4-16-16])]) :-
+    explosion(4, Fs).
 
-test(instrucciones_de, [true(Is == [i(1, 0, 1, r, 2), i(2, 0, 0, r, 3),
-                                    i(3, 0, 2, r, 4), i(4, 0, 0, r, 1)])]) :-
-    instrucciones_de("DADDCRDAA;DAADDRDAAA;DAAADDCCRDAAAA;DAAAADDRDA;", Is).
+test(ej6_repeticion) :-
+    equivalentes(er("a{3}"), er("aaa")).
 
-test(figuras_dn_i, [true(Fs == [0, 1, 0, 1, 0, 1])]) :-
-    figuras_dn(31332531173113353111731113322531111731111335317, 6, Fs).
+test(ej6_grupo) :-
+    acepta(er("(ab){2}c"), [a, b, a, b, c]).
 
-test(figuras_dn_ii, [true(Fs == Gs)]) :-
-    numero(ii, b, [0, 1, schwa, x], N),
-    figuras_dn(N, 20, Fs),
-    figuras(ii, b, 20, Gs).
+test(ej6_cero, [true(E == cat(vacia, sim(y)))]) :-
+    expresion("x{0}y", E).
 
-test(e_desde_el_final, [true(Ss == [schwa, schwa, 1, blanco, 0, blanco, 1])]) :-
-    cinta_de([schwa, schwa, 1, a, 0, a, 1], 0, C0),
-    ejecutar(biblioteca, q(e(fin)), C0, 1000, detenida(fin, C)),
-    contenido(C, Ss).
+test(ej7_lexico, [true(Cs == [id(x), :=, num(1), id(y), :=,
+                              cadena(hola)])]) :-
+    componentes("x := 1 # uno\ny := \"hola\"", Cs).
 
-test(e_desde_el_comienzo, [true(Ss == [schwa, schwa, blanco, a, blanco, a])]) :-
-    cinta_de([schwa, schwa, 1, a, 0, a, 1], 0, C0),
-    ejecutar(biblioteca, e(fin), C0, 1000, detenida(fin, C)),
-    contenido(C, Ss).
+% El complemento a dos de N es 16 - N módulo 16, en los dos sentidos.
+test(ej8_complemento2) :-
+    forall(between(0, 15, N),
+           ( bits(N, B),
+             C is (16 - N) mod 16,
+             bits(C, S),
+             transducir(complemento2, B, S),
+             transducir(complemento2, S, B) )).
 
-test(re_todas, [true(Ss == [schwa, schwa, 1, blanco, 1, blanco, 1])]) :-
-    cinta_de([schwa, schwa, 1, blanco, 0, blanco, 0], 0, C0),
-    ejecutar(biblioteca, re(fin, 0, 1), C0, 1000, detenida(fin, C)),
-    contenido(C, Ss).
+test(ej9_estados, [true(N-M == 4-3)]) :-
+    numero_estados(circuito(par2, [0, 0]), N),
+    numero_estados(min(circuito(par2, [0, 0])), M).
 
-test(rapido, [true(M == medida(121, 14, 33))]) :-
-    medir(rapido, inicio, 120, M).
+% bits(N, Bs): los cuatro bits de N, el menos significativo primero.
+bits(N, Bs) :-
+    findall(B, ( between(0, 3, I), B is (N >> I) /\ 1 ), Bs).
 
-test(rapido_figuras, [true(Fs == Gs)]) :-
-    figuras(rapido, inicio, 30, Fs),
-    figuras(ii, b, 30, Gs).
+test(contiene_final, [true]) :-
+    contiene_final(termina_ab, [q0, q2]).
 
-test(cuenta_mas_larga_primero, [all(N-R == [2-"D", 1-"AD", 0-"AAD"])]) :-
-    string_codes("AAD", Cs),
-    phrase(cuenta(0'A, N), Cs, Resto),
-    string_codes(R, Resto).
+test(contiene_final_no, [fail]) :-
+    contiene_final(termina_ab, [q0]).
 
-test(cuenta_ninguna, [true(N == 0)]) :-
-    phrase(cuenta(0'A, N), `D`, `D`).
+test(contiene_final_vacio, [fail]) :-
+    contiene_final(termina_ab, []).
 
-test(instruccion_sd, [all(I == [i(1, 0, 1, r, 2)])]) :-
-    phrase(instruccion_sd(I), `DADDCRDAA;`).
+test(repetir_cero, [true(R == vacia)]) :-
+    repetir(0, sim(a), R).
 
-test(instruccion_sd_mal_formada, [fail]) :-
-    phrase(instruccion_sd(_), `DADDCXDAA;`).
+test(repetir_uno, [true(R == sim(a))]) :-
+    repetir(1, sim(a), R).
 
-test(instrucciones_sd, [all(Is == [[i(1, 0, 1, r, 2), i(2, 0, 0, l, 1)]])]) :-
-    phrase(instrucciones_sd(Is), `DADDCRDAA;DAADDLDA;`).
+test(repetir_tres, [true(R == cat(sim(a), cat(sim(a), sim(a))))]) :-
+    repetir(3, sim(a), R).
 
-test(instrucciones_sd_vacia, [all(Is == [[]])]) :-
-    phrase(instrucciones_sd(Is), []).
+% Ejercicio 12: las dos expresiones describen el lenguaje de multiplo3.
+test(ej12_kleene) :-
+    expresion_texto(multiplo3, T),
+    equivalentes(er(T), multiplo3).
 
-test(sd_numero_inverso, [true(N == 3137)]) :-
-    sd_numero("DAD;", N).
+test(ej12_corta) :-
+    expresion_corta(T),
+    equivalentes(er(T), multiplo3).
 
-test(instruccion_estandar, [true(I == i(1, blanco, e(1, n), s(3)))]) :-
-    instruccion_estandar(i(1, 0, 2, n, s(3)), I).
+test(ej12_mas_corta, [true(L1 < L2)]) :-
+    expresion_corta(T1),
+    string_length(T1, L1),
+    expresion_texto(multiplo3, T2),
+    string_length(T2, L2).
 
-test(simbolos, [true(Ss == [blanco, 0, 1, s(3), s(7)])]) :-
-    maplist(simbolo_numero, Ss, [0, 1, 2, 3, 7]).
+% Ejercicio 13: la máquina de Moore escribe S0 y después lo mismo que la
+% de Mealy, para todas las entradas de hasta 5 bits.
+test(ej13_gray, [forall(( between(0, 5, L), length(E, L),
+                          maplist([B]>>member(B, [0, 1]), E) )),
+                 nondet, true(S == [0|G])]) :-
+    transducir(gray, E, G),
+    moore(moore_de(gray, 0), E, S).
 
-% figuras/4 cuenta cada figura impresa; U, solo las impresas en un blanco.
-test(reimprime, [true(Fs-Us == [0, 1, 0, 1]-[0, 0, 0, 0])]) :-
-    figuras(reimprime, b, 4, Fs),
-    universal(reimprime, b, [0, 1], 4, Us).
+test(ej13_complemento2, [forall(( between(0, 4, L), length(E, L),
+                                  maplist([B]>>member(B, [0, 1]), E) )),
+                         nondet, true(S == [x|G])]) :-
+    transducir(complemento2, E, G),
+    moore(moore_de(complemento2, x), E, S).
 
-test(reimprime_descripcion,
-     [true(SD == "DADDCNDAA;DAADCDCCRDAAA;DAAADDRDA;DAAADCDCRDA;DAAADCCDCCRDA;")]) :-
-    descripcion(reimprime, b, [0, 1], SD).
+% Los estados de gray se desdoblan: b0 y b1 se alcanzan escribiendo 0 y 1.
+test(ej13_estados, [true(Qs == [b0-0, b0-1, b1-0, b1-1])]) :-
+    findall(Q, alcanzable(moore_de(gray, 0), Q), Qs0),
+    sort(Qs0, Qs).
 
-% U no detecta que la máquina se detuvo: kom sigue buscando hacia la
-% izquierda una instrucción.
-test(corta, [true(Q-T == kom-":DAD:0:DCDAAD")]) :-
-    descripcion(corta, b, [0, 1], SD),
-    cinta_universal(SD, C0),
-    ejecutar(universal, b, C0, 200000, limite(Q, C)),
-    escrito(C, T).
+test(ej13_salida, [true(S == 1)]) :-
+    moore:salida_estado(moore_de(gray, 0), b0-1, S).
+
+test(ej13_inverso, [nondet, true(E == [1, 0, 1, 1])]) :-
+    moore(moore_de(gray, 0), E, [0, 1, 1, 1, 0]).
 
 :- end_tests(soluciones).

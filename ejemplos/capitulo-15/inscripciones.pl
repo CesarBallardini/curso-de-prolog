@@ -1,14 +1,14 @@
 :- encoding(utf8).
 
-% Capítulo 15 - El proyecto Inscripciones: validaciones de una inscripción.
+% Capítulo 15 - El proyecto Inscripciones: el modelo de datos.
 %
-% Respecto del capítulo 14 se agregan las vacantes de cada materia y el
-% predicado que decide si un alumno se puede inscribir en una materia. Las
-% condiciones se evalúan en orden con un condicional, y el resultado dice cuál
-% falló: la primera que falla determina el motivo del rechazo.
+% Respecto del capítulo 14, el estado de una inscripción deja de ser un
+% número o el átomo null: es cursando o nota(N). Cada caso se distingue por
+% la forma del término, y las reglas lo seleccionan por unificación, sin
+% preguntar de qué tipo es el valor.
 %
-%?- inscripcion_posible(104, ssl, Resultado).
-%?- inscripcion_posible(102, am2, Resultado).
+%?- aprobada(101, Materia, Nota).
+%?- cursa(Legajo, Materia).
 
 % alumno(Legajo, Nombre, Carrera, Ingreso): el alumno de ese legajo cursa esa
 % carrera desde el año de ingreso.
@@ -79,41 +79,3 @@ aprobada(Legajo, Materia, Nota) :-
 %   El alumno Legajo está cursando Materia, todavía sin nota.
 cursa(Legajo, Materia) :-
     inscripcion(Legajo, Materia, cursando).
-
-% vacantes(Materia, N): quedan N lugares en la materia.
-vacantes(am1, 30).
-vacantes(alg, 30).
-vacantes(log, 0).
-vacantes(am2, 25).
-vacantes(pp,  25).
-vacantes(ssl, 20).
-vacantes(bd,  15).
-
-%!  inscripcion_posible(+Legajo:integer, +Materia:atom, -Resultado) is det.
-%
-%   Resultado es aceptada si el alumno Legajo se puede inscribir en Materia,
-%   o rechazada(Motivo) con el primer motivo que lo impide: alumno_inexistente,
-%   materia_inexistente, ya_aprobada, ya_la_cursa, falta(Requisito) o
-%   sin_vacantes. Una materia desaprobada se puede volver a cursar.
-inscripcion_posible(Legajo, Materia, Resultado) :-
-    (   \+ alumno(Legajo, _, _, _)
-    ->  Resultado = rechazada(alumno_inexistente)
-    ;   \+ materia(Materia, _, _)
-    ->  Resultado = rechazada(materia_inexistente)
-    ;   aprobada(Legajo, Materia, _)
-    ->  Resultado = rechazada(ya_aprobada)
-    ;   cursa(Legajo, Materia)
-    ->  Resultado = rechazada(ya_la_cursa)
-    ;   correlativa(Materia, Requisito),
-        \+ aprobada(Legajo, Requisito, _)
-    ->  Resultado = rechazada(falta(Requisito))
-    ;   vacantes(Materia, 0)
-    ->  Resultado = rechazada(sin_vacantes)
-    ;   Resultado = aceptada
-    ).
-
-%!  puede_inscribirse(+Legajo:integer, +Materia:atom) is semidet.
-%
-%   El alumno Legajo se puede inscribir en Materia.
-puede_inscribirse(Legajo, Materia) :-
-    inscripcion_posible(Legajo, Materia, aceptada).

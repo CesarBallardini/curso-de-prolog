@@ -1,292 +1,400 @@
 :- encoding(utf8).
 
-% Capítulo 68 - Soluciones de los ejercicios 2 a 8, 10 y 11.
+% Capítulo 68 - Soluciones de los ejercicios 2 a 11.
 %
-% Carga las versiones 4 y 6 del capítulo, como proyecto.pl, y la versión
-% 3 del capítulo 67 para comparar con la inducción. El ejercicio 9 está en
-% soluciones_ebg.pl.
+% Carga la versión 5, que reexporta las anteriores, y agrega los
+% predicados que piden los ejercicios. Los que modifican un predicado
+% interno de una versión lo hacen sobre una copia con otro nombre.
 %
-% solo-local: carga archivos de otros capítulos.
+% solo-local: carga módulos del capítulo, que cargan archivos de otros
+% capítulos.
 %
-%?- todos_convergen.
-%?- eliminar_con_descarte_de(3, EV, D).
+%?- lgg_lista([abuelo(juan, eva), abuelo(juan, luis), abuelo(pedro, sofia)], G).
+%?- aprender_asc_corta(abuelo, H, N).
 
 :- use_module(library(apply)).
 :- use_module(library(lists)).
-:- use_module(library(aggregate)).
-:- use_module(preguntas).
-:- use_module(ebg, except([inferencias/2])).
-:- use_module('../capitulo-67/generalizar', [lgg_ingenua/3]).
-:- use_module('../capitulo-67/subsuncion', [subsume/2]).
-:- use_module('../capitulo-67/ascendente', [aprender_asc/3, evaluar/5]).
-:- use_module('../capitulo-67/familia', [ejemplos/3]).
+:- use_module(recursion).
 
 % Ejercicio 2
 
-%!  ejemplos_de(+C, -Ejs:list) is det.
+%!  lgg_lista(+Ts:list, -G) is det.
 %
-%   Ejs son las 36 instancias, en el orden de instancia/1, con la clase
-%   que les da el concepto C.
-ejemplos_de(C, Ejs) :-
-    findall(Ej, ( instancia(I),
-                  objetivo(C, I, Ej) ), Ejs).
+%   G es la lgg de todos los términos de la lista no vacía Ts: la lgg del
+%   primero con el segundo, la de ese resultado con el tercero, y así.
+lgg_lista([T|Ts], G) :-
+    foldl(lgg_con, Ts, T, G).
 
-%!  eliminar_todos(+C, -EV) is det.
+%!  lgg_con(+T, +G0, -G) is det.
 %
-%   EV es el espacio de versiones de las 36 instancias clasificadas por C.
-eliminar_todos(C, EV) :-
-    ejemplos_de(C, Ejs),
-    eliminar(Ejs, EV).
-
-%!  todos_convergen is semidet.
-%
-%   Para cada concepto C distinto de vacio, eliminar/2 converge a C con
-%   los ejemplos de ejemplos_de/2.
-todos_convergen :-
-    forall(( concepto(C),
-             C \== vacio ),
-           ( eliminar_todos(C, EV),
-             estado(EV, convergio(D)),
-             D =@= C )).
+%   G es la lgg de G0 y T.
+lgg_con(T, G0, G) :-
+    lgg(G0, T, G).
 
 % Ejercicio 3
 
-%!  con_interior(:Meta) is semidet.
+%!  reducida(+C0, -C) is det.
 %
-%   Prueba Meta con un quinto atributo, interior, cuyos valores rojo y
-%   verde repiten valores de color.
-con_interior(Meta) :-
-    setup_call_cleanup(assertz(espacio:atributo(interior, [rojo, verde])),
-                       once(Meta),
-                       retract(espacio:atributo(interior, [rojo, verde]))).
+%   C es la cláusula C0 sin los literales redundantes: se quita un
+%   literal si la cláusula actual subsume a la que queda sin él. C y C0
+%   se subsumen mutuamente.
+reducida((H :- B0), (H :- B)) :-
+    sin_redundantes(B0, [], H, B).
 
-%!  generalizacion_ingenua(+S, +I, -S1) is det.
+%!  sin_redundantes(+Pendientes:list, +Guardados:list, +H, -B:list) is det.
 %
-%   Como generalizacion/3, con lgg_ingenua/3: cada diferencia recibe su
-%   propia variable, y el resultado nunca exige que dos atributos
-%   coincidan.
-generalizacion_ingenua(S, I, S1) :-
-    (   S == vacio
-    ->  S1 = I
-    ;   lgg_ingenua(S, I, S1)
+%   B son los Guardados, en orden inverso, seguidos de los Pendientes que
+%   no son redundantes.
+sin_redundantes([], Guardados, _, B) :-
+    reverse(Guardados, B).
+sin_redundantes([L|Ls], Guardados, H, B) :-
+    reverse(Guardados, G),
+    append(G, [L|Ls], Actual),
+    append(G, Ls, Sin),
+    (   subsume((H :- Actual), (H :- Sin))
+    ->  sin_redundantes(Ls, Guardados, H, B)
+    ;   sin_redundantes(Ls, [L|Guardados], H, B)
     ).
 
 % Ejercicio 4
 
-%!  cuenta_clases(-Pos:integer, -Neg:integer, -Desc:integer) is det.
+%!  reducir_corta(+C0, +Negs:list, +M:list, -C) is semidet.
 %
-%   Cantidad de instancias positivas, negativas y desconocidas según el
-%   espacio de los tres primeros ejemplos de esfera_roja.
-cuenta_clases(Pos, Neg, Desc) :-
-    eliminar_de(esfera_roja, 3, EV),
-    aggregate_all(count, ( instancia(I), clasificar(EV, I, positivo) ),
-                  Pos),
-    aggregate_all(count, ( instancia(I), clasificar(EV, I, negativo) ),
-                  Neg),
-    aggregate_all(count, ( instancia(I), clasificar(EV, I, desconocido) ),
-                  Desc).
-
-%!  desconocidas_esperadas is semidet.
-%
-%   Las instancias desconocidas son las que cubre pieza(esfera, _, _, _)
-%   o pieza(_, rojo, _, _) y no pieza(esfera, rojo, _, _).
-desconocidas_esperadas :-
-    eliminar_de(esfera_roja, 3, EV),
-    forall(instancia(I),
-           (   clasificar(EV, I, desconocido)
-           ->  ( cubre(pieza(esfera, _, _, _), I)
-               ; cubre(pieza(_, rojo, _, _), I) ),
-               \+ cubre(pieza(esfera, rojo, _, _), I)
-           ;   true
-           )).
-
-% Ejercicio 5
-
-%!  pasivo_inverso(+C, -N:integer, -E) is det.
-%
-%   Como pasivo/3, con las instancias en el orden inverso al de
-%   instancia/1 después del primer positivo.
-pasivo_inverso(C, N, E) :-
-    primer_positivo(C, I),
-    findall(Ej, ( instancia(J),
-                  J \== I,
-                  objetivo(C, J, Ej) ), Ejs0),
-    reverse(Ejs0, Ejs),
-    inicial(EV0),
-    actualizar(pos(I), EV0, EV),
-    recibir(Ejs, EV, 1, N, E).
-
-%!  recibir(+Ejs:list, +EV, +N0:integer, -N:integer, -E) is det.
-%
-%   Actualiza EV con los ejemplos de Ejs hasta que converge o colapsa. N0
-%   es la cantidad de ejemplos ya recibidos y N la final.
-recibir(Ejs, EV, N0, N, E) :-
-    estado(EV, E0),
-    (   E0 == abierto,
-        Ejs = [Ej|Resto]
-    ->  actualizar(Ej, EV, EV1),
-        N1 is N0 + 1,
-        recibir(Resto, EV1, N1, N, E)
-    ;   N = N0,
-        E = E0
+%   C es la más corta de las reducciones de C0 con el cuerpo en su orden y
+%   en el inverso; la primera, si tienen la misma longitud. Falla si C0
+%   cubre un negativo.
+reducir_corta((H :- B0), Negs, M, C) :-
+    reducir((H :- B0), Negs, M, C1),
+    reverse(B0, B1),
+    reducir((H :- B1), Negs, M, C2),
+    C1 = (_ :- L1),
+    C2 = (_ :- L2),
+    length(L1, N1),
+    length(L2, N2),
+    (   N2 < N1
+    ->  C = C2
+    ;   C = C1
     ).
 
-%!  promedio_inverso(-P:float) is det.
+%!  aprender_asc_corta(+Relacion, -H:list, -N:integer) is det.
 %
-%   P es el promedio de ejemplos de pasivo_inverso/3 sobre los conceptos
-%   distintos de vacio, redondeado a dos decimales.
-promedio_inverso(P) :-
-    aggregate_all(bag(N), ( concepto(C),
-                            C \== vacio,
-                            pasivo_inverso(C, N, _) ), Ns),
-    sum_list(Ns, Suma),
-    length(Ns, K),
-    P is round(Suma / K * 100) / 100.0.
+%   aprender_asc/3 con reducir_corta/4 en lugar de reducir/4.
+aprender_asc_corta(Relacion, H, N) :-
+    aprender_asc_con(reducir_corta, Relacion, H, N).
+
+%!  aprender_asc_con(:Reducir, +Relacion, -H:list, -N:integer) is det.
+%
+%   aprender_asc/3 con el predicado Reducir, llamado como
+%   call(Reducir, C0, Negs, M, C), en lugar de reducir/4.
+aprender_asc_con(Reducir, Relacion, H, N) :-
+    ejemplos(Relacion, Pos, Negs),
+    modelo_fondo(M),
+    cubrir_con(Pos, Reducir, Negs, M, H, 0, N).
+
+%!  cubrir_con(+Pos:list, :Reducir, +Negs:list, +M:list, -H:list,
+%!             +N0:integer, -N:integer) is det.
+%
+%   El algoritmo de cobertura de la versión 3, con Reducir.
+cubrir_con([], _, _, _, [], N, N).
+cubrir_con([P|Ps], Reducir, Negs, M, H, N0, N) :-
+    Pos = [P|Ps],
+    findall(C0, ( append(_, [E1|Resto], Pos),
+                  member(E2, Resto),
+                  rlgg(E1, E2, M, C0) ),
+            Rlggs),
+    length(Rlggs, K),
+    N1 is N0 + K,
+    findall(Cubiertos-C,
+            ( member(C0, Rlggs),
+              call(Reducir, C0, Negs, M, C),
+              include(cubre_en(C, M), Pos, Cs),
+              length(Cs, Cubiertos) ),
+            Candidatas),
+    (   sort(1, @>=, Candidatas, [_-C|_])
+    ->  exclude(cubre_en(C, M), Pos, Resto),
+        H = [C|H1],
+        cubrir_con(Resto, Reducir, Negs, M, H1, N1, N)
+    ;   findall((E :- []), member(E, Pos), H),
+        N = N1
+    ).
+
+%!  cubre_en(+C, +M:list, +E) is semidet.
+%
+%   La cláusula C cubre el ejemplo E en el modelo M.
+cubre_en(C, M, E) :-
+    cubre(C, E, M).
 
 % Ejercicio 6
 
-%!  eliminar_con_descarte(+Ejs:list, -EV, -Descartados:list) is det.
-%
-%   EV es el espacio de versiones de los ejemplos de Ejs, salvo los que lo
-%   harían colapsar, que se ignoran y quedan en Descartados, en el orden
-%   en que llegaron.
-eliminar_con_descarte(Ejs, EV, Descartados) :-
-    inicial(EV0),
-    foldl(con_descarte, Ejs, EV0-[], EV-Inv),
-    reverse(Inv, Descartados).
+% nuevos(Hechos): tomas, hijo de juan y marta, en el modelo de fondo.
+nuevos([varon(tomas), padre(juan, tomas), madre(marta, tomas),
+        progenitor(juan, tomas), progenitor(marta, tomas)]).
 
-%!  con_descarte(+Ej, +Estado0, -Estado) is det.
+%!  modelo_con_tomas(-M:list) is det.
 %
-%   Estado es EV-Ds después de Ej: si actualizar EV0 con Ej lo hace
-%   colapsar, EV es EV0 y Ej se agrega a Ds.
-con_descarte(Ej, EV0-Ds0, EV-Ds) :-
-    actualizar(Ej, EV0, EV1),
-    (   estado(EV1, colapso)
-    ->  EV = EV0,
-        Ds = [Ej|Ds0]
-    ;   EV = EV1,
-        Ds = Ds0
+%   M es el modelo de fondo con los hechos de tomas, ordenado.
+modelo_con_tomas(M) :-
+    modelo_fondo(M0),
+    nuevos(Nuevos),
+    append(M0, Nuevos, M1),
+    sort(M1, M).
+
+%!  hermano_con_tomas(-Pos:list, -H:list, -N:integer) is det.
+%
+%   Pos son los positivos de hermano/2 en la familia con tomas, y H la
+%   hipótesis de ascendente/5 para ellos; N es la cantidad de rlgg.
+hermano_con_tomas(Pos, H, N) :-
+    modelo_con_tomas(M),
+    personas_de(M, Personas),
+    findall(hermano(A, B),
+            ( member(varon(A), M),
+              member(progenitor(P, A), M),
+              member(progenitor(P, B), M),
+              A \== B ),
+            Pos0),
+    sort(Pos0, Pos),
+    findall(hermano(A, B),
+            ( member(A, Personas),
+              member(B, Personas),
+              \+ memberchk(hermano(A, B), Pos) ),
+            Negs),
+    ascendente(Pos, Negs, M, H, N).
+
+%!  rlgg_con_distintos(-Hechos:integer, -Literales:integer) is det.
+%
+%   Hechos es la cantidad de átomos del modelo con tomas y los hechos
+%   distintos(X, Y) de cada par de personas distintas, y Literales la de
+%   literales enlazados de la rlgg de hermano(pedro, ana) y
+%   hermano(pedro, tomas) en ese modelo.
+rlgg_con_distintos(Hechos, Literales) :-
+    modelo_con_tomas(M0),
+    personas_de(M0, Personas),
+    findall(distintos(X, Y),
+            ( member(X, Personas),
+              member(Y, Personas),
+              X \== Y ),
+            Distintos),
+    append(M0, Distintos, M1),
+    sort(M1, M),
+    length(M, Hechos),
+    rlgg(hermano(pedro, ana), hermano(pedro, tomas), M, (_ :- B)),
+    length(B, Literales).
+
+%!  personas_de(+M:list, -Personas:list) is det.
+%
+%   Personas son las que el modelo M declara varón o mujer, ordenadas.
+personas_de(M, Personas) :-
+    findall(P, ( member(varon(P), M)
+               ; member(mujer(P), M) ),
+            Ps),
+    sort(Ps, Personas).
+
+% Ejercicio 7
+
+%!  generadas_sin_poda(+E, +Negs:list, +M:list, +L:list, +D:integer,
+%!                     -N:integer) is det.
+%
+%   N es la cantidad de cláusulas que genera la búsqueda de la versión 4
+%   desde la cláusula más general de E, con profundidad D, sin descartar
+%   las que dejan de cubrir E: se detiene en la primera consistente que
+%   cubre E.
+generadas_sin_poda(E, Negs, M, L, D, N) :-
+    functor(E, Nombre, Aridad),
+    functor(H, Nombre, Aridad),
+    sin_poda(D, (H :- []), E, Negs, M, L, _, 0, N).
+
+%!  sin_poda(+D:integer, +C, +E, +Negs:list, +M:list, +L:list, -R,
+%!           +N0:integer, -N:integer) is det.
+%
+%   buscar/6 de la versión 4 sin el filtro de los hijos.
+sin_poda(D, C, E, Negs, M, L, R, N0, N) :-
+    (   cubre(C, E, M),
+        \+ cubre_alguno(C, Negs, M)
+    ->  R = encontrada(C),
+        N = N0
+    ;   D > 0
+    ->  findall(S, refinar(L, C, S), Hijos),
+        length(Hijos, K),
+        N1 is N0 + K,
+        D1 is D - 1,
+        sin_poda_en(Hijos, D1, E, Negs, M, L, R, N1, N)
+    ;   R = ninguna,
+        N = N0
     ).
 
-%!  eliminar_con_descarte_de(+K:integer, -EV, -Descartados:list) is det.
+%!  sin_poda_en(+Cs:list, +D:integer, +E, +Negs:list, +M:list, +L:list,
+%!              -R, +N0:integer, -N:integer) is det.
 %
-%   eliminar_con_descarte/3 sobre la secuencia esfera_roja con el negativo
-%   mal clasificado insertado después de los K primeros ejemplos.
-eliminar_con_descarte_de(K, EV, Descartados) :-
-    secuencia(esfera_roja, Ejs0),
-    length(Antes, K),
-    append(Antes, Despues, Ejs0),
-    append(Antes, [neg(pieza(esfera, rojo, grande, madera))|Despues], Ejs),
-    eliminar_con_descarte(Ejs, EV, Descartados).
-
-% Ejercicio 8
-
-%!  reglas_abuelo(-Rs:list) is det.
-%
-%   Rs son las reglas de abuelo/2 aprendidas de cada positivo de
-%   ejemplos/3, sin las que otra regla de la lista subsume.
-reglas_abuelo(Rs) :-
-    ejemplos(abuelo, Pos, _),
-    findall(R, ( member(E, Pos),
-                 aprender(familia, familia, E, R) ), Rs0),
-    sin_subsumidas(Rs0, Rs).
-
-%!  sin_subsumidas(+Rs0:list, -Rs:list) is det.
-%
-%   Rs son las reglas de Rs0, en su orden, salvo las que una regla
-%   anterior de Rs subsume.
-sin_subsumidas(Rs0, Rs) :-
-    foldl(agregar_si_nueva, Rs0, [], Inv),
-    reverse(Inv, Rs).
-
-%!  agregar_si_nueva(+R, +Rs0:list, -Rs:list) is det.
-%
-%   Rs es Rs0 con R al frente, salvo que una regla de Rs0 subsuma a R.
-agregar_si_nueva(R, Rs0, Rs) :-
-    (   member(Q, Rs0),
-        subsume(Q, R)
-    ->  Rs = Rs0
-    ;   Rs = [R|Rs0]
+%   sin_poda/9 sobre cada cláusula de Cs, en orden, hasta encontrar una.
+sin_poda_en([], _, _, _, _, _, ninguna, N, N).
+sin_poda_en([C|Cs], D, E, Negs, M, L, R, N0, N) :-
+    sin_poda(D, C, E, Negs, M, L, R1, N0, N1),
+    (   R1 = encontrada(_)
+    ->  R = R1,
+        N = N1
+    ;   sin_poda_en(Cs, D, E, Negs, M, L, R, N1, N)
     ).
-
-%!  cobertura_abuelo(-P:integer, -N:integer) is det.
-%
-%   P es la cantidad de positivos y N la de negativos de abuelo/2 que
-%   cubre alguna regla de reglas_abuelo/1.
-cobertura_abuelo(P, N) :-
-    reglas_abuelo(Rs),
-    ejemplos(abuelo, Pos, Negs),
-    hechos(familia, Hs),
-    aggregate_all(count, ( member(E, Pos), cubierto(Rs, Hs, E) ), P),
-    aggregate_all(count, ( member(E, Negs), cubierto(Rs, Hs, E) ), N).
-
-%!  cubierto(+Rs:list, +Hs:list, +E) is semidet.
-%
-%   Alguna regla de Rs prueba E con los hechos Hs.
-cubierto(Rs, Hs, E) :-
-    member(R, Rs),
-    aplicar(familia, R, Hs, E),
-    !.
 
 % Ejercicio 10
 
-%!  reglas_de_tazas(-Rs:list) is det.
+%!  verdadero_ordenado(?B:list, +M:list) is nondet.
 %
-%   Rs son las reglas aprendidas de cada taza de la población, sin las
-%   que una regla anterior subsume.
-reglas_de_tazas(Rs) :-
-    poblacion(Os),
-    clasificar_con_teoria(taza, Tazas),
-    findall(R, ( member(O, Tazas),
-                 memberchk(O-Hs, Os),
-                 operacionales(taza, Ops),
-                 once(ebg(taza, Ops, Hs, taza(O), R)) ), Rs0),
-    sin_subsumidas(Rs0, Rs).
+%   Como verdadero/2 de la versión 3, pero prueba primero el literal que
+%   unifica con menos átomos de M (el primero, si empatan), y falla en
+%   cuanto uno no unifica con ninguno.
+verdadero_ordenado([], _).
+verdadero_ordenado([L|Ls], M) :-
+    findall(K-I, ( nth1(I, [L|Ls], Literal),
+                   aggregate_all(count, member(Literal, M), K) ),
+            Cuentas),
+    min_member(Kmin-Imin, Cuentas),
+    Kmin > 0,
+    nth1(Imin, [L|Ls], Elegido, Resto),
+    member(Elegido, M),
+    verdadero_ordenado(Resto, M).
 
-%!  costo_con(+K:integer, -N:integer) is det.
+%!  cubre_ordenado(+C, +E, +M:list) is semidet.
 %
-%   N son las inferencias de reconocidas/3 con K reglas: las de
-%   reglas_de_tazas/1 repetidas en ciclo hasta completar K.
-costo_con(K, N) :-
-    reglas_de_tazas(Rs),
-    length(Rs, L),
-    findall(R, ( between(1, K, J),
-                 I is (J - 1) mod L,
-                 nth0(I, Rs, R) ), Reglas),
-    ebg:inferencias(reconocidas(taza, Reglas, _), N).
+%   cubre/3 con verdadero_ordenado/2.
+cubre_ordenado((H :- B), E, M) :-
+    \+ \+ ( H = E,
+            verdadero_ordenado(B, M) ).
+
+%!  reducir_ordenado(+C0, +Negs:list, +M:list, -C) is semidet.
+%
+%   reducir/4 de la versión 3 con cubre_ordenado/3.
+reducir_ordenado((H :- B0), Negs, M, (H :- B)) :-
+    \+ cubre_algun_ordenado((H :- B0), Negs, M),
+    quitar_ordenado(B0, [], H, Negs, M, B).
+
+%!  cubre_algun_ordenado(+C, +Negs:list, +M:list) is semidet.
+%
+%   C cubre algún ejemplo de Negs, probado con cubre_ordenado/3.
+cubre_algun_ordenado(C, Negs, M) :-
+    member(N, Negs),
+    cubre_ordenado(C, N, M),
+    !.
+
+%!  quitar_ordenado(+Pendientes:list, +Guardados:list, +H, +Negs:list,
+%!                  +M:list, -B:list) is det.
+%
+%   quitar/6 de la versión 3 con cubre_ordenado/3.
+quitar_ordenado([], Guardados, _, _, _, B) :-
+    reverse(Guardados, B).
+quitar_ordenado([L|Ls], Guardados, H, Negs, M, B) :-
+    reverse(Guardados, G),
+    append(G, Ls, Sin),
+    (   cubre_algun_ordenado((H :- Sin), Negs, M)
+    ->  quitar_ordenado(Ls, [L|Guardados], H, Negs, M, B)
+    ;   quitar_ordenado(Ls, Guardados, H, Negs, M, B)
+    ).
 
 % Ejercicio 11
 
-%!  relevantes(+T, +E, +Meta, -Usados:list) is semidet.
+%!  mejor_en_haz(+K:integer, +E, +Pos:list, +Negs:list, +M:list, +L:list,
+%!               +Max:integer, -R, +N0:integer, -N:integer) is det.
 %
-%   Usados son los hechos de la descripción del ejemplo E que son hojas
-%   de la primera explicación de Meta con la teoría T, en el orden de la
-%   descripción. Falla si Meta no tiene explicación.
-relevantes(T, E, Meta, Usados) :-
-    hechos(E, Hs),
-    once(explicar(T, Hs, Meta, Arbol)),
-    findall(H, hoja(Arbol, H), Hojas),
-    include(usado(Hojas), Hs, Usados).
+%   Como mejor_clausula/9, pero solo se refinan las K cláusulas de cada
+%   nivel que cubren más ejemplos de Pos.
+mejor_en_haz(K, E, Pos, Negs, M, L, Max, R, N0, N) :-
+    functor(E, Nombre, Aridad),
+    functor(H, Nombre, Aridad),
+    haz(0, K, Max, [(H :- [])], E-Pos-Negs-M-L, R, N0, N).
 
-%!  irrelevantes(+T, +E, +Meta, -Otros:list) is semidet.
+%!  haz(+D:integer, +K:integer, +Max:integer, +Frontera:list, +Problema,
+%!      -R, +N0:integer, -N:integer) is det.
 %
-%   Otros son los hechos de la descripción de E que la primera
-%   explicación de Meta con la teoría T no usa.
-irrelevantes(T, E, Meta, Otros) :-
-    hechos(E, Hs),
-    relevantes(T, E, Meta, Usados),
-    exclude(usado(Usados), Hs, Otros).
+%   nivel/7 de la versión 5 con la frontera recortada a K cláusulas. Las
+%   consistentes se buscan entre todas las cláusulas del nivel, antes de
+%   recortarlo.
+haz(D, K, Max, Frontera, E-Pos-Negs-M-L, R, N0, N) :-
+    exclude(cubre_algun_negativo(Negs, M), Frontera, Consistentes),
+    (   Consistentes = [_|_]
+    ->  mejores(Consistentes, Pos, M, [C|_]),
+        R = encontrada(C),
+        N = N0
+    ;   D < Max
+    ->  mejores(Frontera, Pos, M, Ordenadas),
+        primeros(K, Ordenadas, Haz),
+        findall(S, ( member(C0, Haz),
+                     refinar(L, C0, S) ),
+                Todos),
+        length(Todos, T),
+        N1 is N0 + T,
+        include(cubre_ej(E, M), Todos, Siguiente),
+        D1 is D + 1,
+        haz(D1, K, Max, Siguiente, E-Pos-Negs-M-L, R, N1, N)
+    ;   R = ninguna,
+        N = N0
+    ).
 
-%!  hoja(+Arbol, -H) is nondet.
+%!  cubre_algun_negativo(+Negs:list, +M:list, +C) is semidet.
 %
-%   H es un hecho que aparece como hoja prueba(H, []) del árbol Arbol.
-hoja(prueba(H, []), H).
-hoja(prueba(_, [A|As]), H) :-
-    member(B, [A|As]),
-    hoja(B, H).
+%   C cubre un ejemplo de Negs.
+cubre_algun_negativo(Negs, M, C) :-
+    cubre_alguno(C, Negs, M).
 
-%!  usado(+Hs:list, @H) is semidet.
+%!  cubre_ej(+E, +M:list, +C) is semidet.
 %
-%   H es uno de los términos de Hs.
-usado(Hs, H) :-
-    memberchk(H, Hs).
+%   La cláusula C cubre el ejemplo E en el modelo M.
+cubre_ej(E, M, C) :-
+    cubre(C, E, M).
+
+%!  mejores(+Cs:list, +Pos:list, +M:list, -Ordenadas:list) is det.
+%
+%   Ordenadas son las cláusulas de Cs de la que cubre más ejemplos de Pos
+%   a la que cubre menos; las que cubren lo mismo, en su orden.
+mejores(Cs, Pos, M, Ordenadas) :-
+    findall(P-C, ( member(C, Cs),
+                   include(cubre_en(C, M), Pos, Cubiertos),
+                   length(Cubiertos, P) ),
+            Pares),
+    sort(1, @>=, Pares, Ordenados),
+    findall(C, member(_-C, Ordenados), Ordenadas).
+
+%!  primeros(+K:integer, +Xs:list, -Ys:list) is det.
+%
+%   Ys son los primeros K elementos de Xs, o todos si son menos.
+primeros(K, Xs, Ys) :-
+    length(Xs, N),
+    (   N =< K
+    ->  Ys = Xs
+    ;   length(Ys, K),
+        append(Ys, _, Xs)
+    ).
+
+%!  aprender_haz(+K:integer, +Relacion, -H:list, -N:integer) is det.
+%
+%   aprender_rec/3 con la búsqueda en haz de ancho K.
+aprender_haz(K, Relacion, H, N) :-
+    ejemplos(Relacion, Pos, Negs),
+    modelo_fondo(Fondo),
+    ord_union(Fondo, Pos, M),
+    lenguaje(L0),
+    append(L0, [Relacion/2], L),
+    cubrir_haz(Pos, K, Negs, M, L, H, 0, N).
+
+%!  cubrir_haz(+Pos:list, +K:integer, +Negs:list, +M:list, +L:list,
+%!             -H:list, +N0:integer, -N:integer) is det.
+%
+%   El algoritmo de cobertura de la versión 5 con mejor_en_haz/10.
+cubrir_haz([], _, _, _, _, [], N, N).
+cubrir_haz([E|Es], K, Negs, M, L, [C|H], N0, N) :-
+    mejor_en_haz(K, E, Es, Negs, M, L, 3, R, N0, N1),
+    (   R = encontrada(C)
+    ->  exclude(cubre_en(C, M), Es, Resto)
+    ;   C = (E :- []),
+        Resto = Es
+    ),
+    cubrir_haz(Resto, K, Negs, M, L, H, N1, N).
+
+%!  reducir_antepasado(:Reducir, -C) is semidet.
+%
+%   C es la rlgg de antepasado(juan, luis) y antepasado(pedro, sofia),
+%   con los positivos en el modelo, reducida con Reducir.
+reducir_antepasado(Reducir, C) :-
+    ejemplos(antepasado, Pos, Negs),
+    modelo_fondo(Fondo),
+    ord_union(Fondo, Pos, M),
+    rlgg(antepasado(juan, luis), antepasado(pedro, sofia), M, C0),
+    call(Reducir, C0, Negs, M, C).

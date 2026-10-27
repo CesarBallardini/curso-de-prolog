@@ -173,4 +173,20 @@ test(ultimo_sin_negacion, all(X == [eva])) :-
 test(ultimo_sin_negacion_con_repetidos, all(X == [ana])) :-
     ultimo_sin_negacion(X, [ana, luis, ana]).
 
+% Ejercicio 18: cada palíndromo una vez, aunque permuta/2 lo genere varias
+% veces por los elementos repetidos.
+test(palindromos, all(Ps == [[[2, 0, 1, 0, 2], [0, 2, 1, 2, 0]]])) :-
+    palindromos([1, 2, 0, 0, 2], Ps).
+
+test(palindromos_seis, all(Ps == [[[b, a, c, c, a, b], [b, c, a, a, c, b],
+                                   [a, b, c, c, b, a], [a, c, b, b, c, a],
+                                   [c, b, a, a, b, c], [c, a, b, b, a, c]]])) :-
+    palindromos([b, a, a, b, c, c], Ps).
+
+test(sin_palindromos) :-
+    palindromos([0, 1, 1, 1, 2, 2], []).
+
+test(no_es_palindromo, [fail]) :-
+    palindrome([a, b]).
+
 :- end_tests(soluciones).

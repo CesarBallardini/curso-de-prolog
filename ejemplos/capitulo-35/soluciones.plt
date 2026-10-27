@@ -2,114 +2,159 @@
 
 :- begin_tests(soluciones).
 
-% Ejercicio 3
-test(tabla, true(Ps == [chile-santiago, peru-lima])) :-
-    findall(P-C, capital(P, C), Ps).
+test(longitud_abierta, true(N == 2)) :-
+    longitud_abierta([a, b|_], N).
 
-test(sin_tabla, [fail]) :-
-    current_predicate(tabla/2).
+test(longitud_abierta_vacia, true(N == 0)) :-
+    longitud_abierta(_, N).
 
-% Una tabla sin pares no deja ningún hecho.
-test(tabla_vacia, true(C == [])) :-
-    expand_term(tabla(capital, []), C).
+test(longitud_abierta_no_cierra, true(var(F))) :-
+    longitud_abierta([a|F], _).
 
-% Ejercicio 4: las dos expansiones terminan, y se aplican una vez.
-test(saludar_expandido,
-     true(Cuerpo == (escribir_texto(texto(hola)), anotar(texto(hola))))) :-
-    clause(saludar, Cuerpo).
+test(a_dif, true(L-F == [a, b|F]-F)) :-
+    a_dif([a, b], L-F).
 
-test(saludar, true(S == "texto(hola)\ntexto(hola)\n")) :-
-    with_output_to(string(S), saludar).
+test(de_dif, true(L == [a, b])) :-
+    de_dif([a, b|F]-F, L).
 
-test(anotar_texto, true(G == anotar(texto(a)))) :-
-    expand_goal(anotar(texto(a)), G).
+test(ida_y_vuelta, true(L == [a, b, c])) :-
+    a_dif([a, b], D1),
+    concatenar_dif(D1, [c|F]-F, D),
+    de_dif(D, L).
 
-test(escribir_expandido, true(G == escribir_texto(texto(a)))) :-
-    expand_goal(escribir(a), G).
+test(bandera, true(B == [rojo, rojo, blanco, azul, azul])) :-
+    bandera([azul, rojo, blanco, rojo, azul], B).
 
-% Ejercicios 5 y 6: la traducción es la del sistema.
-test(como_el_sistema, forall(regla(R))) :-
-    traducir(R, C1),
-    dcg_translate_rule(R, C2),
-    assertion(C1 =@= C2).
+test(bandera_vacia, true(B == [])) :-
+    bandera([], B).
 
-% Ejercicio 7
-test(ultimo,
-     true(Cs =@= [ (ultimo(X, [X]) :- []),
-                   (ultimo(Y, [_|Zs]) :- [ultimo(Y, Zs)]) ])) :-
-    derivar_ultimo(Cs).
+% Cada color conserva su orden: la bandera es estable.
+test(bandera_un_color, true(B == [blanco, blanco])) :-
+    bandera([blanco, blanco], B).
 
-test(ultimo_como_append, true(R1 == R2)) :-
-    findall(X, ultimo(X, [a, b, c]), R1),
-    findall(X, append(_, [X], [a, b, c]), R2).
+arbol(n(n(vacio, 1, vacio), 2, n(vacio, 3, n(vacio, 4, vacio)))).
 
-test(ultimo_vacia, [fail]) :-
-    ultimo(_, []).
+test(preorden, true(L == [2, 1, 3, 4])) :-
+    arbol(A),
+    phrase(preorden(A), L).
 
-% Ejercicio 8
-test(suma_largo,
-     true(Cs =@= [ (suma_largo([], 0, 0) :- []),
-                   (suma_largo([X|Xs], S, N) :-
-                        [suma_largo(Xs, S0, N0), S is S0 + X,
-                         N is N0 + 1]) ])) :-
-    derivar_suma_largo(Cs).
+test(postorden, true(L == [1, 4, 3, 2])) :-
+    arbol(A),
+    phrase(postorden(A), L).
 
-test(reordenar, true(C == (p :- [c, a, b]))) :-
-    reordenar((p :- [a, b, c]), [3, 1, 2], C).
+test(dos_veces, [fail]) :-
+    D = [a|_]-_,
+    concatenar_dif(D, [b|Y]-Y, _),
+    concatenar_dif(D, [c|Z]-Z, _).
 
-test(suma_y_largo, true(S-N == 6-3)) :-
-    suma([1, 2, 3], S),
-    largo([a, b, c], N).
+test(copia_antes, true(R1-R2 == [a, b]-[a, c])) :-
+    D = [a|X]-X,
+    copy_term(D, D2),
+    concatenar_dif(D, [b|Y]-Y, R1-[]),
+    concatenar_dif(D2, [c|Z]-Z, R2-[]).
 
-test(suma_largo_vacia, true(S-N == 0-0)) :-
-    suma_largo([], S, N).
+test(elementos_cola, true(L == [a, b])) :-
+    cola_vacia(C0),
+    encolar(a, C0, C1),
+    encolar(b, C1, C2),
+    elementos_cola(C2, L).
 
-test(una_pasada, true(S-N == 5050-100)) :-
+test(elementos_cola_desencolada, true(L == [b])) :-
+    cola_vacia(C0),
+    encolar(a, C0, C1),
+    encolar(b, C1, C2),
+    desencolar(_, C2, C3),
+    elementos_cola(C3, L).
+
+test(elementos_cola_vacia, true(L == [])) :-
+    cola_vacia(C0),
+    elementos_cola(C0, L).
+
+% La cola sigue admitiendo agregados después de listarla.
+test(elementos_cola_no_cambia, true(L == [a, b])) :-
+    cola_vacia(C0),
+    encolar(a, C0, C1),
+    elementos_cola(C1, _),
+    encolar(b, C1, C2),
+    elementos_cola(C2, L).
+
+test(es_vacia_dif, true(cyclic_term(X))) :-
+    es_vacia_dif([a|X]-X).
+
+test(ocurrencias, [fail]) :-
+    unify_with_occurs_check([a|X]-X, F-F).
+
+test(claves, true(C == [a, b])) :-
+    claves([a-1, b-_|_], C).
+
+test(claves_no_cierra, true(var(F))) :-
+    claves([a-1|F], _).
+
+test(claves_vacio, true(K == [])) :-
+    claves(_, K).
+
+test(pares, true(P == [a-1, b-2, c-3])) :-
+    buscar_arbol(b, A, 2),
+    buscar_arbol(c, A, 3),
+    buscar_arbol(a, A, 1),
+    phrase(pares(A), P).
+
+test(pares_vacio, true(P == [])) :-
+    phrase(pares(_), P).
+
+test(hojas, true(L == [a, b, c])) :-
+    phrase(hojas(n([h(a), n([h(b), h(c)])])), L).
+
+test(hojas_lista_en_hoja, true(L == [[x], y])) :-
+    phrase(hojas(n([h([x]), h(y)])), L).
+
+test(invertir_iguales, true(L1 == L2)) :-
     numlist(1, 100, L),
-    suma_largo(L, S, N).
+    invertir_app(L, L1),
+    invertir(L, L2).
 
-test(como_dos_pasadas, true(R1 == R2)) :-
-    numlist(1, 100, L),
-    suma_largo(L, S1, N1),
-    suma_largo_dos(L, S2, N2),
-    R1 = S1-N1,
-    R2 = S2-N2.
+% Ejercicio 15
+test(nivelar,
+     true(N == n(n(vacio, 9, vacio), 9, n(vacio, 9, vacio)))) :-
+    nivelar(n(n(vacio, 4, vacio), 3, n(vacio, 9, vacio)), N).
 
-test(menos_inferencias, true(I1 < I2)) :-
-    numlist(1, 1000, L),
-    inferencias(suma_largo(L, _, _), I1),
-    inferencias(suma_largo_dos(L, _, _), I2).
+test(nivelar_vacio, true(N == vacio)) :-
+    nivelar(vacio, N).
 
-% Ejercicio 15: el despliegue da el hecho de rotar_dif/2.
-test(derivar_rotar, true(Cs =@= [(rotar_dif([A|B]-[A|C], B-C) :- [])])) :-
-    derivar_rotar(Cs).
+% El máximo está en la raíz y no en una hoja.
+test(nivelar_maximo_en_la_raiz,
+     true(N == n(n(n(vacio, 3, vacio), 3, vacio), 3, vacio))) :-
+    nivelar(n(n(n(vacio, 1, vacio), 2, vacio), 3, vacio), N).
 
-test(mostrar, true(S == "rotar_dif([A|B]-[A|C], B-C):-[]\n")) :-
-    derivar_rotar(Cs),
-    with_output_to(string(S), mostrar(Cs)).
+% Ejercicio 16: las dos versiones, con las dos formas de la suma.
+test(asociar_izquierda, true(S == a + b + c + d)) :-
+    asociar_izquierda((a + b) + (c + d), S).
 
-% Con el final cerrado, [A|C] no unifica con [].
-test(rotar_cerrada, [fail]) :-
-    rotar_dif([a, b]-[], _).
+test(asociar_izquierda_derecha, true(S == +(+(+(a, b), c), d))) :-
+    asociar_izquierda(a + (b + (c + d)), S).
 
-test(rotar_dos_veces, true(L == [3, 1, 2])) :-
-    rotar_dif([1, 2, 3|Q]-Q, R1),
-    rotar_dif(R1, R2),
-    R2 = L-[].
+test(asociar_izquierda_un_sumando, true(S == a)) :-
+    asociar_izquierda(a, S).
+
+test(asociar_izquierda_2, true(S1-S2 == (a + b + c + d)-(a + b + c + d))) :-
+    asociar_izquierda_2((a + b) + (c + d), S1),
+    asociar_izquierda_2(a + (b + (c + d)), S2).
+
+test(sumandos, true(L == [x * y, 2, z])) :-
+    sumandos(x * y + (2 + z), L-[]).
+
+% Ejercicio 10: el subárbol libre queda libre, y no hay otra respuesta.
+test(pares_deja_libre, [true(var(D)), nondet]) :-
+    buscar_arbol(b, A, 2),
+    phrase(pares(A), _),
+    A = t(_, _, _, D).
+
+test(pares_una_respuesta, all(P == [[b-2]])) :-
+    buscar_arbol(b, A, 2),
+    phrase(pares(A), P).
+
+% Ejercicio 16: un átomo como valor inicial queda en el resultado.
+test(agregar_ninguno, true(S == ninguno + a + b + c + d)) :-
+    agregar((a + b) + (c + d), ninguno, S).
 
 :- end_tests(soluciones).
-
-% regla(R): una regla de gramática con cadenas o pushback.
-regla((saludo --> "hola")).
-regla((siguiente(C), [C] --> [C])).
-regla((a, [x] --> b, c)).
-regla((a --> [x], "yz", b)).
-
-%!  inferencias(:G, -N:integer) is det.
-%
-%   N es la cantidad de inferencias de una ejecución de G.
-inferencias(G, N) :-
-    statistics(inferences, I0),
-    once(G),
-    statistics(inferences, I1),
-    N is I1 - I0.

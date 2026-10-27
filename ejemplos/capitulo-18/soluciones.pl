@@ -1,135 +1,128 @@
 :- encoding(utf8).
 
-% Capítulo 18 - Soluciones de los ejercicios 1 a 12.
+% Capítulo 18 - Soluciones de los ejercicios.
 %
-%?- dobles([1, 2, 3], D).
-%?- todos_hijos_de(P, [luis, eva]).
-%?- jugar([1-6, 6-1], Resultado).
+%?- abuelos_con_nietos(A, Nietos).
+%?- los_mejores_de_cada_carrera(Carrera, Legajo).
 
-% --- Ejercicios 1 a 6: la familia del texto ----------------------------------
+% --- Ejercicios 2, 3, 4 y 7: una familia con una nieta más que la del texto --
 
 % padre(P, H): P es el padre de H.
 padre(juan, ana).
 padre(juan, pedro).
 padre(pedro, luis).
 padre(pedro, eva).
+padre(ana, sofia).
 
-:- meta_predicate
-    conservar(1, +, -),
-    conservar_(+, 1, -),
-    descartar(1, +, -),
-    descartar_(+, 1, -),
-    mi_foldl(3, +, +, -),
-    mi_foldl_(+, 3, +, -),
-    informe(2, +, -),
-    mostrar_informe(2, +, +).
+% edad(P, A): P tiene A años. juan y marta empatan en la mayor edad.
+edad(juan, 68).
+edad(marta, 68).
+edad(ana, 41).
+edad(pedro, 39).
+edad(luis, 12).
+edad(eva, 8).
+edad(sofia, 3).
 
-%!  doble(+N:number, -D:number) is det.
+%!  nietos_de(+Abuelo, -Nietos:list) is det.
 %
-%   D es el doble de N.
-doble(N, D) :-
-    D is 2 * N.
+%   Nietos es la lista de los nietos de Abuelo.
+nietos_de(Abuelo, Nietos) :-
+    findall(N, ( padre(Abuelo, P), padre(P, N) ), Nietos).
 
-%!  dobles(+L:list(number), -D:list(number)) is det.
+%!  abuelos_con_nietos(?Abuelo, -Nietos:list) is nondet.
 %
-%   D es la lista de los dobles de los elementos de L.
-dobles(L, D) :-
-    maplist(doble, L, D).
+%   Una respuesta por abuelo, con la lista de sus nietos. P^ hace que el
+%   progenitor intermedio no agrupe.
+abuelos_con_nietos(Abuelo, Nietos) :-
+    bagof(N, P^( padre(Abuelo, P), padre(P, N) ), Nietos).
 
-%!  positivo(+N:number) is semidet.
+%!  edades_ordenadas(-Edades:list(integer)) is semidet.
 %
-%   N es mayor que cero.
-positivo(N) :-
-    N > 0.
+%   Edades es la lista ordenada y sin repetidos de las edades de la base.
+edades_ordenadas(Edades) :-
+    setof(E, P^edad(P, E), Edades).
 
-%!  todos_positivos(+L:list(number)) is semidet.
+%!  edades_ordenadas_2(-Edades:list(integer)) is det.
 %
-%   Todos los elementos de L son positivos.
-todos_positivos(L) :-
-    maplist(positivo, L).
+%   La misma lista con findall/3 y sort/2, que también elimina los repetidos.
+%   Con la base vacía da la lista vacía, en lugar de fallar.
+edades_ordenadas_2(Edades) :-
+    findall(E, edad(_, E), Todas),
+    sort(Todas, Edades).
 
-%!  largo(+L:list, -N:integer) is det.
+%!  menor_edad(-Quien, -Edad:integer) is semidet.
 %
-%   N es la cantidad de elementos de L.
-largo(L, N) :-
-    foldl(contar, L, 0, N).
+%   Quien tiene la menor edad de la base.
+menor_edad(Quien, Edad) :-
+    aggregate_all(min(E, P), edad(P, E), min(Edad, Quien)).
 
-%!  contar(+X, +Hasta:integer, -Total:integer) is det.
+%!  mayor_edad_2(-Quien, -Edad:integer) is semidet.
 %
-%   Total es Hasta más uno; X no interviene.
-contar(_, Hasta, Total) :-
-    Total is Hasta + 1.
+%   Quien tiene la mayor edad, con findall/3 y max_member/2. Con empate, el
+%   mayor par Edad-Quien en el orden estándar: el nombre posterior.
+mayor_edad_2(Quien, Edad) :-
+    findall(E-P, edad(P, E), Pares),
+    max_member(Edad-Quien, Pares).
 
-%!  maximo(+L:list(number), -Max:number) is semidet.
+% --- Ejercicio 14: el tablero del Buscaminas del texto -----------------------
+
+% tamanio(Filas, Columnas): las dimensiones del tablero.
+tamanio(5, 5).
+
+% mina(Fila, Columna): hay una mina en esa celda.
+mina(1, 1).
+mina(2, 3).
+mina(4, 2).
+mina(4, 5).
+
+%!  vecina(+F:integer, +C:integer, -VF:integer, -VC:integer) is nondet.
 %
-%   Max es el mayor elemento de L. Falla con la lista vacía.
-maximo([Primero|Resto], Max) :-
-    foldl([X, M0, M]>>(M is max(X, M0)), Resto, Primero, Max).
+%   (VF, VC) es una de las celdas vecinas de (F, C), dentro del tablero.
+vecina(F, C, VF, VC) :-
+    tamanio(Filas, Columnas),
+    between(-1, 1, DF),
+    between(-1, 1, DC),
+    ( DF, DC ) \== ( 0, 0 ),
+    VF is F + DF,
+    VC is C + DC,
+    between(1, Filas, VF),
+    between(1, Columnas, VC).
 
-%!  dar_vuelta(+L:list, -R:list) is det.
+%!  minas_alrededor(+F:integer, +C:integer, -N:integer) is det.
 %
-%   R tiene los elementos de L en el orden inverso.
-dar_vuelta(L, R) :-
-    foldl([X, Hasta, [X|Hasta]]>>true, L, [], R).
+%   N es la cantidad de minas en las celdas vecinas de (F, C).
+minas_alrededor(F, C, N) :-
+    aggregate_all(count, ( vecina(F, C, VF, VC), mina(VF, VC) ), N).
 
-%!  conservar(:Condicion, +L:list, -Cumplen:list) is det.
+%!  simbolo(+F:integer, +C:integer, -S) is det.
 %
-%   Cumplen son los elementos de L que cumplen Condicion, en su orden.
-conservar(Condicion, L, Cumplen) :-
-    conservar_(L, Condicion, Cumplen).
+%   S es * si hay una mina en (F, C), y la cantidad de minas vecinas si no.
+simbolo(F, C, S) :-
+    (   mina(F, C)
+    ->  S = '*'
+    ;   minas_alrededor(F, C, S)
+    ).
 
-%!  conservar_(+L:list, :Condicion, -Cumplen:list) is det.
+%!  tablero_texto(-Lineas:list(string)) is det.
 %
-%   El recorrido de conservar/3, con la lista primero.
-conservar_([], _, []).
-conservar_([X|Xs], Condicion, Cumplen) :-
-    (   call(Condicion, X)
-    ->  Cumplen = [X|Resto]
-    ;   Cumplen = Resto
-    ),
-    conservar_(Xs, Condicion, Resto).
+%   Lineas son las filas del tablero como cadenas, una por fila.
+tablero_texto(Lineas) :-
+    tamanio(Filas, _),
+    findall(Linea,
+            ( between(1, Filas, F),
+              fila_texto(F, Linea) ),
+            Lineas).
 
-%!  descartar(:Condicion, +L:list, -NoCumplen:list) is det.
+%!  fila_texto(+F:integer, -Linea:string) is det.
 %
-%   NoCumplen son los elementos de L que no cumplen Condicion, en su orden.
-descartar(Condicion, L, NoCumplen) :-
-    descartar_(L, Condicion, NoCumplen).
+%   Linea es la fila F del tablero, con un símbolo por celda.
+fila_texto(F, Linea) :-
+    tamanio(_, Columnas),
+    findall(S, ( between(1, Columnas, C), simbolo(F, C, S) ), Simbolos),
+    atomic_list_concat(Simbolos, Atomo),
+    atom_string(Atomo, Linea).
 
-%!  descartar_(+L:list, :Condicion, -NoCumplen:list) is det.
-%
-%   El recorrido de descartar/3, con la lista primero.
-descartar_([], _, []).
-descartar_([X|Xs], Condicion, NoCumplen) :-
-    (   call(Condicion, X)
-    ->  NoCumplen = Resto
-    ;   NoCumplen = [X|Resto]
-    ),
-    descartar_(Xs, Condicion, Resto).
-
-%!  todos_hijos_de(?P, +Hijos:list) is nondet.
-%
-%   P es el padre de todos los Hijos. {P} hace que la lambda comparta P con
-%   la cláusula: todas las llamadas buscan el mismo padre.
-todos_hijos_de(P, Hijos) :-
-    maplist({P}/[H]>>padre(P, H), Hijos).
-
-%!  mi_foldl(:Paso, +L:list, +V0, -V) is semidet.
-%
-%   V es el resultado de aplicar Paso a cada elemento de L, de izquierda a
-%   derecha, a partir de V0: call(Paso, X, Antes, Despues). Falla si Paso
-%   falla para algún elemento; con un Paso det, es det.
-mi_foldl(Paso, L, V0, V) :-
-    mi_foldl_(L, Paso, V0, V).
-
-%!  mi_foldl_(+L:list, :Paso, +V0, -V) is semidet.
-%
-%   El recorrido de mi_foldl/4, con la lista primero.
-mi_foldl_([], _, V, V).
-mi_foldl_([X|Xs], Paso, V0, V) :-
-    call(Paso, X, V0, V1),
-    mi_foldl_(Xs, Paso, V1, V).
-
-% --- Ejercicios 7 y 8: Inscripciones del capítulo -----------------------------
+% --- Ejercicios 5, 6, 8, 9, 10, 11, 13, 15 y 16: Inscripciones --------------
 
 % alumno(Legajo, Nombre, Carrera, Ingreso): el alumno de ese legajo cursa esa
 % carrera desde el año de ingreso.
@@ -149,6 +142,16 @@ materia(am2, analisis_2,     2).
 materia(pp,  paradigmas,     2).
 materia(ssl, sintaxis,       2).
 materia(bd,  bases_de_datos, 3).
+
+% correlativa(Materia, Requisito): para cursar Materia es necesario aprobar
+% Requisito.
+correlativa(am2, am1).
+correlativa(am2, alg).
+correlativa(pp,  log).
+correlativa(ssl, log).
+correlativa(ssl, alg).
+correlativa(bd,  pp).
+correlativa(bd,  ssl).
 
 % inscripcion(Legajo, Materia, Estado): el alumno se inscribió en la materia;
 % Estado es cursando, o nota(N) con la nota final N, de 1 a 10.
@@ -170,213 +173,243 @@ inscripcion(105, am1, cursando).
 inscripcion(106, log, nota(3)).
 inscripcion(106, am1, nota(6)).
 
-%!  legajos(-Legajos:list(integer)) is det.
+%!  nota_minima(-N:integer) is det.
 %
-%   Legajos son los legajos de todos los alumnos, en el orden de los hechos.
-legajos(Legajos) :-
-    findall(Legajo, alumno(Legajo, _, _, _), Legajos).
+%   N es la nota mínima para aprobar una materia.
+nota_minima(6).
 
-%!  materias(-Materias:list(atom)) is det.
+%!  aprobada(?Legajo:integer, ?Materia:atom, ?Nota:integer) is nondet.
 %
-%   Materias son los códigos de todas las materias, en el orden de los hechos.
-materias(Materias) :-
-    findall(M, materia(M, _, _), Materias).
+%   El alumno Legajo aprobó Materia con Nota. Con Legajo y Materia ligados
+%   hay una respuesta o ninguna; con Nota ligada, además, se comprueba la
+%   nota.
+aprobada(Legajo, Materia, Nota) :-
+    inscripcion(Legajo, Materia, nota(Nota)),
+    nota_minima(Minima),
+    Nota >= Minima.
 
-%!  promedio(+Notas:list(number), -Promedio:number) is semidet.
+%!  cursa(?Legajo:integer, ?Materia:atom) is nondet.
 %
-%   Promedio es el promedio de Notas. Falla con la lista vacía.
-promedio(Notas, Promedio) :-
-    foldl(contar_y_sumar, Notas, 0-0, Cantidad-Suma),
-    Cantidad > 0,
-    Promedio is Suma / Cantidad.
+%   El alumno Legajo está cursando Materia, todavía sin nota.
+cursa(Legajo, Materia) :-
+    inscripcion(Legajo, Materia, cursando).
 
-%!  contar_y_sumar(+Nota:number, +Hasta:pair, -Total:pair) is det.
+% vacantes(Materia, N): quedan N lugares en la materia.
+vacantes(am1, 30).
+vacantes(alg, 30).
+vacantes(log, 0).
+vacantes(am2, 25).
+vacantes(pp,  25).
+vacantes(ssl, 20).
+vacantes(bd,  15).
+
+%!  inscripcion_posible(+Legajo:integer, +Materia:atom, -Resultado) is det.
 %
-%   Total es el par Cantidad-Suma de Hasta con Nota agregada.
-contar_y_sumar(Nota, Cantidad0-Suma0, Cantidad-Suma) :-
-    Cantidad is Cantidad0 + 1,
-    Suma is Suma0 + Nota.
+%   Resultado es aceptada si el alumno Legajo se puede inscribir en Materia,
+%   o rechazada(Motivo) con el primer motivo que lo impide: alumno_inexistente,
+%   materia_inexistente, ya_aprobada, ya_la_cursa, falta(Requisito) o
+%   sin_vacantes. Una materia desaprobada se puede volver a cursar.
+inscripcion_posible(Legajo, Materia, Resultado) :-
+    (   \+ alumno(Legajo, _, _, _)
+    ->  Resultado = rechazada(alumno_inexistente)
+    ;   \+ materia(Materia, _, _)
+    ->  Resultado = rechazada(materia_inexistente)
+    ;   aprobada(Legajo, Materia, _)
+    ->  Resultado = rechazada(ya_aprobada)
+    ;   cursa(Legajo, Materia)
+    ->  Resultado = rechazada(ya_la_cursa)
+    ;   correlativa(Materia, Requisito),
+        \+ aprobada(Legajo, Requisito, _)
+    ->  Resultado = rechazada(falta(Requisito))
+    ;   vacantes(Materia, 0)
+    ->  Resultado = rechazada(sin_vacantes)
+    ;   Resultado = aceptada
+    ).
+
+%!  puede_inscribirse(+Legajo:integer, +Materia:atom) is semidet.
+%
+%   El alumno Legajo se puede inscribir en Materia.
+puede_inscribirse(Legajo, Materia) :-
+    inscripcion_posible(Legajo, Materia, aceptada).
+
+%!  aprobada_por_nombre(?Nombre:atom, ?Materia:atom) is nondet.
+%
+%   El alumno llamado Nombre aprobó Materia. El primer objetivo es el que el
+%   nombre selecciona: con el orden inverso, la consulta recorre todas las
+%   inscripciones de la materia antes de examinar el nombre (sección 17.5).
+aprobada_por_nombre(Nombre, Materia) :-
+    alumno(Legajo, Nombre, _, _),
+    aprobada(Legajo, Materia, _Nota).
+
+%!  inscriptos(+Materia:atom, -Legajos:list(integer)) is det.
+%
+%   Legajos son los alumnos inscriptos en Materia, en orden y sin repetidos;
+%   la lista vacía si no hay ninguno.
+inscriptos(Materia, Legajos) :-
+    findall(Legajo, inscripcion(Legajo, Materia, _), Todos),
+    sort(Todos, Legajos).
+
+%!  sin_notas(-Legajos:list(integer)) is det.
+%
+%   Legajos son los alumnos que no tienen ninguna nota: los que no se
+%   inscribieron en nada y los que solo están cursando.
+sin_notas(Legajos) :-
+    findall(Legajo,
+            ( alumno(Legajo, _, _, _),
+              \+ inscripcion(Legajo, _, nota(_)) ),
+            Legajos).
 
 %!  promedio_de_materia(+Materia:atom, -Promedio:number) is semidet.
 %
 %   Promedio es el promedio de las notas de Materia. Falla si la materia no
 %   tiene ninguna nota.
 promedio_de_materia(Materia, Promedio) :-
-    findall(N, inscripcion(_, Materia, nota(N)), Notas),
-    promedio(Notas, Promedio).
-
-%!  informe(:Calculo, +Claves:list, -Filas:list(pair)) is det.
-%
-%   Filas tiene un par Clave-Valor por cada elemento de Claves para el que
-%   call(Calculo, Clave, Valor) se cumple, con su primer Valor.
-informe(Calculo, Claves, Filas) :-
-    convlist({Calculo}/[Clave, Clave-Valor]>>
-                 once(call(Calculo, Clave, Valor)),
-             Claves, Filas).
-
-%!  materias_cursando(+Legajo:integer, -Cantidad:integer) is det.
-%
-%   Cantidad es la cantidad de materias que el alumno Legajo está cursando.
-materias_cursando(Legajo, Cantidad) :-
-    aggregate_all(count, inscripcion(Legajo, _, cursando), Cantidad).
-
-%!  nombre_de_alumno(+Legajo:integer, -Nombre:atom) is semidet.
-%
-%   Nombre es el nombre del alumno Legajo.
-nombre_de_alumno(Legajo, Nombre) :-
-    alumno(Legajo, Nombre, _, _).
-
-%!  nombre_de_materia(+Codigo:atom, -Nombre:atom) is semidet.
-%
-%   Nombre es el nombre de la materia Codigo.
-nombre_de_materia(Codigo, Nombre) :-
-    materia(Codigo, Nombre, _).
-
-%!  mostrar_informe(:Nombre, +Titulo:atom, +Filas:list(pair)) is semidet.
-%
-%   Escribe Titulo y una línea por fila, con la clave, el nombre que le da
-%   call(Nombre, Clave, N) y el valor. Falla en la primera fila cuya clave no
-%   tiene nombre.
-mostrar_informe(Nombre, Titulo, Filas) :-
-    format("~w~n", [Titulo]),
-    maplist({Nombre}/[Clave-Valor]>>( call(Nombre, Clave, N),
-                                      format("  ~w ~w: ~w~n",
-                                             [Clave, N, Valor]) ),
-            Filas).
-
-% --- Ejercicios 9 y 10: el tablero del Buscaminas del texto -------------------
-
-% tamanio(Filas, Columnas): las dimensiones del tablero.
-tamanio(6, 6).
-
-% mina(Fila, Columna): hay una mina en esa celda.
-mina(1, 1).
-mina(3, 2).
-mina(4, 5).
-mina(6, 3).
-
-%!  vecina(+F:integer, +C:integer, -VF:integer, -VC:integer) is nondet.
-%
-%   (VF, VC) es una de las celdas vecinas de (F, C), dentro del tablero.
-vecina(F, C, VF, VC) :-
-    tamanio(Filas, Columnas),
-    between(-1, 1, DF),
-    between(-1, 1, DC),
-    ( DF, DC ) \== ( 0, 0 ),
-    VF is F + DF,
-    VC is C + DC,
-    between(1, Filas, VF),
-    between(1, Columnas, VC).
-
-%!  minas_alrededor(+F:integer, +C:integer, -N:integer) is det.
-%
-%   N es la cantidad de minas en las celdas vecinas de (F, C).
-minas_alrededor(F, C, N) :-
-    aggregate_all(count, ( vecina(F, C, VF, VC), mina(VF, VC) ), N).
-
-%!  descubrir(+Celda:pair, +Vistas:list, -Descubiertas:list) is det.
-%
-%   El recorrido en profundidad del texto: Descubiertas son las celdas de
-%   Vistas más las que descubre un clic en Celda, que no tiene mina.
-descubrir(F-C, Vistas, Descubiertas) :-
-    (   memberchk(F-C, Vistas)
-    ->  Descubiertas = Vistas
-    ;   minas_alrededor(F, C, 0)
-    ->  findall(VF-VC, vecina(F, C, VF, VC), Vecinas),
-        foldl(descubrir, Vecinas, [F-C|Vistas], Descubiertas)
-    ;   Descubiertas = [F-C|Vistas]
-    ).
-
-%!  jugar(+Jugadas:list(pair), -Resultado) is det.
-%
-%   Resultado es el estado de la partida después de Jugadas, una lista de
-%   celdas Fila-Columna: perdida(Celda) si una jugada cae en una mina, ganada
-%   si quedan descubiertas todas las celdas sin mina, o
-%   en_curso(Descubiertas).
-jugar(Jugadas, Resultado) :-
-    foldl(jugada, Jugadas, en_curso([]), Resultado).
-
-%!  jugada(+Celda:pair, +Antes, -Despues) is det.
-%
-%   Despues es el estado de la partida después de un clic en Celda. Una
-%   partida perdida o ganada no cambia.
-jugada(F-C, Antes, Despues) :-
-    (   Antes \= en_curso(_)
-    ->  Despues = Antes
-    ;   mina(F, C)
-    ->  Despues = perdida(F-C)
-    ;   Antes = en_curso(Vistas),
-        descubrir(F-C, Vistas, Descubiertas),
-        (   todas_descubiertas(Descubiertas)
-        ->  Despues = ganada
-        ;   Despues = en_curso(Descubiertas)
-        )
-    ).
-
-%!  todas_descubiertas(+Descubiertas:list) is semidet.
-%
-%   Toda celda sin mina del tablero está en Descubiertas.
-todas_descubiertas(Descubiertas) :-
-    tamanio(Filas, Columnas),
-    forall(( between(1, Filas, F),
-             between(1, Columnas, C),
-             \+ mina(F, C) ),
-           memberchk(F-C, Descubiertas)).
-
-%!  descubrir_a_lo_ancho(+Celda:pair, -Descubiertas:list) is det.
-%
-%   Descubiertas son las celdas que descubre un clic en Celda, en el orden en
-%   que se descubren: primero la celda, después sus vecinas, después las
-%   vecinas de estas. Pendientes es la cola de celdas por examinar.
-descubrir_a_lo_ancho(Celda, Descubiertas) :-
-    a_lo_ancho([Celda], [], Invertidas),
-    reverse(Invertidas, Descubiertas).
-
-%!  a_lo_ancho(+Pendientes:list, +Vistas:list, -Descubiertas:list) is det.
-%
-%   Descubiertas son las celdas de Vistas más las que se descubren desde las
-%   Pendientes, la última descubierta primero.
-a_lo_ancho([], Vistas, Vistas).
-a_lo_ancho([F-C|Pendientes], Vistas, Descubiertas) :-
-    (   memberchk(F-C, Vistas)
-    ->  a_lo_ancho(Pendientes, Vistas, Descubiertas)
-    ;   minas_alrededor(F, C, 0)
-    ->  findall(VF-VC, vecina(F, C, VF, VC), Vecinas),
-        append(Pendientes, Vecinas, Siguientes),
-        a_lo_ancho(Siguientes, [F-C|Vistas], Descubiertas)
-    ;   a_lo_ancho(Pendientes, [F-C|Vistas], Descubiertas)
-    ).
-
-% --- Ejercicios 11 y 12: recorridos con estado y con dos listas ---------------
-
-%!  promedios_parciales(+Notas:list(number), -Promedios:list(number)) is det.
-%
-%   El elemento i-ésimo de Promedios es el promedio de las i primeras Notas.
-%   Un solo recorrido: el valor acumulado es el par Cantidad-Suma.
-promedios_parciales(Notas, Promedios) :-
-    foldl(promedio_parcial, Notas, Promedios, 0-0, _).
-
-%!  promedio_parcial(+Nota:number, -Promedio:number, +Hasta:pair,
-%!                   -Total:pair) is det.
-%
-%   Total es el par Cantidad-Suma de Hasta con Nota agregada, y Promedio es
-%   el promedio de las notas que Total reúne.
-promedio_parcial(Nota, Promedio, Cantidad0-Suma0, Cantidad-Suma) :-
-    Cantidad is Cantidad0 + 1,
-    Suma is Suma0 + Nota,
+    aggregate_all(count, inscripcion(_, Materia, nota(_)), Cantidad),
+    Cantidad > 0,
+    aggregate_all(sum(N), inscripcion(_, Materia, nota(N)), Suma),
     Promedio is Suma / Cantidad.
 
-%!  producto_interno(+V1:list(number), +V2:list(number),
-%!                   -P:number) is semidet.
+%!  promedio_de_alumno(?Legajo:integer, -Promedio:number) is nondet.
 %
-%   P es el producto interno de los vectores V1 y V2. Falla si los dos
-%   vectores tienen distinto largo.
-producto_interno(V1, V2, P) :-
-    foldl(sumar_producto, V1, V2, 0, P).
+%   Promedio es el promedio de las notas del alumno Legajo, para cada alumno
+%   con al menos una nota.
+promedio_de_alumno(Legajo, Promedio) :-
+    alumno(Legajo, _, _, _),
+    aggregate_all(count, inscripcion(Legajo, _, nota(_)), Cantidad),
+    Cantidad > 0,
+    aggregate_all(sum(N), inscripcion(Legajo, _, nota(N)), Suma),
+    Promedio is Suma / Cantidad.
 
-%!  sumar_producto(+X:number, +Y:number, +Hasta:number,
-%!                 -Total:number) is det.
+%!  mejores(+Cantidad:integer, -Ranking:list(pair)) is det.
 %
-%   Total es Hasta más el producto de X por Y.
-sumar_producto(X, Y, Hasta, Total) :-
-    Total is Hasta + X * Y.
+%   Ranking es la lista de los Cantidad mejores promedios, de mayor a menor,
+%   como pares Legajo-Promedio.
+mejores(Cantidad, Ranking) :-
+    findall(Legajo-Promedio,
+            limit(Cantidad,
+                  order_by([desc(Promedio)],
+                           promedio_de_alumno(Legajo, Promedio))),
+            Ranking).
+
+%!  materia_de_anio(+Anio:integer, -Materias:list(atom)) is det.
+%
+%   Materias son los códigos de las materias de Anio, en el orden en que
+%   aparecen en la base; la lista vacía si no hay ninguna.
+materia_de_anio(Anio, Materias) :-
+    findall(M, materia(M, _, Anio), Materias).
+
+%!  requisitos_faltantes_2(+Legajo:integer, +Materia:atom,
+%!                         -Faltan:list(atom)) is det.
+%
+%   Faltan son los requisitos de Materia que el alumno Legajo no aprobó, sin
+%   repetir las correlatividades en una tabla aparte.
+requisitos_faltantes_2(Legajo, Materia, Faltan) :-
+    findall(R,
+            ( correlativa(Materia, R),
+              \+ aprobada(Legajo, R, _) ),
+            Faltan).
+
+%!  todos_aprobados(+Legajo:integer) is semidet.
+%
+%   El alumno Legajo se inscribió en alguna materia y aprobó todas en las que
+%   se inscribió. Sin la primera condición, forall/2 se cumpliría para un
+%   alumno sin inscripciones.
+todos_aprobados(Legajo) :-
+    once(inscripcion(Legajo, _, _)),
+    forall(inscripcion(Legajo, Materia, _),
+           aprobada(Legajo, Materia, _)).
+
+%!  cantidad_por_materia(?Materia:atom, -N:integer) is nondet.
+%
+%   N es la cantidad de inscriptos en Materia, una respuesta por materia con
+%   al menos uno.
+cantidad_por_materia(Materia, N) :-
+    aggregate(count, Legajo^Estado^inscripcion(Legajo, Materia, Estado), N).
+
+%!  mejor_de_materia(+Materia:atom, -Legajo:integer, -Nota:integer) is semidet.
+%
+%   Legajo tiene la nota más alta de Materia. Con empate, el primero.
+mejor_de_materia(Materia, Legajo, Nota) :-
+    aggregate_all(max(N, L), inscripcion(L, Materia, nota(N)),
+                  max(Nota, Legajo)).
+
+%!  listar_inscriptos(+Materia:atom) is det.
+%
+%   Escribe una línea por alumno inscripto en Materia, con su nombre.
+listar_inscriptos(Materia) :-
+    forall(( inscripcion(Legajo, Materia, _),
+             alumno(Legajo, Nombre, _, _) ),
+           format("~w ~w~n", [Legajo, Nombre])).
+
+%!  los_mejores_de_cada_carrera(?Carrera:atom, -Legajo:integer) is nondet.
+%
+%   Legajo tiene el mejor promedio de Carrera, una respuesta por carrera con
+%   algún alumno con notas. aggregate/3 agrupa por Carrera; los demás
+%   argumentos de alumno/4 se marcan con ^ para que no agrupen.
+los_mejores_de_cada_carrera(Carrera, Legajo) :-
+    aggregate(max(P, L),
+              Nombre^Ingreso^( alumno(L, Nombre, Carrera, Ingreso),
+                               promedio_de_alumno(L, P) ),
+              max(_, Legajo)).
+
+%!  mejores_2(+Cantidad:integer, -Ranking:list(pair)) is det.
+%
+%   Como mejores/2, con findall/3, sort/4 y los primeros Cantidad elementos.
+mejores_2(Cantidad, Ranking) :-
+    findall(L-P, promedio_de_alumno(L, P), Pares),
+    sort(2, @>=, Pares, Ordenados),
+    primeros(Cantidad, Ordenados, Ranking).
+
+%!  primeros(+N:integer, +L:list, -Primeros:list) is det.
+%
+%   Primeros son los N primeros elementos de L, o todos si tiene menos.
+primeros(N, L, Primeros) :-
+    (   N =< 0
+    ->  Primeros = []
+    ;   L = []
+    ->  Primeros = []
+    ;   L = [X|Resto],
+        N1 is N - 1,
+        Primeros = [X|Resto1],
+        primeros(N1, Resto, Resto1)
+    ).
+
+% --- Ejercicio 17: las carreras, en dos órdenes ------------------------------
+
+%!  carreras(-Carreras:list(atom)) is semidet.
+%
+%   Carreras es la lista ordenada y sin repetidos de las carreras con algún
+%   alumno. Falla si no hay ninguno.
+carreras(Carreras) :-
+    setof(C, L^N^I^alumno(L, N, C, I), Carreras).
+
+%!  carreras_2(-Carreras:list(atom)) is det.
+%
+%   La misma lista con aggregate_all/3: la lista vacía si no hay alumnos.
+carreras_2(Carreras) :-
+    aggregate_all(set(C), alumno(_, _, C, _), Carreras).
+
+%!  carreras_en_orden(-Carreras:list(atom)) is det.
+%
+%   Carreras son las carreras en el orden en que aparecen en alumno/4, cada
+%   una la primera vez.
+carreras_en_orden(Carreras) :-
+    findall(C, distinct(C, alumno(_, _, C, _)), Carreras).
+
+% --- Ejercicio 18: una página del ranking por edad ---------------------------
+
+%!  de_mayor_a_menor(-P, -E:integer) is multi.
+%
+%   Las personas de la base, de la mayor a la menor edad.
+de_mayor_a_menor(P, E) :-
+    order_by([desc(E)], edad(P, E)).
+
+%!  pagina(+N:integer, +Tamanio:integer, -Filas:list(pair)) is det.
+%
+%   Filas son los pares P-E de la página N, de Tamanio filas, del ranking de
+%   de_mayor_a_menor/2; la lista vacía más allá de la última página.
+pagina(N, Tamanio, Filas) :-
+    Salto is (N - 1) * Tamanio,
+    findall(P-E,
+            limit(Tamanio, offset(Salto, de_mayor_a_menor(P, E))),
+            Filas).

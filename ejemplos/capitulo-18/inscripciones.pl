@@ -1,17 +1,13 @@
 :- encoding(utf8).
 
-% Capítulo 18 - El proyecto Inscripciones: los informes con orden superior.
+% Capítulo 18 - El proyecto Inscripciones: los informes.
 %
-% Respecto del capítulo 17, los promedios se calculan con foldl/4 sobre la
-% lista de notas, sin_notas/1 usa exclude/3, y informe/3 aplica a una lista
-% de alumnos cualquier cálculo de dos argumentos: el mismo predicado sirve
-% para todos los informes por alumno.
+% Respecto del capítulo 17 se agregan los informes, que reúnen las respuestas
+% de una consulta: los inscriptos de una materia, los alumnos sin ninguna
+% nota, el promedio de una materia y de un alumno, y los mejores promedios.
 %
-%?- legajos(Ls), informe(promedio_de_alumno, Ls, Filas).
-%?- legajos(Ls), informe(aprobadas, Ls, Filas).
-
-:- meta_predicate
-    informe(2, +, -).
+%?- promedio_de_materia(am1, Promedio).
+%?- mejores(3, Ranking).
 
 % alumno(Legajo, Nombre, Carrera, Ingreso): el alumno de ese legajo cursa esa
 % carrera desde el año de ingreso.
@@ -125,7 +121,7 @@ puede_inscribirse(Legajo, Materia) :-
 %
 %   El alumno llamado Nombre aprobó Materia. El primer objetivo es el que el
 %   nombre selecciona: con el orden inverso, la consulta recorre todas las
-%   inscripciones de la materia antes de examinar el nombre (sección 16.5).
+%   inscripciones de la materia antes de examinar el nombre (sección 17.5).
 aprobada_por_nombre(Nombre, Materia) :-
     alumno(Legajo, Nombre, _, _),
     aprobada(Legajo, Materia, _Nota).
@@ -138,50 +134,25 @@ inscriptos(Materia, Legajos) :-
     findall(Legajo, inscripcion(Legajo, Materia, _), Todos),
     sort(Todos, Legajos).
 
-%!  legajos(-Legajos:list(integer)) is det.
-%
-%   Legajos son los legajos de todos los alumnos, en el orden de los hechos.
-legajos(Legajos) :-
-    findall(Legajo, alumno(Legajo, _, _, _), Legajos).
-
-%!  tiene_nota(+Legajo:integer) is semidet.
-%
-%   El alumno Legajo tiene al menos una nota.
-tiene_nota(Legajo) :-
-    once(inscripcion(Legajo, _, nota(_))).
-
 %!  sin_notas(-Legajos:list(integer)) is det.
 %
 %   Legajos son los alumnos que no tienen ninguna nota: los que no se
 %   inscribieron en nada y los que solo están cursando.
 sin_notas(Legajos) :-
-    legajos(Todos),
-    exclude(tiene_nota, Todos, Legajos).
-
-%!  promedio(+Notas:list(number), -Promedio:number) is semidet.
-%
-%   Promedio es el promedio de Notas. Falla con la lista vacía. Un solo
-%   recorrido cuenta y suma a la vez: el valor acumulado es el par
-%   Cantidad-Suma.
-promedio(Notas, Promedio) :-
-    foldl(contar_y_sumar, Notas, 0-0, Cantidad-Suma),
-    Cantidad > 0,
-    Promedio is Suma / Cantidad.
-
-%!  contar_y_sumar(+Nota:number, +Hasta:pair, -Total:pair) is det.
-%
-%   Total es el par Cantidad-Suma de Hasta con Nota agregada.
-contar_y_sumar(Nota, Cantidad0-Suma0, Cantidad-Suma) :-
-    Cantidad is Cantidad0 + 1,
-    Suma is Suma0 + Nota.
+    findall(Legajo,
+            ( alumno(Legajo, _, _, _),
+              \+ inscripcion(Legajo, _, nota(_)) ),
+            Legajos).
 
 %!  promedio_de_materia(+Materia:atom, -Promedio:number) is semidet.
 %
 %   Promedio es el promedio de las notas de Materia. Falla si la materia no
 %   tiene ninguna nota.
 promedio_de_materia(Materia, Promedio) :-
-    findall(N, inscripcion(_, Materia, nota(N)), Notas),
-    promedio(Notas, Promedio).
+    aggregate_all(count, inscripcion(_, Materia, nota(_)), Cantidad),
+    Cantidad > 0,
+    aggregate_all(sum(N), inscripcion(_, Materia, nota(N)), Suma),
+    Promedio is Suma / Cantidad.
 
 %!  promedio_de_alumno(?Legajo:integer, -Promedio:number) is nondet.
 %
@@ -189,40 +160,10 @@ promedio_de_materia(Materia, Promedio) :-
 %   con al menos una nota.
 promedio_de_alumno(Legajo, Promedio) :-
     alumno(Legajo, _, _, _),
-    findall(N, inscripcion(Legajo, _, nota(N)), Notas),
-    promedio(Notas, Promedio).
-
-%!  aprobadas(+Legajo:integer, -Cantidad:integer) is det.
-%
-%   Cantidad es la cantidad de materias que aprobó el alumno Legajo.
-aprobadas(Legajo, Cantidad) :-
-    aggregate_all(count, aprobada(Legajo, _, _), Cantidad).
-
-%!  informe(:Calculo, +Legajos:list(integer), -Filas:list(pair)) is det.
-%
-%   Filas tiene un par Legajo-Valor por cada alumno de Legajos para el que
-%   call(Calculo, Legajo, Valor) se cumple, con su primer Valor; los demás
-%   se omiten.
-informe(Calculo, Legajos, Filas) :-
-    convlist({Calculo}/[Legajo, Legajo-Valor]>>
-                 once(call(Calculo, Legajo, Valor)),
-             Legajos, Filas).
-
-%!  mostrar_informe(+Titulo:atom, +Filas:list(pair)) is semidet.
-%
-%   Escribe Titulo y una línea por fila, con el legajo, el nombre y el valor.
-%   Falla en la primera fila cuyo legajo no es de un alumno.
-mostrar_informe(Titulo, Filas) :-
-    format("~w~n", [Titulo]),
-    maplist(mostrar_fila, Filas).
-
-%!  mostrar_fila(+Fila:pair) is semidet.
-%
-%   Escribe una fila Legajo-Valor de un informe. Falla si Legajo no es de un
-%   alumno.
-mostrar_fila(Legajo-Valor) :-
-    alumno(Legajo, Nombre, _, _),
-    format("  ~d ~w: ~w~n", [Legajo, Nombre, Valor]).
+    aggregate_all(count, inscripcion(Legajo, _, nota(_)), Cantidad),
+    Cantidad > 0,
+    aggregate_all(sum(N), inscripcion(Legajo, _, nota(N)), Suma),
+    Promedio is Suma / Cantidad.
 
 %!  mejores(+Cantidad:integer, -Ranking:list(pair)) is det.
 %

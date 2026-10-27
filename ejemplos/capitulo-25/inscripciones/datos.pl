@@ -148,18 +148,11 @@ restaurar(estado(Inscripciones, Vacantes, Operaciones)) :-
 
 %!  comprobar_datos is det.
 %
-%   Escribe una advertencia por cada inscripción de un alumno o de una
-%   materia que no existen. Se ejecuta al cargar el programa.
+%   Escribe en la salida de errores, user_error, una advertencia por cada
+%   inscripción de un alumno o de una materia que no existen. Se ejecuta al
+%   cargar el programa.
 comprobar_datos :-
     forall(( inscripcion(L, M, _),
              \+ ( alumno(L, _, _, _),
                   materia(M, _, _) ) ),
-           print_message(warning, inscripcion_sin_datos(L, M))).
-
-:- multifile prolog:message//1.
-
-%!  prolog:message(+Mensaje)// is semidet.
-%
-%   El texto de los mensajes propios de Inscripciones.
-prolog:message(inscripcion_sin_datos(L, M)) -->
-    [ 'Inscripción de ~w en ~w: el alumno o la materia no existen'-[L, M] ].
+           format(user_error, "Inscripción sin datos: ~w en ~w~n", [L, M])).

@@ -7,7 +7,7 @@
 % mientras avanza. Ambas producen el mismo resultado.
 %
 %?- suma_lista([3, 1, 4], Total).
-%?- dar_vuelta([ana, luis, eva], AlReves).
+%?- reversa([ana, luis, eva], AlReves).
 
 %!  suma_lista(+L, -S) is det.
 %
@@ -33,32 +33,32 @@ sumando([X|Resto], Hasta, Total) :-
     Ahora is Hasta + X,
     sumando(Resto, Ahora, Total).
 
-%!  largo(?L, ?N) is nondet.
+%!  longitud(?L, ?N) is nondet.
 %
 %   N es la cantidad de elementos de L, también con acumulador. Con L libre y
 %   N ligado, da la lista de N variables y después no termina.
-largo(L, N) :-
+longitud(L, N) :-
     contando(L, 0, N).
 
 %!  contando(?L, +Hasta, ?N) is nondet.
 %
 %   N es Hasta más la cantidad de elementos de L. Admite los mismos modos que
-%   largo/2, con la misma limitación: con L libre y N ligado no termina.
+%   longitud/2, con la misma limitación: con L libre y N ligado no termina.
 contando([], N, N).
 contando([_|Resto], Hasta, N) :-
     Ahora is Hasta + 1,
     contando(Resto, Ahora, N).
 
-%!  dar_vuelta(+L, -R) is det.
+%!  reversa(+L, -R) is det.
 %
 %   R es L en orden inverso. En este caso el acumulador no es un número: es la
 %   lista que se construye.
-dar_vuelta(L, R) :-
-    dando_vuelta(L, [], R).
+reversa(L, R) :-
+    invirtiendo(L, [], R).
 
-%!  dando_vuelta(+L, +Hasta, -R) is det.
+%!  invirtiendo(+L, +Hasta, -R) is det.
 %
 %   R es L en orden inverso, seguida de Hasta.
-dando_vuelta([], R, R).
-dando_vuelta([X|Resto], Hasta, R) :-
-    dando_vuelta(Resto, [X|Hasta], R).
+invirtiendo([], R, R).
+invirtiendo([X|Resto], Hasta, R) :-
+    invirtiendo(Resto, [X|Hasta], R).

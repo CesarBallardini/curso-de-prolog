@@ -1,7 +1,7 @@
 :- encoding(utf8).
 
-% Pruebas de Inscripciones (capítulo 18): las del capítulo 17 sin cambios,
-% que los informes reescritos siguen pasando, y las de informe/3.
+% Pruebas de Inscripciones (capítulo 18): las del capítulo 17, y las de los
+% informes.
 
 :- begin_tests(inscripciones).
 
@@ -133,43 +133,5 @@ test(promedio_de_ana, true(P =:= 8.5)) :-
 
 test(los_tres_mejores, true(R == [101-8.5, 104-8, 103-6])) :-
     mejores(3, R).
-
-% --- Orden superior ------------------------------------------------------
-
-test(legajos, true(L == [101, 102, 103, 104, 105, 106, 107])) :-
-    legajos(L).
-
-test(promedio, true(P =:= 7.5)) :-
-    promedio([6, 9], P).
-
-test(promedio_de_ninguna_nota, [fail]) :-
-    promedio([], _).
-
-test(aprobadas_de_ana, true(N == 4)) :-
-    aprobadas(101, N).
-
-test(aprobadas_de_gabriela, true(N == 0)) :-
-    aprobadas(107, N).
-
-% informe/3 omite a los alumnos sin promedio: elena (105) y gabriela (107).
-test(informe_de_promedios,
-     true(F == [101-8.5, 102-4, 103-6, 104-8, 106-4.5])) :-
-    legajos(L),
-    informe(promedio_de_alumno, L, F).
-
-test(informe_de_aprobadas, true(F == [101-4, 105-0])) :-
-    informe(aprobadas, [101, 105], F).
-
-test(informe_vacio, true(F == [])) :-
-    informe(aprobadas, [], F).
-
-% with_output_to/2, que captura la salida, se presenta en el capítulo 27.
-test(mostrar_informe,
-     true(S == "Aprobadas
-  101 ana: 4
-  105 elena: 0
-")) :-
-    with_output_to(string(S),
-                   mostrar_informe('Aprobadas', [101-4, 105-0])).
 
 :- end_tests(inscripciones).

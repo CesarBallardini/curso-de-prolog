@@ -128,7 +128,7 @@
 ### END-2.4 — Invertir una lista
 - **Fuente:** Endriss, cap. 2, Ejercicio 2.4, p. 19.
 - **Tema:** 5, 6
-- **Capítulos:** 7, 16
+- **Capítulos:** 7, 17
 - **Dificultad:** 2
 - **Solución:** propia, verificada (con acumulador):
   ```prolog
@@ -181,7 +181,7 @@
 ### END-2.8 — Conjunto potencia
 - **Fuente:** Endriss, cap. 2, Ejercicio 2.8, p. 20.
 - **Tema:** 5, 6
-- **Capítulos:** 7, 17
+- **Capítulos:** 7, 18
 - **Dificultad:** 2
 - **Solución:** propia, verificada (usa `findall/3`, que el libro presenta recién en el cap. 5):
   ```prolog
@@ -245,7 +245,7 @@
 ### END-3.3 — Fibonacci
 - **Fuente:** Endriss, cap. 3, Ejercicio 3.3, p. 26.
 - **Tema:** 5, 7
-- **Capítulos:** 8, 16
+- **Capítulos:** 8, 17
 - **Dificultad:** 1
 - **Solución:** propia, verificada:
   ```prolog
@@ -261,7 +261,7 @@
 ### END-3.4 — Fibonacci eficiente
 - **Fuente:** Endriss, cap. 3, Ejercicio 3.4, pp. 26–27.
 - **Tema:** 5, 7
-- **Capítulos:** 8, 16, 39
+- **Capítulos:** 8, 17, 40
 - **Dificultad:** 2
 - **Solución:** propia, verificada: F42 = 267914296 y F100 = 354224848179261915075.
   ```prolog
@@ -316,7 +316,7 @@
 ### END-3.9 — Base de datos de fechas de nacimiento
 - **Fuente:** Endriss, cap. 3, Ejercicio 3.9, pp. 28–29.
 - **Tema:** 1, 2, 3, 7, 11
-- **Capítulos:** 8, 3, 42
+- **Capítulos:** 8, 3, 43
 - **Dificultad:** 2
 - **Solución:** propia, verificada: `older(X, Y)` da 28 soluciones porque son 8 personas con fechas distintas y cada par se cuenta una sola vez: C(8,2) = 28.
   ```prolog
@@ -366,7 +366,7 @@
 ### END-3.13 — Conjetura de Goldbach
 - **Fuente:** Endriss, cap. 3, Ejercicio 3.13, pp. 30–31.
 - **Tema:** 4, 7
-- **Capítulos:** 8, 15
+- **Capítulos:** 8, 16
 - **Dificultad:** 2
 - **Solución:** propia, verificada: `goldbach(N, A+B) :- H is N // 2, between(2, H, A), prime(A), B is N - A, prime(B).` (da `7+23` para 30).
 - **SWISH:** sí
@@ -376,7 +376,7 @@
 ### END-3.14 — Juego de letras de *Countdown*
 - **Fuente:** Endriss, cap. 3, Ejercicio 3.14, pp. 31–32.
 - **Tema:** 4, 6, 7, 9
-- **Capítulos:** 11, 17
+- **Capítulos:** 11, 18
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** no (requiere cargar `words.pl`, un archivo de unas 350.000 palabras que se descarga aparte, http://tinyurl.com/prolog-words)
@@ -386,7 +386,7 @@
 ### END-3.15 — Gráficos en modo texto
 - **Fuente:** Endriss, cap. 3, Ejercicio 3.15, pp. 32–34.
 - **Tema:** 5, 7
-- **Capítulos:** 8, 15
+- **Capítulos:** 8, 16
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí (salida con `write/1`; el alineado depende de que la fuente sea monoespaciada)
@@ -413,7 +413,7 @@
 ### END-4.1 — Operadores `plink` y `plonk`
 - **Fuente:** Endriss, cap. 4, Ejercicio 4.1, pp. 41–42.
 - **Tema:** 3, X
-- **Capítulos:** 18, 4
+- **Capítulos:** 19, 4
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí (la directiva `op/3` funciona en el programa)
@@ -423,7 +423,7 @@
 ### END-4.2 — Operadores `the`, `a` y `has`
 - **Fuente:** Endriss, cap. 4, Ejercicio 4.2, p. 42.
 - **Tema:** 3, X
-- **Capítulos:** 32, 4
+- **Capítulos:** 33, 4
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -432,7 +432,7 @@
 ### END-4.3 — Operadores para los conectivos lógicos
 - **Fuente:** Endriss, cap. 4, Ejercicio 4.3, pp. 42–43.
 - **Tema:** 3, X
-- **Capítulos:** 32, 12
+- **Capítulos:** 33, 13
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -442,7 +442,7 @@
 ### END-4.4 — ¿Está en forma normal negativa?
 - **Fuente:** Endriss, cap. 4, Ejercicio 4.4, pp. 43–44.
 - **Tema:** 3, 5
-- **Capítulos:** 6, 12
+- **Capítulos:** 6, 13
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -455,7 +455,7 @@
 ### END-4.5 — ¿Está en forma normal conjuntiva?
 - **Fuente:** Endriss, cap. 4, Ejercicio 4.5, p. 44.
 - **Tema:** 3, 5
-- **Capítulos:** 6, 12
+- **Capítulos:** 6, 13
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -464,7 +464,7 @@
 ### END-4.6 — Pasar una fórmula a FNC
 - **Fuente:** Endriss, cap. 4, Ejercicio 4.6, pp. 44–45.
 - **Tema:** 3, 5, X
-- **Capítulos:** 12, 6
+- **Capítulos:** 13, 6
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -531,7 +531,7 @@
 ### END-5.5 — Divisores de un número
 - **Fuente:** Endriss, cap. 5, Ejercicio 5.5, p. 59.
 - **Tema:** 6, 7, 8
-- **Capítulos:** 8, 17
+- **Capítulos:** 8, 18
 - **Dificultad:** 1
 - **Solución:** propia, verificada (con `findall/3`): `divisors(N, Ds) :- findall(D, (between(1, N, D), N mod D =:= 0), Ds).`
 - **SWISH:** sí
@@ -549,7 +549,7 @@
 ### END-5.7 — Poder de voto en la UE de 1957
 - **Fuente:** Endriss, cap. 5, Ejercicio 5.7, pp. 60–62.
 - **Tema:** 6, 7, 9
-- **Capítulos:** 17, 8
+- **Capítulos:** 18, 8
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -576,7 +576,7 @@
 ### END-6.1 — Traducir un programa a lógica de primer orden
 - **Fuente:** Endriss, cap. 6, Ejercicio 6.1, p. 67.
 - **Tema:** 2, 4
-- **Capítulos:** 12
+- **Capítulos:** 13
 - **Dificultad:** 1
 - **Solución:** no
 - **SWISH:** no corresponde (es un ejercicio de papel)
@@ -586,7 +586,7 @@
 ### END-6.2 — `X = f(X)` y el *occurs check*
 - **Fuente:** Endriss, cap. 6, Ejercicio 6.2, p. 67.
 - **Tema:** 3
-- **Capítulos:** 4, 12
+- **Capítulos:** 4, 13
 - **Dificultad:** 2
 - **Solución:** propia, verificada: SWI-Prolog tiene éxito y crea un término cíclico (`X = f(X)`), mientras que `unify_with_occurs_check(X, f(X))` falla.
 - **SWISH:** sí
@@ -595,7 +595,7 @@
 ### END-6.3 — La prueba por resolución de Sócrates
 - **Fuente:** Endriss, cap. 6, Ejercicio 6.3, pp. 67–68.
 - **Tema:** 4
-- **Capítulos:** 12
+- **Capítulos:** 13
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** no corresponde (es un ejercicio de papel)

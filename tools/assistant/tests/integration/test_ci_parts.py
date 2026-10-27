@@ -6,7 +6,7 @@ from typing import Protocol, cast
 import pytest
 import sections as course
 
-CHAPTERS = set(range(1, 88))
+CHAPTERS = set(range(1, 89))
 
 
 class CiParts(Protocol):

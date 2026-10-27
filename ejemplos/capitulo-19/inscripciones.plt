@@ -1,7 +1,7 @@
 :- encoding(utf8).
 
-% Pruebas de Inscripciones (capítulo 19): las de los capítulos 17 y 18 sin
-% cambios, y las de los motivos de rechazo escritos como reglas.
+% Pruebas de Inscripciones (capítulo 19): las del capítulo 18 sin cambios,
+% que los informes reescritos siguen pasando, y las de informe/3.
 
 :- begin_tests(inscripciones).
 
@@ -163,7 +163,7 @@ test(informe_de_aprobadas, true(F == [101-4, 105-0])) :-
 test(informe_vacio, true(F == [])) :-
     informe(aprobadas, [], F).
 
-% with_output_to/2, que captura la salida, se presenta en el capítulo 27.
+% with_output_to/2, que captura la salida, se presenta en el capítulo 28.
 test(mostrar_informe,
      true(S == "Aprobadas
   101 ana: 4
@@ -171,43 +171,5 @@ test(mostrar_informe,
 ")) :-
     with_output_to(string(S),
                    mostrar_informe('Aprobadas', [101-4, 105-0])).
-
-% --- Reglas como datos ---------------------------------------------------
-
-test(situacion_de_bruno_en_am2,
-     true(Obs == [materia(am2), aprobada(log), requisito(am1),
-                  requisito(alg), vacantes(25)])) :-
-    situacion(102, am2, Obs).
-
-% inscripcion_posible/3 da solo falta(am1); las reglas dan los dos requisitos.
-test(todos_los_motivos, true(M == [falta(am1), falta(alg)])) :-
-    motivos_de_rechazo(102, am2, M).
-
-test(dos_motivos_distintos, true(M == [ya_aprobada, sin_vacantes])) :-
-    motivos_de_rechazo(101, log, M).
-
-test(sin_motivos, true(M == [])) :-
-    motivos_de_rechazo(104, ssl, M).
-
-% El árbol de la prueba muestra la regla y la negación que se cumplió.
-test(arbol_del_motivo,
-     [ nondet,
-       true(A == deducido(rechazada(falta(am1)), v3,
-                          observado(requisito(am1)) y no aprobada(am1))) ]) :-
-    situacion(102, am2, Obs),
-    prueba(rechazada(falta(am1)), Obs, A).
-
-% Las reglas coinciden con inscripcion_posible/3 para todo alumno y toda
-% materia: sin motivos se acepta, y el primer motivo está entre los motivos.
-test(coinciden_con_inscripcion_posible) :-
-    forall(( alumno(Legajo, _, _, _),
-             materia(Materia, _, _) ),
-           ( inscripcion_posible(Legajo, Materia, Resultado),
-             motivos_de_rechazo(Legajo, Materia, Motivos),
-             (   Resultado == aceptada
-             ->  Motivos == []
-             ;   Resultado = rechazada(Motivo),
-                 memberchk(Motivo, Motivos)
-             ) )).
 
 :- end_tests(inscripciones).

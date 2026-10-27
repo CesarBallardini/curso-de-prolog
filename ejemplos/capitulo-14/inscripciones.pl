@@ -1,14 +1,13 @@
 :- encoding(utf8).
 
-% Capítulo 14 - El proyecto Inscripciones: el modelo de datos.
+% Capítulo 14 - El proyecto Inscripciones: el primer archivo.
 %
-% Respecto del capítulo 13, el estado de una inscripción deja de ser un
-% número o el átomo null: es cursando o nota(N). Cada caso se distingue por
-% la forma del término, y las reglas lo seleccionan por unificación, sin
-% preguntar de qué tipo es el valor.
+% Los datos de un sistema de inscripción a las materias de una carrera: los
+% mismos hechos que el capítulo 43 traduce desde SQL. Todavía no hay reglas:
+% este archivo es el punto de partida del proyecto de la parte II.
 %
-%?- aprobada(101, Materia, Nota).
-%?- cursa(Legajo, Materia).
+%?- inscripcion(101, Materia, Nota).
+%?- correlativa(bd, Requisito).
 
 % alumno(Legajo, Nombre, Carrera, Ingreso): el alumno de ese legajo cursa esa
 % carrera desde el año de ingreso.
@@ -39,43 +38,22 @@ correlativa(ssl, alg).
 correlativa(bd,  pp).
 correlativa(bd,  ssl).
 
-% inscripcion(Legajo, Materia, Estado): el alumno se inscribió en la materia;
-% Estado es cursando, o nota(N) con la nota final N, de 1 a 10.
-inscripcion(101, am1, nota(8)).
-inscripcion(101, alg, nota(9)).
-inscripcion(101, log, nota(10)).
-inscripcion(101, am2, nota(7)).
-inscripcion(101, pp,  cursando).
-inscripcion(102, am1, nota(4)).
-inscripcion(102, log, nota(6)).
-inscripcion(102, alg, nota(2)).
-inscripcion(103, am1, nota(7)).
-inscripcion(103, alg, nota(5)).
-inscripcion(103, am2, cursando).
-inscripcion(104, log, nota(9)).
-inscripcion(104, alg, nota(7)).
-inscripcion(104, pp,  nota(8)).
-inscripcion(105, am1, cursando).
-inscripcion(106, log, nota(3)).
-inscripcion(106, am1, nota(6)).
-
-%!  nota_minima(-N:integer) is det.
-%
-%   N es la nota mínima para aprobar una materia.
-nota_minima(6).
-
-%!  aprobada(?Legajo:integer, ?Materia:atom, ?Nota:integer) is nondet.
-%
-%   El alumno Legajo aprobó Materia con Nota. Con Legajo y Materia ligados
-%   hay una respuesta o ninguna; con Nota ligada, además, se comprueba la
-%   nota.
-aprobada(Legajo, Materia, Nota) :-
-    inscripcion(Legajo, Materia, nota(Nota)),
-    nota_minima(Minima),
-    Nota >= Minima.
-
-%!  cursa(?Legajo:integer, ?Materia:atom) is nondet.
-%
-%   El alumno Legajo está cursando Materia, todavía sin nota.
-cursa(Legajo, Materia) :-
-    inscripcion(Legajo, Materia, cursando).
+% inscripcion(Legajo, Materia, Nota): el alumno cursó o cursa la materia;
+% Nota es null mientras la cursa y todavía no tiene nota.
+inscripcion(101, am1, 8).
+inscripcion(101, alg, 9).
+inscripcion(101, log, 10).
+inscripcion(101, am2, 7).
+inscripcion(101, pp,  null).
+inscripcion(102, am1, 4).
+inscripcion(102, log, 6).
+inscripcion(102, alg, 2).
+inscripcion(103, am1, 7).
+inscripcion(103, alg, 5).
+inscripcion(103, am2, null).
+inscripcion(104, log, 9).
+inscripcion(104, alg, 7).
+inscripcion(104, pp,  8).
+inscripcion(105, am1, null).
+inscripcion(106, log, 3).
+inscripcion(106, am1, 6).

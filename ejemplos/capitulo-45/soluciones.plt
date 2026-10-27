@@ -1,159 +1,154 @@
 :- encoding(utf8).
 
-:- begin_tests(soluciones).
+:- begin_tests(soluciones, [setup(iniciar), cleanup(iniciar)]).
 
-test(menos_unario, [true(S == [-4])]) :-
-    ejecutar("x := -3 * 2; escribir 2 - -x", S).
+%!  con_entrada(+Texto:string, :Objetivo, -Salida:string) is semidet.
+%
+%   Ejecuta call(Objetivo, In), con In un stream que lee Texto; Salida es
+%   todo lo que Objetivo escribió.
+con_entrada(Texto, Objetivo, Salida) :-
+    setup_call_cleanup(
+        open_string(Texto, In),
+        with_output_to(string(Salida), once(call(Objetivo, In))),
+        close(In)).
 
-test(menos_unario_arbol, [true(P == [escribir(bin(-, num(0),
-                                                  bin(-, num(0), id(x))))])]) :-
-    analizar("escribir - - x", P).
+%!  en_el_sotano is det.
+%
+%   El jugador en el sótano, con la linterna encendida y el baúl abierto.
+en_el_sotano :-
+    restablecer([aqui(sotano), esta_en(linterna, jugador),
+                 encendido(linterna), esta_en(baul, sotano),
+                 esta_en(lente, baul)]).
 
-test(repetir_arbol, [true(P == [repetir([escribir(id(i))],
-                                        rel(=, id(i), num(1)))])]) :-
-    analizar("repetir escribir i hasta i = 1", P).
+%!  por_inicial(+Opciones:list, -Valor, +In) is det.
+%
+%   menu_por_inicial/3 con el stream como último argumento.
+por_inicial(Opciones, Valor, In) :-
+    menu_por_inicial(In, Opciones, Valor).
 
-test(repetir, [true(S == [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])]) :-
-    fuente_repetir(T),
-    ejecutar(T, S).
+% Ejercicio 4
 
-test(repetir_compilado, [true(S == [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])]) :-
-    fuente_repetir(T),
-    correr(T, S).
+test(sacar_del_baul, true(O == tomar(lente))) :-
+    en_el_sotano,
+    entender_con_origen("sacar la lente del baúl", O).
 
-test(repetir_una_vez, [true(S == [0])]) :-
-    ejecutar("repetir escribir i hasta i = 0", S).
+test(de_otro_recipiente, true(O == no_entendido)) :-
+    en_el_sotano,
+    entender_con_origen("sacar la lente del escritorio", O).
 
-test(fusion, [true(Pasos-N == 69-18)]) :-
-    fuente_ejemplo(factorial, T),
-    compilar_fusion(T, O),
-    memberchk(saltar_si_no(>, 16), O),
-    maquina_medida(O, [120], Pasos, _),
-    length(O, N).
+test(sin_origen, true(O == tomar(lente))) :-
+    en_el_sotano,
+    entender_con_origen("tomar la lente", O).
 
-test(sin_fusion, [true(Pasos-N == 75-19)]) :-
-    fuente_ejemplo(factorial, T),
-    compilar_optimizado(T, O),
-    maquina_medida(O, [120], Pasos, _),
-    length(O, N).
+% Ejercicio 5
 
-test(fusion_como_el_interprete, [forall(fuente_ejemplo(_, T)),
-                                 true(S1 == S2)]) :-
-    compilar_fusion(T, O),
-    maquina(O, S1),
-    ejecutar(T, S2).
+test(varias, true(S == "Tomas la llave de bronce. Estás en el vestíbulo. \c
+                        Un vestíbulo con baldosas gastadas y olor a \c
+                        humedad. Ves un perchero. Desde aquí puedes ir a \c
+                        la biblioteca y al taller. Abres la puerta del \c
+                        taller.")) :-
+    iniciar,
+    ejecutar("biblioteca", _),
+    ejecutar_varias("tomar la llave y vestíbulo y abrir la puerta del \c
+                     taller", S).
 
-test(pila_reordenada, [true(H0-H == 4-2)]) :-
-    compilar("x := a + (b + (c + d))", O0),
-    maquina_medida(O0, _, 8, H0),
-    compilar_optimizado("x := a + (b + (c + d))", O),
-    maquina_medida(O, _, 8, H).
+test(se_detiene_en_la_bloqueada, true(S-A == "La puerta del taller está \c
+                                              cerrada.\c
+                                              "-vestibulo)) :-
+    iniciar,
+    ejecutar_varias("taller y biblioteca", S),
+    aqui(A).
 
-test(condicion, [true(C == rel(>, bin(+, bin(+, id(b), id(c)), id(a)),
-                               num(1)))]) :-
-    analizar("si 1 < a + (b + c) entonces escribir 1 fin", P0),
-    reordenar_condiciones(P0, [si(C, _, _)]),
-    pila_condicion(C, 2).
+% Ejercicio 6
 
-test(espejo) :-
-    forall(espejo(Op, Op1),
-           forall(member(X-Y, [1-2, 2-2, 3-2]),
-                  (   comparar(Op, X, Y)
-                  ->  comparar(Op1, Y, X)
-                  ;   \+ comparar(Op1, Y, X)
-                  ))).
+test(limite, true(Ultima == "Se terminó el tiempo.")) :-
+    iniciar,
+    con_entrada("mirar\nmirar\nmirar\nmirar\n",
+                [In]>>partida_con_limite(In, 3), Salida),
+    split_string(Salida, "\n", "", Lineas),
+    once(append(_, [Ultima, ""], Lineas)).
 
-test(asociar, [true(E == bin(+, id(x), num(5)))]) :-
-    plegar_asociando(bin(+, bin(+, id(x), num(2)), num(3)), E).
+% Ejercicio 7
 
-test(asociar_resta, [true(E == id(x))]) :-
-    plegar_asociando(bin(-, bin(+, id(x), num(2)), num(2)), E).
+test(tomar_todo, true(S-Os == "Tomas la lente. Tomas la linterna."-
+                              [lente, linterna])) :-
+    iniciar,
+    restablecer([aqui(sotano), esta_en(linterna, sotano),
+                 encendido(linterna), esta_en(baul, sotano),
+                 esta_en(lente, baul)]),
+    ejecutar_con_todo("agarrar todo", S),
+    objetos_en(jugador, Os).
 
-test(marcas, [true(C == [apilar(1), escribir])]) :-
-    analizar("si 2 > 1 entonces escribir 1 sino escribir 2 fin", P),
-    generar(P, C0),
-    mirilla_completa(C0, C).
+test(nada_para_tomar, true(S == "No hay nada para tomar.")) :-
+    iniciar,
+    ejecutar_con_todo("tomar todo", S).
 
-test(a_texto, [true(T == 'x := (a - (b - c)) * d / 2')]) :-
-    analizar("x := (a - (b - c)) * d / 2", P),
-    a_texto(P, T).
+% Ejercicio 9
 
-test(ida_y_vuelta, [forall(programa_ejemplo(_, P)), true(P1 == P)]) :-
-    a_texto(P, T),
-    analizar(T, P1).
+test(con_formato, true(H == H0)) :-
+    iniciar,
+    ejecutar("biblioteca", _),
+    instantanea(H0),
+    tmp_file(partida, A),
+    guardar_con_formato(A),
+    iniciar,
+    cargar_con_formato(A),
+    delete_file(A),
+    instantanea(H).
 
-test(compartir, [true(P == [asignar(t_1, bin(+, id(a), id(b))),
-                            asignar(x, bin(-, bin(*, id(t_1), id(t_1)),
-                                           id(t_1)))])]) :-
-    analizar("x := (a + b) * (a + b) - (a + b)", P0),
-    compartir(P0, P).
+test(sin_formato, [ error(domain_error(partida_con_formato_1, _)),
+                    cleanup(assertion(aqui(vestibulo))) ]) :-
+    iniciar,
+    tmp_file(partida, A),
+    setup_call_cleanup(guardar(A), cargar_con_formato(A), delete_file(A)).
 
-test(compartir_anidadas, [true(P == [asignar(t_1, bin(+, id(a), id(b))),
-                                     asignar(t_2, bin(*, id(t_1), id(c))),
-                                     asignar(y, bin(+, id(t_2),
-                                                    id(t_2)))])]) :-
-    analizar("y := (a + b) * c + (a + b) * c", P0),
-    compartir(P0, P).
+% Ejercicio 11
 
-test(compartir_misma_salida, [true(S1 == S2)]) :-
-    analizar("a := 3; b := 4; x := (a + b) * (a + b); escribir x - (a + b)",
-             P0),
-    compartir(P0, P),
-    interpretar(P0, S1),
-    interpretar(P, S2).
+test(por_inicial, true(V == guardada)) :-
+    opciones_de_inicio(Os),
+    con_entrada("x\nC\n", por_inicial(Os, V), _).
 
-test(medir, [true(R == [18-69-2, 19-75-2])]) :-
-    findall(N-P-M, ( member(C, [compilar_fusion, compilar_optimizado]),
-                     medir_ejemplo(factorial, C, N, P, M) ), R).
+test(iniciales_repetidas, error(domain_error(iniciales_distintas, _))) :-
+    menu_por_inicial(user_input, [opcion("Salir", a), opcion("Seguir", b)],
+                     _).
 
-test(modismo_fusion, all(C =@= [[saltar_si_no(<, L)]])) :-
-    modismo_fusion([comparar(<), saltar_si_cero(L)], C).
+% Ejercicio 12
 
-test(modismo_fusion_otro, all(C == [[apilar(3)]])) :-
-    modismo_fusion([apilar(1), apilar(2), sumar], C).
+test(deshacer, true(Lineas == ["> Tomas la llave de bronce.",
+                               "> Orden deshecha. Estás en la \c
+                                biblioteca. Estantes hasta el techo, casi \c
+                                todos vacíos. Ves un escritorio. Desde \c
+                                aquí puedes ir a la cúpula y al vestíbulo.",
+                               "> No hay nada para deshacer.",
+                               "> Fin de la partida.",
+                               ""])) :-
+    iniciar,
+    restablecer([aqui(biblioteca), esta_en(escritorio, biblioteca),
+                 esta_en(llave, escritorio)]),
+    con_entrada("tomar la llave\ndeshacer\ndeshacer\nsalir\n",
+                partida_con_deshacer, Salida),
+    split_string(Salida, "\n", "", Lineas).
 
-test(ciclo_medido, true(S-P-M == [3]-4-2)) :-
-    maquina_medida([apilar(1), apilar(2), sumar, escribir], S, P, M).
+test(segmentos, true(Ss == [[tomar, la, llave], [ir, a, la, cupula]])) :-
+    soluciones:segmentos([tomar, la, llave, y, ir, a, la, cupula], Ss).
 
-test(condicion_reordenada, true(C == rel(>, bin(+, id(b), id(c)), id(a)))) :-
-    condicion_reordenada(rel(<, id(a), bin(+, id(b), id(c))), C).
+test(un_segmento, true(Ss == [[mirar]])) :-
+    soluciones:segmentos([mirar], Ss).
 
-test(reasociar, true(T == x + 5)) :-
-    reasociar((x + 2) + 3, T).
+test(inicial, true(I == n)) :-
+    soluciones:inicial(opcion("Nueva", nueva), I).
 
-test(regla_asociar_resta, true(T == x - 5)) :-
-    regla_asociar((x - 2) - 3, T).
+test(inicial_vacia, fail) :-
+    soluciones:inicial(opcion("", nueva), _).
 
-test(regla_asociar_sin_constantes, fail) :-
-    regla_asociar(a + (b + c), _).
+test(nada_tomable, fail) :-
+    iniciar,
+    soluciones:tomable(_).
 
-test(quitar_marcas, true(C == [apilar(1), saltar(L), etiqueta(L)])) :-
-    quitar_marcas([etiqueta(_), apilar(1), saltar(L), etiqueta(L)], C).
+test(origen, all(R == [baul])) :-
+    phrase(soluciones:origen(R), [del, baul]).
 
-test(marca_sin_uso) :-
-    marca_sin_uso([etiqueta(L), apilar(1)], etiqueta(L)).
-
-test(marca_usada, fail) :-
-    marca_sin_uso([etiqueta(L), saltar(L)], etiqueta(L)).
-
-test(expresion_texto, true(T == '(a + 1) * b')) :-
-    expresion_texto(bin(*, bin(+, id(a), num(1)), id(b)), 0, T).
-
-test(compartir_expresion,
-     true(N-Ts-E == 2-[asignar(t_1, bin(+, id(a), id(b)))]-
-                    bin(*, id(t_1), id(t_1)))) :-
-    compartir_expresion(bin(*, bin(+, id(a), id(b)), bin(+, id(a), id(b))),
-                        1, N, Ts, E).
-
-test(repetidas, true(R == [bin(+, id(a), id(b))])) :-
-    repetidas(bin(*, bin(+, id(a), id(b)), bin(+, id(a), id(b))), R).
-
-test(sin_repetidas, true(R == [])) :-
-    repetidas(bin(+, id(a), id(b)), R).
-
-test(tablas, true(Ps == [(+)-1, (-)-1, (*)-2, (/)-2])) :-
-    findall(O-N, precedencia(O, N), Ps),
-    destino(saltar(x), x),
-    destino(saltar_si_cero(y), y).
+test(tomar_de, all(O == [lente])) :-
+    phrase(soluciones:tomar_de(O), [sacar, la, lente, del, baul]).
 
 :- end_tests(soluciones).

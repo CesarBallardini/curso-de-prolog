@@ -2,298 +2,306 @@
 
 % Capítulo 85 - Soluciones de los ejercicios.
 %
-% Cargan el motor completo, datalog.pl, las tablas de tablas.pl, las
-% reglas del Wumpus de wumpus.pl, y de costos.pl la tabla de un juego de
-% retrogrado.pl y los predicados que miden, sin modificarlos. Los
-% programas de los ejercicios son listas de cláusulas, como en el
-% capítulo.
+% Carga aprendido.pl, que carga las versiones 1, 3 y 4 y el perceptrón del
+% capítulo 70, comun.pl y paralelo.pl, sin modificarlos.
 %
-% solo-local: carga otros archivos, y SWISH no permite cargar otro
-% archivo.
+% solo-local: lee archivos y carga otros archivos.
 %
-%?- casados(Cs), evaluar(Cs, M, C).
-%?- misma_profundidad(Cs), respuestas_magicas(Cs, sd(d, X), Rs, C).
-%?- restar_con([1, 3, 4], 20, Js), retrogrado(Js, T, N).
+%?- por_recurso(registros('2026-10-01.log'), Filas).
 
-:- use_module(datalog).
-:- use_module(tablas, [tablas/3, magia/4]).
-:- use_module(wumpus, [programa_wumpus/2]).
-:- use_module('../capitulo-77/enfoques', [conocer/3]).
-:- use_module(costos, [inferencias/2, en_banda/2, rondas/3, retrogrado/3]).
-
-:- use_module(library(lists)).
 :- use_module(library(apply)).
+:- use_module(library(lists)).
+:- use_module(library(pairs)).
+:- use_module(library(assoc)).
+:- use_module(library(dcg/basics)).
+:- use_module(aprendido).
+:- use_module(comun).
+:- use_module(paralelo).
 
-% --- Ejercicio 1 -----------------------------------------------------------
+% Ejercicio 1
 
-%!  expresion(-Clausulas:list) is det.
+%!  pendientes_de(+Terminos:list, -Pendientes:list) is det.
 %
-%   El programa del ejercicio 15.1 de Nilsson y Małuszyński, como datos.
-expresion([ (expr(X, Z) :- expr(X, [+|Y]), expr(Y, Z)),
-            (expr([id|Y], Y) :- true) ]).
+%   Pendientes son los pedidos sin respuesta de los Terminos de un
+%   registro, leídos en orden con paso/4 de la versión 1.
+pendientes_de(Terminos, Pendientes) :-
+    empty_assoc(A0),
+    foldl(paso_pendientes, Terminos, A0-[], A-P0),
+    cerrar(A, P1),
+    append(P0, P1, Pendientes).
 
-%!  expr(?X, ?Z) is nondet.
+% paso_pendientes(T, A0-P0, A-P): paso/4 que guarda solo los pendientes.
+paso_pendientes(Termino, A0-P0, A-P) :-
+    paso(Termino, A0, A, Producidos),
+    include(es_pendiente, Producidos, Nuevos),
+    append(P0, Nuevos, P).
+
+% es_pendiente(T): T es un pedido sin respuesta.
+es_pendiente(pendiente(_, _, _, _)).
+
+% registro_engañoso(Terminos): dos corridas en las que el pedido 1 de la
+% primera queda sin respuesta, y el de la segunda la tiene.
+registro_enganoso([ server(started, 0),
+                    request(1, 1.0, [peer(a), method(get), path('/x')]),
+                    server(started, 5),
+                    request(1, 6.0, [peer(b), method(get), path('/y')]),
+                    completed(1, 0.1, 10, 200, ok),
+                    server(stopped, 9) ]).
+
+% Ejercicio 2
+
+%!  por_recurso(+Archivo, -Filas:list) is det.
 %
-%   El mismo programa como cláusulas de Prolog: Z es lo que queda de la
-%   lista X después de una expresión. La recursión a la izquierda no
-%   termina.
-expr(X, Z) :-
-    expr(X, [+|Y]),
-    expr(Y, Z).
-expr([id|Y], Y).
+%   Filas tiene una fila(Recurso, Pedidos, Cpu) por recurso del registro
+%   Archivo, el primer segmento de la ruta: la cantidad de pedidos y el
+%   tiempo de CPU medio, de más a menos pedidos.
+por_recurso(Archivo, Filas) :-
+    leer_registro(Archivo, Pedidos),
+    maplist(recurso_cpu, Pedidos, Pares),
+    keysort(Pares, Ordenados),
+    group_pairs_by_key(Ordenados, Grupos),
+    maplist(fila, Grupos, Filas0),
+    map_list_to_pairs(menos_pedidos, Filas0, Decoradas),
+    keysort(Decoradas, PorPedidos),
+    pairs_values(PorPedidos, Filas).
 
-% --- Ejercicio 3 -----------------------------------------------------------
+% recurso_cpu(Pedido, Recurso-Cpu): el recurso del Pedido y su CPU.
+recurso_cpu(pedido(_, _, _, Ruta, _, Cpu), Recurso-Cpu) :-
+    recurso(Ruta, Recurso).
 
-%!  casados(-Clausulas:list) is det.
+%!  recurso(+Ruta:atom, -Recurso:atom) is det.
 %
-%   El programa con el que Nilsson y Małuszyński abren su capítulo.
-casados([ (married(X, Y) :- married(Y, X)),
-          (married(adam, anne) :- true) ]).
+%   Recurso es el primer segmento de la Ruta, con la barra: el de
+%   '/alumnos/123' es '/alumnos'.
+recurso(Ruta, Recurso) :-
+    split_string(Ruta, "/", "", ["", Primero|_]),
+    atom_concat('/', Primero, Recurso).
 
-% --- Ejercicio 4 -----------------------------------------------------------
+% fila(Ruta-Cpus, Fila): la fila de una ruta.
+fila(Ruta-Cpus, fila(Ruta, N, Media)) :-
+    length(Cpus, N),
+    sum_list(Cpus, Suma),
+    Media is Suma / N.
 
-%!  suplementario(+Clausula, +K:integer, -Clausulas:list) is det.
+% menos_pedidos(Fila, K): K es la cantidad de pedidos con el signo
+% cambiado, para ordenar de más a menos.
+menos_pedidos(fila(_, N, _), K) :-
+    K is -N.
+
+%!  escribir_por_recurso(+Filas:list) is det.
 %
-%   Clausulas reemplazan a Clausula, A0 :- A1, ..., An, por la cadena de
-%   predicados suplementarios de Nilsson y Małuszyński: S1 :- A1,
-%   Si :- S(i-1), Ai, y A0 :- S(n-1), An. Cada Si tiene las variables de
-%   A1, ..., Ai que todavía hacen falta: las de la cabeza y las de los
-%   literales siguientes. Los nombres son sup_Nombre_K_i, con Nombre el de
-%   la cabeza. Una cláusula de un literal o menos queda igual.
-suplementario(Cabeza :- Cuerpo, K, Clausulas) :-
-    literales(Cuerpo, Ls),
-    length(Ls, N),
-    (   N =< 1
-    ->  Clausulas = [Cabeza :- Cuerpo]
-    ;   functor(Cabeza, Nombre, _),
-        Ls = [L|Resto],
-        encadenar(Resto, L, 1, Cabeza, Nombre, K, true, Clausulas)
-    ).
+%   Escribe las Filas en una tabla alineada, con el tiempo medio en
+%   milisegundos.
+escribir_por_recurso(Filas) :-
+    format("recurso              pedidos  cpu (ms)~n"),
+    forall(member(fila(R, N, C), Filas),
+           ( Ms is C * 1000,
+             format("~w~t~20|~t~d~28|~t~2f~38|~n", [R, N, Ms]) )).
 
-%!  encadenar(+Resto:list, +L, +I:integer, +Cabeza, +Nombre, +K, +Previo,
-%!            -Clausulas:list) is det.
-%
-%   Clausulas son las del I-ésimo literal L y de los literales Resto que
-%   lo siguen; Previo es el suplementario anterior, o true antes del
-%   primero.
-encadenar([], L, _, Cabeza, _, _, Previo, [Cabeza :- Cuerpo]) :-
-    conjuncion(Previo, L, Cuerpo).
-encadenar([L2|Ls], L, I, Cabeza, Nombre, K, Previo, [(S :- Cuerpo)|Cs]) :-
-    term_variables(Previo-L, Antes),
-    term_variables(Cabeza-[L2|Ls], Despues),
-    include(aparece_en(Despues), Antes, Vs),
-    atomic_list_concat([sup, Nombre, K, I], '_', F),
-    S =.. [F|Vs],
-    conjuncion(Previo, L, Cuerpo),
-    I1 is I + 1,
-    encadenar(Ls, L2, I1, Cabeza, Nombre, K, S, Cs).
+% Ejercicio 3
 
-%!  conjuncion(+Previo, +L, -Cuerpo) is det.
+%!  linea_combinada(-Pedido)// is semidet.
 %
-%   Cuerpo es L si Previo es true, y (Previo, L) si no.
-conjuncion(Previo, L, Cuerpo) :-
-    (   Previo == true
-    ->  Cuerpo = L
-    ;   Cuerpo = (Previo, L)
-    ).
+%   Una línea del formato común, o del combinado, que agrega la página de
+%   origen y el programa del cliente entre comillas.
+linea_combinada(pedido(Instante, Ip, Metodo, Ruta, Codigo, sin_medir)) -->
+    comun:ip(Ip), " ", comun:campo, " ", comun:campo, " [",
+    comun:fecha(Instante), "] \"", comun:metodo(Metodo), " ",
+    comun:ruta(Ruta), " HTTP/", comun:version, "\" ",
+    integer(Codigo), " ", comun:bytes, agregados, eos.
 
-%!  aparece_en(+Vs:list, +V) is semidet.
-%
-%   La variable V es una de Vs.
-aparece_en(Vs, V) :-
-    member(W, Vs),
-    W == V,
+% agregados//: los dos campos del formato combinado, o nada.
+agregados -->
+    " ", entre_comillas, " ", entre_comillas,
     !.
+agregados -->
+    [].
 
-%!  suplementarios(+Clausulas:list, -Transformadas:list) is det.
+% entre_comillas//: un texto entre comillas, sin comillas dentro.
+entre_comillas -->
+    "\"", string_without(`"`, _), "\"".
+
+% Ejercicio 4
+
+%!  metricas_presentes(+Pedidos:list, -Horas:list) is det.
 %
-%   Transformadas aplica suplementario/3 a cada cláusula de Clausulas,
-%   con su posición como K.
-suplementarios(Clausulas, Transformadas) :-
-    length(Clausulas, N),
-    numlist(1, N, Ks),
-    maplist(suplementario, Clausulas, Ks, Partes),
-    append(Partes, Transformadas).
+%   Como metricas/2, pero solo con las horas en las que hubo pedidos: las
+%   que aparecen en los Pedidos.
+metricas_presentes(Pedidos, Horas) :-
+    metricas(Pedidos, Todas),
+    exclude(sin_pedidos, Todas, Horas).
 
-%!  franjas(-Clausulas:list) is det.
+% sin_pedidos(Hora): la hora no tiene pedidos.
+sin_pedidos(hora(_, m(0, _, _, _))).
+
+%!  anomalias_presentes(+Archivo, +Umbrales:list, -Anomalias:list) is det.
 %
-%   El programa de Warren sobre los alumnos de una facultad, con datos
-%   generados: 1000 alumnos, el alumno A en el año A mod 4 + 1; cada uno
-%   inscripto en las 5 materias de su año, 10 * Anio + K; cada materia con
-%   50 franjas horarias. franja_del_anio(Anio, F): algún alumno de Anio
-%   cursa en la franja F.
-franjas(Clausulas) :-
-    findall((alumno(A, Anio) :- true),
-            ( between(1, 1000, A), Anio is A mod 4 + 1 ),
-            Alumnos),
-    findall((inscripto(A, M) :- true),
-            ( between(1, 1000, A), Anio is A mod 4 + 1,
-              between(1, 5, K), M is 10 * Anio + K ),
-            Inscripciones),
-    findall((horario(M, F) :- true),
-            ( between(1, 4, Anio), between(1, 5, K), M is 10 * Anio + K,
-              between(1, 50, J), F is 100 * M + J ),
-            Horarios),
-    append([Alumnos, Inscripciones, Horarios,
-            [ (franja_del_anio(Anio, F) :-
-                  alumno(A, Anio), inscripto(A, M), horario(M, F)) ]],
-           Clausulas).
+%   Anomalias son las anomalia/4 de las horas con pedidos del registro
+%   Archivo, con los Umbrales.
+anomalias_presentes(Archivo, Umbrales, Anomalias) :-
+    leer_registro(Archivo, Pedidos),
+    metricas_presentes(Pedidos, Horas),
+    findall(A, anomalia(Umbrales, Horas, A), Anomalias).
 
-% --- Ejercicio 5 -----------------------------------------------------------
-
-%!  misma_profundidad(-Clausulas:list) is det.
+%!  metricas_anomalas(+Modelo, +Archivo, -Pares:list) is det.
 %
-%   sd/2 de Nilsson y Małuszyński sobre los diez hechos child/2 de su
-%   ejercicio 15.2, con nodo/1 para que sd(X, X) sea segura.
-misma_profundidad(Clausulas) :-
-    Hijos = [b-a, c-a, d-b, e-b, f-c, g-d, h-d, i-e, j-f, k-f],
-    findall((child(X, Y) :- true), member(X-Y, Hijos), Cs),
-    findall((nodo(N) :- true),
-            ( member(X-Y, Hijos), ( N = X ; N = Y ) ),
-            Ns0),
-    sort(Ns0, Ns),
-    append([Cs, Ns,
-            [ (sd(X, X) :- nodo(X)),
-              (sd(X, Y) :- child(X, Z), child(Y, W), sd(Z, W)) ]],
-           Clausulas).
+%   Pares son los pares Hora-Metrica de las anomalías de las horas con
+%   pedidos del registro Archivo, con los umbrales de referencia
+%   ajustados con el Modelo.
+metricas_anomalas(Modelo, Archivo, Pares) :-
+    umbrales_de_referencia(Modelo, Umbrales),
+    anomalias_presentes(Archivo, Umbrales, Anomalias),
+    findall(H-M, member(anomalia(H, M, _, _), Anomalias), Pares).
 
-% --- Ejercicio 6 -----------------------------------------------------------
+% Ejercicio 5
 
-%!  debe_camino(?X, ?Y) is nondet.
-%
-%   En el camino de 100 personas, X le debe dinero a Y: cada una a la
-%   siguiente, y la 100 a nadie.
-debe_camino(X, Y) :-
-    between(1, 99, X),
-    Y is X + 1.
-
-:- table evita_camino/2.
-
-%!  evita_camino(?X, ?Y) is nondet.
-%
-%   X evita a Y en el camino, con la recursión a la izquierda, tabulada.
-evita_camino(X, Y) :-
-    debe_camino(X, Y).
-evita_camino(X, Y) :-
-    evita_camino(X, Z),
-    debe_camino(Z, Y).
-
-%!  programa_camino(-Clausulas:list) is det.
-%
-%   El mismo programa como datos.
-programa_camino(Clausulas) :-
-    findall((debe(X, Y) :- true), debe_camino(X, Y), Hechos),
-    append(Hechos,
-           [ (evita(X, Y) :- debe(X, Y)),
-             (evita(X, Y) :- evita(X, Z), debe(Z, Y)) ],
-           Clausulas).
-
-% --- Ejercicio 7 -----------------------------------------------------------
-
-%!  reducciones(-Clausulas:list) is det.
-%
-%   El ejemplo de negación estratificada de Warren, con sus doce hechos
-%   reduce/2.
-reducciones(Clausulas) :-
-    Pares = [a-b, b-c, c-d, d-e, e-c, a-f, f-g, g-f, g-k, f-h, h-i, i-h],
-    findall((reduce(X, Y) :- true), member(X-Y, Pares), Hechos),
-    append(Hechos,
-           [ (reachable(X, Y) :- reduce(X, Y)),
-             (reachable(X, Y) :- reachable(X, Z), reduce(Z, Y)),
-             (reducible(X) :- reachable(X, Y), \+ reachable(Y, X)),
-             (fully_reduce(X, Y) :- reachable(X, Y), \+ reducible(Y)) ],
-           Clausulas).
-
-% --- Ejercicio 8 -----------------------------------------------------------
-
-%!  quitar_hechos(+Clausulas:list, +Hechos:list, -Modelo:list, -Costo)
+%!  ajustar_con_minimo(+Z, +Minimo, +Valores:list(number), -Intervalo)
 %!      is det.
 %
-%   Modelo es el de Clausulas sin los Hechos, calculado desde cero con
-%   evaluar/3; Costo, el de ese cálculo.
-quitar_hechos(Clausulas, Hechos, Modelo, Costo) :-
-    exclude(hecho_de(Hechos), Clausulas, Quedan),
-    evaluar(Quedan, Modelo, Costo).
+%   Como ajustar(mediana_mad(Z), Valores, Intervalo), con la MAD
+%   reemplazada por Minimo cuando es menor: una dispersión mínima para que
+%   el intervalo no se reduzca a un punto.
+ajustar_con_minimo(Z, Minimo, Valores, entre(Inferior, Superior)) :-
+    mad(Valores, Mediana, Mad),
+    Dispersion is max(Mad, Minimo),
+    Ancho is Z * Dispersion / 0.6745,
+    Inferior is Mediana - Ancho,
+    Superior is Mediana + Ancho.
 
-%!  hecho_de(+Hechos:list, +Clausula) is semidet.
+% Ejercicio 6
+
+%!  ajustar_cuantil(+P:number, +Valores:list(number), -Limite) is det.
 %
-%   Clausula es el hecho H :- true de uno de los Hechos.
-hecho_de(Hechos, H :- true) :-
-    memberchk(H, Hechos).
+%   Limite es el valor de la posición ceiling(P · N), desde 1, de los N
+%   Valores ordenados: deja por debajo, o igual, al menos una fracción P.
+%   P está entre 0 y 1, y Valores no es vacía.
+ajustar_cuantil(P, Valores, Limite) :-
+    msort(Valores, Ordenados),
+    length(Ordenados, N),
+    K is max(1, ceiling(P * N)),
+    nth1(K, Ordenados, Limite).
 
-%!  volver_a_agregar(+Clausulas:list, +Hechos:list, -Costo) is det.
+%!  umbrales_cuantil(+P:number, -Umbrales:list) is det.
 %
-%   Costo es el de agregar los Hechos, con agregar_hechos/4, al modelo de
-%   Clausulas sin ellos.
-volver_a_agregar(Clausulas, Hechos, Costo) :-
-    exclude(hecho_de(Hechos), Clausulas, Quedan),
-    iniciar(Quedan, Estado, _),
-    agregar_hechos(Hechos, Estado, _, Costo).
+%   Los umbrales superiores de los fallos y de la CPU, y el inferior de
+%   los pedidos con 1 - P, con los cuantiles de los días de referencia.
+umbrales_cuantil(P, [pedidos-menor(PI), fallos-mayor(FS), cpu-mayor(CS)]) :-
+    Q is 1 - P,
+    valores_de_referencia(pedidos, Ps),
+    ajustar_cuantil(Q, Ps, PI),
+    valores_de_referencia(fallos, Fs),
+    ajustar_cuantil(P, Fs, FS),
+    valores_de_referencia(cpu, Cs),
+    ajustar_cuantil(P, Cs, CS).
 
-% --- Ejercicio 9 -----------------------------------------------------------
+% Ejercicio 8
 
-%!  segura_magica(+K, +Celda, -Respuestas:list, -Costo) is det.
+%!  perfiles_diarios(+Pedidos:list, -Perfiles:list) is det.
 %
-%   Respuestas son las de segura(N), con N el número de Celda, en el
-%   programa del Wumpus con el conocimiento K transformado para esa
-%   consulta.
-segura_magica(K, X-Y, Respuestas, Costo) :-
-    N is 10 * X + Y,
-    programa_wumpus(K, Clausulas),
-    respuestas_magicas(Clausulas, segura(N), Respuestas, Costo).
+%   Perfiles tiene un perfil(Ip, dia, N, F) por cliente: sus N pedidos del
+%   día, F de ellos inicios de sesión rechazados.
+perfiles_diarios(Pedidos, Perfiles) :-
+    perfiles(Pedidos, PorHora),
+    map_list_to_pairs(cliente, PorHora, Pares),
+    keysort(Pares, Ordenados),
+    group_pairs_by_key(Ordenados, Grupos),
+    maplist(perfil_diario, Grupos, Perfiles).
 
-% --- Ejercicio 10 ----------------------------------------------------------
+% cliente(Perfil, Ip): el cliente del Perfil.
+cliente(perfil(Ip, _, _, _), Ip).
 
-%!  restar_con(+Sacar:list(integer), +N:integer, -Jugadas:list) is det.
+% perfil_diario(Ip-Perfiles, Perfil): la suma de los perfiles por hora.
+perfil_diario(Ip-Ps, perfil(Ip, dia, N, F)) :-
+    foldl(sumar_perfil, Ps, 0-0, N-F).
+
+% sumar_perfil(Perfil, N0-F0, N-F): suma los pedidos y los fallos.
+sumar_perfil(perfil(_, _, N1, F1), N0-F0, N-F) :-
+    N is N0 + N1,
+    F is F0 + F1.
+
+%!  ejemplos_diarios(-Ejemplos:list) is det.
 %
-%   Jugadas son las del juego de restar con N fichas, en el que cada
-%   jugador saca una de las cantidades de Sacar.
-restar_con(Sacar, N, Jugadas) :-
-    findall(X-Y,
-            ( between(1, N, X),
-              member(M, Sacar),
-              Y is X - M,
-              Y >= 0 ),
-            Jugadas).
+%   Los perfiles diarios de los días de referencia, marcados con
+%   atacante/2.
+ejemplos_diarios(Ejemplos) :-
+    dias_de_referencia(Archivos),
+    maplist(ejemplos_diarios_de, Archivos, Listas),
+    append(Listas, Ejemplos).
 
-% --- Ejercicio 11 ----------------------------------------------------------
+% ejemplos_diarios_de(Archivo, Ejemplos): los de un día.
+ejemplos_diarios_de(Archivo, Ejemplos) :-
+    leer_registro(Archivo, Pedidos),
+    perfiles_diarios(Pedidos, Perfiles),
+    maplist(ejemplo_diario(Archivo), Perfiles, Ejemplos).
 
-%!  evaluar_ingenuo(+Clausulas:list, -Modelo:list, -Costo) is det.
-%
-%   El modelo de evaluar/3, con la evaluación ingenua en cada componente:
-%   cada paso aplica todas las reglas de la componente a la base entera,
-%   hasta que no aparece nada nuevo.
-evaluar_ingenuo(Clausulas, Modelo, Costo) :-
-    separar(Clausulas, Hechos, Reglas),
-    componentes(Clausulas, Componentes),
-    base(Hechos, Base0),
-    foldl(ingenua_componente(Reglas), Componentes,
-          Base0-costo(0, 0), Base-Costo),
-    atomos(Base, Modelo).
-
-%!  ingenua_componente(+Reglas:list, +Componente:list, +Estado0,
-%!                     -Estado) is det.
-%
-%   Estado0 es Base0-Costo0; Estado agrega lo que derivan las reglas de
-%   Componente, aplicadas a la base entera hasta el punto fijo.
-ingenua_componente(Reglas, Componente, Base0-costo(P0, D0), Base-Costo) :-
-    include(cabeza_en(Componente), Reglas, DeLaComponente),
-    findall(H, ( member(r(H, Ls), DeLaComponente), cumplir(Ls, Base0) ),
-            Hs),
-    length(Hs, D),
-    P is P0 + 1,
-    D1 is D0 + D,
-    agregar(Hs, Base0, Base1, Nuevos),
-    (   Nuevos == []
-    ->  Base = Base1,
-        Costo = costo(P, D1)
-    ;   ingenua_componente(Reglas, Componente, Base1-costo(P, D1),
-                           Base-Costo)
+% ejemplo_diario(Archivo, Perfil, Ejemplo): el Perfil marcado.
+ejemplo_diario(Archivo, perfil(Ip, _, N, F), ej([N, F], Clase)) :-
+    (   atacante(Archivo, Ip)
+    ->  Clase = 1
+    ;   Clase = -1
     ).
 
-%!  cabeza_en(+Componente:list, +Regla) is semidet.
+%!  sospechosos_diarios(+Pesos:list, +Archivo, -Sospechosos:list) is det.
 %
-%   La cabeza de Regla es de un predicado de Componente.
-cabeza_en(Componente, r(H, _)) :-
-    functor(H, Nombre, Aridad),
-    memberchk(Nombre/Aridad, Componente).
+%   Los perfiles diarios del registro Archivo a los que el perceptrón con
+%   Pesos da la clase 1.
+sospechosos_diarios(Pesos, Archivo, Sospechosos) :-
+    leer_registro(Archivo, Pedidos),
+    perfiles_diarios(Pedidos, Perfiles),
+    include(sospechoso_diario(Pesos), Perfiles, Sospechosos).
+
+% sospechoso_diario(Pesos, Perfil): el perceptrón da la clase 1.
+sospechoso_diario(Pesos, perfil(_, _, N, F)) :-
+    salida(Pesos, [N, F], 1).
+
+%!  entrenamiento_diario(-N:integer, -Pesos:list, -Curva:list) is semidet.
+%
+%   N es la cantidad de ejemplos diarios de referencia, y Pesos y Curva
+%   los del perceptrón entrenado con ellos, con tasa 1 desde pesos nulos.
+entrenamiento_diario(N, Pesos, Curva) :-
+    ejemplos_diarios(Ejemplos),
+    length(Ejemplos, N),
+    entrenar(1, Ejemplos, [0, 0, 0], Pesos, Curva).
+
+% Ejercicio 9
+
+%!  repetidos(+K:integer, -Archivos:list) is det.
+%
+%   Archivos es la lista de los cuatro días repetida K veces.
+repetidos(K, Archivos) :-
+    Dias = [ registros('2026-09-28.log'), registros('2026-09-29.log'),
+             registros('2026-09-30.log'), registros('2026-10-01.log') ],
+    length(Copias, K),
+    maplist(=(Dias), Copias),
+    append(Copias, Archivos).
+
+% Ejercicio 10
+
+%!  limites_ponderados(+D, +Alfa, +Valores:list(number),
+%!                     -Limites:list(number)) is det.
+%
+%   Limites son los límites superiores, media más D desvíos, después de
+%   cada uno de los Valores, con la media y la varianza exponencialmente
+%   ponderadas: el primer valor inicia la media con varianza 0, y cada
+%   valor siguiente X pesa Alfa.
+limites_ponderados(D, Alfa, [X|Xs], [L|Ls]) :-
+    L is X,
+    foldl(paso_ponderado(D, Alfa), Xs, Ls, X-0, _).
+
+% paso_ponderado(D, Alfa, X, Limite, M0-V0, M-V): un paso de la media y la
+% varianza ponderadas, y el límite que dejan.
+paso_ponderado(D, Alfa, X, Limite, M0-V0, M-V) :-
+    Delta is X - M0,
+    M is M0 + Alfa * Delta,
+    V is (1 - Alfa) * (V0 + Alfa * Delta * Delta),
+    Limite is M + D * sqrt(V).
+
+%!  ajustar_ponderado(+D, +Alfa, +Valores:list(number), -Intervalo) is det.
+%
+%   Intervalo es entre(Inferior, Superior) con la media y el desvío
+%   ponderados después del último de los Valores.
+ajustar_ponderado(D, Alfa, [X|Xs], entre(Inferior, Superior)) :-
+    foldl(paso_ponderado(D, Alfa), Xs, _, X-0, M-V),
+    Desvio is sqrt(V),
+    Inferior is M - D * Desvio,
+    Superior is M + D * Desvio.

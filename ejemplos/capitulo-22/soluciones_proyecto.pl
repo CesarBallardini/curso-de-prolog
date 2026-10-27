@@ -1,12 +1,13 @@
 :- encoding(utf8).
 
-% Capítulo 22 - Soluciones de los ejercicios 14 y 15: el proyecto.
+% Capítulo 22 - Soluciones de los ejercicios 14, 15 y 16: el proyecto.
 %
-% Es inscripciones.pl con ranking_de_carrera/2 (ejercicio 14) y un índice de
-% cada materia a sus alumnos como conjunto ordenado (ejercicio 15).
+% Es inscripciones.pl con el comando vacantes (ejercicio 14), texto_de/2
+% (ejercicio 15) y una respuesta de uso para los comandos mal escritos
+% (ejercicio 16).
 %
-%?- ranking_de_carrera(sistemas, R).
-%?- indice_por_materia(I), alumnos_en_comun(I, am1, log, L).
+%?- ejecutar("vacantes de logica", Respuesta).
+%?- ejecutar("inscribir 104", Respuesta).
 
 :- use_module(library(dcg/basics)).
 
@@ -34,7 +35,7 @@ materia(pp,  paradigmas,     2).
 materia(ssl, sintaxis,       2).
 materia(bd,  bases_de_datos, 3).
 
-% correlativa(Materia, Requisito): para cursar Materia es necesario aprobar
+% correlativa(Materia, Requisito): para cursar Materia se debe aprobar
 % Requisito.
 correlativa(am2, am1).
 correlativa(am2, alg).
@@ -127,7 +128,7 @@ puede_inscribirse(Legajo, Materia) :-
 %
 %   El alumno llamado Nombre aprobó Materia. El primer objetivo es el que el
 %   nombre selecciona: con el orden inverso, la consulta recorre todas las
-%   inscripciones de la materia antes de mirar el nombre (sección 16.5).
+%   inscripciones de la materia antes de examinar el nombre (sección 17.5).
 aprobada_por_nombre(Nombre, Materia) :-
     alumno(Legajo, Nombre, _, _),
     aprobada(Legajo, Materia, _Nota).
@@ -226,43 +227,16 @@ mostrar_fila(Legajo-Valor) :-
     alumno(Legajo, Nombre, _, _),
     format("  ~d ~w: ~w~n", [Legajo, Nombre, Valor]).
 
-%!  ranking(-Ranking:list(pair)) is det.
-%
-%   Ranking son los pares Legajo-Promedio de los alumnos con alguna nota, de
-%   mayor a menor promedio; con el mismo promedio, en el orden de los legajos.
-ranking(Ranking) :-
-    findall(Legajo-Promedio, promedio_de_alumno(Legajo, Promedio), Pares),
-    sort(2, @>=, Pares, Ranking).
-
 %!  mejores(+Cantidad:integer, -Ranking:list(pair)) is det.
 %
 %   Ranking es la lista de los Cantidad mejores promedios, de mayor a menor,
 %   como pares Legajo-Promedio.
 mejores(Cantidad, Ranking) :-
-    ranking(Todos),
-    findall(Par, limit(Cantidad, member(Par, Todos)), Ranking).
-
-%!  indice_por_alumno(-Indice) is det.
-%
-%   Indice es un assoc de cada legajo con inscripciones a la lista de sus
-%   pares Materia-Estado, en el orden de los hechos.
-indice_por_alumno(Indice) :-
-    findall(Legajo-(Materia-Estado),
-            inscripcion(Legajo, Materia, Estado),
-            Pares),
-    keysort(Pares, Ordenados),
-    group_pairs_by_key(Ordenados, Grupos),
-    list_to_assoc(Grupos, Indice).
-
-%!  materias_de(+Indice, +Legajo:integer, -Materias:list(pair)) is det.
-%
-%   Materias son los pares Materia-Estado del alumno Legajo en Indice; la
-%   lista vacía si no tiene inscripciones.
-materias_de(Indice, Legajo, Materias) :-
-    (   get_assoc(Legajo, Indice, Encontradas)
-    ->  Materias = Encontradas
-    ;   Materias = []
-    ).
+    findall(Legajo-Promedio,
+            limit(Cantidad,
+                  order_by([desc(Promedio)],
+                           promedio_de_alumno(Legajo, Promedio))),
+            Ranking).
 
 % operaciones(N): se realizaron N operaciones de inscripción o de baja.
 operaciones(0).
@@ -308,7 +282,7 @@ contar_operacion :-
 
 %!  requisitos_de(+Materia:atom, -Requisitos:list(atom)) is det.
 %
-%   Requisitos son todas las materias que se deben aprobar antes de cursar
+%   Requisitos son todas las materias que se debe aprobar antes de cursar
 %   Materia, directa o indirectamente, en orden y sin repetidos. El resultado
 %   se guarda la primera vez que se calcula.
 requisitos_de(Materia, Requisitos) :-
@@ -356,13 +330,19 @@ restaurar(estado(Inscripciones, Vacantes, Operaciones)) :-
 %   Analiza el comando Texto y lo ejecuta. Respuesta es el resultado:
 %   aceptada o rechazada(Motivo) para una inscripción, baja o
 %   rechazada(no_la_cursa) para una baja, inscriptos(Legajos) para un
-%   listado, promedio(P) o sin_notas para un promedio, y no_entendido si el
-%   texto no es un comando.
+%   listado, promedio(P) o sin_notas para un promedio, vacantes(N) para las
+%   vacantes de una materia (ejercicio 14). Si el texto no es un comando pero
+%   empieza con la palabra de uno, Respuesta es uso(Ejemplo), con un comando
+%   de ejemplo que empieza igual (ejercicio 16); si no, no_entendido.
 ejecutar(Texto, Respuesta) :-
     string_codes(Texto, Codigos),
     (   phrase(palabras(Palabras), Codigos),
         phrase(comando(Comando), Palabras)
     ->  realizar(Comando, Respuesta)
+    ;   phrase(palabras([Verbo|_]), Codigos),
+        once(phrase(comando(_), [Verbo|Resto]))
+    ->  atomic_list_concat([Verbo|Resto], ' ', Ejemplo),
+        Respuesta = uso(Ejemplo)
     ;   Respuesta = no_entendido
     ).
 
@@ -401,6 +381,8 @@ comando(listar(M)) -->
     [listar], materia_por_nombre(M).
 comando(promedio(L)) -->
     [promedio, de], legajo(L).
+comando(vacantes(M)) -->
+    [vacantes, de], materia_por_nombre(M).
 
 %!  legajo(?L)// is semidet.
 %
@@ -428,50 +410,18 @@ realizar(baja(L, M), Respuesta) :-
     ).
 realizar(listar(M), inscriptos(Legajos)) :-
     inscriptos(M, Legajos).
+realizar(vacantes(M), vacantes(N)) :-
+    vacantes(M, N).
 realizar(promedio(L), Respuesta) :-
     (   promedio_de_alumno(L, P)
     ->  Respuesta = promedio(P)
     ;   Respuesta = sin_notas
     ).
 
-% --- Ejercicio 14 ---------------------------------------------------------
-
-%!  ranking_de_carrera(+Carrera:atom, -Ranking:list(pair)) is det.
+%!  texto_de(+Comando, -Texto:atom) is semidet.
 %
-%   Ranking es el ranking de los alumnos de Carrera, de mayor a menor
-%   promedio.
-ranking_de_carrera(Carrera, Ranking) :-
-    ranking(Todos),
-    include({Carrera}/[L-_]>>alumno(L, _, Carrera, _), Todos, Ranking).
-
-% --- Ejercicio 15 ---------------------------------------------------------
-
-%!  indice_por_materia(-Indice) is det.
-%
-%   Indice es un assoc de cada materia con inscriptos al conjunto ordenado
-%   de sus legajos.
-indice_por_materia(Indice) :-
-    findall(M-L, inscripcion(L, M, _), Pares),
-    keysort(Pares, Ordenados),
-    group_pairs_by_key(Ordenados, Grupos),
-    maplist([M-Ls, M-Conjunto]>>list_to_ord_set(Ls, Conjunto), Grupos,
-            Conjuntos),
-    list_to_assoc(Conjuntos, Indice).
-
-%!  alumnos_en_comun(+Indice, +M1:atom, +M2:atom, -Legajos:list) is det.
-%
-%   Legajos son los alumnos inscriptos en M1 y en M2, en orden.
-alumnos_en_comun(Indice, M1, M2, Legajos) :-
-    alumnos_de_materia(Indice, M1, A),
-    alumnos_de_materia(Indice, M2, B),
-    ord_intersection(A, B, Legajos).
-
-%!  alumnos_de_materia(+Indice, +Materia:atom, -Legajos:list) is det.
-%
-%   Legajos son los alumnos de Materia en Indice; el conjunto vacío si no
-%   tiene inscriptos.
-alumnos_de_materia(Indice, Materia, Legajos) :-
-    (   get_assoc(Materia, Indice, Encontrados)
-    ->  Legajos = Encontrados
-    ;   Legajos = []
-    ).
+%   Texto es el texto de Comando, generado con la misma gramática que lo
+%   analiza (ejercicio 15).
+texto_de(Comando, Texto) :-
+    once(phrase(comando(Comando), Palabras)),
+    atomic_list_concat(Palabras, ' ', Texto).

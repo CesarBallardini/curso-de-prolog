@@ -65,13 +65,13 @@ Antes de la barra vertical se puede escribir más de un elemento. Aquí se extra
 Hay dos maneras de ser una lista: la lista vacía, o un primer elemento seguido de una lista. Por eso un predicado que recorre una lista tiene dos cláusulas, una por cada manera. Es también la razón por la que este capítulo y el seis comparten plantilla: en los dos casos la estructura del programa reproduce la estructura de aquello que recorre.
 :::
 
-## esta_en/2
+## pertenece/2
 
-<!-- ejemplo: capitulo-07/recorrer.pl fragmento: esta_en(X, [X|_]). .. esta_en(X, Resto). -->
+<!-- ejemplo: capitulo-07/recorrer.pl fragmento: pertenece(X, [X|_]). .. pertenece(X, Resto). -->
 ```prolog
-esta_en(X, [X|_]).
-esta_en(X, [_|Resto]) :-
-    esta_en(X, Resto).
+pertenece(X, [X|_]).
+pertenece(X, [_|Resto]) :-
+    pertenece(X, Resto).
 ```
 
 ::: notes
@@ -80,7 +80,7 @@ Determinar si un elemento pertenece a una lista tiene dos casos: el elemento es 
 
 ## Buscar a luis
 
-![](imagenes/capitulo-07/esta-en.svg)
+![](imagenes/capitulo-07/pertenece.svg)
 
 ::: notes
 La consulta pregunta si luis está en la lista de ana, luis y eva. La primera cláusula no se aplica, porque luis no es ana. La segunda descarta a ana y plantea la misma pregunta sobre el resto. En la nueva llamada, luis es el primer elemento, y la primera cláusula tiene éxito. El caso de la lista vacía no está escrito: ninguna de las dos cláusulas unifica con ella, de modo que buscar en la lista vacía fracasa por falta de cláusulas aplicables. En algunos predicados el caso base es un hecho, y en otros, como en este, es la ausencia de una cláusula aplicable.
@@ -91,7 +91,7 @@ La consulta pregunta si luis está en la lista de ana, luis y eva. La primera cl
 :::: columns
 ::: column
 ```prolog
-?- esta_en(X, [ana, luis, eva]).
+?- pertenece(X, [ana, luis, eva]).
 X = ana ;
 X = luis ;
 X = eva ;
@@ -100,7 +100,7 @@ false.
 :::
 ::: column
 ```prolog
-?- esta_en(ana, [ana, ana]).
+?- pertenece(ana, [ana, ana]).
 true ;
 true ;
 false.
@@ -125,7 +125,7 @@ La enumeración termina en false y no en punto. En cada nivel, la primera cláus
 ![](imagenes/capitulo-07/plantilla-09.svg)
 
 ::: notes
-La plantilla nueve se usa cuando se deben examinar los elementos de una lista, de a uno por vez. El caso base es la lista vacía. El caso recursivo extrae el primer elemento, lo procesa y continúa con el resto. En algunos predicados el caso base se escribe como hecho, y en otros no es necesario escribirlo. En el capítulo la usa largo. El predicado esta en no responde a esta plantilla, porque difiere en el caso base.
+La plantilla nueve se usa cuando se deben examinar los elementos de una lista, de a uno por vez. El caso base es la lista vacía. El caso recursivo extrae el primer elemento, lo procesa y continúa con el resto. En algunos predicados el caso base se escribe como hecho, y en otros no es necesario escribirlo. En el capítulo la usa longitud. El predicado pertenece no responde a esta plantilla, porque difiere en el caso base.
 :::
 
 ## Plantilla 10 — Buscar uno que cumple
@@ -133,7 +133,7 @@ La plantilla nueve se usa cuando se deben examinar los elementos de una lista, d
 ![](imagenes/capitulo-07/plantilla-10.svg)
 
 ::: notes
-La plantilla diez se usa cuando alcanza con que alguno de los elementos cumpla una condición, y no hace falta examinarlos todos. En ella el caso base no es la lista vacía: la primera cláusula tiene éxito sin recursión en cuanto encuentra un elemento que cumple. Sobre la lista vacía no hay cláusula aplicable, y la búsqueda fracasa, porque ninguno cumplió. Es la forma de esta en.
+La plantilla diez se usa cuando alcanza con que alguno de los elementos cumpla una condición, y no hace falta examinarlos todos. En ella el caso base no es la lista vacía: la primera cláusula tiene éxito sin recursión en cuanto encuentra un elemento que cumple. Sobre la lista vacía no hay cláusula aplicable, y la búsqueda fracasa, porque ninguno cumplió. Es la forma de pertenece.
 :::
 
 ## todos_estan/2
@@ -142,7 +142,7 @@ La plantilla diez se usa cuando alcanza con que alguno de los elementos cumpla u
 ```prolog
 todos_estan([], _).
 todos_estan([X|Resto], L) :-
-    esta_en(X, L),
+    pertenece(X, L),
     todos_estan(Resto, L).
 ```
 
@@ -153,7 +153,7 @@ false.
 ```
 
 ::: notes
-La condición opuesta, que todos los elementos cumplan, tiene su propia silueta, y es la imagen invertida de la anterior. El predicado todos están verifica que cada elemento de la primera lista esté en la segunda. El caso base es la lista vacía y tiene éxito. El caso recursivo prueba el primer elemento y sigue con el resto. La respuesta termina en false porque cada llamada a esta en deja alternativas pendientes.
+La condición opuesta, que todos los elementos cumplan, tiene su propia silueta, y es la imagen invertida de la anterior. El predicado todos están verifica que cada elemento de la primera lista esté en la segunda. El caso base es la lista vacía y tiene éxito. El caso recursivo prueba el primer elemento y sigue con el resto. La respuesta termina en false porque cada llamada a pertenece deja alternativas pendientes.
 :::
 
 ## Plantilla 11 — Todos cumplen
@@ -172,13 +172,13 @@ La plantilla once se usa cuando la condición se debe verificar sobre todos los 
 Las tres plantillas recorren una lista y se distinguen por lo que ocurre sobre la lista vacía. La nueve procesa cada elemento, y su caso base es la lista vacía. La diez busca uno que cumpla, y sobre la lista vacía fracasa. La once exige que todos cumplan, y sobre la lista vacía tiene éxito. Las dos respuestas sobre la lista vacía son correctas: en una lista sin elementos no hay ninguno que cumpla, y no hay ninguno que deje de cumplir.
 :::
 
-## largo/2
+## longitud/2
 
-<!-- ejemplo: capitulo-07/recorrer.pl fragmento: largo([], 0). .. N is Faltan + 1. -->
+<!-- ejemplo: capitulo-07/recorrer.pl fragmento: longitud([], 0). .. N is Faltan + 1. -->
 ```prolog
-largo([], 0).
-largo([_|Resto], N) :-
-    largo(Resto, Faltan),
+longitud([], 0).
+longitud([_|Resto], N) :-
+    longitud(Resto, Faltan),
     N is Faltan + 1.
 ```
 
@@ -188,40 +188,40 @@ Contar los elementos es la misma plantilla, con un resultado numérico. Correspo
 
 ## El largo, al retorno
 
-![](imagenes/capitulo-07/largo.svg)
+![](imagenes/capitulo-07/longitud.svg)
 
 ::: notes
 Las llamadas bajan por la lista, un elemento por llamada, hasta la lista vacía. Allí el caso base da cero. Al retorno de cada llamada recursiva se suma uno: uno, dos, y finalmente tres, que es el largo de la lista de ana, luis y eva. En la figura, F1, F2 y F3 son la variable Faltan de cada llamada, con un nombre distinto en cada una.
 :::
 
-## pegar/3
+## concatenar/3
 
-<!-- ejemplo: capitulo-07/recorrer.pl predicado: pegar/3 -->
+<!-- ejemplo: capitulo-07/recorrer.pl predicado: concatenar/3 -->
 ```prolog
-%!  pegar(+A, ?B, -C) is det.
-%!  pegar(?A, ?B, +C) is nondet.
+%!  concatenar(+A, ?B, -C) is det.
+%!  concatenar(?A, ?B, +C) is nondet.
 %
 %   C es la lista A seguida de la lista B.
-pegar([], B, B).
-pegar([X|RestoA], B, [X|RestoC]) :-
-    pegar(RestoA, B, RestoC).
+concatenar([], B, B).
+concatenar([X|RestoA], B, [X|RestoC]) :-
+    concatenar(RestoA, B, RestoC).
 ```
 
 ```prolog
-?- pegar([ana, luis], [eva], Todos).
+?- concatenar([ana, luis], [eva], Todos).
 Todos = [ana, luis, eva].
 ```
 
 ::: notes
-En los predicados anteriores, las listas eran datos de entrada. En pegar, una lista es el resultado: la concatenación de dos listas. El caso base establece que la concatenación de la lista vacía y B es B. El caso recursivo establece que, si el primer elemento de A es X, el primer elemento del resultado también es X, y el resto del resultado es la concatenación del resto de A con B.
+En los predicados anteriores, las listas eran datos de entrada. En concatenar, una lista es el resultado: la concatenación de dos listas. El caso base establece que la concatenación de la lista vacía y B es B. El caso recursivo establece que, si el primer elemento de A es X, el primer elemento del resultado también es X, y el resto del resultado es la concatenación del resto de A con B.
 :::
 
 ## Construcción en la cabeza
 
-![](imagenes/capitulo-07/pegar.svg)
+![](imagenes/capitulo-07/concatenar.svg)
 
 ::: notes
-Pegar es el primer predicado en el que la lista se construye en la cabeza de la regla. Durante todo el recorrido, el resultado es una lista incompleta: cada llamada fija su primer elemento y deja el resto sin determinar, y recién el caso base cierra la estructura. En la figura, R1 y R2 son la variable RestoC de cada llamada. De esto se sigue una limitación: en cada paso ya hay un resultado parcial, pero la recursión no puede consultarlo. Cuando un predicado necesita saber qué lleva hecho, el resultado se lleva en un argumento que viaja hacia adelante, un acumulador, tema del capítulo ocho.
+Concatenar es el primer predicado en el que la lista se construye en la cabeza de la regla. Durante todo el recorrido, el resultado es una lista incompleta: cada llamada fija su primer elemento y deja el resto sin determinar, y recién el caso base cierra la estructura. En la figura, R1 y R2 son la variable RestoC de cada llamada. De esto se sigue una limitación: en cada paso ya hay un resultado parcial, pero la recursión no puede consultarlo. Cuando un predicado necesita saber qué lleva hecho, el resultado se lleva en un argumento que viaja hacia adelante, un acumulador, tema del capítulo ocho.
 :::
 
 ## Plantilla 12 — Construir una lista
@@ -229,13 +229,13 @@ Pegar es el primer predicado en el que la lista se construye en la cabeza de la 
 ![](imagenes/capitulo-07/plantilla-12.svg)
 
 ::: notes
-La plantilla doce se usa cuando el resultado es una lista que se obtiene al recorrer otra. La lista resultante se escribe en la cabeza, y no se construye en el cuerpo. Cada llamada aporta el primer elemento del resultado, y la recursión completa el resto. Lo que cambia de un predicado a otro es el caso base y la relación entre cada elemento y el que ocupa su lugar en el resultado. Pegar es el caso más simple: cada elemento pasa sin modificarse, y el caso base no entrega la lista vacía sino la segunda lista.
+La plantilla doce se usa cuando el resultado es una lista que se obtiene al recorrer otra. La lista resultante se escribe en la cabeza, y no se construye en el cuerpo. Cada llamada aporta el primer elemento del resultado, y la recursión completa el resto. Lo que cambia de un predicado a otro es el caso base y la relación entre cada elemento y el que ocupa su lugar en el resultado. Concatenar es el caso más simple: cada elemento pasa sin modificarse, y el caso base no entrega la lista vacía sino la segunda lista.
 :::
 
 ## Una relación, varios sentidos
 
 ```prolog
-?- pegar(A, B, [ana, luis, eva]).
+?- concatenar(A, B, [ana, luis, eva]).
 A = [],
 B = [ana, luis, eva] ;
 A = [ana],
@@ -248,7 +248,7 @@ false.
 ```
 
 ::: notes
-Con las dos primeras listas instanciadas, pegar concatena. Con la tercera instanciada y las otras dos libres, el resultado es otro: se obtienen todas las particiones de la lista en dos partes. No se escribió ningún predicado para particionar listas. Es el mismo pegar, consultado en otro sentido. Es la ventaja de haberlo definido como una relación y no como un procedimiento.
+Con las dos primeras listas instanciadas, concatenar las une. Con la tercera instanciada y las otras dos libres, el resultado es otro: se obtienen todas las particiones de la lista en dos partes. No se escribió ningún predicado para particionar listas. Es el mismo concatenar, consultado en otro sentido. Es la ventaja de haberlo definido como una relación y no como un procedimiento.
 :::
 
 ## Las cuatro particiones
@@ -297,7 +297,7 @@ L = [_, _, eva] ;
 ![](imagenes/capitulo-07/limite.svg)
 
 ::: notes
-Que un predicado admita varios sentidos no significa que todos terminen. La condición, para los predicados de este capítulo, es que haya una lista completa por la cual recorrer. Pegar termina si la primera o la tercera lista está completa, y si las dos están sin determinar, produce particiones sin fin. Esta en y último terminan si la lista está completa, y con la lista sin determinar producen listas cada vez más largas, sin fin. Antes de consultar un predicado en un sentido nuevo, conviene preguntarse qué recorre y si eso que recorre es finito.
+Que un predicado admita varios sentidos no significa que todos terminen. La condición, para los predicados de este capítulo, es que haya una lista completa por la cual recorrer. Concatenar termina si la primera o la tercera lista está completa, y si las dos están sin determinar, produce particiones sin fin. Pertenece y último terminan si la lista está completa, y con la lista sin determinar producen listas cada vez más largas, sin fin. Antes de consultar un predicado en un sentido nuevo, conviene preguntarse qué recorre y si eso que recorre es finito.
 :::
 
 ## Predicados predefinidos
@@ -305,7 +305,7 @@ Que un predicado admita varios sentidos no significa que todos terminen. La cond
 ![](imagenes/capitulo-07/predefinidos.svg)
 
 ::: notes
-Todos los predicados anteriores existen en Prolog con nombres estándar, y en adelante el curso usa los predefinidos. Member equivale a esta en, length a largo, append a pegar y last a último. Reverse invierte el orden de una lista. Nth1 da el elemento que ocupa una posición, contando desde uno.
+Todos los predicados anteriores existen en Prolog con nombres estándar, y en adelante el curso usa los predefinidos. Member equivale a pertenece, length a longitud, append a concatenar y last a último. Reverse invierte el orden de una lista. Nth1 da el elemento que ocupa una posición, contando desde uno.
 :::
 
 ## Los invitados
@@ -359,7 +359,7 @@ Quien = luis.
 ::::
 
 ::: notes
-Las tres primeras reglas usan member, length y nth1. Esta invitado enumera a los invitados. A diferencia de esta en, la última respuesta termina en punto: member no deja una alternativa pendiente después del último elemento. Cuantos da la cantidad de invitados, cuatro. En el puesto da quién llegó en una posición: en la dos, luis.
+Las tres primeras reglas usan member, length y nth1. Esta invitado enumera a los invitados. A diferencia de pertenece, la última respuesta termina en punto: member no deja una alternativa pendiente después del último elemento. Cuantos da la cantidad de invitados, cuatro. En el puesto da quién llegó en una posición: en la dos, luis.
 :::
 
 ## nth1/3, en sentido inverso
@@ -430,7 +430,7 @@ Con uno más agrega un invitado al final: append concatena la lista con otra de 
 ![](imagenes/capitulo-07/resumen.svg)
 
 ::: notes
-La lista vacía es una constante. La barra vertical separa el primer elemento del resto, que es una lista, y se pueden extraer varios elementos a la vez. Las plantillas nueve, diez y once recorren una lista para procesar cada elemento, buscar uno que cumpla o verificar que todos cumplan. La plantilla doce construye el resultado en la cabeza. Pegar es una relación: concatena y particiona. Y los predicados predefinidos, member, length, append, reverse, last y nth1, son los que usa el resto del curso. El capítulo ocho retoma las listas con acumuladores.
+La lista vacía es una constante. La barra vertical separa el primer elemento del resto, que es una lista, y se pueden extraer varios elementos a la vez. Las plantillas nueve, diez y once recorren una lista para procesar cada elemento, buscar uno que cumpla o verificar que todos cumplan. La plantilla doce construye el resultado en la cabeza. Concatenar es una relación: concatena y particiona. Y los predicados predefinidos, member, length, append, reverse, last y nth1, son los que usa el resto del curso. El capítulo ocho retoma las listas con acumuladores.
 :::
 
 ## Créditos

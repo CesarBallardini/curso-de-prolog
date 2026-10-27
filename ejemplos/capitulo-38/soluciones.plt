@@ -1,137 +1,83 @@
 :- encoding(utf8).
 
+% Pruebas de las soluciones. Las que usan hilos comparan cantidades o
+% conjuntos; la transferencia ingenua, que puede quedar detenida para
+% siempre, no se prueba: la solución del ejercicio 7 muestra una ejecución.
+
 :- begin_tests(soluciones).
 
-test(modelos_lluvia, [true(Ms == [[calle_mojada, llueve, riego],
-                                  [calle_mojada, llueve]])]) :-
-    modelos(lluvia, [calle_mojada, llueve, riego], Ms).
+test(respuestas_en_hilo, [true(L == [a, b, c])]) :-
+    respuestas_en_hilo(X, member(X, [a, b, c]), L).
 
-% La intersección de los modelos es el modelo mínimo.
-test(interseccion) :-
-    modelos(lluvia, [calle_mojada, llueve, riego], [M1, M2]),
-    ord_intersection(M1, M2, I),
-    modelo_minimo(lluvia, M),
-    assertion(I == M).
+test(respuestas_sin_ninguna, [true(L == [])]) :-
+    respuestas_en_hilo(X, member(X, []), L).
 
-test(subconjuntos, [true(Ss == [[a, b], [a], [b], []])]) :-
-    findall(S, subconjunto([a, b], S), Ss).
+test(respuestas_error, [error(instantiation_error)]) :-
+    respuestas_en_hilo(X, atom_length(X, _), _).
 
-test(base_caminos, [true(N-NM == 32-16)]) :-
-    base_herbrand(caminos, B),
-    length(B, N),
-    modelo_minimo(caminos, M),
-    length(M, NM),
-    assertion(ord_subset(M, B)).
+test(tuberia, [true(S-Hilos == 338350-Antes)]) :-
+    findall(T, thread_property(T, status(_)), Antes0),
+    length(Antes0, Antes),
+    numlist(1, 100, Xs),
+    tuberia(Xs, S),
+    findall(T, thread_property(T, status(_)), Despues),
+    length(Despues, Hilos).
 
-test(base_lluvia, [true(B == [calle_mojada, llueve, riego])]) :-
-    base_herbrand(lluvia, B).
+test(tuberia_vacia, [true(S == 0)]) :-
+    tuberia([], S).
 
-test(circular_modelo) :-
-    modelo_minimo(circular, M),
-    assertion(M == [p, q, r, s]),
-    assertion(es_modelo(circular, M)).
+test(contador_cas, [true(F == 8000)]) :-
+    sumar_en_hilos(8, 1000, F).
 
-test(circular_minimales, [true(Ms == [[p, r, s], [p, r, t], [q, r, s],
-                                      [q, r, t]])]) :-
-    modelos(circular, [p, q, r, s, t], Todos),
-    minimales(Todos, Ms).
+% La suma de los saldos no cambia, y cada cuenta tiene un solo saldo.
+test(transferencias, [true(T-H == 4000-4)]) :-
+    al_azar(8, 1250, T, H).
 
-test(estratos_a, [true(E == [0-[d/0], 1-[b/0, c/0], 2-[a/0]])]) :-
-    estratos_de([(a :- \+ b), (b :- c), (c :- \+ d)], E).
+test(opuestas, [true(R == terminaron)]) :-
+    opuestas(transferir, 2000, R).
 
-test(ciclos_b, [true(P == [a/0-c/0, c/0-a/0])]) :-
-    ciclos_negativos_de([(a :- b, \+ c), (c :- \+ a)], P).
+test(extremos_unico, [true(P == 3)]) :-
+    posicion_extremos([1, 3, 4, 5, 7], [X]>>(0 is X mod 2), P).
 
-test(ciclos_c, [true(P == [a/0-b/0])]) :-
-    ciclos_negativos_de([(a :- \+ b), (b :- a)], P).
+% Con dos elementos pares, cualquiera de las dos búsquedas puede ganar.
+test(extremos_dos, [true(memberchk(P, [2, 4]))]) :-
+    posicion_extremos([1, 2, 3, 4, 5], [X]>>(0 is X mod 2), P).
 
-test(paridad_no_estratificada, [fail]) :-
-    estratos(paridad, _).
+test(extremos_ninguno, [fail]) :-
+    posicion_extremos([1, 3, 5], [X]>>(0 is X mod 2), _).
 
-test(paridad, [true(Ps-I == [0, 2, 4, 6]-[])]) :-
-    bien_fundado(paridad, V, I),
-    findall(N, member(par(N), V), Ps).
+test(emparejar, [true(P == [2-5, 4-10, 6-15])]) :-
+    emparejar(3, multiplo(2), multiplo(5), P).
 
-test(alternancia_j2, [true(Gs == [[]-[a, b, c], [c]-[a, b, c]])]) :-
-    alternancia(juego(j2), Pasos),
-    findall(GV-GP,
-            ( member(V-P, Pasos),
-              findall(X, member(gana(j2, X), V), GV),
-              findall(X, member(gana(j2, X), P), GP) ),
-            Gs).
+test(emparejar_corto, [true(P == [2-a, 4-b])]) :-
+    emparejar(5, multiplo(2), [X]>>member(X, [a, b]), P).
 
-test(estables_pq, [true(Ms == [[p], [q]])]) :-
-    estables_de([(p :- \+ q), (q :- \+ p)], Ms).
+test(identificadores, [true(Ids == [id(1), id(2), id(3)])]) :-
+    nuevo_generador(M),
+    findall(Id, ( between(1, 3, _), siguiente_id(M, Id) ), Ids),
+    engine_destroy(M).
 
-test(estables_circular, [true(Ms == [])]) :-
-    estables(circular, Ms).
-
-test(estables_j2, [true(Gs == [[a, c], [b, c]])]) :-
-    estables(juego(j2), Ms),
-    findall(G,
-            ( member(M, Ms),
-              findall(X, member(gana(j2, X), M), G) ),
-            Gs).
-
-% Un programa estratificado tiene un solo modelo estable: el estándar.
-test(estable_estratificado, [true(Ms == [[b, c]])]) :-
-    Cs = [(a :- \+ b), (b :- c), (c :- \+ d)],
-    estables_de(Cs, Ms),
-    modelo_estandar_de(Cs, M),
-    assertion(Ms == [M]).
-
-test(alcanza, [true(C == costo(42, 80))]) :-
-    semi_ingenua(alcanzables(40), [], M, C),
-    findall(Y, member(alcanza(Y), M), Ys),
-    assertion(length(Ys, 40)).
-
-test(estricta_doble, [true(C1-C2-C3 == costo(8, 1600)-costo(8, 1370)-
-                                     costo(8, 4055))]) :-
-    semi_ingenua(cadena_doble(20), [], M1, C1),
-    semi_ingenua_estricta(cadena_doble(20), [], M2, C2),
-    ingenua(cadena_doble(20), [], M3, C3),
-    assertion(M1 == M2),
-    assertion(M2 == M3).
-
-% Con un solo literal recursivo, las dos semi-ingenuas cuentan lo mismo.
-test(estricta_simple, [true(C1 == C2)]) :-
-    cadena(20, Cs),
-    semi_ingenua_de(Cs, [], _, C1),
-    semi_ingenua_estricta_de(Cs, [], _, C2).
-
-% Los programas de las soluciones se nombran con generado/2.
-test(juego_j2, [true(Js == [j2])]) :-
-    clausulas(juego(j2), Cs),
-    findall(J, member((mueve(J, _, _) :- true), Cs), Js0),
-    sort(Js0, Js).
-
-test(base_de_lista, [true(B == [p(a), p(b)])]) :-
-    base_herbrand_de([(p(a) :- p(b))], B).
-
-test(modelos_de_lista, [true(Ms == [[p]])]) :-
-    modelos_de([(p :- true)], [p], Ms).
-
-% p es verdadero desde el segundo paso, y ahí termina la alternancia.
-test(alternancia_de_lista, [true(Ps == [[]-[p], [p]-[p]])]) :-
-    alternancia_de([(p :- \+ q)], Ps).
-
-% Los auxiliares de las soluciones 2, 3, 11 y 13.
-test(atomos_de_clausula, [all(A == [p(a), q(b), r])]) :-
-    atomo_de((p(a) :- q(b), \+ r, 1 < 2), A).
-
-test(constantes_de_clausula, [all(C == [a, b])]) :-
-    constante((p(a, _) :- q(b)), C).
-
-test(minimales_sin_contenidos, [true(M == [[a], [c]])]) :-
-    minimales([[a], [a, b], [c]], M).
-
-test(del_juego_j1, [true(N-Ms == 4-[a-b, b-a, b-c])]) :-
-    del_juego(j1, Cs),
-    length(Cs, N),
-    findall(X-Y, member((mueve(_, X, Y) :- true), Cs), Ms).
-
-test(es_arco) :-
-    assertion(es_arco((arco(0, 1) :- true))),
-    assertion(\+ es_arco((camino(0, 1) :- true))).
+% Cuatro hilos piden 100 identificadores cada uno al mismo motor: los 400
+% son distintos, del 1 al 400, cualquiera sea el hilo que recibió cada uno.
+test(identificadores_hilos, [true(Ns == Esperados)]) :-
+    nuevo_generador(M),
+    thread_self(Yo),
+    length(Ids, 4),
+    maplist([Id]>>thread_create(pedir_ids(M, 100, Yo), Id), Ids),
+    maplist([Id]>>thread_join(Id, true), Ids),
+    engine_destroy(M),
+    length(Listas, 4),
+    maplist([L]>>thread_get_message(ids(L)), Listas),
+    append(Listas, Todos),
+    findall(N, member(id(N), Todos), Ns0),
+    msort(Ns0, Ns),
+    numlist(1, 400, Esperados).
 
 :- end_tests(soluciones).
+
+%!  pedir_ids(+Motor, +N:integer, +Destino) is det.
+%
+%   Pide N identificadores a Motor y envía ids(Lista) a Destino.
+pedir_ids(Motor, N, Destino) :-
+    findall(Id, ( between(1, N, _), siguiente_id(Motor, Id) ), Ids),
+    thread_send_message(Destino, ids(Ids)).

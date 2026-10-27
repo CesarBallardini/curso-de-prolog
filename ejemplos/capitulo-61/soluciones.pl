@@ -2,251 +2,182 @@
 
 % Capítulo 61 - Soluciones de los ejercicios.
 %
-% Carga la máquina terminada, maquina.pl. Los programas objeto de los
-% ejercicios son listas de cláusulas que se pasan a medir_clausulas/4 y a
-% resolver_clausulas/3 de almacen.pl; nativas/3 los ejecuta con Prolog,
-% como respuestas_nativas/3. Las versiones traza, sin_rastro y aritmetica
-% de los ejercicios 6, 9 y 10 están en soluciones_traza.pl,
-% soluciones_sin_rastro.pl y soluciones_aritmetica.pl.
+% Programas nuevos para el intérprete, una estrategia más, la traza como
+% datos y variantes del demostrador. Carga las versiones 4 y 5, que cargan
+% las anteriores, y no modifica ningún archivo del capítulo: los programas
+% se agregan a programa/2 y la estrategia a clave/4, que son multifile.
 %
-% solo-local: carga maquina.pl.
+% solo-local: carga resolucion.pl y terminacion.pl con ensure_loaded/1, y
+% SWISH no permite cargar archivos.
 %
-%?- medir_tipos(Segundo, Primero).
-%?- transformado(disyuncion, signo(-2, S)).
+%?- ejecutar(maximo, [numero(25), numero(10), numero(15), numero(30)], M, R).
+%?- numeros(2, 30, H), ejecutar(criba, H, M, R).
 
-:- ensure_loaded(maquina).
-:- use_module(library(apply)).
-:- use_module(library(assoc)).
-:- use_module(library(lists)).
-:- use_module(library(modules)).
-:- use_module(almacen,
-              [ medir_clausulas/4,
-                resolver_clausulas/3,
-                compilar_clausula/2,
-                desreferenciar/3,
-                reconstruir/3,
-                renombrar/3,
-                unificar/5
-              ]).
+:- ensure_loaded(resolucion).
+:- ensure_loaded(terminacion).
 
-%!  nativas(+Clausulas:list, +Meta, -Respuestas:list) is det.
+% Ejercicios 2, 3, 4, 7, 8, 9 y 12: programas nuevos.
+programa(maximo,
+    [ menor :: [numero(X), numero(Y), {X < Y}]
+           ---> [quitar(numero(X))],
+      resultado :: [numero(X)]
+           ---> [parar(X)]
+    ]).
+programa(criba,
+    [ multiplo :: [numero(X), numero(Y), {X < Y, Y mod X =:= 0}]
+           ---> [quitar(numero(Y))]
+    ]).
+programa(burbuja,
+    [ vecinos :: [pos(I, X), pos(J, Y), {J =:= I + 1, X > Y}]
+           ---> [reemplazar(pos(I, X), pos(I, Y)),
+                 reemplazar(pos(J, Y), pos(J, X))]
+    ]).
+programa(escrutinio,
+    [ otro_voto :: [voto(C), total(C, N)]
+           ---> [quitar(voto(C)), {M is N + 1},
+                 reemplazar(total(C, N), total(C, M))],
+      primer_voto :: [voto(C), no(total(C, _))]
+           ---> [quitar(voto(C)), agregar(total(C, 1))]
+    ]).
+programa(resolucion_subsuncion,
+    [ contradiccion :: [clausula([])]
+           ---> [parar(contradiccion)],
+      tautologia :: [clausula(C), {tautologica(C)}]
+           ---> [quitar(clausula(C))],
+      subsumir :: [clausula(C1), clausula(C2),
+                   {C1 \== C2, ord_subset(C1, C2)}]
+           ---> [quitar(clausula(C2))],
+      resolver :: [clausula(C1), clausula(C2),
+                   {resolvente(C1, C2, R), \+ tautologica(R)},
+                   no(clausula(R)), no(hecha(C1, C2, R))]
+           ---> [agregar(clausula(R)), agregar(hecha(C1, C2, R))],
+      agotado :: []
+           ---> [parar(sin_contradiccion)]
+    ]).
+programa(resolucion_sin_control,
+    [ contradiccion :: [clausula([])]
+           ---> [parar(contradiccion)],
+      tautologia :: [clausula(C), {tautologica(C)}]
+           ---> [quitar(clausula(C))],
+      resolver :: [clausula(C1), clausula(C2),
+                   {resolvente(C1, C2, R), \+ tautologica(R)}]
+           ---> [agregar(clausula(R))],
+      agotado :: []
+           ---> [parar(sin_contradiccion)]
+    ]).
+programa(luz_limitada,
+    [ fin :: [cambios(0)]
+           ---> [parar(listo)],
+      apagar :: [luz(encendida), cambios(N), {N > 0}]
+           ---> [{M is N - 1}, reemplazar(cambios(N), cambios(M)),
+                 reemplazar(luz(encendida), luz(apagada))],
+      encender :: [luz(apagada), cambios(N), {N > 0}]
+           ---> [{M is N - 1}, reemplazar(cambios(N), cambios(M)),
+                 reemplazar(luz(apagada), luz(encendida))]
+    ]).
+
+%!  numeros(+Desde:integer, +Hasta:integer, -Hechos:list) is det.
 %
-%   Respuestas son las instancias de Meta que Prolog obtiene con las
-%   Clausulas cargadas en un módulo temporal.
-nativas(Clausulas, Meta, Respuestas) :-
-    in_temporary_module(Modulo,
-                        forall(member(C, Clausulas), assertz(Modulo:C)),
-                        findall(Meta, Modulo:Meta, Respuestas)).
+%   Hechos son los hechos numero(I) para I de Desde a Hasta.
+numeros(Desde, Hasta, Hechos) :-
+    findall(numero(I), between(Desde, Hasta, I), Hechos).
 
-% Ejercicio 4
-
-% tipos(Cs): hechos tipo(Valor, Tipo), con el tipo en el segundo argumento.
-tipos([ (tipo(1, entero) :- true),
-        (tipo(2, entero) :- true),
-        (tipo(3, entero) :- true),
-        (tipo(a, atomo) :- true),
-        (tipo(b, atomo) :- true)
-      ]).
-
-% tipos_invertidos(Cs): los mismos hechos, con el tipo primero.
-tipos_invertidos([ (tipo(entero, 1) :- true),
-                   (tipo(entero, 2) :- true),
-                   (tipo(entero, 3) :- true),
-                   (tipo(atomo, a) :- true),
-                   (tipo(atomo, b) :- true)
-                 ]).
-
-%!  medir_tipos(-Segundo:list, -Primero:list) is det.
+%!  clave(+Estrategia, +Largo:integer, +Instancia, -Clave) is det.
 %
-%   Segundo y Primero son las medidas, en la versión 5, de buscar los
-%   enteros con el tipo en el segundo y en el primer argumento.
-medir_tipos(Segundo, Primero) :-
-    tipos(Cs1),
-    medir_clausulas(indice, Cs1, tipo(_, entero), Segundo),
-    tipos_invertidos(Cs2),
-    medir_clausulas(indice, Cs2, tipo(entero, _), Primero).
+%   Ejercicio 5: la estrategia lejana. Al ordenar, las acciones de una
+%   instancia nombran las dos posiciones que intercambia; la clave prefiere
+%   la mayor distancia entre ellas. Una instancia sin intercambio tiene
+%   clave 0.
+clave(lejana, _, instancia(_, _, _, Acciones), Clave) :-
+    distancia(Acciones, Clave).
 
-% Ejercicio 5
-
-%!  unificar_con_prueba(+X, +Y, +Marca:integer, +Estado0, -Estado)
-%!      is semidet.
+%!  distancia(+Acciones:list, -Clave:integer) is det.
 %
-%   Como unificar/5 de almacen.pl, con la prueba de ocurrencia: falla si
-%   una celda se liga a un término que la contiene.
-unificar_con_prueba(X0, Y0, Marca, Estado0, Estado) :-
-    Estado0 = Almacen-_,
-    desreferenciar(X0, Almacen, X),
-    desreferenciar(Y0, Almacen, Y),
-    (   X == Y
-    ->  Estado = Estado0
-    ;   X = '$v'(N)
-    ->  \+ ocurre(N, Y, Almacen),
-        ligar_celda(N, Y, Marca, Estado0, Estado)
-    ;   Y = '$v'(N)
-    ->  \+ ocurre(N, X, Almacen),
-        ligar_celda(N, X, Marca, Estado0, Estado)
-    ;   compound(X),
-        compound(Y),
-        compound_name_arity(X, Nombre, Aridad),
-        compound_name_arity(Y, Nombre, Aridad),
-        compound_name_arguments(X, Nombre, Xs),
-        compound_name_arguments(Y, Nombre, Ys),
-        foldl(unificar_con_prueba_argumento(Marca), Xs, Ys, Estado0, Estado)
+%   Clave es J - I con el signo cambiado si Acciones reemplaza los hechos
+%   pos(I, _) y pos(J, _), y 0 si no.
+distancia(Acciones, Clave) :-
+    (   Acciones = [reemplazar(pos(I, _), _), reemplazar(pos(J, _), _)]
+    ->  Clave is I - J
+    ;   Clave = 0
     ).
 
-%!  unificar_con_prueba_argumento(+Marca:integer, +X, +Y, +Estado0,
-%!                                -Estado) is semidet.
+%!  historia(+Programa, +Estrategia, +Memoria0:list, -Historia:list,
+%!           -Resultado) is semidet.
 %
-%   unificar_con_prueba/5 con los argumentos en el orden de foldl/5.
-unificar_con_prueba_argumento(Marca, X, Y, Estado0, Estado) :-
-    unificar_con_prueba(X, Y, Marca, Estado0, Estado).
+%   Ejercicio 10. Historia es la traza de la ejecución como datos: un
+%   término ciclo(N, Nombre, Cantidad, Hechos) por ciclo, con el módulo
+%   elegido, el tamaño del conjunto de conflicto y los hechos que usa.
+%   Falla si falla una acción de la instancia elegida.
+historia(Programa, Estrategia, Memoria0, Historia, Resultado) :-
+    programa(Programa, Modulos),
+    historia(Modulos, Estrategia, 1, Memoria0, Historia, Resultado).
 
-%!  ocurre(+N:integer, +Termino, +Almacen) is semidet.
+%!  historia(+Modulos:list, +Estrategia, +N:integer, +Memoria0:list,
+%!           -Historia:list, -Resultado) is semidet.
 %
-%   La celda N aparece en Termino, con las ligaduras del Almacen.
-ocurre(N, Termino0, Almacen) :-
-    desreferenciar(Termino0, Almacen, Termino),
-    (   Termino = '$v'(M)
-    ->  M =:= N
-    ;   compound(Termino),
-        arg(_, Termino, Argumento),
-        ocurre(N, Argumento, Almacen)
+%   Historia es la traza desde el ciclo N con la memoria Memoria0. Falla
+%   si falla una acción de la instancia elegida.
+historia(Modulos, Estrategia, N, Memoria0, Historia, Resultado) :-
+    conflicto(Modulos, Memoria0, Instancias),
+    (   Instancias == []
+    ->  Historia = [],
+        Resultado = nada_aplicable
+    ;   elegir(Estrategia, Memoria0, Instancias, Elegida),
+        Elegida = instancia(Nombre, _, Posiciones, Acciones),
+        length(Instancias, Cantidad),
+        findall(F, ( member(I, Posiciones), nth0(I, Memoria0, F) ), Hechos),
+        Historia = [ciclo(N, Nombre, Cantidad, Hechos)|Resto],
+        acciones(Acciones, Memoria0, Memoria1, Fin),
+        (   Fin = parar(R)
+        ->  Resto = [],
+            Resultado = R
+        ;   N1 is N + 1,
+            historia(Modulos, Estrategia, N1, Memoria1, Resto, Resultado)
+        )
     ).
 
-%!  ligar_celda(+N:integer, +Valor, +Marca:integer, +Estado0, -Estado)
-%!      is det.
+%!  escribir_historia(+Historia:list) is det.
 %
-%   Liga la celda N a Valor, y la anota en el rastro si es anterior a
-%   Marca.
-ligar_celda(N, Valor, Marca, Almacen0-Rastro0, Almacen-Rastro) :-
-    put_assoc(N, Almacen0, Valor, Almacen),
-    (   N < Marca
-    ->  Rastro = [N|Rastro0]
-    ;   Rastro = Rastro0
-    ).
+%   Escribe la Historia con el formato de trazar/5.
+escribir_historia(Historia) :-
+    forall(member(ciclo(N, Nombre, Cantidad, Hechos), Historia),
+           format("~w: ~w de ~w, con ~w~n", [N, Nombre, Cantidad, Hechos])).
 
-% Ejercicio 7
-
-%!  transformar(+Clausulas0:list, -Clausulas:list) is det.
+%!  ruido(+Cantidad:integer, -Hechos:list) is det.
 %
-%   Clausulas son las Clausulas0 con cada disyunción (A ; B) y cada
-%   negación \+ G de los cuerpos reemplazadas por la llamada a un predicado
-%   auxiliar nuevo, cuyas cláusulas siguen a la que lo usa.
-transformar(Clausulas0, Clausulas) :-
-    foldl(transformar_clausula, Clausulas0, Grupos, 0, _),
-    append(Grupos, Clausulas).
+%   Ejercicio 11. Hechos son Cantidad hechos ruido(I) que ningún módulo
+%   usa.
+ruido(Cantidad, Hechos) :-
+    findall(ruido(I), between(1, Cantidad, I), Hechos).
 
-%!  transformar_clausula(+Clausula0, -Clausulas:list, +N0:integer,
-%!                       -N:integer) is det.
+%!  primos_hasta(+N:integer, -Primos:list(integer)) is det.
 %
-%   Clausulas son Clausula0 transformada y sus auxiliares; N0 y N cuentan
-%   los auxiliares creados antes y después.
-transformar_clausula((Cabeza :- Cuerpo0), [(Cabeza :- Cuerpo)|Auxiliares],
-                     N0, N) :-
-    transformar_cuerpo(Cuerpo0, Cuerpo, Auxiliares, [], N0, N).
+%   Ejercicio 3. Primos son los primos hasta N, en orden, según el
+%   programa criba.
+primos_hasta(N, Primos) :-
+    numeros(2, N, Hechos),
+    ejecutar(criba, Hechos, Memoria, nada_aplicable),
+    findall(X, member(numero(X), Memoria), Xs),
+    msort(Xs, Primos).
 
-%!  transformar_cuerpo(+Cuerpo0, -Cuerpo, -Auxiliares:list, ?Resto:list,
-%!                     +N0:integer, -N:integer) is det.
+%!  vigilar_formula(+Programa, +Formula, +Limite:integer, -Resultado,
+%!                  -Hechos:integer) is det.
 %
-%   Cuerpo es Cuerpo0 sin disyunciones ni negaciones; Auxiliares-Resto es
-%   la lista diferencia de las cláusulas auxiliares creadas.
-transformar_cuerpo(Cuerpo0, Cuerpo, Auxiliares, Resto, N0, N) :-
-    (   var(Cuerpo0)
-    ->  Cuerpo = Cuerpo0,
-        Auxiliares = Resto,
-        N = N0
-    ;   Cuerpo0 = (A0, B0)
-    ->  transformar_cuerpo(A0, A, Auxiliares, Medio, N0, N1),
-        transformar_cuerpo(B0, B, Medio, Resto, N1, N),
-        Cuerpo = (A, B)
-    ;   Cuerpo0 = (A0 ; B0)
-    ->  auxiliar(o, Cuerpo0, N0, N1, Cuerpo),
-        transformar_cuerpo(A0, A, Auxiliares1, Medio, N1, N2),
-        transformar_cuerpo(B0, B, Medio, Resto, N2, N),
-        Auxiliares = [(Cuerpo :- A), (Cuerpo :- B)|Auxiliares1]
-    ;   Cuerpo0 = (\+ G0)
-    ->  auxiliar(no, Cuerpo0, N0, N1, Cuerpo),
-        transformar_cuerpo(G0, G, Auxiliares1, Resto, N1, N),
-        Auxiliares = [(Cuerpo :- G, !, fail), (Cuerpo :- true)|Auxiliares1]
-    ;   Cuerpo = Cuerpo0,
-        Auxiliares = Resto,
-        N = N0
-    ).
+%   Ejercicio 9. Ejecuta el Programa de resolución sobre la negación de
+%   Formula con vigilar/6. Hechos es la cantidad de hechos de la memoria
+%   final.
+vigilar_formula(Programa, Formula, Limite, Resultado, Hechos) :-
+    memoria_inicial(Formula, Memoria0),
+    vigilar(Programa, primera, Limite, Memoria0, Memoria, Resultado),
+    length(Memoria, Hechos).
 
-%!  auxiliar(+Prefijo:atom, +Meta, +N0:integer, -N:integer, -Llamada)
-%!      is det.
+%!  ciclos_invertida(+Programa, +Estrategia, +Largo:integer,
+%!                   -Ciclos:integer) is det.
 %
-%   Llamada es la llamada al auxiliar número N = N0 + 1, con las variables
-%   de Meta como argumentos; su nombre es '$' seguido del Prefijo y de N.
-auxiliar(Prefijo, Meta, N0, N, Llamada) :-
-    N is N0 + 1,
-    format(atom(Nombre), "$~w~d", [Prefijo, N]),
-    term_variables(Meta, Variables),
-    Llamada =.. [Nombre|Variables].
-
-% disyuncion(Cs): un programa con una disyunción y una negación.
-disyuncion([ (signo(X, S) :- ( X < 0, S = negativo
-                              ; X =:= 0, S = cero
-                              ; S = positivo
-                              )),
-             (persona(ana) :- true),
-             (persona(luis) :- true),
-             (casado(luis) :- true),
-             (soltero(P) :- persona(P), \+ casado(P))
-           ]).
-
-% corte_en_disyuncion(Cs): un corte dentro de una disyunción, y una
-% cláusula más del mismo predicado.
-corte_en_disyuncion([ (p(X) :- ( X = 1, ! ; X = 2 )),
-                      (p(3) :- true)
-                    ]).
-
-%!  transformado(+Programa:atom, ?Meta) is nondet.
-%
-%   Meta se prueba en la versión 5 con el Programa, disyuncion o
-%   corte_en_disyuncion, transformado.
-transformado(Programa, Meta) :-
-    call(Programa, Clausulas0),
-    transformar(Clausulas0, Clausulas),
-    resolver_clausulas(indice, Clausulas, Meta).
-
-% Ejercicios 8 y 11
-
-% acumuladores(Cs): invertir/3 y longitud/3 con acumulador.
-acumuladores([ (invertir_acc(L, R) :- invertir(L, [], R)),
-               (invertir([], R, R) :- true),
-               (invertir([X|Xs], R0, R) :- invertir(Xs, [X|R0], R)),
-               (invertir_acc_hasta(N, R) :- lista_hasta(N, L),
-                                            invertir_acc(L, R)),
-               (longitud_acc(L, N) :- longitud(L, 0, N)),
-               (longitud([], N, N) :- true),
-               (longitud([_|Xs], N0, N) :- N1 is N0 + 1,
-                                           longitud(Xs, N1, N)),
-               (longitud_acc_hasta(N, K) :- lista_hasta(N, L),
-                                            longitud_acc(L, K))
-             ]).
-
-%!  medir_con_acumuladores(+Meta, -Medidas:list) is det.
-%
-%   Medidas son las medidas de Meta en la versión 5, con el programa
-%   listas y los predicados con acumulador.
-medir_con_acumuladores(Meta, Medidas) :-
-    programa(listas, Listas),
-    acumuladores(Acumuladores),
-    append(Listas, Acumuladores, Clausulas),
-    medir_clausulas(indice, Clausulas, Meta, Medidas).
-
-%!  pasos_de(+Meta, -Pasos:integer) is det.
-%
-%   Pasos son los pasos de Meta en la versión 5, como los mide
-%   medir_con_acumuladores/2.
-pasos_de(Meta, Pasos) :-
-    medir_con_acumuladores(Meta, Medidas),
-    memberchk(pasos-Pasos, Medidas).
-
-%!  metas_de(+Meta, -Metas:integer) is det.
-%
-%   Metas es el largo máximo de la resolvente de Meta en la versión 5.
-metas_de(Meta, Metas) :-
-    medir_con_acumuladores(Meta, Medidas),
-    memberchk(metas-Metas, Medidas).
+%   Ejercicios 4 y 5. Ciclos es la cantidad de ciclos del Programa de
+%   ordenamiento, con la Estrategia, para la lista Largo, ..., 2, 1.
+ciclos_invertida(Programa, Estrategia, Largo, Ciclos) :-
+    numlist(1, Largo, Creciente),
+    reverse(Creciente, Lista),
+    posiciones(Lista, Hechos),
+    ciclos(Programa, Estrategia, Hechos, Ciclos).

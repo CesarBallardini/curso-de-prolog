@@ -2,122 +2,147 @@
 
 :- begin_tests(soluciones).
 
-test(ej2_equivalentes) :-
-    equivalentes(par_par, interseccion(a_par, b_par)).
+test(ejercicio_1, [true(E == a(0) - a(2) - w(1) * (a(1) - a(3)))]) :-
+    evaluar([0, 1, 2, 3], 3, 4, E0),
+    simplificar_raices(4, E0, E).
 
-test(ej2_palabras, [true(N == 8)]) :-
-    palabras(par_par, 4, Ws),
-    length(Ws, N).
+test(ejercicio_2, [true(P-I == [0, 3]-[1, 2])]) :-
+    alternar_mal([0, 1, 2, 3], P, I).
 
-test(ej3_sin_epsilon, [fail]) :-
-    epsilon(sin_epsilon(ciclo), _, _).
+test(ejercicio_3, [true(S-P == 56-14)]) :-
+    tdf_ingenua(8, Es0),
+    maplist(simplificar_raices(8), Es0, Es),
+    grafo(Es, Ns, _),
+    contar_nodos(Ns, _, S, P).
 
-test(ej3_ciclo) :-
-    equivalentes(ciclo, sin_epsilon(ciclo)).
+test(ejercicio_4, [true(C == 3)]) :-
+    fft_grafo(8, Ns, _),
+    productos_por(Ns, 2, C).
 
-test(ej3_er) :-
-    equivalentes(er("(a|b)*abb"), sin_epsilon(er("(a|b)*abb"))).
+test(ejercicio_4_sin_raiz, [true(C == 0)]) :-
+    fft_grafo(8, Ns, _),
+    productos_por(Ns, 7, C).
 
-test(ej3_contra, [true(Ws == [[b]])]) :-
-    equivalentes(contra, sin_epsilon(contra)),
-    palabras(sin_epsilon(contra), 1, Ws).
+test(ejercicio_4_no_triviales, [true(Cs == [2, 10, 34])]) :-
+    maplist(productos_no_triviales, [8, 16, 32], Cs).
 
-test(ej4_diferencia, [true(Ws == [[a, a, a], [a, a, b], [a, b, b],
-                                  [b, b, b]])]) :-
-    palabras(diferencia(er("a*b*"), er("(ab)*")), 3, Ws).
+test(ejercicio_5, [true(Ps == [2, 3, 2, 3])]) :-
+    fft_grafo(4, Ns, Ss),
+    maplist(profundidad(Ns), Ss, Ps).
 
-test(ej4_vacia, [forall(member(M, [termina_ab, multiplo3, er("a?b+")]))]) :-
-    vacio(diferencia(M, M)).
+test(ejercicio_5_maximas, [true(Ps-Qs == [3, 5, 7]-[4, 8, 16])]) :-
+    findall(P, ( member(N, [4, 8, 16]),
+                 fft_grafo(N, Ns, Ss),
+                 profundidad_maxima(Ns, Ss, P) ), Ps),
+    findall(Q, ( member(N, [4, 8, 16]),
+                 tdf_ingenua(N, Es0),
+                 maplist(simplificar_raices(N), Es0, Es),
+                 grafo(Es, Ns, Ss),
+                 profundidad_maxima(Ns, Ss, Q) ), Qs).
 
-test(ej5_explosion, [true(Fs == [1-2-2, 2-4-4, 3-8-8, 4-16-16])]) :-
-    explosion(4, Fs).
+test(ejercicio_5_hoja, [true(P == 0)]) :-
+    profundidad([nodo(1, a(0))], 1, P).
 
-test(ej6_repeticion) :-
-    equivalentes(er("a{3}"), er("aaa")).
+test(ejercicio_5_ausente, [fail]) :-
+    profundidad([nodo(1, a(0))], 2, _).
 
-test(ej6_grupo) :-
-    acepta(er("(ab){2}c"), [a, b, a, b, c]).
+test(ejercicio_8, [forall(member(N, [2, 4, 8, 16, 32]))]) :-
+    fft_arboles(N, Es0),
+    maplist(simplificar_raices(N), Es0, Es),
+    grafo(Es, G1, S1),
+    grafo_rapido(Es, G2, S2),
+    assertion(G1 == G2),
+    assertion(S1 == S2).
 
-test(ej6_cero, [true(E == cat(vacia, sim(y)))]) :-
-    expresion("x{0}y", E).
+test(ejercicio_9, [true(Vs == [c(10, 0), c(-2, -2), c(-2, 0), c(-2, 2)])]) :-
+    fft_grafo(4, Ns, Ss),
+    valor_grafo_exacto(4, [1, 2, 3, 4], Ns, Ss, Vs).
 
-test(ej7_lexico, [true(Cs == [id(x), :=, num(1), id(y), :=,
-                              cadena(hola)])]) :-
-    componentes("x := 1 # uno\ny := \"hola\"", Cs).
+test(ejercicio_9_orden, [error(domain_error(orden_exacto, 8))]) :-
+    raiz_exacta(8, 1, _).
 
-% El complemento a dos de N es 16 - N módulo 16, en los dos sentidos.
-test(ej8_complemento2) :-
-    forall(between(0, 15, N),
-           ( bits(N, B),
-             C is (16 - N) mod 16,
-             bits(C, S),
-             transducir(complemento2, B, S),
-             transducir(complemento2, S, B) )).
+test(ejercicio_10, [forall(member(N, [1, 2, 4, 8, 16]))]) :-
+    numlist(1, N, Cs),
+    fft_numerica(Cs, Xs),
+    fft_inversa(Xs, As),
+    maplist([C, c(C, 0)]>>true, Cs, Esperados),
+    cercanos(As, Esperados).
 
-test(ej9_estados, [true(N-M == 4-3)]) :-
-    numero_estados(circuito(par2, [0, 0]), N),
-    numero_estados(min(circuito(par2, [0, 0])), M).
+test(ejercicio_11, [true(R == [4, 13, 22, 15])]) :-
+    producto_polinomios([1, 2, 3], [4, 5], R).
 
-% bits(N, Bs): los cuatro bits de N, el menos significativo primero.
-bits(N, Bs) :-
-    findall(B, ( between(0, 3, I), B is (N >> I) /\ 1 ), Bs).
+test(ejercicio_11_potencia, [true(R == [1, 4, 6, 4, 1])]) :-
+    producto_polinomios([1, 2, 1], [1, 2, 1], R).
 
-test(contiene_final, [true]) :-
-    contiene_final(termina_ab, [q0, q2]).
+% Ejercicio 12: dos claves con variables libres unifican.
+test(ejercicio_12, [true(V1 == V2)]) :-
+    buscar(op(+, _, _), D, V1),
+    buscar(op(-, _, _), D, _),
+    buscar(op(+, _, _), D, V2).
 
-test(contiene_final_no, [fail]) :-
-    contiene_final(termina_ab, [q0]).
+test(profundidad_version, [true(P-Q == 5-8)]) :-
+    profundidad_version(mariposa, 8, P),
+    profundidad_version(matriz_grafo, 8, Q).
 
-test(contiene_final_vacio, [fail]) :-
-    contiene_final(termina_ab, []).
+test(rotaciones, [true(N == 16)]) :-
+    rotaciones(Es),
+    length(Es, N).
 
-test(repetir_cero, [true(R == vacia)]) :-
-    repetir(0, sim(a), R).
+% Ejercicio 6: el grafo comparte los productos de senos y cosenos.
+test(costo_rotaciones, [true(S0-P0-S-P == 4-8-4-7)]) :-
+    costo_rotaciones(S0, P0, S, P).
 
-test(repetir_uno, [true(R == sim(a))]) :-
-    repetir(1, sim(a), R).
+test(presente, [true(I == 2)]) :-
+    presente(b, [a-1, b-2|_], I).
 
-test(repetir_tres, [true(R == cat(sim(a), cat(sim(a), sim(a))))]) :-
-    repetir(3, sim(a), R).
+% presente/3 no agrega la clave que falta.
+test(presente_ausente, [fail]) :-
+    presente(c, [a-1, b-2|_], _).
 
-% Ejercicio 12: las dos expresiones describen el lenguaje de multiplo3.
-test(ej12_kleene) :-
-    expresion_texto(multiplo3, T),
-    equivalentes(er(T), multiplo3).
+test(presente_vacio, [fail]) :-
+    presente(c, _, _).
 
-test(ej12_corta) :-
-    expresion_corta(T),
-    equivalentes(er(T), multiplo3).
+test(agregar_rapido, [true(D == [a-1, b-2, a*b-3, a*b+a*b-4])]) :-
+    agregar_rapido(D, a * b + a * b, _),
+    numerar(D, 1),
+    length(D, 4).
 
-test(ej12_mas_corta, [true(L1 < L2)]) :-
-    expresion_corta(T1),
-    string_length(T1, L1),
-    expresion_texto(multiplo3, T2),
-    string_length(T2, L2).
+test(valor_exacto, [true(V == c(2, 1))]) :-
+    valor_exacto(4, [1, 2], a(1) + w(1) * a(0), V).
 
-% Ejercicio 13: la máquina de Moore escribe S0 y después lo mismo que la
-% de Mealy, para todas las entradas de hasta 5 bits.
-test(ej13_gray, [forall(( between(0, 5, L), length(E, L),
-                          maplist([B]>>member(B, [0, 1]), E) )),
-                 nondet, true(S == [0|G])]) :-
-    transducir(gray, E, G),
-    moore(moore_de(gray, 0), E, S).
+test(raiz_exacta, [true(Vs == [c(0, -1), c(-1, 0), c(1, 0)])]) :-
+    raiz_exacta(4, 3, V1),
+    raiz_exacta(2, 1, V2),
+    raiz_exacta(1, 5, V3),
+    Vs = [V1, V2, V3].
 
-test(ej13_complemento2, [forall(( between(0, 4, L), length(E, L),
-                                  maplist([B]>>member(B, [0, 1]), E) )),
-                         nondet, true(S == [x|G])]) :-
-    transducir(complemento2, E, G),
-    moore(moore_de(complemento2, x), E, S).
+test(fft_exacta, [true(Vs == [c(10, 0), c(-2, -2), c(-2, 0), c(-2, 2)])]) :-
+    fft_exacta([1, 2, 3, 4], Vs).
 
-% Los estados de gray se desdoblan: b0 y b1 se alcanzan escribiendo 0 y 1.
-test(ej13_estados, [true(Qs == [b0-0, b0-1, b1-0, b1-1])]) :-
-    findall(Q, alcanzable(moore_de(gray, 0), Q), Qs0),
-    sort(Qs0, Qs).
+test(fft_inversa_grafo, [true(Ss == [3, 4])]) :-
+    fft_inversa_grafo(2, _, Ss).
 
-test(ej13_salida, [true(S == 1)]) :-
-    moore:salida_estado(moore_de(gray, 0), b0-1, S).
+% La salida 1 de la inversa de orden 4 usa la potencia 3 = -1 módulo 4.
+test(salida_inversa, [true(E == a(0) + w(2) * a(2)
+                                + w(3) * (a(1) + w(2) * a(3)))]) :-
+    salida_inversa([0, 1, 2, 3], 4, 1, E).
 
-test(ej13_inverso, [nondet, true(E == [1, 0, 1, 1])]) :-
-    moore(moore_de(gray, 0), E, [0, 1, 1, 1, 0]).
+test(dividir, [true(W == c(0.5, -2))]) :-
+    dividir(4, c(2, -8), W).
+
+test(potencia_mayor, [true(Ns == [8, 4, 8])]) :-
+    potencia_mayor(5, 1, N1),
+    potencia_mayor(4, 4, N2),
+    potencia_mayor(1, 8, N3),
+    Ns = [N1, N2, N3].
+
+test(completar, [true(Q == [1, 2, 0, 0])]) :-
+    completar([1, 2], 4, Q).
+
+test(completar_lleno, [true(Q == [1, 2])]) :-
+    completar([1, 2], 2, Q).
+
+test(producto_constantes, [true(R == [6])]) :-
+    producto_polinomios([3], [2], R).
 
 :- end_tests(soluciones).

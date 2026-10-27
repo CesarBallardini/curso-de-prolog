@@ -1,108 +1,98 @@
 :- encoding(utf8).
 
-% Pruebas de las soluciones de los ejercicios 12 a 15. Las que cambian el
-% estado lo restauran; las que escriben usan un archivo temporal.
+% Ejercicio 3: una prueba por modo de aprobada/3 y por caso límite.
+:- begin_tests(aprobada_por_modo).
 
-:- begin_tests(soluciones_proyecto).
+% (+, +, -): legajo y materia dados; una respuesta o ninguna.
+test(legajo_y_materia, true(N == 10)) :-
+    aprobada(101, log, N).
 
-%!  escribir_csv(+Archivo, +Filas:list) is det.
-%
-%   Escribe Filas en Archivo como CSV: los datos de entrada de una prueba.
-escribir_csv(Archivo, Filas) :-
-    csv_write_file(Archivo, Filas, [encoding(utf8)]).
+% (+, -, -): las materias aprobadas de un alumno, en el orden de los hechos.
+test(materias_de_un_alumno, all(M-N == [am1-8, alg-9, log-10, am2-7])) :-
+    aprobada(101, M, N).
 
-% --- Ejercicio 12 -----------------------------------------------------------
+% (-, +, -): quiénes aprobaron una materia.
+test(alumnos_de_una_materia, all(L == [101, 102, 104])) :-
+    aprobada(L, log, _).
 
-test(guardar_y_cargar_hechos, [ setup(( estado(E), tmp_file(hechos, F) )),
-                                cleanup(( restaurar(E), delete_file(F) )),
-                                true(Despues == E) ]) :-
-    guardar_hechos(F),
-    agregar_inscripcion(104, ssl, cursando),
-    cambiar_vacantes(ssl, -1),
-    cargar_hechos(F),
-    estado(Despues).
+% (-, -, -): la consulta más general.
+test(todas, true(N == 10)) :-
+    aggregate_all(count, aprobada(_, _, _), N).
 
-% El archivo tiene un hecho por línea: 17 inscripciones, 7 vacantes y el
-% contador.
-test(un_hecho_por_linea, [ setup(tmp_file(hechos, F)),
-                           cleanup(delete_file(F)),
-                           true(N == 25) ]) :-
-    guardar_hechos(F),
-    read_file_to_string(F, S, [encoding(utf8)]),
-    split_string(S, "\n", "", Lineas),
-    length(Lineas, N0),
-    N is N0 - 1.
+% Caso límite: la nota mínima aprueba; una menos, no.
+test(nota_minima_aprueba) :-
+    aprobada(106, am1, 6).
 
-test(hechos_ajenos, [ setup(( estado(E), tmp_file(hechos, F) )),
-                      cleanup(( restaurar(E), delete_file(F) )),
-                      error(domain_error(archivo_de_hechos, _)) ]) :-
-    setup_call_cleanup(open(F, write, S, [encoding(utf8)]),
-                       portray_clause(S, padre(juan, ana)),
-                       close(S)),
-    cargar_hechos(F).
+test(nota_menor_no_aprueba, [fail]) :-
+    aprobada(106, log, _).
 
-% --- Ejercicio 13 -----------------------------------------------------------
+% Caso límite: una materia que se está cursando no está aprobada.
+test(cursando_no_aprobada, [fail]) :-
+    aprobada(101, pp, _).
 
-test(exportar_inscriptos, [ setup(tmp_file(inscriptos, F)),
-                            cleanup(delete_file(F)),
-                            true(Filas == [ row(legajo, nombre, estado),
-                                            row(101, ana, 8),
-                                            row(102, bruno, 4),
-                                            row(103, carla, 7),
-                                            row(105, elena, cursando),
-                                            row(106, facundo, 6) ]) ]) :-
-    exportar_inscriptos(am1, F),
-    csv_read_file(F, Filas).
+:- end_tests(aprobada_por_modo).
 
-% --- Ejercicio 14 -----------------------------------------------------------
+% Ejercicio 4: una tabla de casos con la opción forall.
+:- begin_tests(tabla_de_inscripciones).
 
-% Una nota nueva, y otra que reemplaza una cursada.
-test(importar_notas, [ setup(( estado(E), tmp_file(notas, F) )),
-                       cleanup(( restaurar(E), delete_file(F) )),
-                       true(Estados == [nota(9), nota(7)]) ]) :-
-    escribir_csv(F, [ row(legajo, materia, nota),
-                      row(104, ssl, 9),
-                      row(105, am1, 7) ]),
-    importar_notas(F),
-    findall(Estado, ( member(L-M, [104-ssl, 105-am1]),
-                      inscripcion(L, M, Estado) ),
-            Estados).
+caso(104, ssl, aceptada).
+caso(102, alg, aceptada).
+caso(999, am1, rechazada(alumno_inexistente)).
+caso(101, quimica, rechazada(materia_inexistente)).
+caso(101, log, rechazada(ya_aprobada)).
+caso(101, pp, rechazada(ya_la_cursa)).
+caso(102, am2, rechazada(falta(am1))).
+caso(105, log, rechazada(sin_vacantes)).
 
-% Una fila incorrecta: no se registra ninguna, tampoco las correctas.
-test(alumno_inexistente, [ setup(( estado(E), tmp_file(notas, F) )),
-                           cleanup(( restaurar(E), delete_file(F) )),
-                           true(Despues == E) ]) :-
-    escribir_csv(F, [ row(legajo, materia, nota),
-                      row(104, ssl, 9),
-                      row(999, am1, 7) ]),
-    catch(importar_notas(F), error(existence_error(alumno, 999), _), true),
-    estado(Despues).
+test(inscripcion_posible,
+     [forall(caso(L, M, Esperado)), true(R == Esperado)]) :-
+    inscripcion_posible(L, M, R).
 
-test(materia_inexistente, [ setup(( estado(E), tmp_file(notas, F) )),
-                            cleanup(( restaurar(E), delete_file(F) )),
-                            error(existence_error(materia, quimica)) ]) :-
-    escribir_csv(F, [row(legajo, materia, nota), row(104, quimica, 9)]),
-    importar_notas(F).
+:- end_tests(tabla_de_inscripciones).
 
-test(nota_invalida, [ setup(( estado(E), tmp_file(notas, F) )),
-                      cleanup(( restaurar(E), delete_file(F) )),
-                      error(type_error(between(1, 10), 11)) ]) :-
-    escribir_csv(F, [row(legajo, materia, nota), row(104, ssl, 11)]),
-    importar_notas(F).
+% Ejercicio 5: la cláusula de comprobar_datos/0 que ninguna prueba cubría.
+:- begin_tests(cobertura).
 
-% --- Ejercicio 15 -----------------------------------------------------------
+:- dynamic advertido/1.
 
-test(escribir_materias, true(Lineas == [
-         "Código  Nombre          Año     Inscriptos  Promedio",
-         "am1     analisis_1      1                5      6.25",
-         "alg     algebra         1                4      5.75",
-         "log     logica          1                4      7.00",
-         "am2     analisis_2      2                2      7.00",
-         "pp      paradigmas      2                2      8.00",
-         "ssl     sintaxis        2                0         -",
-         "bd      bases_de_datos  3                0         -",
-         "" ])) :-
-    with_output_to(string(S), escribir_materias(current_output)),
-    split_string(S, "\n", "", Lineas).
+user:message_hook(inscripcion_sin_datos(L, M), warning, _) :-
+    assertz(plunit_cobertura:advertido(L-M)).
 
-:- end_tests(soluciones_proyecto).
+test(advertencia, [ setup(estado(E)),
+                    cleanup(( restaurar(E), retractall(advertido(_)) )),
+                    true(A == [999-am1]) ]) :-
+    agregar_inscripcion(999, am1, cursando),
+    comprobar_datos,
+    findall(X, advertido(X), A).
+
+:- end_tests(cobertura).
+
+% Ejercicios 7 y 8.
+:- begin_tests(depuracion).
+
+test(registrado, [ setup(estado(E)), cleanup(restaurar(E)),
+                   true(R == aceptada) ]) :-
+    inscribir_registrado(104, ssl, R).
+
+test(invariante) :-
+    vacantes_no_negativas.
+
+:- end_tests(depuracion).
+
+% Ejercicio 13: la segunda llamada a requisitos_de/2 usa el valor guardado.
+:- begin_tests(memoria).
+
+inferencias(G, I) :-
+    statistics(inferences, I0),
+    once(G),
+    statistics(inferences, I1),
+    I is I1 - I0.
+
+test(segunda_llamada_mas_barata) :-
+    retractall(reglas:requisitos_guardados(_, _)),
+    inferencias(requisitos_de(bd, _), Primera),
+    inferencias(requisitos_de(bd, _), Segunda),
+    Segunda < Primera,
+    Segunda < 10.
+
+:- end_tests(memoria).

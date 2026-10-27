@@ -1,312 +1,292 @@
 :- encoding(utf8).
 
-% Capítulo 69 - Soluciones de los ejercicios.
+% Capítulo 69 - Soluciones de los ejercicios 2 a 8, 10 y 11.
 %
-% solo-local: carga los programas de los capítulos 32, 46 y 69, y SWISH
-% no carga otros archivos.
+% Carga las versiones 4 y 6 del capítulo, como proyecto.pl, y la versión
+% 3 del capítulo 68 para comparar con la inducción. El ejercicio 9 está en
+% soluciones_ebg.pl.
 %
-%?- datos(puntos, Es), errores([0.13, -0.51, -0.35], Es, N).
-%?- datos(o_exclusivo, Es), entrenar_n(1, 6, Es, [0, 0, 0], P, Curva).
+% solo-local: carga archivos de otros capítulos.
+%
+%?- todos_convergen.
+%?- eliminar_con_descarte_de(3, EV, D).
 
-:- ensure_loaded(rasgos).
+:- use_module(library(apply)).
+:- use_module(library(lists)).
+:- use_module(library(aggregate)).
+:- use_module(preguntas).
+:- use_module(ebg, except([inferencias/2])).
+:- use_module('../capitulo-68/generalizar', [lgg_ingenua/3]).
+:- use_module('../capitulo-68/subsuncion', [subsume/2]).
+:- use_module('../capitulo-68/ascendente', [aprender_asc/3, evaluar/5]).
+:- use_module('../capitulo-68/familia', [ejemplos/3]).
+
+% Ejercicio 2
+
+%!  ejemplos_de(+C, -Ejs:list) is det.
+%
+%   Ejs son las 36 instancias, en el orden de instancia/1, con la clase
+%   que les da el concepto C.
+ejemplos_de(C, Ejs) :-
+    findall(Ej, ( instancia(I),
+                  objetivo(C, I, Ej) ), Ejs).
+
+%!  eliminar_todos(+C, -EV) is det.
+%
+%   EV es el espacio de versiones de las 36 instancias clasificadas por C.
+eliminar_todos(C, EV) :-
+    ejemplos_de(C, Ejs),
+    eliminar(Ejs, EV).
+
+%!  todos_convergen is semidet.
+%
+%   Para cada concepto C distinto de vacio, eliminar/2 converge a C con
+%   los ejemplos de ejemplos_de/2.
+todos_convergen :-
+    forall(( concepto(C),
+             C \== vacio ),
+           ( eliminar_todos(C, EV),
+             estado(EV, convergio(D)),
+             D =@= C )).
 
 % Ejercicio 3
 
-%!  errores(+Pesos:list, +Ejemplos:list, -N:integer) is det.
+%!  con_interior(:Meta) is semidet.
 %
-%   N es la cantidad de Ejemplos que Pesos clasifican mal.
-errores(Pesos, Ejemplos, N) :-
-    exclude(bien_clasificado(Pesos), Ejemplos, Mal),
-    length(Mal, N).
+%   Prueba Meta con un quinto atributo, interior, cuyos valores rojo y
+%   verde repiten valores de color.
+con_interior(Meta) :-
+    setup_call_cleanup(assertz(espacio:atributo(interior, [rojo, verde])),
+                       once(Meta),
+                       retract(espacio:atributo(interior, [rojo, verde]))).
+
+%!  generalizacion_ingenua(+S, +I, -S1) is det.
+%
+%   Como generalizacion/3, con lgg_ingenua/3: cada diferencia recibe su
+%   propia variable, y el resultado nunca exige que dos atributos
+%   coincidan.
+generalizacion_ingenua(S, I, S1) :-
+    (   S == vacio
+    ->  S1 = I
+    ;   lgg_ingenua(S, I, S1)
+    ).
 
 % Ejercicio 4
 
-%!  entrenar_n(+Tasa:number, +N:integer, +Ejemplos:list, +Pesos0:list,
-%!             -Pesos:list, -Curva:list(integer)) is det.
+%!  cuenta_clases(-Pos:integer, -Neg:integer, -Desc:integer) is det.
 %
-%   Pesos son los que quedan después de N épocas desde Pesos0, y Curva
-%   los errores de cada época, aunque alguna no tenga errores.
-entrenar_n(Tasa, N, Ejemplos, Pesos0, Pesos, Curva) :-
-    numlist(1, N, Epocas),
-    foldl(epoca_contada(Tasa, Ejemplos), Epocas, Pesos0-Curva, Pesos-[]).
+%   Cantidad de instancias positivas, negativas y desconocidas según el
+%   espacio de los tres primeros ejemplos de esfera_roja.
+cuenta_clases(Pos, Neg, Desc) :-
+    eliminar_de(esfera_roja, 3, EV),
+    aggregate_all(count, ( instancia(I), clasificar(EV, I, positivo) ),
+                  Pos),
+    aggregate_all(count, ( instancia(I), clasificar(EV, I, negativo) ),
+                  Neg),
+    aggregate_all(count, ( instancia(I), clasificar(EV, I, desconocido) ),
+                  Desc).
 
-%!  epoca_contada(+Tasa, +Ejemplos, +Numero:integer, +Estado0, -Estado)
-%!      is det.
+%!  desconocidas_esperadas is semidet.
 %
-%   Estado0 es Pesos0-[Errores|Curva] y Estado es Pesos-Curva: la época
-%   deja sus errores en la lista, que se completa de adelante hacia atrás.
-epoca_contada(Tasa, Ejemplos, _, Pesos0-[Errores|Curva], Pesos-Curva) :-
-    epoca(Tasa, Ejemplos, Pesos0, Pesos, Errores).
+%   Las instancias desconocidas son las que cubre pieza(esfera, _, _, _)
+%   o pieza(_, rojo, _, _) y no pieza(esfera, rojo, _, _).
+desconocidas_esperadas :-
+    eliminar_de(esfera_roja, 3, EV),
+    forall(instancia(I),
+           (   clasificar(EV, I, desconocido)
+           ->  ( cubre(pieza(esfera, _, _, _), I)
+               ; cubre(pieza(_, rojo, _, _), I) ),
+               \+ cubre(pieza(esfera, rojo, _, _), I)
+           ;   true
+           )).
 
 % Ejercicio 5
 
-%!  puntos_con_ruido(-Ejemplos:list) is det.
+%!  pasivo_inverso(+C, -N:integer, -E) is det.
 %
-%   Ejemplos son los puntos de datos/2 con la clase del último cambiada.
-puntos_con_ruido(Ejemplos) :-
-    datos(puntos, Ps),
-    reverse(Ps, [ej(Xs, _)|Anteriores]),
-    reverse([ej(Xs, -1)|Anteriores], Ejemplos).
+%   Como pasivo/3, con las instancias en el orden inverso al de
+%   instancia/1 después del primer positivo.
+pasivo_inverso(C, N, E) :-
+    primer_positivo(C, I),
+    findall(Ej, ( instancia(J),
+                  J \== I,
+                  objetivo(C, J, Ej) ), Ejs0),
+    reverse(Ejs0, Ejs),
+    inicial(EV0),
+    actualizar(pos(I), EV0, EV),
+    recibir(Ejs, EV, 1, N, E).
 
-%!  entrenar_bolsillo(+Tasa:number, +N:integer, +Ejemplos:list,
-%!                    +Pesos0:list, -Mejores:list, -Errores:integer)
-%!      is det.
+%!  recibir(+Ejs:list, +EV, +N0:integer, -N:integer, -E) is det.
 %
-%   Mejores son, entre Pesos0 y los pesos del final de cada una de N
-%   épocas, los primeros que menos Ejemplos clasifican mal, y Errores es
-%   esa cantidad.
-entrenar_bolsillo(Tasa, N, Ejemplos, Pesos0, Mejores, Errores) :-
-    errores(Pesos0, Ejemplos, E0),
-    numlist(1, N, Epocas),
-    foldl(epoca_bolsillo(Tasa, Ejemplos), Epocas,
-          b(Pesos0, Pesos0, E0), b(_, Mejores, Errores)).
-
-%!  epoca_bolsillo(+Tasa, +Ejemplos, +Numero:integer, +Estado0, -Estado)
-%!      is det.
-%
-%   Estado0 es b(Pesos0, Mejores0, E0): los pesos actuales, los mejores
-%   hasta ahora y sus errores. Estado es el mismo término después de una
-%   época.
-epoca_bolsillo(Tasa, Ejemplos, _, b(Pesos0, Mejores0, E0),
-               b(Pesos, Mejores, E)) :-
-    epoca(Tasa, Ejemplos, Pesos0, Pesos, _),
-    errores(Pesos, Ejemplos, E1),
-    (   E1 < E0
-    ->  Mejores = Pesos,
-        E = E1
-    ;   Mejores = Mejores0,
+%   Actualiza EV con los ejemplos de Ejs hasta que converge o colapsa. N0
+%   es la cantidad de ejemplos ya recibidos y N la final.
+recibir(Ejs, EV, N0, N, E) :-
+    estado(EV, E0),
+    (   E0 == abierto,
+        Ejs = [Ej|Resto]
+    ->  actualizar(Ej, EV, EV1),
+        N1 is N0 + 1,
+        recibir(Resto, EV1, N1, N, E)
+    ;   N = N0,
         E = E0
     ).
 
+%!  promedio_inverso(-P:float) is det.
+%
+%   P es el promedio de ejemplos de pasivo_inverso/3 sobre los conceptos
+%   distintos de vacio, redondeado a dos decimales.
+promedio_inverso(P) :-
+    aggregate_all(bag(N), ( concepto(C),
+                            C \== vacio,
+                            pasivo_inverso(C, N, _) ), Ns),
+    sum_list(Ns, Suma),
+    length(Ns, K),
+    P is round(Suma / K * 100) / 100.0.
+
 % Ejercicio 6
 
-% nand(Ejemplos): la negación de la conjunción.
-nand([ej([0, 0], 1), ej([0, 1], 1), ej([1, 0], 1), ej([1, 1], -1)]).
-
-%!  entrenar_capas(-Modelo) is det.
+%!  eliminar_con_descarte(+Ejs:list, -EV, -Descartados:list) is det.
 %
-%   Modelo es capas(Po, Pn, Py): los pesos de la disyunción y de la
-%   negación de la conjunción, que forman la primera capa, y los de la
-%   conjunción, que combina sus salidas. Los tres se entrenan por
-%   separado, desde pesos nulos y con tasa 1.
-entrenar_capas(capas(Po, Pn, Py)) :-
-    datos(o, O),
-    entrenar(1, O, [0, 0, 0], Po, _),
-    nand(N),
-    entrenar(1, N, [0, 0, 0], Pn, _),
-    datos(y, Y),
-    entrenar(1, Y, [0, 0, 0], Py, _).
+%   EV es el espacio de versiones de los ejemplos de Ejs, salvo los que lo
+%   harían colapsar, que se ignoran y quedan en Descartados, en el orden
+%   en que llegaron.
+eliminar_con_descarte(Ejs, EV, Descartados) :-
+    inicial(EV0),
+    foldl(con_descarte, Ejs, EV0-[], EV-Inv),
+    reverse(Inv, Descartados).
 
-%!  salida_capas(+Modelo, +Entradas:list, -Clase) is det.
+%!  con_descarte(+Ej, +Estado0, -Estado) is det.
 %
-%   Clase es la salida de la segunda capa de Modelo para las Entradas.
-%   Las salidas de la primera capa, 1 o -1, se pasan a 1 o 0 porque la
-%   segunda capa se entrenó con entradas 1 y 0.
-salida_capas(capas(Po, Pn, Py), Xs, Clase) :-
-    salida(Po, Xs, A),
-    salida(Pn, Xs, B),
-    maplist(binaria, [A, B], Intermedias),
-    salida(Py, Intermedias, Clase).
-
-%!  binaria(+Clase, -Bit) is det.
-%
-%   Bit es 1 si Clase es 1, y 0 si es -1.
-binaria(Clase, Bit) :-
-    Bit is (Clase + 1) // 2.
-
-% Ejercicio 7
-
-% tres_clases(Ejemplos): puntos del plano con clases a, b y c.
-tres_clases([ ej([0, 0], a), ej([1, 0], a), ej([0, 1], a),
-              ej([6, 0], b), ej([7, 1], b), ej([6, 1], b),
-              ej([0, 6], c), ej([1, 7], c), ej([1, 6], c)
-            ]).
-
-%!  entrenar_clases(+Ejemplos:list, -Modelo:list(pair)) is semidet.
-%
-%   Modelo es una lista Clase-Pesos con un perceptrón por clase, que
-%   separa esa clase de todas las demás. Falla si alguna clase no se
-%   separa de las otras.
-entrenar_clases(Ejemplos, Modelo) :-
-    findall(C, member(ej(_, C), Ejemplos), Cs0),
-    sort(Cs0, Clases),
-    maplist(entrenar_clase(Ejemplos), Clases, Modelo).
-
-%!  entrenar_clase(+Ejemplos:list, +Clase, -Par:pair) is semidet.
-%
-%   Par es Clase-Pesos, con Pesos entrenados para dar 1 a los Ejemplos de
-%   la Clase y -1 a los demás.
-entrenar_clase(Ejemplos, Clase, Clase-Pesos) :-
-    maplist(uno_contra_resto(Clase), Ejemplos, Binarios),
-    entrenar(1, Binarios, [0, 0, 0], Pesos, _).
-
-%!  uno_contra_resto(+Clase, +Ejemplo, -Binario) is det.
-%
-%   Binario es el Ejemplo con clase 1 si era de la Clase, y -1 si no.
-uno_contra_resto(Clase, ej(Xs, C), ej(Xs, D)) :-
-    (   C == Clase
-    ->  D = 1
-    ;   D = -1
+%   Estado es EV-Ds después de Ej: si actualizar EV0 con Ej lo hace
+%   colapsar, EV es EV0 y Ej se agrega a Ds.
+con_descarte(Ej, EV0-Ds0, EV-Ds) :-
+    actualizar(Ej, EV0, EV1),
+    (   estado(EV1, colapso)
+    ->  EV = EV0,
+        Ds = [Ej|Ds0]
+    ;   EV = EV1,
+        Ds = Ds0
     ).
 
-%!  suma(+Pesos:list, +Entradas:list, -S:number) is det.
+%!  eliminar_con_descarte_de(+K:integer, -EV, -Descartados:list) is det.
 %
-%   S es W0 + W1·X1 + ... + Wn·Xn.
-suma([W0|Ws], Xs, S) :-
-    foldl(sumar_producto, Ws, Xs, W0, S).
-
-%!  clase_de(+Modelo:list(pair), +Entradas:list, -Clase) is det.
-%
-%   Clase es la del perceptrón de Modelo con la mayor suma para las
-%   Entradas; con sumas iguales, la primera.
-clase_de(Modelo, Xs, Clase) :-
-    maplist(suma_de(Xs), Modelo, Pares),
-    pairs_keys_values(Pares, Sumas, _),
-    max_list(Sumas, Maxima),
-    once(member(Maxima-Clase, Pares)).
-
-%!  suma_de(+Entradas, +Par:pair, -Suma:pair) is det.
-%
-%   Par es Clase-Pesos y Suma es S-Clase, con S la suma de Pesos para las
-%   Entradas.
-suma_de(Xs, Clase-Pesos, S-Clase) :-
-    suma(Pesos, Xs, S).
+%   eliminar_con_descarte/3 sobre la secuencia esfera_roja con el negativo
+%   mal clasificado insertado después de los K primeros ejemplos.
+eliminar_con_descarte_de(K, EV, Descartados) :-
+    secuencia(esfera_roja, Ejs0),
+    length(Antes, K),
+    append(Antes, Despues, Ejs0),
+    append(Antes, [neg(pieza(esfera, rojo, grande, madera))|Despues], Ejs),
+    eliminar_con_descarte(Ejs, EV, Descartados).
 
 % Ejercicio 8
 
-%!  recta(+Pesos:list, -Pendiente:float, -Ordenada:float) is semidet.
+%!  reglas_abuelo(-Rs:list) is det.
 %
-%   La frontera de Pesos [W0, W1, W2] es la recta y = Pendiente · x +
-%   Ordenada. Falla si W2 es 0: la frontera es entonces vertical.
-recta([W0, W1, W2], Pendiente, Ordenada) :-
-    W2 =\= 0,
-    Pendiente is -W1 / W2,
-    Ordenada is -W0 / W2.
+%   Rs son las reglas de abuelo/2 aprendidas de cada positivo de
+%   ejemplos/3, sin las que otra regla de la lista subsume.
+reglas_abuelo(Rs) :-
+    ejemplos(abuelo, Pos, _),
+    findall(R, ( member(E, Pos),
+                 aprender(familia, familia, E, R) ), Rs0),
+    sin_subsumidas(Rs0, Rs).
+
+%!  sin_subsumidas(+Rs0:list, -Rs:list) is det.
+%
+%   Rs son las reglas de Rs0, en su orden, salvo las que una regla
+%   anterior de Rs subsume.
+sin_subsumidas(Rs0, Rs) :-
+    foldl(agregar_si_nueva, Rs0, [], Inv),
+    reverse(Inv, Rs).
+
+%!  agregar_si_nueva(+R, +Rs0:list, -Rs:list) is det.
+%
+%   Rs es Rs0 con R al frente, salvo que una regla de Rs0 subsuma a R.
+agregar_si_nueva(R, Rs0, Rs) :-
+    (   member(Q, Rs0),
+        subsume(Q, R)
+    ->  Rs = Rs0
+    ;   Rs = [R|Rs0]
+    ).
+
+%!  cobertura_abuelo(-P:integer, -N:integer) is det.
+%
+%   P es la cantidad de positivos y N la de negativos de abuelo/2 que
+%   cubre alguna regla de reglas_abuelo/1.
+cobertura_abuelo(P, N) :-
+    reglas_abuelo(Rs),
+    ejemplos(abuelo, Pos, Negs),
+    hechos(familia, Hs),
+    aggregate_all(count, ( member(E, Pos), cubierto(Rs, Hs, E) ), P),
+    aggregate_all(count, ( member(E, Negs), cubierto(Rs, Hs, E) ), N).
+
+%!  cubierto(+Rs:list, +Hs:list, +E) is semidet.
+%
+%   Alguna regla de Rs prueba E con los hechos Hs.
+cubierto(Rs, Hs, E) :-
+    member(R, Rs),
+    aplicar(familia, R, Hs, E),
+    !.
 
 % Ejercicio 10
 
-%!  entrenar_cola(+Tasa:number, +Ejemplos:list, +Pesos0:list,
-%!                -Pesos:list, -Pasos:integer) is det.
+%!  reglas_de_tazas(-Rs:list) is det.
 %
-%   Como entrenar_uno/5, con los ejemplos en una cola hecha con una lista
-%   diferencia: pasar el primero al final no copia la lista.
-entrenar_cola(Tasa, Ejemplos, Pesos0, Pesos, Pasos) :-
-    append(Ejemplos, Fin, Cola),
-    entrenar_cola(Tasa, Ejemplos, Cola-Fin, Pesos0, 0, Pesos, Pasos).
+%   Rs son las reglas aprendidas de cada taza de la población, sin las
+%   que una regla anterior subsume.
+reglas_de_tazas(Rs) :-
+    poblacion(Os),
+    clasificar_con_teoria(taza, Tazas),
+    findall(R, ( member(O, Tazas),
+                 memberchk(O-Hs, Os),
+                 operacionales(taza, Ops),
+                 once(ebg(taza, Ops, Hs, taza(O), R)) ), Rs0),
+    sin_subsumidas(Rs0, Rs).
 
-%!  entrenar_cola(+Tasa, +Ejemplos, +Cola, +Pesos0, +Pasos0:integer,
-%!                -Pesos, -Pasos:integer) is det.
+%!  costo_con(+K:integer, -N:integer) is det.
 %
-%   Cola es Frente-Fin, una lista diferencia con los ejemplos en el orden
-%   en que se usan; Ejemplos es la lista fija que se verifica.
-entrenar_cola(Tasa, Ejemplos, [E|Frente]-[E|Fin], Pesos0, Pasos0,
-              Pesos, Pasos) :-
-    (   maplist(bien_clasificado(Pesos0), Ejemplos)
-    ->  Pesos = Pesos0,
-        Pasos = Pasos0
-    ;   corregir(Tasa, E, Pesos0, Pesos1),
-        Pasos1 is Pasos0 + 1,
-        entrenar_cola(Tasa, Ejemplos, Frente-Fin, Pesos1, Pasos1, Pesos,
-                      Pasos)
-    ).
+%   N son las inferencias de reconocidas/3 con K reglas: las de
+%   reglas_de_tazas/1 repetidas en ciclo hasta completar K.
+costo_con(K, N) :-
+    reglas_de_tazas(Rs),
+    length(Rs, L),
+    findall(R, ( between(1, K, J),
+                 I is (J - 1) mod L,
+                 nth0(I, Rs, R) ), Reglas),
+    ebg:inferencias(reconocidas(taza, Reglas, _), N).
 
 % Ejercicio 11
 
-%!  margen(+Pesos:list, +Ejemplos:list, -Margen:float) is det.
+%!  relevantes(+T, +E, +Meta, -Usados:list) is semidet.
 %
-%   Margen es la menor distancia con signo de los Ejemplos a la frontera
-%   de Pesos: positiva si todos están del lado de su clase. Pesos debe
-%   tener algún peso distinto de cero además del sesgo.
-margen([W0|Ws], Ejemplos, Margen) :-
-    foldl(sumar_producto, Ws, Ws, 0, Cuadrados),
-    Norma is sqrt(Cuadrados),
-    maplist(distancia([W0|Ws], Norma), Ejemplos, Distancias),
-    min_list(Distancias, Margen).
+%   Usados son los hechos de la descripción del ejemplo E que son hojas
+%   de la primera explicación de Meta con la teoría T, en el orden de la
+%   descripción. Falla si Meta no tiene explicación.
+relevantes(T, E, Meta, Usados) :-
+    hechos(E, Hs),
+    once(explicar(T, Hs, Meta, Arbol)),
+    findall(H, hoja(Arbol, H), Hojas),
+    include(usado(Hojas), Hs, Usados).
 
-%!  distancia(+Pesos:list, +Norma:float, +Ejemplo, -D:float) is det.
+%!  irrelevantes(+T, +E, +Meta, -Otros:list) is semidet.
 %
-%   D es la distancia con signo del Ejemplo ej(Xs, C) a la frontera: la
-%   suma de Pesos para Xs, por C, dividida por la Norma.
-distancia(Pesos, Norma, ej(Xs, C), D) :-
-    suma(Pesos, Xs, S),
-    D is C * S / Norma.
+%   Otros son los hechos de la descripción de E que la primera
+%   explicación de Meta con la teoría T no usa.
+irrelevantes(T, E, Meta, Otros) :-
+    hechos(E, Hs),
+    relevantes(T, E, Meta, Usados),
+    exclude(usado(Usados), Hs, Otros).
 
-% Ejercicio 12
-
-% anillo(Ejemplos): la clase 1 dentro del círculo de radio 2, -1 fuera.
-anillo([ ej([0, 0], 1), ej([1, 0], 1), ej([0, -1], 1), ej([-1, 1], 1),
-         ej([3, 0], -1), ej([0, 3], -1), ej([-3, 1], -1),
-         ej([2, -2], -1), ej([-2, -2], -1)
-       ]).
-
-%!  cuadrados(+Ejemplo0, -Ejemplo) is det.
+%!  hoja(+Arbol, -H) is nondet.
 %
-%   Ejemplo tiene como entradas los cuadrados de las de Ejemplo0.
-cuadrados(ej(Xs, D), ej(Cs, D)) :-
-    maplist(cuadrado, Xs, Cs).
+%   H es un hecho que aparece como hoja prueba(H, []) del árbol Arbol.
+hoja(prueba(H, []), H).
+hoja(prueba(_, [A|As]), H) :-
+    member(B, [A|As]),
+    hoja(B, H).
 
-%!  cuadrado(+X:number, -C:number) is det.
+%!  usado(+Hs:list, @H) is semidet.
 %
-%   C es X·X.
-cuadrado(X, C) :-
-    C is X * X.
-
-% Consultas de la página de soluciones
-
-%!  errores_en(+Nombre:atom, +Pesos:list, -N:integer) is det.
-%
-%   N es la cantidad de ejemplos del conjunto Nombre de datos/2 que Pesos
-%   clasifican mal.
-errores_en(Nombre, Pesos, N) :-
-    datos(Nombre, Ejemplos),
-    errores(Pesos, Ejemplos, N).
-
-%!  bolsillo_con_ruido(+N:integer, -Mejores:list, -Errores:integer) is det.
-%
-%   Como entrenar_bolsillo/6 con N épocas sobre puntos_con_ruido/1, desde
-%   los pesos iniciales de Csenki y con tasa 0.25.
-bolsillo_con_ruido(N, Mejores, Errores) :-
-    puntos_con_ruido(Ejemplos),
-    entrenar_bolsillo(0.25, N, Ejemplos, [0.13, -0.51, -0.35], Mejores,
-                      Errores).
-
-%!  margen_en(+Nombre:atom, +Tasa:number, +Pesos0:list, -Margen:float)
-%!      is semidet.
-%
-%   Margen es el de los pesos que entrenar/5 obtiene para el conjunto
-%   Nombre de datos/2 desde Pesos0 con la Tasa.
-margen_en(Nombre, Tasa, Pesos0, Margen) :-
-    datos(Nombre, Ejemplos),
-    entrenar(Tasa, Ejemplos, Pesos0, Pesos, _),
-    margen(Pesos, Ejemplos, Margen).
-
-%!  probar_anillo(+Rasgos:atom, -Resultado) is semidet.
-%
-%   Resultado es el de entrenar_o_ciclo/4 para anillo/1, con las entradas
-%   originales (Rasgos = entradas) o sus cuadrados (Rasgos = cuadrados),
-%   desde pesos nulos y con tasa 1.
-probar_anillo(entradas, Resultado) :-
-    anillo(Ejemplos),
-    entrenar_o_ciclo(1, Ejemplos, [0, 0, 0], Resultado).
-probar_anillo(cuadrados, Resultado) :-
-    anillo(Ejemplos0),
-    maplist(cuadrados, Ejemplos0, Ejemplos),
-    entrenar_o_ciclo(1, Ejemplos, [0, 0, 0], Resultado).
-
-%!  modelo_tres_clases(-Modelo:list(pair)) is det.
-%
-%   Modelo es el de entrenar_clases/2 para tres_clases/1.
-modelo_tres_clases(Modelo) :-
-    tres_clases(Ejemplos),
-    entrenar_clases(Ejemplos, Modelo).
-
-%!  costo_cola(-Cola:integer, -Uno:integer) is det.
-%
-%   Cola y Uno son las inferencias de entrenar_cola/5 y de entrenar_uno/5
-%   con los ocho puntos, los pesos iniciales de Csenki y tasa 0.25.
-costo_cola(Cola, Uno) :-
-    datos(puntos, Ejemplos),
-    inferencias(entrenar_cola(0.25, Ejemplos, [0.13, -0.51, -0.35], _, _),
-                Cola),
-    inferencias(entrenar_uno(0.25, Ejemplos, [0.13, -0.51, -0.35], _, _),
-                Uno).
+%   H es uno de los términos de Hs.
+usado(Hs, H) :-
+    memberchk(H, Hs).

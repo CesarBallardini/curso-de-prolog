@@ -17,7 +17,6 @@
           ]).
 
 :- use_module(library(dcg/basics)).
-:- use_module(library(error)).
 :- use_module(datos).
 :- use_module(reglas).
 :- use_module(informes).
@@ -28,16 +27,12 @@
 %   aceptada o rechazada(Motivo) para una inscripción, baja o
 %   rechazada(no_la_cursa) para una baja, inscriptos(Legajos) para un
 %   listado, promedio(P) o sin_notas para un promedio, y no_entendido si el
-%   texto no es un comando. Si realizar el comando produce un error,
-%   Respuesta es error(Formal), con la parte formal del término de error.
-%   Produce un error de tipo si Texto no es un texto.
+%   texto no es un comando.
 ejecutar(Texto, Respuesta) :-
-    must_be(text, Texto),
     string_codes(Texto, Codigos),
     (   phrase(palabras(Palabras), Codigos),
         phrase(comando(Comando), Palabras)
-    ->  catch(realizar(Comando, Respuesta), error(Formal, _),
-              Respuesta = error(Formal))
+    ->  realizar(Comando, Respuesta)
     ;   Respuesta = no_entendido
     ).
 

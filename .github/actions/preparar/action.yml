@@ -40,10 +40,10 @@ runs:
     # It no longer comes from ppa:swi-prolog/stable: that PPA publishes only
     # 10 now, and removed its last 9.2.9 build for noble in February 2026.
     #
-    # python3-dev is for chapter 29: the janus-swi package builds against the
+    # python3-dev is for chapter 30: the janus-swi package builds against the
     # headers of this Python and of this swipl.
     #
-    # swi-prolog-odbc and libsqliteodbc are for chapter 42: library(odbc) is
+    # swi-prolog-odbc and libsqliteodbc are for chapter 43: library(odbc) is
     # packaged apart from swi-prolog-nox, and libsqliteodbc is the SQLite
     # driver, registered with unixODBC as SQLite3. Without them the chapter's
     # ODBC tests are blocked instead of run.
@@ -63,9 +63,9 @@ runs:
       run: |
         swipl -q -t halt -g 'current_prolog_flag(version, V), ( V >= 90000, V < 100000 -> true ; format(user_error, "this book shows the answers of SWI-Prolog 9; this is ~w~n", [V]), halt(1) )'
 
-    # Chapter 15 teaches if_/3 from library(reif), a pack. It has no licence
+    # Chapter 16 teaches if_/3 from library(reif), a pack. It has no licence
     # of its own, so it cannot be copied into the repository: it is installed
-    # here, as each reader installs it (section 15.9).
+    # here, as each reader installs it (section 16.9).
     #
     # Not with pack_install/2: that asks www.swi-prolog.org/pack/query first,
     # and a 503 from that server failed whole runs. The pack is its git

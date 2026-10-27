@@ -39,7 +39,7 @@ Feature: A written answer from the browser's own language model
     And the student has opened the panel
     When the student asks "¿Qué hace findall/3?"
     Then there is no written answer
-    And "Dónde leerlo" links to "capitulo-17-todas-las-soluciones/#172-findall3"
+    And "Dónde leerlo" links to "capitulo-18-todas-las-soluciones/#182-findall3"
 
   Scenario: Without the Prompt API there is no written answer
     Given a student reading the page "capitulo-07-listas/"

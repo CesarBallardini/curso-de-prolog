@@ -40,7 +40,7 @@
 ### AoP-2.1-1 — Hermana, sobrina y hermanos completos
 - **Fuente:** Sterling & Shapiro, §2.1, ej. (i), p. 75
 - **Tema:** 2, 11
-- **Capítulos:** 3, 42
+- **Capítulos:** 3, 43
 - **Dificultad:** 1
 - **Solución:** sí (verificada en SWI-Prolog 9.2.9 con la base bíblica del cap. 1)
   ```prolog
@@ -57,7 +57,7 @@
 ### AoP-2.1-2 — Relaciones políticas: suegra, cuñado, yerno
 - **Fuente:** Sterling & Shapiro, §2.1, ej. (ii), p. 75
 - **Tema:** 2, 11
-- **Capítulos:** 3, 42
+- **Capítulos:** 3, 43
 - **Dificultad:** 1
 - **Solución:** no
 - **SWISH:** sí
@@ -77,7 +77,7 @@
 ### AoP-2.2-1 — Consultas sobre cursos: ubicación, ocupado, no pueden reunirse
 - **Fuente:** Sterling & Shapiro, §2.2, ej. (i), p. 79
 - **Tema:** 2, 3, 11
-- **Capítulos:** 4, 42
+- **Capítulos:** 4, 43
 - **Dificultad:** 1
 - **Solución:** no
 - **SWISH:** sí
@@ -87,7 +87,7 @@
 ### AoP-2.2-2 — Conflicto de horarios
 - **Fuente:** Sterling & Shapiro, §2.2, ej. (ii), p. 79
 - **Tema:** 2, 7, 11
-- **Capítulos:** 8, 42
+- **Capítulos:** 8, 43
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -97,7 +97,7 @@
 ### AoP-2.2-3 — Requisitos de graduación
 - **Fuente:** Sterling & Shapiro, §2.2, ej. (iii), p. 79
 - **Tema:** 2, 11
-- **Capítulos:** 3, 17, 42
+- **Capítulos:** 3, 18, 43
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -107,7 +107,7 @@
 ### AoP-2.2-4 — Base de datos propia
 - **Fuente:** Sterling & Shapiro, §2.2, ej. (iv), p. 79
 - **Tema:** 1, 2, 11
-- **Capítulos:** 3, 42
+- **Capítulos:** 3, 43
 - **Dificultad:** 1
 - **Solución:** no
 - **SWISH:** sí
@@ -117,7 +117,7 @@
 ### AoP-2.3-1 — Pila de bloques: `above` como clausura transitiva de `on`
 - **Fuente:** Sterling & Shapiro, §2.3, ej. (i), p. 82
 - **Tema:** 5, 11
-- **Capítulos:** 6, 42
+- **Capítulos:** 6, 43
 - **Dificultad:** 1
 - **Solución:** sí (verificada)
   ```prolog
@@ -151,7 +151,7 @@
 ### AoP-2.4-P — Álgebra relacional en Prolog (adaptado de §2.4)
 - **Fuente:** Sterling & Shapiro, §2.4, p. 83–84 (sin ejercicios en el libro; adaptado del texto)
 - **Tema:** 2, 8, 11
-- **Capítulos:** 42, 10
+- **Capítulos:** 43, 10
 - **Dificultad:** 1
 - **Solución:** no
 - **SWISH:** sí
@@ -161,7 +161,7 @@
 
 ## Capítulo 3: Programación recursiva
 
-> Nota general para SWI-Prolog: redefinir en un archivo propio `append/3`, `member/2`, `reverse/2`, `select/3`, `plus/3`, etc. funciona (la definición local tapa la de biblioteca), pero **`length/2` es un predicado del sistema y no se puede redefinir** ("No permission to modify static procedure"). Conviene pedir nombres propios (`largo/2`, `my_length/2`). El libro escribe `≤` (Programa 3.2) como predicado infijo; en SWI conviene llamarlo `leq/2`.
+> Nota general para SWI-Prolog: redefinir en un archivo propio `append/3`, `member/2`, `reverse/2`, `select/3`, `plus/3`, etc. funciona (la definición local tapa la de biblioteca), pero **`length/2` es un predicado del sistema y no se puede redefinir** ("No permission to modify static procedure"). Conviene pedir nombres propios (`longitud/2`, `my_length/2`). El libro escribe `≤` (Programa 3.2) como predicado infijo; en SWI conviene llamarlo `leq/2`.
 
 ### AoP-3.1-1 — `<`, `>` y `≥` sobre naturales de Peano
 - **Fuente:** Sterling & Shapiro, §3.1, ej. (i), p. 96
@@ -180,7 +180,7 @@
 ### AoP-3.1-2 — Corrección y completitud de `≤`
 - **Fuente:** Sterling & Shapiro, §3.1, ej. (ii), p. 96
 - **Tema:** 5 (teoría)
-- **Capítulos:** 6, 12
+- **Capítulos:** 6, 13
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** no (demostración en papel)
@@ -303,7 +303,7 @@
 ### AoP-3.2-4 — Tamaño del árbol de prueba de `reverse`
 - **Fuente:** Sterling & Shapiro, §3.2, ej. (iv), p. 106
 - **Tema:** 4, 6 (teoría)
-- **Capítulos:** 7, 16
+- **Capítulos:** 7, 17
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí (para medir con `time/1`)
@@ -380,7 +380,7 @@
 ### AoP-3.3-5 — Merge sort
 - **Fuente:** Sterling & Shapiro, §3.3, ej. (v), p. 112
 - **Tema:** 6, 7
-- **Capítulos:** 8, 22
+- **Capítulos:** 8, 23
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -390,7 +390,7 @@
 ### AoP-3.3-6 — k-ésimo mayor en tiempo lineal
 - **Fuente:** Sterling & Shapiro, §3.3, ej. (vi), p. 112
 - **Tema:** 6, 7
-- **Capítulos:** 8, 22
+- **Capítulos:** 8, 23
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -400,7 +400,7 @@
 ### AoP-3.3-7 — La mejor mano de póker
 - **Fuente:** Sterling & Shapiro, §3.3, ej. (vii), p. 113
 - **Tema:** 3, 6
-- **Capítulos:** 8, 22
+- **Capítulos:** 8, 23
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -448,7 +448,7 @@
 ### AoP-3.4-4 — Insertar en un ABB
 - **Fuente:** Sterling & Shapiro, §3.4, ej. (iv), p. 119
 - **Tema:** 5, 7
-- **Capítulos:** 8, 22
+- **Capítulos:** 8, 23
 - **Dificultad:** 1
 - **Solución:** sí (verificada)
   ```prolog
@@ -483,7 +483,7 @@
 ### AoP-3.5-2 — Tipo de las fórmulas booleanas
 - **Fuente:** Sterling & Shapiro, §3.5, ej. (ii), p. 125
 - **Tema:** 3, 5
-- **Capítulos:** 6, 12
+- **Capítulos:** 6, 13
 - **Dificultad:** 1
 - **Solución:** no
 - **SWISH:** sí
@@ -493,7 +493,7 @@
 ### AoP-3.5-3 — ¿Forma normal conjuntiva?
 - **Fuente:** Sterling & Shapiro, §3.5, ej. (iii), p. 125
 - **Tema:** 3, 5
-- **Capítulos:** 6, 12
+- **Capítulos:** 6, 13
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -502,7 +502,7 @@
 ### AoP-3.5-4 — Negaciones hacia adentro
 - **Fuente:** Sterling & Shapiro, §3.5, ej. (iv), p. 125
 - **Tema:** 3, 5
-- **Capítulos:** 6, 12
+- **Capítulos:** 6, 13
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -512,7 +512,7 @@
 ### AoP-3.5-5 — Pasaje a FNC
 - **Fuente:** Sterling & Shapiro, §3.5, ej. (v), p. 125
 - **Tema:** 3, 5
-- **Capítulos:** 6, 12
+- **Capítulos:** 6, 13
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -596,7 +596,7 @@
 ### AoP-5.2-2 — Árboles completos e incompletos
 - **Fuente:** Sterling & Shapiro, §5.2, ej. (ii), p. 149
 - **Tema:** 3, 5 (teoría)
-- **Capítulos:** 4, 34
+- **Capítulos:** 4, 35
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** no (definición en papel)
@@ -605,7 +605,7 @@
 ### AoP-5.3-1 — Complejidad lineal de `append`
 - **Fuente:** Sterling & Shapiro, §5.3, ej. (i), p. 150–151
 - **Tema:** 4, 6 (teoría)
-- **Capítulos:** 7, 16
+- **Capítulos:** 7, 17
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** no (papel)
@@ -615,7 +615,7 @@
 ### AoP-5.3-2 — Complejidad lineal de `plus`
 - **Fuente:** Sterling & Shapiro, §5.3, ej. (ii), p. 151
 - **Tema:** 5 (teoría)
-- **Capítulos:** 6, 16
+- **Capítulos:** 6, 17
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** no (papel)
@@ -624,7 +624,7 @@
 ### AoP-5.3-3 — Complejidad de otros programas
 - **Fuente:** Sterling & Shapiro, §5.3, ej. (iii), p. 151
 - **Tema:** 4 (teoría)
-- **Capítulos:** 7, 16
+- **Capítulos:** 7, 17
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** no
@@ -798,7 +798,7 @@
 ### AoP-8.2-4 — Árbol de codificación de Huffman
 - **Fuente:** Sterling & Shapiro, §8.2, ej. (iv), p. 195
 - **Tema:** 6, 7
-- **Capítulos:** 8, 22
+- **Capítulos:** 8, 23
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -808,7 +808,7 @@
 ### AoP-8.3-1 — `triangle` iterativo
 - **Fuente:** Sterling & Shapiro, §8.3, ej. (i), p. 202
 - **Tema:** 5, 7
-- **Capítulos:** 8, 16
+- **Capítulos:** 8, 17
 - **Dificultad:** 1
 - **Solución:** sí (verificada)
   ```prolog
@@ -824,7 +824,7 @@
 ### AoP-8.3-2 — `power` iterativo
 - **Fuente:** Sterling & Shapiro, §8.3, ej. (ii), p. 202
 - **Tema:** 5, 7
-- **Capítulos:** 8, 16
+- **Capítulos:** 8, 17
 - **Dificultad:** 1
 - **Solución:** sí (verificada)
   ```prolog
@@ -838,7 +838,7 @@
 ### AoP-8.3-3 — `between` en orden descendente
 - **Fuente:** Sterling & Shapiro, §8.3, ej. (iii), p. 202
 - **Tema:** 4, 7
-- **Capítulos:** 8, 15
+- **Capítulos:** 8, 16
 - **Dificultad:** 1
 - **Solución:** sí (verificada: da 3, 2, 1)
   ```prolog
@@ -923,7 +923,7 @@
 ### AoP-9.1-1 — `flatten` con acumulador
 - **Fuente:** Sterling & Shapiro, §9.1, ej. (i), p. 208
 - **Tema:** 3, 6
-- **Capítulos:** 7, 32
+- **Capítulos:** 7, 33
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -933,7 +933,7 @@
 ### AoP-9.2-1 — Contar apariciones de un subtérmino
 - **Fuente:** Sterling & Shapiro, §9.2, ej. (i), p. 214
 - **Tema:** 3, 7
-- **Capítulos:** 32
+- **Capítulos:** 33
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -943,7 +943,7 @@
 ### AoP-9.2-2 — Posición de un subtérmino
 - **Fuente:** Sterling & Shapiro, §9.2, ej. (ii), p. 214–215
 - **Tema:** 3, 6
-- **Capítulos:** 32
+- **Capítulos:** 33
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -952,7 +952,7 @@
 ### AoP-9.2-3 — `=..` contando hacia abajo
 - **Fuente:** Sterling & Shapiro, §9.2, ej. (iii), p. 215
 - **Tema:** 3, 7
-- **Capítulos:** 32
+- **Capítulos:** 33
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -961,7 +961,7 @@
 ### AoP-9.2-4 — `functor` y `arg` a partir de `univ`
 - **Fuente:** Sterling & Shapiro, §9.2, ej. (iv), p. 215
 - **Tema:** 3, 6
-- **Capítulos:** 32
+- **Capítulos:** 33
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -971,7 +971,7 @@
 ### AoP-9.2-5 — `substitute` en términos con `univ`
 - **Fuente:** Sterling & Shapiro, §9.2, ej. (v), p. 215
 - **Tema:** 3, 6
-- **Capítulos:** 32, 18
+- **Capítulos:** 33, 19
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -983,7 +983,7 @@
 ### AoP-10.1-1 — `range` con varios modos de uso
 - **Fuente:** Sterling & Shapiro, §10.1, ej. (i), p. 220
 - **Tema:** 3, 7
-- **Capítulos:** 32, 8
+- **Capítulos:** 33, 8
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -993,7 +993,7 @@
 ### AoP-10.1-2 — `plus` que también descompone un número
 - **Fuente:** Sterling & Shapiro, §10.1, ej. (ii), p. 220
 - **Tema:** 3, 4, 7
-- **Capítulos:** 32, 15
+- **Capítulos:** 33, 16
 - **Dificultad:** 2
 - **Solución:** sí (verificada: `plus3(P,Q,3)` da 0-3, 1-2, 2-1, 3-0)
   ```prolog
@@ -1054,7 +1054,7 @@
 ### AoP-11.3-2 — `nonvar` con corte y falla
 - **Fuente:** Sterling & Shapiro, §11.3, ej. (ii), p. 243
 - **Tema:** 8
-- **Capítulos:** 10, 32
+- **Capítulos:** 10, 33
 - **Dificultad:** 1
 - **Solución:** sí (verificada)
   ```prolog
@@ -1067,7 +1067,7 @@
 ### AoP-11.4-1 — Dónde cortar en `substitute`
 - **Fuente:** Sterling & Shapiro, §11.4, ej. (i), p. 247
 - **Tema:** 8
-- **Capítulos:** 9, 32
+- **Capítulos:** 9, 33
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -1093,7 +1093,7 @@
 ### AoP-12.1-1 — Leer también números
 - **Fuente:** Sterling & Shapiro, §12.1, ej. (i), p. 259
 - **Tema:** 0, 3
-- **Capítulos:** 11, 28
+- **Capítulos:** 11, 29
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** no (lee de la entrada estándar carácter a carácter; usar swipl local)
@@ -1103,7 +1103,7 @@
 ### AoP-12.3-1 — Juego de llegar a 20 con funciones memo
 - **Fuente:** Sterling & Shapiro, §12.3, ej. (i), p. 263
 - **Tema:** 7, 10
-- **Capítulos:** 20, 39
+- **Capítulos:** 21, 40
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1113,7 +1113,7 @@
 ### AoP-12.4-1 — Ampliar el editor de líneas
 - **Fuente:** Sterling & Shapiro, §12.4, ej. (i), p. 270
 - **Tema:** 0, 10
-- **Capítulos:** 28
+- **Capítulos:** 29
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** no (programa interactivo con `read/1`)
@@ -1123,7 +1123,7 @@
 ### AoP-12.4-2 — Registro de sesión en un archivo elegido
 - **Fuente:** Sterling & Shapiro, §12.4, ej. (ii), p. 270
 - **Tema:** 0
-- **Capítulos:** 27
+- **Capítulos:** 28
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** no (escribe archivos)
@@ -1133,7 +1133,7 @@
 ### AoP-12.5-1 — Implementar `abolish`
 - **Fuente:** Sterling & Shapiro, §12.5, ej. (i), p. 272
 - **Tema:** 10
-- **Capítulos:** 20, 15
+- **Capítulos:** 21, 16
 - **Dificultad:** 1
 - **Solución:** sí (verificada)
   ```prolog
@@ -1149,7 +1149,7 @@
 ### AoP-13.3-1 — Diferencia de listas con el esquema del Programa 13.3
 - **Fuente:** Sterling & Shapiro, §13.3, ej. (i), p. 285
 - **Tema:** 6
-- **Capítulos:** 10, 22
+- **Capítulos:** 10, 23
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -1192,7 +1192,7 @@
 ### AoP-14.1-1 — Raíz cuadrada entera por generar y probar
 - **Fuente:** Sterling & Shapiro, §14.1, ej. (i), p. 302
 - **Tema:** 4, 7
-- **Capítulos:** 8, 15
+- **Capítulos:** 8, 16
 - **Dificultad:** 1
 - **Solución:** sí (verificada: isqrt(17) = 4, isqrt(16) = 4)
   ```prolog
@@ -1205,7 +1205,7 @@
 ### AoP-14.1-2 — Matrimonios estables
 - **Fuente:** Sterling & Shapiro, §14.1, ej. (ii), p. 302–303
 - **Tema:** 4, 6
-- **Capítulos:** 7, 40
+- **Capítulos:** 7, 41
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1215,7 +1215,7 @@
 ### AoP-14.1-3 — Colorear el mapa de Europa occidental
 - **Fuente:** Sterling & Shapiro, §14.1, ej. (iii), p. 303
 - **Tema:** 4, 6
-- **Capítulos:** 5, 23
+- **Capítulos:** 5, 24
 - **Dificultad:** 1
 - **Solución:** no
 - **SWISH:** sí
@@ -1225,7 +1225,7 @@
 ### AoP-14.1-4 — N reinas por instanciación de una estructura
 - **Fuente:** Sterling & Shapiro, §14.1, ej. (iv), p. 303
 - **Tema:** 4, 6
-- **Capítulos:** 7, 23
+- **Capítulos:** 7, 24
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1235,7 +1235,7 @@
 ### AoP-14.1-5 — Explicar un programa rápido de N reinas
 - **Fuente:** Sterling & Shapiro, §14.1, ej. (v), p. 303
 - **Tema:** 3, 4
-- **Capítulos:** 4, 23
+- **Capítulos:** 4, 24
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1245,7 +1245,7 @@
 ### AoP-14.1-6 — El acertijo de la cebra
 - **Fuente:** Sterling & Shapiro, §14.1, ej. (vi), p. 303–304
 - **Tema:** 3, 4, 6
-- **Capítulos:** 7, 23
+- **Capítulos:** 7, 24
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -1255,7 +1255,7 @@
 ### AoP-14.1-7 — Planaridad de grafos (Hopcroft-Tarjan) — X
 - **Fuente:** Sterling & Shapiro, §14.1, ej. (vii), p. 304
 - **Tema:** X
-- **Capítulos:** 22
+- **Capítulos:** 23
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1264,7 +1264,7 @@
 ### AoP-14.2-1 — Otro problema del mundo de bloques
 - **Fuente:** Sterling & Shapiro, §14.2, ej. (i), p. 311
 - **Tema:** 4
-- **Capítulos:** 22, 40
+- **Capítulos:** 23, 41
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -1274,7 +1274,7 @@
 ### AoP-14.2-2 — Planificar operaciones de un acumulador — X
 - **Fuente:** Sterling & Shapiro, §14.2, ej. (ii), p. 311
 - **Tema:** X (4)
-- **Capítulos:** 40, 22
+- **Capítulos:** 41, 23
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1303,7 +1303,7 @@
 ### AoP-14.3-3 — ELIZA con cambio de persona
 - **Fuente:** Sterling & Shapiro, §14.3, ej. (iii), p. 319
 - **Tema:** 6
-- **Capítulos:** 7, 18
+- **Capítulos:** 7, 19
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -1313,7 +1313,7 @@
 ### AoP-14.3-4 — McSAM con estructuras — X
 - **Fuente:** Sterling & Shapiro, §14.3, ej. (iv), p. 319
 - **Tema:** X
-- **Capítulos:** 14
+- **Capítulos:** 15
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -1322,7 +1322,7 @@
 ### AoP-14.3-5 — Reconstruir otro clásico de IA (GPS) — X
 - **Fuente:** Sterling & Shapiro, §14.3, ej. (v), p. 319
 - **Tema:** X
-- **Capítulos:** 40
+- **Capítulos:** 41
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1335,7 +1335,7 @@
 ### AoP-15.1-1 — Aplanar con listas diferencia en orden inverso
 - **Fuente:** Sterling & Shapiro, §15.1, ej. (i), p. 331
 - **Tema:** 6
-- **Capítulos:** 34
+- **Capítulos:** 35
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1344,7 +1344,7 @@
 ### AoP-15.1-2 — Recorridos de árboles con listas diferencia
 - **Fuente:** Sterling & Shapiro, §15.1, ej. (ii), p. 331–332
 - **Tema:** 6
-- **Capítulos:** 34
+- **Capítulos:** 35
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -1354,7 +1354,7 @@
 ### AoP-15.1-3 — Torres de Hanoi con lista diferencia — X
 - **Fuente:** Sterling & Shapiro, §15.1, ej. (iii), p. 332
 - **Tema:** X (6)
-- **Capítulos:** 34
+- **Capítulos:** 35
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -1373,7 +1373,7 @@
 ### AoP-15.2-2 — Normalización de sumas: variantes — X
 - **Fuente:** Sterling & Shapiro, §15.2, ej. (ii), p. 334
 - **Tema:** X
-- **Capítulos:** 34
+- **Capítulos:** 35
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1382,7 +1382,7 @@
 ### AoP-15.2-3 — Normalización de sumas con constantes — X
 - **Fuente:** Sterling & Shapiro, §15.2, ej. (iii), p. 334
 - **Tema:** X
-- **Capítulos:** 34
+- **Capítulos:** 35
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1391,7 +1391,7 @@
 ### AoP-15.2-4 — Productos diferencia — X
 - **Fuente:** Sterling & Shapiro, §15.2, ej. (iv), p. 334
 - **Tema:** X
-- **Capítulos:** 34
+- **Capítulos:** 35
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1402,7 +1402,7 @@
 ### AoP-16.1-1 — Intersección con `findall`
 - **Fuente:** Sterling & Shapiro, §16.1, ej. (i), p. 345–346
 - **Tema:** 9
-- **Capítulos:** 17
+- **Capítulos:** 18
 - **Dificultad:** 1
 - **Solución:** sí (verificada)
   ```prolog
@@ -1415,7 +1415,7 @@
 ### AoP-16.2-1 — Algoritmo de Lee con otros obstáculos — X
 - **Fuente:** Sterling & Shapiro, §16.2, ej. (i), p. 355
 - **Tema:** X
-- **Capítulos:** 40
+- **Capítulos:** 41
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1424,7 +1424,7 @@
 ### AoP-16.2-2 — Índice KWIC sobre líneas de texto
 - **Fuente:** Sterling & Shapiro, §16.2, ej. (ii), p. 355
 - **Tema:** 9, 6
-- **Capítulos:** 17, 11
+- **Capítulos:** 18, 11
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -1434,7 +1434,7 @@
 ### AoP-16.2-3 — Rotación de listas con listas diferencia — X
 - **Fuente:** Sterling & Shapiro, §16.2, ej. (iii), p. 355
 - **Tema:** X (6)
-- **Capítulos:** 34
+- **Capítulos:** 35
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -1443,7 +1443,7 @@
 ### AoP-16.2-4 — Árbol generador mínimo
 - **Fuente:** Sterling & Shapiro, §16.2, ej. (iv), p. 355
 - **Tema:** 9, 6
-- **Capítulos:** 17, 22
+- **Capítulos:** 18, 23
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1453,7 +1453,7 @@
 ### AoP-16.2-5 — Flujo máximo (Ford-Fulkerson) — X
 - **Fuente:** Sterling & Shapiro, §16.2, ej. (v), p. 355
 - **Tema:** X
-- **Capítulos:** 22
+- **Capítulos:** 23
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1462,7 +1462,7 @@
 ### AoP-16.3-1 — Reducción beta — X
 - **Fuente:** Sterling & Shapiro, §16.3, ej. (i), p. 358
 - **Tema:** X
-- **Capítulos:** 32
+- **Capítulos:** 33
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1511,7 +1511,7 @@
 ### AoP-17.2-1 a AoP-17.2-5 — Metaintérpretes — X
 - **Fuente:** Sterling & Shapiro, §17.2, ej. (i)–(v), p. 372
 - **Tema:** X
-- **Capítulos:** 33
+- **Capítulos:** 34
 - **Dificultad:** 2–3
 - **Solución:** no
 - **SWISH:** sí (con `clause/2` sobre predicados dinámicos)
@@ -1521,7 +1521,7 @@
 ### AoP-17.4-1 a AoP-17.4-3 — Shell de explicaciones — X
 - **Fuente:** Sterling & Shapiro, §17.4, ej. (i)–(iii), p. 390
 - **Tema:** X
-- **Capítulos:** 33
+- **Capítulos:** 34
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1532,7 +1532,7 @@
 ### AoP-18.1-1, AoP-18.2-1, AoP-18.2-2, AoP-18.3-1 — Evaluación parcial — X
 - **Fuente:** Sterling & Shapiro, §18.1 ej. (i), p. 401; §18.2 ej. (i)–(ii), p. 406; §18.3 ej. (i), p. 414
 - **Tema:** X
-- **Capítulos:** 35
+- **Capítulos:** 36
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1543,7 +1543,7 @@
 ### AoP-19.1-1 — Traductor de DCG completo — X
 - **Fuente:** Sterling & Shapiro, §19.1, ej. (i), p. 421
 - **Tema:** X
-- **Capítulos:** 35, 21
+- **Capítulos:** 36, 22
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1552,7 +1552,7 @@
 ### AoP-19.1-2 — Pascal: declaraciones de etiquetas y funciones
 - **Fuente:** Sterling & Shapiro, §19.1, ej. (ii), p. 421
 - **Tema:** A
-- **Capítulos:** 21
+- **Capítulos:** 22
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1561,7 +1561,7 @@
 ### AoP-19.1-3 — Pascal: devolver las variables declaradas
 - **Fuente:** Sterling & Shapiro, §19.1, ej. (iii), p. 421
 - **Tema:** A
-- **Capítulos:** 21
+- **Capítulos:** 22
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -1571,7 +1571,7 @@
 ### AoP-19.1-4 — Un analizador para un lenguaje a elección
 - **Fuente:** Sterling & Shapiro, §19.1, ej. (iv), p. 421
 - **Tema:** A
-- **Capítulos:** 21
+- **Capítulos:** 22
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -1581,7 +1581,7 @@
 ### AoP-19.2-1 a AoP-19.2-3 — Intérprete de DCG — X
 - **Fuente:** Sterling & Shapiro, §19.2, ej. (i)–(iii), p. 422–423
 - **Tema:** X
-- **Capítulos:** 33, 21, 35
+- **Capítulos:** 34, 22, 36
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1590,7 +1590,7 @@
 ### AoP-19.3-1 — Gramática del francés con concordancia de género
 - **Fuente:** Sterling & Shapiro, §19.3, ej. (i), p. 429
 - **Tema:** A
-- **Capítulos:** 21
+- **Capítulos:** 22
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -1600,7 +1600,7 @@
 ### AoP-19.3-2 — Números en inglés hasta un millón
 - **Fuente:** Sterling & Shapiro, §19.3, ej. (ii), p. 429
 - **Tema:** A, 7
-- **Capítulos:** 21
+- **Capítulos:** 22
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1612,7 +1612,7 @@
 ### AoP-20.1-1 — Jarras de agua con dos operaciones
 - **Fuente:** Sterling & Shapiro, §20.1, ej. (i), p. 439
 - **Tema:** 4, 7
-- **Capítulos:** 22, 40
+- **Capítulos:** 23, 41
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -1622,7 +1622,7 @@
 ### AoP-20.1-2 — Misioneros y caníbales
 - **Fuente:** Sterling & Shapiro, §20.1, ej. (ii), p. 439
 - **Tema:** 4, 6
-- **Capítulos:** 22, 40
+- **Capítulos:** 23, 41
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -1632,7 +1632,7 @@
 ### AoP-20.1-3 — Los cinco maridos celosos
 - **Fuente:** Sterling & Shapiro, §20.1, ej. (iii), p. 442
 - **Tema:** 4, 6
-- **Capítulos:** 22, 40
+- **Capítulos:** 23, 41
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1642,7 +1642,7 @@
 ### AoP-20.1-4 — Marco de búsqueda en anchura — X
 - **Fuente:** Sterling & Shapiro, §20.1, ej. (iv), p. 442
 - **Tema:** X (9)
-- **Capítulos:** 40, 22
+- **Capítulos:** 41, 23
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1651,7 +1651,7 @@
 ### AoP-20.1-5 — Ocho reinas en el marco de búsqueda informada — X
 - **Fuente:** Sterling & Shapiro, §20.1, ej. (v), p. 442
 - **Tema:** X
-- **Capítulos:** 40
+- **Capítulos:** 41
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1664,7 +1664,7 @@
 ### AoP-23-1 a AoP-23-5 — Resolvedor de ecuaciones PRESS — X
 - **Fuente:** Sterling & Shapiro, cap. 23, ej. (i)–(v), p. 497–498
 - **Tema:** X
-- **Capítulos:** 32
+- **Capítulos:** 33
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1674,7 +1674,7 @@
 ### AoP-24-1, AoP-24-2 — Compilador de PL — X
 - **Fuente:** Sterling & Shapiro, cap. 24, ej. (i)–(ii), p. 519
 - **Tema:** X (A)
-- **Capítulos:** 35, 21
+- **Capítulos:** 36, 22
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1697,7 +1697,7 @@
 ### AoP-P-2.2 — Circuito lógico como base de datos (adaptado del Programa 2.2)
 - **Fuente:** Sterling & Shapiro, Programa 2.2, p. 74
 - **Tema:** 2, 11
-- **Capítulos:** 3, 42
+- **Capítulos:** 3, 43
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -1727,7 +1727,7 @@
 ### AoP-P-3.20 — Tres ordenamientos (adaptado de los Programas 3.20–3.22)
 - **Fuente:** Sterling & Shapiro, Programas 3.20 (p. 110), 3.21 (p. 111), 3.22 (p. 111)
 - **Tema:** 4, 6
-- **Capítulos:** 8, 16
+- **Capítulos:** 8, 17
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -1767,7 +1767,7 @@
 ### AoP-P-3.32 — Satisfacibilidad de fórmulas booleanas (adaptado del Programa 3.32)
 - **Fuente:** Sterling & Shapiro, Programa 3.32, p. 124
 - **Tema:** 3, 4, 5
-- **Capítulos:** 6, 12
+- **Capítulos:** 6, 13
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -1805,7 +1805,7 @@
 ### AoP-P-14.4 — Coloreo de mapas y acertijos lógicos (adaptado de los Programas 14.4–14.7)
 - **Fuente:** Sterling & Shapiro, Programas 14.4 (p. 297), 14.6 y 14.7 (p. 300–301)
 - **Tema:** 4, 6
-- **Capítulos:** 7, 23
+- **Capítulos:** 7, 24
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -1815,7 +1815,7 @@
 ### AoP-P-14.10 — Caminos en grafos con ciclos (adaptado de los Programas 14.8–14.10)
 - **Fuente:** Sterling & Shapiro, Programas 14.8–14.10, p. 306–307
 - **Tema:** 4, 6, 11
-- **Capítulos:** 10, 42
+- **Capítulos:** 10, 43
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -1825,7 +1825,7 @@
 ### AoP-P-16.2 — Predicados de todas las soluciones sobre una base de datos (adaptado de los Programas 16.1 y 16.2)
 - **Fuente:** Sterling & Shapiro, Programas 16.1 (p. 343) y 16.2 (p. 344)
 - **Tema:** 9, 11
-- **Capítulos:** 17, 42
+- **Capítulos:** 18, 43
 - **Dificultad:** 1
 - **Solución:** no
 - **SWISH:** sí
@@ -1835,7 +1835,7 @@
 ### AoP-P-16.8 — `map_list` y `has_property` (adaptado del Programa 16.8)
 - **Fuente:** Sterling & Shapiro, Programa 16.8 y Figura 16.4, p. 356–357
 - **Tema:** 9
-- **Capítulos:** 18
+- **Capítulos:** 19
 - **Dificultad:** 1
 - **Solución:** no
 - **SWISH:** sí
@@ -1855,7 +1855,7 @@
 ### AoP-P-17.5 — Metaintérprete "vanilla" (adaptado del Programa 17.5)
 - **Fuente:** Sterling & Shapiro, Programa 17.5, p. 365
 - **Tema:** X (4)
-- **Capítulos:** 33
+- **Capítulos:** 34
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí (predicados interpretados declarados `:- dynamic`)
@@ -1865,7 +1865,7 @@
 ### AoP-P-19.6 — Gramática del castellano con DCG (adaptado de los Programas 19.6–19.8)
 - **Fuente:** Sterling & Shapiro, Programas 19.6 (p. 424), 19.7 y 19.8 (p. 425–426)
 - **Tema:** A
-- **Capítulos:** 21
+- **Capítulos:** 22
 - **Dificultad:** 1–2
 - **Solución:** no
 - **SWISH:** sí
@@ -1875,7 +1875,7 @@
 ### AoP-P-20.2 — Problemas de cruce del río (adaptado de los Programas 20.1–20.3)
 - **Fuente:** Sterling & Shapiro, Programas 20.1 (p. 431), 20.2 (p. 433) y 20.3 (p. 435)
 - **Tema:** 4, 6
-- **Capítulos:** 22, 40
+- **Capítulos:** 23, 41
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí

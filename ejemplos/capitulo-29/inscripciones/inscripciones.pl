@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 29 - Inscripciones: el programa completo, en ocho módulos.
+% Capítulo 29 - Inscripciones: el programa completo, en siete módulos.
 %
 % Este archivo solo carga los módulos. Cargarlo es cargar el programa; cada
 % módulo se puede cargar y probar también por separado. Al terminar de cargar,
@@ -20,6 +20,5 @@
 :- use_module(horarios).
 :- use_module(intercambio).
 :- use_module(consola).
-:- use_module(puente).
 
 :- initialization(comprobar_datos).

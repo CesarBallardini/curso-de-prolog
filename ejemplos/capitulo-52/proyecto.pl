@@ -2,17 +2,20 @@
 
 % Capítulo 52 - El programa terminado.
 %
-% Carga la última versión, que vuelve a exportar las anteriores: el
-% intérprete perezoso con alias y tablas, la biblioteca de funciones de
-% configuración m de Turing, la traza, la expansión a la tabla completa,
-% los números de descripción y la máquina universal.
+% Carga los módulos del proyecto: los autómatas como hechos y la clausura
+% ε tabulada, las construcciones (determinista, complemento, intersección,
+% unión, equivalencia), el autómata mínimo, las expresiones regulares, el
+% analizador léxico, los transductores y los circuitos secuenciales del
+% capítulo 49 como máquinas de Mealy. Los autómatas de pila y las máquinas
+% de Turing están en maquinas.pl, que se carga aparte.
 %
 % solo-local: carga módulos propios, y SWISH no los admite.
 %
-%?- figuras(ii, b, 15, Fs).
-%?- figuras(contador, inicio, 15, Fs).
-%?- cinta_de([schwa, schwa, 1, a, 0, a], 0, C0), ejecutar(biblioteca, ce(fin, a), C0, 1000, detenida(Q, C)), contenido(C, Ss).
-%?- completa(contador, inicio, [0, 1, schwa], 1000, R).
-%?- numero(i, b, [0, 1], N).
+%?- acepta(er("(a|b)*abb"), [a, b, a, b, b]).
+%?- tabla(min(er("(a|b)*abb")), T).
+%?- contraejemplo(er("(ab)*"), er("a*b*"), W).
+%?- componentes("mientras x <= 10 hacer x := x + 1 fin", Cs).
+%?- transducir(plural, W, [l, u, c, e, s]).
 
-:- use_module(universal).
+:- use_module(lexico).
+:- use_module(secuencial).

@@ -30,21 +30,21 @@ Then every chapter that depends on a selected one, directly or through others,
 is selected too. The dependencies are read from the sources on every run, so
 there is no table to keep up to date: chapter MM depends on chapter NN when a
 file under `ejemplos/capitulo-MM/` names `capitulo-NN` (a `use_module` of
-`'../../capitulo-31/inscripciones/datos'`, a file it reads), or when a page of
+`'../../capitulo-32/inscripciones/datos'`, a file it reads), or when a page of
 `docs/capitulo-MM-*/` or the deck `diapositivas/capitulo-MM.md` runs its code
 or its transcripts against `capitulo-NN` (an `<!-- ejemplo: -->` or
 `<!-- contexto: -->` marker, or an `ejemplos/capitulo-NN` path).
 
 The output is the parts of the book that hold a selected chapter, each with
 its list of chapters. The tools behind `make test`, `make transcripts` and
-`make swish` take that list as it is (`make test e="capitulo-42 capitulo-43"`):
+`make swish` take that list as it is (`make test e="capitulo-43 capitulo-44"`):
 test and swish match a whole directory name, transcripts a substring of it,
 which is why the names always carry both digits (`capitulo-4` would also select
 40 to 49). Under GitHub Actions ($GITHUB_OUTPUT set) it writes:
 
-- `matrix`: `{"include": [{"parte": "III", "capitulos": "capitulo-42"}, ...]}`
+- `matrix`: `{"include": [{"parte": "III", "capitulos": "capitulo-43"}, ...]}`
 - `capitulos`: every selected chapter, in one list
-- `python`: `true` when chapter 29, 30, 31 or 36 is selected (`make appendix`)
+- `python`: `true` when chapter 30, 31, 32 or 37 is selected (`make appendix`)
 - `any`: `true` when at least one chapter is selected
 """
 
@@ -59,9 +59,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 
 # The four parts of the book, by their first chapter.
-PARTS = [('I', 1), ('II', 13), ('III', 32), ('IV', 43)]
+PARTS = [('I', 1), ('II', 14), ('III', 33), ('IV', 44)]
 # The pytest suites of `make appendix`.
-PYTHON_CHAPTERS = {29, 30, 31, 36}
+PYTHON_CHAPTERS = {30, 31, 32, 37}
 
 # What the checks run on: a change here can change any result.
 SHARED_DIRS = ('tools/', '.github/')

@@ -1,16 +1,23 @@
 :- encoding(utf8).
 
-% Pruebas de Inscripciones (capítulo 14): las de datos del capítulo 13, con el
-% estado nuevo, y una prueba por modo de cada regla (Patrón 2).
+% Pruebas de los datos de Inscripciones. Todavía no hay reglas que probar:
+% estas pruebas verifican que los hechos sean coherentes entre sí, y son las
+% que el gancho de git ejecuta antes de cada commit (sección 14.7).
 
 :- begin_tests(inscripciones).
 
-% --- Datos ---------------------------------------------------------------
+test(las_materias_de_ana, all(M == [am1, alg, log, am2, pp])) :-
+    inscripcion(101, M, _).
 
+test(requisitos_de_bases_de_datos, all(R == [pp, ssl])) :-
+    correlativa(bd, R).
+
+% Ninguna inscripción nombra un legajo que no existe.
 test(toda_inscripcion_es_de_un_alumno, [fail]) :-
     inscripcion(Legajo, _, _),
     \+ alumno(Legajo, _, _, _).
 
+% Ninguna inscripción ni correlativa nombra una materia que no existe.
 test(toda_inscripcion_es_a_una_materia, [fail]) :-
     inscripcion(_, Materia, _),
     \+ materia(Materia, _, _).
@@ -21,44 +28,10 @@ test(toda_correlativa_une_materias, [fail]) :-
     ;   \+ materia(Requisito, _, _)
     ).
 
-% Un estado es cursando o nota(N) con N entero de 1 a 10.
-test(los_estados_son_validos, [fail]) :-
-    inscripcion(_, _, Estado),
-    Estado \== cursando,
-    \+ ( Estado = nota(N),
-         integer(N),
-         between(1, 10, N) ).
-
-% --- aprobada/3 ------------------------------------------------------------
-
-% Todo libre: la consulta más general enumera todas las aprobadas.
-test(todas_las_aprobadas, all(L-M-N == [101-am1-8, 101-alg-9, 101-log-10,
-                                         101-am2-7, 102-log-6, 103-am1-7,
-                                         104-log-9, 104-alg-7, 104-pp-8,
-                                         106-am1-6])) :-
-    aprobada(L, M, N).
-
-% Legajo y materia ligados, nota libre: una respuesta.
-test(nota_de_ana_en_logica, all(N == [10])) :-
-    aprobada(101, log, N).
-
-% Todo ligado: comprueba, y con una nota falsa falla (estabilidad).
-test(ana_aprobo_logica_con_10) :-
-    aprobada(101, log, 10).
-
-test(ana_no_aprobo_logica_con_9, [fail]) :-
-    aprobada(101, log, 9).
-
-% Con nota menor que la mínima, la materia no está aprobada.
-test(bruno_no_aprobo_algebra, [fail]) :-
-    aprobada(102, alg, _).
-
-% --- cursa/2 ---------------------------------------------------------------
-
-test(quienes_cursan, all(L-M == [101-pp, 103-am2, 105-am1])) :-
-    cursa(L, M).
-
-test(ana_cursa_paradigmas) :-
-    cursa(101, pp).
+% Una nota es un entero de 1 a 10, o null mientras se cursa.
+test(las_notas_son_validas, [fail]) :-
+    inscripcion(_, _, Nota),
+    Nota \== null,
+    \+ between(1, 10, Nota).
 
 :- end_tests(inscripciones).

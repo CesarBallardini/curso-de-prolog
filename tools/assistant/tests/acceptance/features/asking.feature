@@ -14,7 +14,7 @@ Feature: Asking the course a question
 
     Examples:
       | question                                                 | section                                                        |
-      | ¿Qué hace findall/3?                                     | capitulo-17-todas-las-soluciones/#172-findall3                 |
+      | ¿Qué hace findall/3?                                     | capitulo-18-todas-las-soluciones/#182-findall3                 |
       | ¿Cuál es la diferencia entre corte verde y corte rojo?   | capitulo-09-backtracking-y-corte/#95-corte-verde-y-corte-rojo  |
 
   Scenario: An operator is searched as it is written
@@ -62,7 +62,7 @@ Feature: Asking the course a question
 
   Scenario: A link leads to its section and closes the panel
     When the student asks "¿Qué hace findall/3?"
-    And the student follows the link of section "17.2"
-    Then the browser shows "capitulo-17-todas-las-soluciones/#172-findall3"
-    And the heading "172-findall3" is in view
+    And the student follows the link of section "18.2"
+    Then the browser shows "capitulo-18-todas-las-soluciones/#182-findall3"
+    And the heading "182-findall3" is in view
     And the panel is closed

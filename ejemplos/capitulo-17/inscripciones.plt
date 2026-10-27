@@ -1,7 +1,7 @@
 :- encoding(utf8).
 
-% Pruebas de Inscripciones (capítulo 17): las del capítulo 16, y las de los
-% informes.
+% Pruebas de Inscripciones (capítulo 17): las del capítulo 16, y las de
+% aprobada_por_nombre/2.
 
 :- begin_tests(inscripciones).
 
@@ -109,29 +109,5 @@ test(quienes_aprobaron_logica, all(N == [ana, bruno, diego])) :-
 
 test(un_nombre_que_no_existe, [fail]) :-
     aprobada_por_nombre(zoe, _).
-
-% --- Informes --------------------------------------------------------------
-
-test(inscriptos_en_am1, true(L == [101, 102, 103, 105, 106])) :-
-    inscriptos(am1, L).
-
-test(inscriptos_en_una_materia_sin_nadie, true(L == [])) :-
-    inscriptos(bd, L).
-
-% elena (105) solo cursa; gabriela (107) no se inscribió en nada.
-test(sin_notas, true(L == [105, 107])) :-
-    sin_notas(L).
-
-test(promedio_de_logica, true(P =:= 7)) :-
-    promedio_de_materia(log, P).
-
-test(promedio_de_una_materia_sin_notas, [fail]) :-
-    promedio_de_materia(bd, _).
-
-test(promedio_de_ana, true(P =:= 8.5)) :-
-    promedio_de_alumno(101, P).
-
-test(los_tres_mejores, true(R == [101-8.5, 104-8, 103-6])) :-
-    mejores(3, R).
 
 :- end_tests(inscripciones).

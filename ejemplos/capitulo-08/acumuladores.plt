@@ -12,19 +12,19 @@ test(suma_con_acumulador, all(S == [8])) :-
 test(la_lista_vacia_suma_cero, all(S == [0])) :-
     suma_con_acumulador([], S).
 
-test(largo_de_tres, all(N == [3])) :-
-    largo([ana, luis, eva], N).
+test(longitud_de_tres, all(N == [3])) :-
+    longitud([ana, luis, eva], N).
 
-test(largo_de_la_vacia, all(N == [0])) :-
-    largo([], N).
+test(longitud_de_la_vacia, all(N == [0])) :-
+    longitud([], N).
 
-test(dar_vuelta, all(R == [[eva, luis, ana]])) :-
-    dar_vuelta([ana, luis, eva], R).
+test(reversa, all(R == [[eva, luis, ana]])) :-
+    reversa([ana, luis, eva], R).
 
-test(dar_vuelta_uno_solo, all(R == [[ana]])) :-
-    dar_vuelta([ana], R).
+test(reversa_de_uno_solo, all(R == [[ana]])) :-
+    reversa([ana], R).
 
-test(dar_vuelta_la_vacia, all(R == [[]])) :-
-    dar_vuelta([], R).
+test(reversa_de_la_vacia, all(R == [[]])) :-
+    reversa([], R).
 
 :- end_tests(acumuladores).

@@ -563,6 +563,6 @@ con una ficha concreta, A queda ligada al año y el resto se ignora.
 
 Esta es la plantilla 7 del curso, extraer un componente de un término: un
 hecho sin cuerpo, con variables en las posiciones de interés y guiones bajos
-en todas las demás. El capítulo 32 retoma la inspección de términos cuya forma
+en todas las demás. El capítulo 33 retoma la inspección de términos cuya forma
 no se conoce de antemano.
 :::

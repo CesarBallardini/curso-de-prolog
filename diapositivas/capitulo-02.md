@@ -644,6 +644,6 @@ relación con los mismos nombres de argumentos.
 Todo el encabezado es un comentario: Prolog lo ignora. Los hechos conservan el
 comentario de una línea, porque un predicado definido solo por hechos se
 consulta con cualquier combinación de argumentos: todos llevan el signo de
-interrogación. Este formato se denomina PlDoc; el capítulo 14 lo presenta
+interrogación. Este formato se denomina PlDoc; el capítulo 15 lo presenta
 completo, con los demás signos de modo.
 :::

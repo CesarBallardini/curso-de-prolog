@@ -1,390 +1,322 @@
 :- encoding(utf8).
 
-% Capítulo 63 - Soluciones de los ejercicios.
+% Capítulo 63 - Soluciones de los ejercicios 2, 4, 6, 8, 9, 10, 11 y 12.
 %
-% Carga costo.pl, que carga las demás versiones, y no modifica ningún
-% archivo del capítulo: los programas nuevos son cláusulas de programa/2,
-% las estrategias nuevas, de clave_estrategia/3, y las clases nuevas, de
-% marco/3, tres predicados que el capítulo declara multifile.
+% Cada solución usa los módulos del capítulo sin modificarlos: comparacion
+% carga todas las versiones, resolucion agrega el demostrador
+% proposicional, y verificador.pl, que no es un módulo, se carga aparte.
 %
-% solo-local: carga costo.pl con ensure_loaded/1, y SWISH no permite
-% cargar archivos.
+% solo-local: carga los módulos del capítulo, y SWISH no admite módulos
+% propios.
 %
-%?- encadenar_vigilado(familia, orden, no, 50, [padre(juan, ana)], M, R).
-%?- mas_barata([pedido(nucleos, 6), pedido(memoria, 16), pedido(video, no)], C, P).
+%?- clasificar("(p → q) ∨ (q → p)", C).
+%?- decidir("(p → q) → (q → p)", V).
 
-:- ensure_loaded(costo).
-:- ensure_loaded(facetas).
+:- use_module(library(lists)).
+:- use_module(library(apply)).
+:- use_module(library(ordsets)).
+:- use_module(comparacion).
+:- use_module(resolucion).
+:- ensure_loaded(verificador).
+:- use_module(modelos).
 
-% Ejercicio 2 -------------------------------------------------------------
+% --- Ejercicio 2 ---------------------------------------------------------
 
-%!  encadenar_vigilado(+Programa, +Estrategia, +Refraccion, +Limite:integer,
-%!                     +Hechos:list, -Memoria:list, -Resultado) is det.
+%!  clasificar(+Texto, -Clase) is det.
 %
-%   Como encadenar/5, con la refracción si Refraccion es si y sin ella si
-%   es no. Resultado es limite(Limite) si el programa disparó Limite
-%   reglas sin terminar.
-encadenar_vigilado(Programa, Estrategia, Refraccion, Limite, Hechos,
-                   Memoria, Resultado) :-
-    programa(Programa, Reglas),
-    memoria_con(Hechos, Memoria0),
-    vigilado_63(Reglas, Estrategia, Refraccion, Limite, 0, [], Memoria0,
-                Memoria1, Resultado),
-    hechos(Memoria1, Memoria).
-
-%!  vigilado_63(+Reglas:list, +Estrategia, +Refraccion, +Limite:integer,
-%!              +N:integer, +Disparadas:list, +Memoria0, -Memoria,
-%!              -Resultado) is det.
-%
-%   El ciclo de reconocer_actuar/9 con un límite de ciclos. N es la
-%   cantidad de ciclos hechos.
-vigilado_63(Reglas, Estrategia, Refraccion, Limite, N, Disparadas,
-            Memoria0, Memoria, Resultado) :-
-    conjunto_conflicto(Reglas, Memoria0, Todas),
-    candidatas(Refraccion, Todas, Disparadas, Nuevas),
-    (   Nuevas == []
-    ->  Memoria = Memoria0,
-        Resultado = nada_aplicable
-    ;   N >= Limite
-    ->  Memoria = Memoria0,
-        Resultado = limite(N)
-    ;   preferida(Estrategia, Nuevas, Elegida),
-        Elegida = instanciacion(Nombre, Sellos, _, Acciones),
-        ord_add_element(Disparadas, Nombre-Sellos, Disparadas1),
-        aplicar_acciones(Acciones, Memoria0, Memoria1, Fin),
-        N1 is N + 1,
-        (   Fin = parar(R)
-        ->  Memoria = Memoria1,
-            Resultado = R
-        ;   vigilado_63(Reglas, Estrategia, Refraccion, Limite, N1,
-                        Disparadas1, Memoria1, Memoria, Resultado)
-        )
+%   Clase es tautologia, contradiccion o contingente, según la fórmula
+%   sin cuantificadores que Texto escribe: una contradicción es una
+%   fórmula cuya negación es una tautología.
+clasificar(Texto, Clase) :-
+    leer_formula(Texto, F),
+    (   tautologia(clpb, F)
+    ->  Clase = tautologia
+    ;   tautologia(clpb, no(F))
+    ->  Clase = contradiccion
+    ;   Clase = contingente
     ).
 
-%!  candidatas(+Refraccion, +Todas:list, +Disparadas:list, -Nuevas:list)
+% --- Ejercicio 4 ---------------------------------------------------------
+
+%!  clausulas_def(+F, -Clausulas:list) is det.
+%
+%   Clausulas es la forma clausal definicional de F, una fórmula sin
+%   cuantificadores: satisfacible si y solo si F lo es. Cada conjunción y
+%   cada disyunción de la forma normal negada recibe un átomo d(N) y las
+%   cláusulas que dicen que d(N) implica la subfórmula.
+clausulas_def(F, Clausulas) :-
+    fnn(F, G),
+    definir(G, 1, _, L, Cs),
+    maplist(sort, [[L]|Cs], Clausulas).
+
+%!  definir(+G, +N0:integer, -N:integer, -L, -Cs:list) is det.
+%
+%   L es el literal que representa a G, en forma normal negada, y Cs las
+%   cláusulas que lo definen; N0 y N numeran los átomos nuevos.
+definir(at(A), N, N, +A, []).
+definir(no(at(A)), N, N, -A, []).
+definir(y(A, B), N0, N, +d(N0), [[-d(N0), LA], [-d(N0), LB]|Cs]) :-
+    N1 is N0 + 1,
+    definir(A, N1, N2, LA, CA),
+    definir(B, N2, N, LB, CB),
+    append(CA, CB, Cs).
+definir(o(A, B), N0, N, +d(N0), [[-d(N0), LA, LB]|Cs]) :-
+    N1 is N0 + 1,
+    definir(A, N1, N2, LA, CA),
+    definir(B, N2, N, LB, CB),
+    append(CA, CB, Cs).
+
+%!  cadena(+N:integer, -Texto:string) is det.
+%
+%   Texto es la disyunción de N conjunciones a1 ∧ b1 ∨ … ∨ aN ∧ bN.
+cadena(N, Texto) :-
+    numlist(1, N, Is),
+    maplist([I, T]>>format(string(T), "a~w ∧ b~w", [I, I]), Is, Ts),
+    atomic_list_concat(Ts, ' ∨ ', A),
+    atom_string(A, Texto).
+
+%!  comparar_def(+N:integer, -Distribucion:integer, -Definicional:integer)
 %!      is det.
 %
-%   Nuevas son Todas sin las ya disparadas si Refraccion es si, y Todas si
-%   es no.
-candidatas(si, Todas, Disparadas, Nuevas) :-
-    refractar(Todas, Disparadas, Nuevas).
-candidatas(no, Todas, _, Todas).
+%   Cantidad de cláusulas de las dos formas clausales de cadena(N).
+comparar_def(N, D, E) :-
+    cadena(N, T),
+    leer_formula(T, F),
+    clausulas(F, C1),
+    length(C1, D),
+    clausulas_def(F, C2),
+    length(C2, E).
 
-% Ejercicio 4 -------------------------------------------------------------
+% --- Ejercicio 6 ---------------------------------------------------------
 
-% prioridad(Regla, P): la Regla tiene la prioridad P; mayor se prefiere.
-prioridad(apilar, 1).
-
-% Con prioridad, la clave es prio(P, Lex): la prioridad de la regla y la
-% clave de LEX.
-clave_estrategia(prioridad, Instanciacion, prio(P, Lex)) :-
-    Instanciacion = instanciacion(Nombre, _, _, _),
-    prioridad_de(Nombre, P),
-    clave_estrategia(lex, Instanciacion, Lex).
-
-%!  prioridad_de(+Regla, -P:integer) is det.
+%!  primer_error(+Prueba, -K) is det.
 %
-%   P es la prioridad de la Regla, o 0 si no tiene.
-prioridad_de(Regla, P) :-
-    (   prioridad(Regla, P0)
-    ->  P = P0
-    ;   P = 0
+%   K es el número del primer paso incorrecto de Prueba; ninguno si todos
+%   son correctos y el último produce la cláusula vacía, e incompleta si
+%   todos son correctos y ninguno la produce.
+primer_error(prueba(Clausulas, Pasos), K) :-
+    primer_error(Pasos, Clausulas, 1, K).
+
+%!  primer_error(+Pasos:list, +Clausulas:list, +I:integer, -K) is det.
+%
+%   Como primer_error/2; I es el número del primer paso de Pasos.
+primer_error([], Clausulas, _, K) :-
+    (   last(Clausulas, [])
+    ->  K = ninguno
+    ;   K = incompleta
+    ).
+primer_error([Paso|Pasos], Clausulas, I, K) :-
+    (   paso_correcto(Paso, Clausulas, C)
+    ->  append(Clausulas, [C], Clausulas1),
+        I1 is I + 1,
+        primer_error(Pasos, Clausulas1, I1, K)
+    ;   K = I
     ).
 
-% Ejercicio 7 -------------------------------------------------------------
+% --- Ejercicio 8 ---------------------------------------------------------
 
-marco(apu, [procesador, placa_de_video], []).
-marco(apu_invertida, [placa_de_video, procesador], []).
-
-% Ejercicio 8 -------------------------------------------------------------
-
-% El configurador con el consumo sumado por una regla aparte.
-programa(configurador_sumando, Reglas) :-
-    programa(configurador, Reglas0),
-    exclude(regla_llamada(elegir), Reglas0, Reglas1),
-    con_marcos(
-        [ elegir ::
-              [fase(elegir(T)), candidato(T, X), despues(T, T1)]
-              ---> [quitar(candidato(T, X)), agregar(elegido(T, X)),
-                    reemplazar(fase(elegir(T)), fase(buscar(T1)))],
-          sumar ::
-              [elegido(_, X), es(X, componente, [consumo-C]), consumo(W),
-               {W1 is W + C}]
-              ---> [reemplazar(consumo(W), consumo(W1))]
-        ], Nuevas),
-    append(Nuevas, Reglas1, Reglas).
-
-%!  configurar_sumando(+Estrategia, -Componentes:list, -Consumo:number,
-%!                     -Resultado) is det.
+%!  clausulas_alcance(+F, -Clausulas:list) is det.
 %
-%   Ejecuta configurador_sumando con la Estrategia, la refracción y un
-%   límite de 200 ciclos, para el pedido de 8 núcleos, 32 GB y placa de
-%   video.
-configurar_sumando(Estrategia, Componentes, Consumo, Resultado) :-
-    memoria_del_pedido([pedido(nucleos, 8), pedido(memoria, 32),
-                        pedido(video, si)], Hechos),
-    encadenar_vigilado(configurador_sumando, Estrategia, si, 200, Hechos,
-                       Memoria, Resultado),
-    componentes(Memoria, Componentes, _),
-    memberchk(consumo(Consumo), Memoria).
+%   Como clausulas_fo/2, pero skolemiza antes de la forma prenexa: cada
+%   término de Skolem depende solo de las variables universales cuyo
+%   cuantificador rodea al existencial.
+clausulas_alcance(F, Clausulas) :-
+    fnn(F, G0),
+    renombrar(G0, G),
+    skolemizar_fnn(G, [], 1, _, H),
+    prenexa(H, _, Matriz),
+    fnc(Matriz, Clausulas).
 
-%!  regla_llamada(+Nombre, +Regla) is semidet.
+%!  skolemizar_fnn(+G, +Us:list, +N0:integer, -N:integer, -H) is det.
 %
-%   Regla se llama Nombre.
-regla_llamada(Nombre, Nombre :: _ ---> _).
+%   H es G, en forma normal negada, sin cuantificadores existenciales:
+%   cada variable existencial se liga a skN(Us…), donde Us son las
+%   variables universales que la rodean.
+skolemizar_fnn(at(A), _, N, N, at(A)).
+skolemizar_fnn(no(A), _, N, N, no(A)).
+skolemizar_fnn(y(A, B), Us, N0, N, y(HA, HB)) :-
+    skolemizar_fnn(A, Us, N0, N1, HA),
+    skolemizar_fnn(B, Us, N1, N, HB).
+skolemizar_fnn(o(A, B), Us, N0, N, o(HA, HB)) :-
+    skolemizar_fnn(A, Us, N0, N1, HA),
+    skolemizar_fnn(B, Us, N1, N, HB).
+skolemizar_fnn(todo(X, F), Us, N0, N, todo(X, H)) :-
+    append(Us, [X], Us1),
+    skolemizar_fnn(F, Us1, N0, N, H).
+skolemizar_fnn(existe(X, F), Us, N0, N, H) :-
+    skolemizar([existe(X)], Us, N0, N1),
+    skolemizar_fnn(F, Us, N1, N, H).
 
-% Ejercicio 9 -------------------------------------------------------------
-
-% Una segunda cláusula de marco/3 para placa le agrega una ranura.
-marco(gabinete, [componente], [formatos-[atx]]).
-marco(placa, [componente], [formato-atx]).
-
-% El configurador con una regla más, para el gabinete.
-programa(configurador_gabinete, Reglas) :-
-    programa(configurador, Reglas0),
-    con_marcos(
-        [ candidato_gabinete ::
-              [fase(buscar(gabinete)), elegido(placa, B),
-               es(B, placa, [formato-F]), es(G, gabinete, [formatos-Fs]),
-               {memberchk(F, Fs)}]
-              ---> [agregar(candidato(gabinete, G))]
-        ], [Regla]),
-    Reglas = [Regla|Reglas0].
-
-%!  memoria_con_gabinete(+Pedido:list, -Hechos:list) is det.
+%!  skolemizar(+Prefijo:list, +Us:list, +N0:integer, -N:integer) is det.
 %
-%   Hechos es la memoria inicial del configurador para el Pedido, con dos
-%   gabinetes y una placa micro-ATX más en el catálogo, y el gabinete como
-%   fase obligatoria después de la fuente.
-memoria_con_gabinete(Pedido, Hechos) :-
-    memoria_del_pedido(Pedido, Hechos0),
-    subtract(Hechos0, [despues(fuente, fin)], Hechos1),
-    append(Hechos1,
-           [objeto(placa_c, placa, [zocalo-lga1700, memoria-ddr4,
-                                    formato-microatx, precio-90]),
-            objeto(gab_a, gabinete, [formatos-[microatx], precio-40]),
-            objeto(gab_b, gabinete, [formatos-[atx, microatx], precio-70]),
-            despues(fuente, gabinete), despues(gabinete, fin),
-            obligatorio(gabinete)],
-           Hechos).
+%   Liga cada existencial del Prefijo a un término de las variables Us.
+skolemizar([], _, N, N).
+skolemizar([existe(X)|P], Us, N0, N) :-
+    atom_concat(sk, N0, Nombre),
+    (   Us == []
+    ->  X = Nombre
+    ;   compound_name_arguments(X, Nombre, Us)
+    ),
+    N1 is N0 + 1,
+    skolemizar(P, Us, N1, N).
 
-%!  configurar_gabinete(+Pedido:list, -Componentes:list) is det.
+% --- Ejercicio 9 ---------------------------------------------------------
+
+%!  refutar_unitaria(+Clausulas:list, +Max:integer, -Pasos:list) is semidet.
 %
-%   Componentes son los que elige configurador_gabinete para el Pedido.
-configurar_gabinete(Pedido, Componentes) :-
-    memoria_con_gabinete(Pedido, Hechos),
-    encadenar(configurador_gabinete, mea, Hechos, Memoria, configurada),
-    componentes(Memoria, Componentes, _).
+%   Pasos es la refutación más corta, de a lo sumo Max pasos, en la que
+%   uno de los dos padres de cada paso tiene un solo literal.
+refutar_unitaria(Clausulas, Max, Pasos) :-
+    between(0, Max, N),
+    length(Pasos, N),
+    derivar_unitaria(Pasos, Clausulas),
+    !.
 
-% Ejercicio 10 ------------------------------------------------------------
-
-%!  mas_barata(+Pedido:list, -Componentes:list, -Precio:number) is semidet.
+%!  derivar_unitaria(?Pasos:list, +Clausulas:list) is nondet.
 %
-%   Componentes es la configuración compatible de menor Precio para el
-%   Pedido con el catálogo del capítulo. Falla si no hay ninguna.
-mas_barata(Pedido, Componentes, Precio) :-
-    catalogo(Catalogo),
-    mas_barata(Catalogo, Pedido, Componentes, Precio).
+%   Como derivar/2 de resolucion.pl, con un padre unitario en cada paso.
+%   La condición es un condicional y no una disyunción: con los dos
+%   padres unitarios, la disyunción daría cada derivación dos veces.
+derivar_unitaria([], Clausulas) :-
+    memberchk([], Clausulas).
+derivar_unitaria([r(I, J, R)|Pasos], Clausulas) :-
+    nth1(J, Clausulas, C2),
+    nth1(I, Clausulas, C1),
+    I < J,
+    (   C1 = [_]
+    ->  true
+    ;   C2 = [_]
+    ),
+    resolvente(C1, C2, R),
+    \+ memberchk(R, Clausulas),
+    append(Clausulas, [R], Clausulas1),
+    derivar_unitaria(Pasos, Clausulas1).
 
-%!  mas_barata(+Catalogo:list, +Pedido:list, -Componentes:list,
-%!             -Precio:number) is semidet.
-%
-%   Como mas_barata/3, con otro Catalogo.
-mas_barata(Catalogo, Pedido, Componentes, Precio) :-
-    aggregate_all(min(P, C), compatible(Catalogo, Pedido, C, P),
-                  min(Precio, Componentes)).
+% --- Ejercicio 10 --------------------------------------------------------
 
-%!  compatible(+Catalogo:list, +Pedido:list, -Componentes:list,
-%!             -Precio:number) is nondet.
+%!  decidir(+Texto, -Veredicto) is det.
 %
-%   Componentes es una configuración que cumple el Pedido con el Catalogo,
-%   con las mismas condiciones que las reglas del configurador, y Precio,
-%   la suma de sus precios.
-compatible(Catalogo, Pedido, Componentes, Precio) :-
-    memberchk(pedido(nucleos, Nucleos), Pedido),
-    memberchk(pedido(memoria, Gb), Pedido),
-    memberchk(pedido(video, Video), Pedido),
-    ranura(Catalogo, Cpu, procesador, nucleos, N), N >= Nucleos,
-    ranura(Catalogo, Cpu, procesador, zocalo, Z),
-    ranura(Catalogo, Placa, placa, zocalo, Z),
-    ranura(Catalogo, Placa, placa, memoria, T),
-    ranura(Catalogo, Mem, memoria, tipo, T),
-    ranura(Catalogo, Mem, memoria, gb, G), G >= Gb,
-    disipador(Catalogo, Cpu, Disipador),
-    video(Catalogo, Video, Placas),
-    append([[Cpu, Placa, Mem], Disipador, Placas], Partes),
-    consumo_total(Catalogo, Partes, W),
-    ranura(Catalogo, Fuente, fuente, potencia, P), P >= W * 1.3,
-    append(Partes, [Fuente], Componentes),
-    consumo_o_precio(Catalogo, precio, Componentes, Precio).
-
-%!  ranura(+Catalogo:list, ?Objeto, +Clase, +Ranura, ?Valor) is nondet.
-%
-%   Objeto es un objeto del Catalogo de la Clase, o de una subclase, cuya
-%   Ranura tiene el Valor.
-ranura(Catalogo, Objeto, Clase, Ranura, Valor) :-
-    member(objeto(Objeto, C, Ranuras), Catalogo),
-    es_de_clase(C, Clase),
-    valor_ranura(C, Ranuras, Ranura, Valor).
-
-%!  disipador(+Catalogo:list, +Cpu, -Disipador:list) is nondet.
-%
-%   Disipador es [D] con un disipador D del Catalogo si Cpu lo necesita, y
-%   [] si no.
-disipador(Catalogo, Cpu, Disipador) :-
-    (   ranura(Catalogo, Cpu, procesador, necesita_disipador, si)
-    ->  ranura(Catalogo, D, disipador, precio, _),
-        Disipador = [D]
-    ;   Disipador = []
+%   Veredicto es teorema(Prueba), con una refutación de a lo sumo 10
+%   pasos de la negación de la fórmula que Texto escribe, o
+%   contraejemplo(A), con una asignación que la hace falsa. Si no hay
+%   ninguna de las dos, la refutación necesita más de 10 pasos, y el
+%   Veredicto es desconocido.
+decidir(Texto, Veredicto) :-
+    leer_formula(Texto, F),
+    (   demostrar(Texto, 10, Prueba)
+    ->  Veredicto = teorema(Prueba)
+    ;   once(contraejemplo(F, A))
+    ->  Veredicto = contraejemplo(A)
+    ;   Veredicto = desconocido
     ).
 
-%!  video(+Catalogo:list, +Video, -Placas:list) is nondet.
+%!  valor_en(+F, +A:list, -V) is det.
 %
-%   Placas es [V] con una placa de video V del Catalogo si Video es si, y
-%   [] si es no.
-video(Catalogo, si, [V]) :-
-    ranura(Catalogo, V, placa_de_video, precio, _).
-video(_, no, []).
-
-%!  consumo_total(+Catalogo:list, +Objetos:list, -W:number) is det.
-%
-%   W es la suma de los consumos de los Objetos.
-consumo_total(Catalogo, Objetos, W) :-
-    consumo_o_precio(Catalogo, consumo, Objetos, W).
-
-%!  consumo_o_precio(+Catalogo:list, +Ranura, +Objetos:list, -Suma:number)
-%!      is det.
-%
-%   Suma es la suma de la Ranura de los Objetos del Catalogo.
-consumo_o_precio(Catalogo, Ranura, Objetos, Suma) :-
-    findall(V, ( member(O, Objetos),
-                 memberchk(objeto(O, C, Rs), Catalogo),
-                 valor_ranura(C, Rs, Ranura, V) ),
-            Vs),
-    sum_list(Vs, Suma).
-
-%!  catalogo_con_disipador_caro(-Catalogo:list) is det.
-%
-%   Catalogo es el del capítulo con el disipador a 110 en lugar de 35.
-catalogo_con_disipador_caro(Catalogo) :-
-    catalogo(Catalogo0),
-    selectchk(objeto(dis_a, disipador, _), Catalogo0,
-              objeto(dis_a, disipador, [precio-110]), Catalogo).
-
-%!  configurar_con(+Catalogo:list, +Pedido:list, -Componentes:list,
-%!                 -Precio:number) is det.
-%
-%   Como configurar/4, con otro Catalogo en la memoria inicial.
-configurar_con(Catalogo, Pedido, Componentes, Precio) :-
-    fases(Fases),
-    append([Catalogo, Fases, Pedido, [consumo(0), fase(buscar(procesador))]],
-           Hechos),
-    encadenar(configurador, mea, Hechos, Memoria, configurada),
-    componentes(Memoria, Componentes, Precio).
-
-%!  comparar_disipador_caro(-Optima:list, -PrecioOptimo:number,
-%!                          -Elegida:list, -PrecioElegido:number) is det.
-%
-%   Para el pedido de 6 núcleos, 16 GB y sin video, con el disipador a
-%   110, Optima es la configuración más barata y Elegida, la del
-%   configurador.
-comparar_disipador_caro(Optima, PrecioOptimo, Elegida, PrecioElegido) :-
-    Pedido = [pedido(nucleos, 6), pedido(memoria, 16), pedido(video, no)],
-    catalogo_con_disipador_caro(Catalogo),
-    mas_barata(Catalogo, Pedido, Optima, PrecioOptimo),
-    configurar_con(Catalogo, Pedido, Elegida, PrecioElegido).
-
-% Ejercicio 11 ------------------------------------------------------------
-
-%!  familias(+K:integer, -Hechos:list) is det.
-%
-%   Hechos son los de K copias de la familia del capítulo 20, con cada
-%   nombre N de la copia I escrito N-I.
-familias(K, Hechos) :-
-    familia(Familia),
-    findall(H, ( between(1, K, I),
-                 member(H0, Familia),
-                 copia(I, H0, H) ),
-            Hechos).
-
-%!  copia(+I:integer, +Hecho0, -Hecho) is det.
-%
-%   Hecho es Hecho0 con cada nombre N reemplazado por N-I.
-copia(I, Hecho0, Hecho) :-
-    Hecho0 =.. [F, A, B],
-    Hecho =.. [F, A-I, B-I].
-
-% Ejercicio 12 ------------------------------------------------------------
-
-%!  con_origen(+Reglas0:list, -Reglas:list) is det.
-%
-%   Reglas son las Reglas0 con una acción agregar(origen(F, Regla, Hechos))
-%   después de cada agregar(F): Hechos son los hechos que cumplen los
-%   patrones de la Regla.
-con_origen(Reglas0, Reglas) :-
-    maplist(regla_con_origen, Reglas0, Reglas).
-
-%!  regla_con_origen(+Regla0, -Regla) is det.
-%
-%   Regla es Regla0 con los origen/3 agregados.
-regla_con_origen(Nombre :: Condiciones ---> Acciones0,
-                 Nombre :: Condiciones ---> Acciones) :-
-    include(patron_de_hecho, Condiciones, Patrones),
-    maplist(con_su_origen(Nombre, Patrones), Acciones0, Partes),
-    append(Partes, Acciones).
-
-%!  patron_de_hecho(+Condicion) is semidet.
-%
-%   Condicion es un patrón, ni una prueba ni una negación.
-patron_de_hecho(Condicion) :-
-    patron(Condicion).
-
-%!  con_su_origen(+Nombre, +Patrones:list, +Accion, -Acciones:list) is det.
-%
-%   Acciones es [Accion] seguida de su origen si Accion es agregar/1.
-con_su_origen(Nombre, Patrones, Accion, Acciones) :-
-    (   Accion = agregar(F)
-    ->  Acciones = [Accion, agregar(origen(F, Nombre, Patrones))]
-    ;   Acciones = [Accion]
+%   V, 0 o 1, es el valor de F, sin cuantificadores, con la asignación A
+%   de pares Átomo-Valor.
+valor_en(at(P), A, V) :-
+    memberchk(P-V, A).
+valor_en(no(F), A, V) :-
+    valor_en(F, A, W),
+    V is 1 - W.
+valor_en(y(F, G), A, V) :-
+    valor_en(F, A, VF),
+    valor_en(G, A, VG),
+    V is min(VF, VG).
+valor_en(o(F, G), A, V) :-
+    valor_en(F, A, VF),
+    valor_en(G, A, VG),
+    V is max(VF, VG).
+valor_en(si(F, G), A, V) :-
+    valor_en(F, A, VF),
+    valor_en(G, A, VG),
+    V is max(1 - VF, VG).
+valor_en(sii(F, G), A, V) :-
+    valor_en(F, A, VF),
+    valor_en(G, A, VG),
+    (   VF =:= VG
+    ->  V = 1
+    ;   V = 0
     ).
 
-programa(familia_con_origen, Reglas) :-
-    programa(familia, Reglas0),
-    con_origen(Reglas0, Reglas).
+% --- Ejercicio 11 --------------------------------------------------------
 
-%!  explicar(+Hecho, -Arbol) is nondet.
+%!  saturar(+Clausulas:list, -Niveles:integer, -Resultado) is det.
 %
-%   Arbol es la explicación de Hecho en la memoria final de
-%   familia_con_origen: por(Hecho, Regla, Arboles) si una regla lo agregó,
-%   con los árboles de los hechos que usó, o inicial(Hecho).
-explicar(Hecho, Arbol) :-
-    familia(Hechos),
-    encadenar(familia_con_origen, orden, Hechos, Memoria, _),
-    explicar(Memoria, Hecho, Arbol).
+%   Resultado es refutada si la saturación por niveles de las Clausulas,
+%   sin variables, llega a la cláusula vacía, y saturada si llega a un
+%   nivel sin resolventes nuevos; Niveles es la cantidad de niveles
+%   calculados. Un resolvente subsumido por una cláusula anterior no se
+%   agrega.
+saturar(Clausulas, Niveles, Resultado) :-
+    saturar(Clausulas, 0, Niveles, Resultado).
 
-%!  explicar(+Memoria:list, +Hecho, -Arbol) is nondet.
+%!  saturar(+Clausulas:list, +N0:integer, -N:integer, -Resultado) is det.
 %
-%   Como explicar/2, en la Memoria dada.
-explicar(Memoria, Hecho, Arbol) :-
-    (   memberchk(origen(Hecho, _, _), Memoria)
-    ->  member(origen(Hecho, Regla, Usados), Memoria),
-        maplist(explicar(Memoria), Usados, Arboles),
-        Arbol = por(Hecho, Regla, Arboles)
-    ;   Arbol = inicial(Hecho)
+%   Como saturar/3; N0 es la cantidad de niveles ya calculados.
+saturar(Clausulas, N, N, refutada) :-
+    memberchk([], Clausulas),
+    !.
+saturar(Clausulas, N0, N, Resultado) :-
+    findall(R,
+            ( append(_, [C1|Resto], Clausulas),
+              member(C2, Resto),
+              resolvente(C1, C2, R),
+              \+ subsumida(R, Clausulas)
+            ),
+            Rs0),
+    sort(Rs0, Rs),
+    (   Rs == []
+    ->  N = N0,
+        Resultado = saturada
+    ;   append(Clausulas, Rs, Clausulas1),
+        N1 is N0 + 1,
+        saturar(Clausulas1, N1, N, Resultado)
     ).
 
-% Ejercicio 13 ------------------------------------------------------------
+%!  subsumida(+R:list, +Clausulas:list) is semidet.
+%
+%   Alguna de las Clausulas, sin variables, está contenida en R.
+subsumida(R, Clausulas) :-
+    member(C, Clausulas),
+    ord_subset(C, R),
+    !.
 
-% El consumo de una placa de video según su memoria. En placa_de_video
-% no se usa nunca: la misma clase tiene el valor por omisión consumo-200,
-% que se busca antes que el cálculo.
-calculo(placa_de_video, consumo, Ranuras, Consumo) :-
-    memberchk(memoria_gb-Gb, Ranuras),
-    Consumo is 100 + 20 * Gb.
+% --- Ejercicio 12 --------------------------------------------------------
 
-% Una subclase sin valor por omisión para el consumo, con su cálculo: en
-% la cadena de herencia aparece antes que placa_de_video.
-marco(placa_calculada, [placa_de_video], []).
+%!  modelo_minimo(+Clausulas:list, -Modelo:list) is nondet.
+%
+%   Modelo es un modelo de las Clausulas que construye modelo/2 y del que
+%   ningún subconjunto propio es un modelo. Puede dar dos veces el mismo
+%   modelo, si modelo/2 lo construye por dos caminos.
+modelo_minimo(Clausulas, Modelo) :-
+    modelo(Clausulas, Modelo),
+    \+ ( subconjunto_propio(Modelo, Menor),
+         es_modelo(Clausulas, Menor)
+       ).
 
-calculo(placa_calculada, consumo, Ranuras, Consumo) :-
-    calculo(placa_de_video, consumo, Ranuras, Consumo).
+%!  es_modelo(+Clausulas:list, +Modelo:list) is semidet.
+%
+%   Ninguna de las Clausulas está violada en el Modelo.
+es_modelo(Clausulas, Modelo) :-
+    \+ ( member(C, Clausulas),
+         modelos:violada(C, Modelo, _)
+       ).
+
+%!  subconjunto_propio(+Conjunto:list, -Subconjunto:list) is nondet.
+%
+%   Subconjunto es un subconjunto de Conjunto con al menos un elemento
+%   menos, en el mismo orden.
+subconjunto_propio(Conjunto, Subconjunto) :-
+    subconjunto(Conjunto, Subconjunto),
+    Subconjunto \== Conjunto.
+
+%!  subconjunto(+Conjunto:list, -Subconjunto:list) is multi.
+%
+%   Subconjunto tiene algunos de los elementos de Conjunto, en el mismo
+%   orden.
+subconjunto([], []).
+subconjunto([X|Xs], [X|Ys]) :-
+    subconjunto(Xs, Ys).
+subconjunto([_|Xs], Ys) :-
+    subconjunto(Xs, Ys).

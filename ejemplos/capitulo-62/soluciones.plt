@@ -2,128 +2,109 @@
 
 :- begin_tests(soluciones).
 
-test(clasificar, [true(Cs == [tautologia, contradiccion, contingente,
-                              tautologia])]) :-
-    maplist(clasificar, ["p ∨ ¬p", "p ∧ ¬p", "p → q", "(p → q) ∨ (q → p)"],
-            Cs).
+test(ejercicio1, [true(S-M == 3-4), nondet]) :-
+    resolver(almacen, listas, suma([1, 2], S)),
+    resolver(almacen, maximo, maximo(3, 4, M)).
 
-% La forma definicional crece en forma lineal: 3n cláusulas contra 2^n.
-test(definicional, [forall(between(1, 8, N)),
-                    true(D-E =:= (2 ** N)-(3 * N))]) :-
-    comparar_def(N, D, E).
+test(ejercicio1_indice, [true(S == 3)]) :-
+    resolver(indice, listas, suma([1, 2], S)).
 
-test(definicional_refuta) :-
-    leer_formula("(p ∧ q) ∨ (p ∧ ¬q) → p", F),
-    clausulas_def(no(F), Cs),
-    refutar(Cs, 8, _).
+test(ejercicio1_resolvente, all(M == [4])) :-
+    resolver(resolvente, maximo, maximo(3, 4, M)).
 
-% Una fórmula que no es un teorema sigue sin refutación.
-test(definicional_no_teorema, [true(R == saturada)]) :-
-    leer_formula("(p ∧ q) ∨ (r ∧ s) → p", F),
-    clausulas_def(no(F), Cs),
-    saturar(Cs, _, R).
+test(ejercicio2, [true(C == 1814)]) :-
+    almacen:medir(listas, suma_hasta(200, _), M),
+    memberchk(celdas-C, M).
 
-test(primer_error_ninguno, [true(K == ninguno)]) :-
-    primer_error(prueba([[-p, +q], [+p, +q], [+p, -q], [-p, -q]],
-                        [r(1, 2, [+q]), r(3, 4, [-q]), r(5, 6, [])]), K).
+test(ejercicio3, [true(N == 2)]) :-
+    ejecutar_archivo(ejemplos('capitulo-07/recorrer'), longitud([a, b], N)).
 
-test(primer_error, [true(K == 2)]) :-
-    primer_error(prueba([[-p, +q], [+p, +q], [+p, -q], [-p, -q]],
-                        [r(1, 2, [+q]), r(2, 4, [-q]), r(5, 6, [])]), K).
+test(ejercicio4, [true(I1-I2 == 5-3)]) :-
+    medir_tipos(S, P),
+    memberchk(intentos-I1, S),
+    memberchk(intentos-I2, P).
 
-test(primer_error_incompleta, [true(K == incompleta)]) :-
-    primer_error(prueba([[-p, +q], [+p, +q]], [r(1, 2, [+q])]), K).
+test(ejercicio5, [fail]) :-
+    empty_assoc(A),
+    unificar_con_prueba('$v'(0), f('$v'(0)), 0, A-[], _).
 
-% Skolemizar en el alcance da términos de un argumento.
-test(alcance, [true(Cs =@= [[+ama(X, sk1(X))], [-ama(sk2(Y), Y)]])]) :-
-    leer_formula("¬((∀x ∃y ama(x, y)) → ∃y ∀x ama(x, y))", F),
-    clausulas_alcance(F, Cs).
+test(ejercicio5_sin_prueba, [true(R == [])]) :-
+    empty_assoc(A),
+    unificar('$v'(0), f('$v'(0)), 0, A-[], _-R).
 
-test(unitaria_horn, [true(N == 3)]) :-
-    clausulas_texto("¬((a → b) ∧ (b → c) → (a → c))", Cs),
-    refutar_unitaria(Cs, 5, P),
-    length(P, N).
+test(ejercicio5_ligada, [fail]) :-
+    empty_assoc(A0),
+    unificar_con_prueba('$v'(0), g('$v'(1)), 0, A0-[], A1),
+    unificar_con_prueba('$v'(1), h('$v'(0)), 0, A1, _).
 
-test(unitaria_hein, [fail]) :-
-    refutar_unitaria([[-p, +q], [+p, +q], [+p, -q], [-p, -q]], 10, _).
+test(ejercicio7_signo, all(S == [negativo, positivo])) :-
+    transformado(disyuncion, signo(-2, S)).
 
-test(decidir_teorema) :-
-    decidir("((p → q) → p) → p", teorema(P)),
-    verificar(P).
+test(ejercicio7_nativo, [true(Ss == Ns)]) :-
+    disyuncion(Cs),
+    nativas(Cs, signo(-2, _), Ns),
+    findall(signo(-2, S), transformado(disyuncion, signo(-2, S)), Ss).
 
-test(decidir_contraejemplo, [true(V == 0)]) :-
-    decidir("(p → q) → (q → p)", contraejemplo(A)),
-    leer_formula("(p → q) → (q → p)", F),
-    valor_en(F, A, V).
+test(ejercicio7_soltero, all(P == [ana])) :-
+    transformado(disyuncion, soltero(P)).
 
-test(saturar, [true(N-R == 4-refutada)]) :-
-    palomar(2, F),
-    clausulas_fo(no(F), Cs),
-    saturar(Cs, N, R).
+% El corte de la disyunción transformada no corta las cláusulas de p/1.
+test(ejercicio7_corte, [true(Xs-Ns == [1, 3]-[p(1)])]) :-
+    findall(X, transformado(corte_en_disyuncion, p(X)), Xs),
+    corte_en_disyuncion(Cs),
+    nativas(Cs, p(_), Ns).
 
-test(saturar_no_teorema, [true(R == saturada)]) :-
-    clausulas_texto("¬((p → q) → (q → p))", Cs),
-    saturar(Cs, _, R).
+test(ejercicio8, [true(Ps == [295-86, 985-166, 3565-326])]) :-
+    findall(P-Q, ( member(N, [20, 40, 80]),
+                   pasos_de(invertir_hasta(N, _), P),
+                   pasos_de(invertir_acc_hasta(N, _), Q)
+                 ), Ps).
 
-test(clasificar, [true(Cs == [tautologia, contradiccion, contingente])]) :-
-    maplist(clasificar, ["p ∨ ¬p", "p ∧ ¬p", "p → q"], Cs).
+test(ejercicio11, [true(Ms == [51-4, 101-4])]) :-
+    findall(P-Q, ( member(N, [50, 100]),
+                   metas_de(longitud_hasta(N, _), P),
+                   metas_de(longitud_acc_hasta(N, _), Q)
+                 ), Ms).
 
-% definir/5 da un átomo d(N) a cada conjunción y disyunción.
-test(definir, [true(N-L-Cs == 2-(+d(0))-[ [-d(0), +d(1), -c],
-                                         [-d(1), +a],
-                                         [-d(1), +b]
-                                       ])]) :-
-    definir(o(y(at(a), at(b)), no(at(c))), 0, N, L, Cs).
+test(ocurre, [true]) :-
+    empty_assoc(A),
+    ocurre(0, f(a, g('$v'(0))), A).
 
-test(definir_literal, [true(N-L-Cs == 3-(-a)-[])]) :-
-    definir(no(at(a)), 3, N, L, Cs).
+% La celda 1 está ligada a un término que contiene la celda 0.
+test(ocurre_ligada, [true]) :-
+    list_to_assoc([1-h('$v'(0))], A),
+    ocurre(0, f('$v'(1)), A).
 
-% La variable existencial depende de la universal que la rodea.
-test(skolemizar_fnn, [true(N-H =@= 1-todo(X, at(p(X, sk0(X)))))]) :-
-    skolemizar_fnn(todo(X0, existe(Y, at(p(X0, Y)))), [], 0, N, H).
+test(ocurre_no, [fail]) :-
+    empty_assoc(A),
+    ocurre(0, f(a, '$v'(1)), A).
 
-test(skolemizar_fnn_afuera, [true(H =@= y(at(p(sk0)), todo(X, at(q(X)))))]) :-
-    skolemizar_fnn(y(existe(Y, at(p(Y))), todo(X0, at(q(X0)))), [], 0, _, H).
+test(auxiliar, [true(N-L =@= 3-'$o3'(A, B))]) :-
+    auxiliar(o, f(A, B, A), 2, N, L).
 
-% Con los dos padres unitarios, la derivación aparece una sola vez.
-test(derivar_unitaria, all(P == [[r(1, 2, [])]])) :-
-    length(P, 1),
-    derivar_unitaria(P, [[+p], [-p]]).
+test(transformar_cuerpo,
+     [true(C-Aux-N =@= (a, '$no1'(Y))-[('$no1'(Y) :- b(Y), !, fail),
+                                       ('$no1'(Y) :- true)]-1)]) :-
+    transformar_cuerpo((a, \+ b(Y)), C, Aux, [], 0, N).
 
-test(derivar_unitaria_sin_unitarias, [fail]) :-
-    length(P, 1),
-    derivar_unitaria(P, [[+p, +q], [-p, -q]]).
+test(transformar,
+     [true(Cs =@= [ (p(X) :- '$o1'(X)),
+                    ('$o1'(X) :- q(X)),
+                    ('$o1'(X) :- r(X)),
+                    (s :- '$no2'),
+                    ('$no2' :- t, !, fail),
+                    ('$no2' :- true)
+                  ])]) :-
+    transformar([(p(X) :- (q(X) ; r(X))), (s :- \+ t)], Cs).
 
-test(subsumida, [true]) :-
-    subsumida([+p, +q], [[+q], [+r]]).
+% Un programa sin disyunciones ni negaciones queda igual.
+test(transformar_igual, [true(Cs == Cs0)]) :-
+    Cs0 = [(p(a) :- true), (q :- p(a), p(a))],
+    transformar(Cs0, Cs).
 
-test(no_subsumida, [fail]) :-
-    subsumida([+p], [[+p, +q]]).
-
-% El modelo no mínimo de Flach se descarta.
-test(modelo_minimo, all(M == [[amable(maria), estudiante(maria),
-                               gusta(pedro, maria)]])) :-
-    modelo_minimo([ [+gusta(pedro, maria)],
-                    [+estudiante(maria)],
-                    [+docente(X), +amable(Y), -gusta(X, Y), -estudiante(Y)],
-                    [+amable(Y1), -docente(X1), -gusta(X1, Y1)]
-                  ], M).
-
-test(es_modelo, [true]) :-
-    es_modelo([[+p, -q], [+q]], [p, q]).
-
-test(no_es_modelo, [fail]) :-
-    es_modelo([[+p, -q], [+q]], [q]).
-
-test(subconjunto_propio, all(S == [[a], [b], []])) :-
-    subconjunto_propio([a, b], S).
-
-test(subconjunto, all(S == [[a, b], [a], [b], []])) :-
-    subconjunto([a, b], S).
-
-% Quitar una fórmula por vez no alcanza: de [a, b, c] no se puede quitar
-% ninguna sola, pero [c] es un modelo.
-test(de_a_una, all(M == [[c]])) :-
-    modelo_minimo([[+a, +c], [-a, +b], [-b, +a], [+c, -b]], M).
+test(medir_con_acumuladores, [true(R-M == 1-4)]) :-
+    medir_con_acumuladores(longitud_acc_hasta(10, _), Ms),
+    memberchk(respuestas-R, Ms),
+    memberchk(metas-M, Ms).
 
 :- end_tests(soluciones).

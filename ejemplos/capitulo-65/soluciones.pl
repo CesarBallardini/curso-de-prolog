@@ -1,202 +1,322 @@
 :- encoding(utf8).
 
-% Capítulo 65 - Soluciones de los ejercicios 2, 3, 6, 7, 9 y 10.
+% Capítulo 65 - Soluciones de los ejercicios.
 %
-% Una sola base con varios dominios que no comparten predicados: Hans y el
-% dialecto de Pensilvania (2), Inés, la estudiante sin el eslabón derrotado
-% (3), tres automóviles (6), el diamante de Drácula con tnot/1 (9) y el
-% intérprete de Flach para el razonamiento por defecto (10).
+% Carga pruebas.pl, que carga todas las versiones del capítulo, y agrega
+% los programas y predicados de las soluciones sin modificar ningún
+% archivo del capítulo.
 %
-% solo-local: carga módulos propios, y SWISH no los admite.
+% solo-local: carga pruebas.pl con ensure_loaded/1, y SWISH no permite
+% cargar archivos.
 %
-%?- respuesta([especificidad], nacio_en(hans, eeuu), R).
-%?- sospechosas(auto3, Ps).
-%?- explicar_por_defecto(no(vuela(dracula)), E).
+%?- mostrar_programa(tienda).
+%?- ciclos_para_ganar(800, C).
 
-:- use_module(explicaciones).
+:- ensure_loaded(pruebas).
 
-% Ejercicio 2 ----------------------------------------------------------
+% Ejercicio 1. Tres reglas sobre productos y clientes.
+programa(tienda,
+    [ oferta :: [producto(P, C), {C > 100}, cliente(_, P)] ---> [],
+      aviso :: [producto(_, C), {C > 100}] ---> [],
+      venta :: [producto(Q, _), cliente(_, Q)] ---> []
+    ]).
 
-% habla_pensilvania(X): X habla el dialecto alemán de Pensilvania.
-habla_pensilvania(hans).
-
-%!  habla_dialecto_aleman(?X) is nondet.
+%!  mostrar_programa(+Programa) is det.
 %
-%   X habla un dialecto del alemán: quien habla el de Pensilvania.
-habla_dialecto_aleman(X) :-
-    habla_pensilvania(X).
+%   Escribe con mostrar/1 la red del Programa, compilada con pasos/2.
+mostrar_programa(Programa) :-
+    programa(Programa, Reglas),
+    compilar_red(pasos, Reglas, Red),
+    mostrar(Red).
 
-%!  nacio_en(?X, ?Lugar) is nondet.
+% Ejercicio 2. hermanos con la prueba antes de tiempo y con las dos
+% condiciones en el orden inverso, junto a antepasado_1.
+programa(hermanos_variantes,
+    [ antepasado_1 :: [progenitor(A, D)] ---> [agregar(antepasado(A, D))],
+      temprana :: [progenitor(P, A), {A \== B}, progenitor(P, B)]
+           ---> [agregar(hermanos(A, B))],
+      invertida :: [progenitor(P, B), progenitor(P, A), {A \== B}]
+           ---> [agregar(hermanos(A, B))],
+      hermanos :: [progenitor(P, A), progenitor(P, B), {A \== B}]
+           ---> [agregar(hermanos(A, B))]
+    ]).
+
+% Ejercicio 3.
+
+%!  primera_ascendente(+Programa, +Hechos:list, -Elegida) is det.
 %
-%   X nació en Lugar en forma estricta: quien nació en Pensilvania nació
-%   en los Estados Unidos.
-nacio_en(X, eeuu) :-
-    nacio_en(X, pensilvania).
+%   Elegida es la instanciación que elige orden si el conjunto de conflicto
+%   de la red, con los Hechos, se ordena por la clave K-Sellos: por la
+%   regla y, dentro de ella, del hecho más antiguo al más reciente.
+primera_ascendente(Programa, Hechos, Elegida) :-
+    red_de(Programa, Red),
+    cargar(Red, Hechos, _, Rete),
+    conjunto_rete(Rete, Is),
+    Red = red(_, _, _, Terminales),
+    findall((K-Sellos)-I,
+            ( member(I, Is),
+              I = instanciacion(Nombre, Sellos, _, _),
+              once(gen_assoc(K, Terminales, regla(Nombre, _, _, _))) ),
+            Pares),
+    keysort(Pares, [_-Elegida|_]).
 
-nacio_en(X, pensilvania) :~ habla_pensilvania(X).
-neg nacio_en(X, eeuu) :~ habla_dialecto_aleman(X).
-
-% Ejercicio 3 ----------------------------------------------------------
-
-% estudiante(X): X es estudiante universitario.
-estudiante(ines).
-
-% empleado(X): X tiene un empleo.
-empleado(ines).
-
-adulto(X) :~ estudiante(X).
-empleado(X) :~ adulto(X).
-se_mantiene(X) :~ empleado(X).
-neg se_mantiene(X) :~ estudiante(X).
-
-% Ejercicio 6 ----------------------------------------------------------
-
-% neg arranca(A): se observó que el automóvil A no arranca.
-neg arranca(auto2).
-neg arranca(auto3).
-
-% enciende_luces(A): se observó que las luces del automóvil A encienden.
-enciende_luces(auto3).
-
-%!  arranca(?A) is nondet.
+%!  primera_descendente(+Programa, +Hechos:list, -Elegida) is det.
 %
-%   El automóvil A arranca si la batería, el motor de arranque y el
-%   combustible están bien.
-arranca(A) :-
-    bien(A, bateria),
-    bien(A, arranque),
-    bien(A, combustible).
+%   Elegida es la instanciación que elige orden con el conjunto de la red.
+primera_descendente(Programa, Hechos, Elegida) :-
+    reconocer_rete(Programa, Hechos, Is),
+    preferida(orden, Is, Elegida).
 
-%!  bien(?A, ?Pieza) is nondet.
+% Ejercicio 4. Un programa sin prueba que descarte el par de un hecho
+% consigo mismo.
+programa(pares, [ par :: [p(X), p(Y)] ---> [agregar(par(X, Y))] ]).
+
+%!  conjunto_invertido(+Programa, +Hechos:list, -Sellos:list) is det.
 %
-%   La Pieza del automóvil A está bien en forma estricta: la batería, si
-%   las luces encienden.
-bien(A, bateria) :-
-    enciende_luces(A).
+%   Sellos son los de las instanciaciones del conjunto de conflicto de la
+%   red del Programa con los Hechos, cargados activando los sucesores de
+%   cada nodo alfa del menos profundo al más profundo.
+conjunto_invertido(Programa, Hechos, Sellos) :-
+    red_de(Programa, Red),
+    cargar_con(@=<, activar_derecha(mas), Red, Hechos, Rete),
+    conjunto_rete(Rete, Is),
+    findall(S, member(instanciacion(_, S, _, _), Is), Sellos).
 
-bien(_Auto, _Pieza) :~ true.
-
-%!  sospechosas(+Auto, -Piezas:list) is det.
+%!  cargar_con(+Orden, :Activar, +Red, +Hechos:list, -Rete) is det.
 %
-%   Piezas son las piezas cuyas presunciones sostienen la regla de
-%   arranca(Auto), que una observación derrotó; la lista está vacía si
-%   ninguna regla de arranca(Auto) está derrotada.
-sospechosas(Auto, Piezas) :-
-    por_que_no([especificidad], arranca(Auto), Motivos),
-    findall(Pieza,
-            ( member(derrotada((_ :- Cuerpo), _), Motivos),
-              literal(bien(Auto, Pieza), Cuerpo),
-              once(derivacion([especificidad], bien(Auto, Pieza), Arbol)),
-              supuestos(Arbol, [_|_]) ),
-            Piezas).
+%   Como cargar/4, sin la memoria de trabajo: los Hechos, que son
+%   distintos, entran con los sellos 1, 2, ..., y los sucesores de sus
+%   nodos alfa se ordenan con sort/4 y Orden, y se activan con
+%   call(Activar, Sello, Red, Nodo-Paso, Rete0, Rete).
+cargar_con(Orden, Activar, Red, Hechos, Rete) :-
+    rete_vacio(Red, Rete0),
+    foldl(entrar_con(Orden, Activar, Red), Hechos, Rete0-1, Rete-_).
 
-%!  literal(?Literal, +Conjuncion) is nondet.
+%!  entrar_con(+Orden, :Activar, +Red, +Hecho, +Rete0S0, -ReteS) is det.
 %
-%   Literal es uno de los literales de Conjuncion.
-literal(Literal, (A, B)) :-
-    !,
-    (   literal(Literal, A)
-    ;   literal(Literal, B)
+%   Hecho entra con el sello S0, y S es el sello siguiente.
+entrar_con(Orden, Activar, Red, Hecho, rete(Alfas0, Betas, C)-S0,
+           Rete-S) :-
+    entrar_alfa(mas, S0, Hecho, Red, Alfas0, Alfas, Entradas),
+    Red = red(_, Info, _, _),
+    findall(B-Paso,
+            ( member(A-Paso, Entradas),
+              get_assoc(A, Info, a(_, Sucesores)),
+              member(B, Sucesores) ),
+            Activaciones0),
+    sort(1, Orden, Activaciones0, Activaciones),
+    foldl(call(Activar, S0, Red), Activaciones, rete(Alfas, Betas, C),
+          Rete),
+    S is S0 + 1.
+
+% Ejercicio 6.
+
+%!  ciclo_sin_registro(+Programa, +Estrategia, +Limite:integer,
+%!                     +Hechos:list, -Memoria:list, -Resultado) is det.
+%
+%   Ejecuta el Programa en la red sin el registro de las disparadas: la
+%   elegida sale del conjunto de conflicto y nada más. Resultado es el de
+%   parar/1, nada_aplicable, o limite(Limite) si se llega al límite de
+%   ciclos.
+ciclo_sin_registro(Programa, Estrategia, Limite, Hechos, Memoria,
+                   Resultado) :-
+    red_de(Programa, Red),
+    cargar(Red, Hechos, Mt0, Rete0),
+    sin_registro(Red, Estrategia, Limite, 0, Mt0-Rete0, Mt, Resultado),
+    hechos(Mt, Memoria).
+
+%!  sin_registro(+Red, +Estrategia, +Limite:integer, +N:integer, +Estado,
+%!               -Memoria, -Resultado) is det.
+%
+%   Sigue el ciclo después de N ciclos, desde el par Memoria-Rete Estado.
+sin_registro(Red, Estrategia, Limite, N, Mt0-Rete0, Mt, Resultado) :-
+    conjunto_rete(Rete0, Is),
+    (   Is == []
+    ->  Mt = Mt0,
+        Resultado = nada_aplicable
+    ;   N >= Limite
+    ->  Mt = Mt0,
+        Resultado = limite(Limite)
+    ;   preferida(Estrategia, Is, Elegida),
+        Elegida = instanciacion(_, _, _, Acciones),
+        quitar_elegida(Red, Elegida, Rete0, Rete1),
+        acciones_rete(Acciones, Red, Mt0-Rete1, Estado, Fin),
+        (   Fin = parar(R)
+        ->  Estado = Mt-_,
+            Resultado = R
+        ;   N1 is N + 1,
+            sin_registro(Red, Estrategia, Limite, N1, Estado, Mt, Resultado)
+        )
     ).
-literal(Literal, Literal).
 
-% Ejercicio 7 ----------------------------------------------------------
+% Ejercicio 7.
 
-%!  escribir_derivacion(+Arbol) is det.
+%!  carga_siempre(+K:integer, -Inferencias:integer) is det.
 %
-%   Escribe Arbol, un árbol de derivacion/3, con una línea por nodo.
-escribir_derivacion(Arbol) :-
-    escribir_derivacion(Arbol, 0).
+%   Inferencias son las de cargar pedido_ampliado(K, _) en la red del
+%   configurador activando por la derecha cada sucesor, aunque su padre no
+%   tenga tokens.
+carga_siempre(K, Inferencias) :-
+    red_de(configurador, Red),
+    pedido_ampliado(K, Hechos),
+    inferencias(cargar_con(@>=, siempre_derecha, Red, Hechos, _),
+                Inferencias).
 
-%!  escribir_derivacion(+Arbol, +Sangria:integer) is det.
+%!  carga_normal(+K:integer, -Inferencias:integer) is det.
 %
-%   Escribe Arbol con Sangria espacios antes de su raíz.
-escribir_derivacion(predefinido(Meta), S) :-
-    format("~t~*|~q, predefinido~n", [S, Meta]).
-escribir_derivacion(estricta(Meta), S) :-
-    format("~t~*|~q, en forma estricta~n", [S, Meta]).
-escribir_derivacion(regla(Regla, Arboles), S) :-
-    partes(Regla, Cabeza, _),
-    format("~t~*|~q, por ~q~n", [S, Cabeza, Regla]),
-    S1 is S + 2,
-    forall(member(A, Arboles), escribir_derivacion(A, S1)).
+%   Como carga_siempre/2, con activar_derecha/6, que no activa un nodo
+%   cuyo padre no tiene tokens.
+carga_normal(K, Inferencias) :-
+    red_de(configurador, Red),
+    pedido_ampliado(K, Hechos),
+    inferencias(cargar_con(@>=, activar_derecha(mas), Red, Hechos, _),
+                Inferencias).
 
-% Ejercicio 9 ----------------------------------------------------------
-
-% murcielago(X): X es un murciélago.
-murcielago(rufo).
-murcielago(dracula).
-
-% muerto(X): X está muerto.
-muerto(dracula).
-
-:- table vuela_t/1, no_vuela_t/1.
-
-%!  vuela_t(?X) is nondet.
+%!  siempre_derecha(+Sello:integer, +Red, +Activacion, +Rete0, -Rete)
+%!      is det.
 %
-%   X vuela: es un murciélago del que no se prueba que no vuela.
-vuela_t(X) :-
-    murcielago(X),
-    tnot(no_vuela_t(X)).
+%   Como activar_derecha/6 con el signo mas, sin mirar la memoria del
+%   padre.
+siempre_derecha(Sello, Red, Nodo-Paso, Rete0, Rete) :-
+    Red = red(_, _, Nodos, _),
+    get_assoc(Nodo, Nodos, beta(Tipo, Padre, Prefijo, _, _)),
+    derecha(Tipo, mas, Sello-Paso, Padre-Nodo, Prefijo, Red, Rete0, Rete).
 
-%!  no_vuela_t(?X) is nondet.
+% Ejercicio 9.
+
+%!  rastrear_cambios(+Programa, +Estrategia, +Hechos:list, -Resultado)
+%!      is det.
 %
-%   X no vuela: está muerto. La regla de los muertos, superior, ya no
-%   tiene la excepción.
-no_vuela_t(X) :-
-    muerto(X).
+%   Ejecuta el Programa en la red y escribe, en cada ciclo, la regla
+%   elegida y los pares Regla-Sellos que entraron en el conjunto de
+%   conflicto y los que salieron por las acciones del ciclo, sin contar la
+%   elegida.
+rastrear_cambios(Programa, Estrategia, Hechos, Resultado) :-
+    red_de(Programa, Red),
+    cargar(Red, Hechos, Mt, Rete),
+    con_cambios(Red, Estrategia, 1, [], Mt-Rete, Resultado).
 
-% Ejercicio 10 ---------------------------------------------------------
-
-% regla_f(Cabeza, Cuerpo): regla sin excepciones del intérprete de Flach.
-regla_f(mamifero(X), murcielago(X)).
-regla_f(murcielago(dracula), true).
-regla_f(murcielago(rufo), true).
-regla_f(muerto(dracula), true).
-
-% por_defecto(Nombre, Cabeza, Cuerpo): supuesto por defecto, con nombre.
-por_defecto(mamiferos_no_vuelan(X), no(vuela(X)), mamifero(X)).
-por_defecto(murcielagos_vuelan(X), vuela(X), murcielago(X)).
-por_defecto(muertos_no_vuelan(X), no(vuela(X)), muerto(X)).
-
-%!  explicar_por_defecto(+Meta, -Supuestos:list) is nondet.
+%!  con_cambios(+Red, +Estrategia, +N:integer, +Disparadas:list, +Estado,
+%!              -Resultado) is det.
 %
-%   Supuestos son los nombres de los supuestos por defecto con los que
-%   Meta se prueba sin contradecir las reglas.
-explicar_por_defecto(Meta, Supuestos) :-
-    explicar_f(Meta, [], Supuestos).
+%   Hace el ciclo N con un_ciclo/9 y escribe sus cambios.
+con_cambios(Red, Estrategia, N, Disparadas0, Estado0, Resultado) :-
+    Estado0 = _-Rete0,
+    identidades(Rete0, Antes),
+    un_ciclo(Red, Estrategia, breve, N, Disparadas0, Disparadas, Estado0,
+             Estado, Fin),
+    (   Fin == nada_aplicable
+    ->  Resultado = nada_aplicable
+    ;   Estado = _-Rete,
+        identidades(Rete, Despues),
+        ord_subtract(Despues, Antes, Entraron),
+        ord_subtract(Antes, Despues, Salieron0),
+        ord_subtract(Salieron0, Disparadas, Salieron),
+        format("   entran ~w, salen ~w~n", [Entraron, Salieron]),
+        (   Fin = parar(R)
+        ->  Resultado = R
+        ;   N1 is N + 1,
+            con_cambios(Red, Estrategia, N1, Disparadas, Estado, Resultado)
+        )
+    ).
 
-%!  explicar_f(+Meta, +S0:list, -S:list) is nondet.
+%!  identidades(+Rete, -Identidades:list) is det.
 %
-%   Meta se prueba con las reglas y con supuestos por defecto; S son los
-%   supuestos de S0 más los que la prueba agrega.
-explicar_f(true, S, S).
-explicar_f((A, B), S0, S) :-
-    explicar_f(A, S0, S1),
-    explicar_f(B, S1, S).
-explicar_f(Meta, S, S) :-
-    Meta \= true,
-    Meta \= (_, _),
-    probar_f(Meta).
-explicar_f(Meta, S0, [Nombre|S]) :-
-    por_defecto(Nombre, Meta, Cuerpo),
-    explicar_f(Cuerpo, S0, S),
-    \+ contradice(Meta).
+%   Identidades es el conjunto ordenado de los pares Regla-Sellos del
+%   conjunto de conflicto de Rete.
+identidades(Rete, Identidades) :-
+    conjunto_rete(Rete, Is),
+    findall(N-S, member(instanciacion(N, S, _, _), Is), Pares),
+    sort(Pares, Identidades).
 
-%!  probar_f(+Meta) is nondet.
-%
-%   Meta se prueba solo con las reglas.
-probar_f(true).
-probar_f(Meta) :-
-    Meta \= true,
-    regla_f(Meta, Cuerpo),
-    probar_f(Cuerpo).
+% Ejercicio 10.
 
-%!  contradice(+Meta) is semidet.
+%!  tokens_al_final(+N:integer, -Tokens:integer, -Antepasados:integer)
+%!      is det.
 %
-%   Las reglas prueban lo contrario de Meta.
-contradice(no(A)) :-
-    !,
-    probar_f(A).
-contradice(A) :-
-    probar_f(no(A)).
+%   Tokens son los de todas las memorias beta de la red de familia al
+%   terminar cadena(N, _) con orden, y Antepasados, los hechos
+%   antepasado/2 de la memoria final.
+tokens_al_final(N, Tokens, Antepasados) :-
+    cadena(N, Hechos),
+    red_de(familia, Red),
+    cargar(Red, Hechos, Mt0, Rete0),
+    ciclo_rete(Red, orden, sin_traza, 0, _, [], Mt0-Rete0, Mt-Rete, _),
+    Red = red(_, _, Nodos, _),
+    aggregate_all(sum(T),
+                  ( gen_assoc(B, Nodos, _),
+                    tokens(B, Rete, Ts),
+                    length(Ts, T) ),
+                  Tokens),
+    aggregate_all(count, elemento(_, antepasado(_, _), Mt), Antepasados).
+
+% Ejercicio 11.
+
+%!  pasos_forzados(+Condiciones:list, -Pasos:list) is det.
+%
+%   Como pasos_con_pruebas/2, pero cada patrón se lleva todas las pruebas
+%   que lo siguen, sin mirar sus variables.
+pasos_forzados(Condiciones, Pasos) :-
+    separar(Condiciones, Separadas),
+    forzar(Separadas, Pasos).
+
+%!  forzar(+Condiciones:list, -Pasos:list) is det.
+%
+%   Pasos son los de las Condiciones con todas las pruebas que siguen a un
+%   patrón dentro de su paso alfa.
+forzar([], []).
+forzar([C|Cs], [Paso|Pasos]) :-
+    (   ( C = {_} ; C = no(_) )
+    ->  Paso = C,
+        Resto = Cs
+    ;   pruebas_siguientes(Cs, Pruebas, Resto),
+        Paso = alfa(C, Pruebas)
+    ),
+    forzar(Resto, Pasos).
+
+%!  pruebas_siguientes(+Condiciones:list, -Pruebas:list, -Resto:list)
+%!      is det.
+%
+%   Pruebas son las metas de las pruebas del principio de Condiciones, y
+%   Resto, las condiciones que siguen.
+pruebas_siguientes(Condiciones, Pruebas, Resto) :-
+    (   Condiciones = [{G}|Cs]
+    ->  Pruebas = [G|Gs],
+        pruebas_siguientes(Cs, Gs, Resto)
+    ;   Pruebas = [],
+        Resto = Condiciones
+    ).
+
+%!  configurar_forzado(+Pedido:list, -Resultado) is det.
+%
+%   Resultado es ok(Componentes) si el configurador con la red de
+%   pasos_forzados/2 termina para el Pedido, o error(E) si lanza el
+%   error E.
+configurar_forzado(Pedido, Resultado) :-
+    programa(configurador, Reglas),
+    compilar_red(pasos_forzados, Reglas, Red),
+    memoria_del_pedido(Pedido, Hechos),
+    catch(( ejecutar_red(Red, mea, sin_traza, Hechos, _, Mt, _),
+            hechos(Mt, Memoria),
+            componentes(Memoria, Componentes, _),
+            Resultado = ok(Componentes) ),
+          E,
+          Resultado = error(E)).
+
+% Ejercicio 12.
+
+%!  ciclos_para_ganar(+K:integer, -C) is det.
+%
+%   C es la menor cantidad de ciclos para la cual la red con pruebas alfa
+%   cuesta menos que el capítulo 64 en el configurador con
+%   pedido_ampliado(K, _), si cada ciclo cuesta el promedio de los 21
+%   medidos en cada intérprete, o nunca si el ciclo promedio de la red no
+%   es más barato.
+ciclos_para_ganar(K, C) :-
+    comparar_con_pruebas(K, fila(_, I63, _, _, Carga, Ciclos)),
+    Por63 is I63 / 21,
+    PorRed is Ciclos / 21,
+    (   Por63 > PorRed
+    ->  C is floor(Carga / (Por63 - PorRed)) + 1
+    ;   C = nunca
+    ).

@@ -1,204 +1,189 @@
 :- encoding(utf8).
 
-% Capítulo 87 - Soluciones de los ejercicios.
+% Capítulo 87 - Soluciones de los ejercicios que piden código.
 %
-% Carga el programa completo sin modificarlo. Los ejercicios que agregan
-% vocabulario lo hacen con cláusulas de los predicados multifile de los
-% módulos del capítulo: el léxico del capítulo 53, verbo_tipos/3 y sn//3
-% de gramatica.pl, definicion/2 de evaluar.pl y sql_atomo/4 de sql.pl.
+% Cargan el intérprete completo sin modificarlo. columnas_usadas/2
+% (ejercicio 4) resuelve cada columna de una consulta a su tabla;
+% actualizar_tupla/2 (ejercicio 5) es el UPDATE de Toy-Sequel, tupla por
+% tupla; traducir_ordenado/2 (ejercicio 6) pone primero los generadores con
+% más argumentos ligados; insertar_verificado/2 (ejercicio 7) verifica las
+% referencias del capítulo 43; recursiva/5 (ejercicio 8) calcula una
+% consulta recursiva repitiendo un INSERT … SELECT hasta que no agrega
+% nada.
 %
-% solo-local: carga módulos.
+% solo-local: carga los módulos del capítulo y modifica la base.
 %
-%?- preguntar("¿Quién desaprobó álgebra?").
-%?- simplificar(cual(X, y(y(alumno(X), carrera(X, sistemas)), cursar(X, pp))), S).
-%?- por_que_no_esta("¿Quién aprobó análisis 1?", "elena", M).
+%?- columnas_usadas("SELECT a.nombre FROM alumnos a, inscripciones i WHERE a.legajo = i.legajo AND nota > 6", Cs).
 
 :- module(soluciones,
-          [ simplificar/2,
-            por_que_no_esta/3,
-            pasos_sin_tabla/3,
-            responder_lecturas/2,
-            conversar_por_que/2,
-            sql_presuposicion/2,
-            aplicar/3,
-            aplicar_mal/3
+          [ columnas_usadas/2,
+            actualizar_tupla/2,
+            traducir_ordenado/2,
+            generadores/3,
+            insertar_verificado/2,
+            recursiva/5
           ]).
 
-:- use_module('../capitulo-42/base').
-:- reexport(preguntas).
-:- reexport(gramatica, [analizar/2, lecturas/2]).
-:- reexport(evaluar).
-:- reexport(sql, [sql/2]).
-:- use_module(nombres).
-:- use_module(palabras).
+:- reexport(minisql).
+:- reexport(costos).
+:- use_module(library(lists)).
+:- use_module(library(apply)).
 
-% --- Ejercicio 4: desaprobar ---------------------------------------------
+% Ejercicio 4
 
-lexico:verbo("desaprobar", o_ue).
-
-gramatica:verbo_tipos(desaprobar, alumno, materia).
-
-evaluar:definicion(desaprobar(L, M), [inscripcion(L, M, N), N < 6]) :-
-    inscripcion(L, M, N),
-    integer(N),
-    N < 6.
-
-sql:sql_atomo(desaprobar(L, M), inscripciones, [legajo-L, materia-M],
-              "nota < 6").
-
-% --- Ejercicio 5: simplificar ----------------------------------------------
-
-%!  simplificar(+Forma, -Simple) is det.
+%!  columnas_usadas(+Texto, -Columnas:list) is det.
 %
-%   Simple es Forma con cada y(alumno(X), carrera(X, C)) reemplazado por
-%   carrera(X, C): la carrera ya dice que X es un alumno.
-simplificar(cual(X, F), cual(X, S)) :-
-    !,
-    simplificar(F, S).
-simplificar(cuantos(X, F), cuantos(X, S)) :-
-    !,
-    simplificar(F, S).
-simplificar(si_no(F), si_no(S)) :-
-    !,
-    simplificar(F, S).
-simplificar(y(alumno(X), carrera(Y, C)), carrera(X, C)) :-
-    X == Y,
-    !.
-simplificar(y(A, B), y(SA, SB)) :-
-    !,
-    simplificar(A, SA),
-    simplificar(B, SB).
-simplificar(todo(X, R, A), todo(X, SR, SA)) :-
-    !,
-    simplificar(R, SR),
-    simplificar(A, SA).
-simplificar(alguno(X, R, A), alguno(X, SR, SA)) :-
-    !,
-    simplificar(R, SR),
-    simplificar(A, SA).
-simplificar(no(A), no(SA)) :-
-    !,
-    simplificar(A, SA).
-simplificar(Atomo, Atomo).
+%   Columnas son las columnas que nombra el SELECT Texto, de un solo
+%   nivel, cada una Tabla-Columna, sin repetidas y en orden alfabético.
+columnas_usadas(Texto, Columnas) :-
+    analizar(Texto, consulta(seleccion(_, Items, Desde, Donde, Grupo, Ten),
+                             _, _)),
+    marcos(Desde, _, Marcos),
+    findall(R, ( sub_term(R, f(Items, Donde, Grupo, Ten)),
+                 ( R = columna(_) ; R = columna(_, _) ) ),
+            Refs),
+    maplist(tabla_de_columna(Desde, Marcos), Refs, Cs),
+    sort(Cs, Columnas).
 
-% --- Ejercicio 6: por qué no está ------------------------------------------
-
-%!  por_que_no_esta(+Texto, +Nombre, -Motivo) is semidet.
+%!  tabla_de_columna(+Desde:list, +Marcos:list, +Ref, -TC) is det.
 %
-%   Motivo explica por qué la entidad que se llama Nombre no está en la
-%   respuesta de Texto, una pregunta con cual/2 o cuantos/2. Falla si la
-%   pregunta no se analiza, si Nombre no nombra nada o si la entidad está
-%   en la respuesta.
-por_que_no_esta(Texto, Nombre, Motivo) :-
-    analizar(Texto, Forma),
-    (   Forma = cual(X, F)
-    ;   Forma = cuantos(X, F)
+%   TC es Tabla-Columna para la referencia Ref, buscada en Marcos.
+tabla_de_columna(Desde, Marcos, Ref, Tabla-C) :-
+    buscar_columna(Ref, [Marcos], col(C, _, _, V), _),
+    member(marco(Alias, Cs), Marcos),
+    member(col(_, _, _, W), Cs),
+    W == V,
+    !,
+    memberchk(desde(Tabla, Alias), Desde).
+
+% Ejercicio 5
+
+%!  actualizar_tupla(+Texto, -N:integer) is det.
+%
+%   Ejecuta el UPDATE Texto como Toy-Sequel: para cada fila que cumple la
+%   condición, retira la tupla y agrega la nueva, dentro del recorrido.
+%   N es la cantidad de filas cambiadas. La condición ve la tabla a medio
+%   cambiar.
+actualizar_tupla(Texto, N) :-
+    analizar(Texto, actualizar(T, Asignaciones, Condicion)),
+    marcos([desde(T, T)], [Generador], Marcos),
+    Marcos = [marco(_, Columnas)],
+    Pila = [Marcos],
+    condicion(Condicion, fila, Pila, verdadera, Filtro),
+    maplist([col(_, _, _, V), V]>>true, Columnas, Viejos),
+    nuevos(Columnas, Asignaciones, Pila, Nuevos, Calculos),
+    Generador = M:Cabeza,
+    Cabeza =.. [P|Viejos],
+    Nueva =.. [P|Nuevos],
+    aggregate_all(count,
+                  ( Generador,
+                    once(Filtro),
+                    Calculos,
+                    retract(M:Cabeza),
+                    assertz(M:Nueva) ),
+                  N).
+
+%!  nuevos(+Columnas:list, +Asignaciones:list, +Pila:list, -Nuevos:list,
+%!         -Calculos) is det.
+%
+%   Nuevos son los valores nuevos de las columnas: el de su asignación, o
+%   el viejo; Calculos es la meta que calcula los asignados.
+nuevos([], _, _, [], true).
+nuevos([col(C, _, _, V)|Cs], Asignaciones, Pila, [N|Ns], (M, Ms)) :-
+    (   memberchk(C-E, Asignaciones)
+    ->  expresion(E, fila, Pila, N, _, _, M)
+    ;   N = V,
+        M = true
     ),
+    nuevos(Cs, Asignaciones, Pila, Ns, Ms).
+
+% Ejercicio 6
+
+%!  traducir_ordenado(+Texto, -Traduccion) is det.
+%
+%   Traduccion es Fila-Meta, la traducción de la consulta Texto con sus
+%   generadores ordenados de más a menos argumentos ligados al compilar.
+traducir_ordenado(Texto, Fila-Meta) :-
+    traducir(Texto, _, Fila-Meta0),
+    generadores(Meta0, Gs, Resto),
+    map_list_to_pairs(ligados, Gs, Pares),
+    sort(1, @>=, Pares, Ordenados),
+    pairs_values(Ordenados, Gs1),
+    (   Resto == true
+    ->  Metas = Gs1
+    ;   append(Gs1, [Resto], Metas)
+    ),
+    encadenar(Metas, Meta).
+
+% encadenar(Metas, Meta): Meta es (M1, (M2, …)).
+encadenar([M], M) :-
+    !.
+encadenar([M|Ms], (M, Resto)) :-
+    encadenar(Ms, Resto).
+
+%!  generadores(+Meta, -Generadores:list, -Resto) is det.
+%
+%   Generadores son las llamadas a tablas con que empieza la conjunción
+%   Meta, y Resto la meta que sigue.
+generadores((G, Resto0), [G|Gs], Resto) :-
+    generador(G),
     !,
-    palabras(Nombre, Palabras),
-    once(phrase(nombre_propio(_, X), Palabras)),
-    \+ probar(F, _),
-    por_que_no(F, Motivo).
+    generadores(Resto0, Gs, Resto).
+generadores(G, [G], true) :-
+    generador(G),
+    !.
+generadores(Resto, [], Resto).
 
-% --- Ejercicio 7: sin tabla ------------------------------------------------
+% generador(G): G llama a una tabla o una vista.
+generador(M:_) :-
+    memberchk(M, [base, relaciones]).
 
-%!  pasos_sin_tabla(+Materia, ?Requisito, ?N:integer) is nondet.
+% ligados(G, K): K es la cantidad de argumentos de G ligados al compilar.
+ligados(_:G, K) :-
+    G =.. [_|Args],
+    include(nonvar, Args, Ligados),
+    length(Ligados, K).
+
+% Ejercicio 7
+
+%!  insertar_verificado(+Texto, -Resultado) is det.
 %
-%   La definición de pasos/3 sin la tabla. No termina: la segunda cláusula
-%   se llama a sí misma antes de consumir una correlativa.
-pasos_sin_tabla(M, R, 1) :-
-    correlativa(M, R).
-pasos_sin_tabla(M, R, N) :-
-    pasos_sin_tabla(M, I, N0),
-    correlativa(I, R),
-    N is N0 + 1.
-
-% --- Ejercicio 8: todas las lecturas ---------------------------------------
-
-%!  responder_lecturas(+Texto, -Respuestas:list) is det.
-%
-%   Respuestas tiene un par Forma-Respuesta por cada lectura de Texto.
-responder_lecturas(Texto, Respuestas) :-
-    lecturas(Texto, Formas),
-    findall(F-R, ( member(F, Formas), evaluar(F, R) ), Respuestas).
-
-% --- Ejercicio 9: ¿por qué? ------------------------------------------------
-
-%!  conversar_por_que(+Entrada, +Salida) is det.
-%
-%   Como conversar/2, pero escribe solo la respuesta; si la línea
-%   siguiente es «¿por qué?», escribe la explicación de la última
-%   pregunta.
-conversar_por_que(Entrada, Salida) :-
-    conversar_por_que(Entrada, Salida, ninguna).
-
-%!  conversar_por_que(+Entrada, +Salida, +Ultima) is det.
-%
-%   Ultima es la explicación de la última pregunta, o ninguna.
-conversar_por_que(Entrada, Salida, Ultima) :-
-    format(Salida, "> ", []),
-    read_line_to_string(Entrada, Linea),
-    (   ( Linea == end_of_file ; Linea == "" )
-    ->  true
-    ;   Linea == "¿por qué?"
-    ->  (   Ultima == ninguna
-        ->  format(Salida, "No hay una pregunta anterior.~n", [])
-        ;   with_output_to(Salida,
-                           preguntas:escribir_explicacion(Ultima))
-        ),
-        conversar_por_que(Entrada, Salida, Ultima)
-    ;   responder(Linea, Respuesta, Explicacion),
-        with_output_to(Salida, preguntas:escribir_respuesta(Respuesta)),
-        conversar_por_que(Entrada, Salida, Explicacion)
+%   Ejecuta el INSERT Texto y verifica después las restricciones del
+%   esquema del capítulo 43 con violacion/1. Si alguna no se cumple,
+%   repone el estado anterior y lanza error(sql(Violacion), _).
+insertar_verificado(Texto, Resultado) :-
+    estado(E),
+    sql(Texto, Resultado),
+    (   base:violacion(V)
+    ->  restaurar(E),
+        throw(error(sql(V), _))
+    ;   true
     ).
 
-% --- Ejercicio 10: la presuposición en SQL --------------------------------
+% Ejercicio 8
 
-%!  sql_presuposicion(+Forma, -SQL:string) is semidet.
+%!  recursiva(+Tabla, +Crear, +Base, +Paso, -Rondas:integer) is det.
 %
-%   SQL es como la sentencia de sql/2, salvo para una pregunta de sí o no
-%   con «todos»: da NULL si la restricción no tiene casos, y si los tiene,
-%   1 o 0.
-sql_presuposicion(si_no(todo(X, R, A)), SQL) :-
-    !,
-    sql(si_no(R), Hay),
-    sql(si_no(todo(X, R, A)), Todos),
-    format(string(SQL),
-           "SELECT CASE WHEN (~s) = 0 THEN NULL ELSE (~s) END",
-           [Hay, Todos]).
-sql_presuposicion(Forma, SQL) :-
-    sql(Forma, SQL).
+%   Calcula una consulta recursiva en la tabla Tabla, que crea la
+%   sentencia Crear: la llena con el SELECT Base y después repite
+%   INSERT INTO Tabla Paso EXCEPT SELECT * FROM Tabla, donde Paso nombra
+%   a Tabla, hasta que no agrega ninguna fila. Rondas es la cantidad de
+%   veces que se ejecutó Paso.
+recursiva(Tabla, Crear, Base, Paso, Rondas) :-
+    sql(Crear, _),
+    format(atom(Inicio), "INSERT INTO ~w ~w", [Tabla, Base]),
+    sql(Inicio, _),
+    format(atom(Insertar), "INSERT INTO ~w ~w EXCEPT SELECT * FROM ~w",
+           [Tabla, Paso, Tabla]),
+    rondas(Insertar, 1, Rondas).
 
-% --- Ejercicio 11: la coordinación -----------------------------------------
-
-% Dos nombres propios unidos por «y», después del verbo. La propiedad X^P
-% ya está construida cuando se analiza el objeto o el sujeto pospuesto;
-% antes del verbo, P todavía es una variable, y la regla no se aplica.
-
-gramatica:sn(plural, Tipo, (X^P)^y(P1, P2)) -->
-    nombre_propio(Tipo, E1),
-    gramatica:palabra("y"),
-    nombre_propio(Tipo, E2),
-    { Tipo \== carrera,
-      nonvar(P),
-      aplicar(X^P, E1, P1),
-      aplicar(X^P, E2, P2) }.
-
-%!  aplicar_mal(+Propiedad, +E, -F) is det.
+%!  rondas(+Insertar, +K0:integer, -K:integer) is det.
 %
-%   La aplicación con copy_term/2 sobre la propiedad entera: renombra
-%   también las variables de la pregunta. Es el error del ejercicio.
-aplicar_mal(X^P, E, F) :-
-    copy_term(X^P, E^F).
-
-%!  aplicar(+Propiedad, +E, -F) is det.
-%
-%   F es la Propiedad X^P aplicada a E: una copia de P con E en lugar de
-%   X. Solo X se renombra; las demás variables de P siguen compartidas,
-%   porque son las de la pregunta.
-aplicar(X^P, E, F) :-
-    term_variables(P, Vs0),
-    exclude(==(X), Vs0, Libres),
-    copy_term(t(Libres, X, P), t(Libres1, X1, F)),
-    Libres1 = Libres,
-    X1 = E.
+%   Ejecuta Insertar hasta que no agrega filas; K cuenta las ejecuciones.
+rondas(Insertar, K0, K) :-
+    sql(Insertar, insertadas(N)),
+    (   N =:= 0
+    ->  K = K0
+    ;   K1 is K0 + 1,
+        rondas(Insertar, K1, K)
+    ).

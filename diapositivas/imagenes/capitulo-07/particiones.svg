@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" width="960" height="480">
-  <title>pegar(A, B, [ana, luis, eva]) da las cuatro particiones de la lista en dos partes</title>
+  <title>concatenar(A, B, [ana, luis, eva]) da las cuatro particiones de la lista en dos partes</title>
   <rect x="0" y="0" width="960" height="480" fill="#FFFFFF"/>
   <line x1="54.0" y1="30.0" x2="54.0" y2="100.0" stroke="#1F2933" stroke-width="4"/>
   <rect x="68.0" y="40.0" width="100.0" height="50.0" rx="4" fill="#EAF1F8" stroke="#1F3A5F" stroke-width="3"/>

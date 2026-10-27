@@ -1,147 +1,99 @@
 :- encoding(utf8).
 
-:- use_module(library(lists)).
-
 :- begin_tests(soluciones).
 
-test(ejercicio_2, [true(F-D == [[[g1]], [[g2]], [[g4]]]-[[[g1]], [[g2]], [[g4]]])]) :-
-    sospechosas(fuerte, xor_nand, [[1, 0]-[0]], 2, F),
-    sospechosas(debil, xor_nand, [[1, 0]-[0]], 2, D).
+test(restador) :-
+    resta_correcta.
 
-test(ejercicio_2_dos, [true(Ds == [[[g1]-invertida], [[g1]-pegada(0)],
-                                   [[g2]-pegada(1)], [[g4]-pegada(0)]])]) :-
-    mas_simples(fuerte, xor_nand, [[1, 0]-[0], [0, 0]-[0]], Ds).
+test(restador_ejemplo, [nondet, true(Ds == [1, 1, 1, 1])]) :-
+    simular(restador3, [1, 0, 0, 0, 1, 0], Ds).
 
-test(ejercicio_3, [nondet, true(D == [[m2, x1]-pegada(0), [o1]-pegada(0),
-                                      [o1]-pegada(1)])]) :-
-    diagnostico_mal(sumador, [[0, 0, 1]-[0, 1], [1, 0, 0]-[1, 0]], D),
-    repetida(D).
+test(mux_sdp, [nondet, true(Ps == [[a, ~s], [b, s]])]) :-
+    formula(mux, z, F),
+    suma_de_productos(F, Ps).
 
-test(ejercicio_4, [true(N-M == 8-4)]) :-
-    aggregate_all(count, diagnostico(flach, sumador, [[0, 0, 1]-[0, 1]], _),
-                  N),
-    por_filtro(flach, sumador, [[0, 0, 1]-[0, 1]], Ds),
-    length(Ds, M).
+test(mux_nand) :-
+    equivalentes(mux, mux_nand).
 
-test(ejercicio_4_dos, [fail]) :-
-    mas_simples(flach, sumador, [[0, 0, 1]-[0, 1], [1, 0, 0]-[1, 0]], _).
+test(nand_universal) :-
+    equivalentes(inv_nand, inv1),
+    equivalentes(and_nand, and1),
+    equivalentes(or_nand, or1).
 
-test(ejercicio_6, [true(D == [A])]) :-
-    A = [[m1, y1]-pegada(1), [m2, x1]-pegada(0)],
-    predecir(sumador_sondas, [0, 0, 1], A, Ss),
-    localizar(sumador_sondas, A, [[0, 0, 1]-Ss], _, D).
+test(pegada_s, [true(Ess == [[0, 0, 1], [0, 1, 0], [1, 0, 0], [1, 1, 1]])]) :-
+    findall(Es, detecta(sumador, [m2, x1], 0, Es), Ess).
 
-test(ejercicio_7, [nondet, true(R == [[m1, x1], [m1, y1], [m2, x1], [m2, y1],
-                                      [o1]])]) :-
-    explicar(fuerte, sumador, [[1, 0, 1]-[0, 1]], S),
-    sanas(S, R).
+test(pegada_co, [true(Ess == [[0, 0, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0]])]) :-
+    findall(Es, detecta(sumador, [o1], 1, Es), Ess).
 
-test(ejercicio_8, [true(Ss == [[arranque-malo, bateria-bien],
-                                [combustible-vacio, bateria-bien]])]) :-
-    findall(S, ( abducir((motor(no_arranca), luces(encendidas)), S),
-                 cerrar(S) ),
-            Ss).
+test(minterminos_xor, [true(Ps == [[x, ~y], [y, ~x]])]) :-
+    minterminos(xor_nand, z, Ps).
 
-test(ejercicio_9, [true(D == [[s2, m2, y1]-pegada(0)])]) :-
-    mas_probables(sumador3, [[1, 1, 0, 1, 0, 1]-[0, 0, 0, 0]], 2,
-                  [_-D|_]).
+test(minterminos_co, [true(Ps == [[a, b, ci], [a, b, ~ci], [a, ci, ~b],
+                                  [b, ci, ~a]])]) :-
+    minterminos(sumador, co, Ps).
 
-test(ejercicio_10, [true(C == [[m1, x1], [m2, x1]])]) :-
-    cono(sumador, s, C).
+test(consenso_acarreo, [nondet, true(Ps == [[a, b], [a, ci], [b, ci]])]) :-
+    formula(sumador, co, F),
+    suma_de_productos(F, Ps0),
+    simplificar_consenso(Ps0, Ps).
 
-test(ejercicio_10_conos, [true]) :-
-    O = [1, 1, 0, 1, 0, 1]-[1, 0, 0, 0],
-    minimos(fuerte, sumador3, [O], 2, Ds),
-    forall(member(D, Ds), toca_los_conos(sumador3, O, D)).
+% Los productos de los mintérminos del acarreo se reducen igual.
+test(consenso_minterminos, [true(Ps == [[a, b], [a, ci], [b, ci]])]) :-
+    minterminos(sumador, co, Ps0),
+    simplificar_consenso(Ps0, Ps).
 
-test(ejercicio_11, [true(P-U == [[0, 0, 0], [0, 1, 1], [1, 1, 1]]-[])]) :-
-    conjunto_de_pruebas(sumador, P, U).
+test(consenso_xor, [true(Ps == [[x, ~y], [y, ~x]])]) :-
+    simplificar_consenso([[x, ~y], [y, ~x]], Ps).
 
-% Con un solo supuesto por componente, la copia coincide con abducir/2.
-test(abducir_mal_una, all(S == [[[g]-pegada(0)], [[g]-invertida]])) :-
-    abducir_mal(salida(fuerte, [g], and, [1, 1], 0), S),
-    cerrar(S).
+test(contador2, [nondet, true(Ss == [[0, 0], [1, 0], [0, 1], [0, 1], [1, 1],
+                                     [1, 1]])]) :-
+    ejecutar(contador2, [0, 0], [[1], [1], [0], [1], [0], [1]], Ss).
 
-test(abductiva_mal, all(S-Sp == [1-[[g]-ok], 0-[[g]-pegada(0)],
-                                 1-[[g]-pegada(1)], 0-[[g]-invertida]])) :-
-    abductiva_mal(Sp, [g], and, [1, 1], S),
-    cerrar(Sp).
+test(contador2_estados, [true(N == 4)]) :-
+    aggregate_all(count, alcanzable(contador2, [0, 0], _), N).
 
-test(observar_mal, all(S == [[[x1]-ok, [y1]-ok], [[x1]-ok, [y1]-pegada(1)],
-                             [[x1]-pegada(0), [y1]-ok],
-                             [[x1]-pegada(0), [y1]-pegada(1)]])) :-
-    observar_mal(semisumador, S, [1, 1]-[0, 1]),
-    cerrar(S).
+test(detector,
+     [nondet, true(Ss == [[0], [0], [1], [0], [1], [0], [0], [1]])]) :-
+    ejecutar(detector, [0, 0], [[1], [0], [1], [0], [1], [1], [0], [1]], Ss).
 
-test(repetida_no, [fail]) :-
-    repetida([[a]-x, [b]-y]).
+test(detector_correcto) :-
+    detector_correcto.
 
-test(repetida_si, [true]) :-
-    repetida([[b]-y, [a]-x, [a]-y]).
+test(anticipado) :-
+    equivalentes(sumador3, sumador3_anticipado).
 
-test(sanas_vacio, [true(R == [])]) :-
-    sanas([], R).
+test(anticipado_compuertas, [true(N-M == 12-15)]) :-
+    compuertas(sumador3, N),
+    compuertas(sumador3_anticipado, M).
 
-test(sanas, [true(R == [[a], [c]])]) :-
-    sanas([[a]-ok, [b]-pegada(1), [c]-ok], R).
+test(profundidad, [true(P1-P2 == [1, 2, 4, 5]-[1, 2, 4, 4])]) :-
+    once(simular(profundidad, sumador3, [0, 0, 0, 0, 0, 0], P1)),
+    once(simular(profundidad, sumador3_anticipado, [0, 0, 0, 0, 0, 0], P2)).
 
-test(multiplicar, [true(P =:= 0.0005)]) :-
-    multiplicar([g]-invertida, 0.5, P).
+test(pegada_falla, [true(S == 1)]) :-
+    pegada([g1], 1, [g1], and, [0, 0], S).
 
-test(con_probabilidad_sano, [true(abs(P - 0.979 ** 5) < 1.0e-12)]) :-
-    con_probabilidad(5, [], P-[]).
+test(pegada_otra, [nondet, true(S == 0)]) :-
+    pegada([g1], 1, [g2], and, [0, 1], S).
 
-test(con_probabilidad, [true(abs(P - 0.01 * 0.979 ** 4) < 1.0e-12)]) :-
-    con_probabilidad(5, [[g]-pegada(1)], P-_).
+test(literal, [nondet, true(L1-L0 == a-(~a))]) :-
+    literal(a, 1, L1),
+    literal(a, 0, L0).
 
-% pegada(1) es diez veces más probable que invertida.
-test(mas_probables, [true(Ds == [[[m1, x1]-pegada(1)],
-                                 [[m1, x1]-invertida]])]) :-
-    mas_probables(sumador, [[0, 0, 1]-[0, 1]], 1, Pares),
-    pairs_values(Pares, Ds).
+test(consenso, [nondet, true(C == [b, c])]) :-
+    consenso([a, b], [c, ~a], C).
 
-test(cono_acarreo, [true(C == [[m1, x1], [m1, y1], [m2, y1], [o1]])]) :-
-    cono(sumador, co, C).
+test(consenso_contradictorio, [fail]) :-
+    consenso([a, b], [~a, ~b], _).
 
-test(depende_entrada, [true(R-E == []-[a])]) :-
-    depende(sumador, [], a, R, E).
+test(consenso_sin_par, [fail]) :-
+    consenso([a, b], [c], _).
 
-test(depende_cable, [true(R-E == [[m1, x1]]-[a, b])]) :-
-    depende(sumador, [], t, R, E).
+test(cerrar, [true(Ps == [[a, b], [b, c], [c, ~a]])]) :-
+    cerrar([[a, b], [c, ~a]], Ps).
 
-test(unir, [true(U == [[m1, x1]]-[a, a, b])]) :-
-    unir(sumador, [], t, []-[a], U).
-
-test(toca_los_conos_no, [fail]) :-
-    toca_los_conos(sumador, [0, 0, 1]-[0, 1], [[o1]-pegada(1)]).
-
-test(toca_los_conos_si, [true]) :-
-    toca_los_conos(sumador, [0, 0, 1]-[0, 1], [[m1, x1]-pegada(1)]).
-
-test(detecta_si, [true]) :-
-    detecta(sumador, [0, 0, 1], [o1]-pegada(1)).
-
-test(detecta_no, [fail]) :-
-    detecta(sumador, [0, 0, 1], [o1]-pegada(0)).
-
-test(fallas_simples, [true(N == 15)]) :-
-    fallas_simples(sumador, Fs),
-    length(Fs, N).
-
-test(conjunto_semisumador, [true(P-U == [[0, 0], [0, 1], [1, 1]]-[])]) :-
-    conjunto_de_pruebas(semisumador, P, U).
-
-% Una falla que ninguna entrada detecta queda sin detectar.
-test(elegir_sin_deteccion, [true(P-U == []-[[o1]-pegada(0)])]) :-
-    elegir(sumador, [[0, 0, 0]], [[o1]-pegada(0)], P, U).
-
-% Ejercicio 13: en el modelo fuerte, agregar una compuerta puede romper
-% un diagnóstico.
-test(ejercicio_13, [true]) :-
-    conjunto_fuerte(sumador, [[0, 0, 1]-[0, 1], [0, 0, 0]-[1, 0]], [[m1, x1]]).
-
-test(ejercicio_13_mas, [fail]) :-
-    conjunto_fuerte(sumador, [[0, 0, 1]-[0, 1], [0, 0, 0]-[1, 0]],
-                    [[m1, x1], [o1]]).
+test(profundidad, [true(P == 3)]) :-
+    profundidad([g], and, [0, 2], P).
 
 :- end_tests(soluciones).

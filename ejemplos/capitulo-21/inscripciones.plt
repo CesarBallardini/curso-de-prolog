@@ -1,8 +1,8 @@
 :- encoding(utf8).
 
-% Pruebas de Inscripciones (capítulo 21): las del capítulo 20, y las del
-% lenguaje de comandos. Las que modifican la base guardan el estado en su
-% setup y lo restauran en su cleanup, con los predicados del programa.
+% Pruebas de Inscripciones (capítulo 21): las del capítulo 19, y las de las
+% operaciones que modifican la base. Cada una de estas guarda el estado en su
+% setup y lo restaura en su cleanup, con los predicados del programa.
 
 :- begin_tests(inscripciones).
 
@@ -164,7 +164,7 @@ test(informe_de_aprobadas, true(F == [101-4, 105-0])) :-
 test(informe_vacio, true(F == [])) :-
     informe(aprobadas, [], F).
 
-% with_output_to/2, que captura la salida, se presenta en el capítulo 27.
+% with_output_to/2, que captura la salida, se presenta en el capítulo 28.
 test(mostrar_informe,
      true(S == "Aprobadas
   101 ana: 4
@@ -226,44 +226,5 @@ test(requisitos_de_am1, true(R == [])) :-
 test(requisitos_guardados, true(R == [alg, am1])) :-
     requisitos_de(am2, _),
     requisitos_guardados(am2, R).
-
-% --- Lenguaje de comandos --------------------------------------------------
-
-test(palabras, true(P == [inscribir, a, 104, en, sintaxis])) :-
-    phrase(palabras(P), `  inscribir a 104 en sintaxis `).
-
-test(comando, true(C == inscribir(104, ssl))) :-
-    phrase(comando(C), [inscribir, a, 104, en, sintaxis]).
-
-% La misma gramática genera las palabras de un comando.
-test(generar_comando, true(P == [dar, de, baja, a, 105, en, analisis_1])) :-
-    phrase(comando(baja(105, am1)), P).
-
-test(ejecutar_inscribir, [ setup(estado(E)), cleanup(restaurar(E)),
-                           true(R-L == aceptada-[104]) ]) :-
-    ejecutar("inscribir a 104 en sintaxis", R),
-    inscriptos(ssl, L).
-
-test(ejecutar_baja, [ setup(estado(E)), cleanup(restaurar(E)),
-                      true(R == baja) ]) :-
-    ejecutar("dar de baja a 105 en analisis_1", R).
-
-test(ejecutar_baja_rechazada, true(R == rechazada(no_la_cursa))) :-
-    ejecutar("dar de baja a 101 en logica", R).
-
-test(ejecutar_listar, true(R == inscriptos([101, 102, 103, 105, 106]))) :-
-    ejecutar("listar analisis_1", R).
-
-test(ejecutar_promedio, true(R == promedio(8.5))) :-
-    ejecutar("promedio de 101", R).
-
-test(ejecutar_sin_notas, true(R == sin_notas)) :-
-    ejecutar("promedio de 107", R).
-
-test(no_entendido, true(R == no_entendido)) :-
-    ejecutar("inscribir 104 sintaxis", R).
-
-test(alumno_inexistente, true(R == no_entendido)) :-
-    ejecutar("promedio de 999", R).
 
 :- end_tests(inscripciones).

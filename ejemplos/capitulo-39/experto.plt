@@ -2,7 +2,35 @@
 
 :- begin_tests(experto).
 
-% Con la base original, cada caso tiene una respuesta, sin indefinidos.
+test(conversion, [true(C == (avestruz :- ave, (\+ vuela, (peso(P), P > 50))))]) :-
+    regla(r12, R),
+    regla_clausula(R, C),
+    C = (_ :- _, (_, (peso(P), _))).
+
+test(base_original, [true(N == 12)]) :-
+    base(original, Cs),
+    length(Cs, N).
+
+test(version_desconocida, [error(type_error(oneof([original, vuela, puede_volar]), otra))]) :-
+    base(otra, _).
+
+% La base original es estratificada: pinguino y avestruz usan vuela negado,
+% una observación, y quedan un estrato más arriba.
+test(original_estratificada, [true(Superiores == [1-[avestruz/0, pinguino/0]])]) :-
+    estratos(base(original), [0-_|Superiores]).
+
+test(vuela_no_estratificada, [fail]) :-
+    estratos(base(vuela), _).
+
+test(ciclos_vuela, [true(P == [avestruz/0-vuela/0, pinguino/0-vuela/0,
+                               vuela/0-avestruz/0, vuela/0-pinguino/0])]) :-
+    ciclos_negativos(base(vuela), P).
+
+test(puede_volar_estratificada, [true(Superiores == [1-[avestruz/0, pinguino/0],
+                                                     2-[puede_volar/0]])]) :-
+    estratos(base(puede_volar), [0-_|Superiores]).
+
+% Con la base estratificada, cada caso tiene una respuesta, sin indefinidos.
 test(original_casos, [true(Rs == [ resultado([pinguino], []),
                                    resultado([avestruz], []),
                                    resultado([guepardo], []),
@@ -16,8 +44,7 @@ test(original_casos, [true(Rs == [ resultado([pinguino], []),
               diagnostico(original, Os, R) ),
             Rs).
 
-% Con r13 en la versión vuela, el pingüino y el avestruz quedan indefinidos:
-% los mismos valores que calcula bien_fundado/3 en la sección 38.7.
+% Con r13 en la versión vuela, el pingüino y el avestruz quedan indefinidos.
 test(vuela_indefinidos, [true(Rs == [ resultado([], [pinguino]),
                                       resultado([], [avestruz]) ])]) :-
     findall(R,
@@ -26,47 +53,36 @@ test(vuela_indefinidos, [true(Rs == [ resultado([], [pinguino]),
               diagnostico(vuela, Os, R) ),
             Rs).
 
-% El ciclo positivo de r4 y r13 termina: ave es falsa para un guepardo.
-test(vuela_guepardo, [true(R-V == resultado([guepardo], [])-falso)]) :-
-    Os = [tiene_pelo, come_carne, color_leonado, manchas_oscuras],
-    diagnostico(vuela, Os, R),
-    valor(cierto(vuela, Os, ave), V).
+% Si vuela se observa, deja de estar indefinido y r11 no se aplica.
+test(vuela_observado, [true(R == resultado([], []))]) :-
+    diagnostico(vuela, [tiene_plumas, vuela, nada], R).
 
-% Sin tabla, el mismo caso entra en el ciclo y no termina.
-test(sin_tabla_ciclo, [true(R == inference_limit_exceeded)]) :-
-    Os = [tiene_pelo, come_carne, color_leonado, manchas_oscuras],
-    call_with_inference_limit(probar_sin_tabla(vuela, Os, pinguino),
-                              1000000, R).
-
-% Sin ciclos, el intérprete sin tabla da la misma respuesta.
-test(sin_tabla_original, [nondet]) :-
-    probar_sin_tabla(original, [tiene_plumas, nada, peso(30)], pinguino).
-
-test(puede_volar, [true(Rs == [ resultado([pinguino], []),
-                                resultado([avestruz], []) ])]) :-
+test(puede_volar_casos, [true(Rs == [ resultado([pinguino], []),
+                                      resultado([avestruz], []) ])]) :-
     findall(R,
             ( member(Os, [ [tiene_plumas, nada, peso(30)],
                            [tiene_plumas, peso(90)] ]),
               diagnostico(puede_volar, Os, R) ),
             Rs).
 
-% Si vuela se observa, deja de estar indefinido y r11 no se aplica.
-test(vuela_observado, [true(R == resultado([], []))]) :-
-    diagnostico(vuela, [tiene_plumas, vuela, nada, peso(30)], R).
+% Un ave sin más datos puede volar en la versión corregida.
+test(puede_volar, [true(V == verdadero)]) :-
+    valor(con_hechos(base(puede_volar), [tiene_plumas]), puede_volar, V).
 
-test(version_desconocida,
-     [error(type_error(oneof([original, vuela, puede_volar]), otra))]) :-
-    diagnostico(otra, [], _).
+% con_hechos/2 agrega un hecho por observación al final del programa.
+test(con_hechos, [true(Hechos == [(nada :- true), (peso(30) :- true)])]) :-
+    base(original, Base),
+    clausulas(con_hechos(base(original), [nada, peso(30)]), Cs),
+    append(Base, Hechos, Cs).
 
-% probar/3 recorre las condiciones: la conjunción, la negación con tnot/1
-% y las comparaciones.
-test(probar_conjuncion_negada, [nondet]) :-
-    probar(original, [tiene_plumas, nada, peso(30)], ave y no vuela).
+test(programa_base, [true(Cs =@= Base)]) :-
+    base(vuela, Base),
+    clausulas(base(vuela), Cs).
 
-test(probar_negada_falla, [fail]) :-
-    probar(original, [tiene_plumas, vuela, pone_huevos], no vuela).
-
-test(probar_comparacion, [all(P == [90])]) :-
-    probar(original, [peso(90)], peso(P) y P > 50).
+% condiciones_cuerpo/2: y pasa a ser la conjunción y no la negación; una
+% condición simple queda igual.
+test(condiciones_cuerpo, [true(C-D == (a, (\+ b, c))-x)]) :-
+    condiciones_cuerpo(a y no b y c, C),
+    condiciones_cuerpo(x, D).
 
 :- end_tests(experto).

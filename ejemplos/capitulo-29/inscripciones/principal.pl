@@ -25,7 +25,7 @@ opt_type(ajustes, ajustes, atom).
 
 % opt_help(Clave, Texto): la ayuda de cada opción.
 opt_help(estado,      "Archivo donde se guarda el estado entre ejecuciones").
-opt_help(ajustes,     "Archivo de ajustes, como archivos/ajustes.cfg").
+opt_help(ajustes,     "Archivo de ajustes, como ../archivos/ajustes.cfg").
 opt_help(help(usage), " [opciones] [orden]").
 
 %!  main(+Argv:list) is det.

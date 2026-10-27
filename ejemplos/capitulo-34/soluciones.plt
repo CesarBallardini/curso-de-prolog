@@ -2,159 +2,120 @@
 
 :- begin_tests(soluciones).
 
-test(longitud_abierta, true(N == 2)) :-
-    longitud_abierta([a, b|_], N).
+% Ejercicio 2
+test(reglas_antepasado, true(N == 2)) :-
+    reglas(antepasado/2, N).
 
-test(longitud_abierta_vacia, true(N == 0)) :-
-    longitud_abierta(_, N).
+test(reglas_hechos, true(N == 0)) :-
+    reglas(padre/2, N).
 
-test(longitud_abierta_no_cierra, true(var(F))) :-
-    longitud_abierta([a|F], _).
+test(reglas_mixto, true(N == 1)) :-
+    reglas(maximo/3, N).
 
-test(a_dif, true(L-F == [a, b|F]-F)) :-
-    a_dif([a, b], L-F).
+test(reglas_no_definido, [fail]) :-
+    reglas(no_definido/2, _).
 
-test(de_dif, true(L == [a, b])) :-
-    de_dif([a, b|F]-F, L).
+% Ejercicio 4
+test(signo, all(S == [negativo])) :-
+    resolver(signo(-3, S)).
 
-test(ida_y_vuelta, true(L == [a, b, c])) :-
-    a_dif([a, b], D1),
-    concatenar_dif(D1, [c|F]-F, D),
-    de_dif(D, L).
+test(signo_cero, all(S == [cero])) :-
+    resolver(signo(0, S)).
 
-test(bandera, true(B == [rojo, rojo, blanco, azul, azul])) :-
-    bandera([azul, rojo, blanco, rojo, azul], B).
+test(signo_como_prolog, true(Rs == Ps)) :-
+    findall(X-S, ( member(X, [-2, 0, 5]), resolver(signo(X, S)) ), Rs),
+    findall(X-S, ( member(X, [-2, 0, 5]), signo(X, S) ), Ps).
 
-test(bandera_vacia, true(B == [])) :-
-    bandera([], B).
+test(disyuncion, all(X == [luis, juan])) :-
+    resolver(pariente_directo(ana, X)).
 
-% Cada color conserva su orden: la bandera es estable.
-test(bandera_un_color, true(B == [blanco, blanco])) :-
-    bandera([blanco, blanco], B).
+test(disyuncion_como_prolog, true(Rs == Ps)) :-
+    findall(A-B, resolver(pariente_directo(A, B)), Rs),
+    findall(A-B, pariente_directo(A, B), Ps).
 
-arbol(n(n(vacio, 1, vacio), 2, n(vacio, 3, n(vacio, 4, vacio)))).
+test(limpiar_condicional,
+     true(C == si(sis(x > 0), sis(s = p), si(sis(x < 0), sis(s = n),
+                                             sis(s = c))))) :-
+    limpiar((x > 0 -> s = p ; x < 0 -> s = n ; s = c), C).
 
-test(preorden, true(L == [2, 1, 3, 4])) :-
-    arbol(A),
-    phrase(preorden(A), L).
+% Ejercicio 5
+test(maximo_prolog, all(M == [5])) :-
+    maximo(5, 3, M).
 
-test(postorden, true(L == [1, 4, 3, 2])) :-
-    arbol(A),
-    phrase(postorden(A), L).
+test(maximo_interpretado, all(M == [5, 3])) :-
+    resolver(maximo(5, 3, M)).
 
-test(dos_veces, [fail]) :-
-    D = [a|_]-_,
-    concatenar_dif(D, [b|Y]-Y, _),
-    concatenar_dif(D, [c|Z]-Z, _).
+test(maximo_interpretado_bien, all(M == [5])) :-
+    resolver(maximo(3, 5, M)).
 
-test(copia_antes, true(R1-R2 == [a, b]-[a, c])) :-
-    D = [a|X]-X,
-    copy_term(D, D2),
-    concatenar_dif(D, [b|Y]-Y, R1-[]),
-    concatenar_dif(D2, [c|Z]-Z, R2-[]).
+% Ejercicio 6
+test(anchura_camino,
+     true(Cs == [[a-b, b-c], [a-b, b-a, a-b, b-c], [a-b, b-c, c-b, b-c]])) :-
+    findall(C, limit(3, resolver_anchura(camino(a, c, C))), Cs).
 
-test(elementos_cola, true(L == [a, b])) :-
-    cola_vacia(C0),
-    encolar(a, C0, C1),
-    encolar(b, C1, C2),
-    elementos_cola(C2, L).
+% La recursión a la izquierda da sus tres respuestas en anchura.
+test(anchura_izquierda, true(As == [luis, ana, juan])) :-
+    findall(A, limit(3, resolver_anchura(antepasado_izq(A, eva))), As).
 
-test(elementos_cola_desencolada, true(L == [b])) :-
-    cola_vacia(C0),
-    encolar(a, C0, C1),
-    encolar(b, C1, C2),
-    desencolar(_, C2, C3),
-    elementos_cola(C3, L).
+test(anchura_como_prolog, true(Rs == Ps)) :-
+    findall(D, resolver_anchura(antepasado(juan, D)), Rs0),
+    msort(Rs0, Rs),
+    findall(D, antepasado(juan, D), Ps0),
+    msort(Ps0, Ps).
 
-test(elementos_cola_vacia, true(L == [])) :-
-    cola_vacia(C0),
-    elementos_cola(C0, L).
+test(anchura_sin_prueba, [fail]) :-
+    resolver_anchura(padre(eva, _)).
 
-% La cola sigue admitiendo agregados después de listarla.
-test(elementos_cola_no_cambia, true(L == [a, b])) :-
-    cola_vacia(C0),
-    encolar(a, C0, C1),
-    elementos_cola(C1, _),
-    encolar(b, C1, C2),
-    elementos_cola(C2, L).
+% Ejercicio 7
+test(hechos_usados, true(H == [padre(juan, ana), padre(ana, luis)])) :-
+    once(resolver_arbol(abuelo(juan, _), A)),
+    hechos_usados(A, H).
 
-test(es_vacia_dif, true(cyclic_term(X))) :-
-    es_vacia_dif([a|X]-X).
+test(hechos_usados_con_predefinido,
+     true(H == [edad(juan, 68), edad(ana, 41)])) :-
+    hechos_usados(prueba(mayor(juan, ana),
+                         [ prueba(edad(juan, 68), []),
+                           prueba(edad(ana, 41), []),
+                           sis(68 > 41) ]),
+                  H).
 
-test(ocurrencias, [fail]) :-
-    unify_with_occurs_check([a|X]-X, F-F).
+% Ejercicio 8
+test(acotado_corto, all(R == [agotado])) :-
+    resolver_acotado(camino(a, d, _), 3, R).
 
-test(claves, true(C == [a, b])) :-
-    claves([a-1, b-_|_], C).
+test(acotado_largo, all(R == [si, agotado])) :-
+    resolver_acotado(camino(a, d, _), 4, R).
 
-test(claves_no_cierra, true(var(F))) :-
-    claves([a-1|F], _).
+test(acotado_largo_camino, all(C == [[a-b, b-c, c-d]])) :-
+    resolver_acotado(camino(a, d, C), 4, si).
 
-test(claves_vacio, true(K == [])) :-
-    claves(_, K).
+% La respuesta agotado no liga las variables de Meta.
+test(acotado_sin_ligaduras, true(V == libre)) :-
+    resolver_acotado(camino(a, d, C), 3, agotado),
+    (   var(C)
+    ->  V = libre
+    ;   V = ligada
+    ).
 
-test(pares, true(P == [a-1, b-2, c-3])) :-
-    buscar_arbol(b, A, 2),
-    buscar_arbol(c, A, 3),
-    buscar_arbol(a, A, 1),
-    phrase(pares(A), P).
+% Sin prueba y sin llegar al límite: la respuesta es no.
+test(acotado_sin_prueba, [fail]) :-
+    resolver_acotado(padre(eva, _), 3, _).
 
-test(pares_vacio, true(P == [])) :-
-    phrase(pares(_), P).
+test(acotado_completo, all(R == [si])) :-
+    resolver_acotado(abuelo(juan, luis), 5, R).
 
-test(hojas, true(L == [a, b, c])) :-
-    phrase(hojas(n([h(a), n([h(b), h(c)])])), L).
+% Ejercicio 9
+test(sin_ciclos, all(A == [luis, ana])) :-
+    resolver_sin_ciclos(antepasado_izq(A, eva)).
 
-test(hojas_lista_en_hoja, true(L == [[x], y])) :-
-    phrase(hojas(n([h([x]), h(y)])), L).
+test(sin_ciclos_derecha, all(D == [ana, pedro, luis, eva])) :-
+    resolver_sin_ciclos(antepasado(juan, D)).
 
-test(invertir_iguales, true(L1 == L2)) :-
-    numlist(1, 100, L),
-    invertir_app(L, L1),
-    invertir(L, L2).
-
-% Ejercicio 15
-test(nivelar,
-     true(N == n(n(vacio, 9, vacio), 9, n(vacio, 9, vacio)))) :-
-    nivelar(n(n(vacio, 4, vacio), 3, n(vacio, 9, vacio)), N).
-
-test(nivelar_vacio, true(N == vacio)) :-
-    nivelar(vacio, N).
-
-% El máximo está en la raíz y no en una hoja.
-test(nivelar_maximo_en_la_raiz,
-     true(N == n(n(n(vacio, 3, vacio), 3, vacio), 3, vacio))) :-
-    nivelar(n(n(n(vacio, 1, vacio), 2, vacio), 3, vacio), N).
-
-% Ejercicio 16: las dos versiones, con las dos formas de la suma.
-test(asociar_izquierda, true(S == a + b + c + d)) :-
-    asociar_izquierda((a + b) + (c + d), S).
-
-test(asociar_izquierda_derecha, true(S == +(+(+(a, b), c), d))) :-
-    asociar_izquierda(a + (b + (c + d)), S).
-
-test(asociar_izquierda_un_sumando, true(S == a)) :-
-    asociar_izquierda(a, S).
-
-test(asociar_izquierda_2, true(S1-S2 == (a + b + c + d)-(a + b + c + d))) :-
-    asociar_izquierda_2((a + b) + (c + d), S1),
-    asociar_izquierda_2(a + (b + (c + d)), S2).
-
-test(sumandos, true(L == [x * y, 2, z])) :-
-    sumandos(x * y + (2 + z), L-[]).
-
-% Ejercicio 10: el subárbol libre queda libre, y no hay otra respuesta.
-test(pares_deja_libre, [true(var(D)), nondet]) :-
-    buscar_arbol(b, A, 2),
-    phrase(pares(A), _),
-    A = t(_, _, _, D).
-
-test(pares_una_respuesta, all(P == [[b-2]])) :-
-    buscar_arbol(b, A, 2),
-    phrase(pares(A), P).
-
-% Ejercicio 16: un átomo como valor inicial queda en el resultado.
-test(agregar_ninguno, true(S == ninguno + a + b + c + d)) :-
-    agregar((a + b) + (c + d), ninguno, S).
+% Ejercicio 10
+test(rastrear_entradas,
+     true(S == "llama abuelo(juan, A)\n  llama padre(juan, A)\n  \c
+                sale padre(juan, ana)\n  llama padre(ana, A)\n  \c
+                sale padre(ana, luis)\nsale abuelo(juan, luis)\n")) :-
+    with_output_to(string(S), once(rastrear_entradas(abuelo(juan, _)))).
 
 :- end_tests(soluciones).

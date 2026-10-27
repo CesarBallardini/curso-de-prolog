@@ -2,22 +2,24 @@
 
 :- begin_tests(proyecto).
 
-test(maquina_ii, [true(Fs == [0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1])]) :-
-    figuras(ii, b, 15, Fs).
+test(acepta) :-
+    acepta(er("(a|b)*abb"), [a, b, a, b, b]).
 
-test(contador, [true(Fs == [0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1])]) :-
-    figuras(contador, inicio, 15, Fs).
+test(min, [true(N == 4)]) :-
+    tabla(min(er("(a|b)*abb")), automata(N, _, _)).
 
-test(ce, [true(Ss == [schwa, schwa, 1, blanco, 0, blanco, 1, blanco, 0])]) :-
-    cinta_de([schwa, schwa, 1, a, 0, a], 0, C0),
-    ejecutar(biblioteca, ce(fin, a), C0, 1000, detenida(fin, C)),
-    contenido(C, Ss).
+test(contraejemplo, [true(W == [a])]) :-
+    contraejemplo(er("(ab)*"), er("a*b*"), W).
 
-test(incompleta, [true(N == 1001)]) :-
-    completa(contador, inicio, [0, 1, schwa], 1000, incompleta(Es)),
-    length(Es, N).
+test(componentes, [true(Cs == [mientras, id(x), <=, num(10), hacer, id(x),
+                               :=, id(x), +, num(1), fin])]) :-
+    componentes("mientras x <= 10 hacer x := x + 1 fin", Cs).
 
-test(numero, [true(N == 31332531173113353111731113322531111731111335317)]) :-
-    numero(i, b, [0, 1], N).
+test(plural, [true(Ws == [[l, u, c], [l, u, c, e], [l, u, z]])]) :-
+    findall(W, transducir(plural, W, [l, u, c, e, s]), Ws0),
+    sort(Ws0, Ws).
+
+test(circuito, [true(N == 8)]) :-
+    numero_estados(circuito(contador_gray, [0, 0, 0]), N).
 
 :- end_tests(proyecto).

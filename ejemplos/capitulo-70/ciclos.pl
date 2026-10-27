@@ -1,82 +1,115 @@
 :- encoding(utf8).
 
-% Capítulo 70 - WARPLAN con control de ciclos.
+% Capítulo 70 - Versión 3: separables o en ciclo.
 %
-% Es una de las mejoras que Warren propone en la sección «Deficiencies of
-% the system» de su memo de 1974: una meta que ya se está logrando más
-% arriba en la cadena de precondiciones no se vuelve a intentar con una
-% acción. La cadena «liberar c, poner algo sobre c, liberar c» se corta en
-% la segunda aparición de libre(c), y la búsqueda sin cota termina en los
-% dos órdenes de la anomalía.
+% Con entradas enteras y una tasa entera, los pesos son enteros y el
+% entrenamiento no puede producir infinitos pesos distintos dentro de una
+% región acotada: si los ejemplos no son separables, los pesos del final
+% de una época terminan por repetirse, y desde allí todo se repite. El
+% estado de iterar/5 lleva los pesos y la historia de los pesos ya
+% vistos, y el ciclo se detiene cuando los pesos se repiten. Una época sin
+% errores es el caso de un ciclo de largo 1: los pesos no cambiaron.
 %
-% solo-local: carga warplan.pl.
+% solo-local: carga los programas de los capítulos 33 y 47, y SWISH no
+% carga otros archivos.
 %
-%?- planificar_sin_ciclos(cubos, sussman, [sobre(b, c), sobre(a, b)], Plan).
+%?- probar(o_exclusivo, R).
+%?- no_separables(Tablas).
 
-:- module(ciclos,
-          [ planificar_sin_ciclos/4
-          ]).
+:- ensure_loaded(epocas).
 
-:- use_module(warplan, [regresar/4]).
-:- use_module(regresion, [vale/4, preservada/3, es_prueba/2]).
-:- use_module(extension, [proteger/3, no_borra_ninguna/3, inconsistente/3]).
-:- use_module(library(lists)).
-
-%!  planificar_sin_ciclos(+Mundo, +Inicio, +Metas:list, -Plan:list) is nondet.
+%!  paso_con_memoria(+Tasa, +Ejemplos, +Estado0, -Estado, -Resultado,
+%!                   -Cambio:integer) is det.
 %
-%   Plan lleva desde el estado inicial Inicio del Mundo a un estado donde
-%   valen todas las Metas. La búsqueda es en profundidad y sin cota, como
-%   la de planificar_sin_cota/4, pero no intenta lograr con una acción una
-%   meta que ya se está logrando en la cadena de precondiciones.
-planificar_sin_ciclos(Mundo, Inicio, Metas, Plan) :-
-    \+ inconsistente(Mundo, Metas, []),
-    planear(Mundo, Inicio, Metas, [], [], _, [], Hechas),
-    reverse(Hechas, Plan).
+%   El paso para iterar/5: Estado0 es Pesos0-Vistos, con Vistos los pesos
+%   de las épocas anteriores; Estado es Pesos-[Pesos0|Vistos], Resultado
+%   es Errores-Pesos, y Cambio es 0 si Pesos ya estaba entre los vistos, o
+%   1 si no.
+paso_con_memoria(Tasa, Ejemplos, Pesos0-Vistos, Pesos-[Pesos0|Vistos],
+                 Errores-Pesos, Cambio) :-
+    epoca(Tasa, Ejemplos, Pesos0, Pesos, Errores),
+    (   memberchk(Pesos, [Pesos0|Vistos])
+    ->  Cambio = 0
+    ;   Cambio = 1
+    ).
 
-%!  planear(+Mundo, +Inicio, +Metas:list, +Cadena:list, +Protegidas0:list,
-%!          -Protegidas:list, +Hechas0:list, -Hechas:list) is nondet.
+%!  entrenar_o_ciclo(+Tasa:number, +Ejemplos:list, +Pesos0:list,
+%!                   -Resultado) is semidet.
 %
-%   Como planear/9 de warplan.pl, sin cota y con la Cadena de metas que se
-%   están logrando por encima de estas.
-planear(_, _, [], _, Ps, Ps, Hechas, Hechas).
-planear(Mundo, Inicio, [Meta|Metas], Cadena, Ps0, Ps, Hechas0, Hechas) :-
-    resolver(Mundo, Inicio, Meta, Cadena, Ps0, Ps1, Hechas0, Hechas1),
-    planear(Mundo, Inicio, Metas, Cadena, Ps1, Ps, Hechas1, Hechas).
+%   Resultado es separa(Pesos, Curva) si una época termina sin errores,
+%   con Pesos los pesos finales, o ciclo(Largo, Curva) si los pesos del
+%   final de una época repiten los de Largo épocas antes con errores.
+%   Curva son los errores de cada época. Falla si los pesos no se repiten
+%   en maximo_de_epocas/1 épocas, lo que puede ocurrir con pesos de punto
+%   flotante.
+entrenar_o_ciclo(Tasa, Ejemplos, Pesos0, Resultado) :-
+    maximo_de_epocas(Maximo),
+    iterar(paso_con_memoria(Tasa, Ejemplos), 0, Maximo, Pesos0-[],
+           Resultados),
+    pairs_keys_values(Resultados, Curva, Sucesion),
+    last(Curva, Errores),
+    last(Sucesion, Pesos),
+    (   Errores =:= 0
+    ->  Resultado = separa(Pesos, Curva)
+    ;   reverse([Pesos0|Sucesion], [Ultimo|Anteriores]),
+        once(nth1(Largo, Anteriores, Ultimo)),
+        Resultado = ciclo(Largo, Curva)
+    ).
 
-%!  resolver(+Mundo, +Inicio, +Meta, +Cadena:list, +Protegidas0:list,
-%!           -Protegidas:list, +Hechas0:list, -Hechas:list) is nondet.
+%!  probar(+Nombre:atom, -Resultado) is semidet.
 %
-%   Como resolver/9 de warplan.pl. La última cláusula, la que elige una
-%   acción, no se aplica si Meta es una variante de una meta de la Cadena.
-resolver(Mundo, _, Meta, _, Ps, Ps, Hechas, Hechas) :-
-    Mundo:siempre(Meta).
-resolver(Mundo, _, Meta, _, Ps, Ps, Hechas, Hechas) :-
-    es_prueba(Mundo, Meta),
-    call(Mundo:Meta).
-resolver(Mundo, Inicio, Meta, _, Ps0, Ps, Hechas, Hechas) :-
-    \+ es_prueba(Mundo, Meta),
-    vale(Mundo, Inicio, Meta, Hechas),
-    proteger(Meta, Ps0, Ps).
-resolver(Mundo, Inicio, Meta, Cadena, Ps, [Meta|Ps], Hechas0, Hechas) :-
-    \+ es_prueba(Mundo, Meta),
-    \+ ( member(M, Cadena), M =@= Meta ),
-    Mundo:agrega(Meta, Accion),
-    lograr(Mundo, Inicio, Meta, Accion, [Meta|Cadena], Ps, Hechas0, Hechas).
+%   Resultado es el de entrenar_o_ciclo/4 para el conjunto Nombre de
+%   datos/2, desde pesos nulos y con tasa 1.
+probar(Nombre, Resultado) :-
+    datos(Nombre, Ejemplos),
+    pesos_nulos(Ejemplos, Pesos0),
+    entrenar_o_ciclo(1, Ejemplos, Pesos0, Resultado).
 
-%!  lograr(+Mundo, +Inicio, +Meta, +Accion, +Cadena:list, +Protegidas:list,
-%!         +Hechas0:list, -Hechas:list) is nondet.
+%!  pesos_nulos(+Ejemplos:list, -Pesos:list) is det.
 %
-%   Como lograr/9 de warplan.pl: Accion al final del plan, o antes de la
-%   última acción si esa acción no borra Meta.
-lograr(Mundo, Inicio, _, Accion, Cadena, Ps, Hechas0, [Accion|Hechas1]) :-
-    no_borra_ninguna(Mundo, Accion, Ps),
-    Mundo:puede(Accion, Pre),
-    \+ inconsistente(Mundo, Pre, Ps),
-    planear(Mundo, Inicio, Pre, Cadena, Ps, _, Hechas0, Hechas1),
-    no_borra_ninguna(Mundo, Accion, Ps).
-lograr(Mundo, Inicio, Meta, Accion, Cadena, Ps, [Ultima|Hechas0],
-       [Ultima|Hechas1]) :-
-    preservada(Mundo, Meta, Ultima),
-    regresar(Mundo, Ps, Ultima, Ps1),
-    lograr(Mundo, Inicio, Meta, Accion, Cadena, Ps1, Hechas0, Hechas1),
-    preservada(Mundo, Meta, Ultima).
+%   Pesos son ceros, uno para el sesgo y uno por cada entrada del primero
+%   de los Ejemplos.
+pesos_nulos([ej(Xs, _)|_], [0|Pesos]) :-
+    maplist(cero, Xs, Pesos).
+
+%!  cero(+X, -Cero:integer) is det.
+%
+%   Cero es 0, para cualquier X.
+cero(_, 0).
+
+%!  tabla(?Clases:list) is multi.
+%
+%   Clases es la columna de una función lógica de dos entradas: las clases
+%   de [0, 0], [0, 1], [1, 0] y [1, 1], cada una 1 o -1. Hay 16.
+tabla(Clases) :-
+    length(Clases, 4),
+    maplist(clase, Clases).
+
+% clase(C): C es una de las dos clases.
+clase(-1).
+clase(1).
+
+%!  ejemplos_de(+Clases:list, -Ejemplos:list) is det.
+%
+%   Ejemplos son los de la función lógica de columna Clases.
+ejemplos_de(Clases, Ejemplos) :-
+    maplist(ejemplo_de, [[0, 0], [0, 1], [1, 0], [1, 1]], Clases,
+            Ejemplos).
+
+%!  ejemplo_de(+Entradas, +Clase, -Ejemplo) is det.
+%
+%   Ejemplo es ej(Entradas, Clase).
+ejemplo_de(Xs, D, ej(Xs, D)).
+
+%!  no_separables(-Tablas:list) is det.
+%
+%   Tablas son las columnas de las funciones lógicas de dos entradas con
+%   las que el entrenamiento, desde pesos nulos y con tasa 1, entra en
+%   ciclo.
+no_separables(Tablas) :-
+    findall(Clases,
+            ( tabla(Clases),
+              ejemplos_de(Clases, Ejemplos),
+              entrenar_o_ciclo(1, Ejemplos, [0, 0, 0], ciclo(_, _))
+            ),
+            Tablas).

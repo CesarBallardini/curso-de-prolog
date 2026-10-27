@@ -1,176 +1,351 @@
 :- encoding(utf8).
 
-% Capítulo 22 - Soluciones de los ejercicios 1 a 9 y 16. Las de los ejercicios
-% 10 y 11 están en soluciones_bloques.pl, las de 12 y 13 en
-% soluciones_buscaminas.pl, y las de 14 y 15 en soluciones_proyecto.pl.
+% Capítulo 22 - Soluciones de los ejercicios 1 a 13 y 17. Las de los
+% ejercicios 14 a 16, sobre el proyecto, están en soluciones_proyecto.pl.
 %
-%?- por_longitud([[a, b, c], [d], [e, f]], L).
-%?- anagramas(roma, [amor, mora, ramo, rama], L).
-%?- formatear_nombre(ana, [mayusculas(true), prefijo('Sra. ')], T).
+%?- phrase(oracion_verdadera(H), P).
+%?- phrase(expresion(V), `2+3*4-6/2`).
+%?- string_codes("cuanto es 5 mas 13 por 2", Cs), phrase(problema(V), Cs).
 
-% --- Ejercicio 3 ----------------------------------------------------------
+:- use_module(library(dcg/basics)).
+:- use_module(library(dcg/high_order)).
 
-%!  por_longitud(+Listas:list(list), -Ordenadas:list(list)) is det.
+% --- Ejercicio 2 --------------------------------------------------------------
+
+%!  ab// is nondet.
 %
-%   Ordenadas son las Listas de la más corta a la más larga; con la misma
-%   longitud, en el orden original.
-por_longitud(Listas, Ordenadas) :-
-    map_list_to_pairs(length, Listas, Pares),
-    keysort(Pares, Ordenados),
-    pairs_values(Ordenados, Ordenadas).
+%   Una o más a seguidas de la misma cantidad de b.
+ab --> [a], [b].
+ab --> [a], ab, [b].
 
-% --- Ejercicio 4 ----------------------------------------------------------
-
-%!  anagramas(+Palabra:atom, +Candidatas:list, -Anagramas:list) is det.
+%!  ab_invertida// is nondet.
 %
-%   Anagramas son las Candidatas que tienen las mismas letras que Palabra,
-%   en otro orden. Palabra misma no es su propio anagrama.
-anagramas(Palabra, Candidatas, Anagramas) :-
-    letras(Palabra, Letras),
-    include([C]>>( C \== Palabra, letras(C, Letras) ), Candidatas,
-            Anagramas).
+%   El mismo lenguaje que ab//0, con las reglas en el orden inverso
+%   (ejercicio 6). Analiza bien, pero no genera: la primera regla es siempre
+%   la recursiva, y la generación no llega nunca a una lista completa.
+ab_invertida --> [a], ab_invertida, [b].
+ab_invertida --> [a], [b].
 
-%!  letras(+Palabra:atom, -Letras:list) is det.
+% --- Ejercicio 3 --------------------------------------------------------------
+
+%!  saludo_a(?N)// is nondet.
 %
-%   Letras son los caracteres de Palabra ordenados, con los repetidos.
-letras(Palabra, Letras) :-
-    atom_chars(Palabra, Caracteres),
-    msort(Caracteres, Letras).
+%   Los códigos de "hola " seguidos del nombre N.
+saludo_a(N) -->
+    "hola ",
+    nombre(N).
 
-% --- Ejercicio 5 ----------------------------------------------------------
-
-%!  agregar_alumno(+Grado:integer, +Nombre:atom, +Escuela0, -Escuela) is det.
+%!  saludo_a_traducido(?N, ?S0, ?S) is nondet.
 %
-%   Escuela es Escuela0, un assoc de cada grado a un conjunto ordenado de
-%   nombres, con Nombre agregado al Grado.
-agregar_alumno(Grado, Nombre, Escuela0, Escuela) :-
-    (   get_assoc(Grado, Escuela0, Nombres0)
-    ->  true
-    ;   Nombres0 = []
-    ),
-    ord_add_element(Nombres0, Nombre, Nombres),
-    put_assoc(Grado, Escuela0, Nombres, Escuela).
+%   La traducción de saludo_a//1 escrita sin -->: los códigos de "hola " al
+%   principio de S0, y el nombre en lo que sigue.
+saludo_a_traducido(N, S0, S) :-
+    S0 = [0'h, 0'o, 0'l, 0'a, 0' |S1],
+    nombre(N, S1, S).
 
-%!  alumnos_de(+Escuela, +Grado:integer, -Nombres:list(atom)) is det.
+%!  nombre(?N)// is nondet.
 %
-%   Nombres son los alumnos del Grado, en orden alfabético; la lista vacía si
-%   no tiene ninguno.
-alumnos_de(Escuela, Grado, Nombres) :-
-    (   get_assoc(Grado, Escuela, Encontrados)
-    ->  Nombres = Encontrados
-    ;   Nombres = []
-    ).
+%   Los códigos de uno de los nombres conocidos.
+nombre(ana)  --> "ana".
+nombre(luis) --> "luis".
 
-%!  escuela(+Altas:list(pair), -Escuela) is det.
+% --- Ejercicio 4 --------------------------------------------------------------
+
+%!  frase// is nondet.
 %
-%   Escuela es la escuela que resulta de agregar cada alta Grado-Nombre, en
-%   orden, a una escuela vacía.
-escuela(Altas, Escuela) :-
-    empty_assoc(Vacia),
-    foldl([G-N, E0, E]>>agregar_alumno(G, N, E0, E), Altas, Vacia, Escuela).
+%   Un sujeto y un verbo que concuerdan en número: "el perro ladra" o "los
+%   perros ladran", como listas de palabras.
+frase -->
+    sujeto(Numero),
+    verbo(Numero).
 
-% --- Ejercicio 6 ----------------------------------------------------------
-
-%!  por_valor(+Pares:list(pair), -Ordenados:list(pair)) is det.
+%!  sujeto(?Numero)// is nondet.
 %
-%   Ordenados son los Pares de menor a mayor valor, con los repetidos:
-%   comparar_valor/3 nunca responde =.
-por_valor(Pares, Ordenados) :-
-    predsort(comparar_valor, Pares, Ordenados).
+%   Un artículo y un sustantivo en singular o en plural.
+sujeto(Numero) -->
+    articulo(Numero),
+    sustantivo(Numero).
 
-%!  comparar_valor(-Orden, +A:pair, +B:pair) is det.
+% articulo(Numero)//: el artículo de ese número.
+articulo(singular) --> [el].
+articulo(plural)   --> [los].
+
+% sustantivo(Numero)//: un sustantivo de ese número.
+sustantivo(singular) --> [perro].
+sustantivo(plural)   --> [perros].
+sustantivo(singular) --> [gato].
+sustantivo(plural)   --> [gatos].
+
+% verbo(Numero)//: un verbo conjugado en ese número.
+verbo(singular) --> [ladra].
+verbo(plural)   --> [ladran].
+
+% --- Ejercicio 5 --------------------------------------------------------------
+
+% persona(P): P es una de las personas de las que se puede hablar.
+persona(juan).
+persona(ana).
+persona(pedro).
+persona(marta).
+
+% padre(P, H): P es el padre de H.
+padre(juan, ana).
+padre(juan, pedro).
+% madre(M, H): M es la madre de H.
+madre(marta, ana).
+madre(marta, pedro).
+
+%!  oracion_verdadera(?Hecho)// is nondet.
 %
-%   Orden es < si el valor de A es menor o igual que el de B, y > si no.
-comparar_valor(Orden, _-VA, _-VB) :-
-    (   VA =< VB
-    ->  Orden = (<)
-    ;   Orden = (>)
-    ).
+%   Una oración de la sección 22.1 que afirma Hecho, siempre que Hecho sea
+%   uno de los hechos de la base.
+oracion_verdadera(Hecho) -->
+    nombre_de_persona(A),
+    [es],
+    relacion(A, B, Hecho),
+    [de],
+    nombre_de_persona(B),
+    { verdadero(Hecho) }.
 
-% --- Ejercicio 7 ----------------------------------------------------------
-
-%!  la_mayor(+Personas:list(dict), -Mayor:dict) is semidet.
+%!  verdadero(+Hecho) is semidet.
 %
-%   Mayor es el dict de mayor edad de Personas; con empate, el primero. Falla
-%   con la lista vacía.
-la_mayor([Primera|Resto], Mayor) :-
-    foldl(la_mayor_de_dos, Resto, Primera, Mayor).
+%   Hecho es uno de los hechos de padre/2 o de madre/2. Una cláusula por
+%   relación, en lugar de call/1: el sandbox de SWISH no acepta llamar un
+%   objetivo que no conoce de antemano.
+verdadero(padre(A, B)) :-
+    padre(A, B).
+verdadero(madre(A, B)) :-
+    madre(A, B).
 
-%!  la_mayor_de_dos(+P:dict, +Hasta:dict, -Mayor:dict) is det.
+% relacion(A, B, Hecho)//: el artículo y el sustantivo de una relación.
+relacion(A, B, padre(A, B)) --> [el, padre].
+relacion(A, B, madre(A, B)) --> [la, madre].
+
+%!  nombre_de_persona(?P)// is nondet.
 %
-%   Mayor es P si es mayor que Hasta, o Hasta si no. La notación funcional
-%   se expande en la cláusula que la contiene: dentro de una lambda, se
-%   evaluaría antes de que la lambda reciba P.
-la_mayor_de_dos(P, Hasta, Mayor) :-
-    (   P.edad > Hasta.edad
-    ->  Mayor = P
-    ;   Mayor = Hasta
-    ).
+%   El nombre de una persona conocida.
+nombre_de_persona(P) -->
+    [P],
+    { persona(P) }.
 
-% --- Ejercicio 8 ----------------------------------------------------------
+% --- Ejercicio 7 --------------------------------------------------------------
 
-%!  formatear_nombre(+Nombre:atom, +Opciones:list, -Texto:atom) is det.
+%!  preorden(+Arbol)// is det.
 %
-%   Texto es Nombre con las Opciones: mayusculas(B), si se escribe en
-%   mayúsculas, false si falta; prefijo(P), el texto que va antes, '' si
-%   falta.
-formatear_nombre(Nombre, Opciones, Texto) :-
-    option(mayusculas(Mayusculas), Opciones, false),
-    option(prefijo(Prefijo), Opciones, ''),
-    (   Mayusculas == true
-    ->  upcase_atom(Nombre, Base)
-    ;   Base = Nombre
-    ),
-    atom_concat(Prefijo, Base, Texto).
+%   Los nombres de los nodos de Arbol, cada uno antes que sus subárboles. Un
+%   árbol es nil o nodo(Nombre, Izquierdo, Derecho).
+preorden(nil) --> [].
+preorden(nodo(Nombre, I, D)) -->
+    [Nombre],
+    preorden(I),
+    preorden(D).
 
-% --- Ejercicio 9 ----------------------------------------------------------
-
-%!  sorteo(+Cantidad:integer, +Hasta:integer, -Numeros:list(integer)) is det.
+%!  simetrico(+Arbol)// is det.
 %
-%   Numeros son Cantidad números distintos entre 1 y Hasta, elegidos al azar,
-%   en el orden en que salieron.
-sorteo(Cantidad, Hasta, Numeros) :-
-    randseq(Cantidad, Hasta, Numeros).
+%   Los nombres de los nodos de Arbol, cada uno entre sus dos subárboles.
+simetrico(nil) --> [].
+simetrico(nodo(Nombre, I, D)) -->
+    simetrico(I),
+    [Nombre],
+    simetrico(D).
 
-% --- Ejercicio 16 ---------------------------------------------------------
-
-%!  insertar_mal(+Clave, +Arbol0, -Arbol) is det.
+%!  postorden(+Arbol)// is det.
 %
-%   Arbol es Arbol0 con Clave agregada. Versión incorrecta, la del
-%   enunciado: las cláusulas recursivas devuelven el árbol del subárbol, sin
-%   el nodo que lo contiene, y la última no liga Arbol.
-insertar_mal(Clave, vacio, n(vacio, Clave, vacio)).
-insertar_mal(Clave, n(Izq, Clave0, _), Arbol) :-
-    Clave @< Clave0,
-    insertar_mal(Clave, Izq, Arbol).
-insertar_mal(Clave, n(_, Clave0, Der), Arbol) :-
-    Clave @> Clave0,
-    insertar_mal(Clave, Der, Arbol).
-insertar_mal(Clave, n(_, Clave, _), _).
+%   Los nombres de los nodos de Arbol, cada uno después de sus subárboles.
+postorden(nil) --> [].
+postorden(nodo(Nombre, I, D)) -->
+    postorden(I),
+    postorden(D),
+    [Nombre].
 
-%!  insertar(+Clave, +Arbol0, -Arbol) is det.
-%
-%   Arbol es el árbol de búsqueda Arbol0 con Clave agregada; si Clave ya
-%   está, Arbol es igual a Arbol0. El árbol es vacio o n(Izq, Clave, Der).
-insertar(Clave, Arbol0, Arbol) :-
-    insertar_en(Arbol0, Clave, Arbol).
+% --- Ejercicio 8 --------------------------------------------------------------
 
-%!  insertar_en(+Arbol0, +Clave, -Arbol) is det.
+%!  balanceado// is semidet.
 %
-%   El recorrido de insertar/3, con el árbol como primer argumento para que
-%   la indexación distinga vacio de n/3.
-insertar_en(vacio, Clave, n(vacio, Clave, vacio)).
-insertar_en(n(Izq, Clave0, Der), Clave, Arbol) :-
-    compare(Orden, Clave, Clave0),
-    insertar_segun(Orden, Clave, n(Izq, Clave0, Der), Arbol).
+%   Los paréntesis, corchetes y llaves del texto están bien anidados; los
+%   demás códigos se ignoran.
+balanceado -->
+    balanceado([]).
 
-%!  insertar_segun(+Orden, +Clave, +Nodo, -Arbol) is det.
+%!  balanceado(+Abiertos:list)// is semidet.
 %
-%   Arbol es Nodo con Clave agregada, según el Orden de Clave respecto de la
-%   clave de Nodo: un nodo nuevo con el subárbol que cambió, o el mismo Nodo
-%   si la clave ya está.
-insertar_segun(<, Clave, n(Izq, Clave0, Der), n(Izq1, Clave0, Der)) :-
-    insertar_en(Izq, Clave, Izq1).
-insertar_segun(=, _, Nodo, Nodo).
-insertar_segun(>, Clave, n(Izq, Clave0, Der), n(Izq, Clave0, Der1)) :-
-    insertar_en(Der, Clave, Der1).
+%   Abiertos son los cierres que faltan, el próximo primero.
+balanceado([]) -->
+    eos,
+    !.
+balanceado(Abiertos) -->
+    [C],
+    { apertura(C, Cierre) },
+    !,
+    balanceado([Cierre|Abiertos]).
+balanceado([Cierre|Abiertos]) -->
+    [Cierre],
+    !,
+    balanceado(Abiertos).
+balanceado(Abiertos) -->
+    [C],
+    { \+ apertura(C, _),
+      \+ apertura(_, C) },
+    balanceado(Abiertos).
+
+% apertura(A, C): A abre un grupo que C cierra.
+apertura(0'(, 0')).
+apertura(0'[, 0']).
+apertura(0'{, 0'}).
+
+% --- Ejercicio 9 --------------------------------------------------------------
+
+%!  expresion(-V:number)// is semidet.
+%
+%   Una expresión con enteros, +, -, * y /, sin paréntesis. * y / se
+%   evalúan antes que + y -, y operadores de la misma precedencia, de
+%   izquierda a derecha.
+expresion(V) -->
+    termino(T),
+    sumas(T, V).
+
+%!  sumas(+Hasta:number, -V:number)// is det.
+%
+%   V es Hasta con las sumas y restas que siguen aplicadas en orden.
+sumas(Hasta, V) -->
+    "+",
+    !,
+    termino(T),
+    { Ahora is Hasta + T },
+    sumas(Ahora, V).
+sumas(Hasta, V) -->
+    "-",
+    !,
+    termino(T),
+    { Ahora is Hasta - T },
+    sumas(Ahora, V).
+sumas(V, V) -->
+    [].
+
+%!  termino(-V:number)// is semidet.
+%
+%   Un producto o cociente de enteros, de izquierda a derecha.
+termino(V) -->
+    integer(N),
+    productos(N, V).
+
+%!  productos(+Hasta:number, -V:number)// is det.
+%
+%   V es Hasta con los productos y cocientes que siguen aplicados en orden.
+productos(Hasta, V) -->
+    "*",
+    !,
+    integer(N),
+    { Ahora is Hasta * N },
+    productos(Ahora, V).
+productos(Hasta, V) -->
+    "/",
+    !,
+    integer(N),
+    { Ahora is Hasta / N },
+    productos(Ahora, V).
+productos(V, V) -->
+    [].
+
+% --- Ejercicio 10 -------------------------------------------------------------
+
+%!  fecha_larga(?F)// is semidet.
+%
+%   El texto "24 de septiembre de 2026" de la fecha F = fecha(2026, 9, 24),
+%   en los dos sentidos.
+fecha_larga(fecha(Anio, Mes, Dia)) -->
+    integer(Dia),
+    " de ",
+    nombre_de_mes(Mes),
+    " de ",
+    integer(Anio).
+
+%!  nombre_de_mes(?Mes:integer)// is semidet.
+%
+%   Los códigos del nombre del mes número Mes. atom//1 escribe el nombre al
+%   generar, y lo compara con la entrada al analizar.
+nombre_de_mes(Mes) -->
+    { nth1(Mes, [enero, febrero, marzo, abril, mayo, junio, julio, agosto,
+                 septiembre, octubre, noviembre, diciembre], Nombre) },
+    atom(Nombre).
+
+% --- Ejercicio 11 -------------------------------------------------------------
+
+%!  enumeracion(?Nombres:list)// is semidet.
+%
+%   Los nombres separados por comas, con y antes del último: "ana",
+%   "ana y luis", "ana, luis y eva", en los dos sentidos.
+enumeracion([N]) -->
+    csym(N).
+enumeracion([N1, N2]) -->
+    csym(N1),
+    " y ",
+    csym(N2).
+enumeracion([N1, N2, N3|Ns]) -->
+    csym(N1),
+    ", ",
+    enumeracion([N2, N3|Ns]).
+
+% --- Ejercicio 12 -------------------------------------------------------------
+
+%!  problema(-V:number)// is semidet.
+%
+%   "cuanto es 5 mas 13 por 2": V es el resultado de las operaciones,
+%   aplicadas de izquierda a derecha, sin precedencia.
+problema(V) -->
+    "cuanto es ",
+    integer(N),
+    operaciones(N, V).
+
+%!  operaciones(+Hasta:number, -V:number)// is semidet.
+%
+%   V es Hasta con cada " operación número" que sigue aplicada en orden.
+operaciones(Hasta, V) -->
+    " ",
+    operacion(Op),
+    " ",
+    !,
+    integer(N),
+    { aplicar(Op, Hasta, N, Ahora) },
+    operaciones(Ahora, V).
+operaciones(V, V) -->
+    [].
+
+%!  operacion(?Op)// is nondet.
+%
+%   Los códigos de la palabra que nombra la operación Op.
+operacion(suma)     --> "mas".
+operacion(resta)    --> "menos".
+operacion(producto) --> "por".
+operacion(cociente) --> "dividido".
+
+%!  aplicar(+Op, +A:number, +B:number, -R:number) is det.
+%
+%   R es el resultado de la operación Op entre A y B.
+aplicar(suma, A, B, R)     :- R is A + B.
+aplicar(resta, A, B, R)    :- R is A - B.
+aplicar(producto, A, B, R) :- R is A * B.
+aplicar(cociente, A, B, R) :- R is A / B.
+
+% --- Ejercicio 13 -------------------------------------------------------------
+
+%!  lista_de_enteros(?L:list(integer))// is semidet.
+%
+%   "[1, 2, 3]": enteros entre corchetes, separados por coma y espacio.
+lista_de_enteros(L) -->
+    sequence("[", integer, ", ", "]", L).
+
+% --- Ejercicio 17 -------------------------------------------------------------
+
+%!  siguiente(-C)// is semidet.
+%
+%   C es el próximo elemento de la entrada, que no se consume: se devuelve a
+%   la entrada con el pushback. Es la de gramatica.pl.
+siguiente(C), [C] --> [C].
+
+%!  empieza_con_mayuscula// is semidet.
+%
+%   El próximo código de la entrada es una letra mayúscula. No lo consume.
+empieza_con_mayuscula -->
+    siguiente(C),
+    { code_type(C, upper) }.

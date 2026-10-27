@@ -140,22 +140,4 @@ test(requisitos_guardados, true(R == [alg, am1])) :-
     requisitos_de(am2, _),
     reglas:requisitos_guardados(am2, R).
 
-% --- Validación de los argumentos -------------------------------------------
-
-test(legajo_libre, [error(instantiation_error)]) :-
-    inscripcion_posible(_, am1, _).
-
-test(legajo_no_entero, [error(type_error(integer, ana))]) :-
-    inscripcion_posible(ana, am1, _).
-
-test(materia_no_atomo, [error(type_error(atom, "am1"))]) :-
-    inscripcion_posible(101, "am1", _).
-
-test(baja_con_tipo_incorrecto, [error(type_error(integer, '101'))]) :-
-    dar_de_baja('101', pp).
-
-% Un legajo inexistente, en cambio, es una respuesta del dominio.
-test(legajo_inexistente, true(R == rechazada(alumno_inexistente))) :-
-    inscripcion_posible(999, am1, R).
-
 :- end_tests(reglas).
