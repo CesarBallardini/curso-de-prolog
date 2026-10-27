@@ -1,365 +1,411 @@
 :- encoding(utf8).
 
-% Capítulo 46 - Soluciones de los ejercicios 3 a 12.
+% Capítulo 46 - Soluciones de los ejercicios 2 a 7, 9, 10 y 12.
 %
-% Extensiones del programa de métodos numéricos: el ciclo sin límite y con
-% tolerancia relativa, la falsa posición, la derivada de sin, cos, exp y
-% log, Newton para raíces múltiples y para sistemas de dos ecuaciones,
-% Jacobi, la diagonal dominante, el residuo y la búsqueda de varias raíces.
+% Las extensiones del lenguaje (ejercicios 2, 3 y 4) agregan cláusulas a
+% predicados de los archivos del capítulo. Para que dos archivos definan
+% cláusulas del mismo predicado, este archivo lo declara multifile antes de
+% cargar compilador.pl; las cláusulas nuevas quedan después de las
+% originales.
 %
-% solo-local: carga los programas del capítulo 32, y SWISH no carga otros
-% archivos.
+% solo-local: carga compilador.pl con ensure_loaded/1.
 %
-%?- biseccion_relativa(x ^ 2 = 2.0e12, x, 0-2.0e6, 1.0e-12, Xs).
-%?- newton_ampliado(x = cos(x), x, 1, 1.0e-12, Xs).
+%?- ejecutar("x := -3 * 2; escribir 2 - -x", S).
+%?- fuente_repetir(T), ejecutar(T, S), correr(T, S).
+%?- analizar("x := a + (b + (c + d))", P), a_texto(P, T).
 
-:- ensure_loaded(metodos).
+:- multifile
+    factor//1,
+    reservada/1,
+    sentencia//1,
+    ejecutar_sentencia//3,
+    codigo_sentencia//1,
+    paso//3,
+    clase/2.
 
-:- meta_predicate
-    iterar_sin_limite(4, +, +, -),
-    iterar_relativa(4, +, +, -),
-    iterar_relativa(4, +, +, +, -).
+:- ensure_loaded(compilador).
 
-%!  iterar_sin_limite(:Paso, +Tol:float, +Estado0,
-%!                    -Aproximaciones:list) is semidet.
+% Ejercicio 2: el menos unario, como una resta desde 0.
+factor(bin(-, num(0), F)) -->
+    [-],
+    factor(F).
+
+% Ejercicio 3: repetir Bloque hasta Condicion.
+reservada(repetir).
+reservada(hasta).
+
+sentencia(repetir(Cuerpo, C)) -->
+    [repetir],
+    bloque(Cuerpo),
+    [hasta],
+    condicion(C).
+
+% El intérprete ejecuta el cuerpo una vez y sigue como un mientras con la
+% condición contraria.
+ejecutar_sentencia(repetir(Cuerpo, rel(Op, A, B)), E0, E) -->
+    { contraria(Op, No) },
+    ejecutar_bloque(Cuerpo, E0, E1),
+    ejecutar_sentencia(mientras(rel(No, A, B), Cuerpo), E1, E).
+
+% El generador pone la condición al final: si no se cumple, vuelve.
+codigo_sentencia(repetir(Cuerpo, C)) -->
+    [etiqueta(Inicio)],
+    codigo_bloque(Cuerpo),
+    codigo_condicion(C),
+    [saltar_si_cero(Inicio)].
+
+%!  fuente_repetir(-Texto:string) is det.
 %
-%   Como iterar/4, sin maximo_de_pasos/1: si la tolerancia no se alcanza,
-%   no termina.
-iterar_sin_limite(Paso, Tol, Estado0, [X|Xs]) :-
-    call(Paso, Estado0, Estado, X, Cambio),
-    (   Cambio =< Tol
-    ->  Xs = []
-    ;   iterar_sin_limite(Paso, Tol, Estado, Xs)
+%   El programa de prueba del ejercicio: escribe de 1 a 10.
+fuente_repetir("i := 1;
+repetir
+  escribir i;
+  i := i + 1
+hasta i = 11").
+
+% Ejercicio 4: saltar_si_no(Op, D) compara los dos valores del tope y salta
+% a D si la comparación Op no se cumple.
+clase(saltar_si_no(_, _), fija).
+
+paso(saltar_si_no(Op, D), s(PC, [Y, X|P], M), s(PC1, P, M)) -->
+    {   comparar(Op, X, Y)
+    ->  PC1 is PC + 1
+    ;   PC1 = D
+    }.
+
+%!  modismo_fusion(+Codigo0:list, -Codigo:list) is semidet.
+%
+%   Los modismos de modismo/2, y una comparación seguida de un salto si
+%   cero reemplazada por un salto si la comparación no se cumple.
+modismo_fusion([comparar(Op), saltar_si_cero(L)|R], [saltar_si_no(Op, L)|R]).
+modismo_fusion(Codigo0, Codigo) :-
+    modismo(Codigo0, Codigo).
+
+%!  compilar_fusion(+Texto, -Objeto:list) is semidet.
+%
+%   Como compilar_optimizado/2, con modismo_fusion/2 en la mirilla.
+compilar_fusion(Texto, Objeto) :-
+    analizar(Texto, Programa0),
+    optimizar(Programa0, Programa),
+    generar(Programa, Simbolico0),
+    mirilla(modismo_fusion, Simbolico0, Simbolico),
+    ensamblar(Simbolico, Objeto, _).
+
+% Ejercicio 5: la máquina que cuenta los pasos y la pila máxima.
+
+%!  maquina_medida(+Objeto, -Salida, -Pasos, -Maxima) is det.
+%
+%   Como maquina/2; Pasos es la cantidad de instrucciones ejecutadas y
+%   Maxima la mayor cantidad de valores que tuvo la pila.
+maquina_medida(Objeto, Salida, Pasos, Maxima) :-
+    compound_name_arguments(Codigo, codigo, Objeto),
+    empty_assoc(Memoria),
+    phrase(ciclo_medido(Codigo, s(0, [], Memoria), 0-0, Pasos-Maxima),
+           Salida).
+
+%!  ciclo_medido(+Codigo, +Estado, +Medida0, -Medida)// is det.
+%
+%   Como ciclo//2; Medida0 y Medida son pares Pasos-Maxima, antes y al
+%   terminar.
+ciclo_medido(Codigo, s(PC, P, M), N0-H0, Medida) -->
+    (   { K is PC + 1,
+          arg(K, Codigo, I) }
+    ->  paso(I, s(PC, P, M), s(PC1, P1, M1)),
+        { N1 is N0 + 1,
+          length(P1, Altura),
+          H1 is max(H0, Altura) },
+        ciclo_medido(Codigo, s(PC1, P1, M1), N1-H1, Medida)
+    ;   { Medida = N0-H0 }
     ).
 
-%!  iterar_relativa(:Paso, +Tol:float, +Estado0,
-%!                  -Aproximaciones:list) is semidet.
+%!  medir_ejemplo(+Nombre, :Compilar, -N, -Pasos, -Maxima) is semidet.
 %
-%   Como iterar/4, con la tolerancia relativa: se detiene cuando el cambio
-%   es menor o igual que Tol por el mayor entre 1 y el valor absoluto de la
-%   aproximación.
-iterar_relativa(Paso, Tol, Estado0, Aproximaciones) :-
-    maximo_de_pasos(Maximo),
-    iterar_relativa(Paso, Tol, Maximo, Estado0, Aproximaciones).
+%   Compila el programa de ejemplo Nombre con call(Compilar, Texto,
+%   Objeto): N es la cantidad de instrucciones de Objeto, y Pasos y Maxima
+%   las de maquina_medida/4 al ejecutarlo.
+medir_ejemplo(Nombre, Compilar, N, Pasos, Maxima) :-
+    fuente_ejemplo(Nombre, Texto),
+    call(Compilar, Texto, Objeto),
+    length(Objeto, N),
+    maquina_medida(Objeto, _, Pasos, Maxima).
 
-%!  iterar_relativa(:Paso, +Tol:float, +Restantes:integer, +Estado0,
-%!                  -Aproximaciones:list) is semidet.
+% Ejercicio 6: las comparaciones también se reordenan, con la relación
+% espejada.
+
+%!  reordenar_condiciones(+Programa0:list, -Programa:list) is det.
 %
-%   Como iterar_relativa/4, con a lo sumo Restantes pasos.
-iterar_relativa(Paso, Tol, Restantes, Estado0, [X|Xs]) :-
-    Restantes > 0,
-    call(Paso, Estado0, Estado, X, Cambio),
-    (   Cambio =< Tol * max(1, abs(X))
-    ->  Xs = []
-    ;   Restantes1 is Restantes - 1,
-        iterar_relativa(Paso, Tol, Restantes1, Estado, Xs)
+%   Programa es Programa0 con las expresiones reordenadas y, en cada
+%   condición, el lado que más pila necesita primero.
+reordenar_condiciones(Ss0, Ss) :-
+    maplist(condiciones_sentencia, Ss0, Ss).
+
+condiciones_sentencia(asignar(X, E0), asignar(X, E)) :-
+    reordenar_expresion(E0, E).
+condiciones_sentencia(escribir(E0), escribir(E)) :-
+    reordenar_expresion(E0, E).
+condiciones_sentencia(si(C0, Si0, No0), si(C, Si, No)) :-
+    condicion_reordenada(C0, C),
+    reordenar_condiciones(Si0, Si),
+    reordenar_condiciones(No0, No).
+condiciones_sentencia(mientras(C0, Cuerpo0), mientras(C, Cuerpo)) :-
+    condicion_reordenada(C0, C),
+    reordenar_condiciones(Cuerpo0, Cuerpo).
+
+%!  condicion_reordenada(+C0, -C) is det.
+%
+%   C es la condición C0 con sus lados reordenados y, si el derecho
+%   necesita más pila, intercambiados, con la relación espejada.
+condicion_reordenada(rel(Op, A0, B0), C) :-
+    reordenar(A0, A, NA),
+    reordenar(B0, B, NB),
+    (   NB > NA
+    ->  espejo(Op, Op1),
+        C = rel(Op1, B, A)
+    ;   C = rel(Op, A, B)
     ).
 
-%!  biseccion_relativa(+Ecuacion, +X:atom, +Intervalo, +Tol:float,
-%!                     -Aproximaciones:list(float)) is semidet.
-%
-%   Como biseccion/5, con la tolerancia relativa de iterar_relativa/4.
-biseccion_relativa(Ecuacion, X, A0-B0, Tol, Xs) :-
-    funcion(Ecuacion, F),
-    A is float(A0),
-    B is float(B0),
-    valor_en(F, X, A, FA),
-    valor_en(F, X, B, FB),
-    (   A < B,
-        FA * FB =< 0
-    ->  iterar_relativa(paso_biseccion(F, X), Tol, intervalo(A, FA, B), Xs)
-    ;   domain_error(intervalo_con_cambio_de_signo, A0-B0)
-    ).
+% espejo(Op, Op1): A Op B se cumple si y solo si B Op1 A se cumple.
+espejo(=, =).
+espejo(<>, <>).
+espejo(<, >).
+espejo(>, <).
+espejo(<=, >=).
+espejo(>=, <=).
 
-%!  falsa_posicion(+Ecuacion, +X:atom, +Intervalo, +Tol:float,
-%!                 -Aproximaciones:list(float)) is semidet.
+%!  pila_condicion(+C, -N:integer) is det.
 %
-%   Aproximaciones son los puntos donde la secante por los extremos del
-%   intervalo corta el eje, hasta que dos seguidos difieren en Tol o menos.
-%   Intervalo es A-B con A < B y un cambio de signo, o se produce un error
-%   de dominio.
-falsa_posicion(Ecuacion, X, A0-B0, Tol, Xs) :-
-    funcion(Ecuacion, F),
-    A is float(A0),
-    B is float(B0),
-    valor_en(F, X, A, FA),
-    valor_en(F, X, B, FB),
-    (   A < B,
-        FA * FB =< 0
-    ->  iterar(paso_falsa_posicion(F, X), Tol, falsa(A, FA, B, FB, A), Xs)
-    ;   domain_error(intervalo_con_cambio_de_signo, A0-B0)
-    ).
+%   N es la pila que necesita la máquina para evaluar la condición C.
+pila_condicion(rel(_, A, B), N) :-
+    pila(A, NA),
+    pila(B, NB),
+    N is max(NA, NB + 1).
 
-%!  paso_falsa_posicion(+F, +X:atom, +Estado0, -Estado, -C:float,
-%!                      -Cambio:float) is semidet.
-%
-%   C es el punto donde la secante por los extremos de Estado0,
-%   falsa(A, FA, B, FB, Anterior), corta el eje; Estado es la parte del
-%   intervalo con cambio de signo, y Cambio la distancia de C a la
-%   aproximación Anterior. Falla si FA y FB son iguales.
-paso_falsa_posicion(F, X, falsa(A, FA, B, FB, Anterior), Estado, C,
-                    Cambio) :-
-    FA =\= FB,
-    C is B - FB * (B - A) / (FB - FA),
-    valor_en(F, X, C, FC),
-    Cambio is abs(C - Anterior),
-    (   FA * FC =< 0
-    ->  Estado = falsa(A, FA, C, FC, C)
-    ;   Estado = falsa(C, FC, B, FB, C)
-    ).
+% Ejercicio 7: reasociar para que las constantes de una suma queden juntas.
 
-%!  derivar_ampliado(+E, +X:atom, -D) is det.
+%!  plegar_asociando(+E0, -E) is det.
 %
-%   D es la derivada de la expresión cerrada E respecto de X, simplificada.
-%   E usa +, -, *, ^ con exponente numérico, sin, cos, exp y log.
-derivar_ampliado(E, X, D) :-
-    must_be(ground, E),
-    must_be(atom, X),
-    derivada_ampliada(E, X, D0),
-    simplificar(D0, D).
+%   Como plegar_expresion/2, pero antes de simplificar agrupa las
+%   constantes de las sumas y restas encadenadas: (X + A) + B pasa a
+%   X + (A + B).
+plegar_asociando(E0, E) :-
+    a_termino(E0, T0),
+    simplificar(T0, T1),
+    reasociar(T1, T2),
+    simplificar(T2, T),
+    de_termino(T, E).
 
-%!  derivada_ampliada(+E, +X:atom, -D) is det.
+%!  reasociar(+T0, -T) is det.
 %
-%   D es la derivada de E respecto de X, sin simplificar, con la regla de la
-%   cadena para las cuatro funciones. Produce un error de dominio con otra
-%   operación.
-derivada_ampliada(E, X, D) :-
-    (   E == X
-    ->  D = 1
-    ;   atomic(E)
-    ->  D = 0
-    ;   E = U + V
-    ->  D = DU + DV,
-        derivada_ampliada(U, X, DU),
-        derivada_ampliada(V, X, DV)
-    ;   E = U - V
-    ->  D = DU - DV,
-        derivada_ampliada(U, X, DU),
-        derivada_ampliada(V, X, DV)
-    ;   E = U * V
-    ->  D = DU * V + U * DV,
-        derivada_ampliada(U, X, DU),
-        derivada_ampliada(V, X, DV)
-    ;   E = U ^ N,
-        number(N)
-    ->  N1 is N - 1,
-        D = N * U ^ N1 * DU,
-        derivada_ampliada(U, X, DU)
-    ;   E = sin(U)
-    ->  D = cos(U) * DU,
-        derivada_ampliada(U, X, DU)
-    ;   E = cos(U)
-    ->  D = -1 * sin(U) * DU,
-        derivada_ampliada(U, X, DU)
-    ;   E = exp(U)
-    ->  D = exp(U) * DU,
-        derivada_ampliada(U, X, DU)
-    ;   E = log(U)
-    ->  D = DU / U,
-        derivada_ampliada(U, X, DU)
-    ;   domain_error(expresion_derivable, E)
-    ).
-
-%!  newton_ampliado(+Ecuacion, +X:atom, +X0:number, +Tol:float,
-%!                  -Aproximaciones:list(float)) is semidet.
-%
-%   Como newton/5, con la derivada de derivar_ampliado/3.
-newton_ampliado(Ecuacion, X, X0, Tol, Xs) :-
-    funcion(Ecuacion, F),
-    derivar_ampliado(F, X, DF),
-    A is float(X0),
-    iterar(paso_newton(F, DF, X), Tol, A, Xs).
-
-%!  newton_multiple(+Ecuacion, +X:atom, +M:integer, +X0:number,
-%!                  +Tol:float, -Aproximaciones:list(float)) is semidet.
-%
-%   Como newton/5, con el paso multiplicado por M, la multiplicidad de la
-%   raíz buscada.
-newton_multiple(Ecuacion, X, M, X0, Tol, Xs) :-
-    funcion(Ecuacion, F),
-    derivar(F, X, DF),
-    A is float(X0),
-    iterar(paso_newton_multiple(F, DF, X, M), Tol, A, Xs).
-
-%!  paso_newton_multiple(+F, +DF, +X:atom, +M:integer, +X0:float,
-%!                       -X1:float, -X1:float, -Cambio:float) is semidet.
-%
-%   X1 es X0 menos M veces el cociente entre F y su derivada DF en X0.
-%   Falla si la derivada vale 0 en X0.
-paso_newton_multiple(F, DF, X, M, X0, X1, X1, Cambio) :-
-    valor_en(F, X, X0, F0),
-    valor_en(DF, X, X0, D0),
-    D0 =\= 0,
-    X1 is X0 - M * F0 / D0,
-    Cambio is abs(X1 - X0).
-
-%!  jacobi(+Filas:list(list(number)), +Bs:list(number),
-%!         +X0s:list(number), +Tol:float,
-%!         -Aproximaciones:list(list(float))) is semidet.
-%
-%   Como gauss_seidel/5, pero cada barrido usa solo los valores del
-%   barrido anterior.
-jacobi(Filas, Bs, X0s, Tol, Aproximaciones) :-
-    iterar(paso_jacobi(Filas, Bs), Tol, X0s, Aproximaciones).
-
-%!  paso_jacobi(+Filas, +Bs, +X0s, -Xs, -Xs, -Cambio:float) is semidet.
-%
-%   Xs es el resultado de un barrido de Jacobi desde X0s; Cambio es el
-%   mayor cambio de una componente.
-paso_jacobi(Filas, Bs, X0s, Xs, Xs, Cambio) :-
-    barrido_jacobi(Filas, Bs, [], X0s, Xs),
-    foldl(mayor_diferencia, X0s, Xs, 0.0, Cambio).
-
-%!  barrido_jacobi(+Filas, +Bs, +Anteriores:list(number),
-%!                 +Viejos:list(number), -Xs:list(float)) is semidet.
-%
-%   Xs son los valores nuevos de las incógnitas de Filas. Anteriores y
-%   Viejos son los valores del barrido anterior de las incógnitas que
-%   preceden a la fila actual y de las que siguen, ella incluida. Falla si
-%   un coeficiente de la diagonal es 0.
-barrido_jacobi([], [], _, [], []).
-barrido_jacobi([Fila|Filas], [B|Bs], Anteriores, [V|Viejos], [X|Xs]) :-
-    length(Anteriores, K),
-    length(Izquierda, K),
-    append(Izquierda, [Diagonal|Derecha], Fila),
-    Diagonal =\= 0,
-    producto_escalar(Izquierda, Anteriores, P1),
-    producto_escalar(Derecha, Viejos, P2),
-    X is (B - P1 - P2) / Diagonal,
-    append(Anteriores, [V], Anteriores1),
-    barrido_jacobi(Filas, Bs, Anteriores1, Viejos, Xs).
-
-%!  diagonal_dominante(+Filas:list(list(number))) is semidet.
-%
-%   En cada fila de Filas, el valor absoluto del coeficiente de la diagonal
-%   supera la suma de los valores absolutos de los demás.
-diagonal_dominante(Filas) :-
-    diagonal_dominante(Filas, 0).
-
-%!  diagonal_dominante(+Filas:list(list(number)), +K:integer) is semidet.
-%
-%   Como diagonal_dominante/1, con la diagonal de la primera fila de Filas
-%   en la posición K, contada desde 0.
-diagonal_dominante([], _).
-diagonal_dominante([Fila|Filas], K) :-
-    length(Izquierda, K),
-    append(Izquierda, [Diagonal|Derecha], Fila),
-    foldl(sumar_absoluto, Izquierda, 0, S1),
-    foldl(sumar_absoluto, Derecha, S1, S),
-    abs(Diagonal) > S,
-    K1 is K + 1,
-    diagonal_dominante(Filas, K1).
-
-%!  sumar_absoluto(+A:number, +S0:number, -S:number) is det.
-%
-%   S es S0 más el valor absoluto de A.
-sumar_absoluto(A, S0, S) :-
-    S is S0 + abs(A).
-
-%!  ordenar_filas(+Filas:list(list(number)), +Bs:list(number),
-%!                -Filas1:list(list(number)), -Bs1:list(number))
-%!      is semidet.
-%
-%   Filas1 y Bs1 son las mismas ecuaciones en el primer orden, entre las
-%   permutaciones, que tiene la diagonal estrictamente dominante. Falla si
-%   ningún orden la tiene.
-ordenar_filas(Filas, Bs, Filas1, Bs1) :-
-    pairs_keys_values(Pares, Filas, Bs),
-    once(( permutation(Pares, Pares1),
-           pairs_keys_values(Pares1, Filas2, _),
-           diagonal_dominante(Filas2) )),
-    pairs_keys_values(Pares1, Filas1, Bs1).
-
-%!  residuo(+Filas:list(list(number)), +Bs:list(number),
-%!          +Xs:list(number), -R:float) is det.
-%
-%   R es el mayor valor absoluto de las componentes de A·x - b.
-residuo(Filas, Bs, Xs, R) :-
-    foldl(residuo_fila(Xs), Filas, Bs, 0.0, R).
-
-%!  residuo_fila(+Xs:list(number), +Fila:list(number), +B:number,
-%!               +R0:float, -R:float) is det.
-%
-%   R es el mayor entre R0 y el valor absoluto de Fila·Xs - B.
-residuo_fila(Xs, Fila, B, R0, R) :-
-    producto_escalar(Fila, Xs, P),
-    R is max(R0, abs(P - B)).
-
-%!  newton_sistema(+Ecuaciones:list, +Incognitas, +Inicio, -Raiz)
-%!      is semidet.
-%
-%   Raiz, un par X-Y, es una solución de las dos Ecuaciones en las
-%   Incognitas, un par de átomos, buscada desde Inicio, otro par, con una
-%   tolerancia de 1.0e-12. Falla si el jacobiano se anula o si el método no
-%   converge.
-newton_sistema([E1, E2], X-Y, X0-Y0, Raiz) :-
-    funcion(E1, F1),
-    funcion(E2, F2),
-    derivar(F1, X, A),
-    derivar(F1, Y, B),
-    derivar(F2, X, C),
-    derivar(F2, Y, D),
-    Punto is float(X0),
-    Punto2 is float(Y0),
-    iterar(paso_newton_sistema(X-Y, F1-F2, A-B, C-D), 1.0e-12,
-           Punto-Punto2, Aproximaciones),
-    last(Aproximaciones, Raiz).
-
-%!  paso_newton_sistema(+Incognitas, +Fs, +Fila1, +Fila2, +P0, -P, -P,
-%!                      -Cambio:float) is semidet.
-%
-%   P es el punto que sigue a P0 en el método de Newton para las dos
-%   funciones Fs, F1-F2, cuyas derivadas parciales forman las filas del
-%   jacobiano Fila1 y Fila2. El sistema lineal se resuelve por la regla de
-%   Cramer. Falla si el determinante es 0.
-paso_newton_sistema(X-Y, F1-F2, A-B, C-D, X0-Y0, X1-Y1, X1-Y1, Cambio) :-
-    Valores = [X-X0, Y-Y0],
-    maplist(valor_en_punto(Valores), [F1, F2, A, B, C, D],
-            [V1, V2, VA, VB, VC, VD]),
-    Det is VA * VD - VB * VC,
-    Det =\= 0,
-    DX is (VB * V2 - VD * V1) / Det,
-    DY is (VC * V1 - VA * V2) / Det,
-    X1 is X0 + DX,
-    Y1 is Y0 + DY,
-    Cambio is max(abs(DX), abs(DY)).
-
-%!  valor_en_punto(+Valores:list(pair), +E, -V:float) is det.
-%
-%   V es el valor de E con las incógnitas de Valores.
-valor_en_punto(Valores, E, V) :-
-    evaluar(E, Valores, V0),
-    V is float(V0).
-
-%!  raices(+Ecuacion, +X:atom, +Intervalo, +N:integer,
-%!         -Raices:list(float)) is det.
-%
-%   Raices son las que da la bisección en cada uno de los N intervalos
-%   iguales en que se parte Intervalo, A-B, que tiene cambio de signo.
-raices(Ecuacion, X, A-B, N, Raices) :-
-    must_be(positive_integer, N),
-    Ancho is (B - A) / N,
-    N1 is N - 1,
-    numlist(0, N1, Is),
-    convlist(raiz_en_tramo(Ecuacion, X, A, Ancho), Is, Raices).
-
-%!  raiz_en_tramo(+Ecuacion, +X:atom, +A:number, +Ancho:number,
-%!                +I:integer, -R:float) is semidet.
-%
-%   R es la raíz que da la bisección en el tramo I, de A + I·Ancho a
-%   A + (I + 1)·Ancho. Falla si el tramo no tiene cambio de signo. Una raíz
-%   en el borde entre dos tramos pertenece al que termina en ella, y solo
-%   el primer tramo toma la que está en su extremo izquierdo.
-raiz_en_tramo(Ecuacion, X, A, Ancho, I, R) :-
-    Desde is A + I * Ancho,
-    Hasta is Desde + Ancho,
-    funcion(Ecuacion, F),
-    valor_en(F, X, Desde, FD),
-    valor_en(F, X, Hasta, FH),
-    (   FD * FH < 0
-    ;   FH =:= 0
-    ;   I =:= 0,
-        FD =:= 0
+%   T es la expresión de Prolog T0 con regla_asociar/2 aplicada de abajo
+%   hacia arriba, hasta que no se aplica en ningún nodo.
+reasociar(T0, T) :-
+    (   compound(T0)
+    ->  mapargs(reasociar, T0, T1)
+    ;   T1 = T0
     ),
-    !,
-    biseccion(Ecuacion, X, Desde-Hasta, R).
+    (   regla_asociar(T1, T2)
+    ->  reasociar(T2, T)
+    ;   T = T1
+    ).
+
+%!  regla_asociar(+T0, -T) is semidet.
+%
+%   T es T0 con dos constantes de una suma o resta encadenada sumadas.
+regla_asociar((X + A) + B, X + C) :-
+    number(A),
+    number(B),
+    C is A + B.
+regla_asociar((X + A) - B, X + C) :-
+    number(A),
+    number(B),
+    C is A - B.
+regla_asociar((X - A) + B, X + C) :-
+    number(A),
+    number(B),
+    C is B - A.
+regla_asociar((X - A) - B, X - C) :-
+    number(A),
+    number(B),
+    C is A + B.
+
+% Ejercicio 9: las marcas que ningún salto usa se quitan.
+
+%!  mirilla_completa(+Codigo0:list, -Codigo:list) is det.
+%
+%   Codigo es Codigo0 pasado por la mirilla y sin las marcas de etiquetas
+%   que ningún salto usa, repetido hasta que no cambia.
+mirilla_completa(Codigo0, Codigo) :-
+    mirilla(Codigo0, Codigo1),
+    quitar_marcas(Codigo1, Codigo2),
+    (   Codigo2 == Codigo1
+    ->  Codigo = Codigo1
+    ;   mirilla_completa(Codigo2, Codigo)
+    ).
+
+%!  quitar_marcas(+Codigo0:list, -Codigo:list) is det.
+%
+%   Codigo es Codigo0 sin las marcas de etiquetas que ninguna instrucción
+%   de Codigo0 usa como destino.
+quitar_marcas(Codigo0, Codigo) :-
+    exclude(marca_sin_uso(Codigo0), Codigo0, Codigo).
+
+%!  marca_sin_uso(+Codigo:list, +I) is semidet.
+%
+%   I es una marca de una etiqueta que ningún salto de Codigo usa.
+marca_sin_uso(Codigo, etiqueta(L)) :-
+    \+ ( member(I, Codigo),
+         destino(I, D),
+         D == L ).
+
+% destino(I, D): la instrucción I salta a la etiqueta D.
+destino(saltar(D), D).
+destino(saltar_si_cero(D), D).
+
+% Ejercicio 10: de la sintaxis abstracta al texto.
+
+%!  a_texto(+Programa:list, -Texto:atom) is det.
+%
+%   Texto es un texto de Programa que analizar/2 lee como Programa: las
+%   sentencias separadas por punto y coma y cada expresión con los
+%   paréntesis que su forma necesita. Los números deben ser naturales, como
+%   los que produce analizar/2.
+a_texto(Programa, Texto) :-
+    bloque_texto(Programa, Texto).
+
+bloque_texto(Ss, Texto) :-
+    maplist(sentencia_texto, Ss, Ts),
+    atomic_list_concat(Ts, '; ', Texto).
+
+sentencia_texto(asignar(X, E), T) :-
+    expresion_texto(E, 1, TE),
+    format(atom(T), "~w := ~w", [X, TE]).
+sentencia_texto(escribir(E), T) :-
+    expresion_texto(E, 1, TE),
+    format(atom(T), "escribir ~w", [TE]).
+sentencia_texto(si(C, Si, No), T) :-
+    condicion_texto(C, TC),
+    bloque_texto(Si, TSi),
+    (   No == []
+    ->  format(atom(T), "si ~w entonces ~w fin", [TC, TSi])
+    ;   bloque_texto(No, TNo),
+        format(atom(T), "si ~w entonces ~w sino ~w fin", [TC, TSi, TNo])
+    ).
+sentencia_texto(mientras(C, Cuerpo), T) :-
+    condicion_texto(C, TC),
+    bloque_texto(Cuerpo, TB),
+    format(atom(T), "mientras ~w hacer ~w fin", [TC, TB]).
+
+condicion_texto(rel(Op, A, B), T) :-
+    expresion_texto(A, 1, TA),
+    expresion_texto(B, 1, TB),
+    format(atom(T), "~w ~w ~w", [TA, Op, TB]).
+
+%!  expresion_texto(+E, +Minima:integer, -T:atom) is det.
+%
+%   T es el texto de la expresión E; va entre paréntesis si la precedencia
+%   de su operador es menor que Minima. El operando derecho exige una
+%   precedencia mayor que la del operador, porque se agrupa a la
+%   izquierda: a - (b - c) necesita los paréntesis.
+expresion_texto(num(N), _, N).
+expresion_texto(id(X), _, X).
+expresion_texto(bin(Op, A, B), Minima, T) :-
+    precedencia(Op, P),
+    expresion_texto(A, P, TA),
+    P1 is P + 1,
+    expresion_texto(B, P1, TB),
+    format(atom(T0), "~w ~w ~w", [TA, Op, TB]),
+    (   P < Minima
+    ->  format(atom(T), "(~w)", [T0])
+    ;   T = T0
+    ).
+
+% precedencia(Op, P): el operador Op agrupa con precedencia P; mayor
+% precedencia agrupa antes.
+precedencia(+, 1).
+precedencia(-, 1).
+precedencia(*, 2).
+precedencia(/, 2).
+
+% Ejercicio 12: subexpresiones comunes, con un diccionario incompleto.
+
+%!  compartir(+Programa0:list, -Programa:list) is det.
+%
+%   Programa es Programa0 con cada subexpresión compuesta que aparece más
+%   de una vez en una asignación o un escribir calculada una sola vez, en
+%   una variable nueva t_1, t_2, ... asignada antes. Supone que el programa
+%   no usa esos nombres.
+compartir(Ss0, Ss) :-
+    compartir(Ss0, 1, _, Ss).
+
+%!  compartir(+Ss0:list, +N0:integer, -N:integer, -Ss:list) is det.
+%
+%   Como compartir/2; N0 es el número de la primera variable nueva y N el
+%   de la siguiente a la última usada.
+compartir([], N, N, []).
+compartir([S0|Ss0], N0, N, Ss) :-
+    compartir_sentencia(S0, N0, N1, Ss1),
+    compartir(Ss0, N1, N, Ss2),
+    append(Ss1, Ss2, Ss).
+
+compartir_sentencia(asignar(X, E0), N0, N, Ss) :-
+    compartir_expresion(E0, N0, N, Temporales, E),
+    append(Temporales, [asignar(X, E)], Ss).
+compartir_sentencia(escribir(E0), N0, N, Ss) :-
+    compartir_expresion(E0, N0, N, Temporales, E),
+    append(Temporales, [escribir(E)], Ss).
+compartir_sentencia(si(C, Si0, No0), N0, N, [si(C, Si, No)]) :-
+    compartir(Si0, N0, N1, Si),
+    compartir(No0, N1, N, No).
+compartir_sentencia(mientras(C, Cuerpo0), N0, N, [mientras(C, Cuerpo)]) :-
+    compartir(Cuerpo0, N0, N, Cuerpo).
+
+%!  compartir_expresion(+E0, +N0, -N, -Temporales, -E) is det.
+%
+%   E es E0 con cada subexpresión repetida reemplazada por una variable
+%   nueva; Temporales son las asignaciones de esas variables, las internas
+%   primero. El diccionario incompleto (buscar/3 del capítulo 35) asocia
+%   cada subexpresión repetida con su nombre y su definición: la primera
+%   aparición la agrega, las siguientes la encuentran.
+compartir_expresion(E0, N0, N, Temporales, E) :-
+    repetidas(E0, Repetidas),
+    reemplazar(E0, Repetidas, Dic, E),
+    definiciones(Dic, N0, N, Temporales).
+
+%!  repetidas(+E, -Repetidas:list) is det.
+%
+%   Repetidas son las subexpresiones compuestas de E que aparecen más de
+%   una vez.
+repetidas(E, Repetidas) :-
+    findall(S, ( sub_term(S, E), S = bin(_, _, _) ), Ss0),
+    msort(Ss0, Ss),
+    clumped(Ss, Pares),
+    findall(S, ( member(S-K, Pares), K > 1 ), Repetidas).
+
+%!  reemplazar(+E0, +Repetidas:list, ?Dic, -E) is det.
+%
+%   E es E0 con cada subexpresión de Repetidas reemplazada, de abajo hacia
+%   arriba, por id(Nombre), con Nombre libre hasta definiciones/4. Dic es
+%   el diccionario incompleto de pares Subexpresion-t(Nombre, Cuerpo).
+reemplazar(num(N), _, _, num(N)).
+reemplazar(id(X), _, _, id(X)).
+reemplazar(bin(Op, A0, B0), Repetidas, Dic, E) :-
+    reemplazar(A0, Repetidas, Dic, A),
+    reemplazar(B0, Repetidas, Dic, B),
+    Nodo = bin(Op, A, B),
+    (   memberchk(bin(Op, A0, B0), Repetidas)
+    ->  buscar(bin(Op, A0, B0), Dic, t(Nombre, Nodo)),
+        E = id(Nombre)
+    ;   E = Nodo
+    ).
+
+%!  definiciones(?Dic, +N0:integer, -N:integer, -Temporales:list) is det.
+%
+%   Da nombre a las entradas del diccionario incompleto Dic, en orden,
+%   desde t_N0, y Temporales son sus asignaciones.
+definiciones(Dic, N, N, []) :-
+    var(Dic),
+    !.
+definiciones([_-t(Nombre, Cuerpo)|Dic], N0, N, [asignar(Nombre, Cuerpo)|Ts]) :-
+    format(atom(Nombre), "t_~w", [N0]),
+    N1 is N0 + 1,
+    definiciones(Dic, N1, N, Ts).

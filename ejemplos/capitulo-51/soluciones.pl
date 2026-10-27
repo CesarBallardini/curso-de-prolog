@@ -1,208 +1,312 @@
 :- encoding(utf8).
 
-% Capítulo 51 - Soluciones de los ejercicios 2 a 9, 12 y 13.
+% Capítulo 51 - Soluciones de los ejercicios.
 %
-% Carga los módulos del proyecto y agrega autómatas, construcciones, un
-% operador de las expresiones regulares y dos clases de componentes
-% léxicos con cláusulas multifile.
+% solo-local: carga fft.pl, y SWISH no carga otros archivos.
 %
-% solo-local: carga módulos propios, y SWISH no los admite.
+%?- alternar_mal([0, 1, 2, 3], P, I).
+%?- fft_grafo(8, Ns, _), productos_por(Ns, 2, C).
+%?- fft_grafo(4, Ns, Ss), maplist(profundidad(Ns), Ss, Ps).
+%?- fft_numerica([1, 2, 3, 4], Xs), fft_inversa(Xs, As).
+%?- producto_polinomios([1, 2, 3], [4, 5], R).
+
+:- ensure_loaded(fft).
+
+% Ejercicio 2
+
+%!  alternar_mal(?Lista:list, ?Pares:list, ?Impares:list) is semidet.
 %
-%?- equivalentes(par_par, interseccion(a_par, b_par)).
-%?- equivalentes(ciclo, sin_epsilon(ciclo)).
-%?- numero_estados(min(enesima(3)), N).
-%?- transducir(complemento2, [0, 1, 1, 0], S).
-%?- moore(moore_de(gray, 0), [1, 0, 1, 1], S).
+%   La versión con error del ejercicio 2: pretende ser alternar/3, pero la
+%   llamada recursiva intercambia las dos listas.
+alternar_mal([], [], []).
+alternar_mal([X, Y|T], [X|Xs], [Y|Ys]) :-
+    alternar_mal(T, Ys, Xs).
 
-:- use_module(library(lists)).
-:- use_module(library(ordsets)).
-:- use_module(lexico).
-:- use_module(secuencial).
-:- use_module(kleene).
-:- use_module(moore).
+% Ejercicio 4
 
-:- multifile automatas:alfabeto/2, automatas:inicial/2, automatas:final/2,
-             automatas:delta/4, automatas:epsilon/3.
-
-% Ejercicio 2: par_par cuenta las a y las b módulo 2; el estado es el
-% par de restos. a_par y b_par cuentan una letra cada uno.
-
-automatas:alfabeto(par_par, [a, b]).
-automatas:inicial(par_par, 0-0).
-automatas:final(par_par, 0-0).
-automatas:delta(par_par, 0-B, a, 1-B) :- member(B, [0, 1]).
-automatas:delta(par_par, 1-B, a, 0-B) :- member(B, [0, 1]).
-automatas:delta(par_par, A-0, b, A-1) :- member(A, [0, 1]).
-automatas:delta(par_par, A-1, b, A-0) :- member(A, [0, 1]).
-
-automatas:alfabeto(a_par, [a, b]).
-automatas:inicial(a_par, 0).
-automatas:final(a_par, 0).
-automatas:delta(a_par, 0, a, 1).
-automatas:delta(a_par, 1, a, 0).
-automatas:delta(a_par, R, b, R) :- member(R, [0, 1]).
-
-automatas:alfabeto(b_par, [a, b]).
-automatas:inicial(b_par, 0).
-automatas:final(b_par, 0).
-automatas:delta(b_par, 0, b, 1).
-automatas:delta(b_par, 1, b, 0).
-automatas:delta(b_par, R, a, R) :- member(R, [0, 1]).
-
-% Ejercicio 3: sin_epsilon(M) tiene los estados de M; una transición con
-% S es ε, S, ε en M, y un estado es final si su clausura tiene un final.
-
-automatas:alfabeto(sin_epsilon(M), Sigma) :-
-    alfabeto(M, Sigma).
-automatas:inicial(sin_epsilon(M), Q0) :-
-    inicial(M, Q0).
-automatas:final(sin_epsilon(M), Q) :-
-    alcanzable(sin_epsilon(M), Q),
-    once(( clausura(M, Q, Q1),
-           final(M, Q1) )).
-automatas:delta(sin_epsilon(M), Q, S, Q1) :-
-    clausura(M, Q, Q2),
-    delta(M, Q2, S, Q3),
-    clausura(M, Q3, Q1).
-
-% contra acepta solo b; x se alcanza con a, y también con ε desde el
-% final f. Tomar como finales los estados a los que se llega con ε desde
-% un final haría aceptar a.
-
-automatas:alfabeto(contra, [a, b]).
-automatas:inicial(contra, q0).
-automatas:final(contra, f).
-automatas:delta(contra, q0, a, x).
-automatas:delta(contra, q0, b, f).
-automatas:epsilon(contra, f, x).
-
-% Ejercicio 4: diferencia(M1, M2), el producto de los deterministas con
-% los pares finales en M1 y no finales en M2.
-
-automatas:alfabeto(diferencia(M1, M2), Sigma) :-
-    alfabeto(M1, Sigma1),
-    alfabeto(M2, Sigma2),
-    ord_union(Sigma1, Sigma2, Sigma).
-automatas:inicial(diferencia(M1, M2), D1-D2) :-
-    inicial(det(M1), D1),
-    inicial(det(M2), D2).
-automatas:final(diferencia(M1, M2), D1-D2) :-
-    alcanzable(diferencia(M1, M2), D1-D2),
-    contiene_final(M1, D1),
-    \+ contiene_final(M2, D2).
-automatas:delta(diferencia(M1, M2), D1-D2, S, E1-E2) :-
-    alfabeto(diferencia(M1, M2), Sigma),
-    member(S, Sigma),
-    mover(M1, S, D1, E1),
-    mover(M2, S, D2, E2).
-
-%!  contiene_final(+M, +D:list) is semidet.
+%!  productos_por(+Nodos:list, +K:integer, -Cantidad:integer) is det.
 %
-%   El conjunto de estados D de M contiene un estado final.
-contiene_final(M, D) :-
-    member(Q, D),
-    final(M, Q),
+%   Cantidad es la cantidad de productos del grafo Nodos en los que uno de
+%   los operandos es la hoja w(K).
+productos_por(Nodos, K, Cantidad) :-
+    memberchk(nodo(Raiz, w(K)), Nodos),
+    !,
+    aggregate_all(count,
+                  ( member(nodo(_, op(*, I, J)), Nodos),
+                    ( I == Raiz -> true ; J == Raiz )
+                  ),
+                  Cantidad).
+productos_por(_, _, 0).
+
+%!  productos_no_triviales(+N:integer, -Cantidad:integer) is det.
+%
+%   Cantidad es la cantidad de productos de la mariposa de orden N que no
+%   son por w(N/4), es decir, por la unidad imaginaria. N es una potencia
+%   de 2.
+productos_no_triviales(N, Cantidad) :-
+    fft_grafo(N, Nodos, _),
+    contar_nodos(Nodos, _, _, P),
+    K is N // 4,
+    productos_por(Nodos, K, Pi),
+    Cantidad is P - Pi.
+
+% Ejercicio 5
+
+%!  profundidad(+Nodos:list, +Id:integer, -P:integer) is semidet.
+%
+%   P es la cantidad de operaciones del camino más largo desde una hoja
+%   del grafo Nodos hasta el nodo Id; 0 si Id es una hoja. Falla si Id no
+%   es un nodo del grafo.
+profundidad(Nodos, Id, P) :-
+    memberchk(nodo(Id, T), Nodos),
+    (   T = op(_, I, J)
+    ->  profundidad(Nodos, I, PI),
+        profundidad(Nodos, J, PJ),
+        P is max(PI, PJ) + 1
+    ;   P = 0
+    ).
+
+%!  profundidad_maxima(+Nodos:list, +Salidas:list, -P:integer) is det.
+%
+%   P es la mayor profundidad de los nodos Salidas del grafo Nodos.
+profundidad_maxima(Nodos, Salidas, P) :-
+    maplist(profundidad(Nodos), Salidas, Ps),
+    max_list(Ps, P).
+
+% Ejercicio 8
+
+%!  presente(+E, ?Dic, -Id) is semidet.
+%
+%   La clave cerrada E está en el diccionario incompleto Dic con el valor
+%   Id. A diferencia de buscar/3, no agrega nada: falla al llegar al final
+%   abierto.
+presente(E, Dic, Id) :-
+    nonvar(Dic),
+    Dic = [E0-V|Resto],
+    (   E0 == E
+    ->  Id = V
+    ;   presente(E, Resto, Id)
+    ).
+
+%!  grafo_rapido(+Es:list, -Nodos:list, -Salidas:list(integer)) is det.
+%
+%   La misma relación que grafo/3, sin volver a recorrer una subexpresión
+%   que ya está en el diccionario.
+grafo_rapido(Es, Nodos, Salidas) :-
+    must_be(ground, Es),
+    maplist(agregar_rapido(Dic), Es, Salidas),
+    numerar(Dic, 1),
+    nodos(Dic, Dic, Nodos).
+
+%!  agregar_rapido(?Dic, +E, -Id) is det.
+%
+%   Como agregar/3, pero si E ya está en Dic no examina sus hijos, que
+%   también están.
+agregar_rapido(Dic, E, Id) :-
+    (   presente(E, Dic, Id0)
+    ->  Id = Id0
+    ;   (   operacion(E, _, A, B)
+        ->  agregar_rapido(Dic, A, _),
+            agregar_rapido(Dic, B, _)
+        ;   true
+        ),
+        buscar(E, Dic, Id)
+    ).
+
+% Ejercicio 9
+
+%!  valor_exacto(+N:integer, +Coefs:list, +E, -V) is det.
+%
+%   Como valor/4, con N igual a 1, 2 o 4 y las raíces exactas: V es un
+%   complejo de componentes enteras si los coeficientes son enteros.
+valor_exacto(_, _, X, c(X, 0)) :-
+    number(X),
     !.
+valor_exacto(_, Coefs, a(J), V) :-
+    !,
+    nth0(J, Coefs, C),
+    complejo(C, V).
+valor_exacto(N, _, w(K), V) :-
+    !,
+    raiz_exacta(N, K, V).
+valor_exacto(N, Coefs, E, V) :-
+    E =.. [Op, A, B],
+    valor_exacto(N, Coefs, A, VA),
+    valor_exacto(N, Coefs, B, VB),
+    operar(Op, VA, VB, V).
 
-% Ejercicio 5: enesima(N), la letra N-ésima desde el final es a. El
-% estado 0 lee cualquier cosa y apuesta por la a; los estados 1 a N
-% cuentan las letras que siguen.
-
-automatas:alfabeto(enesima(_), [a, b]).
-automatas:inicial(enesima(_), 0).
-automatas:final(enesima(N), N).
-automatas:delta(enesima(_), 0, S, 0) :-
-    member(S, [a, b]).
-automatas:delta(enesima(_), 0, a, 1).
-automatas:delta(enesima(N), I, S, I1) :-
-    between(1, N, I),
-    I < N,
-    member(S, [a, b]),
-    I1 is I + 1.
-
-%!  explosion(+N:integer, -Filas:list) is det.
+%!  raiz_exacta(+N:integer, +K:integer, -V) is det.
 %
-%   Filas tiene un término K-Det-Min por cada K de 1 a N: la cantidad de
-%   estados de det(enesima(K)) y de min(enesima(K)).
-explosion(N, Filas) :-
-    findall(K-D-M,
-            ( between(1, N, K),
-              numero_estados(det(enesima(K)), D),
-              numero_estados(min(enesima(K)), M) ),
-            Filas).
+%   V es la potencia K de la raíz N-ésima de la unidad, exacta, con N igual
+%   a 1, 2 o 4. Produce un error de dominio para otro N.
+raiz_exacta(N, K, V) :-
+    (   memberchk(N, [1, 2, 4])
+    ->  true
+    ;   domain_error(orden_exacto, N)
+    ),
+    Q is (K * (4 // N)) mod 4,
+    nth0(Q, [c(1, 0), c(0, 1), c(-1, 0), c(0, -1)], V).
 
-% Ejercicio 6: E{n}, con n un dígito, es E concatenada n veces.
-
-expresiones:sufijos(E0, E, ['{', D, '}'|S0], S) :-
-    char_type(D, digit(N)),
-    repetir(N, E0, R),
-    expresiones:sufijos(R, E, S0, S).
-
-%!  repetir(+N:integer, +E, -R) is det.
+%!  valor_grafo_exacto(+N:integer, +Coefs:list, +Nodos:list,
+%!                     +Salidas:list, -Vs:list) is det.
 %
-%   R es la concatenación de N copias de E; con N = 0, la palabra vacía.
-repetir(0, _, vacia) :-
-    !.
-repetir(1, E, E) :-
-    !.
-repetir(N, E, cat(E, R)) :-
+%   Como valor_grafo/5, con las hojas evaluadas por valor_exacto/4.
+valor_grafo_exacto(N, Coefs, Nodos, Salidas, Vs) :-
+    empty_assoc(T0),
+    foldl(valor_nodo_exacto(N, Coefs), Nodos, T0, T),
+    maplist([Id, V]>>get_assoc(Id, T, V), Salidas, Vs).
+
+%!  valor_nodo_exacto(+N, +Coefs, +Nodo, +T0, -T) is det.
+%
+%   Como valor_nodo/5, con las hojas evaluadas por valor_exacto/4.
+valor_nodo_exacto(N, Coefs, nodo(Id, T), T0, T1) :-
+    (   T = op(Op, I, J)
+    ->  get_assoc(I, T0, VI),
+        get_assoc(J, T0, VJ),
+        operar(Op, VI, VJ, V)
+    ;   valor_exacto(N, Coefs, T, V)
+    ),
+    put_assoc(Id, T0, V, T1).
+
+% Ejercicio 10
+
+%!  fft_inversa_grafo(+N:integer, -Nodos:list, -Salidas:list) is det.
+%
+%   Nodos es el grafo de la transformada inversa de orden N sin la
+%   división por N: la salida J es el polinomio de las entradas evaluado
+%   en w(-J), es decir, en w((N - J) mod N). N es una potencia de 2.
+fft_inversa_grafo(N, Nodos, Salidas) :-
+    potencia_de_dos(N),
     N1 is N - 1,
-    repetir(N1, E, R).
+    numlist(0, N1, Is),
+    maplist(salida_inversa(Is, N), Is, Es0),
+    maplist(simplificar_raices(N), Es0, Es),
+    grafo(Es, Nodos, Salidas).
 
-% Ejercicio 7: comentarios hasta el fin de la línea y cadenas entre
-% comillas. [ -~] son los caracteres imprimibles, sin el fin de línea;
-% [ !#-~], los mismos sin la comilla doble.
-
-lexico:regla(comentario, "#[ -~]*").
-lexico:regla(cadena, "\"[ !#-~]*\"").
-
-lexico:componente(comentario, _, Cs, Cs).
-lexico:componente(cadena, Lexema, [cadena(A)|Cs], Cs) :-
-    once(append(['"'|Caracteres], ['"'], Lexema)),
-    atom_chars(A, Caracteres).
-
-% Ejercicio 8: complemento a dos, el bit menos significativo primero:
-% copia hasta el primer 1 inclusive, y después invierte.
-
-automatas:inicial(complemento2, copia).
-automatas:final(complemento2, copia).
-automatas:final(complemento2, invierte).
-automatas:delta(complemento2, copia, [0]:[0], copia).
-automatas:delta(complemento2, copia, [1]:[1], invierte).
-automatas:delta(complemento2, invierte, [0]:[1], invierte).
-automatas:delta(complemento2, invierte, [1]:[0], invierte).
-
-% Ejercicio 9: un contador de dos bits cuya salida es 1 cuando vale 0 o
-% 2, es decir, cuando su bit menos significativo es 0.
-
-:- multifile secuenciales:secuencial/3.
-:- multifile circuitos:circuito/3, circuitos:componente/5.
-
-secuenciales:secuencial(par2, par2_c, 2).
-circuitos:circuito(par2_c, [b0, b1], [n0, n0, n1]).
-circuitos:componente(par2_c, i1, inv, [b0], [n0]).
-circuitos:componente(par2_c, x1, xor, [b1, b0], [n1]).
-
-% Ejercicio 12: la expresión de multiplo3 por la construcción de Kleene,
-% y una más corta escrita a mano.
-
-%!  expresion_corta(-T:string) is det.
+%!  salida_inversa(+Is:list(integer), +N:integer, +J:integer, -E) is det.
 %
-%   T es una expresión regular del lenguaje de multiplo3 escrita a mano.
-%   Desde el resto 0, un 0 no lo cambia, y 1(01*0)*1 vuelve a él: el
-%   primer 1 lleva al resto 1, cada 01*0 va al resto 2 y vuelve al 1, y
-%   el último 1 vuelve al 0.
-expresion_corta("(0|1(01*0)*1)*").
+%   E es la expresión de la salida J de la transformada inversa de orden N.
+salida_inversa(Is, N, J, E) :-
+    K is (N - J) mod N,
+    evaluar(Is, K, N, E).
 
-% Ejercicio 13: la máquina de Moore de una máquina de Mealy. Sus estados
-% son pares Q-S: el estado de la máquina de Mealy y la salida que escribió
-% al llegar. El estado inicial escribe S0, que no viene de ninguna
-% transición.
+%!  fft_inversa(+Xs:list, -As:list) is det.
+%
+%   As es la transformada inversa de Xs, una lista de números o complejos
+%   c(Re, Im) de longitud potencia de 2: el grafo de fft_inversa_grafo/3
+%   evaluado con Xs, y cada valor dividido por la longitud.
+fft_inversa(Xs, As) :-
+    length(Xs, N),
+    fft_inversa_grafo(N, Nodos, Salidas),
+    valor_grafo(N, Xs, Nodos, Salidas, Vs),
+    maplist(dividir(N), Vs, As).
 
-automatas:inicial(moore_de(M, S0), Q0-S0) :-
-    inicial(M, Q0).
-automatas:final(moore_de(_, _), _).
-automatas:delta(moore_de(M, _), Q-_, E, Q1-S) :-
-    delta(M, Q, [E]:[S], Q1).
+%!  dividir(+N:number, +V, -W) is det.
+%
+%   W es el complejo V dividido por N.
+dividir(N, c(R0, I0), c(R, I)) :-
+    R is R0 / N,
+    I is I0 / N.
 
-moore:salida_estado(moore_de(_, _), _-S, S).
+% Ejercicio 11
+
+%!  producto_polinomios(+P:list(integer), +Q:list(integer),
+%!                      -R:list(integer)) is det.
+%
+%   R es la lista de coeficientes del producto de los polinomios de
+%   coeficientes P y Q, calculado con la transformada rápida: las dos
+%   transformadas, su producto salida por salida y la inversa, con la
+%   parte real redondeada. P y Q no son vacías.
+producto_polinomios(P, Q, R) :-
+    length(P, LP),
+    length(Q, LQ),
+    L is LP + LQ - 1,
+    potencia_mayor(L, 1, N),
+    completar(P, N, P1),
+    completar(Q, N, Q1),
+    fft_numerica(P1, VP),
+    fft_numerica(Q1, VQ),
+    maplist(operar(*), VP, VQ, VR),
+    fft_inversa(VR, As),
+    length(R0, L),
+    append(R0, _, As),
+    maplist([c(Re, _), X]>>(X is round(Re)), R0, R).
+
+%!  potencia_mayor(+L:integer, +N0:integer, -N:integer) is det.
+%
+%   N es la menor potencia de 2 que es al menos L y al menos N0, con N0 una
+%   potencia de 2.
+potencia_mayor(L, N0, N) :-
+    (   N0 >= L
+    ->  N = N0
+    ;   N1 is 2 * N0,
+        potencia_mayor(L, N1, N)
+    ).
+
+%!  completar(+P:list, +N:integer, -P1:list) is det.
+%
+%   P1 es P seguida de ceros hasta tener N elementos; P no tiene más de N.
+completar(P, N, P1) :-
+    length(P, LP),
+    K is N - LP,
+    length(Ceros, K),
+    maplist(=(0), Ceros),
+    append(P, Ceros, P1).
+
+% Ejercicio 3
+
+% costo/4, declarada en tdf.pl: el grafo de las expresiones de la matriz,
+% simplificadas, sin la recursión sobre las mitades.
+costo(matriz_grafo, N, S, P) :-
+    tdf_ingenua(N, Es0),
+    maplist(simplificar_raices(N), Es0, Es),
+    grafo(Es, Nodos, _),
+    contar_nodos(Nodos, _, S, P).
+
+% Ejercicio 5
+
+%!  profundidad_version(+Version, +N:integer, -P:integer) is det.
+%
+%   P es la mayor profundidad de las salidas del grafo de orden N de la
+%   Version: mariposa, o matriz_grafo, el del ejercicio 3.
+profundidad_version(mariposa, N, P) :-
+    fft_grafo(N, Nodos, Salidas),
+    profundidad_maxima(Nodos, Salidas, P).
+profundidad_version(matriz_grafo, N, P) :-
+    tdf_ingenua(N, Es0),
+    maplist(simplificar_raices(N), Es0, Es),
+    grafo(Es, Nodos, Salidas),
+    profundidad_maxima(Nodos, Salidas, P).
+
+% Ejercicio 6
+
+%!  rotaciones(-Es:list) is det.
+%
+%   Es son los 16 elementos, fila por fila, del producto simplificado de
+%   las rotaciones alrededor del eje z en los ángulos a y b.
+rotaciones(Es) :-
+    rotacion(z, a, A),
+    rotacion(z, b, B),
+    producto_simbolico(A, B, P),
+    append(P, Es).
+
+%!  costo_rotaciones(-S0, -P0, -S, -P) is det.
+%
+%   Los elementos de rotaciones/1 tienen, por separado, S0 sumas o restas
+%   y P0 productos, y su grafo tiene S sumas o restas y P productos.
+costo_rotaciones(S0, P0, S, P) :-
+    rotaciones(Es),
+    operaciones(Es, S0, P0),
+    grafo(Es, Nodos, _),
+    contar_nodos(Nodos, _, S, P).
+
+% Ejercicio 9
+
+%!  fft_exacta(+Coefs:list(integer), -Vs:list) is det.
+%
+%   Vs es la transformada exacta de Coefs, de longitud 1, 2 o 4, con el
+%   grafo de la mariposa.
+fft_exacta(Coefs, Vs) :-
+    length(Coefs, N),
+    fft_grafo(N, Nodos, Salidas),
+    valor_grafo_exacto(N, Coefs, Nodos, Salidas, Vs).

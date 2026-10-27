@@ -90,7 +90,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-1.7 — De reglas en castellano a reglas Prolog
 - **Fuente:** Clocksin & Mellish, cap. 1 §1.8, p. 30–31 (adaptado del ejemplo)
 - **Tema:** 2
-- **Capítulos:** 3, 12
+- **Capítulos:** 3, 13
 - **Dificultad:** 1
 - **Solución:** en el libro (p. 31)
 - **SWISH:** sí
@@ -167,7 +167,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-2.1 — ¿Átomo, número, variable o nada?
 - **Fuente:** Clocksin & Mellish, cap. 2 §2.1, p. 40–41 (adaptado del ejemplo)
 - **Tema:** 1, 3
-- **Capítulos:** 4, 32
+- **Capítulos:** 4, 33
 - **Dificultad:** 1
 - **Solución:** en el libro (p. 40–41)
 - **SWISH:** sí
@@ -392,7 +392,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-3.10 — Generar oraciones con el inventario de partes
 - **Fuente:** Clocksin & Mellish, cap. 3 §3.6, p. 80–81 (propuesta dentro del texto)
 - **Tema:** 6, A
-- **Capítulos:** 7, 21
+- **Capítulos:** 7, 22
 - **Dificultad:** 2
 - **Solución:** Reutilizando `partsof/2` de CM-3.9 con esta "gramática" se generan 16 oraciones, entre ellas `[the,apple,is,a,fruit]` (verificado):
   ```prolog
@@ -411,7 +411,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-3.11 — Largo de una lista, con y sin acumulador
 - **Fuente:** Clocksin & Mellish, cap. 3 §3.7, p. 81–82 (adaptado del ejemplo)
 - **Tema:** 5, 7
-- **Capítulos:** 8, 16
+- **Capítulos:** 8, 17
 - **Dificultad:** 1
 - **Solución:** en el libro (p. 81–82)
 - **SWISH:** sí
@@ -421,7 +421,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-3.12 — Inventario con acumulador
 - **Fuente:** Clocksin & Mellish, cap. 3 §3.7, p. 83–84 (adaptado del ejemplo)
 - **Tema:** 5, 6
-- **Capítulos:** 7, 16
+- **Capítulos:** 7, 17
 - **Dificultad:** 2
 - **Solución:** en el libro (p. 83–84); verificado: `[nut,bolt,gears,rim,spoke]` para `wheel`.
 - **SWISH:** sí
@@ -431,7 +431,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-3.13 — Inventario con listas de diferencia
 - **Fuente:** Clocksin & Mellish, cap. 3 §3.8, p. 84–86 (adaptado del ejemplo)
 - **Tema:** 6
-- **Capítulos:** 34
+- **Capítulos:** 35
 - **Dificultad:** 3
 - **Solución:** en el libro (p. 86); verificado: recupera el orden original `[spoke,rim,gears,bolt,nut]`.
 - **SWISH:** sí
@@ -636,7 +636,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-5.4 — Leer una fecha con `read/1`
 - **Fuente:** Clocksin & Mellish, cap. 5 §5.1, p. 114–118 (adaptado del ejemplo)
 - **Tema:** X
-- **Capítulos:** 28, 27
+- **Capítulos:** 29, 28
 - **Dificultad:** 1
 - **Solución:** en el libro (p. 115 y 118)
 - **SWISH:** parcial (SWISH pide la entrada en un cuadro de diálogo; en `swipl` es más natural)
@@ -646,7 +646,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-5.5 — Detector de errores de tipeo
 - **Fuente:** Clocksin & Mellish, cap. 5 §5.2.1, p. 119–120 (adaptado del ejemplo)
 - **Tema:** X
-- **Capítulos:** 27, 28
+- **Capítulos:** 28, 29
 - **Dificultad:** 2
 - **Solución:** en el libro (p. 119–120); verificado leyendo desde un string con `open_string/2`.
 - **SWISH:** no (lee caracteres de la entrada estándar)
@@ -656,7 +656,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-5.6 — Corrector de errores de tipeo
 - **Fuente:** Clocksin & Mellish, cap. 5 §5.2.2, p. 120–122 (adaptado del ejemplo)
 - **Tema:** X
-- **Capítulos:** 27, 28
+- **Capítulos:** 28, 29
 - **Dificultad:** 2
 - **Solución:** en el libro (p. 121–122)
 - **SWISH:** no (lee caracteres de la entrada estándar)
@@ -666,7 +666,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-5.7 — ¿Por qué se pierden caracteres?
 - **Fuente:** Clocksin & Mellish, cap. 5 §5.3, p. 122–123 (adaptado del ejemplo)
 - **Tema:** 4, X
-- **Capítulos:** 27, 5
+- **Capítulos:** 28, 5
 - **Dificultad:** 2
 - **Solución:** en el libro (p. 123)
 - **SWISH:** no (lee caracteres de la entrada estándar)
@@ -680,7 +680,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-5.8 — Las variables de `read_in` (Ejercicio 5.1)
 - **Fuente:** Clocksin & Mellish, cap. 5 §5.3, p. 122–125 (Exercise 5.1)
 - **Tema:** X
-- **Capítulos:** 27, 11
+- **Capítulos:** 28, 11
 - **Dificultad:** 2
 - **Solución:** En `read_in([W|Ws])`: `C` es el primer carácter, `W` la primera palabra, `C1` el carácter que sigue a esa palabra y `Ws` el resto. En `restsent(W, C, Ws)`: `W` es la palabra anterior (para ver si terminó la oración), `C` el carácter pendiente. En `readword(C, W, C2)`: `C` es el carácter inicial, `NewC` ese carácter pasado a minúscula, `Cs` los caracteres restantes de la palabra, `W` el átomo formado y `C2` el primer carácter después de la palabra, que se devuelve porque puede iniciar la palabra siguiente. Verificado: con la oración del libro devuelve `[the,man,',',who,is,old,',',saw,'joe''s',hat,'.']`.
 - **SWISH:** no (lee caracteres de la entrada estándar)
@@ -690,7 +690,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-5.9 — Cambiar `a` por `b` (Ejercicio 5.2)
 - **Fuente:** Clocksin & Mellish, cap. 5 §5.3, p. 125 (Exercise 5.2)
 - **Tema:** 8, X
-- **Capítulos:** 27, 15
+- **Capítulos:** 28, 16
 - **Dificultad:** 2
 - **Solución:** en el libro (Apéndice A, p. 281–282)
 - **SWISH:** no (lee caracteres de la entrada estándar)
@@ -700,7 +700,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-5.10 — Leer todos los términos de un archivo
 - **Fuente:** Clocksin & Mellish, cap. 5 §5.4, p. 125–129 (adaptado del ejemplo)
 - **Tema:** X
-- **Capítulos:** 27
+- **Capítulos:** 28
 - **Dificultad:** 2
 - **Solución:** Verificado leyendo un archivo `.pl`:
   ```prolog
@@ -716,7 +716,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-5.11 — Consultar archivos
 - **Fuente:** Clocksin & Mellish, cap. 5 §5.4.3, p. 129; cap. 6 §6.1, p. 134–135 (adaptado del ejemplo)
 - **Tema:** 0, 5
-- **Capítulos:** 13
+- **Capítulos:** 14
 - **Dificultad:** 1
 - **Solución:** en el libro (p. 129)
 - **SWISH:** no (en SWISH el programa se escribe en el editor)
@@ -726,7 +726,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-5.12 — Declarar operadores
 - **Fuente:** Clocksin & Mellish, cap. 5 §5.5, p. 130–132 (adaptado del ejemplo)
 - **Tema:** 3
-- **Capítulos:** 18, 4
+- **Capítulos:** 19, 4
 - **Dificultad:** 2
 - **Solución:** Verificado: con `:- op(700, xfx, likes).` se puede escribir `john likes mary.` y `write_canonical` muestra `likes(john,mary)`; `no no a` se lee si `no` es `fy`, pero da "Operator priority clash" si es `fx`.
 - **SWISH:** sí
@@ -738,7 +738,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-6.1 — Recorrer todas las soluciones con `fail`
 - **Fuente:** Clocksin & Mellish, cap. 6 §6.2, p. 135–136 (adaptado del ejemplo)
 - **Tema:** 4
-- **Capítulos:** 5, 15
+- **Capítulos:** 5, 16
 - **Dificultad:** 1
 - **Solución:** en el libro (p. 136)
 - **SWISH:** sí
@@ -748,7 +748,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-6.2 — Clasificar términos en ejecución
 - **Fuente:** Clocksin & Mellish, cap. 6 §6.3, p. 136–137 (adaptado del ejemplo)
 - **Tema:** 3
-- **Capítulos:** 32, 4
+- **Capítulos:** 33, 4
 - **Dificultad:** 1
 - **Solución:** en el libro (p. 136–137)
 - **SWISH:** sí
@@ -758,7 +758,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-6.3 — Las cláusulas también son términos
 - **Fuente:** Clocksin & Mellish, cap. 6 §6.4, p. 137–139 (adaptado del ejemplo)
 - **Tema:** 3, X
-- **Capítulos:** 32, 4
+- **Capítulos:** 33, 4
 - **Dificultad:** 2
 - **Solución:** en el libro (p. 138)
 - **SWISH:** sí
@@ -768,7 +768,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-6.4 — `listing` encuentra un error
 - **Fuente:** Clocksin & Mellish, cap. 6 §6.4, p. 139–140 (adaptado del ejemplo)
 - **Tema:** 0
-- **Capítulos:** 13
+- **Capítulos:** 14
 - **Dificultad:** 1
 - **Solución:** en el libro (p. 139–140)
 - **SWISH:** sí
@@ -778,7 +778,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-6.5 — Recuperar cláusulas con `clause/2`
 - **Fuente:** Clocksin & Mellish, cap. 6 §6.4, p. 140 (adaptado del ejemplo)
 - **Tema:** X
-- **Capítulos:** 33
+- **Capítulos:** 34
 - **Dificultad:** 2
 - **Solución:** en el libro (p. 140); verificado con una copia `app/3` de `append/3`.
 - **SWISH:** sí (el sandbox permite `clause/2` sobre los predicados del programa)
@@ -788,7 +788,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-6.6 — `functor`, `arg` y `=..`
 - **Fuente:** Clocksin & Mellish, cap. 6 §6.5, p. 141–145 (adaptado del ejemplo)
 - **Tema:** 3
-- **Capítulos:** 32
+- **Capítulos:** 33
 - **Dificultad:** 1
 - **Solución:** en el libro (p. 142–145)
 - **SWISH:** sí
@@ -798,7 +798,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-6.7 — Copia vacía de una estructura
 - **Fuente:** Clocksin & Mellish, cap. 6 §6.5, p. 142–143 (adaptado del ejemplo)
 - **Tema:** 3
-- **Capítulos:** 32
+- **Capítulos:** 33
 - **Dificultad:** 1
 - **Solución:** en el libro (p. 143); verificado: `copy(sentence(np(n(john)), v(eats)), X)` da `X = sentence(_, _)`.
 - **SWISH:** sí
@@ -808,7 +808,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-6.8 — Acceder a una estructura de 14 campos
 - **Fuente:** Clocksin & Mellish, cap. 6 §6.5, p. 144 (adaptado del ejemplo)
 - **Tema:** 3
-- **Capítulos:** 32
+- **Capítulos:** 33
 - **Dificultad:** 1
 - **Solución:** en el libro (p. 144)
 - **SWISH:** sí
@@ -828,7 +828,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-6.10 — Cómo funciona `repeat`
 - **Fuente:** Clocksin & Mellish, cap. 6 §6.6, p. 146–148 (propuesta dentro del texto)
 - **Tema:** 4, 5
-- **Capítulos:** 15, 5
+- **Capítulos:** 16, 5
 - **Dificultad:** 2
 - **Solución:** Con `rep :- rep.` antes de `rep.`, la primera llamada entra en la regla, que vuelve a llamar a la regla, y nunca llega al hecho: recursión infinita sin ningún éxito (el mismo problema de CM-3.4).
 - **SWISH:** sí
@@ -838,7 +838,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-6.11 — Saltear espacios (Ejercicio 6.1)
 - **Fuente:** Clocksin & Mellish, cap. 6 §6.6, p. 147–148 (Exercise 6.1)
 - **Tema:** 4, 8
-- **Capítulos:** 15, 27
+- **Capítulos:** 16, 28
 - **Dificultad:** 2
 - **Solución:** Si `X` ya está ligado (por ejemplo a `b`), `get_char(b)` falla con cualquier otro carácter y `repeat` sigue leyendo: se descartan también caracteres que no son espacios hasta encontrar una `b`, en vez de fallar si el siguiente carácter no blanco no es `b`. Corrección: leer en una variable nueva y unificar al final (verificado con `open_string/2`):
   ```prolog
@@ -851,7 +851,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-6.12 — Disyunción y cláusulas separadas
 - **Fuente:** Clocksin & Mellish, cap. 6 §6.7, p. 148–149 (adaptado del ejemplo)
 - **Tema:** 2
-- **Capítulos:** 3, 15
+- **Capítulos:** 3, 16
 - **Dificultad:** 1
 - **Solución:** en el libro (p. 149)
 - **SWISH:** sí
@@ -881,7 +881,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-6.15 — Orden estándar de términos
 - **Fuente:** Clocksin & Mellish, cap. 6 §6.12, p. 155–157 (adaptado del ejemplo)
 - **Tema:** 3
-- **Capítulos:** 22, 32
+- **Capítulos:** 23, 33
 - **Dificultad:** 2
 - **Solución:** en el libro (p. 156). Verificado en SWI: `g(X) @< f(X, Y)`, `f(Z, b) @< f(a, A)` y `123 @< 124` tienen éxito, pero `123.5 @< 2` falla.
 - **SWISH:** sí
@@ -891,7 +891,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-6.16 — Mirar un programa en ejecución
 - **Fuente:** Clocksin & Mellish, cap. 6 §6.13, p. 157–158 (adaptado del ejemplo)
 - **Tema:** 0
-- **Capítulos:** 13, 26
+- **Capítulos:** 14, 27
 - **Dificultad:** 1
 - **Solución:** en el libro (p. 157–158)
 - **SWISH:** parcial (SWISH tiene un trazador gráfico; `spy/1` y `debugging/0` son de `swipl`)
@@ -903,7 +903,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-7.1 — Diccionario en árbol ordenado
 - **Fuente:** Clocksin & Mellish, cap. 7 §7.1, p. 159–162 (adaptado del ejemplo)
 - **Tema:** 3, 5
-- **Capítulos:** 34, 22
+- **Capítulos:** 35, 23
 - **Dificultad:** 2
 - **Solución:** en el libro (p. 162)
 - **SWISH:** sí
@@ -918,7 +918,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-7.2 — Orden de inserción (Ejercicio 7.1)
 - **Fuente:** Clocksin & Mellish, cap. 7 §7.1, p. 162 (Exercise 7.1)
 - **Tema:** 3, 5
-- **Capítulos:** 34, 22
+- **Capítulos:** 35, 23
 - **Dificultad:** 2
 - **Solución:** Verificado. Orden massinga, braemar, nettleweed, panorama: `massinga` en la raíz, `braemar` a la izquierda, `nettleweed` a la derecha y `panorama` a la derecha de `nettleweed` (árbol bastante equilibrado). Orden adela, braemar, nettleweed, massinga: `adela` → `braemar` → `nettleweed` encadenados a la derecha y `massinga` a la izquierda de `nettleweed`, casi una lista, con búsquedas más largas.
 - **SWISH:** sí
@@ -928,7 +928,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-7.3 — Buscar el teléfono en una casa
 - **Fuente:** Clocksin & Mellish, cap. 7 §7.2, p. 162–166 (adaptado del ejemplo)
 - **Tema:** 5, 8
-- **Capítulos:** 10, 22
+- **Capítulos:** 10, 23
 - **Dificultad:** 2
 - **Solución:** en el libro (p. 164–166)
 - **SWISH:** sí
@@ -987,7 +987,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-7.8 — Inventario con cantidades
 - **Fuente:** Clocksin & Mellish, cap. 7 §7.4, p. 167–169 (adaptado del ejemplo)
 - **Tema:** 6, 7
-- **Capítulos:** 8, 7, 22
+- **Capítulos:** 8, 7, 23
 - **Dificultad:** 3
 - **Solución:** en el libro (p. 168–169); verificado: para una bicicleta con 32 rayos por rueda se listan 64 `spoke`, 2 `rim`, etc.
 - **SWISH:** sí
@@ -1007,7 +1007,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-7.10 — Invertir una lista
 - **Fuente:** Clocksin & Mellish, cap. 7 §7.5, p. 170–171 (adaptado del ejemplo)
 - **Tema:** 5, 6
-- **Capítulos:** 7, 16
+- **Capítulos:** 7, 17
 - **Dificultad:** 2
 - **Solución:** en el libro (p. 171)
 - **SWISH:** sí
@@ -1037,7 +1037,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-7.13 — Quitar repetidos
 - **Fuente:** Clocksin & Mellish, cap. 7 §7.5, p. 172 (adaptado del ejemplo)
 - **Tema:** 6, 8
-- **Capítulos:** 9, 10, 22
+- **Capítulos:** 9, 10, 23
 - **Dificultad:** 1
 - **Solución:** en el libro (p. 172); verificado: `remdup([a,b,a,c,b], R)` da `[c,b,a]`.
 - **SWISH:** sí
@@ -1047,7 +1047,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-7.14 — Conjuntos como listas
 - **Fuente:** Clocksin & Mellish, cap. 7 §7.6, p. 173–174 (adaptado del ejemplo)
 - **Tema:** 6, 8
-- **Capítulos:** 9, 10, 22
+- **Capítulos:** 9, 10, 23
 - **Dificultad:** 2
 - **Solución:** en el libro (p. 174); verificado: intersección de `[r,a,p,i,d]` y `[p,i,c,t,u,r,e]` = `[r,p,i]`; unión de `[a,b,c]` y `[c,d,e]` = `[a,b,c,d,e]`.
 - **SWISH:** sí
@@ -1057,7 +1057,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-7.15 — Ordenamiento ingenuo
 - **Fuente:** Clocksin & Mellish, cap. 7 §7.7, p. 175–176 (adaptado del ejemplo)
 - **Tema:** 4, 6
-- **Capítulos:** 8, 22
+- **Capítulos:** 8, 23
 - **Dificultad:** 2
 - **Solución:** en el libro (p. 175); verificado con `[3,6,2,9,20]`.
 - **SWISH:** sí
@@ -1067,7 +1067,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-7.16 — Inserción, con el orden como parámetro
 - **Fuente:** Clocksin & Mellish, cap. 7 §7.7, p. 176 (adaptado del ejemplo)
 - **Tema:** 6, 9
-- **Capítulos:** 18, 22
+- **Capítulos:** 19, 23
 - **Dificultad:** 2
 - **Solución:** en el libro (p. 176)
 - **SWISH:** sí
@@ -1077,7 +1077,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-7.17 — Ordenamiento burbuja
 - **Fuente:** Clocksin & Mellish, cap. 7 §7.7, p. 176–177 (adaptado del ejemplo)
 - **Tema:** 6
-- **Capítulos:** 8, 22
+- **Capítulos:** 8, 23
 - **Dificultad:** 2
 - **Solución:** en el libro (p. 176–177)
 - **SWISH:** sí
@@ -1087,7 +1087,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-7.18 — Quicksort
 - **Fuente:** Clocksin & Mellish, cap. 7 §7.7, p. 177 (adaptado del ejemplo)
 - **Tema:** 6
-- **Capítulos:** 8, 22, 34
+- **Capítulos:** 8, 23, 35
 - **Dificultad:** 2
 - **Solución:** en el libro (p. 177); verificado contra `msort/2`.
 - **SWISH:** sí
@@ -1107,7 +1107,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-7.20 — Ordenamiento híbrido (Ejercicio 7.6)
 - **Fuente:** Clocksin & Mellish, cap. 7 §7.7, p. 178 (Exercise 7.6)
 - **Tema:** 6, 7
-- **Capítulos:** 8, 22, 16
+- **Capítulos:** 8, 23, 17
 - **Dificultad:** 3
 - **Solución:** Verificado con una lista invertida de 2000 elementos y contra `msort/2`. `split3` parte la lista y cuenta el tamaño de cada parte; `insort/2` es el de CM-7.16:
   ```prolog
@@ -1128,7 +1128,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-7.21 — Números pseudoaleatorios con una semilla
 - **Fuente:** Clocksin & Mellish, cap. 7 §7.8.1, p. 178–179 (adaptado del ejemplo)
 - **Tema:** 7, 10
-- **Capítulos:** 20, 8
+- **Capítulos:** 21, 8
 - **Dificultad:** 2
 - **Solución:** en el libro (p. 179); verificado (con semilla 13 la secuencia para `R = 10` empieza 4, 7, 8, 5, 6, 9).
 - **SWISH:** sí
@@ -1138,7 +1138,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-7.22 — Generar átomos nuevos (`gensym`)
 - **Fuente:** Clocksin & Mellish, cap. 7 §7.8.2, p. 179–181 (adaptado del ejemplo)
 - **Tema:** 10
-- **Capítulos:** 20, 11
+- **Capítulos:** 21, 11
 - **Dificultad:** 2
 - **Solución:** en el libro (p. 180–181); verificado: `student1`, `student2`, `teacher1`.
 - **SWISH:** sí
@@ -1148,7 +1148,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-7.23 — Implementar `findall` con la base de datos
 - **Fuente:** Clocksin & Mellish, cap. 7 §7.8.3, p. 181–182 (adaptado del ejemplo)
 - **Tema:** 9, 10
-- **Capítulos:** 20, 17
+- **Capítulos:** 21, 18
 - **Dificultad:** 3
 - **Solución:** en el libro (p. 182); verificado con llamadas anidadas: `[1-[x,y], 2-[x,y]]`.
 - **SWISH:** sí
@@ -1158,7 +1158,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-7.24 — Elegir un elemento al azar (Ejercicio 7.7)
 - **Fuente:** Clocksin & Mellish, cap. 7 §7.8, p. 182 (Exercise 7.7)
 - **Tema:** 6, 10
-- **Capítulos:** 20, 8
+- **Capítulos:** 21, 8
 - **Dificultad:** 2
 - **Solución:** Con el generador de CM-7.21 renombrado `rand/2` (verificado):
   ```prolog
@@ -1173,7 +1173,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-7.25 — `findall` con variables libres (Ejercicio 7.8)
 - **Fuente:** Clocksin & Mellish, cap. 7 §7.8, p. 183 (Exercise 7.8)
 - **Tema:** 9
-- **Capítulos:** 17
+- **Capítulos:** 18
 - **Dificultad:** 2
 - **Solución:** Las variables de G que no aparecen en X no quedan ligadas después de `findall` y se comportan como "para algún valor": se recogen todas las soluciones juntas, sin agrupar. Verificado: con `parents(cain,eve,adam)`, … `findall(X, parents(X, Y, _), L)` da todos los hijos y deja `Y` libre, mientras que `bagof(X, F^parents(X, M, F), L)` da una lista por cada madre `M`.
 - **SWISH:** sí
@@ -1183,7 +1183,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-7.26 — Grafos dirigidos y ciclos
 - **Fuente:** Clocksin & Mellish, cap. 7 §7.9, p. 183–184 (adaptado del ejemplo)
 - **Tema:** 5
-- **Capítulos:** 10, 22
+- **Capítulos:** 10, 23
 - **Dificultad:** 2
 - **Solución:** en el libro (p. 183–184)
 - **SWISH:** sí
@@ -1196,7 +1196,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-7.27 — Devolver la ruta encontrada
 - **Fuente:** Clocksin & Mellish, cap. 7 §7.9, p. 184–185 (adaptado del ejemplo)
 - **Tema:** 5, 6
-- **Capítulos:** 10, 22
+- **Capítulos:** 10, 23
 - **Dificultad:** 2
 - **Solución:** en el libro (p. 185); verificado: `go(darlington, workington, R)` da primero `[darlington,newcastle,carlisle,penrith,workington]`.
 - **SWISH:** sí
@@ -1211,7 +1211,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-7.28 — Profundidad frente a amplitud
 - **Fuente:** Clocksin & Mellish, cap. 7 §7.9, p. 185–187 (adaptado del ejemplo, con dos propuestas del texto)
 - **Tema:** 9
-- **Capítulos:** 40, 17
+- **Capítulos:** 41, 18
 - **Dificultad:** 3
 - **Solución:** en el libro (p. 185–187); verificado: la versión en amplitud da `[darlington,penrith,workington]` primero.
 - **SWISH:** sí
@@ -1221,7 +1221,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-7.29 — Búsqueda "el mejor primero" con distancias
 - **Fuente:** Clocksin & Mellish, cap. 7 §7.9, p. 187–188 (adaptado del ejemplo, con propuesta del texto)
 - **Tema:** 7, 9
-- **Capítulos:** 40, 17
+- **Capítulos:** 41, 18
 - **Dificultad:** 3
 - **Solución:** en el libro (p. 187–188). La variante que informa la longitud (propuesta del texto) devuelve `r(Km, Ruta)` en la cláusula final de `proceed`; verificado: `91-[darlington,penrith,workington]`, `108-…`, `131-…`, `160-…`.
 - **SWISH:** sí
@@ -1251,7 +1251,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-7.32 — Ternas pitagóricas (Ejercicio 7.9)
 - **Fuente:** Clocksin & Mellish, cap. 7 §7.10, p. 190–191 (Exercise 7.9)
 - **Tema:** 4, 7
-- **Capítulos:** 8, 23
+- **Capítulos:** 8, 24
 - **Dificultad:** 3
 - **Solución:** en el libro (Apéndice A, p. 282)
 - **SWISH:** sí
@@ -1271,7 +1271,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-7.34 — `maplist` y `applist` propios
 - **Fuente:** Clocksin & Mellish, cap. 7 §7.12, p. 193–194 (adaptado del ejemplo)
 - **Tema:** 9
-- **Capítulos:** 18
+- **Capítulos:** 19
 - **Dificultad:** 2
 - **Solución:** en el libro (p. 193–194); verificado: `my_maplist(change, [you,are,a,computer], Z)` da `[i,[am,not],a,computer]`.
 - **SWISH:** sí
@@ -1291,7 +1291,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-7.36 — Un `listing` casero
 - **Fuente:** Clocksin & Mellish, cap. 7 §7.13, p. 196 (adaptado del ejemplo)
 - **Tema:** X
-- **Capítulos:** 33, 15
+- **Capítulos:** 34, 16
 - **Dificultad:** 2
 - **Solución:** en el libro (p. 196); verificado con `app/3`.
 - **SWISH:** sí
@@ -1301,7 +1301,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-7.37 — Un intérprete de Prolog en Prolog
 - **Fuente:** Clocksin & Mellish, cap. 7 §7.13, p. 197 (adaptado del ejemplo)
 - **Tema:** X
-- **Capítulos:** 33
+- **Capítulos:** 34
 - **Dificultad:** 3
 - **Solución:** en el libro (p. 197); verificado: `interpret(rev([a,b,c], R))` da `[c,b,a]` y `interpret(app(X, Y, [1,2]))` enumera las tres particiones.
 - **SWISH:** sí
@@ -1311,7 +1311,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-7.38 — `retractall` y `consult` escritos en Prolog
 - **Fuente:** Clocksin & Mellish, cap. 7 §7.13, p. 197–199 (adaptado del ejemplo)
 - **Tema:** 10, X
-- **Capítulos:** 33, 20, 27
+- **Capítulos:** 34, 21, 28
 - **Dificultad:** 3
 - **Solución:** en el libro (p. 197–198); verificado `my_retractall/1` con un predicado dinámico que tiene hechos y reglas.
 - **SWISH:** no (`consult` lee archivos; además el sandbox no permite agregar ni quitar reglas, solo hechos)
@@ -1343,7 +1343,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-8.3 — Una coma o un punto de más
 - **Fuente:** Clocksin & Mellish, cap. 8 §8.2, p. 206–207 (propuesta dentro del texto)
 - **Tema:** 0, 2
-- **Capítulos:** 13, 3
+- **Capítulos:** 14, 3
 - **Dificultad:** 2
 - **Solución:** en el libro (p. 207)
 - **SWISH:** sí
@@ -1385,7 +1385,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-8.6 — Trazar `append` y adaptar la impresión
 - **Fuente:** Clocksin & Mellish, cap. 8 §8.4, p. 214–218 (adaptado del ejemplo)
 - **Tema:** 0
-- **Capítulos:** 5, 26
+- **Capítulos:** 5, 27
 - **Dificultad:** 1
 - **Solución:** en el libro (p. 216–218)
 - **SWISH:** parcial (el trazador gráfico de SWISH no usa `portray/1`)
@@ -1395,7 +1395,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-8.7 — Ancestros de un objetivo
 - **Fuente:** Clocksin & Mellish, cap. 8 §8.4.2, p. 219–220 (propuesta dentro del texto)
 - **Tema:** 0, 4
-- **Capítulos:** 5, 26
+- **Capítulos:** 5, 27
 - **Dificultad:** 2
 - **Solución:** en el libro (p. 219–220)
 - **SWISH:** sí
@@ -1405,7 +1405,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-8.8 — Moverse por la ejecución con el trazador
 - **Fuente:** Clocksin & Mellish, cap. 8 §8.4.3–8.4.4, p. 220–223 (adaptado del ejemplo)
 - **Tema:** 0
-- **Capítulos:** 5, 26
+- **Capítulos:** 5, 27
 - **Dificultad:** 1
 - **Solución:** en el libro (p. 222–223)
 - **SWISH:** parcial (el trazador gráfico tiene botones equivalentes a algunas opciones)
@@ -1415,7 +1415,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-8.9 — La sesión del programador descuidado
 - **Fuente:** Clocksin & Mellish, cap. 8 §8.5, p. 224–226 (adaptado del ejemplo)
 - **Tema:** 0
-- **Capítulos:** 13
+- **Capítulos:** 14
 - **Dificultad:** 1
 - **Solución:** en el libro (p. 226)
 - **SWISH:** no (usa `consult(user)`)
@@ -1431,7 +1431,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-9.1 — Un reconocedor con `append`
 - **Fuente:** Clocksin & Mellish, cap. 9 §9.2, p. 230–233 (adaptado del ejemplo)
 - **Tema:** 6, A
-- **Capítulos:** 7, 21
+- **Capítulos:** 7, 22
 - **Dificultad:** 2
 - **Solución:** en el libro (p. 231–232)
 - **SWISH:** sí
@@ -1441,7 +1441,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-9.2 — De listas de diferencia a DCG
 - **Fuente:** Clocksin & Mellish, cap. 9 §9.2–9.3, p. 233–237 (adaptado del ejemplo)
 - **Tema:** A
-- **Capítulos:** 21, 34
+- **Capítulos:** 22, 35
 - **Dificultad:** 2
 - **Solución:** en el libro (p. 235–237)
 - **SWISH:** sí
@@ -1451,7 +1451,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-9.3 — Concordancia de número
 - **Fuente:** Clocksin & Mellish, cap. 9 §9.4, p. 237–239 (adaptado del ejemplo)
 - **Tema:** A
-- **Capítulos:** 21
+- **Capítulos:** 22
 - **Dificultad:** 2
 - **Solución:** en el libro (p. 239); verificado: acepta "the boys eat the apple" y rechaza "the boys eats the apple".
 - **SWISH:** sí
@@ -1461,7 +1461,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-9.4 — Construir el árbol de análisis
 - **Fuente:** Clocksin & Mellish, cap. 9 §9.4, p. 239–241 (adaptado del ejemplo)
 - **Tema:** A
-- **Capítulos:** 21
+- **Capítulos:** 22
 - **Dificultad:** 2
 - **Solución:** en el libro (p. 240); verificado.
 - **SWISH:** sí
@@ -1471,7 +1471,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-9.5 — Traducir reglas gramaticales (Ejercicio 9.1)
 - **Fuente:** Clocksin & Mellish, cap. 9 §9.4, p. 241 (Exercise 9.1)
 - **Tema:** A, X
-- **Capítulos:** 35, 21, 32
+- **Capítulos:** 36, 22, 33
 - **Dificultad:** 3
 - **Solución:** en el libro (Apéndice A, p. 282–284); la versión simple se verificó con `sentence --> noun_phrase, verb_phrase` y `determiner --> [the]`.
 - **SWISH:** sí
@@ -1481,7 +1481,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-9.6 — `phrase` con argumentos extra (Ejercicio 9.2)
 - **Fuente:** Clocksin & Mellish, cap. 9 §9.4, p. 241 (Exercise 9.2)
 - **Tema:** 9, A
-- **Capítulos:** 21, 18, 32
+- **Capítulos:** 22, 19, 33
 - **Dificultad:** 2
 - **Solución:** en el libro (Apéndice A, p. 284); verificado como `my_phrase(sentence(T), [the,man,sings])`.
 - **SWISH:** sí
@@ -1491,7 +1491,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-9.7 — Diccionario con objetivos entre llaves
 - **Fuente:** Clocksin & Mellish, cap. 9 §9.5, p. 241–243 (adaptado del ejemplo)
 - **Tema:** A
-- **Capítulos:** 21, 11
+- **Capítulos:** 22, 11
 - **Dificultad:** 2
 - **Solución:** en el libro (p. 242–243)
 - **SWISH:** sí
@@ -1501,7 +1501,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-9.8 — Agregar palabras a la entrada
 - **Fuente:** Clocksin & Mellish, cap. 9 §9.6, p. 244–245 (adaptado del ejemplo)
 - **Tema:** A
-- **Capítulos:** 21
+- **Capítulos:** 22
 - **Dificultad:** 2
 - **Solución:** en el libro (p. 245); verificado con `listing(imperative//0)`.
 - **SWISH:** sí
@@ -1511,7 +1511,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-9.9 — Una gramática de gramáticas que no sirve (Ejercicio 9.3)
 - **Fuente:** Clocksin & Mellish, cap. 9 §9.6, p. 244–245 (Exercise 9.3)
 - **Tema:** 5, A
-- **Capítulos:** 21
+- **Capítulos:** 22
 - **Dificultad:** 2
 - **Solución:** Reglas como `grammar_body --> grammar_body, [','], grammar_body.` son recursivas a izquierda: para reconocer un `grammar_body` Prolog primero intenta reconocer otro `grammar_body` sin consumir nada, y entra en recursión infinita. Además la gramática es ambigua (no fija cómo agrupar `,` y `;`) e ignora las precedencias de los operadores.
 - **SWISH:** sí
@@ -1521,7 +1521,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-9.10 — De oraciones a fórmulas lógicas (Ejercicio 9.4)
 - **Fuente:** Clocksin & Mellish, cap. 9 §9.7, p. 245–247 (Exercise 9.4)
 - **Tema:** A
-- **Capítulos:** 21, 12
+- **Capítulos:** 22, 13
 - **Dificultad:** 3
 - **Solución:** Verificado (con `=>` en lugar de `->`): "every man loves a woman" da `all(A, man(A) => exists(B, woman(B) & loves(A, B)))`; "every man that lives loves a woman" da `all(A, man(A) & lives(A) => exists(B, woman(B) & loves(A, B)))`; "every man that loves a woman lives" da `all(A, man(A) & exists(B, woman(B) & loves(A, B)) => lives(A))`. La lectura ambigua con una única mujer para todos no aparece: el programa compone los significados en el orden de la oración, y el cuantificador del sujeto siempre abarca al del objeto.
 - **SWISH:** sí
@@ -1531,7 +1531,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-9.11 — DCG para llevar otro estado
 - **Fuente:** Clocksin & Mellish, cap. 9 §9.8, p. 247–249 (adaptado del ejemplo)
 - **Tema:** A, X
-- **Capítulos:** 21
+- **Capítulos:** 22
 - **Dificultad:** 3
 - **Solución:** en el libro (p. 248–249), pero no funciona así en SWI (ver notas).
 - **SWISH:** sí
@@ -1545,7 +1545,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-10.1 — Formalizar en cálculo de predicados
 - **Fuente:** Clocksin & Mellish, cap. 10 §10.1, p. 251–254 (adaptado del ejemplo)
 - **Tema:** X
-- **Capítulos:** 12
+- **Capítulos:** 13
 - **Dificultad:** 1
 - **Solución:** en el libro (p. 253–254)
 - **SWISH:** no aplica (ejercicio de papel)
@@ -1555,7 +1555,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-10.2 — Pasar a forma clausal
 - **Fuente:** Clocksin & Mellish, cap. 10 §10.2, p. 254–260 (adaptado del ejemplo)
 - **Tema:** X
-- **Capítulos:** 12
+- **Capítulos:** 13
 - **Dificultad:** 2
 - **Solución:** en el libro (p. 259–260); verificado con el programa del Apéndice B (CM-B.2): `person(f1(x)); king(x) :- .` y `king(x) :- respects(f1(x), x).`
 - **SWISH:** no aplica (ejercicio de papel)
@@ -1565,7 +1565,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-10.3 — Notación de cláusulas y cláusulas de Horn
 - **Fuente:** Clocksin & Mellish, cap. 10 §10.3 y §10.5, p. 260–261 y 265–266 (adaptado del ejemplo)
 - **Tema:** 2, X
-- **Capítulos:** 12
+- **Capítulos:** 13
 - **Dificultad:** 2
 - **Solución:** en el libro (p. 261)
 - **SWISH:** no aplica (ejercicio de papel)
@@ -1575,7 +1575,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-10.4 — Una demostración por resolución
 - **Fuente:** Clocksin & Mellish, cap. 10 §10.4, p. 262–265 (adaptado del ejemplo)
 - **Tema:** 4, X
-- **Capítulos:** 12
+- **Capítulos:** 13
 - **Dificultad:** 2
 - **Solución:** en el libro (p. 263–265)
 - **SWISH:** no aplica (ejercicio de papel)
@@ -1590,7 +1590,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-10.5 — Un paso de resolución a la manera de Prolog
 - **Fuente:** Clocksin & Mellish, cap. 10 §10.6, p. 266–268 (adaptado del ejemplo)
 - **Tema:** 4
-- **Capítulos:** 12, 5
+- **Capítulos:** 13, 5
 - **Dificultad:** 1
 - **Solución:** en el libro (p. 267): `:- parent(john, X), female(X), mother(X, Y).`
 - **SWISH:** no aplica (ejercicio de papel)
@@ -1600,7 +1600,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-10.6 — La verificación de ocurrencia
 - **Fuente:** Clocksin & Mellish, cap. 10 §10.6, p. 268–269 (adaptado del ejemplo)
 - **Tema:** 3
-- **Capítulos:** 4, 12
+- **Capítulos:** 4, 13
 - **Dificultad:** 2
 - **Solución:** en el libro (p. 268). En SWI, `equal(foo(Y), Y)` con `equal(X, X).` tiene éxito y crea el término cíclico `Y = foo(Y)`; `unify_with_occurs_check(foo(Y), Y)` falla.
 - **SWISH:** sí
@@ -1610,7 +1610,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-10.7 — Lectura declarativa y lectura procedural
 - **Fuente:** Clocksin & Mellish, cap. 10 §10.7, p. 268–271 (adaptado del ejemplo)
 - **Tema:** 8, X
-- **Capítulos:** 12
+- **Capítulos:** 13
 - **Dificultad:** 2
 - **Solución:** en el libro (p. 270–271)
 - **SWISH:** sí
@@ -1622,7 +1622,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-B.1 — Sustituir una variable en una fórmula
 - **Fuente:** Clocksin & Mellish, Apéndice B, p. 287–288 ("left as an exercise for the reader")
 - **Tema:** 3, 5
-- **Capítulos:** 32, 12
+- **Capítulos:** 33, 13
 - **Dificultad:** 2
 - **Solución:** Verificado: `subst(x, g1, loves(x, f(x, y)), R)` da `loves(g1, f(g1, y))`.
   ```prolog
@@ -1641,7 +1641,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-B.2 — El programa completo de forma clausal
 - **Fuente:** Clocksin & Mellish, Apéndice B, p. 285–290 (adaptado del ejemplo)
 - **Tema:** X
-- **Capítulos:** 32, 12
+- **Capítulos:** 33, 13
 - **Dificultad:** 3
 - **Solución:** en el libro (p. 285–290); verificado en SWI con los ejemplos del capítulo 10 (reproduce las cláusulas del libro).
 - **SWISH:** sí (con `=>` en lugar de `->`)
@@ -1699,7 +1699,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-11.4 — Negar una expresión proposicional
 - **Fuente:** Clocksin & Mellish, cap. 11 §11.1 proyecto 4, p. 274
 - **Tema:** 3, 5
-- **Capítulos:** 9, 12, 18
+- **Capítulos:** 9, 13, 19
 - **Dificultad:** 2
 - **Solución:** Verificado: `negate(p implies (q and not r), N)` da `p and (not q or r)`.
   ```prolog
@@ -1723,7 +1723,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-11.5 — Concordancia de palabras
 - **Fuente:** Clocksin & Mellish, cap. 11 §11.1 proyecto 5, p. 274
 - **Tema:** 6, 9
-- **Capítulos:** 22, 7
+- **Capítulos:** 23, 7
 - **Dificultad:** 2
 - **Solución:** Verificado: `concordance([the,cat,sat,on,the,mat], C)` da `[cat-1,mat-1,on-1,sat-1,the-2]`.
   ```prolog
@@ -1736,7 +1736,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-11.6 — Diálogo "X es un Y"
 - **Fuente:** Clocksin & Mellish, cap. 11 §11.1 proyecto 6, p. 274–275
 - **Tema:** 10, A
-- **Capítulos:** 20, 21, 28
+- **Capítulos:** 21, 22, 29
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** parcial (lee con `read/1`; en SWISH no se pueden agregar reglas con `assert`, solo hechos)
@@ -1746,7 +1746,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-11.7 — Poda alfa-beta
 - **Fuente:** Clocksin & Mellish, cap. 11 §11.1 proyecto 7, p. 275
 - **Tema:** X
-- **Capítulos:** 41
+- **Capítulos:** 42
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1756,7 +1756,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-11.8 — Las N reinas
 - **Fuente:** Clocksin & Mellish, cap. 11 §11.1 proyecto 8, p. 275
 - **Tema:** 4, 7
-- **Capítulos:** 8, 23, 40
+- **Capítulos:** 8, 24, 41
 - **Dificultad:** 2
 - **Solución:** Verificado: para 4 hay 2 soluciones, `[2,4,1,3]` y `[3,1,4,2]`; para 8, 92.
   ```prolog
@@ -1774,7 +1774,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-11.9 — Todo con NAND
 - **Fuente:** Clocksin & Mellish, cap. 11 §11.1 proyecto 9, p. 275
 - **Tema:** 3, 5
-- **Capítulos:** 9, 12, 18
+- **Capítulos:** 9, 13, 19
 - **Dificultad:** 2
 - **Solución:** Con los operadores de CM-11.4 más `:- op(650, xfy, nand).` (verificado: `p and q` da `(p nand q) nand (p nand q)`):
   ```prolog
@@ -1810,7 +1810,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-11.11 — Planificar un viaje con horarios
 - **Fuente:** Clocksin & Mellish, cap. 11 §11.2 proyecto 1, p. 276
 - **Tema:** 7, 9
-- **Capítulos:** 40, 8
+- **Capítulos:** 41, 8
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1830,7 +1830,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-11.13 — Matrices
 - **Fuente:** Clocksin & Mellish, cap. 11 §11.2 proyecto 3, p. 276
 - **Tema:** 6, 7, 9
-- **Capítulos:** 18, 8
+- **Capítulos:** 19, 8
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1840,7 +1840,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-11.14 — Un compilador de expresiones
 - **Fuente:** Clocksin & Mellish, cap. 11 §11.2 proyecto 4, p. 276
 - **Tema:** X
-- **Capítulos:** 35, 21
+- **Capítulos:** 36, 22
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1850,7 +1850,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-11.15 — Juegos de tablero complejos
 - **Fuente:** Clocksin & Mellish, cap. 11 §11.2 proyecto 5, p. 276
 - **Tema:** X
-- **Capítulos:** 41
+- **Capítulos:** 42
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1860,7 +1860,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-11.16 — Demostrador para una teoría axiomática
 - **Fuente:** Clocksin & Mellish, cap. 11 §11.2 proyecto 6, p. 276
 - **Tema:** X
-- **Capítulos:** 33, 12
+- **Capítulos:** 34, 13
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1870,7 +1870,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-11.17 — Intérprete con otro orden de ejecución
 - **Fuente:** Clocksin & Mellish, cap. 11 §11.2 proyecto 7, p. 276–277
 - **Tema:** X
-- **Capítulos:** 33
+- **Capítulos:** 34
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1880,7 +1880,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-11.18 — Generador de planes
 - **Fuente:** Clocksin & Mellish, cap. 11 §11.2 proyecto 8, p. 277
 - **Tema:** X
-- **Capítulos:** 40, 22
+- **Capítulos:** 41, 23
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1890,7 +1890,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-11.19 — Interpretar dibujos de líneas
 - **Fuente:** Clocksin & Mellish, cap. 11 §11.2 proyecto 9, p. 277
 - **Tema:** X
-- **Capítulos:** 23
+- **Capítulos:** 24
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1900,7 +1900,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-11.20 — Voz pasiva y verbos de control
 - **Fuente:** Clocksin & Mellish, cap. 11 §11.2 proyecto 10, p. 277
 - **Tema:** A
-- **Capítulos:** 21
+- **Capítulos:** 22
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1910,7 +1910,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-11.21 — Sistema de reglas de producción
 - **Fuente:** Clocksin & Mellish, cap. 11 §11.2 proyecto 11, p. 277–278
 - **Tema:** 10, X
-- **Capítulos:** 33, 20, 28
+- **Capítulos:** 34, 21, 29
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** parcial (necesita preguntar al usuario)
@@ -1920,7 +1920,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-11.22 — Traducir un corpus al cálculo de predicados
 - **Fuente:** Clocksin & Mellish, cap. 11 §11.2 proyecto 12, p. 278
 - **Tema:** A, X
-- **Capítulos:** 21, 12
+- **Capítulos:** 22, 13
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1930,7 +1930,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-11.23 — Demostrador de teoremas
 - **Fuente:** Clocksin & Mellish, cap. 11 §11.2 proyecto 13, p. 278
 - **Tema:** X
-- **Capítulos:** 33, 12
+- **Capítulos:** 34, 13
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1940,7 +1940,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-11.24 — Un psiquiatra simulado
 - **Fuente:** Clocksin & Mellish, cap. 11 §11.2 proyecto 14, p. 278
 - **Tema:** 6, A
-- **Capítulos:** 21, 28, 7
+- **Capítulos:** 22, 29, 7
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** parcial (entrada interactiva)
@@ -1950,7 +1950,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-11.25 — Resumen de oraciones sobre una oficina
 - **Fuente:** Clocksin & Mellish, cap. 11 §11.2 proyecto 15, p. 278–279
 - **Tema:** 10, A
-- **Capítulos:** 21, 20
+- **Capítulos:** 22, 21
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -1960,7 +1960,7 @@ Una entrada con varios temas cuenta en cada uno. Dificultad: 47 de nivel 1, 88 d
 ### CM-11.26 — Preguntas en lenguaje natural sobre archivos
 - **Fuente:** Clocksin & Mellish, cap. 11 §11.2 proyecto 16, p. 279
 - **Tema:** A, X
-- **Capítulos:** 21, 42
+- **Capítulos:** 22, 43
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** no (consulta el sistema de archivos)

@@ -29,7 +29,7 @@ Al terminar el capítulo, el lector puede:
 !!! info "Tiempo estimado"
     Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:40 h**.
     Resolver los 6 ejercicios marcados con ★: **1:10 h**.
-    Resolver los 17 ejercicios del final: **4:25 h**.
+    Resolver los 18 ejercicios del final: **5:00 h**.
 
 ## 11.1 Cuatro maneras de escribir texto
 
@@ -800,7 +800,7 @@ true.
 La última muestra que el orden no es el del diccionario: los átomos se comparan
 carácter por carácter según sus códigos, y el código de una mayúscula es menor
 que el de cualquier minúscula. Ese orden, que se extiende a todos los términos,
-es el orden estándar del [capítulo 22](../capitulo-22-estructuras-de-datos-de-la-biblioteca/index.md).
+es el orden estándar del [capítulo 23](../capitulo-23-estructuras-de-datos-de-la-biblioteca/index.md).
 
 ## 11.7 Escribir términos
 
@@ -925,6 +925,26 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     según `@=<`. Predecir, antes de ejecutar, qué responden
     `en_orden([ana, eva, 'Zoe']).` y `en_orden(['Zoe', ana, eva]).` Su
     encabezado es `%! en_orden(+Palabras) is semidet.`
+18. **(3)** Un árbol binario, representado con `void` y
+    `tree(Elemento, Izquierdo, Derecho)` como en el
+    [ejercicio 25 del capítulo 7](../capitulo-07-listas/index.md#ejercicios), está
+    ordenado alfabéticamente si cada nodo va después de **todos** los nodos de
+    su subárbol izquierdo y antes de todos los de su subárbol derecho. Escribir
+    `orden_lexicografico(Arbol)` para un árbol de átomos, sin `@<`: convertir
+    cada átomo con `atom_codes/2` y comparar las dos listas de códigos elemento
+    por elemento con un predicado auxiliar. El árbol siguiente está ordenado:
+
+    ```mermaid
+    flowchart TD
+        lista --- corte
+        lista --- regla
+        corte --- arbol
+        corte --- hecho
+        regla --- prolog
+        regla ~~~ v[" "]
+        classDef abierto fill:none,stroke:none;
+        class v abierto;
+    ```
 
 ## Resumen
 
@@ -947,8 +967,8 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 
 | Tema | Se retoma en |
 |---|---|
-| Analizar un texto con una gramática, en lugar de encadenar `sub_atom/5` | [capítulo 21](../capitulo-21-gramaticas-dcg/index.md) |
-| El orden estándar de todos los términos; ordenar listas | [capítulo 22](../capitulo-22-estructuras-de-datos-de-la-biblioteca/index.md) |
-| Mensajes al usuario con `print_message/2` | [capítulo 25](../capitulo-25-errores-y-excepciones/index.md) |
-| Leer y escribir texto en archivos; CSV y JSON | [capítulo 27](../capitulo-27-archivos-streams-y-formatos/index.md) |
-| Leer texto del teclado en un programa de línea de comandos | [capítulo 28](../capitulo-28-programas-de-linea-de-comandos/index.md) |
+| Analizar un texto con una gramática, en lugar de encadenar `sub_atom/5` | [capítulo 22](../capitulo-22-gramaticas-dcg/index.md) |
+| El orden estándar de todos los términos; ordenar listas | [capítulo 23](../capitulo-23-estructuras-de-datos-de-la-biblioteca/index.md) |
+| Mensajes al usuario con `print_message/2` | [capítulo 26](../capitulo-26-errores-y-excepciones/index.md) |
+| Leer y escribir texto en archivos; CSV y JSON | [capítulo 28](../capitulo-28-archivos-streams-y-formatos/index.md) |
+| Leer texto del teclado en un programa de línea de comandos | [capítulo 29](../capitulo-29-programas-de-linea-de-comandos/index.md) |

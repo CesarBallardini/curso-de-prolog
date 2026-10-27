@@ -87,4 +87,166 @@ test(maximo_de_uno, all(M == [7])) :-
 test(la_lista_vacia_no_tiene_maximo, [fail]) :-
     maximo([], _).
 
+% Ejercicio 17
+test(enesimo_da_el_elemento, all(E == [c])) :-
+    enesimo([a, b, c, d], 3, E).
+
+test(enesimo_genera_las_posiciones, all(N-E == [1-a, 2-b, 3-c, 4-d])) :-
+    enesimo([a, b, c, d], N, E).
+
+test(enesimo_con_repetidos, all(N == [1, 3, 4])) :-
+    enesimo([a, b, a, a], N, a).
+
+test(enesimo_fuera_de_la_lista, [fail]) :-
+    enesimo([a, b, c, d], 5, _).
+
+% Ejercicio 18
+test(ordered_con_repetidos, [nondet]) :-
+    ordered([1, 2, 2, 5]).
+
+test(ordered_desordenada, [fail]) :-
+    ordered([3, 1, 2]).
+
+test(ordena, all(L == [[-1, 2, 4, 5, 10]])) :-
+    ordena([10, 2, 5, -1, 4], L).
+
+test(ordena_conserva_repetidos, all(L == [[0, 0, 0, 1, 2, 5]])) :-
+    ordena([5, 0, 1, 0, 2, 0], L).
+
+test(ordena_verifica, [fail]) :-
+    ordena([3, 1, 2], [3, 2, 1]).
+
+% Ejercicio 19
+test(profundidad, all(P == [3])) :-
+    arbol_ejemplo(T),
+    profundidad(T, P).
+
+test(profundidad_de_un_nodo, all(P == [0])) :-
+    profundidad(tree(9, void, void), P).
+
+test(sum_tree, all(S == [28])) :-
+    arbol_ejemplo(T),
+    sum_tree(T, S).
+
+test(sum_tree_verifica, [fail]) :-
+    sum_tree(tree(0, void, void), 1).
+
+test(cantidad_hojas, all(N == [3])) :-
+    arbol_ejemplo(T),
+    cantidad_hojas(T, N).
+
+test(cantidad_hojas_de_una_hoja, all(N == [1])) :-
+    cantidad_hojas(tree(4, void, void), N).
+
+test(lista_nivel, all(L == [[4, 5, 6]])) :-
+    arbol_ejemplo(T),
+    lista_nivel(T, 2, L).
+
+test(lista_nivel_de_la_raiz, all(L == [[1]])) :-
+    arbol_ejemplo(T),
+    lista_nivel(T, 0, L).
+
+test(lista_nivel_mas_alla_de_la_profundidad, all(L == [[]])) :-
+    arbol_ejemplo(T),
+    lista_nivel(T, 4, L).
+
+% Ejercicio 20
+test(ocurrencias, all(P == [[4, 5, 8]])) :-
+    ocurrencias(a, [s, 1, 3, a, a, 2, d, a], P).
+
+test(ocurrencias_verifica, [nondet]) :-
+    ocurrencias(2, [2, 1, 3, a, a, 2, d, a], [1, 6]).
+
+test(ocurrencias_ninguna, all(P == [[]])) :-
+    ocurrencias(4, [s, 1, 3, a, a, 2, d, a], P).
+
+test(ocurrencias_equivocadas, [fail]) :-
+    ocurrencias(2, [2, 1, 3, a, a, 2, d, a], [1]).
+
+% Ejercicio 21
+test(intercala_verifica, [nondet]) :-
+    intercala([a1, a2, a3, a4, a5, a6], [b1, b2, b3, b4], 3, 2,
+              [a1, a2, a3, b1, b2, a4, a5, a6, b3, b4]).
+
+test(intercala_comienza_con_la_segunda,
+     all(R == [[b1, a1, a2, a3, a4, b2]])) :-
+    intercala([a1, a2, a3, a4], [b1, b2], 4, 1, R).
+
+test(intercala_dos_formas, all(R == [[a1, a2, b1, a3, a4, b2],
+                                     [b1, a1, a2, b2, a3, a4]])) :-
+    intercala([a1, a2, a3, a4], [b1, b2], 2, 1, R).
+
+test(intercala_tramos_incompletos, [fail]) :-
+    intercala([a1, a2, a3], [b1, b2], 2, 1, _).
+
+% Ejercicio 22
+test(peso_arbol1, all(P == [46])) :-
+    arbol_ponderado(arbol1, A),
+    peso_arbol(A, P).
+
+test(peso_arbol2, all(P == [45])) :-
+    arbol_ponderado(arbol2, A),
+    peso_arbol(A, P).
+
+test(mapeo_arboles, all(Nombre == [arbol2])) :-
+    arbol_ponderado(arbol1, A1),
+    arbol_ponderado(arbol2, A2),
+    mapeo_arboles([A1, A2, A1], T),
+    arbol_ponderado(Nombre, T).
+
+test(mapeo_arboles_de_la_vacia, [fail]) :-
+    mapeo_arboles([], _).
+
+% Ejercicio 23
+test(es_hoja) :-
+    es_hoja(nodo(c, [])).
+
+test(la_raiz_no_es_hoja, [fail]) :-
+    arbol_nario(A),
+    es_hoja(A).
+
+test(cantidad, all(N == [8])) :-
+    arbol_nario(A),
+    cantidad(A, N).
+
+test(cantidad_de_una_hoja, all(N == [1])) :-
+    cantidad(nodo(c, []), N).
+
+test(lista_hojas_n, all(L == [[e, f, g, c, h]])) :-
+    arbol_nario(A),
+    lista_hojas_n(A, L).
+
+test(lista_hojas_n_de_una_hoja, all(L == [[c]])) :-
+    lista_hojas_n(nodo(c, []), L).
+
+test(quita_hojas, all(A2 == [nodo(a, [nodo(b, []), nodo(d, [])])])) :-
+    arbol_nario(A),
+    quita_hojas(A, A2).
+
+test(quita_hojas_de_una_hoja, [fail]) :-
+    quita_hojas(nodo(c, []), _).
+
+% Ejercicio 24
+test(recorrido_horizontal, all(L == [[a, c, j, t, r, h, m, q, z]])) :-
+    arbol_horizontal(A),
+    recorrido_horizontal(A, L).
+
+test(recorrido_horizontal_nario, all(L == [[a, b, c, d, e, f, g, h]])) :-
+    arbol_nario(A),
+    recorrido_horizontal(A, L).
+
+test(recorrido_horizontal_verifica, [fail]) :-
+    arbol_horizontal(A),
+    recorrido_horizontal(A, [a, c, t, r, q, z, j, h, m]).
+
+% Ejercicio 25
+test(secuencia_faltante, all(L == [[2, 3, 5, 7, 8, 9, 10, 11]])) :-
+    secuencia_faltante([1, 4, 6, 12], L).
+
+test(secuencia_faltante_equivocada, [fail]) :-
+    secuencia_faltante([2, 4, 6], [1, 3, 5]).
+
+test(secuencia_sin_faltantes, all(L == [[]])) :-
+    secuencia_faltante([-1, 0, 1, 2], L).
+
 :- end_tests(soluciones).

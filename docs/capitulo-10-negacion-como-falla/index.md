@@ -10,7 +10,7 @@ de valores.
 Es el último capítulo sobre el modelo de ejecución de Prolog. El
 [capítulo 11](../capitulo-11-texto/index.md) trata el texto —átomos, cadenas y
 las conversiones entre ellos— y el
-[capítulo 12](../capitulo-12-prolog-y-la-logica/index.md) analiza todo lo
+[capítulo 13](../capitulo-13-prolog-y-la-logica/index.md) analiza todo lo
 anterior desde el punto de vista de la lógica.
 
 ## Objetivos del capítulo
@@ -26,12 +26,14 @@ Al terminar el capítulo, el lector puede:
 - obtener una respuesta por negación: el máximo como el valor para el que no
   existe otro mayor;
 - escribir una negación sin `\+`, con corte y falla o sin negación, y comparar
-  la extensión y el comportamiento de cada versión.
+  la extensión y el comportamiento de cada versión;
+- armar la lista de todas las respuestas de una consulta con una lista
+  auxiliar, `\+ pertenece/2`, un corte y una cláusula de cierre.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:45 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **2:30 h**.
     Resolver los 9 ejercicios marcados con ★: **2:40 h**.
-    Resolver los 17 ejercicios del final: **5:45 h**.
+    Resolver los 18 ejercicios del final: **6:00 h**.
 
 ## 10.1 El supuesto de mundo cerrado
 
@@ -597,7 +599,7 @@ false.
 ```
 
 **Las variables del interior.** `Otra` aparece solamente dentro del `\+`. Como
-se verá en la [sección 12.3](../capitulo-12-prolog-y-la-logica/index.md#123-las-variables-y-los-cuantificadores), una variable en esa posición está cuantificada
+se verá en la [sección 13.3](../capitulo-13-prolog-y-la-logica/index.md#133-las-variables-y-los-cuantificadores), una variable en esa posición está cuantificada
 universalmente: la regla afirma que, **para toda** edad `Otra` de la base, `Otra`
 no es mayor que `E`. Es la lectura de la [sección 10.4](#104-donde-ubicar) usada a favor: allí una
 variable libre dentro del `\+` era un error, porque se esperaba que tuviera
@@ -897,7 +899,7 @@ Cuando la información está en hechos, `\+` es la forma más breve: expresa «n
 existe» en un solo objetivo. La versión con corte y falla es su definición
 escrita a mano, con el mismo comportamiento y más líneas. La versión sin
 negación cambia la pregunta —recorrer en lugar de negar— y necesita los datos
-en una lista, que en la parte I se escribe a mano; el [capítulo 17](../capitulo-17-todas-las-soluciones/index.md) presenta
+en una lista, que en la parte I se escribe a mano; el [capítulo 18](../capitulo-18-todas-las-soluciones/index.md) presenta
 `findall/3`, que construye esa lista a partir de los hechos. Cuando los datos
 ya son una lista, como en los ejercicios 8, 13 y 17, la versión sin negación no
 repite nada, y suele ser la más directa.
@@ -907,6 +909,20 @@ repite nada, y suele ser la más directa.
     `edad(marta, 70).` Antes de ejecutar, predecir qué responden
     `mayor_edad_con_corte(Quien).` y `mayor_edad_sin_negacion(Quien).`
     Comprobar la predicción, y corregir la versión que no responde marta.
+
+## 10.9 Estrategia para recolectar soluciones
+
+La página
+[Recolectar soluciones](recolectar.md#estrategia-para-recolectar-soluciones)
+arma la lista de todas las respuestas de una consulta, sin `findall/3`: un
+acumulador `YaIncluidas`, `\+ pertenece(X, YaIncluidas)`, un corte y una
+cláusula de cierre.
+
+## 10.10 Todas las materias de un ciclo
+
+La [misma página](recolectar.md#todas-las-materias-de-un-ciclo) expresa
+«aprobó todas las materias del ciclo» como «no le queda ninguna sin aprobar»,
+y recolecta los alumnos que cumplen esa condición.
 
 ## Ejercicios
 
@@ -1006,6 +1022,13 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     es el último en llegar porque nadie llegó después que él. No usar
     `append/3`. Escribir también los encabezados de los dos predicados, y
     explicar por qué el enunciado exige que la lista no tenga repetidos.
+18. **(2)** Escribir `palindromos(L, Ps)`: `Ps` es la lista de todos los
+    palíndromos distintos que se forman con los elementos de `L`. Usar
+    `permuta/2` del
+    [ejercicio 21 del capítulo 7](../capitulo-07-listas/index.md#ejercicios) y la
+    estrategia de la [sección 10.9](#109-estrategia-para-recolectar-soluciones).
+    `palindromos([1, 2, 0, 0, 2], Ps)` da `Ps = [[2, 0, 1, 0, 2], [0, 2, 1, 2, 0]]`,
+    y `palindromos([0, 1, 1, 1, 2, 2], [])` se cumple.
 
 ## Resumen
 
@@ -1023,14 +1046,16 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 | `=` `\=` | pueden unificar, o no pueden unificar |
 | `==` `\==` | son el mismo término, o no lo son |
 | `=:=` `=\=` | tienen el mismo valor numérico, o distinto |
+| recolectar soluciones | acumulador `YaIncluidas`, `\+ pertenece(X, YaIncluidas)`, corte y cláusula de cierre: la lista de todas las respuestas |
 
 ## Temas que se retoman
 
 | Tema | Se retoma en |
 |---|---|
-| Todo el capítulo, desde el punto de vista de la lógica | [capítulo 12](../capitulo-12-prolog-y-la-logica/index.md) |
-| `->` y `;`, construcciones relacionadas con `\+` | [capítulo 15](../capitulo-15-control/index.md) |
-| `forall/2`, que expresa "para todos" sin los problemas de `\+` | [capítulo 17](../capitulo-17-todas-las-soluciones/index.md) |
-| Verificación del tipo de un término antes de compararlo | [capítulo 32](../capitulo-32-inspeccion-de-terminos/index.md) |
-| Otras formas de obtener el máximo: `aggregate_all(max, …)` y ordenar con `sort/4` | [capítulo 17](../capitulo-17-todas-las-soluciones/index.md) y [capítulo 22](../capitulo-22-estructuras-de-datos-de-la-biblioteca/index.md) |
-| `dif/2`, la desigualdad `\=` que se posterga hasta que las variables tengan valor | [capítulo 23](../capitulo-23-programacion-con-restricciones/index.md) |
+| Todo el capítulo, desde el punto de vista de la lógica | [capítulo 13](../capitulo-13-prolog-y-la-logica/index.md) |
+| `->` y `;`, construcciones relacionadas con `\+` | [capítulo 16](../capitulo-16-control/index.md) |
+| `forall/2`, que expresa "para todos" sin los problemas de `\+` | [capítulo 18](../capitulo-18-todas-las-soluciones/index.md) |
+| `findall/3`, que recolecta todas las respuestas en una llamada | [capítulo 18](../capitulo-18-todas-las-soluciones/index.md) |
+| Verificación del tipo de un término antes de compararlo | [capítulo 33](../capitulo-33-inspeccion-de-terminos/index.md) |
+| Otras formas de obtener el máximo: `aggregate_all(max, …)` y ordenar con `sort/4` | [capítulo 18](../capitulo-18-todas-las-soluciones/index.md) y [capítulo 23](../capitulo-23-estructuras-de-datos-de-la-biblioteca/index.md) |
+| `dif/2`, la desigualdad `\=` que se posterga hasta que las variables tengan valor | [capítulo 24](../capitulo-24-programacion-con-restricciones/index.md) |

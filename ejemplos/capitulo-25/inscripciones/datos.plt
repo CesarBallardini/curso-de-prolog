@@ -29,11 +29,4 @@ test(los_estados_son_validos, [fail]) :-
          integer(N),
          between(1, 10, N) ).
 
-% --- Mensajes -------------------------------------------------------------
-
-test(mensaje_propio,
-     true(L == ['Inscripción de ~w en ~w: el alumno o la materia no existen'
-                -[999, am1]])) :-
-    once(phrase(prolog:message(inscripcion_sin_datos(999, am1)), L)).
-
 :- end_tests(datos).

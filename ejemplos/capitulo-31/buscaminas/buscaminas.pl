@@ -1,102 +1,202 @@
 :- encoding(utf8).
 
-% Capítulo 31 - Buscaminas completo: el programa.
+% Capítulo 31 - Solución del ejercicio 14: las reglas del Buscaminas, sin
+% cambios desde el capítulo 30.
 %
-%     swipl buscaminas.pl [--semilla=N] filas columnas minas
-%     swipl buscaminas.pl --servicio [--puerto=P] [--publico]
+% Las usan dos adaptadores: adaptador_prolog.py, con Janus, y servicio.pl,
+% que las ofrece por HTTP al adaptador adaptador_http.py.
+% Las reglas son las del juego de la terminal del capítulo 29: el tablero
+% como assoc y el recorrido que descubre una región. El módulo exporta solo
+% lo que usa Python. Una partida es el término juego(Tablero, Descubiertas,
+% Marcadas); cruza a Python envuelta en prolog/1, y Python la devuelve en
+% cada jugada sin mirarla. Las filas del tablero cruzan como textos.
 %
-% Con tres números, juega en la terminal, y termina con el código 0 si la
-% partida se gana y con 1 si se pierde. Con --servicio, ofrece el juego por
-% HTTP. Los módulos: vecinos, tablero, descubrir, resolver, partida,
-% terminal y servicio; este archivo solo lee los argumentos y elige.
+% solo-local: SWISH no admite módulos propios ni ejecuta Python.
 %
-% solo-local: SWISH no admite módulos propios ni ejecuta programas.
-%
-%?- nueva_partida(9, 9, 10, 7, P), mostrar(P, false).
-%
-% thread_get_message/1: lo presenta el capítulo 37, con los hilos.
+%?- nueva_partida_py(3, 3, [1-1], prolog(J)), filas_py(J, @(false), F).
 
-:- use_module(library(main)).
-:- use_module(partida).
-:- use_module(terminal).
-:- use_module(servicio).
+:- module(buscaminas,
+          [ nueva_partida_py/4,
+            partida_al_azar_py/5,
+            jugar_py/6,
+            filas_py/3
+          ]).
 
-:- initialization(main, main).
+:- use_module(library(assoc)).
+:- use_module(library(ordsets)).
+:- use_module(library(random)).
 
-% opt_type(Opcion, Clave, Tipo): las opciones del programa.
-opt_type(semilla,  semilla,  integer).
-opt_type(servicio, servicio, boolean).
-opt_type(puerto,   puerto,   nonneg).
-opt_type(publico,  publico,  boolean).
+% --- La interfaz para Python -------------------------------------------------
 
-% opt_help(Clave, Texto): la ayuda de cada opción.
-opt_help(semilla,     "Semilla del azar: la misma semilla repite el tablero").
-opt_help(servicio,    "Ofrece el juego por HTTP en lugar de jugar").
-opt_help(puerto,      "Puerto del servicio; sin la opción, uno libre").
-opt_help(publico,     "El servicio acepta pedidos de cualquier interfaz").
-opt_help(help(usage), " [--semilla=N] filas columnas minas | --servicio").
-
-%!  main(+Argv:list) is det.
+%!  nueva_partida_py(+Filas:integer, +Columnas:integer, +Minas:list,
+%!                   -Partida) is det.
 %
-%   Juega en la terminal o arranca el servicio, según los argumentos, y
-%   termina con el código de salida del resultado: 0 si se gana, 1 si se
-%   pierde, 2 ante un error.
-main(Argv) :-
-    argv_options(Argv, Posicionales, Opciones),
-    catch(correr(Posicionales, Opciones, Codigo),
-          Error,
-          ( print_message(error, Error),
-            Codigo = 2 )),
-    halt(Codigo).
+%   Partida es una partida nueva, envuelta en prolog/1, en un tablero con
+%   minas en las celdas de Minas, pares Fila-Columna.
+nueva_partida_py(Filas, Columnas, Minas, prolog(juego(Tablero, [], []))) :-
+    tablero(Filas, Columnas, Minas, Tablero).
 
-%!  correr(+Posicionales:list, +Opciones:list, -Codigo:integer) is det.
+%!  partida_al_azar_py(+Filas:integer, +Columnas:integer, +Cantidad:integer,
+%!                     +Semilla:integer, -Partida) is det.
 %
-%   Hace lo que piden los argumentos.
-%
-%   @error uso(argumentos) si no son tres números ni --servicio.
-correr(_, Opciones, 0) :-
-    option(servicio(true), Opciones),
-    !,
-    option(puerto(Puerto), Opciones, _),
-    (   option(publico(true), Opciones)
-    ->  Alcance = publico
-    ;   Alcance = local
-    ),
-    iniciar_servicio(Puerto, Alcance),
-    format("Buscaminas en http://localhost:~w/~n", [Puerto]),
-    flush_output,
-    thread_get_message(_).
-correr([F, C, M], Opciones, Codigo) :-
-    !,
-    maplist(numero, [F, C, M], [Filas, Columnas, Minas]),
-    option(semilla(Semilla), Opciones, 0),
-    nueva_partida(Filas, Columnas, Minas, Semilla, Partida),
-    prompt(_, ''),
-    jugar_en_terminal(user_input, Partida, Estado),
-    (   Estado == gano
-    ->  Codigo = 0
-    ;   Codigo = 1
-    ).
-correr(_, _, _) :-
-    throw(uso(argumentos)).
+%   Partida es una partida nueva con Cantidad minas al azar, elegidas con
+%   Semilla: la misma semilla da el mismo tablero.
+partida_al_azar_py(Filas, Columnas, Cantidad, Semilla, Partida) :-
+    set_random(seed(Semilla)),
+    Total is Filas * Columnas,
+    randseq(Cantidad, Total, Numeros),
+    maplist(celda_numero(Columnas), Numeros, Minas),
+    nueva_partida_py(Filas, Columnas, Minas, Partida).
 
-%!  numero(+Argumento:atom, -N:integer) is det.
+%!  jugar_py(+Juego0, +Accion:atom, +Fila:integer, +Columna:integer,
+%!           -Juego, -Estado:atom) is det.
 %
-%   N es el entero que escribe Argumento.
-%
-%   @error type_error(integer, Argumento) si no es un entero.
-numero(Argumento, N) :-
-    (   atom_number(Argumento, N),
-        integer(N)
-    ->  true
-    ;   type_error(integer, Argumento)
+%   Juego es Juego0 después de Accion, descubrir o marcar, en la celda
+%   Fila-Columna, envuelto en prolog/1. Estado es sigue, gano, perdio, o
+%   fuera si la celda está fuera del tablero; en ese caso, Juego es Juego0.
+jugar_py(Juego0, Accion, Fila, Columna, prolog(Juego), Estado) :-
+    Jugada =.. [Accion, Fila-Columna],
+    (   aplicar(Jugada, Juego0, Juego1, Estado1)
+    ->  Juego = Juego1,
+        Estado = Estado1
+    ;   Juego = Juego0,
+        Estado = fuera
     ).
 
-:- multifile prolog:message//1.
-
-%!  prolog:message(+Mensaje)// is semidet.
+%!  filas_py(+Juego, +Minas, -Filas:list(string)) is det.
 %
-%   El mensaje de uso.
-prolog:message(uso(argumentos)) -->
-    [ 'Uso: swipl buscaminas.pl [--semilla=N] filas columnas minas',
-      nl, '     swipl buscaminas.pl --servicio [--puerto=P] [--publico]' ].
+%   Filas son las filas del tablero de Juego como textos: el número de minas
+%   vecinas en las celdas descubiertas, . si es cero, M en las marcadas y #
+%   en las demás. Con Minas en @(true), el True de Python, las minas se
+%   muestran con *.
+filas_py(juego(tablero(Filas, Columnas, Celdas), D, M), Minas, Textos) :-
+    findall(Texto,
+            ( between(1, Filas, F),
+              findall(S,
+                      ( between(1, Columnas, C),
+                        get_assoc(F-C, Celdas, V),
+                        simbolo(F-C, V, D, M, Minas, S) ),
+                      Simbolos),
+              atomic_list_concat(Simbolos, Atomo),
+              atom_string(Atomo, Texto) ),
+            Textos).
+
+% --- El tablero y las jugadas, del capítulo 29 ------------------------------
+
+%!  tablero(+Filas:integer, +Columnas:integer, +Minas:list, -Tablero) is det.
+%
+%   Tablero es el tablero de Filas por Columnas con minas en las celdas de
+%   Minas.
+tablero(Filas, Columnas, Minas, tablero(Filas, Columnas, Celdas)) :-
+    list_to_ord_set(Minas, ConjuntoDeMinas),
+    findall(F-C, ( between(1, Filas, F), between(1, Columnas, C) ), Todas),
+    maplist(valor_inicial(Filas, Columnas, ConjuntoDeMinas), Todas, Valores),
+    pairs_keys_values(Pares, Todas, Valores),
+    list_to_assoc(Pares, Celdas).
+
+%!  valor_inicial(+Filas:integer, +Columnas:integer, +Minas:list,
+%!                +Celda:pair, -Valor) is det.
+%
+%   Valor es mina si Celda está en Minas, o la cantidad de minas vecinas.
+valor_inicial(Filas, Columnas, Minas, F-C, Valor) :-
+    (   ord_memberchk(F-C, Minas)
+    ->  Valor = mina
+    ;   aggregate_all(count,
+                      ( vecina(Filas, Columnas, F-C, V),
+                        ord_memberchk(V, Minas) ),
+                      Valor)
+    ).
+
+%!  vecina(+Filas:integer, +Columnas:integer, +Celda:pair, -Vecina:pair)
+%!      is nondet.
+%
+%   Vecina es una de las celdas que rodean a Celda dentro del tablero.
+vecina(Filas, Columnas, F-C, VF-VC) :-
+    between(-1, 1, DF),
+    between(-1, 1, DC),
+    ( DF, DC ) \== ( 0, 0 ),
+    VF is F + DF,
+    VC is C + DC,
+    between(1, Filas, VF),
+    between(1, Columnas, VC).
+
+%!  celda_numero(+Columnas:integer, +K:integer, -Celda:pair) is det.
+%
+%   Celda es la celda número K del tablero, contando por filas desde 1.
+celda_numero(Columnas, K, F-C) :-
+    F is (K - 1) // Columnas + 1,
+    C is (K - 1) mod Columnas + 1.
+
+%!  descubrir(+Tablero, +Celda:pair, +Vistas:list, -Descubiertas:list)
+%!      is det.
+%
+%   Descubiertas es Vistas más las celdas que descubre un clic en Celda.
+descubrir(Tablero, Celda, Vistas, Descubiertas) :-
+    (   ord_memberchk(Celda, Vistas)
+    ->  Descubiertas = Vistas
+    ;   ord_add_element(Vistas, Celda, Vistas1),
+        Tablero = tablero(Filas, Columnas, Celdas),
+        (   get_assoc(Celda, Celdas, 0)
+        ->  findall(V, vecina(Filas, Columnas, Celda, V), Vecinas),
+            foldl(descubrir(Tablero), Vecinas, Vistas1, Descubiertas)
+        ;   Descubiertas = Vistas1
+        )
+    ).
+
+%!  aplicar(+Jugada, +Juego0, -Juego, -Estado) is semidet.
+%
+%   Juego es Juego0 después de Jugada, descubrir(Celda) o marcar(Celda).
+%   Estado es sigue, gano o perdio. Falla si la celda está fuera del
+%   tablero.
+aplicar(descubrir(Celda), juego(T, D0, M), juego(T, D, M), Estado) :-
+    T = tablero(_, _, Celdas),
+    get_assoc(Celda, Celdas, Valor),
+    (   Valor == mina
+    ->  ord_add_element(D0, Celda, D),
+        Estado = perdio
+    ;   descubrir(T, Celda, D0, D),
+        (   todas_descubiertas(T, D)
+        ->  Estado = gano
+        ;   Estado = sigue
+        )
+    ).
+aplicar(marcar(Celda), juego(T, D, M0), juego(T, D, M), sigue) :-
+    T = tablero(_, _, Celdas),
+    get_assoc(Celda, Celdas, _),
+    (   ord_memberchk(Celda, M0)
+    ->  ord_del_element(M0, Celda, M)
+    ;   ord_add_element(M0, Celda, M)
+    ).
+
+%!  todas_descubiertas(+Tablero, +Descubiertas:list) is semidet.
+%
+%   Descubiertas tiene todas las celdas libres de Tablero.
+todas_descubiertas(tablero(Filas, Columnas, Celdas), Descubiertas) :-
+    assoc_to_values(Celdas, Valores),
+    include(==(mina), Valores, Minas),
+    length(Minas, CantidadDeMinas),
+    Libres is Filas * Columnas - CantidadDeMinas,
+    length(Descubiertas, Libres).
+
+%!  simbolo(+Celda, +Valor, +Descubiertas, +Marcadas, +Minas, -Simbolo)
+%!      is det.
+%
+%   Simbolo es el carácter con que se muestra Celda.
+simbolo(Celda, Valor, D, M, Minas, Simbolo) :-
+    (   ord_memberchk(Celda, D)
+    ->  visible(Valor, Simbolo)
+    ;   Minas == @(true), Valor == mina
+    ->  Simbolo = '*'
+    ;   ord_memberchk(Celda, M)
+    ->  Simbolo = 'M'
+    ;   Simbolo = '#'
+    ).
+
+%!  visible(+Valor, -Simbolo) is det.
+%
+%   Simbolo muestra el Valor de una celda descubierta.
+visible(mina, '*') :-
+    !.
+visible(0, '.') :-
+    !.
+visible(N, N).

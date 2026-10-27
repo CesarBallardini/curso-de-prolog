@@ -2,33 +2,49 @@
 
 :- begin_tests(soluciones_proyecto).
 
+% Ejercicio 13
+test(registrar_nota, [ setup(estado(E)), cleanup(restaurar(E)),
+                       true(N == 9) ]) :-
+    registrar_nota(101, pp, 9),
+    aprobada(101, pp, N).
+
+test(nota_de_una_materia_aprobada, [ setup(estado(E)), cleanup(restaurar(E)),
+                                     fail ]) :-
+    registrar_nota(101, am1, 9).
+
+test(nota_invalida, [ setup(estado(E)), cleanup(restaurar(E)), fail ]) :-
+    registrar_nota(101, pp, 11).
+
+test(nota_no_cambia_la_base, [ setup(estado(E)), cleanup(restaurar(E)),
+                               true(Estado == cursando) ]) :-
+    \+ registrar_nota(101, pp, 0),
+    inscripcion(101, pp, Estado).
+
 % Ejercicio 14
-test(vacantes, true(R == vacantes(0))) :-
-    ejecutar("vacantes de logica", R).
+test(historial, [ setup(estado(E)), cleanup(restaurar(E)),
+                  true(H == [1-inscribir(104, ssl, aceptada),
+                             2-dar_de_baja(104, ssl)]) ]) :-
+    inscribir(104, ssl, _),
+    dar_de_baja(104, ssl),
+    historial(H).
 
-test(vacantes_despues_de_inscribir, [ setup(estado(E)), cleanup(restaurar(E)),
-                                      true(R == vacantes(19)) ]) :-
-    ejecutar("inscribir a 104 en sintaxis", _),
-    ejecutar("vacantes de sintaxis", R).
+test(historial_vacio, true(H == [])) :-
+    historial(H).
 
-% Ejercicio 15: el texto generado se vuelve a analizar como el mismo comando.
-test(texto_de, true(T == 'dar de baja a 105 en analisis_1')) :-
-    texto_de(baja(105, am1), T).
+% Ejercicio 15: el promedio guardado se actualiza al registrar una nota.
+test(promedio_memo, [ setup(estado(E)), cleanup(restaurar(E)),
+                      true(P0-P == 8.5-8.6) ]) :-
+    promedio_memo(101, P0),
+    registrar_nota(101, pp, 9),
+    promedio_memo(101, P).
 
-test(ida_y_vuelta, all(C == [listar(am1), listar(alg), listar(log),
-                             listar(am2), listar(pp), listar(ssl),
-                             listar(bd)])) :-
-    materia(M, _, _),
-    texto_de(listar(M), T),
-    atom_codes(T, Cs),
-    phrase(palabras(Ps), Cs),
-    phrase(comando(C), Ps).
-
-% Ejercicio 16
-test(uso, true(R == uso('inscribir a 101 en analisis_1'))) :-
-    ejecutar("inscribir 104", R).
-
-test(no_entendido, true(R == no_entendido)) :-
-    ejecutar("hola", R).
+% Sin la invalidación, el valor guardado quedaría viejo: se simula
+% cambiando la nota sin registrar_nota/3.
+test(sin_invalidar, [ setup(estado(E)), cleanup(restaurar(E)),
+                      true(P == 8.5) ]) :-
+    promedio_memo(101, _),
+    retract(user:inscripcion(101, pp, cursando)),
+    assertz(user:inscripcion(101, pp, nota(9))),
+    promedio_memo(101, P).
 
 :- end_tests(soluciones_proyecto).

@@ -35,10 +35,10 @@ def document(location: str, title: str, text: str) -> SearchDocumentDto:
 def test_solutions_pages_are_left_out_and_chapter_17_stays() -> None:
     documents = [
         document('capitulo-10-n/soluciones/#e1', 'Ejercicio 1', '<p>Solución</p>'),
-        document('capitulo-17-todas-las-soluciones/#172-findall3', '17.2', '<p>findall</p>'),
+        document('capitulo-18-todas-las-soluciones/#182-findall3', '18.2', '<p>findall</p>'),
     ]
     chunks, _ = index_hook.index_chunks(documents, {})
-    assert [c['location'] for c in chunks] == ['capitulo-17-todas-las-soluciones/#172-findall3']
+    assert [c['location'] for c in chunks] == ['capitulo-18-todas-las-soluciones/#182-findall3']
 
 
 def test_a_long_section_is_split_on_its_blocks() -> None:

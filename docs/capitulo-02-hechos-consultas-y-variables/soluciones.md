@@ -196,7 +196,7 @@ a. **"Ana es mayor que Luis"** afirma algo que se **deduce** de otros datos, las
 b. **"Toda persona tiene madre"** habla de **todas** las personas a la vez. Un
    hecho afirma algo sobre objetos determinados, y no hay manera de nombrar
    "todas" escribiendo un hecho. Los enunciados de esta forma se escriben como
-   reglas, y el [capítulo 12](../capitulo-12-prolog-y-la-logica/index.md) explica por qué.
+   reglas, y el [capítulo 13](../capitulo-13-prolog-y-la-logica/index.md) explica por qué.
 c. **"Ana no tiene hijos"** es una **negación**. Un programa Prolog está formado
    por afirmaciones, y no hay forma de escribir la ausencia de una. Lo que se
    hace es no escribir ningún hecho que diga lo contrario, y dejar que Prolog
@@ -286,4 +286,4 @@ termina de mostrarlas. El árbol de derivación del
 [capítulo 5](../capitulo-05-como-responde-prolog/index.md) no muestra ese `;`:
 una consulta que termina en punto tiene el mismo árbol que una que queda en
 espera, y que Prolog deje o no una alternativa abierta depende de cómo indexa
-las cláusulas, tema de la [sección 16.3](../capitulo-16-rendimiento/index.md#163-indexacion).
+las cláusulas, tema de la [sección 17.3](../capitulo-17-rendimiento/index.md#173-indexacion).

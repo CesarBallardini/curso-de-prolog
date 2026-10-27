@@ -1,13 +1,14 @@
 :- encoding(utf8).
 
-% Capítulo 16 - El proyecto Inscripciones: consultas por nombre.
+% Capítulo 16 - El proyecto Inscripciones: validaciones de una inscripción.
 %
-% Respecto del capítulo 15 se agrega aprobada_por_nombre/2, con el orden de
-% los objetivos medido sobre 5 000 alumnos (generar_datos.pl): primero el
-% alumno, que el nombre selecciona, y después sus inscripciones.
+% Respecto del capítulo 15 se agregan las vacantes de cada materia y el
+% predicado que decide si un alumno se puede inscribir en una materia. Las
+% condiciones se evalúan en orden con un condicional, y el resultado dice cuál
+% falló: la primera que falla determina el motivo del rechazo.
 %
-%?- aprobada_por_nombre(ana, Materia).
 %?- inscripcion_posible(104, ssl, Resultado).
+%?- inscripcion_posible(102, am2, Resultado).
 
 % alumno(Legajo, Nombre, Carrera, Ingreso): el alumno de ese legajo cursa esa
 % carrera desde el año de ingreso.
@@ -116,12 +117,3 @@ inscripcion_posible(Legajo, Materia, Resultado) :-
 %   El alumno Legajo se puede inscribir en Materia.
 puede_inscribirse(Legajo, Materia) :-
     inscripcion_posible(Legajo, Materia, aceptada).
-
-%!  aprobada_por_nombre(?Nombre:atom, ?Materia:atom) is nondet.
-%
-%   El alumno llamado Nombre aprobó Materia. El primer objetivo es el que el
-%   nombre selecciona: con el orden inverso, la consulta recorre todas las
-%   inscripciones de la materia antes de examinar el nombre (sección 16.5).
-aprobada_por_nombre(Nombre, Materia) :-
-    alumno(Legajo, Nombre, _, _),
-    aprobada(Legajo, Materia, _Nota).

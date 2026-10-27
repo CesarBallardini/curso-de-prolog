@@ -2,10 +2,10 @@
 """Run the XPCE window tests of the examples under `swipl-win`.
 
     ./tools/run-windows.py                 every example that loads library(pce)
-    ./tools/run-windows.py capitulo-36     one chapter, or one example by name
+    ./tools/run-windows.py capitulo-37     one chapter, or one example by name
 
 `make test` runs every example under the console `swipl`, which on Windows has
-no XPCE: there the window tests of chapter 36 carry `condition(hay_xpce)` and
+no XPCE: there the window tests of chapter 37 carry `condition(hay_xpce)` and
 plunit skips them. This runs the same `.pl` and `.plt` under `swipl-win`, where
 XPCE is loaded, so those tests run too. The windows are created and queried but
 never opened, so nothing appears on the screen.

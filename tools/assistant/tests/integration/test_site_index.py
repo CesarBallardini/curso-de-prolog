@@ -39,7 +39,7 @@ def test_every_indexed_section_is_in_the_index(index: IndexDto) -> None:
 
 def test_no_solutions_page_is_in_the_index(index: IndexDto) -> None:
     assert not [c['location'] for c in index['chunks'] if course.is_solutions(c['location'])]
-    assert any(c['location'].startswith('capitulo-17-todas-las-soluciones/') for c in index['chunks'])
+    assert any(c['location'].startswith('capitulo-18-todas-las-soluciones/') for c in index['chunks'])
 
 
 def test_every_section_with_keywords_carries_them(index: IndexDto) -> None:

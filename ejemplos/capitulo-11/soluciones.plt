@@ -105,4 +105,31 @@ test(la_lista_vacia_esta_en_orden) :-
 test(un_solo_atomo_esta_en_orden, [nondet]) :-
     en_orden([ana]).
 
+% Ejercicio 18
+test(arbol_ordenado) :-
+    arbol_palabras(T),
+    orden_lexicografico(T).
+
+test(arbol_vacio_ordenado) :-
+    orden_lexicografico(void).
+
+% El hijo izquierdo de corte está bien ubicado respecto de corte, pero no
+% respecto de la raíz: zeta debería estar a la derecha de lista.
+test(nodo_profundo_fuera_de_orden, [fail]) :-
+    orden_lexicografico(tree(lista, tree(corte, void, tree(zeta, void, void)),
+                             void)).
+
+test(hijos_intercambiados, [fail]) :-
+    orden_lexicografico(tree(hecho, tree(regla, void, void),
+                             tree(arbol, void, void))).
+
+test(prefijo_precede) :-
+    precede(arbol, arboles).
+
+test(no_precede_a_si_mismo, [fail]) :-
+    precede(arbol, arbol).
+
+test(mayuscula_antes) :-
+    precede('Zoe', ana).
+
 :- end_tests(soluciones).

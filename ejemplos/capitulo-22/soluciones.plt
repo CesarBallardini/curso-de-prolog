@@ -2,102 +2,123 @@
 
 :- begin_tests(soluciones).
 
-% Ejercicio 1
-test(msort, true(L == [1.5, 2, "a", b, f(1)])) :-
-    msort([b, 2, "a", f(1), 1.5], L).
-
-test(sort_descendente, true(L == [3, 3, 2, 1])) :-
-    sort(0, @>=, [3, 1, 2, 3], L).
-
-test(sort_por_clave, true(L == [a-2, b-1])) :-
-    sort(1, @<, [b-1, a-2, b-3], L).
-
 % Ejercicio 2
-test(tres_formas, true(S-M-T == [a, b, c]-[a, a, b, c]-[c, a, b])) :-
-    sort([c, a, b, a], S),
-    msort([c, a, b, a], M),
-    list_to_set([c, a, b, a], T).
+test(ab, [nondet]) :-
+    phrase(ab, [a, a, b, b]).
 
-% Ejercicio 3
-test(por_longitud, true(L == [[d], [e, f], [a, b, c]])) :-
-    por_longitud([[a, b, c], [d], [e, f]], L).
+test(ab_vacia, [fail]) :-
+    phrase(ab, []).
 
-test(por_longitud_estable, true(L == [[x], [y], [a, b]])) :-
-    por_longitud([[a, b], [x], [y]], L).
+test(ab_por_longitud, all(L == [[a, b], [a, a, b, b], [a, a, a, b, b, b]])) :-
+    between(1, 6, N),
+    length(L, N),
+    phrase(ab, L).
+
+% Ejercicio 6: ab//0 genera las listas de menor a mayor; con las reglas
+% invertidas, la generación no da ninguna respuesta.
+test(ab_genera, true(L == [a, a, b, b])) :-
+    once(( phrase(ab, L), L = [a, a|_] )).
+
+test(ab_invertida_analiza, [nondet]) :-
+    phrase(ab_invertida, [a, a, b, b]).
+
+% call_with_inference_limit/3, que acota las inferencias,
+% se presenta en el capítulo 27.
+test(ab_invertida_no_genera, true(R == inference_limit_exceeded)) :-
+    call_with_inference_limit(phrase(ab_invertida, _), 1000000, R).
+
+% Ejercicio 3: la traducción explícita responde lo mismo que la gramática.
+test(traduccion, true(N1-N2 == luis-luis)) :-
+    phrase(saludo_a(N1), `hola luis`),
+    saludo_a_traducido(N2, `hola luis`, []).
 
 % Ejercicio 4
-test(anagramas, true(L == [amor, mora, ramo])) :-
-    anagramas(roma, [amor, mora, ramo, rama, roma, aroma], L).
+test(concordancia, [nondet]) :-
+    phrase(frase, [los, perros, ladran]).
 
-% Ejercicio 5
-test(escuela, true(L2-L1-L3 == [eva, luis]-[ana]-[])) :-
-    escuela([2-luis, 1-ana, 2-eva, 1-ana], E),
-    alumnos_de(E, 2, L2),
-    alumnos_de(E, 1, L1),
-    alumnos_de(E, 3, L3).
+test(sin_concordancia, [fail]) :-
+    phrase(frase, [los, perros, ladra]).
 
-% Ejercicio 6: con predsort/3 que nunca responde =, no se pierde ninguno.
-test(por_valor, true(L == [b-1, d-2, a-3, c-3])) :-
-    por_valor([a-3, b-1, c-3, d-2], L).
+test(todas_las_frases, true(N == 4)) :-
+    aggregate_all(count, phrase(frase, _), N).
+
+% Ejercicio 5: solo las oraciones verdaderas.
+test(oraciones_verdaderas,
+     all(H == [padre(juan, ana), padre(juan, pedro),
+               madre(marta, ana), madre(marta, pedro)])) :-
+    phrase(oracion_verdadera(H), _).
+
+test(oracion_falsa, [fail]) :-
+    phrase(oracion_verdadera(_), [ana, es, la, madre, de, juan]).
 
 % Ejercicio 7
-test(la_mayor, true(N == b)) :-
-    la_mayor([_{n: a, edad: 3}, _{n: b, edad: 9}, _{n: c, edad: 9}], M),
-    get_dict(n, M, N).
-
-test(la_mayor_vacia, [fail]) :-
-    la_mayor([], _).
-
-% La notación funcional dentro de una lambda se expande fuera de ella.
-test(punto_en_lambda, [error(instantiation_error)]) :-
-    foldl([P, M0, M]>>( P.edad > M0.edad -> M = P ; M = M0 ),
-          [_{edad: 1}], _{edad: 0}, _).
+test(recorridos, true(P-S-O == [a, b, c]-[b, a, c]-[b, c, a])) :-
+    A = nodo(a, nodo(b, nil, nil), nodo(c, nil, nil)),
+    phrase(preorden(A), P),
+    phrase(simetrico(A), S),
+    phrase(postorden(A), O).
 
 % Ejercicio 8
-test(formatear, true(T == 'Sra. ANA')) :-
-    formatear_nombre(ana, [mayusculas(true), prefijo('Sra. ')], T).
+test(balanceado) :-
+    phrase(balanceado, `{[a(b)]c}`).
 
-test(formatear_por_omision, true(T == ana)) :-
-    formatear_nombre(ana, [], T).
+test(cruzado, [fail]) :-
+    phrase(balanceado, `([)]`).
 
-% Ejercicio 9: con la misma semilla, el mismo sorteo.
-test(sorteo, [ setup(set_random(seed(1))),
-               true(L == [35, 19, 40, 15, 48, 28]) ]) :-
-    sorteo(6, 49, L).
+test(sin_cerrar, [fail]) :-
+    phrase(balanceado, `((a)`).
 
-test(sorteo_sin_repetidos, true(N == 6)) :-
-    sorteo(6, 49, L),
-    sort(L, S),
-    length(S, N).
+% Ejercicio 9
+test(expresion, true(V =:= 11)) :-
+    phrase(expresion(V), `2+3*4-6/2`).
 
-% Ejercicio 16: la versión incorrecta pierde la raíz, o deja el árbol libre.
-test(insertar_mal_pierde_la_raiz, [nondet, true(A == n(vacio, 5, vacio))]) :-
-    insertar_mal(5, n(vacio, 7, vacio), A).
+test(expresion_izquierda, true(V =:= 5)) :-
+    phrase(expresion(V), `10-3-2`).
 
-% var/1, que reconoce una variable libre, se presenta en el capítulo 32.
-test(insertar_mal_deja_libre, true(var(A))) :-
-    insertar_mal(7, n(vacio, 7, vacio), A).
+% Ejercicio 10
+test(fecha_larga, [nondet, true(F == fecha(2026, 9, 24))]) :-
+    phrase(fecha_larga(F), `24 de septiembre de 2026`).
 
-test(insertar_menor, true(A == n(n(vacio, 5, vacio), 7, vacio))) :-
-    insertar(5, n(vacio, 7, vacio), A).
+test(fecha_larga_generar, true(A == '1 de enero de 2027')) :-
+    phrase(fecha_larga(fecha(2027, 1, 1)), Cs),
+    atom_codes(A, Cs).
 
-test(insertar_existente, true(A == n(vacio, 7, vacio))) :-
-    insertar(7, n(vacio, 7, vacio), A).
+% Ejercicio 11
+test(enumeracion, [nondet, true(L == [ana, luis, eva])]) :-
+    phrase(enumeracion(L), `ana, luis y eva`).
 
-test(insertar_varias,
-     true(A == n(n(n(vacio, 1, vacio), 3, n(vacio, 5, vacio)), 7,
-                 n(vacio, 9, vacio)))) :-
-    foldl(insertar, [7, 3, 9, 1, 5], vacio, A).
+test(enumeracion_uno, [nondet, true(L == [ana])]) :-
+    phrase(enumeracion(L), `ana`).
 
-test(reinsertar_da_el_mismo_arbol, true(A == B)) :-
-    foldl(insertar, [7, 3, 9, 1, 5], vacio, A),
-    insertar(9, A, B).
+% Al generar, csym//1 deja una alternativa que no termina: once/1 la descarta.
+test(enumeracion_generar, true(A == 'ana, luis y eva')) :-
+    once(phrase(enumeracion([ana, luis, eva]), Cs)),
+    atom_codes(A, Cs).
 
-% El subárbol derecho de la raíz no está en el camino de 4: no se copia.
-test(insertar_comparte, true(same_term(D, D1))) :-
-    foldl(insertar, [7, 3, 9, 1, 5], vacio, A),
-    insertar(4, A, B),
-    A = n(_, 7, D),
-    B = n(_, 7, D1).
+% Ejercicio 12
+test(problema, true(V =:= 36)) :-
+    phrase(problema(V), `cuanto es 5 mas 13 por 2`).
+
+test(problema_mal_escrito, [fail]) :-
+    phrase(problema(_), `cuanto es 5 mas`).
+
+% Ejercicio 13
+test(lista_de_enteros, true(L == [1, 2, 3])) :-
+    phrase(lista_de_enteros(L), `[1, 2, 3]`).
+
+test(lista_generar, true(A == '[4, 5]')) :-
+    phrase(lista_de_enteros([4, 5]), Cs),
+    atom_codes(A, Cs).
+
+% Ejercicio 17: la regla no consume el código que examina.
+test(empieza_con_mayuscula, true(A == 'Ana')) :-
+    phrase(empieza_con_mayuscula, `Ana`, Resto),
+    atom_codes(A, Resto).
+
+test(empieza_con_minuscula, [fail]) :-
+    phrase(empieza_con_mayuscula, `ana`, _).
+
+test(empieza_vacia, [fail]) :-
+    phrase(empieza_con_mayuscula, ``, _).
 
 :- end_tests(soluciones).

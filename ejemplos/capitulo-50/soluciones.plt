@@ -1,148 +1,147 @@
 :- encoding(utf8).
 
+:- use_module(library(lists)).
+
 :- begin_tests(soluciones).
 
-test(ejercicio_1, [true(E == a(0) - a(2) - w(1) * (a(1) - a(3)))]) :-
-    evaluar([0, 1, 2, 3], 3, 4, E0),
-    simplificar_raices(4, E0, E).
+test(ejercicio_2, [true(F-D == [[[g1]], [[g2]], [[g4]]]-[[[g1]], [[g2]], [[g4]]])]) :-
+    sospechosas(fuerte, xor_nand, [[1, 0]-[0]], 2, F),
+    sospechosas(debil, xor_nand, [[1, 0]-[0]], 2, D).
 
-test(ejercicio_2, [true(P-I == [0, 3]-[1, 2])]) :-
-    alternar_mal([0, 1, 2, 3], P, I).
+test(ejercicio_2_dos, [true(Ds == [[[g1]-invertida], [[g1]-pegada(0)],
+                                   [[g2]-pegada(1)], [[g4]-pegada(0)]])]) :-
+    mas_simples(fuerte, xor_nand, [[1, 0]-[0], [0, 0]-[0]], Ds).
 
-test(ejercicio_3, [true(S-P == 56-14)]) :-
-    tdf_ingenua(8, Es0),
-    maplist(simplificar_raices(8), Es0, Es),
-    grafo(Es, Ns, _),
-    contar_nodos(Ns, _, S, P).
+test(ejercicio_3, [nondet, true(D == [[m2, x1]-pegada(0), [o1]-pegada(0),
+                                      [o1]-pegada(1)])]) :-
+    diagnostico_mal(sumador, [[0, 0, 1]-[0, 1], [1, 0, 0]-[1, 0]], D),
+    repetida(D).
 
-test(ejercicio_4, [true(C == 3)]) :-
-    fft_grafo(8, Ns, _),
-    productos_por(Ns, 2, C).
+test(ejercicio_4, [true(N-M == 8-4)]) :-
+    aggregate_all(count, diagnostico(flach, sumador, [[0, 0, 1]-[0, 1]], _),
+                  N),
+    por_filtro(flach, sumador, [[0, 0, 1]-[0, 1]], Ds),
+    length(Ds, M).
 
-test(ejercicio_4_sin_raiz, [true(C == 0)]) :-
-    fft_grafo(8, Ns, _),
-    productos_por(Ns, 7, C).
+test(ejercicio_4_dos, [fail]) :-
+    mas_simples(flach, sumador, [[0, 0, 1]-[0, 1], [1, 0, 0]-[1, 0]], _).
 
-test(ejercicio_4_no_triviales, [true(Cs == [2, 10, 34])]) :-
-    maplist(productos_no_triviales, [8, 16, 32], Cs).
+test(ejercicio_6, [true(D == [A])]) :-
+    A = [[m1, y1]-pegada(1), [m2, x1]-pegada(0)],
+    predecir(sumador_sondas, [0, 0, 1], A, Ss),
+    localizar(sumador_sondas, A, [[0, 0, 1]-Ss], _, D).
 
-test(ejercicio_5, [true(Ps == [2, 3, 2, 3])]) :-
-    fft_grafo(4, Ns, Ss),
-    maplist(profundidad(Ns), Ss, Ps).
+test(ejercicio_7, [nondet, true(R == [[m1, x1], [m1, y1], [m2, x1], [m2, y1],
+                                      [o1]])]) :-
+    explicar(fuerte, sumador, [[1, 0, 1]-[0, 1]], S),
+    sanas(S, R).
 
-test(ejercicio_5_maximas, [true(Ps-Qs == [3, 5, 7]-[4, 8, 16])]) :-
-    findall(P, ( member(N, [4, 8, 16]),
-                 fft_grafo(N, Ns, Ss),
-                 profundidad_maxima(Ns, Ss, P) ), Ps),
-    findall(Q, ( member(N, [4, 8, 16]),
-                 tdf_ingenua(N, Es0),
-                 maplist(simplificar_raices(N), Es0, Es),
-                 grafo(Es, Ns, Ss),
-                 profundidad_maxima(Ns, Ss, Q) ), Qs).
+test(ejercicio_8, [true(Ss == [[arranque-malo, bateria-bien],
+                                [combustible-vacio, bateria-bien]])]) :-
+    findall(S, ( abducir((motor(no_arranca), luces(encendidas)), S),
+                 cerrar(S) ),
+            Ss).
 
-test(ejercicio_5_hoja, [true(P == 0)]) :-
-    profundidad([nodo(1, a(0))], 1, P).
+test(ejercicio_9, [true(D == [[s2, m2, y1]-pegada(0)])]) :-
+    mas_probables(sumador3, [[1, 1, 0, 1, 0, 1]-[0, 0, 0, 0]], 2,
+                  [_-D|_]).
 
-test(ejercicio_5_ausente, [fail]) :-
-    profundidad([nodo(1, a(0))], 2, _).
+test(ejercicio_10, [true(C == [[m1, x1], [m2, x1]])]) :-
+    cono(sumador, s, C).
 
-test(ejercicio_8, [forall(member(N, [2, 4, 8, 16, 32]))]) :-
-    fft_arboles(N, Es0),
-    maplist(simplificar_raices(N), Es0, Es),
-    grafo(Es, G1, S1),
-    grafo_rapido(Es, G2, S2),
-    assertion(G1 == G2),
-    assertion(S1 == S2).
+test(ejercicio_10_conos, [true]) :-
+    O = [1, 1, 0, 1, 0, 1]-[1, 0, 0, 0],
+    minimos(fuerte, sumador3, [O], 2, Ds),
+    forall(member(D, Ds), toca_los_conos(sumador3, O, D)).
 
-test(ejercicio_9, [true(Vs == [c(10, 0), c(-2, -2), c(-2, 0), c(-2, 2)])]) :-
-    fft_grafo(4, Ns, Ss),
-    valor_grafo_exacto(4, [1, 2, 3, 4], Ns, Ss, Vs).
+test(ejercicio_11, [true(P-U == [[0, 0, 0], [0, 1, 1], [1, 1, 1]]-[])]) :-
+    conjunto_de_pruebas(sumador, P, U).
 
-test(ejercicio_9_orden, [error(domain_error(orden_exacto, 8))]) :-
-    raiz_exacta(8, 1, _).
+% Con un solo supuesto por componente, la copia coincide con abducir/2.
+test(abducir_mal_una, all(S == [[[g]-pegada(0)], [[g]-invertida]])) :-
+    abducir_mal(salida(fuerte, [g], and, [1, 1], 0), S),
+    cerrar(S).
 
-test(ejercicio_10, [forall(member(N, [1, 2, 4, 8, 16]))]) :-
-    numlist(1, N, Cs),
-    fft_numerica(Cs, Xs),
-    fft_inversa(Xs, As),
-    maplist([C, c(C, 0)]>>true, Cs, Esperados),
-    cercanos(As, Esperados).
+test(abductiva_mal, all(S-Sp == [1-[[g]-ok], 0-[[g]-pegada(0)],
+                                 1-[[g]-pegada(1)], 0-[[g]-invertida]])) :-
+    abductiva_mal(Sp, [g], and, [1, 1], S),
+    cerrar(Sp).
 
-test(ejercicio_11, [true(R == [4, 13, 22, 15])]) :-
-    producto_polinomios([1, 2, 3], [4, 5], R).
+test(observar_mal, all(S == [[[x1]-ok, [y1]-ok], [[x1]-ok, [y1]-pegada(1)],
+                             [[x1]-pegada(0), [y1]-ok],
+                             [[x1]-pegada(0), [y1]-pegada(1)]])) :-
+    observar_mal(semisumador, S, [1, 1]-[0, 1]),
+    cerrar(S).
 
-test(ejercicio_11_potencia, [true(R == [1, 4, 6, 4, 1])]) :-
-    producto_polinomios([1, 2, 1], [1, 2, 1], R).
+test(repetida_no, [fail]) :-
+    repetida([[a]-x, [b]-y]).
 
-% Ejercicio 12: dos claves con variables libres unifican.
-test(ejercicio_12, [true(V1 == V2)]) :-
-    buscar(op(+, _, _), D, V1),
-    buscar(op(-, _, _), D, _),
-    buscar(op(+, _, _), D, V2).
+test(repetida_si, [true]) :-
+    repetida([[b]-y, [a]-x, [a]-y]).
 
-test(profundidad_version, [true(P-Q == 5-8)]) :-
-    profundidad_version(mariposa, 8, P),
-    profundidad_version(matriz_grafo, 8, Q).
+test(sanas_vacio, [true(R == [])]) :-
+    sanas([], R).
 
-test(rotaciones, [true(N == 16)]) :-
-    rotaciones(Es),
-    length(Es, N).
+test(sanas, [true(R == [[a], [c]])]) :-
+    sanas([[a]-ok, [b]-pegada(1), [c]-ok], R).
 
-% Ejercicio 6: el grafo comparte los productos de senos y cosenos.
-test(costo_rotaciones, [true(S0-P0-S-P == 4-8-4-7)]) :-
-    costo_rotaciones(S0, P0, S, P).
+test(multiplicar, [true(P =:= 0.0005)]) :-
+    multiplicar([g]-invertida, 0.5, P).
 
-test(presente, [true(I == 2)]) :-
-    presente(b, [a-1, b-2|_], I).
+test(con_probabilidad_sano, [true(abs(P - 0.979 ** 5) < 1.0e-12)]) :-
+    con_probabilidad(5, [], P-[]).
 
-% presente/3 no agrega la clave que falta.
-test(presente_ausente, [fail]) :-
-    presente(c, [a-1, b-2|_], _).
+test(con_probabilidad, [true(abs(P - 0.01 * 0.979 ** 4) < 1.0e-12)]) :-
+    con_probabilidad(5, [[g]-pegada(1)], P-_).
 
-test(presente_vacio, [fail]) :-
-    presente(c, _, _).
+% pegada(1) es diez veces más probable que invertida.
+test(mas_probables, [true(Ds == [[[m1, x1]-pegada(1)],
+                                 [[m1, x1]-invertida]])]) :-
+    mas_probables(sumador, [[0, 0, 1]-[0, 1]], 1, Pares),
+    pairs_values(Pares, Ds).
 
-test(agregar_rapido, [true(D == [a-1, b-2, a*b-3, a*b+a*b-4])]) :-
-    agregar_rapido(D, a * b + a * b, _),
-    numerar(D, 1),
-    length(D, 4).
+test(cono_acarreo, [true(C == [[m1, x1], [m1, y1], [m2, y1], [o1]])]) :-
+    cono(sumador, co, C).
 
-test(valor_exacto, [true(V == c(2, 1))]) :-
-    valor_exacto(4, [1, 2], a(1) + w(1) * a(0), V).
+test(depende_entrada, [true(R-E == []-[a])]) :-
+    depende(sumador, [], a, R, E).
 
-test(raiz_exacta, [true(Vs == [c(0, -1), c(-1, 0), c(1, 0)])]) :-
-    raiz_exacta(4, 3, V1),
-    raiz_exacta(2, 1, V2),
-    raiz_exacta(1, 5, V3),
-    Vs = [V1, V2, V3].
+test(depende_cable, [true(R-E == [[m1, x1]]-[a, b])]) :-
+    depende(sumador, [], t, R, E).
 
-test(fft_exacta, [true(Vs == [c(10, 0), c(-2, -2), c(-2, 0), c(-2, 2)])]) :-
-    fft_exacta([1, 2, 3, 4], Vs).
+test(unir, [true(U == [[m1, x1]]-[a, a, b])]) :-
+    unir(sumador, [], t, []-[a], U).
 
-test(fft_inversa_grafo, [true(Ss == [3, 4])]) :-
-    fft_inversa_grafo(2, _, Ss).
+test(toca_los_conos_no, [fail]) :-
+    toca_los_conos(sumador, [0, 0, 1]-[0, 1], [[o1]-pegada(1)]).
 
-% La salida 1 de la inversa de orden 4 usa la potencia 3 = -1 módulo 4.
-test(salida_inversa, [true(E == a(0) + w(2) * a(2)
-                                + w(3) * (a(1) + w(2) * a(3)))]) :-
-    salida_inversa([0, 1, 2, 3], 4, 1, E).
+test(toca_los_conos_si, [true]) :-
+    toca_los_conos(sumador, [0, 0, 1]-[0, 1], [[m1, x1]-pegada(1)]).
 
-test(dividir, [true(W == c(0.5, -2))]) :-
-    dividir(4, c(2, -8), W).
+test(detecta_si, [true]) :-
+    detecta(sumador, [0, 0, 1], [o1]-pegada(1)).
 
-test(potencia_mayor, [true(Ns == [8, 4, 8])]) :-
-    potencia_mayor(5, 1, N1),
-    potencia_mayor(4, 4, N2),
-    potencia_mayor(1, 8, N3),
-    Ns = [N1, N2, N3].
+test(detecta_no, [fail]) :-
+    detecta(sumador, [0, 0, 1], [o1]-pegada(0)).
 
-test(completar, [true(Q == [1, 2, 0, 0])]) :-
-    completar([1, 2], 4, Q).
+test(fallas_simples, [true(N == 15)]) :-
+    fallas_simples(sumador, Fs),
+    length(Fs, N).
 
-test(completar_lleno, [true(Q == [1, 2])]) :-
-    completar([1, 2], 2, Q).
+test(conjunto_semisumador, [true(P-U == [[0, 0], [0, 1], [1, 1]]-[])]) :-
+    conjunto_de_pruebas(semisumador, P, U).
 
-test(producto_constantes, [true(R == [6])]) :-
-    producto_polinomios([3], [2], R).
+% Una falla que ninguna entrada detecta queda sin detectar.
+test(elegir_sin_deteccion, [true(P-U == []-[[o1]-pegada(0)])]) :-
+    elegir(sumador, [[0, 0, 0]], [[o1]-pegada(0)], P, U).
+
+% Ejercicio 13: en el modelo fuerte, agregar una compuerta puede romper
+% un diagnóstico.
+test(ejercicio_13, [true]) :-
+    conjunto_fuerte(sumador, [[0, 0, 1]-[0, 1], [0, 0, 0]-[1, 0]], [[m1, x1]]).
+
+test(ejercicio_13_mas, [fail]) :-
+    conjunto_fuerte(sumador, [[0, 0, 1]-[0, 1], [0, 0, 0]-[1, 0]],
+                    [[m1, x1], [o1]]).
 
 :- end_tests(soluciones).

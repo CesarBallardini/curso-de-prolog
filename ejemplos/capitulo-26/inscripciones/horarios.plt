@@ -43,10 +43,4 @@ test(horarios_validos, [fail]) :-
 test(dominio_incorrecto, [error(domain_error(clpfd_domain, 1..dos), _)]) :-
     horario(dos, 6, _).
 
-% --- Rendimiento -------------------------------------------------------------
-
-% El primer horario usa unas 26 500 inferencias.
-test(horario_rapido, true(R \== inference_limit_exceeded)) :-
-    call_with_inference_limit(once(horario(5, 6, _)), 100000, R).
-
 :- end_tests(horarios).

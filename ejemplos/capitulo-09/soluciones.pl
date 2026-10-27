@@ -167,3 +167,98 @@ prenda_corte_final(T, C, M) :-
     tela(M),
     !.
 prenda_corte_final(unico, negro, cuero).
+
+% --- Ejercicio 17 ----------------------------------------------------------
+
+%!  identifica(+Datos, -Secuencia) is det.
+%
+%   Secuencia es la forma de la lista de números Datos: maximo, minimo,
+%   meseta o sinorden. Plantilla 14. Secuencia debe llegar libre: con
+%   sinorden ya ligado, la última cláusula lo acepta sin verificar nada.
+identifica(Datos, maximo) :-
+    append(Sube, [Cima|Baja], Datos),
+    Sube = [_|_],
+    Baja = [_|_],
+    append(Sube, [Cima], Subida),
+    creciente(Subida),
+    decreciente([Cima|Baja]),
+    !.
+identifica(Datos, minimo) :-
+    append(Baja, [Fondo|Sube], Datos),
+    Baja = [_|_],
+    Sube = [_|_],
+    append(Baja, [Fondo], Bajada),
+    decreciente(Bajada),
+    creciente([Fondo|Sube]),
+    !.
+identifica(Datos, meseta) :-
+    append(Sube, Resto, Datos),
+    Sube = [_|_],
+    append(Meseta, Baja, Resto),
+    Meseta = [Primero, _|_],
+    Baja = [_|_],
+    append(Sube, [Primero], Subida),
+    creciente(Subida),
+    constante(Meseta),
+    last(Meseta, Ultimo),
+    decreciente([Ultimo|Baja]),
+    !.
+identifica(_, sinorden).
+
+%!  creciente(+L) is semidet.
+%
+%   Los números de L están en orden estrictamente creciente.
+creciente([]).
+creciente([_]).
+creciente([X, Y|Resto]) :-
+    X < Y,
+    creciente([Y|Resto]).
+
+%!  decreciente(+L) is semidet.
+%
+%   Los números de L están en orden estrictamente decreciente.
+decreciente([]).
+decreciente([_]).
+decreciente([X, Y|Resto]) :-
+    X > Y,
+    decreciente([Y|Resto]).
+
+%!  constante(+L) is semidet.
+%
+%   Todos los números de L son iguales.
+constante([]).
+constante([_]).
+constante([X, Y|Resto]) :-
+    X =:= Y,
+    constante([Y|Resto]).
+
+% --- Ejercicio 18 ----------------------------------------------------------
+
+%!  sust(+L1, +P1, +P2, -L2) is det.
+%
+%   L2 es L1 con cada aparición de la lista P1 reemplazada por la lista P2,
+%   de izquierda a derecha y sin superposiciones. P1 no puede ser vacía.
+sust([], _, _, []).
+sust(L1, P1, P2, L2) :-
+    append(P1, Resto, L1),
+    !,
+    sust(Resto, P1, P2, R),
+    append(P2, R, L2).
+sust([X|Xs], P1, P2, [X|L2]) :-
+    sust(Xs, P1, P2, L2).
+
+% --- Ejercicio 19 ----------------------------------------------------------
+
+%!  atomiza(+Xs, -Ys) is det.
+%
+%   Ys tiene los elementos de Xs que no son listas, de todos los niveles de
+%   anidamiento, en orden. Los cortes distinguen una lista de un elemento.
+atomiza([], Ys) :-
+    !,
+    Ys = [].
+atomiza([X|Xs], Ys) :-
+    !,
+    atomiza(X, Ys1),
+    atomiza(Xs, Ys2),
+    append(Ys1, Ys2, Ys).
+atomiza(X, [X]).

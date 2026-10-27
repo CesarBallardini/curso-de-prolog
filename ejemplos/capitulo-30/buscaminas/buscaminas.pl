@@ -1,15 +1,15 @@
 :- encoding(utf8).
 
-% Capítulo 30 - Solución del ejercicio 14: las reglas del Buscaminas, sin
-% cambios desde el capítulo 29.
+% Capítulo 30 - Solución del ejercicio 13: las reglas del Buscaminas, el
+% dominio del cliente de Python.
 %
-% Las usan dos adaptadores: adaptador_prolog.py, con Janus, y servicio.pl,
-% que las ofrece por HTTP al adaptador adaptador_http.py.
-% Las reglas son las del juego de la terminal del capítulo 28: el tablero
+% El paquete de Python buscaminas las usa a través de un puerto, dominio.py,
+% que implementa adaptador_prolog.py; la interfaz de texto no las conoce.
+% Las reglas son las del juego de la terminal del capítulo 29: el tablero
 % como assoc y el recorrido que descubre una región. El módulo exporta solo
 % lo que usa Python. Una partida es el término juego(Tablero, Descubiertas,
 % Marcadas); cruza a Python envuelta en prolog/1, y Python la devuelve en
-% cada jugada sin mirarla. Las filas del tablero cruzan como textos.
+% cada jugada sin examinarla. Las filas del tablero cruzan como textos.
 %
 % solo-local: SWISH no admite módulos propios ni ejecuta Python.
 %
@@ -81,7 +81,7 @@ filas_py(juego(tablero(Filas, Columnas, Celdas), D, M), Minas, Textos) :-
               atom_string(Atomo, Texto) ),
             Textos).
 
-% --- El tablero y las jugadas, del capítulo 28 ------------------------------
+% --- El tablero y las jugadas, del capítulo 29 ------------------------------
 
 %!  tablero(+Filas:integer, +Columnas:integer, +Minas:list, -Tablero) is det.
 %

@@ -2,109 +2,115 @@
 
 :- begin_tests(soluciones).
 
-test(ejercicio1, [true(S-M == 3-4), nondet]) :-
-    resolver(almacen, listas, suma([1, 2], S)),
-    resolver(almacen, maximo, maximo(3, 4, M)).
+test(ej1_mcd, [N, R] == [8, 2]) :-
+    ciclos(mcd, primera, [numero(18), numero(12), numero(8)], N),
+    ejecutar(mcd, primera, [numero(18), numero(12), numero(8)], _, R).
 
-test(ejercicio1_indice, [true(S == 3)]) :-
-    resolver(indice, listas, suma([1, 2], S)).
+test(ej2_maximo, [M, R] == [[numero(30)], 30]) :-
+    ejecutar(maximo, [numero(25), numero(10), numero(15), numero(30)], M, R).
 
-test(ejercicio1_resolvente, all(M == [4])) :-
-    resolver(resolvente, maximo, maximo(3, 4, M)).
+test(ej3_criba, P == [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]) :-
+    numeros(2, 30, H),
+    ejecutar(criba, H, M, nada_aplicable),
+    findall(X, member(numero(X), M), Xs),
+    msort(Xs, P).
 
-test(ejercicio2, [true(C == 1814)]) :-
-    almacen:medir(listas, suma_hasta(200, _), M),
-    memberchk(celdas-C, M).
+test(ej4_burbuja, [B, O, BR, OR] == [45, 45, 7, 5]) :-
+    numlist(1, 10, L0),
+    reverse(L0, L),
+    posiciones(L, H),
+    ciclos(burbuja, reciente, H, B),
+    ciclos(ordenar, reciente, H, O),
+    posiciones([4, 5, 1, 3, 2], Q),
+    ciclos(burbuja, reciente, Q, BR),
+    ciclos(ordenar, reciente, Q, OR).
 
-test(ejercicio3, [true(N == 2)]) :-
-    ejecutar_archivo(ejemplos('capitulo-07/recorrer'), largo([a, b], N)).
+test(ej4_burbuja_ordena, L == [1, 2, 3, 4, 5]) :-
+    posiciones([4, 5, 1, 3, 2], H),
+    ejecutar(burbuja, primera, H, M, nada_aplicable),
+    valores(M, L).
 
-test(ejercicio4, [true(I1-I2 == 5-3)]) :-
-    medir_tipos(S, P),
-    memberchk(intentos-I1, S),
-    memberchk(intentos-I2, P).
+test(ej5_lejana, [N, L] == [10, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+                                 14, 15, 16, 17, 18, 19, 20]]) :-
+    numlist(1, 20, L0),
+    reverse(L0, L1),
+    posiciones(L1, H),
+    ciclos(ordenar, lejana, H, N),
+    ejecutar(ordenar, lejana, H, M, _),
+    valores(M, L).
 
-test(ejercicio5, [fail]) :-
-    empty_assoc(A),
-    unificar_con_prueba('$v'(0), f('$v'(0)), 0, A-[], _).
+test(ej6_ejecuciones, [N, Rs] == [6, [4, 8, 12]]) :-
+    aggregate_all(count, ejecucion(mcd, [numero(12), numero(8)], _, _), N),
+    setof(R, M^ejecucion(mcd, [numero(12), numero(8)], M, R), Rs).
 
-test(ejercicio5_sin_prueba, [true(R == [])]) :-
-    empty_assoc(A),
-    unificar('$v'(0), f('$v'(0)), 0, A-[], _-R).
+test(ej7_escrutinio, T == [total(ana, 3), total(eva, 1), total(luis, 1)]) :-
+    ejecutar(escrutinio,
+             [voto(ana), voto(luis), voto(ana), voto(eva), voto(ana)], M,
+             nada_aplicable),
+    msort(M, T).
 
-test(ejercicio5_ligada, [fail]) :-
-    empty_assoc(A0),
-    unificar_con_prueba('$v'(0), g('$v'(1)), 0, A0-[], A1),
-    unificar_con_prueba('$v'(1), h('$v'(0)), 0, A1, _).
+test(ej8_subsuncion, all(F-B == [(p v -p)-2, (((p ==> q) ==> p) ==> p)-3])) :-
+    member(F, [p v -p, ((p ==> q) ==> p) ==> p]),
+    memoria_inicial(F, M),
+    ciclos(resolucion_subsuncion, primera, M, B).
 
-test(ejercicio7_signo, all(S == [negativo, positivo])) :-
-    transformado(disyuncion, signo(-2, S)).
+test(ej8_mismo_veredicto, all(R == [contradiccion, sin_contradiccion])) :-
+    member(F, [(a ==> b) & (b ==> c) ==> (a ==> c),
+               (p ==> q) ==> (q ==> p)]),
+    memoria_inicial(F, M),
+    vigilar(resolucion_subsuncion, primera, 500, M, _, R).
 
-test(ejercicio7_nativo, [true(Ss == Ns)]) :-
-    disyuncion(Cs),
-    nativas(Cs, signo(-2, _), Ns),
-    findall(signo(-2, S), transformado(disyuncion, signo(-2, S)), Ss).
+test(ej9_sin_control, [R, L] == [limite(50), 52]) :-
+    memoria_inicial((p v q) ==> p, M0),
+    vigilar(resolucion_sin_control, primera, 50, M0, M, R),
+    length(M, L).
 
-test(ejercicio7_soltero, all(P == [ana])) :-
-    transformado(disyuncion, soltero(P)).
+test(ej9_teorema_termina, R == contradiccion) :-
+    memoria_inicial((a ==> b) & (b ==> c) ==> (a ==> c), M),
+    vigilar(resolucion_sin_control, primera, 50, M, _, R).
 
-% El corte de la disyunción transformada no corta las cláusulas de p/1.
-test(ejercicio7_corte, [true(Xs-Ns == [1, 3]-[p(1)])]) :-
-    findall(X, transformado(corte_en_disyuncion, p(X)), Xs),
-    corte_en_disyuncion(Cs),
-    nativas(Cs, p(_), Ns).
+test(ej10_historia, [H, R] == [[ciclo(1, resta, 3, [numero(12), numero(8)]),
+                                ciclo(2, resta, 3, [numero(8), numero(4)]),
+                                ciclo(3, resultado, 2, [numero(4)])], 4]) :-
+    historia(mcd, primera, [numero(12), numero(8)], H, R).
 
-test(ejercicio8, [true(Ps == [295-86, 985-166, 3565-326])]) :-
-    findall(P-Q, ( member(N, [20, 40, 80]),
-                   pasos_de(invertir_hasta(N, _), P),
-                   pasos_de(invertir_acc_hasta(N, _), Q)
-                 ), Ps).
+test(ej10_igual_a_trazar, S1 == S2) :-
+    Memoria = [numero(25), numero(10), numero(15), numero(30)],
+    with_output_to(string(S1), trazar(mcd, primera, Memoria, _, _)),
+    historia(mcd, primera, Memoria, H, _),
+    with_output_to(string(S2), escribir_historia(H)).
 
-test(ejercicio11, [true(Ms == [51-4, 101-4])]) :-
-    findall(P-Q, ( member(N, [50, 100]),
-                   metas_de(longitud_hasta(N, _), P),
-                   metas_de(longitud_acc_hasta(N, _), Q)
-                 ), Ms).
+test(ej11_ruido, [R1, R2] == [60, 60]) :-
+    findall(numero(X), ( between(1, 12, I), X is I * 60 ), Ns),
+    ruido(100, Ruido),
+    append(Ns, Ruido, M),
+    ejecutar(mcd, M, _, R1),
+    ejecutar(mcd, primera, M, _, R2).
 
-test(ocurre, [true]) :-
-    empty_assoc(A),
-    ocurre(0, f(a, g('$v'(0))), A).
+test(ej12_luz_limitada, [M, R] == [[luz(apagada), cambios(0)], listo]) :-
+    vigilar(luz_limitada, primera, 100, [luz(encendida), cambios(3)], M, R).
 
-% La celda 1 está ligada a un término que contiene la celda 0.
-test(ocurre_ligada, [true]) :-
-    list_to_assoc([1-h('$v'(0))], A),
-    ocurre(0, f('$v'(1)), A).
+test(ej3_primos_hasta, P == [2, 3, 5, 7, 11, 13, 17, 19]) :-
+    primos_hasta(20, P).
 
-test(ocurre_no, [fail]) :-
-    empty_assoc(A),
-    ocurre(0, f(a, '$v'(1)), A).
+test(ej9_vigilar_formula, [R, N] == [limite(50), 52]) :-
+    vigilar_formula(resolucion_sin_control, (p v q) ==> p, 50, R, N).
 
-test(auxiliar, [true(N-L =@= 3-'$o3'(A, B))]) :-
-    auxiliar(o, f(A, B, A), 2, N, L).
+test(ej5_ciclos_invertida, [N, P] == [10, 190]) :-
+    ciclos_invertida(ordenar, lejana, 20, N),
+    ciclos_invertida(ordenar, primera, 20, P).
 
-test(transformar_cuerpo,
-     [true(C-Aux-N =@= (a, '$no1'(Y))-[('$no1'(Y) :- b(Y), !, fail),
-                                       ('$no1'(Y) :- true)]-1)]) :-
-    transformar_cuerpo((a, \+ b(Y)), C, Aux, [], 0, N).
+test(distancia, [true(Cs == [-3, 0])]) :-
+    distancia([reemplazar(pos(2, b), pos(2, a)),
+               reemplazar(pos(5, a), pos(5, b))], C1),
+    distancia([agregar(x)], C2),
+    Cs = [C1, C2].
 
-test(transformar,
-     [true(Cs =@= [ (p(X) :- '$o1'(X)),
-                    ('$o1'(X) :- q(X)),
-                    ('$o1'(X) :- r(X)),
-                    (s :- '$no2'),
-                    ('$no2' :- t, !, fail),
-                    ('$no2' :- true)
-                  ])]) :-
-    transformar([(p(X) :- (q(X) ; r(X))), (s :- \+ t)], Cs).
-
-% Un programa sin disyunciones ni negaciones queda igual.
-test(transformar_igual, [true(Cs == Cs0)]) :-
-    Cs0 = [(p(a) :- true), (q :- p(a), p(a))],
-    transformar(Cs0, Cs).
-
-test(medir_con_acumuladores, [true(R-M == 1-4)]) :-
-    medir_con_acumuladores(longitud_acc_hasta(10, _), Ms),
-    memberchk(respuestas-R, Ms),
-    memberchk(metas-M, Ms).
+% La estrategia lejana prefiere el intercambio más distante.
+test(clave_lejana, [true(C == -4)]) :-
+    clave(lejana, 9, instancia(i, 3, [0, 4],
+                               [reemplazar(pos(1, c), pos(1, a)),
+                                reemplazar(pos(5, a), pos(5, c))]),
+          C).
 
 :- end_tests(soluciones).

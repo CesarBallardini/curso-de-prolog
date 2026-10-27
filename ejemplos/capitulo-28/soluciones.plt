@@ -2,82 +2,117 @@
 
 :- begin_tests(soluciones).
 
-%!  responder(+Entrada:string, -In, :Pregunta, -Salida:string) is det.
-%
-%   Ejecuta Pregunta con In, un stream sobre Entrada, como teclado; Salida
-%   es lo que Pregunta escribió.
-responder(Entrada, In, Pregunta, Salida) :-
-    setup_call_cleanup(open_string(Entrada, In),
-                       with_output_to(string(Salida), Pregunta),
-                       close(In)).
+% Ejercicio 1.
+test(contar_terminos, true(N == 4)) :-
+    contar_terminos(archivos('hechos.txt'), N).
 
-%!  eco(-Archivo:atom) is det.
-%
-%   Archivo es la ruta de eco.pl, en el directorio de este capítulo.
-eco(Archivo) :-
-    source_file(user:codigo_de(_, _, _), Soluciones),
-    file_directory_name(Soluciones, Directorio),
-    directory_file_path(Directorio, 'eco.pl', Archivo).
+% Ejercicio 2: agregar no borra lo anterior.
+test(agregar_termino, [ setup(tmp_file(terminos, F)),
+                        cleanup(delete_file(F)),
+                        true(T == [a(1), b]) ]) :-
+    agregar_termino(F, a(1)),
+    agregar_termino(F, b),
+    leer_terminos(F, T).
 
-% Ejercicio 4: un número fuera de rango, y después uno válido.
-test(preguntar_opcion, true(E == algebra)) :-
-    responder("3\n2\n", In,
-              preguntar_opcion(In, "¿Materia?", [logica, algebra], E), _).
+% Ejercicio 3.
+test(copiar_en_mayusculas,
+     [ setup(tmp_file(salida, F)),
+       cleanup(delete_file(F)),
+       true(S == "HOLA MUNDO\nSEGUNDA LINEA\n\nTERCERA\n") ]) :-
+    copiar_en_mayusculas(archivos('texto.txt'), F),
+    read_file_to_string(F, S, [encoding(utf8)]).
 
-% Ejercicio 5.
-test(guepardo, true(A == guepardo)) :-
-    responder("s\ns\ns\ns\n", In, identificar(In, A), _).
+% Ejercicio 4.
+test(linea_mas_larga, true(L == "segunda linea")) :-
+    linea_mas_larga(archivos('texto.txt'), L).
 
-test(tigre, true(A == tigre)) :-
-    responder("s\ns\ns\nn\nn\ns\n", In, identificar(In, A), _).
-
-test(desconocido, true(A == desconocido)) :-
-    responder("n\nn\nn\nn\n", In, identificar(In, A), _).
-
-% Cada dato se pregunta una sola vez: cuatro preguntas para el guepardo.
-test(sin_repetir, true(N == 4)) :-
-    responder("s\ns\ns\ns\n", In, identificar(In, _), S),
-    aggregate_all(count, sub_string(S, _, _, _, "(s/n)"), N).
+% Ejercicio 5: con un archivo donde las palabras se repiten.
+test(frecuencias, [ setup(tmp_file(texto, F)),
+                    cleanup(delete_file(F)),
+                    true(P == ["a"-3, "b"-2, "c"-1]) ]) :-
+    setup_call_cleanup(open(F, write, S, [encoding(utf8)]),
+                       format(S, "b a c~na b~n  a~n", []),
+                       close(S)),
+    frecuencias(F, P).
 
 % Ejercicio 6.
-test(primera_linea, true(Inicio == "SWI-Prolog")) :-
-    primera_linea_de(swipl, ['--version'], L),
-    sub_string(L, 0, 10, _, Inicio).
+test(archivos_con_extension, true(N == ['alumnos.csv'])) :-
+    archivos_con_extension(csv, N).
 
-% Ejercicio 7: el programa del ejercicio 3, con y sin argumentos.
-test(eco_con_argumentos, true(C == 0)) :-
-    eco(Eco),
-    codigo_de(Eco, [uno, dos], C).
+test(sin_archivos_con_extension, true(N == [])) :-
+    archivos_con_extension(xml, N).
 
-test(eco_sin_argumentos, true(C == 1)) :-
-    eco(Eco),
-    codigo_de(Eco, [], C).
+% Ejercicio 7: legajos y años de ingreso, alternados.
+test(numeros_del_archivo, true(Primeros == [101, 2023, 102, 2024])) :-
+    numeros_del_archivo(archivos('alumnos.csv'), Numeros),
+    length(Numeros, 14),
+    length(Primeros, 4),
+    append(Primeros, _, Numeros).
 
-% Ejercicio 8.
-test(antes_del_cumpleanios, true(E == 20)) :-
-    edad_en(date(2005, 10, 3), date(2026, 9, 25), E).
+% Ejercicio 8: escribir y volver a leer da los mismos alumnos.
+test(alumnos_a_csv, [ setup(tmp_file(alumnos, F)),
+                      cleanup(delete_file(F)),
+                      true(Leidos == Alumnos) ]) :-
+    alumnos_csv(archivos('alumnos.csv'), Alumnos),
+    alumnos_a_csv(Alumnos, F),
+    alumnos_csv(F, Leidos).
 
-test(el_dia_del_cumpleanios, true(E == 21)) :-
-    edad_en(date(2005, 9, 25), date(2026, 9, 25), E).
+% Ejercicio 9.
+test(materias_validadas, true(N == 7)) :-
+    materias_json_validado(archivos('materias.json'), M),
+    length(M, N).
 
-% Ejercicio 9: de un viernes al lunes siguiente.
-test(proximo_habil, true(H == date(2026, 9, 28))) :-
-    proximo_habil(date(2026, 9, 25), H).
-
-test(proximo_habil_entre_semana, true(H == date(2026, 9, 23))) :-
-    proximo_habil(date(2026, 9, 22), H).
+test(materia_sin_anio,
+     [ setup(tmp_file(materias, F)),
+       cleanup(delete_file(F)),
+       error(domain_error(objeto_materia, _{codigo: am1, nombre: x})) ]) :-
+    setup_call_cleanup(open(F, write, S, [encoding(utf8)]),
+                       write(S, '[{"codigo": "am1", "nombre": "x"}]'),
+                       close(S)),
+    materias_json_validado(F, _).
 
 % Ejercicio 10.
-test(fecha_corta, true(T == "vie 25/09")) :-
-    fecha_corta(date(2026, 9, 25), T).
+test(materias_a_yaml, true(Primeras == ["- anio: 1", "  codigo: am1",
+                                        "  nombre: analisis_1"])) :-
+    materias_a_yaml(archivos('materias.json'), Texto),
+    split_string(Texto, "\n", "", [A, B, C|_]),
+    Primeras = [A, B, C].
 
-test(fecha_corta_con_cero, true(T == "sáb 05/09")) :-
-    fecha_corta(date(2026, 9, 5), T).
+% Ejercicio 11.
+test(tabla_ajustable, [ setup(set_setting(user:ancho, 10)),
+                        cleanup(restore_setting(user:ancho)),
+                        true(S == "Legajo    Nombre        Promedio\n\c
+                                   101       ana               8.50\n") ]) :-
+    with_output_to(string(S), tabla_ajustable([101-ana-8.5])).
 
-% Ejercicio 11: la ruta termina con el nombre del programa.
-test(directorio_de_datos) :-
-    directorio_de_datos(inscripciones, D),
-    file_base_name(D, inscripciones),
-    \+ sub_atom(D, _, _, _, '\\').
+test(ajuste_guardado, [ setup(( set_setting(user:ancho, 10),
+                                tmp_file(ajustes, F) )),
+                        cleanup(( restore_setting(user:ancho),
+                                  delete_file(F) )),
+                        true(T == [setting(user:ancho, 10)]) ]) :-
+    save_settings(F),
+    leer_terminos(F, T).
+
+% Ejercicio 16: lo marcado se recupera al volver a asociar el archivo.
+test(asistencias_recuperadas,
+     [ setup(tmp_file(asistencias, F)),
+       cleanup(delete_file(F)),
+       true(Fechas == ['2026-03-02', '2026-03-09']) ]) :-
+    abrir_asistencias(F),
+    marcar_asistencia(101, '2026-03-09'),
+    marcar_asistencia(101, '2026-03-02'),
+    marcar_asistencia(101, '2026-03-02'),
+    marcar_asistencia(102, '2026-03-02'),
+    cerrar_asistencias,
+    asistencias_de(101, []),
+    abrir_asistencias(F),
+    asistencias_de(101, Fechas),
+    cerrar_asistencias.
+
+test(asistencia_tipo, [ setup(( tmp_file(asistencias, F),
+                                abrir_asistencias(F) )),
+                        cleanup(( cerrar_asistencias, delete_file(F) )),
+                        error(type_error(integer, ana)) ]) :-
+    marcar_asistencia(ana, '2026-03-02').
 
 :- end_tests(soluciones).

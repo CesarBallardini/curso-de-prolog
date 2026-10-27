@@ -2,28 +2,13 @@
 
 :- begin_tests(capitulo41).
 
-test(alfabeta, [true(J-V-N == 5-1-36)]) :-
-    inicial(tateti(3), P),
-    alfabeta(tateti(3), P, 2, J, V, N).
+test(vuelta, [true(P-C == [ir(2-2), ir(2-1), ir(1-1)]-3)]) :-
+    vuelta(2-3, [1-1, 1-2, 2-1, 2-2, 2-3, 3-2], P, C, _).
 
-test(profundizar, [true(D >= 1)]) :-
-    inicial(tateti(3), P),
-    profundizar(tateti(3), P, 1, _, _, D).
+test(en_casa, [true(P == [])]) :-
+    vuelta(1-1, [1-1], P, _, _).
 
-test(fin, [true(R == gana(x))]) :-
-    fin(tateti(3), pos([x, x, x, o, o, v, v, v, v], o), R).
-
-test(jugadas, [true(N == 9)]) :-
-    inicial(tateti(3), P),
-    aggregate_all(count, jugada(tateti(3), P, _, _), N).
-
-test(turno, [true(L == min)]) :-
-    turno(tateti(3), pos([x, v, v, v, v, v, v, v, v], o), L).
-
-test(valor_final, [true(V == 0)]) :-
-    valor_final(empate, cualquiera, V).
-
-test(evaluar, [true(V == 4)]) :-
-    evaluar(tateti(3), pos([v, v, v, v, x, v, v, v, v], o), V).
+test(sin_camino, [fail]) :-
+    vuelta(3-3, [1-1, 3-3], _, _, _).
 
 :- end_tests(capitulo41).

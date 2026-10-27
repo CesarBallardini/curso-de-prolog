@@ -2,306 +2,272 @@
 
 % Capítulo 84 - Soluciones de los ejercicios.
 %
-% Carga aprendido.pl, que carga las versiones 1, 3 y 4 y el perceptrón del
-% capítulo 69, comun.pl y paralelo.pl, sin modificarlos.
+% Carga cribar.pl (la versión 1 del filtro), paso/7 y final/1 de
+% cribar_seguro.pl, y curvas_programa.pl, que carga curvas.pl y cicloide.pl;
+% ninguno se modifica. La versión 2 del filtro se llama como
+% cribar_seguro:cribar/4, porque cribar/4 es también la versión 1. Las
+% clases de curva nuevas se agregan como cláusulas de curvas:punto/3.
 %
-% solo-local: lee archivos y carga otros archivos.
+% solo-local: carga otros archivos.
 %
-%?- por_recurso(registros('2026-10-01.log'), Filas).
+%?- conservar(["a", "INICIO", "b", "FIN", "c"], "INICIO", "FIN", Q).
+%?- secciones(["a", "INICIO", "b", "FIN", "c"], "INICIO", "FIN", R).
 
-:- use_module(library(apply)).
-:- use_module(library(lists)).
-:- use_module(library(pairs)).
-:- use_module(library(assoc)).
-:- use_module(library(dcg/basics)).
-:- use_module(aprendido).
-:- use_module(comun).
-:- use_module(paralelo).
+:- ensure_loaded(cribar).
+:- use_module(cribar_seguro, [paso/7, final/1]).
+:- ensure_loaded(curvas_programa).
+:- use_module(cicloide, [decimal//1, codigos//1]).
 
-% Ejercicio 1
+% --- Ejercicio 2 ------------------------------------------------------------
 
-%!  pendientes_de(+Terminos:list, -Pendientes:list) is det.
+%!  conservar(+Lineas:list(string), +Inicio:string, +Fin:string,
+%!            -Quedan:list(string)) is det.
 %
-%   Pendientes son los pedidos sin respuesta de los Terminos de un
-%   registro, leídos en orden con paso/4 de la versión 1.
-pendientes_de(Terminos, Pendientes) :-
-    empty_assoc(A0),
-    foldl(paso_pendientes, Terminos, A0-[], A-P0),
-    cerrar(A, P1),
-    append(P0, P1, Pendientes).
+%   Quedan son las líneas de Lineas que están dentro de las secciones, sin
+%   las marcas. Lanza los errores de paso/7 y final/1.
+conservar(Lineas, Inicio, Fin, Quedan) :-
+    conservar(Lineas, 1, copiando, Inicio, Fin, Quedan).
 
-% paso_pendientes(T, A0-P0, A-P): paso/4 que guarda solo los pendientes.
-paso_pendientes(Termino, A0-P0, A-P) :-
-    paso(Termino, A0, A, Producidos),
-    include(es_pendiente, Producidos, Nuevos),
-    append(P0, Nuevos, P).
-
-% es_pendiente(T): T es un pedido sin respuesta.
-es_pendiente(pendiente(_, _, _, _)).
-
-% registro_engañoso(Terminos): dos corridas en las que el pedido 1 de la
-% primera queda sin respuesta, y el de la segunda la tiene.
-registro_enganoso([ server(started, 0),
-                    request(1, 1.0, [peer(a), method(get), path('/x')]),
-                    server(started, 5),
-                    request(1, 6.0, [peer(b), method(get), path('/y')]),
-                    completed(1, 0.1, 10, 200, ok),
-                    server(stopped, 9) ]).
-
-% Ejercicio 2
-
-%!  por_recurso(+Archivo, -Filas:list) is det.
+%!  conservar(+Lineas:list(string), +N:integer, +Estado, +Inicio:string,
+%!            +Fin:string, -Quedan:list(string)) is det.
 %
-%   Filas tiene una fila(Recurso, Pedidos, Cpu) por recurso del registro
-%   Archivo, el primer segmento de la ruta: la cantidad de pedidos y el
-%   tiempo de CPU medio, de más a menos pedidos.
-por_recurso(Archivo, Filas) :-
-    leer_registro(Archivo, Pedidos),
-    maplist(recurso_cpu, Pedidos, Pares),
-    keysort(Pares, Ordenados),
-    group_pairs_by_key(Ordenados, Grupos),
-    maplist(fila, Grupos, Filas0),
-    map_list_to_pairs(menos_pedidos, Filas0, Decoradas),
-    keysort(Decoradas, PorPedidos),
-    pairs_values(PorPedidos, Filas).
+%   Como conservar/4, con la primera línea numerada N y el recorrido en
+%   Estado. Una línea queda si el recorrido está salteando antes y después
+%   de su paso: las marcas cambian el estado, y las líneas de afuera no
+%   están salteando.
+conservar([], _, Estado, _, _, []) :-
+    final(Estado).
+conservar([Linea|Lineas], N, Estado, Inicio, Fin, Quedan) :-
+    paso(Estado, N, Linea, Inicio, Fin, Estado1, _),
+    (   Estado = salteando(_),
+        Estado1 = salteando(_)
+    ->  Quedan = [Linea|Resto]
+    ;   Quedan = Resto
+    ),
+    N1 is N + 1,
+    conservar(Lineas, N1, Estado1, Inicio, Fin, Resto).
 
-% recurso_cpu(Pedido, Recurso-Cpu): el recurso del Pedido y su CPU.
-recurso_cpu(pedido(_, _, _, Ruta, _, Cpu), Recurso-Cpu) :-
-    recurso(Ruta, Recurso).
+% --- Ejercicio 3 ------------------------------------------------------------
 
-%!  recurso(+Ruta:atom, -Recurso:atom) is det.
+%!  cribar_sangria(+Lineas:list(string), +Inicio:string, +Fin:string,
+%!                 -Quedan:list(string)) is det.
 %
-%   Recurso es el primer segmento de la Ruta, con la barra: el de
-%   '/alumnos/123' es '/alumnos'.
-recurso(Ruta, Recurso) :-
-    split_string(Ruta, "/", "", ["", Primero|_]),
-    atom_concat('/', Primero, Recurso).
+%   Como cribar/4 de la versión 2, con las marcas reconocidas también
+%   después de espacios y tabulaciones. Las líneas que quedan no cambian.
+cribar_sangria(Lineas, Inicio, Fin, Quedan) :-
+    cribar_sangria(Lineas, 1, copiando, Inicio, Fin, Quedan).
 
-% fila(Ruta-Cpus, Fila): la fila de una ruta.
-fila(Ruta-Cpus, fila(Ruta, N, Media)) :-
-    length(Cpus, N),
-    sum_list(Cpus, Suma),
-    Media is Suma / N.
-
-% menos_pedidos(Fila, K): K es la cantidad de pedidos con el signo
-% cambiado, para ordenar de más a menos.
-menos_pedidos(fila(_, N, _), K) :-
-    K is -N.
-
-%!  escribir_por_recurso(+Filas:list) is det.
+%!  cribar_sangria(+Lineas:list(string), +N:integer, +Estado,
+%!                 +Inicio:string, +Fin:string,
+%!                 -Quedan:list(string)) is det.
 %
-%   Escribe las Filas en una tabla alineada, con el tiempo medio en
-%   milisegundos.
-escribir_por_recurso(Filas) :-
-    format("recurso              pedidos  cpu (ms)~n"),
-    forall(member(fila(R, N, C), Filas),
-           ( Ms is C * 1000,
-             format("~w~t~20|~t~d~28|~t~2f~38|~n", [R, N, Ms]) )).
+%   Como cribar_sangria/4, desde la línea N en Estado. El paso decide sobre
+%   la línea sin la sangría, y se escribe la línea original.
+cribar_sangria([], _, Estado, _, _, []) :-
+    final(Estado).
+cribar_sangria([Linea|Lineas], N, Estado, Inicio, Fin, Quedan) :-
+    sin_sangria(Linea, Recortada),
+    paso(Estado, N, Recortada, Inicio, Fin, Estado1, Salida),
+    (   Salida == []
+    ->  Quedan = Resto
+    ;   Quedan = [Linea|Resto]
+    ),
+    N1 is N + 1,
+    cribar_sangria(Lineas, N1, Estado1, Inicio, Fin, Resto).
 
-% Ejercicio 3
-
-%!  linea_combinada(-Pedido)// is semidet.
+%!  sin_sangria(+Linea:string, -Recortada:string) is det.
 %
-%   Una línea del formato común, o del combinado, que agrega la página de
-%   origen y el programa del cliente entre comillas.
-linea_combinada(pedido(Instante, Ip, Metodo, Ruta, Codigo, sin_medir)) -->
-    comun:ip(Ip), " ", comun:campo, " ", comun:campo, " [",
-    comun:fecha(Instante), "] \"", comun:metodo(Metodo), " ",
-    comun:ruta(Ruta), " HTTP/", comun:version, "\" ",
-    integer(Codigo), " ", comun:bytes, agregados, eos.
+%   Recortada es Linea sin los espacios y las tabulaciones del principio.
+sin_sangria(Linea, Recortada) :-
+    string_codes(Linea, Codigos),
+    sin_blancos(Codigos, Resto),
+    string_codes(Recortada, Resto).
 
-% agregados//: los dos campos del formato combinado, o nada.
-agregados -->
-    " ", entre_comillas, " ", entre_comillas,
-    !.
-agregados -->
-    [].
-
-% entre_comillas//: un texto entre comillas, sin comillas dentro.
-entre_comillas -->
-    "\"", string_without(`"`, _), "\"".
-
-% Ejercicio 4
-
-%!  metricas_presentes(+Pedidos:list, -Horas:list) is det.
+%!  sin_blancos(+Codigos:list, -Resto:list) is det.
 %
-%   Como metricas/2, pero solo con las horas en las que hubo pedidos: las
-%   que aparecen en los Pedidos.
-metricas_presentes(Pedidos, Horas) :-
-    metricas(Pedidos, Todas),
-    exclude(sin_pedidos, Todas, Horas).
+%   Resto es Codigos sin los espacios y las tabulaciones del principio.
+sin_blancos([C|Cs], Resto) :-
+    memberchk(C, [0' , 0'\t]),
+    !,
+    sin_blancos(Cs, Resto).
+sin_blancos(Codigos, Codigos).
 
-% sin_pedidos(Hora): la hora no tiene pedidos.
-sin_pedidos(hora(_, m(0, _, _, _))).
+% --- Ejercicio 4 ------------------------------------------------------------
 
-%!  anomalias_presentes(+Archivo, +Umbrales:list, -Anomalias:list) is det.
+%!  secciones(+Lineas:list(string), +Inicio:string, +Fin:string,
+%!            -Rangos:list(pair)) is det.
 %
-%   Anomalias son las anomalia/4 de las horas con pedidos del registro
-%   Archivo, con los Umbrales.
-anomalias_presentes(Archivo, Umbrales, Anomalias) :-
-    leer_registro(Archivo, Pedidos),
-    metricas_presentes(Pedidos, Horas),
-    findall(A, anomalia(Umbrales, Horas, A), Anomalias).
+%   Rangos son los pares Desde-Hasta, las líneas de la marca de inicio y de
+%   la de fin de cada sección de Lineas, en orden. Lanza los errores de
+%   paso/7 y final/1.
+secciones(Lineas, Inicio, Fin, Rangos) :-
+    secciones(Lineas, 1, copiando, Inicio, Fin, Rangos).
 
-%!  metricas_anomalas(+Modelo, +Archivo, -Pares:list) is det.
+%!  secciones(+Lineas:list(string), +N:integer, +Estado, +Inicio:string,
+%!            +Fin:string, -Rangos:list(pair)) is det.
 %
-%   Pares son los pares Hora-Metrica de las anomalías de las horas con
-%   pedidos del registro Archivo, con los umbrales de referencia
-%   ajustados con el Modelo.
-metricas_anomalas(Modelo, Archivo, Pares) :-
-    umbrales_de_referencia(Modelo, Umbrales),
-    anomalias_presentes(Archivo, Umbrales, Anomalias),
-    findall(H-M, member(anomalia(H, M, _, _), Anomalias), Pares).
+%   Como secciones/4, desde la línea N en Estado. Una sección termina en
+%   el paso que va de salteando(N0) a copiando.
+secciones([], _, Estado, _, _, []) :-
+    final(Estado).
+secciones([Linea|Lineas], N, Estado, Inicio, Fin, Rangos) :-
+    paso(Estado, N, Linea, Inicio, Fin, Estado1, _),
+    (   Estado = salteando(N0),
+        Estado1 == copiando
+    ->  Rangos = [N0-N|Resto]
+    ;   Rangos = Resto
+    ),
+    N1 is N + 1,
+    secciones(Lineas, N1, Estado1, Inicio, Fin, Resto).
 
-% Ejercicio 5
-
-%!  ajustar_con_minimo(+Z, +Minimo, +Valores:list(number), -Intervalo)
-%!      is det.
+%!  secciones_archivo(+Archivo, +Inicio:string, +Fin:string,
+%!                    -Rangos:list(pair)) is det.
 %
-%   Como ajustar(mediana_mad(Z), Valores, Intervalo), con la MAD
-%   reemplazada por Minimo cuando es menor: una dispersión mínima para que
-%   el intervalo no se reduzca a un punto.
-ajustar_con_minimo(Z, Minimo, Valores, entre(Inferior, Superior)) :-
-    mad(Valores, Mediana, Mad),
-    Dispersion is max(Mad, Minimo),
-    Ancho is Z * Dispersion / 0.6745,
-    Inferior is Mediana - Ancho,
-    Superior is Mediana + Ancho.
+%   Rangos son las secciones del archivo Archivo, del directorio de este
+%   programa.
+secciones_archivo(Archivo, Inicio, Fin, Rangos) :-
+    source_file(user:secciones(_, _, _, _), Programa),
+    file_directory_name(Programa, Directorio),
+    directory_file_path(Directorio, Archivo, Ruta),
+    read_file_to_string(Ruta, Texto, [encoding(utf8)]),
+    split_string(Texto, "\n", "\r", Partes),
+    (   append(Lineas, [""], Partes)
+    ->  true
+    ;   Lineas = Partes
+    ),
+    secciones(Lineas, Inicio, Fin, Rangos).
 
-% Ejercicio 6
+% --- Ejercicio 5 ------------------------------------------------------------
 
-%!  ajustar_cuantil(+P:number, +Valores:list(number), -Limite) is det.
+%!  cribar_pares(+Lineas:list(string), +Pares:list(pair),
+%!               -Quedan:list(string)) is det.
 %
-%   Limite es el valor de la posición ceiling(P · N), desde 1, de los N
-%   Valores ordenados: deja por debajo, o igual, al menos una fracción P.
-%   P está entre 0 y 1, y Valores no es vacía.
-ajustar_cuantil(P, Valores, Limite) :-
-    msort(Valores, Ordenados),
-    length(Ordenados, N),
-    K is max(1, ceiling(P * N)),
-    nth1(K, Ordenados, Limite).
+%   Quedan son las líneas de Lineas fuera de las secciones de cualquiera de
+%   los pares Inicio-Fin de Pares. Lanza los errores de la versión 2:
+%   error(marcas(Problema), _), con los mismos problemas.
+cribar_pares(Lineas, Pares, Quedan) :-
+    cribar_pares(Lineas, 1, copiando, Pares, Quedan).
 
-%!  umbrales_cuantil(+P:number, -Umbrales:list) is det.
+%!  cribar_pares(+Lineas:list(string), +N:integer, +Estado,
+%!               +Pares:list(pair), -Quedan:list(string)) is det.
 %
-%   Los umbrales superiores de los fallos y de la CPU, y el inferior de
-%   los pedidos con 1 - P, con los cuantiles de los días de referencia.
-umbrales_cuantil(P, [pedidos-menor(PI), fallos-mayor(FS), cpu-mayor(CS)]) :-
-    Q is 1 - P,
-    valores_de_referencia(pedidos, Ps),
-    ajustar_cuantil(Q, Ps, PI),
-    valores_de_referencia(fallos, Fs),
-    ajustar_cuantil(P, Fs, FS),
-    valores_de_referencia(cpu, Cs),
-    ajustar_cuantil(P, Cs, CS).
+%   Como cribar_pares/3, desde la línea N en Estado: copiando, o
+%   salteando(Fin, N0), con Fin la marca que cierra la sección abierta en
+%   la línea N0.
+cribar_pares([], _, Estado, _, []) :-
+    final_par(Estado).
+cribar_pares([Linea|Lineas], N, Estado, Pares, Quedan) :-
+    paso_par(Estado, N, Linea, Pares, Estado1, Salida),
+    append(Salida, Resto, Quedan),
+    N1 is N + 1,
+    cribar_pares(Lineas, N1, Estado1, Pares, Resto).
 
-% Ejercicio 8
-
-%!  perfiles_diarios(+Pedidos:list, -Perfiles:list) is det.
+%!  paso_par(+Estado, +N:integer, +Linea:string, +Pares:list(pair),
+%!           -Estado1, -Salida:list(string)) is det.
 %
-%   Perfiles tiene un perfil(Ip, dia, N, F) por cliente: sus N pedidos del
-%   día, F de ellos inicios de sesión rechazados.
-perfiles_diarios(Pedidos, Perfiles) :-
-    perfiles(Pedidos, PorHora),
-    map_list_to_pairs(cliente, PorHora, Pares),
-    keysort(Pares, Ordenados),
-    group_pairs_by_key(Ordenados, Grupos),
-    maplist(perfil_diario, Grupos, Perfiles).
-
-% cliente(Perfil, Ip): el cliente del Perfil.
-cliente(perfil(Ip, _, _, _), Ip).
-
-% perfil_diario(Ip-Perfiles, Perfil): la suma de los perfiles por hora.
-perfil_diario(Ip-Ps, perfil(Ip, dia, N, F)) :-
-    foldl(sumar_perfil, Ps, 0-0, N-F).
-
-% sumar_perfil(Perfil, N0-F0, N-F): suma los pedidos y los fallos.
-sumar_perfil(perfil(_, _, N1, F1), N0-F0, N-F) :-
-    N is N0 + N1,
-    F is F0 + F1.
-
-%!  ejemplos_diarios(-Ejemplos:list) is det.
-%
-%   Los perfiles diarios de los días de referencia, marcados con
-%   atacante/2.
-ejemplos_diarios(Ejemplos) :-
-    dias_de_referencia(Archivos),
-    maplist(ejemplos_diarios_de, Archivos, Listas),
-    append(Listas, Ejemplos).
-
-% ejemplos_diarios_de(Archivo, Ejemplos): los de un día.
-ejemplos_diarios_de(Archivo, Ejemplos) :-
-    leer_registro(Archivo, Pedidos),
-    perfiles_diarios(Pedidos, Perfiles),
-    maplist(ejemplo_diario(Archivo), Perfiles, Ejemplos).
-
-% ejemplo_diario(Archivo, Perfil, Ejemplo): el Perfil marcado.
-ejemplo_diario(Archivo, perfil(Ip, _, N, F), ej([N, F], Clase)) :-
-    (   atacante(Archivo, Ip)
-    ->  Clase = 1
-    ;   Clase = -1
+%   El paso de cribar_pares/5: como paso/7, con la marca de fin de la
+%   sección abierta en el estado. Dentro de una sección, la marca de fin
+%   de otro par es una marca de fin sin su inicio.
+paso_par(copiando, N, Linea, Pares, Estado1, Salida) :-
+    (   member(Inicio-Fin, Pares),
+        string_concat(Inicio, _, Linea)
+    ->  Estado1 = salteando(Fin, N),
+        Salida = []
+    ;   member(_-Fin, Pares),
+        string_concat(Fin, _, Linea)
+    ->  throw(error(marcas(fin_sin_inicio(N)), _))
+    ;   Estado1 = copiando,
+        Salida = [Linea]
+    ).
+paso_par(salteando(Fin, N0), N, Linea, Pares, Estado1, []) :-
+    (   string_concat(Fin, _, Linea)
+    ->  Estado1 = copiando
+    ;   member(Inicio-_, Pares),
+        string_concat(Inicio, _, Linea)
+    ->  throw(error(marcas(inicio_anidado(N, N0)), _))
+    ;   member(_-Otro, Pares),
+        string_concat(Otro, _, Linea)
+    ->  throw(error(marcas(fin_sin_inicio(N)), _))
+    ;   Estado1 = salteando(Fin, N0)
     ).
 
-%!  sospechosos_diarios(+Pesos:list, +Archivo, -Sospechosos:list) is det.
+%!  final_par(+Estado) is det.
 %
-%   Los perfiles diarios del registro Archivo a los que el perceptrón con
-%   Pesos da la clase 1.
-sospechosos_diarios(Pesos, Archivo, Sospechosos) :-
-    leer_registro(Archivo, Pedidos),
-    perfiles_diarios(Pedidos, Perfiles),
-    include(sospechoso_diario(Pesos), Perfiles, Sospechosos).
+%   El texto puede terminar en Estado; si no, lanza el error de final/1.
+final_par(copiando).
+final_par(salteando(_, N0)) :-
+    final(salteando(N0)).
 
-% sospechoso_diario(Pesos, Perfil): el perceptrón da la clase 1.
-sospechoso_diario(Pesos, perfil(_, _, N, F)) :-
-    salida(Pesos, [N, F], 1).
+% --- Ejercicios 7 y 8 -------------------------------------------------------
 
-%!  entrenamiento_diario(-N:integer, -Pesos:list, -Curva:list) is semidet.
+:- multifile curvas:punto/3.
+
+% La curva de Lissajous: x = sin(A t + Delta), y = sin(B t).
+curvas:punto(lissajous(A, B, Delta), T, X-Y) :-
+    X is sin(A * T + Delta),
+    Y is sin(B * T).
+
+% La hipocicloide de un disco de radio Rd que rueda por dentro de una
+% circunferencia de radio R, con el punto a distancia D de su centro.
+curvas:punto(hipocicloide(R, Rd, D), T, X-Y) :-
+    K is (R - Rd) / Rd,
+    X is (R - Rd) * cos(T) + D * cos(K * T),
+    Y is (R - Rd) * sin(T) - D * sin(K * T).
+
+%!  dibujar(+Entrada, +Salida) is det.
 %
-%   N es la cantidad de ejemplos diarios de referencia, y Pesos y Curva
-%   los del perceptrón entrenado con ellos, con tasa 1 desde pesos nulos.
-entrenamiento_diario(N, Pesos, Curva) :-
-    ejemplos_diarios(Ejemplos),
-    length(Ejemplos, N),
-    entrenar(1, Ejemplos, [0, 0, 0], Pesos, Curva).
+%   Escribe en Salida el dibujo SVG de las especificaciones de Entrada,
+%   con las clases de curva de este archivo; los dos nombres son relativos
+%   al directorio de este programa.
+dibujar(Entrada, Salida) :-
+    source_file(user:dibujar(_, _), Programa),
+    file_directory_name(Programa, Directorio),
+    directory_file_path(Directorio, Entrada, RutaEntrada),
+    directory_file_path(Directorio, Salida, RutaSalida),
+    curvas(RutaEntrada, svg, Texto),
+    setup_call_cleanup(open(RutaSalida, write, Out, [encoding(utf8)]),
+                       write(Out, Texto),
+                       close(Out)).
 
-% Ejercicio 9
+% --- Ejercicio 10 -----------------------------------------------------------
 
-%!  repetidos(+K:integer, -Archivos:list) is det.
+%!  datos(+Partes:list, -Texto:string) is det.
 %
-%   Archivos es la lista de los cuatro días repetida K veces.
-repetidos(K, Archivos) :-
-    Dias = [ registros('2026-09-28.log'), registros('2026-09-29.log'),
-             registros('2026-09-30.log'), registros('2026-10-01.log') ],
-    length(Copias, K),
-    maplist(=(Dias), Copias),
-    append(Copias, Archivos).
+%   Texto es Partes en el formato de datos de los programas de gráficos:
+%   una línea X Y por punto, una línea vacía entre dos curvas, y cada
+%   comentario en una línea que empieza con #.
+datos(Partes, Texto) :-
+    phrase(datos(Partes, primera), Codigos),
+    string_codes(Texto, Codigos).
 
-% Ejercicio 10
-
-%!  limites_ponderados(+D, +Alfa, +Valores:list(number),
-%!                     -Limites:list(number)) is det.
+%!  datos(+Partes:list, +Antes)// is det.
 %
-%   Limites son los límites superiores, media más D desvíos, después de
-%   cada uno de los Valores, con la media y la varianza exponencialmente
-%   ponderadas: el primer valor inicia la media con varianza 0, y cada
-%   valor siguiente X pesa Alfa.
-limites_ponderados(D, Alfa, [X|Xs], [L|Ls]) :-
-    L is X,
-    foldl(paso_ponderado(D, Alfa), Xs, Ls, X-0, _).
+%   Las líneas de Partes; Antes es primera hasta la primera curva, y
+%   despues desde ella, para separar cada curva de la anterior.
+datos([], _) -->
+    [].
+datos([Parte|Partes], Antes) -->
+    dato(Parte, Antes, Despues),
+    datos(Partes, Despues).
 
-% paso_ponderado(D, Alfa, X, Limite, M0-V0, M-V): un paso de la media y la
-% varianza ponderadas, y el límite que dejan.
-paso_ponderado(D, Alfa, X, Limite, M0-V0, M-V) :-
-    Delta is X - M0,
-    M is M0 + Alfa * Delta,
-    V is (1 - Alfa) * (V0 + Alfa * Delta * Delta),
-    Limite is M + D * sqrt(V).
-
-%!  ajustar_ponderado(+D, +Alfa, +Valores:list(number), -Intervalo) is det.
+%!  dato(+Parte, +Antes, -Despues)// is det.
 %
-%   Intervalo es entre(Inferior, Superior) con la media y el desvío
-%   ponderados después del último de los Valores.
-ajustar_ponderado(D, Alfa, [X|Xs], entre(Inferior, Superior)) :-
-    foldl(paso_ponderado(D, Alfa), Xs, _, X-0, M-V),
-    Desvio is sqrt(V),
-    Inferior is M - D * Desvio,
-    Superior is M + D * Desvio.
+%   Las líneas de una parte.
+dato(comentario(Texto), Antes, Antes) -->
+    { string_codes(Texto, Codigos) },
+    "# ", codigos(Codigos), "\n".
+dato(curva(_, Puntos), Antes, despues) -->
+    (   { Antes == despues }
+    ->  "\n"
+    ;   []
+    ),
+    lineas_xy(Puntos).
+
+%!  lineas_xy(+Puntos:list(pair))// is det.
+%
+%   Una línea X Y por punto, con cuatro decimales.
+lineas_xy([]) -->
+    [].
+lineas_xy([X-Y|Ps]) -->
+    decimal(X), " ", decimal(Y), "\n",
+    lineas_xy(Ps).

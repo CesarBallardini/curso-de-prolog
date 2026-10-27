@@ -2,35 +2,42 @@
 
 :- begin_tests(programas).
 
-test(familia, [true(N == 7)]) :-
-    programa(familia, Clausulas),
-    length(Clausulas, N).
+test(bien_formados, all(N == [mcd, mcd_invertido, mcd_mal, ordenar, luz, contador])) :-
+    programa(N, Modulos),
+    maplist(bien_formado, Modulos).
 
-% Un hecho se entrega con el cuerpo true.
-test(hecho, [true(C == (padre(juan, ana) :- true))]) :-
-    programa(familia, [C|_]).
+test(accion_desconocida, [fail]) :-
+    bien_formado(m :: [a] ---> [borrar(a)]).
 
-test(clases, [true(Cs == [ verdad, conjuncion(a, b), corte,
-                           predefinida(1 < 2), usuario(p(x))
-                         ])]) :-
-    maplist(clase, [true, (a, b), !, 1 < 2, p(x)], Cs).
+test(patron_variable, [fail]) :-
+    bien_formado(m :: [_] ---> []).
 
-test(variable, [error(instantiation_error)]) :-
-    clase(_, _).
+test(prueba_como_hecho, [fail]) :-
+    bien_formado(m :: [a] ---> [agregar({b})]).
 
-test(nativas, [true(Ds == [ antepasado(juan, ana), antepasado(juan, pedro),
-                            antepasado(juan, luis), antepasado(juan, eva)
-                          ])]) :-
-    respuestas_nativas(familia, antepasado(juan, _), Ds).
+test(negacion_de_prueba, [fail]) :-
+    bien_formado(m :: [no({a})] ---> []).
 
-% Con el corte, Prolog da una sola respuesta.
-test(maximo, [true(Ms == [maximo(4, 3, 4)])]) :-
-    respuestas_nativas(maximo, maximo(4, 3, _), Ms).
+test(posiciones, H == [pos(1, c), pos(2, a), pos(3, b)]) :-
+    posiciones([c, a, b], H).
 
-test(suma, [true(Ss == [suma_hasta(100, 5050)])]) :-
-    respuestas_nativas(listas, suma_hasta(100, _), Ss).
+test(valores, L == [c, a, b]) :-
+    valores([pos(3, b), pos(1, c), pos(2, a)], L).
 
-test(ejecutar, [fail]) :-
-    ejecutar(3 < 2).
+test(ida_y_vuelta, L == [x, y, x]) :-
+    posiciones([x, y, x], H),
+    valores(H, L).
+
+% Tras no(F), la cláusula del patrón queda por probar: un punto de elección.
+test(condicion_valida, [nondet]) :-
+    condicion_valida({X > 0}),
+    condicion_valida(no(numero(_))),
+    condicion_valida(numero(X)).
+
+test(condicion_valida_variable, [fail]) :-
+    condicion_valida(_).
+
+test(condicion_valida_doble_negacion, [fail]) :-
+    condicion_valida(no(no(a))).
 
 :- end_tests(programas).

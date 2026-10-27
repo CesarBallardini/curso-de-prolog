@@ -1,13 +1,13 @@
 :- encoding(utf8).
 
-% Capítulo 17 - El proyecto Inscripciones: los informes.
+% Capítulo 17 - El proyecto Inscripciones: consultas por nombre.
 %
-% Respecto del capítulo 16 se agregan los informes, que reúnen las respuestas
-% de una consulta: los inscriptos de una materia, los alumnos sin ninguna
-% nota, el promedio de una materia y de un alumno, y los mejores promedios.
+% Respecto del capítulo 16 se agrega aprobada_por_nombre/2, con el orden de
+% los objetivos medido sobre 5 000 alumnos (generar_datos.pl): primero el
+% alumno, que el nombre selecciona, y después sus inscripciones.
 %
-%?- promedio_de_materia(am1, Promedio).
-%?- mejores(3, Ranking).
+%?- aprobada_por_nombre(ana, Materia).
+%?- inscripcion_posible(104, ssl, Resultado).
 
 % alumno(Legajo, Nombre, Carrera, Ingreso): el alumno de ese legajo cursa esa
 % carrera desde el año de ingreso.
@@ -121,57 +121,7 @@ puede_inscribirse(Legajo, Materia) :-
 %
 %   El alumno llamado Nombre aprobó Materia. El primer objetivo es el que el
 %   nombre selecciona: con el orden inverso, la consulta recorre todas las
-%   inscripciones de la materia antes de examinar el nombre (sección 16.5).
+%   inscripciones de la materia antes de examinar el nombre (sección 17.5).
 aprobada_por_nombre(Nombre, Materia) :-
     alumno(Legajo, Nombre, _, _),
     aprobada(Legajo, Materia, _Nota).
-
-%!  inscriptos(+Materia:atom, -Legajos:list(integer)) is det.
-%
-%   Legajos son los alumnos inscriptos en Materia, en orden y sin repetidos;
-%   la lista vacía si no hay ninguno.
-inscriptos(Materia, Legajos) :-
-    findall(Legajo, inscripcion(Legajo, Materia, _), Todos),
-    sort(Todos, Legajos).
-
-%!  sin_notas(-Legajos:list(integer)) is det.
-%
-%   Legajos son los alumnos que no tienen ninguna nota: los que no se
-%   inscribieron en nada y los que solo están cursando.
-sin_notas(Legajos) :-
-    findall(Legajo,
-            ( alumno(Legajo, _, _, _),
-              \+ inscripcion(Legajo, _, nota(_)) ),
-            Legajos).
-
-%!  promedio_de_materia(+Materia:atom, -Promedio:number) is semidet.
-%
-%   Promedio es el promedio de las notas de Materia. Falla si la materia no
-%   tiene ninguna nota.
-promedio_de_materia(Materia, Promedio) :-
-    aggregate_all(count, inscripcion(_, Materia, nota(_)), Cantidad),
-    Cantidad > 0,
-    aggregate_all(sum(N), inscripcion(_, Materia, nota(N)), Suma),
-    Promedio is Suma / Cantidad.
-
-%!  promedio_de_alumno(?Legajo:integer, -Promedio:number) is nondet.
-%
-%   Promedio es el promedio de las notas del alumno Legajo, para cada alumno
-%   con al menos una nota.
-promedio_de_alumno(Legajo, Promedio) :-
-    alumno(Legajo, _, _, _),
-    aggregate_all(count, inscripcion(Legajo, _, nota(_)), Cantidad),
-    Cantidad > 0,
-    aggregate_all(sum(N), inscripcion(Legajo, _, nota(N)), Suma),
-    Promedio is Suma / Cantidad.
-
-%!  mejores(+Cantidad:integer, -Ranking:list(pair)) is det.
-%
-%   Ranking es la lista de los Cantidad mejores promedios, de mayor a menor,
-%   como pares Legajo-Promedio.
-mejores(Cantidad, Ranking) :-
-    findall(Legajo-Promedio,
-            limit(Cantidad,
-                  order_by([desc(Promedio)],
-                           promedio_de_alumno(Legajo, Promedio))),
-            Ranking).

@@ -1,70 +1,106 @@
 :- encoding(utf8).
 
-:- use_module(consejos).
-:- use_module(busqueda).
-:- use_module(verificar).
-:- use_module(finales).
-:- use_module(reglas).
+:- begin_tests(soluciones).
 
-:- begin_tests(soluciones, [setup(calcular)]).
+test(ejercicio_1, [true(S-J == [2, 0, 0]-[sacar(1, 2)])]) :-
+    maplist(suma_nim, [[3, 4, 5], [1, 4, 5], [2, 2, 7, 7]], S),
+    findall(X, jugada_segura([3, 4, 5], X), J).
 
-% Ejercicio 4: el consejo sin restricciones y la búsqueda de la versión 2
-% eligen la misma primera jugada.
-test(ciega, [forall(member(P, [pos(blancas, 2-3, 4-2, 2-1),
-                               pos(blancas, 1-3, 1-4, 2-1),
-                               pos(blancas, 1-3, 4-2, 2-1)])),
-             true(J1 == J2)]) :-
-    satisfacible(ciega, mate_en_3, P, juega(J1, _)),
-    mate_forzado(P, 3, J2).
+test(ejercicio_1_ganadoras, [true(G == [si, no, no])]) :-
+    findall(R, ( member(P, [[3, 4, 5], [1, 4, 5], [2, 2, 7, 7]]),
+                 ( ganadora_tabulada(P) -> R = si ; R = no ) ),
+            G).
 
-test(por_que, [true(Ls == ["regla borde",
-                            "  mate_en_2: no satisfacible",
-                            "  encierro: no satisfacible",
-                            "  acercamiento: no satisfacible",
-                            "  mantener_espacio: satisfacible, juega Rb3",
-                            ""])]) :-
-    with_output_to(string(S), por_que(krk, pos(blancas, 1-3, 2-2, 1-1))),
-    split_string(S, "\n", "", Ls).
+test(miseria, [true(L == [[1, 1, 1], [2, 2], [1, 2, 3]])]) :-
+    findall(P, ( member(P, [[1, 1, 1], [1, 1], [2, 2], [1, 2, 3], [3, 4, 5]]),
+                 segura_miseria(P) ),
+            L).
 
-test(azar_legal) :-
-    P = pos(negras, 5-5, 3-6, 4-8),
-    azar(7, P, J),
-    once(jugada(P, J, _)).
+test(miseria_sin_fichas) :-
+    ganadora_miseria([0, 0]).
 
-test(azar_repetible, [true(J1 == J2)]) :-
-    P = pos(negras, 5-5, 3-6, 4-8),
-    azar(7, P, J1),
-    azar(7, P, J2).
+%!  posicion3(-Posicion:list) is nondet.
+%
+%   Posicion son tres pilas de 0 a 7 fichas.
+posicion3([A, B, C]) :-
+    between(0, 7, A),
+    between(0, 7, B),
+    between(0, 7, C).
 
-test(historia, [true(H == [dividir_en_2, encierro, encierro, acercamiento,
-                           acercamiento, encierro, mate_en_2])]) :-
-    historia(krk, resistente, pos(blancas, 5-5, 1-1, 4-7), H).
+test(miseria_igual_regla, [true(Distintas == [])]) :-
+    findall(P, ( posicion3(P),
+                 \+ ( ganadora_miseria(P) -> \+ segura_miseria(P)
+                    ; segura_miseria(P) ) ),
+            Distintas).
 
-test(cuantas, [true(K-N-Total == 12-3135-27352)]) :-
-    cuantas(Pares),
-    pairs_values(Pares, Ns),
-    sum_list(Ns, Total),
-    max_member(N, Ns),
-    memberchk(K-N, Pares).
+test(ejercicio_3, [true(J-V-N == sacar(5, 9)-50-26)]) :-
+    alfabeta(nim_suma([1, 3, 5, 7, 9]), pilas([1, 3, 5, 7, 9], uno), 1,
+             J, V, N).
 
-% Ejercicio 9: sin no torre_expuesta, ningún árbol pierde la torre.
-test(sin_cuidado_no_pierde, [true(N == 0)]) :-
-    posiciones(blancas, Ps),
-    aggregate_all(count,
-                  ( member(P, Ps),
-                    P = pos(_, _, _, 1-1),
-                    salidas(sin_cuidado, P, S),
-                    memberchk(_-falla(torre_perdida), S) ),
-                  N).
+test(valor_suma, [true(Vs == [50, -50, -50, 50])]) :-
+    findall(V, ( member(P-J, [[1, 1]-dos, [1, 1]-uno, [1, 2]-dos,
+                              [1, 2]-uno]),
+                 valor_suma(P, J, V) ),
+            Vs).
 
-% Ejercicio 11: la otra corrección también asegura las posiciones del
-% ahogado.
-test(meta_mejor, [forall(member(P, [pos(blancas, 1-3, 2-2, 1-1),
-                                    pos(blancas, 7-5, 7-1, 7-8)])),
-                  true(A == T)]) :-
-    verificar_desde(meta_mejor, P, r(A, T, _)).
+test(ejercicio_4, [true(N == 728)]) :-
+    abolish_all_tables,
+    ganadora_tabulada([1, 3, 5, 7, 9]),
+    posiciones(N).
 
-test(sin_memoria, [true(R == r(25580, 27352, 32))]) :-
-    politica_sin_memoria(corregida, R).
+test(particion, [true(C == [0-0-360, 0-1-1440, 0-2-1260, 0-3-264, 0-4-9,
+                            1-0-480, 1-1-720, 1-2-216, 1-3-8, 2-0-180,
+                            2-1-72, 2-2-6, 3-0-24, 4-0-1])]) :-
+    particion([0, 1, 2, 3], C).
+
+% Después de dos respuestas quedan 83 códigos; el primero, 1547, deja en el
+% peor caso 27, y 1574, el elegido, 25.
+test(mejor_intento, [true(I-M == [1, 5, 7, 4]-25)]) :-
+    candidatos(Cs0),
+    filtrar(Cs0, [0, 1, 2, 3], 0, 1, Cs1),
+    filtrar(Cs1, [1, 4, 5, 6], 1, 2, Cs),
+    mejor_intento(Cs, I),
+    peor_clase(Cs, I, M).
+
+test(peor_clase, [true(M == 1440)]) :-
+    candidatos(Cs),
+    peor_clase(Cs, [0, 1, 2, 3], M).
+
+test(colores, [true(T-V == 1-2)]) :-
+    respuesta_colores([1, 1, 2, 3], [1, 2, 1, 6], T, V).
+
+test(colores_repetidos, [true(T-V == 0-1)]) :-
+    respuesta_colores([1, 2, 2, 2], [3, 1, 1, 1], T, V).
+
+test(codigos_colores, [true(N == 1296)]) :-
+    aggregate_all(count, codigo_colores(_), N).
+
+test(adivinar_colores, [true(Is == [[1, 1, 1, 1], [1, 2, 2, 2],
+                                    [3, 1, 2, 3], [3, 2, 1, 4],
+                                    [4, 1, 3, 2], [4, 3, 2, 1]])]) :-
+    adivinar_colores([4, 3, 2, 1], Is).
+
+test(contradiccion, [true(K == 2)]) :-
+    primera_contradiccion([r([0, 1, 2, 3], 0, 0), r([4, 5, 6, 7], 0, 0),
+                           r([8, 9, 0, 1], 0, 0)], K).
+
+test(sin_contradiccion, [fail]) :-
+    primera_contradiccion([r([0, 1, 2, 3], 0, 1)], _).
+
+test(ejercicio_9, [true(U-T == 3-tablero([1, 1, 0, 1, 1, 1], 3,
+                                         [1, 1, 1, 0, 3, 1], 0))]) :-
+    sembrar(3, tablero([0, 0, 13, 0, 0, 0], 0, [0, 0, 0, 0, 2, 0], 0), U, T0),
+    capturar(U, T0, T).
+
+test(piedras, [true(V-W == 4-(-4))]) :-
+    piedras(tablero([2, 2, 2, 0, 0, 0], 5, [1, 1, 0, 0, 0, 0], 3), sur, V),
+    piedras(tablero([2, 2, 2, 0, 0, 0], 5, [1, 1, 0, 0, 0, 0], 3), norte, W).
+
+test(puntos, [true(P == [a-1.5, b-0.5])]) :-
+    puntos([r(a-2, b-2, gana(sur)), r(b-2, a-2, empate)], P).
+
+test(texto, [true(Ts == ["La computadora saca 3 fichas de la pila 2.",
+                         "La computadora saca 1 ficha de la pila 1."])]) :-
+    maplist(jugada_nim_texto, [sacar(2, 3), sacar(1, 1)], Ts).
 
 :- end_tests(soluciones).

@@ -2,69 +2,91 @@
 
 :- begin_tests(soluciones).
 
-test(comparar_giros, [true(K1-K2 == 96-97)]) :-
-    comparar_giros(patio, 28-8, 32-8, K1, K2).
-
-test(comparar_giros_igual_costo) :-
-    giros:camino_con_giros(taller, 1-4, 20-6, _, C, _),
-    capitulo40:buscar(mejor(a_estrella),
-                      soluciones:giros2(taller, 1-4, 20-6), _, C, _).
-
-test(camino8, [true(P-K == 20-53)]) :-
-    camino8(taller, 1-4, 20-6, P, K).
-
-test(cantidad_minimos, [true(Ns == [5, 125970])]) :-
-    findall(N,
-            ( member(H, [32-8, 20-20]),
-              cantidad_minimos(patio, 28-8, H, N) ),
+test(escrituras_chico, [true(Ns == [6, 2, 1])]) :-
+    findall(N, ( member(M, [todas, semilla, sentido]),
+                 escrituras(M, chico, Ls), length(Ls, N) ),
             Ns).
 
-test(cantidad_minimos_sin_camino, [fail]) :-
-    cantidad_minimos(galpon, 1-1, 23-15, _).
+test(costo_por_semilla, [true(Ts == [4, 6, 3, 4, 3, 4, 6, 3, 5])]) :-
+    costo_por_semilla(csenki1, Filas),
+    findall(T, member(s(_, T, _), Filas), Ts).
 
-test(ida_con_tabla, [true(P-K == 12-83)]) :-
-    camino_ida_con_tabla(patio, 28-8, 32-8, P, K).
+test(simetrias_propias,
+     [true(Ss == [identidad, giro180, espejo_filas, espejo_columnas])]) :-
+    simetrias_propias(cruz, Ss).
 
-test(ida_con_tabla_puzzle, [true(C == 8)]) :-
-    ida_con_tabla(capitulo40:puzzle([2, 4, 3, 7, 1, 5, 0, 8, 6], manhattan),
-                  _, C, _).
+test(orbitas_cruz, [true(Ls == [4, 1])]) :-
+    orbitas(cruz, Os),
+    maplist(length, Os, Ls).
 
-test(salida_manhattan, [true(C-K == 54-20)]) :-
-    salida_manhattan(csenki, C, K).
+test(orbita_unitaria, [true(O == [L])]) :-
+    distintos(chico, [L]),
+    orbita([identidad], 3, 3, L, O).
 
-test(salida_h3, [true(C-K == 54-18)]) :-
-    salida_h3(csenki, C, K).
+test(imagen_de_lazo, [true(F == [1-1, 1-2, 2-2, 2-1])]) :-
+    imagen_de_lazo(2, 2, [1-1, 1-2, 2-2, 2-1], giro180, F).
 
-test(estimacion_h3) :-
-    estimacion_h3(csenki, g(1, 2), H3),
-    laberinto:estimacion(vuelo, csenki, g(1, 2), V),
-    V =< H3,
-    H3 =< 54.
+test(leer_tablero, [nondet]) :-
+    forall(member(N, [chico, cruz, csenki1, csenki2]),
+           ( lineas(N, [], Ls),
+             leer_tablero(Ls, F, C, Ms),
+             problema(N, F, C, Ms0),
+             msort(Ms, X),
+             msort(Ms0, X) )).
 
-test(sobreestimaciones, [true(L == 146)]) :-
-    sobreestimaciones(minima, Ps),
-    length(Ps, L).
+test(marcas_de_fila, [true(M-F == [circulo(2-1), numeral(2-3)]-3)]) :-
+    marcas_de_fila("O · #", M, 2, F).
 
-test(sobreestimaciones_ninguna, [true(Ps == [])]) :-
-    sobreestimaciones(combinada, Ps).
+test(lazo_recto, [true(N == 1)]) :-
+    lazo_recto(recto, Ls),
+    length(Ls, N).
 
-test(distancias, [true(D == 6)]) :-
-    distancias(8, 1-8, Ds),
-    get_assoc(8-1, Ds, D).
+test(lazo_recto_cubre, [true(K == 36)]) :-
+    lazo_recto(recto, [L]),
+    length(L, K).
 
-test(saltos_minimos, [true(D == 2)]) :-
-    saltos_minimos(8, 1-1, 4-4, D).
+test(vecinas_de_esquina, [true(Vs == [1-2, 2-1])]) :-
+    findall(V, vecina(6, 6, 1-1, V), Vs0),
+    msort(Vs0, Vs).
 
-test(admisible) :-
-    admisible(6, entera(combinada)).
+test(recta_si_marca) :-
+    recta_si_marca([2-2], 1-2, 2-2, 3-2).
 
-test(no_admisible, [fail]) :-
-    admisible(8, minima).
+test(giro_en_marca, [fail]) :-
+    recta_si_marca([2-2], 1-2, 2-2, 2-3).
 
-test(cerrado, [nondet]) :-
-    recorrido_cerrado(8, 1-1, C),
-    recorrido:es_recorrido(8, C),
-    last(C, U),
-    caballo:salto(8, U, 1-1, _).
+test(camino_recto_sin_salida, [fail]) :-
+    camino_recto(t(2, 2, [], 4), 1-1, 1-2, [1-2, 1-1], 2, [_, _, _, _]).
+
+test(cantidad_desarreglos, [nondet]) :-
+    forall(between(1, 8, N),
+           ( cantidad_desarreglos(N, D), desarreglos(N, Ps), length(Ps, D) )).
+
+test(cantidad_desarreglos_20, [true(D == 895014631192902121)]) :-
+    cantidad_desarreglos(20, D).
+
+test(particiones_libres, [true(N == 22)]) :-
+    aggregate_all(count, particion_libre(8, _), N).
+
+test(conjugacion_6) :-
+    conjugacion_verificada(6).
+
+test(polinomio, [true(T == 544)]) :-
+    polinomio(8, T).
+
+test(conjetura) :-
+    conjetura(20).
+
+test(lineas_matriz, [true(Ls == ["  1  1", "  3 12"])]) :-
+    lineas_matriz([[1, 1], [3, 12]], Ls).
+
+test(linea_matriz, [true(L == " 1 2")]) :-
+    linea_matriz(2, [1, 2], L).
+
+test(celda_matriz, [true(L == "a  7")]) :-
+    celda_matriz(3, 7, "a", L).
+
+test(mostrar_matriz, [true(S == " 1 2\n 2 1\n")]) :-
+    with_output_to(string(S), mostrar_matriz([[1, 2], [2, 1]])).
 
 :- end_tests(soluciones).

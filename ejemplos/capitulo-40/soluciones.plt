@@ -1,71 +1,62 @@
 :- encoding(utf8).
 
-:- begin_tests(soluciones).
+:- begin_tests(soluciones, [setup(abolish_all_tables)]).
 
-test(rio, [true(P-C == [cruzar(cabra), cruzar(solo), cruzar(lobo),
-                        cruzar(cabra), cruzar(col), cruzar(solo),
-                        cruzar(cabra)]-7)]) :-
-    buscar(anchura, rio, P, C, _).
+test(camino_der, [setup(abolish_all_tables),
+                  true(Ys-T == [a, b, c, d]-4)]) :-
+    findall(Y, camino_der(a, Y), Ys0),
+    msort(Ys0, Ys),
+    tablas(T).
 
-% Ningún estado del plan deja a la cabra sola con el lobo o con la col.
-test(rio_seguro, [true]) :-
-    buscar(anchura, rio, P, _, _),
-    foldl(paso(rio), P, r(i, i, i, i), r(d, d, d, d)).
+test(suma_hasta, [setup(abolish_all_tables), true(S-T == 5050-100)]) :-
+    suma_hasta(100, S),
+    tablas(T).
 
-test(misioneros, [true(C == 11)]) :-
-    buscar(anchura, misioneros, _, C, _).
+test(suma_hasta_cero, [fail]) :-
+    suma_hasta(0, _).
 
-test(misioneros_a_salvo, [fail]) :-
-    a_salvo(1, 2).
+test(formas, [true(N == 292)]) :-
+    formas(100, [1, 5, 10, 25, 50], N).
 
-test(anchura_lista, [true(P-K == [llenar(2), pasar(2, 1), llenar(2),
-                                  pasar(2, 1)]-9)]) :-
-    buscar(anchura_lista, jarras(4, 3, 2), P, _, K).
+test(formas_iguales, [forall(member(M, [0, 7, 30, 64])), true(N1 == N2)]) :-
+    formas(M, [1, 5, 10, 25, 50], N1),
+    formas_sin_tabla(M, [1, 5, 10, 25, 50], N2).
 
-test(caballo, [true(N-U == 25-25)]) :-
-    once(recorrido_caballo(5, R)),
-    length(R, N),
-    sort(R, S),
-    length(S, U).
+test(formas_imposible, [true(N == 0)]) :-
+    formas(3, [2], N).
 
-test(caballo_saltos, [true]) :-
-    once(recorrido_caballo(5, R)),
-    saltos_validos(R).
+test(distancia_desde_b, [true(Ps == [a-8, b-11, c-9, d-5])]) :-
+    findall(Y-D, distancia(b, Y, D), Ps0),
+    msort(Ps0, Ps).
 
-test(caballo_cuatro, [fail]) :-
-    recorrido_caballo(4, _).
+test(distancia_max_no_termina, [true(R == inference_limit_exceeded)]) :-
+    call_with_inference_limit(distancia_max(a, b, _), 1000000, R).
 
-test(mas_cortos, [true(Ps == [[llenar(2), pasar(2, 1), llenar(2),
-                               pasar(2, 1)]])]) :-
-    mas_cortos(jarras(4, 3, 2), Ps).
+% De a a b: un tramo, de longitud 4; el más corto tiene dos, y mide 3.
+test(saltos, [true(N-D == 1-3)]) :-
+    saltos(a, b, N),
+    distancia(a, b, D).
 
-test(mas_cortos_rio, [true(N == 2)]) :-
-    mas_cortos(rio, Ps),
-    length(Ps, N).
+test(saltos_todos, [true(Ps == [a-3, b-1, c-1, d-2])]) :-
+    findall(Y-N, saltos(a, Y, N), Ps0),
+    msort(Ps0, Ps).
 
-paso(Problema, Accion, E0, E) :-
-    once(sucesor(Problema, E0, Accion, E, _)).
+test(mas_larga, [true(R == 9-[s, b, a, t])]) :-
+    ruta_mas_larga(s, t, R).
 
-saltos_validos([A|R]) :-
-    saltos_desde(R, A).
+test(j3, [true(Vs == [a-verdadero, b-falso, c-verdadero, d-falso,
+                      e-falso])]) :-
+    findall(X-V, ( member(X, [a, b, c, d, e]), valor(gana(j3, X), V) ), Vs).
 
-saltos_desde([], _).
-saltos_desde([B|R], A) :-
-    once(salto(A, B)),
-    saltos_desde(R, B).
+test(j2_empate, [true(V == indefinido)]) :-
+    valor(gana(j2, b), V).
 
-% Los auxiliares del ejercicio 3 y del 4.
-test(pasajeros, [all(Q-S == [solo-r(d, i, i, i), lobo-r(d, d, i, i),
-                             cabra-r(d, i, d, i), col-r(d, i, i, d)])]) :-
-    pasajero(Q, r(i, i, i, i), d, S).
+test(pqr, [true(Vs == [indefinido, indefinido, indefinido])]) :-
+    findall(V, ( member(A, [p, q, r]), valor(A, V) ), Vs).
 
-test(segura) :-
-    assertion(\+ segura(r(d, i, i, d))),
-    assertion(segura(r(i, d, i, d))).
-
-test(a_salvo) :-
-    assertion(\+ a_salvo(1, 2)),
-    assertion(a_salvo(0, 3)),
-    assertion(a_salvo(2, 2)).
+test(r_prolog, [true(R == inference_limit_exceeded)]) :-
+    call_with_inference_limit(catch(r_prolog, error(resource_error(_), _),
+                                    true),
+                              1000000, R).
 
 :- end_tests(soluciones).

@@ -1,24 +1,27 @@
 :- encoding(utf8).
 
-% Capítulo 39 - El intérprete del sistema experto, con tablas.
+% Capítulo 39 - Las reglas del sistema experto leídas como datos: ¿tienen
+% un significado claro?
 %
-% Las reglas son las del capítulo 33 con la negación no: r11 y r12 dicen
-% no vuela. La versión vuela de la base agrega r13, «un ave que no es
-% pingüino ni avestruz vuela», que crea un ciclo positivo con r4 (ave,
-% vuela, ave) y dos negativos con r11 y r12; la versión puede_volar
-% concluye otra cosa y no los crea. Es el análisis de la sección 38.7.
+% Las reglas son las del capítulo 34 con la negación no de su ejercicio 13:
+% r11 y r12 dicen no vuela. base/2 convierte cada regla en una cláusula de
+% Prolog, con \+ en lugar de no, y el programa base(Version) es la base de
+% esa versión; con_hechos(Programa, Hechos) le agrega observaciones. Los
+% evaluadores de semantica.pl la examinan: estratos/2 dice si la base es
+% estratificada, y bien_fundado/3 da qué hipótesis son verdaderas y cuáles
+% quedan indefinidas con unas observaciones. Dos versiones agregan una
+% regla r13, «un ave que no es pingüino ni avestruz vuela»: la versión
+% vuela concluye vuela, que r11 y r12 usan negado; la versión puede_volar
+% concluye otra cosa.
 %
-% probar_sin_tabla/3 es el intérprete de arriba hacia abajo del capítulo
-% 33, con \+ para la negación: con la versión vuela entra en el ciclo
-% positivo y no termina. cierto/3 es el mismo intérprete tabulado, con
-% tnot/1 para la negación: cada conclusión se prueba una vez por conjunto
-% de observaciones, los ciclos positivos terminan y los negativos dejan
-% indefinidas las conclusiones que dependen de ellos. diagnostico/3 separa
-% las hipótesis verdaderas de las indefinidas.
+% solo-local: carga semantica.pl con ensure_loaded/1, y SWISH no permite
+% cargar otro archivo.
 %
-%?- diagnostico(original, [tiene_plumas, nada, peso(30)], R).
+%?- estratos(base(original), E).
+%?- ciclos_negativos(base(vuela), P).
 %?- diagnostico(vuela, [tiene_plumas, nada, peso(30)], R).
-%?- diagnostico(vuela, [tiene_pelo, come_carne, color_leonado, manchas_oscuras], R).
+
+:- ensure_loaded(semantica).
 
 :- op(800, xfx, entonces).
 :- op(790, fx, si).
@@ -54,95 +57,57 @@ hipotesis(cebra).
 hipotesis(pinguino).
 hipotesis(avestruz).
 
-%!  regla_de(+Version:atom, ?Nombre, ?Regla) is nondet.
+%!  base(+Version:atom, -Clausulas:list) is det.
 %
-%   Regla, llamada Nombre, es una regla de la base en la versión Version:
-%   original, vuela o puede_volar.
-regla_de(_, Nombre, Regla) :-
-    regla(Nombre, Regla).
-regla_de(Version, Nombre, Regla) :-
-    agregada(Version, Nombre, Regla).
+%   Clausulas son las reglas de la base, más las que agrega Version
+%   (original, vuela o puede_volar), como cláusulas Conclusion :- Cuerpo.
+base(Version, Clausulas) :-
+    must_be(oneof([original, vuela, puede_volar]), Version),
+    findall(R, regla(_, R), Reglas),
+    findall(R, agregada(Version, _, R), Agregadas),
+    append(Reglas, Agregadas, Todas),
+    maplist(regla_clausula, Todas, Clausulas).
 
-%!  probar_sin_tabla(+Version:atom, +Observaciones:list, +Condicion)
-%!      is nondet.
+%!  regla_clausula(+Regla, -Clausula) is det.
 %
-%   Condicion se prueba con las reglas de Version y las Observaciones, de
-%   arriba hacia abajo y sin tablas. Con un ciclo en las reglas, puede no
-%   terminar.
-probar_sin_tabla(Version, Os, A y B) :-
-    probar_sin_tabla(Version, Os, A),
-    probar_sin_tabla(Version, Os, B).
-probar_sin_tabla(_, _, X > Y) :-
-    X > Y.
-probar_sin_tabla(Version, Os, no A) :-
-    \+ probar_sin_tabla(Version, Os, A).
-probar_sin_tabla(_, Os, Meta) :-
-    atomica(Meta),
-    member(Meta, Os).
-probar_sin_tabla(Version, Os, Meta) :-
-    atomica(Meta),
-    regla_de(Version, _, si Condiciones entonces Meta),
-    probar_sin_tabla(Version, Os, Condiciones).
+%   Clausula es Regla, si Condiciones entonces Conclusion, escrita como la
+%   cláusula Conclusion :- Cuerpo.
+regla_clausula(si Condiciones entonces Conclusion, Conclusion :- Cuerpo) :-
+    condiciones_cuerpo(Condiciones, Cuerpo).
 
-%!  probar(+Version:atom, +Observaciones:list, +Condicion) is nondet.
+%!  condiciones_cuerpo(+Condiciones, -Cuerpo) is det.
 %
-%   Condicion se prueba con las reglas de Version y las Observaciones. Cada
-%   conclusión se busca en la tabla de cierto/3, y la negación es tnot/1.
-probar(Version, Os, A y B) :-
-    probar(Version, Os, A),
-    probar(Version, Os, B).
-probar(_, _, X > Y) :-
-    X > Y.
-probar(Version, Os, no A) :-
-    tnot(cierto(Version, Os, A)).
-probar(Version, Os, Meta) :-
-    atomica(Meta),
-    cierto(Version, Os, Meta).
+%   Cuerpo es Condiciones con , en lugar de y, y \+ en lugar de no.
+condiciones_cuerpo(Condiciones, Cuerpo) :-
+    (   Condiciones = (A y B)
+    ->  Cuerpo = (CuerpoA, CuerpoB),
+        condiciones_cuerpo(A, CuerpoA),
+        condiciones_cuerpo(B, CuerpoB)
+    ;   Condiciones = (no A)
+    ->  Cuerpo = (\+ A)
+    ;   Cuerpo = Condiciones
+    ).
 
-:- table cierto/3.
+:- multifile generado/2.
 
-%!  cierto(+Version:atom, +Observaciones:list, ?Meta) is nondet.
+%!  generado(+Programa, -Clausulas:list) is semidet.
 %
-%   Meta es una observación, o la conclusión de una regla de Version cuyas
-%   condiciones se prueban. Las respuestas que dependen de un ciclo
-%   negativo quedan indefinidas.
-cierto(_, Os, Meta) :-
-    member(Meta, Os).
-cierto(Version, Os, Meta) :-
-    regla_de(Version, _, si Condiciones entonces Meta),
-    probar(Version, Os, Condiciones).
-
-%!  atomica(+Condicion) is semidet.
-%
-%   Condicion no es una conjunción, una negación ni una comparación.
-atomica(Condicion) :-
-    Condicion \= (_ y _),
-    Condicion \= (no _),
-    Condicion \= (_ > _).
+%   Los programas de este archivo: base(Version), las cláusulas de base/2,
+%   y con_hechos(Programa, Hechos), las del programa Programa más un hecho
+%   por cada uno de Hechos.
+generado(base(Version), Clausulas) :-
+    base(Version, Clausulas).
+generado(con_hechos(Programa, Hechos), Clausulas) :-
+    clausulas(Programa, Reglas),
+    findall(H :- true, member(H, Hechos), Nuevas),
+    append(Reglas, Nuevas, Clausulas).
 
 %!  diagnostico(+Version:atom, +Observaciones:list, -Resultado) is det.
 %
 %   Resultado es resultado(Verdaderas, Indefinidas): las hipótesis
-%   verdaderas y las indefinidas con las reglas de Version y las
-%   Observaciones.
-diagnostico(Version, Os, resultado(Verdaderas, Indefinidas)) :-
-    must_be(oneof([original, vuela, puede_volar]), Version),
-    findall(H-V,
-            ( hipotesis(H),
-              valor(cierto(Version, Os, H), V) ),
-            Valores),
-    findall(H, member(H-verdadero, Valores), Verdaderas),
-    findall(H, member(H-indefinido, Valores), Indefinidas).
-
-%!  valor(+Meta, -Valor) is det.
-%
-%   Valor es verdadero, falso o indefinido: el de Meta, tabulada y sin
-%   variables, como en juego.pl.
-valor(Meta, Valor) :-
-    findall(Condicion, call_delays(Meta, Condicion), Condiciones),
-    (   Condiciones == []
-    ->  Valor = falso
-    ;   memberchk(true, Condiciones)
-    ->  Valor = verdadero
-    ;   Valor = indefinido
-    ).
+%   verdaderas y las indefinidas en el modelo bien fundado de la base de
+%   Version con Observaciones como hechos.
+diagnostico(Version, Observaciones, resultado(Verdaderas, Indefinidas)) :-
+    bien_fundado(con_hechos(base(Version), Observaciones), V, I),
+    findall(H, ( hipotesis(H), ord_memberchk(H, V) ), Verdaderas),
+    findall(H, ( hipotesis(H), ord_memberchk(H, I) ), Indefinidas).

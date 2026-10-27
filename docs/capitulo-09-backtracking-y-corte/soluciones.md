@@ -590,3 +590,191 @@ la ejecución siempre pasa por el `!`, porque `talle/1`, `color/1` y `tela/1`
 tienen al menos un hecho, y el corte descarta el saldo. Si ningún talle
 existiera, el cuerpo fallaría antes del `!` y el saldo volvería a aparecer: el
 corte solo poda cuando la ejecución lo atraviesa.
+
+## 17
+
+<!-- ejemplo: capitulo-09/soluciones.pl predicado: identifica/2 creciente/1 decreciente/1 constante/1 consulta: identifica([34, 35, 67, 67, 67, 30, 21], Z). -->
+```prolog
+%!  identifica(+Datos, -Secuencia) is det.
+%
+%   Secuencia es la forma de la lista de números Datos: maximo, minimo,
+%   meseta o sinorden. Plantilla 14. Secuencia debe llegar libre: con
+%   sinorden ya ligado, la última cláusula lo acepta sin verificar nada.
+identifica(Datos, maximo) :-
+    append(Sube, [Cima|Baja], Datos),
+    Sube = [_|_],
+    Baja = [_|_],
+    append(Sube, [Cima], Subida),
+    creciente(Subida),
+    decreciente([Cima|Baja]),
+    !.
+identifica(Datos, minimo) :-
+    append(Baja, [Fondo|Sube], Datos),
+    Baja = [_|_],
+    Sube = [_|_],
+    append(Baja, [Fondo], Bajada),
+    decreciente(Bajada),
+    creciente([Fondo|Sube]),
+    !.
+identifica(Datos, meseta) :-
+    append(Sube, Resto, Datos),
+    Sube = [_|_],
+    append(Meseta, Baja, Resto),
+    Meseta = [Primero, _|_],
+    Baja = [_|_],
+    append(Sube, [Primero], Subida),
+    creciente(Subida),
+    constante(Meseta),
+    last(Meseta, Ultimo),
+    decreciente([Ultimo|Baja]),
+    !.
+identifica(_, sinorden).
+
+%!  creciente(+L) is semidet.
+%
+%   Los números de L están en orden estrictamente creciente.
+creciente([]).
+creciente([_]).
+creciente([X, Y|Resto]) :-
+    X < Y,
+    creciente([Y|Resto]).
+
+%!  decreciente(+L) is semidet.
+%
+%   Los números de L están en orden estrictamente decreciente.
+decreciente([]).
+decreciente([_]).
+decreciente([X, Y|Resto]) :-
+    X > Y,
+    decreciente([Y|Resto]).
+
+%!  constante(+L) is semidet.
+%
+%   Todos los números de L son iguales.
+constante([]).
+constante([_]).
+constante([X, Y|Resto]) :-
+    X =:= Y,
+    constante([Y|Resto]).
+```
+
+```prolog
+?- identifica([1, 3, 4, 10, 99, 98, 23, 2], Z).
+Z = maximo.
+
+?- identifica([34, 3, 6, 99, 100], Z).
+Z = minimo.
+
+?- identifica([34, 35, 67, 67, 67, 30, 21], Z).
+Z = meseta.
+
+?- identifica([23, 45, 46, 2, 1, 4], Z).
+Z = sinorden.
+```
+
+Cada forma es una cláusula de la plantilla 14: una condición seguida de `!`, y
+una última cláusula sin condición para `sinorden`. La condición de cada forma
+es de generar y probar: `append/3` propone los puntos donde la lista cambia de
+sentido, y `creciente/1`, `decreciente/1` y `constante/1` verifican cada tramo.
+Para `maximo`, la cima pertenece a los dos tramos: `Subida` termina en ella y
+`[Cima|Baja]` empieza en ella. `Sube = [_|_]` y `Baja = [_|_]` exigen que haya
+subida y bajada; sin ellas, `[5, 4, 3]` sería un máximo con la cima en el
+primer elemento. La meseta tiene tres tramos, y el del medio tiene al menos dos
+elementos iguales.
+
+El corte es rojo, como el de `clasificar/2` en el [ejercicio 14](#14):
+
+```prolog
+?- identifica([1, 3, 2], sinorden).
+true.
+```
+
+Con `sinorden` ya ligado, las tres primeras cabezas no unifican y la última
+cláusula acepta la lista sin verificar nada. Las consultas con `maximo`,
+`minimo` o `meseta` ligados sí son correctas, porque esas cláusulas tienen su
+condición completa. Por eso el encabezado aclara que `Secuencia` debe llegar
+libre.
+
+## 18
+
+<!-- ejemplo: capitulo-09/soluciones.pl predicado: sust/4 consulta: sust([a, b, c, d, 1, a, b, c, 1, a], [1, a], [c], T). -->
+```prolog
+%!  sust(+L1, +P1, +P2, -L2) is det.
+%
+%   L2 es L1 con cada aparición de la lista P1 reemplazada por la lista P2,
+%   de izquierda a derecha y sin superposiciones. P1 no puede ser vacía.
+sust([], _, _, []).
+sust(L1, P1, P2, L2) :-
+    append(P1, Resto, L1),
+    !,
+    sust(Resto, P1, P2, R),
+    append(P2, R, L2).
+sust([X|Xs], P1, P2, [X|L2]) :-
+    sust(Xs, P1, P2, L2).
+```
+
+```prolog
+?- sust([p, r, o, l, g, g, o, g, g, g], [g, g], [], L).
+L = [p, r, o, l, o, g] ;
+false.
+
+?- sust([a, b, c, d, 1, a, b, c, 1, a], [1, a], [c], T).
+T = [a, b, c, d, c, b, c, c] ;
+false.
+```
+
+La segunda cláusula reconoce el patrón al comienzo de la lista con
+`append(P1, Resto, L1)`, que se cumple si `L1` empieza con `P1`, y continúa
+con lo que sigue al patrón. La tercera conserva el primer elemento y continúa
+con el resto. El corte hace que las dos no se superpongan: sin él, al pedir
+otra respuesta, la tercera cláusula conservaría el patrón en lugar de
+reemplazarlo, y aparecerían todas las combinaciones de apariciones
+reemplazadas y conservadas.
+
+Como el patrón se busca desde el comienzo y lo reemplazado no se vuelve a
+examinar, las apariciones se reemplazan de izquierda a derecha y sin
+superponerse: en `[g, g, g]` se reemplaza el primer par y queda una `g`. Un
+`P1` vacío no tiene sentido: `append([], Resto, L1)` se cumple siempre, y la
+recursión no termina. La respuesta termina en `;` porque quedan alternativas
+pendientes, que fallan al pedir otra respuesta.
+
+## 19
+
+<!-- ejemplo: capitulo-09/soluciones.pl predicado: atomiza/2 consulta: atomiza([[[5, s], [p, q]], r, [2]], X). -->
+```prolog
+%!  atomiza(+Xs, -Ys) is det.
+%
+%   Ys tiene los elementos de Xs que no son listas, de todos los niveles de
+%   anidamiento, en orden. Los cortes distinguen una lista de un elemento.
+atomiza([], Ys) :-
+    !,
+    Ys = [].
+atomiza([X|Xs], Ys) :-
+    !,
+    atomiza(X, Ys1),
+    atomiza(Xs, Ys2),
+    append(Ys1, Ys2, Ys).
+atomiza(X, [X]).
+```
+
+```prolog
+?- atomiza([[[5, s], [p, q]], r, [2]], X).
+X = [5, s, p, q, r, 2].
+
+?- atomiza([1, [[2, a], 3], [4]], [1, 2, a, 3, 4]).
+true.
+```
+
+Es el `flatten/2` de doble recursión de Sterling y Shapiro (programa 9.1a), que
+distingue una lista de un elemento con un predicado de tipo que la parte I no
+presenta. Aquí lo hacen los cortes, con la plantilla 14: la lista vacía, la
+lista no vacía, y cualquier otro término, que la última cláusula convierte en
+una lista de un elemento. Sin los cortes, `[]` y `[a]` también se tomarían
+como elementos al pedir otra respuesta.
+
+La primera cláusula unifica el resultado con `[]` **después** del corte, y no
+en la cabeza. Escrita `atomiza([], [])`, una consulta como
+`atomiza([], [[]])` no unificaría con esa cabeza, no pasaría por el corte, y
+la última cláusula la aceptaría, porque `[]` unifica con `X`. Con la
+unificación en el cuerpo, la consulta entra por la primera cláusula, el corte
+descarta las demás, y `Ys = []` falla, como corresponde.

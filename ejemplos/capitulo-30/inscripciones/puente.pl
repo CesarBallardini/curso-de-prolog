@@ -72,7 +72,7 @@ resultado_py(rechazada(Motivo), _{aceptada: @(false), motivo: Texto}) :-
 %!  estado_py(-Estado) is det.
 %
 %   Estado es el estado del programa, envuelto en prolog/1: Python recibe un
-%   objeto janus.Term, que puede guardar y devolver sin mirarlo.
+%   objeto janus.Term, que puede guardar y devolver sin examinarlo.
 estado_py(prolog(Estado)) :-
     estado(Estado).
 

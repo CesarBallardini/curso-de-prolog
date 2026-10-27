@@ -1,207 +1,184 @@
 :- encoding(utf8).
 
-% Capítulo 79 - Versión 5: jugar con la tabla de consejos.
+% Capítulo 79 - Partidas entre estrategias, y contra una persona.
 %
-% El ciclo de juego de Advice Language 0: con las blancas a mover y sin un
-% árbol forzante en curso, la tabla da un consejo y su árbol; las blancas
-% juegan por el árbol mientras dure, y cuando se termina piden otro. Las
-% negras juegan con una defensa, un predicado que recibe la posición y
-% elige una respuesta legal. La partida es una lista de jugadas, cada una
-% con el consejo que la eligió.
+% Una estrategia es un predicado que recibe el juego y la posición y elige
+% una jugada: se pasa como argumento, sin sus tres últimos argumentos, y la
+% partida la llama con call/4. profundidad(D) busca con la poda alfa-beta
+% del capítulo 42; tiempo(S), con su profundización progresiva; primera
+% toma la primera jugada legal. nim:suma, en nim.pl, es la suma de Nim.
 %
-% solo-local: carga reglas.pl, consejos.pl, krk.pl, corregida.pl y
-% finales.pl.
+% partida/6 juega una partida entera entre dos estrategias, sin entrada ni
+% salida. jugar/4 juega contra una persona, que es la estrategia persona:
+% lee sus jugadas, una por línea, de un stream. Cada juego dice cómo se
+% muestra una posición y cómo se lee una jugada con dos predicados
+% multifile, pantalla/3 y leer_jugada/4.
 %
-%?- partida(krk, primera, pos(blancas, 5-5, 1-1, 4-7), P, F).
+% solo-local: es un módulo que carga otro, y lee de un stream.
+%
+%?- partida(nim([1, 2, 3]), primera, nim:suma, Jugadas, Resultado).
 
 :- module(partida,
           [ partida/5,
-            jugadas_hasta_mate/4,
-            medir/3,
-            primera/2,
-            resistente/2,
-            narrar/3
+            partida/6,
+            profundidad/4,
+            tiempo/4,
+            primera/3,
+            jugar/4
           ]).
 
-:- use_module(library(lists)).
-:- use_module(library(apply)).
-:- use_module(library(pairs)).
-:- use_module(reglas).
-:- use_module(consejos).
-:- use_module(krk).
-:- use_module(corregida, []).
-:- use_module(finales, [posiciones/2]).
+:- use_module(library(readutil)).
+:- use_module(capitulo42).
 
-:- meta_predicate partida(+, 2, +, -, -), jugadas_hasta_mate(+, 2, +, -),
-                  narrar(+, 2, +), medir(+, 2, -).
+:- multifile
+    pantalla/3,
+    leer_jugada/4.
 
-%!  partida(+Tabla, :Defensa, +Posicion, -Jugadas:list, -Final) is det.
+:- meta_predicate
+    partida(+, 3, 3, -, -),
+    partida(+, +, 3, 3, -, -),
+    jugar(+, 3, 3, +).
+
+% --- Partidas entre dos estrategias ----------------------------------------
+
+%!  partida(+Juego, :Max, :Min, -Jugadas:list, -Resultado) is det.
 %
-%   Jugadas es la partida que se juega desde Posicion con las blancas
-%   guiadas por Tabla y las negras por Defensa: una lista de elementos
-%   blancas(Jugada, Consejo), con el consejo que dio el árbol en curso, y
-%   negras(Jugada). Final es mate, ahogado, torre_perdida, sin_consejo (si
-%   ningún consejo es satisfacible) o limite (después de 100 jugadas de las
-%   blancas).
-partida(Tabla, Defensa, Posicion, Jugadas, Final) :-
-    jugar(Tabla, Defensa, Posicion, ninguno, 0, Jugadas, Final).
+%   Jugadas es la partida entera de Juego desde su posición inicial, con la
+%   estrategia Max para el jugador max y Min para el jugador min, y
+%   Resultado, el de fin/3.
+partida(Juego, Max, Min, Jugadas, Resultado) :-
+    inicial(Juego, Posicion),
+    partida(Juego, Posicion, Max, Min, Jugadas, Resultado).
 
-%!  jugar(+Tabla, :Defensa, +Posicion, +Arbol, +N:integer, -Jugadas:list,
-%!        -Final) is det.
+%!  partida(+Juego, +Posicion, :Max, :Min, -Jugadas:list, -Resultado)
+%!      is det.
 %
-%   Continúa la partida desde Posicion, con Arbol el árbol forzante en
-%   curso, consejo(Nombre, A), o ninguno; N es la cantidad de jugadas de
-%   las blancas hechas.
-jugar(Tabla, Defensa, Posicion, Arbol, N, Jugadas, Final) :-
-    (   terminada(Posicion, F)
+%   Como partida/5, desde Posicion.
+partida(Juego, Posicion, Max, Min, Jugadas, Resultado) :-
+    (   fin(Juego, Posicion, R)
     ->  Jugadas = [],
-        Final = F
-    ;   N >= 100
-    ->  Jugadas = [],
-        Final = limite
-    ;   Posicion = pos(blancas, _, _, _)
-    ->  (   siguiente_en_arbol(Arbol, Nombre, Jugada, Resto)
-        ->  true
-        ;   estrategia(Tabla, Posicion, Nombre, juega(Jugada, A))
-        ->  Resto = A
-        ;   Jugada = ninguna
-        ),
-        (   Jugada == ninguna
-        ->  Jugadas = [],
-            Final = sin_consejo
-        ;   once(jugada(Posicion, Jugada, Siguiente)),
-            N1 is N + 1,
-            Jugadas = [blancas(Jugada, Nombre)|Js],
-            jugar(Tabla, Defensa, Siguiente, consejo(Nombre, Resto), N1, Js,
-                  Final)
-        )
-    ;   call(Defensa, Posicion, Jugada),
-        once(jugada(Posicion, Jugada, Siguiente)),
-        rama(Arbol, Jugada, Arbol1),
-        Jugadas = [negras(Jugada)|Js],
-        jugar(Tabla, Defensa, Siguiente, Arbol1, N, Js, Final)
+        Resultado = R
+    ;   turno(Juego, Posicion, Lado),
+        estrategia(Lado, Max, Min, Estrategia),
+        call(Estrategia, Juego, Posicion, Jugada),
+        once(jugada(Juego, Posicion, Jugada, Siguiente)),
+        Jugadas = [Jugada|Resto],
+        partida(Juego, Siguiente, Max, Min, Resto, Resultado)
     ).
 
-%!  terminada(+Posicion, -Final) is semidet.
+% estrategia(Lado, Max, Min, E): E es la estrategia del que juega del Lado.
+estrategia(max, Max, _, Max).
+estrategia(min, _, Min, Min).
+
+%!  profundidad(+D:integer, +Juego, +Posicion, -Jugada) is det.
 %
-%   La partida terminó en Posicion: mate, ahogado o torre_perdida, si la
-%   torre fue capturada.
-terminada(P, mate) :-
-    mate(P),
-    !.
-terminada(P, ahogado) :-
-    ahogado(P),
-    !.
-terminada(pos(_, _, capturada, _), torre_perdida).
+%   Jugada es la que elige alfabeta/6 del capítulo 42 buscando D jugadas
+%   hacia adelante.
+profundidad(D, Juego, Posicion, Jugada) :-
+    alfabeta(Juego, Posicion, D, Jugada, _, _).
 
-%!  siguiente_en_arbol(+Arbol, -Nombre, -Jugada, -Resto) is semidet.
+%!  tiempo(+Segundos:number, +Juego, +Posicion, -Jugada) is det.
 %
-%   El árbol en curso indica la Jugada de las blancas, y Resto es lo que
-%   queda de él. Falla si no hay árbol en curso o si se terminó.
-siguiente_en_arbol(consejo(Nombre, juega(Jugada, Resto)), Nombre, Jugada,
-                   Resto).
+%   Jugada es la que elige profundizar/6 del capítulo 42 en Segundos. Si
+%   ni la profundidad 1 termina a tiempo, la primera jugada legal.
+tiempo(Segundos, Juego, Posicion, Jugada) :-
+    profundizar(Juego, Posicion, Segundos, J, _, _),
+    (   J == ninguna
+    ->  primera(Juego, Posicion, Jugada)
+    ;   Jugada = J
+    ).
 
-%!  rama(+Arbol, +Respuesta, -Arbol1) is det.
+%!  primera(+Juego, +Posicion, -Jugada) is semidet.
 %
-%   Arbol1 es el subárbol que corresponde a la Respuesta de las negras, o
-%   ninguno si el árbol se terminó o no la prevé.
-rama(consejo(Nombre, responde(Ramas)), Respuesta, consejo(Nombre, A)) :-
-    memberchk(Respuesta-A, Ramas),
-    !.
-rama(_, _, ninguno).
+%   Jugada es la primera jugada legal de Posicion. Falla si no hay.
+primera(Juego, Posicion, Jugada) :-
+    once(jugada(Juego, Posicion, Jugada, _)).
 
-%!  jugadas_hasta_mate(+Tabla, :Defensa, +Posicion, -N:integer) is semidet.
+% --- Contra una persona -----------------------------------------------------
+
+%!  jugar(+Juego, :Max, :Min, +In) is det.
 %
-%   La partida desde Posicion termina en mate después de N jugadas de las
-%   blancas. Falla si termina de otra forma.
-jugadas_hasta_mate(Tabla, Defensa, Posicion, N) :-
-    partida(Tabla, Defensa, Posicion, Jugadas, mate),
-    include(de_blancas, Jugadas, Bs),
-    length(Bs, N).
+%   Juega Juego mostrando cada posición. Una de las estrategias, o las dos,
+%   puede ser persona: sus jugadas se leen de In, una por línea, con
+%   leer_jugada/4 del juego. La partida termina al final del juego o al
+%   final de In.
+jugar(Juego, Max, Min, In) :-
+    inicial(Juego, Posicion),
+    bucle(Juego, Posicion, Max, Min, In).
 
-%!  medir(+Tabla, :Defensa, -R) is det.
+%!  bucle(+Juego, +Posicion, :Max, :Min, +In) is det.
 %
-%   Juega una partida desde cada una de las 27 352 posiciones con las
-%   blancas a mover y el rey negro en el triángulo a1-d1-d4. R es
-%   r(Finales, Mayor, Media): Finales cuenta las partidas por su final, como
-%   pares Final-Cantidad; Mayor y Media son la mayor cantidad y la media de
-%   jugadas de las blancas en las que terminaron en mate.
-medir(Tabla, Defensa, r(Finales, Mayor, Media)) :-
-    posiciones(blancas, Ps),
-    findall(F-N,
-            ( member(P, Ps),
-              partida(Tabla, Defensa, P, Js, F),
-              include(de_blancas, Js, Bs),
-              length(Bs, N) ),
-            FNs),
-    pairs_keys(FNs, Fs0),
-    msort(Fs0, Fs),
-    clumped(Fs, Finales),
-    findall(N, member(mate-N, FNs), Ns),
-    max_list(Ns, Mayor),
-    sum_list(Ns, Suma),
-    length(Ns, Cantidad),
-    Media is round(100 * Suma / Cantidad) / 100.
+%   Muestra Posicion y sigue la partida desde ella.
+bucle(Juego, Posicion, Max, Min, In) :-
+    mostrar(Juego, Posicion),
+    (   fin(Juego, Posicion, Resultado)
+    ->  anunciar(Juego, Posicion, Resultado, Max, Min)
+    ;   turno(Juego, Posicion, Lado),
+        estrategia(Lado, Max, Min, Estrategia),
+        (   persona(Estrategia)
+        ->  pedir(Juego, Posicion, In, Jugada)
+        ;   call(Estrategia, Juego, Posicion, Jugada),
+            format("La computadora juega ~W.~n",
+                   [Jugada, [spacing(next_argument)]])
+        ),
+        (   Jugada == abandono
+        ->  format("Partida abandonada.~n")
+        ;   once(jugada(Juego, Posicion, Jugada, Siguiente)),
+            bucle(Juego, Siguiente, Max, Min, In)
+        )
+    ).
 
-% de_blancas(E): el elemento E de una partida es una jugada de las blancas.
-de_blancas(blancas(_, _)).
-
-% --- Defensas ------------------------------------------------------------
-
-%!  primera(+Posicion, -Jugada) is semidet.
+%!  mostrar(+Juego, +Posicion) is det.
 %
-%   Jugada es la primera jugada legal de las negras en Posicion.
-primera(Posicion, Jugada) :-
-    once(jugada(Posicion, Jugada, _)).
+%   Escribe las líneas de pantalla/3 del juego.
+mostrar(Juego, Posicion) :-
+    pantalla(Juego, Posicion, Lineas),
+    forall(member(L, Lineas), format("~w~n", [L])).
 
-%!  resistente(+Posicion, -Jugada) is semidet.
+%!  pedir(+Juego, +Posicion, +In, -Jugada) is det.
 %
-%   Jugada es la respuesta de las negras que deja a su rey el mayor
-%   espacio y, entre las que empatan, la más alejada de los bordes. Captura
-%   la torre si puede.
-resistente(Posicion, Jugada) :-
-    findall(V-J,
-            ( jugada(Posicion, J, S),
-              valor_defensa(S, V) ),
-            VJs),
-    VJs \== [],
-    keysort(VJs, Ordenadas),
-    last(Ordenadas, _-Jugada).
+%   Jugada es la primera línea de In que leer_jugada/4 traduce a una jugada
+%   legal en Posicion, o abandono si In se termina antes.
+pedir(Juego, Posicion, In, Jugada) :-
+    format("Tu jugada: "),
+    read_line_to_string(In, Linea),
+    (   Linea == end_of_file
+    ->  nl,
+        Jugada = abandono
+    ;   format("~w~n", [Linea]),
+        leer_jugada(Juego, Posicion, Linea, J),
+        jugada(Juego, Posicion, J, _)
+    ->  Jugada = J
+    ;   format("Esa jugada no es válida.~n"),
+        pedir(Juego, Posicion, In, Jugada)
+    ).
 
-%!  valor_defensa(+Posicion, -Valor) is det.
+%!  anunciar(+Juego, +Posicion, +Resultado, :Max, :Min) is det.
 %
-%   Valor ordena las posiciones que pueden resultar de una respuesta de las
-%   negras: la torre capturada es lo mejor; si no, más espacio y más
-%   distancia al borde.
-valor_defensa(pos(_, _, capturada, _), v(1000, 0)) :-
-    !.
-valor_defensa(P, v(E, B)) :-
-    espacio(P, E),
-    P = pos(_, _, _, X-Y),
-    B is min(min(X, 9 - X), min(Y, 9 - Y)).
-
-% --- La partida escrita --------------------------------------------------
-
-%!  narrar(+Tabla, :Defensa, +Posicion) is det.
-%
-%   Escribe la partida desde Posicion: una línea por jugada de las blancas,
-%   con la respuesta de las negras y el consejo, y al final el resultado.
-narrar(Tabla, Defensa, Posicion) :-
-    partida(Tabla, Defensa, Posicion, Jugadas, Final),
-    escribir(Jugadas, 1),
-    format("~w~n", [Final]).
-
-%!  escribir(+Jugadas:list, +N:integer) is det.
-%
-%   Escribe las jugadas numeradas desde N.
-escribir([], _).
-escribir([blancas(J, C)|Js], N) :-
-    notacion(J, T),
-    (   Js = [negras(R)|Js1]
-    ->  notacion(R, TR)
-    ;   TR = '',
-        Js1 = Js
+%   Escribe quién ganó, desde el punto de vista de la persona si una de las
+%   dos estrategias es persona.
+anunciar(_, Posicion, Resultado, Max, Min) :-
+    valor_final(Resultado, Posicion, Valor),
+    (   Valor > 0
+    ->  ganador(Max, Mensaje)
+    ;   Valor < 0
+    ->  ganador(Min, Mensaje)
+    ;   Mensaje = "Empate."
     ),
-    format("~w. ~w ~w~t~20|~w~n", [N, T, TR, C]),
-    N1 is N + 1,
-    escribir(Js1, N1).
+    format("~w~n", [Mensaje]).
+
+%!  ganador(:Estrategia, -Mensaje:string) is det.
+%
+%   Mensaje anuncia la victoria del que juega con Estrategia.
+ganador(Estrategia, Mensaje) :-
+    (   persona(Estrategia)
+    ->  Mensaje = "Ganaste."
+    ;   Mensaje = "Gana la computadora."
+    ).
+
+%!  persona(:Estrategia) is semidet.
+%
+%   Estrategia es persona, con el módulo que le agrega meta_predicate/1 o
+%   sin él.
+persona(Estrategia) :-
+    strip_module(Estrategia, _, persona).

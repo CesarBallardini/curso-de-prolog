@@ -1,240 +1,297 @@
 :- encoding(utf8).
 
-% Capítulo 39 - Soluciones de los ejercicios 2, 4, 5, 6, 7, 8, 9 y 10.
+% Capítulo 39 - Soluciones de los ejercicios 1, 2, 3, 9, 10, 11, 12, 13 y
+% 14: modelos, base de Herbrand, estratos, semántica bien fundada, modelos
+% estables y evaluación semi-ingenua. Usa los evaluadores de semantica.pl,
+% y nombra con generado/2 los programas que construye como datos.
 %
-% Cada ejercicio repite los datos que usa, para que el archivo se cargue
-% solo: el grafo de camino.pl, el de distancias.pl y el juego de juego.pl.
+% solo-local: carga semantica.pl con ensure_loaded/1, y SWISH no permite
+% cargar otro archivo.
 %
-%?- findall(Y, camino_der(a, Y), Ys), tablas(T).
-%?- formas(100, [1, 5, 10, 25, 50], N).
-%?- saltos(a, b, N).
-%?- valor(gana(j3, a), V).
+%?- modelos(lluvia, [calle_mojada, llueve, riego], Ms).
+%?- base_herbrand(lluvia, B).
+%?- bien_fundado(paridad, V, I).
+%?- estables_de([(p :- \+ q), (q :- \+ p)], Ms).
 
-% arco(X, Y): hay un arco de X a Y.
-arco(a, b).
-arco(b, c).
-arco(c, a).
-arco(c, d).
+:- ensure_loaded(semantica).
 
-% Ejercicio 2
+:- multifile generado/2.
 
-:- table camino_der/2.
-
-%!  camino_der(?X, ?Y) is nondet.
+%!  generado(+Programa, -Clausulas:list) is semidet.
 %
-%   Hay un camino de X a Y, con la recursión a la derecha y tabulado.
-camino_der(X, Y) :-
-    arco(X, Y).
-camino_der(X, Y) :-
-    arco(X, Z),
-    camino_der(Z, Y).
+%   Los programas de estas soluciones: paridad, juego(Juego) (los
+%   movimientos de Juego solamente), alcanzables(N) y cadena_doble(N).
+generado(paridad, Clausulas) :-
+    paridad(Clausulas).
+generado(juego(Juego), Clausulas) :-
+    del_juego(Juego, Clausulas).
+generado(alcanzables(N), Clausulas) :-
+    alcanzables(N, Clausulas).
+generado(cadena_doble(N), Clausulas) :-
+    cadena_doble(N, Clausulas).
 
-%!  tablas(-N:integer) is det.
+%!  modelos_de(+Clausulas:list, +Atomos:list, -Modelos:list) is det.
 %
-%   N es la cantidad de tablas que existen en este momento.
-tablas(N) :-
-    aggregate_all(count, current_table(_, _), N).
+%   Modelos son los subconjuntos de Atomos que son modelos de Clausulas,
+%   cada uno ordenado, en el orden en que subconjunto/2 los genera.
+modelos_de(Clausulas, Atomos, Modelos) :-
+    findall(I,
+            ( subconjunto(Atomos, I),
+              es_modelo_de(Clausulas, I) ),
+            Modelos).
 
-% Ejercicio 4
-
-:- table suma_hasta/2.
-
-%!  suma_hasta(+N:integer, -S:integer) is semidet.
+%!  modelos(+Programa, +Atomos:list, -Modelos:list) is det.
 %
-%   S es la suma de 1 a N. Falla si N no es positivo.
-suma_hasta(1, 1).
-suma_hasta(N, S) :-
-    N > 1,
-    N1 is N - 1,
-    suma_hasta(N1, S1),
-    S is S1 + N.
+%   modelos_de/3 con las cláusulas del programa llamado Programa.
+modelos(Programa, Atomos, Modelos) :-
+    clausulas(Programa, Clausulas),
+    modelos_de(Clausulas, Atomos, Modelos).
 
-% Ejercicio 5
-
-:- table formas/3.
-
-%!  formas(+Monto:integer, +Monedas:list(integer), -N:integer) is det.
+%!  subconjunto(+Conjunto:list, -Sub:list) is multi.
 %
-%   N es la cantidad de formas de pagar Monto con monedas de los valores de
-%   Monedas, positivos y sin repetir, sin importar el orden.
-formas(Monto, Monedas, N) :-
-    (   Monto =:= 0
-    ->  N = 1
-    ;   Monedas == []
-    ->  N = 0
-    ;   Monedas = [Moneda|Resto],
-        (   Moneda > Monto
-        ->  formas(Monto, Resto, N)
-        ;   Menos is Monto - Moneda,
-            formas(Menos, Monedas, N1),
-            formas(Monto, Resto, N2),
-            N is N1 + N2
-        )
+%   Sub es un subconjunto de Conjunto, con los elementos en el mismo orden.
+%   Una respuesta por subconjunto: primero los que tienen el primer
+%   elemento.
+subconjunto([], []).
+subconjunto([X|Xs], [X|Ys]) :-
+    subconjunto(Xs, Ys).
+subconjunto([_|Xs], Ys) :-
+    subconjunto(Xs, Ys).
+
+%!  minimales(+Modelos:list, -Minimales:list) is det.
+%
+%   Minimales son los de Modelos que no contienen estrictamente a ningún
+%   otro de Modelos.
+minimales(Modelos, Minimales) :-
+    include(minimal(Modelos), Modelos, Minimales).
+
+%!  minimal(+Modelos:list, +M:list) is semidet.
+%
+%   Ningún otro de Modelos está contenido en M.
+minimal(Modelos, M) :-
+    \+ ( member(N, Modelos),
+         N \== M,
+         ord_subset(N, M) ).
+
+%!  base_herbrand_de(+Clausulas:list, -Base:list) is det.
+%
+%   Base es la base de Herbrand de Clausulas, un programa sin functores: los
+%   átomos que se forman con sus predicados y sus constantes, ordenados.
+base_herbrand_de(Clausulas, Base) :-
+    findall(C, ( member(Clausula, Clausulas),
+                 constante(Clausula, C) ),
+            Cs0),
+    sort(Cs0, Constantes),
+    findall(P, ( member(Clausula, Clausulas),
+                 atomo_de(Clausula, A),
+                 indicador(A, P) ),
+            Ps0),
+    sort(Ps0, Predicados),
+    findall(Atomo,
+            ( member(Nombre/Aridad, Predicados),
+              length(Argumentos, Aridad),
+              maplist(elegida(Constantes), Argumentos),
+              Atomo =.. [Nombre|Argumentos] ),
+            Base0),
+    sort(Base0, Base).
+
+%!  base_herbrand(+Programa, -Base:list) is det.
+%
+%   Base es la base de Herbrand del programa llamado Programa.
+base_herbrand(Programa, Base) :-
+    clausulas(Programa, Clausulas),
+    base_herbrand_de(Clausulas, Base).
+
+%!  atomo_de(+Clausula, -Atomo) is nondet.
+%
+%   Atomo es la cabeza de Clausula o un átomo de su cuerpo, positivo o
+%   negado; las comparaciones no cuentan.
+atomo_de(Cabeza :- _, Cabeza).
+atomo_de(_ :- Cuerpo, Atomo) :-
+    conjuncion_lista(Cuerpo, Literales),
+    member(Literal, Literales),
+    (   Literal = (\+ Atomo)
+    ->  true
+    ;   atomo(Literal),
+        Atomo = Literal
     ).
 
-%!  formas_sin_tabla(+Monto:integer, +Monedas:list(integer), -N:integer)
-%!      is det.
+%!  constante(+Clausula, -C) is nondet.
 %
-%   La misma relación que formas/3, sin tabla.
-formas_sin_tabla(Monto, Monedas, N) :-
-    (   Monto =:= 0
-    ->  N = 1
-    ;   Monedas == []
-    ->  N = 0
-    ;   Monedas = [Moneda|Resto],
-        (   Moneda > Monto
-        ->  formas_sin_tabla(Monto, Resto, N)
-        ;   Menos is Monto - Moneda,
-            formas_sin_tabla(Menos, Monedas, N1),
-            formas_sin_tabla(Monto, Resto, N2),
-            N is N1 + N2
-        )
+%   C es un argumento sin variables de un átomo de Clausula.
+constante(Clausula, C) :-
+    atomo_de(Clausula, Atomo),
+    Atomo =.. [_|Argumentos],
+    member(C, Argumentos),
+    atomic(C).
+
+%!  elegida(+Constantes:list, -C) is nondet.
+%
+%   C es una de Constantes.
+elegida(Constantes, C) :-
+    member(C, Constantes).
+
+%!  paridad(-Clausulas:list) is det.
+%
+%   Clausulas es el programa del ejercicio 10: par/1 sobre los números del
+%   0 al 6, con sigue/2.
+paridad(Clausulas) :-
+    findall(sigue(M, N) :- true,
+            ( between(1, 6, N),
+              M is N - 1 ),
+            Hechos),
+    append([ [ (par(0) :- true),
+               (par(N) :- sigue(M, N), \+ par(M)) ],
+             Hechos ],
+           Clausulas).
+
+%!  alternancia_de(+Clausulas:list, -Pasos:list) is det.
+%
+%   Pasos son los pares V-P del punto fijo alternado, desde V vacío: los
+%   verdaderos de cada paso y los posibles que se calculan con ellos, hasta
+%   que los verdaderos no cambian.
+alternancia_de(Clausulas, Pasos) :-
+    alternancia_de(Clausulas, [], Pasos).
+
+%!  alternancia_de(+Clausulas:list, +V0:list, -Pasos:list) is det.
+%
+%   Pasos son los pares V-P del punto fijo alternado, desde los verdaderos
+%   V0.
+alternancia_de(Clausulas, V0, [V0-P0|Pasos]) :-
+    reducido(Clausulas, V0, P0),
+    reducido(Clausulas, P0, V1),
+    (   V1 == V0
+    ->  Pasos = []
+    ;   alternancia_de(Clausulas, V1, Pasos)
     ).
 
-% Ejercicios 6 y 7
-
-% tramo(X, Y, D): hay un tramo de X a Y de longitud D.
-tramo(a, b, 4).
-tramo(a, c, 1).
-tramo(c, b, 2).
-tramo(b, d, 5).
-tramo(d, a, 3).
-
-:- table distancia(_, _, min).
-
-%!  distancia(?X, ?Y, -D:integer) is nondet.
+%!  alternancia(+Programa, -Pasos:list) is det.
 %
-%   D es la longitud del recorrido más corto de X a Y. D debe llegar libre.
-distancia(X, Y, D) :-
-    tramo(X, Y, D).
-distancia(X, Y, D) :-
-    distancia(X, Z, D0),
-    tramo(Z, Y, D1),
-    D is D0 + D1.
+%   alternancia_de/2 con las cláusulas del programa llamado Programa.
+alternancia(Programa, Pasos) :-
+    clausulas(Programa, Clausulas),
+    alternancia_de(Clausulas, Pasos).
 
-:- table distancia_max(_, _, max).
-
-%!  distancia_max(?X, ?Y, -D:integer) is nondet.
+%!  estables_de(+Clausulas:list, -Modelos:list) is det.
 %
-%   Pretende dar la longitud del recorrido más largo de X a Y. Con un
-%   ciclo de longitud positiva no termina: cada vuelta mejora el máximo.
-distancia_max(X, Y, D) :-
-    tramo(X, Y, D).
-distancia_max(X, Y, D) :-
-    distancia_max(X, Z, D0),
-    tramo(Z, Y, D1),
-    D is D0 + D1.
+%   Modelos son los modelos estables de Clausulas: los M tales que el
+%   modelo reducido con las negaciones evaluadas contra M es M. Los
+%   candidatos son los subconjuntos de lo posible, reducido(Clausulas, [],
+%   P).
+estables_de(Clausulas, Modelos) :-
+    reducido(Clausulas, [], Posibles),
+    findall(M,
+            ( subconjunto(Posibles, M),
+              reducido(Clausulas, M, M) ),
+            Modelos).
 
-:- table saltos(_, _, min).
-
-%!  saltos(?X, ?Y, -N:integer) is nondet.
+%!  estables(+Programa, -Modelos:list) is det.
 %
-%   N es la menor cantidad de tramos de un recorrido de X a Y. N debe
-%   llegar libre.
-saltos(X, Y, 1) :-
-    tramo(X, Y, _).
-saltos(X, Y, N) :-
-    saltos(X, Z, N0),
-    tramo(Z, Y, _),
-    N is N0 + 1.
+%   Modelos son los modelos estables del programa llamado Programa.
+estables(Programa, Modelos) :-
+    clausulas(Programa, Clausulas),
+    estables_de(Clausulas, Modelos).
 
-% Ejercicio 8
-
-% dag(X, Y, D): hay un tramo de X a Y de longitud D, en un grafo sin
-% ciclos.
-dag(s, a, 2).
-dag(s, b, 1).
-dag(b, a, 5).
-dag(a, t, 3).
-dag(b, t, 1).
-
-:- table ruta_mas_larga(_, _, lattice(mas_larga/3)).
-
-%!  ruta_mas_larga(?X, ?Y, -R) is nondet.
+%!  del_juego(+Juego, -Clausulas:list) is det.
 %
-%   R es D-Nodos: el recorrido más largo de X a Y en dag/3, con su
-%   longitud D y sus nodos. R debe llegar libre.
-ruta_mas_larga(X, Y, D-[X, Y]) :-
-    dag(X, Y, D).
-ruta_mas_larga(X, Y, D-Nodos) :-
-    ruta_mas_larga(X, Z, R0),
-    R0 = D0-Nodos0,
-    dag(Z, Y, D1),
-    D is D0 + D1,
-    append(Nodos0, [Y], Nodos).
+%   Clausulas son las del programa juego con los movimientos de Juego
+%   solamente.
+del_juego(Juego, Clausulas) :-
+    clausulas(juego, Todas),
+    exclude(de_otro_juego(Juego), Todas, Clausulas).
 
-%!  mas_larga(+R1, +R2, -R) is det.
+%!  de_otro_juego(+Juego, +Clausula) is semidet.
 %
-%   R es la más larga de las rutas R1 y R2, de la forma D-Nodos; con
-%   longitudes iguales, R1.
-mas_larga(D1-N1, D2-N2, R) :-
-    (   D1 >= D2
-    ->  R = D1-N1
-    ;   R = D2-N2
+%   Clausula es un movimiento de un juego distinto de Juego.
+de_otro_juego(Juego, mueve(Otro, _, _) :- true) :-
+    Otro \== Juego.
+
+%!  alcanzables(+N:integer, -Clausulas:list) is det.
+%
+%   Clausulas son las de alcanza/1, los nodos a los que se llega desde el 0,
+%   sobre los N arcos en fila de cadena/2.
+alcanzables(N, Clausulas) :-
+    cadena(N, Cadena),
+    include(es_arco, Cadena, Arcos),
+    append(Arcos,
+           [ (alcanza(Y) :- arco(0, Y)),
+             (alcanza(Y) :- alcanza(Z), arco(Z, Y)) ],
+           Clausulas).
+
+%!  es_arco(+Clausula) is semidet.
+%
+%   Clausula es un hecho arco/2.
+es_arco(arco(_, _) :- true).
+
+%!  semi_ingenua_estricta_de(+Clausulas:list, +I0:list, -M:list,
+%!                            -Costo) is det.
+%
+%   El mismo M que semi_ingenua_de/4, sin derivaciones repetidas: en cada
+%   paso, una derivación se cuenta en la primera posición del cuerpo que usa
+%   un átomo nuevo. Los átomos anteriores se toman de los viejos, y los
+%   posteriores de todos.
+semi_ingenua_estricta_de(Clausulas, I0, M, Costo) :-
+    derivar(Clausulas, I0, I0, Cabezas),
+    length(Cabezas, D),
+    sort(Cabezas, T),
+    ord_subtract(T, I0, Nuevos),
+    ord_union(I0, Nuevos, I1),
+    estricta(Clausulas, I0, I1, Nuevos, M, costo(1, D), Costo).
+
+%!  semi_ingenua_estricta(+Programa, +I0:list, -M:list, -Costo) is det.
+%
+%   semi_ingenua_estricta_de/4 con las cláusulas del programa llamado
+%   Programa.
+semi_ingenua_estricta(Programa, I0, M, Costo) :-
+    clausulas(Programa, Clausulas),
+    semi_ingenua_estricta_de(Clausulas, I0, M, Costo).
+
+%!  estricta(+Clausulas:list, +Viejos:list, +I:list, +Nuevos:list, -M:list,
+%!           +Costo0, -Costo) is det.
+%
+%   Continúa la evaluación estricta desde I: Viejos es la interpretación del
+%   paso anterior, y Nuevos los átomos que ese paso agregó. Costo0 es el
+%   costo acumulado hasta aquí, y Costo el total al llegar a M.
+estricta(Clausulas, Viejos, I, Nuevos, M, costo(P0, D0), Costo) :-
+    (   Nuevos == []
+    ->  M = I,
+        Costo = costo(P0, D0)
+    ;   findall(Cabeza,
+                ( member(Cabeza :- Cuerpo, Clausulas),
+                  conjuncion_lista(Cuerpo, Literales),
+                  append(Antes, [Literal|Despues], Literales),
+                  atomo(Literal),
+                  member(Literal, Nuevos),
+                  viejos(Antes, Viejos, I),
+                  cumple_todos(Despues, I),
+                  must_be(ground, Cabeza) ),
+                Cabezas),
+        length(Cabezas, D),
+        P is P0 + 1,
+        D1 is D0 + D,
+        sort(Cabezas, T),
+        ord_subtract(T, I, Nuevos1),
+        ord_union(I, Nuevos1, I1),
+        estricta(Clausulas, I, I1, Nuevos1, M, costo(P, D1), Costo)
     ).
 
-% Ejercicio 9
-
-% mueve(Juego, X, Y): en Juego, un jugador puede pasar de la posición X a
-% la posición Y. j3 es j2 con un movimiento más, de a a e.
-mueve(j2, a, b).
-mueve(j2, b, a).
-mueve(j2, b, c).
-mueve(j2, c, d).
-mueve(j3, a, b).
-mueve(j3, b, a).
-mueve(j3, b, c).
-mueve(j3, c, d).
-mueve(j3, a, e).
-
-:- table gana/2.
-
-%!  gana(?Juego, ?X) is nondet.
+%!  viejos(+Literales:list, +Viejos:list, +I:list) is nondet.
 %
-%   En Juego, quien mueve desde X gana. Las posiciones de empate son
-%   respuestas indefinidas.
-gana(J, X) :-
-    mueve(J, X, Y),
-    tnot(gana(J, Y)).
+%   Cada uno de Literales es verdadero con sus átomos en Viejos; los
+%   negados se evalúan contra I.
+viejos([], _, _).
+viejos([L|Ls], Viejos, I) :-
+    cumple(L, Viejos, I),
+    viejos(Ls, Viejos, I).
 
-%!  valor(+Meta, -Valor) is det.
+%!  cadena_doble(+N:integer, -Clausulas:list) is det.
 %
-%   Valor es verdadero, falso o indefinido: el de Meta, tabulada y sin
-%   variables, en la semántica bien fundada.
-valor(Meta, Valor) :-
-    must_be(ground, Meta),
-    findall(Condicion, call_delays(Meta, Condicion), Condiciones),
-    (   Condiciones == []
-    ->  Valor = falso
-    ;   memberchk(true, Condiciones)
-    ->  Valor = verdadero
-    ;   Valor = indefinido
-    ).
-
-% Ejercicio 10
-
-:- table p/0, q/0, r/0.
-
-%!  p is semidet.
-%
-%   p es verdadero si q no lo es.
-p :-
-    tnot(q).
-
-%!  q is semidet.
-%
-%   q es verdadero si p no lo es.
-q :-
-    tnot(p).
-
-%!  r is semidet.
-%
-%   r es verdadero si r no lo es.
-r :-
-    tnot(r).
-
-%!  r_prolog is semidet.
-%
-%   r con la negación de Prolog y sin tabla: no termina.
-r_prolog :-
-    \+ r_prolog.
+%   Clausulas son los N arcos en fila de cadena/2 con camino/2 definido por
+%   dos llamadas recursivas.
+cadena_doble(N, Clausulas) :-
+    cadena(N, Cadena),
+    include(es_arco, Cadena, Arcos),
+    append(Arcos,
+           [ (camino(X, Y) :- arco(X, Y)),
+             (camino(X, Y) :- camino(X, Z), camino(Z, Y)) ],
+           Clausulas).

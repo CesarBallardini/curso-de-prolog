@@ -2,37 +2,36 @@
 
 :- begin_tests(soluciones_experto).
 
-test(guepardo, [true(A == deducido(guepardo, r7,
-                                   deducido(carnivoro, r5,
-                                            deducido(mamifero, r1,
-                                                     observado(tiene_pelo))
-                                            y observado(come_carne))
-                                   y observado(color_leonado)
-                                   y observado(manchas_oscuras)))]) :-
-    como_tabulado(original,
-                  [tiene_pelo, come_carne, color_leonado, manchas_oscuras],
-                  guepardo, A).
+test(ciclo_no_estratificado, [fail]) :-
+    estratos(herbivoros(ciclo), _).
 
-test(avestruz, [true(A == deducido(avestruz, r12,
-                                   deducido(ave, r3, observado(tiene_plumas))
-                                   y no vuela
-                                   y observado(peso(90))
-                                   y 90 > 50))]) :-
-    como_tabulado(original, [tiene_plumas, peso(90)], avestruz, A).
+test(ciclo, [true(P == [herbivoro/0-carnivoro/0])]) :-
+    ciclos_negativos(herbivoros(ciclo), P).
 
-% Con el ciclo de r4 y r13, las pruebas de ave son finitas: la que usa r3,
-% y la que usa r4 con vuela deducido por r13 sin volver a usar ave no
-% existe, porque r13 necesita ave.
-test(ciclo, [true(As == [deducido(ave, r3, observado(tiene_plumas))])]) :-
-    findall(A,
-            arbol(vuela, [tiene_plumas, pone_huevos, peso(2)], ave, [], A),
-            As).
+test(indefinidos, [true(C-H == indefinido-indefinido)]) :-
+    valor(con_hechos(herbivoros(ciclo), [tiene_pelo]), carnivoro, C),
+    valor(con_hechos(herbivoros(ciclo), [tiene_pelo]), herbivoro, H).
 
-% Una conclusión indefinida no tiene prueba.
-test(indefinida, [fail]) :-
-    como_tabulado(vuela, [tiene_plumas, nada, peso(30)], pinguino, _).
+% Si come carne, r5 decide: el ciclo no deja nada indefinido.
+test(come_carne, [true(C-H == verdadero-falso)]) :-
+    Programa = con_hechos(herbivoros(ciclo), [tiene_pelo, come_carne]),
+    valor(Programa, carnivoro, C),
+    valor(Programa, herbivoro, H).
 
-test(falsa, [fail]) :-
-    como_tabulado(original, [tiene_pelo], guepardo, _).
+test(corregida, [true(S == [1-[avestruz/0, herbivoro/0, pinguino/0],
+                            2-[puede_volar/0]])]) :-
+    estratos(herbivoros(corregida), [_|S]).
+
+test(corregida_valores, [true(C-H == falso-verdadero)]) :-
+    valor(con_hechos(herbivoros(corregida), [tiene_pelo]), carnivoro, C),
+    valor(con_hechos(herbivoros(corregida), [tiene_pelo]), herbivoro, H).
+
+% Con la lista: la corrección sin observaciones no concluye herbivoro.
+test(corregida_de_lista, [true(H == falso)]) :-
+    con_herbivoros(corregida, Cs),
+    valor_de(Cs, herbivoro, H).
+
+test(version_desconocida, [error(type_error(_, otra))]) :-
+    con_herbivoros(otra, _).
 
 :- end_tests(soluciones_experto).

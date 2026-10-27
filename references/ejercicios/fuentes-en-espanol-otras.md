@@ -99,7 +99,7 @@ Licencia: no declarada. Sin soluciones.
 ### ES-UNS-9 — Conjuntos como listas sin repetidos
 - **Fuente:** ídem, ejercicio 12.
 - **Tema:** 6, 8
-- **Capítulos:** 10, 22
+- **Capítulos:** 10, 23
 - **Dificultad:** 1
 - **Solución:** no
 - **SWISH:** sí
@@ -161,7 +161,7 @@ corte ni predicados de orden superior como `setof`.
 ### ES-UBA-4 — Predicados sobre listas con modos de instanciación
 - **Fuente:** ídem, ejercicios 4 a 7 y 9 a 10.
 - **Tema:** 5, 6
-- **Capítulos:** 7, 22
+- **Capítulos:** 7, 23
 - **Dificultad:** 2
 - **Solución:** no oficial
 - **SWISH:** sí
@@ -181,7 +181,7 @@ corte ni predicados de orden superior como `setof`.
 ### ES-UBA-6 — Árboles binarios: altura, inorder, ABB
 - **Fuente:** ídem, ejercicios 11 y 12.
 - **Tema:** 3, 5, 6
-- **Capítulos:** 8, 22
+- **Capítulos:** 8, 23
 - **Dificultad:** 2
 - **Solución:** no oficial
 - **SWISH:** sí
@@ -190,7 +190,7 @@ corte ni predicados de orden superior como `setof`.
 ### ES-UBA-7 — Generate & test: coprimos, cuadrados semilatinos, triángulos
 - **Fuente:** ídem, ejercicios 13 a 15.
 - **Tema:** 4, 5, 6, 7
-- **Capítulos:** 8, 23
+- **Capítulos:** 8, 24
 - **Dificultad:** 3
 - **Solución:** no oficial; verificada una versión propia de `coprimos/2` (primeros pares: 1-1, 1-2, 2-1, 1-3, 3-1, 1-4)
 - **SWISH:** sí
@@ -213,7 +213,7 @@ corte ni predicados de orden superior como `setof`.
 ### ES-UBA-9 — Grafos: camino simple, hamiltoniano, conexo, estrella
 - **Fuente:** ídem, ejercicio 20 (integrador opcional).
 - **Tema:** 4, 5, 6, 8
-- **Capítulos:** 10, 22
+- **Capítulos:** 10, 23
 - **Dificultad:** 3
 - **Solución:** no oficial
 - **SWISH:** sí
@@ -282,7 +282,7 @@ Usa SWI-Prolog (de 2010: `Yes`/`No`, `guitracer`, `edit(file(...))`).
 ### ES-UHU-5 — dividir, mezclar ordenado y ordenar
 - **Fuente:** ídem, práctica "Predicados sobre listas en Prolog", ejercicios 3 a 5.
 - **Tema:** 6, 7, 4
-- **Capítulos:** 8, 22
+- **Capítulos:** 8, 23
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -301,7 +301,7 @@ Usa SWI-Prolog (de 2010: `Yes`/`No`, `guitracer`, `edit(file(...))`).
 ### ES-UHU-7 — Conjuntos y multiconjuntos
 - **Fuente:** ídem, práctica "Predicados sobre listas en Prolog", ejercicios 10 y 11.
 - **Tema:** 6, 8
-- **Capítulos:** 10, 22
+- **Capítulos:** 10, 23
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -310,7 +310,7 @@ Usa SWI-Prolog (de 2010: `Yes`/`No`, `guitracer`, `edit(file(...))`).
 ### ES-UHU-8 — Árboles binarios, genéricos y de búsqueda
 - **Fuente:** ídem, práctica "Árboles en Prolog".
 - **Tema:** 3, 5, 6, 7
-- **Capítulos:** 8, 22
+- **Capítulos:** 8, 23
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -323,7 +323,7 @@ Usa SWI-Prolog (de 2010: `Yes`/`No`, `guitracer`, `edit(file(...))`).
 ### ES-UHU-9 — Grafos: el sobre sin levantar el lápiz y caminos entre ciudades
 - **Fuente:** ídem, práctica "Grafos en Prolog", ejercicios 1 a 3.
 - **Tema:** 4, 5, 6, 7, 9
-- **Capítulos:** 8, 22, 17
+- **Capítulos:** 8, 23, 18
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí
@@ -417,7 +417,7 @@ apunte sí trae ejemplos resueltos).
 ### ES-UNIOVI-3 — Número desde dígitos, montes, cambio de monedas, binario
 - **Fuente:** ídem, ejercicios 5 a 8 y 12.
 - **Tema:** 5, 6, 7
-- **Capítulos:** 8, 23
+- **Capítulos:** 8, 24
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -426,7 +426,7 @@ apunte sí trae ejemplos resueltos).
 ### ES-UNIOVI-4 — Combinaciones, variaciones con repetición y triángulos
 - **Fuente:** ídem, ejercicios 9 a 11, 13 y 16.
 - **Tema:** 4, 6, 7, 9
-- **Capítulos:** 17, 11
+- **Capítulos:** 18, 11
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -436,7 +436,7 @@ apunte sí trae ejemplos resueltos).
 ### ES-UNIOVI-5 — Proyectos: derivadas simbólicas, polinomios, calculadora interactiva
 - **Fuente:** ídem, ejercicios 14, 15 y 17 a 23.
 - **Tema:** X, 3, 10
-- **Capítulos:** 32, 28
+- **Capítulos:** 33, 29
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** parcial (la calculadora interactiva necesita leer de la entrada estándar)
@@ -531,7 +531,7 @@ Dialecto: ECLiPSe (el libro lo elige explícitamente). Las soluciones escriben
 ### ES-UJI-8 — Búsqueda con predicados predefinidos y gensym
 - **Fuente:** ídem, cap. 4, ejercicios 4.2 a 4.5.
 - **Tema:** 4, 6, 10
-- **Capítulos:** 40, 20
+- **Capítulos:** 41, 21
 - **Dificultad:** 3
 - **Solución:** en el libro
 - **SWISH:** sí
@@ -541,7 +541,7 @@ Dialecto: ECLiPSe (el libro lo elige explícitamente). Las soluciones escriben
 ### ES-UJI-9 — Suministradores y partes: álgebra relacional en Prolog
 - **Fuente:** ídem, cap. 5 "Programación lógica y Bases de Datos", ejercicio 5.1 (y 5.3).
 - **Tema:** 11, 9, 8
-- **Capítulos:** 42, 17
+- **Capítulos:** 43, 18
 - **Dificultad:** 2
 - **Solución:** en el libro (usa `findall` y `not` prefijo); verificada con consultas propias equivalentes: (a) partes rojas: `juan`; (b) no suministran p2: `luis`; (c) suministran todo lo de s2: `juan`; (e) partes suministradas por todos: ninguna (s5, luis, no suministra nada); (g) totales: juan 2000, maria 900, pedro 700, raquel 200, luis 0.
 - **SWISH:** sí (el 5.3 no: pide `lib(db)` de ECLiPSe)
@@ -555,7 +555,7 @@ Dialecto: ECLiPSe (el libro lo elige explícitamente). Las soluciones escriben
 ### ES-UJI-10 — Base de datos de familias con estructuras anidadas
 - **Fuente:** ídem, cap. 5, ejercicio 5.2.
 - **Tema:** 3, 9, 11
-- **Capítulos:** 4, 17, 42
+- **Capítulos:** 4, 18, 43
 - **Dificultad:** 2
 - **Solución:** en el libro
 - **SWISH:** sí
@@ -565,7 +565,7 @@ Dialecto: ECLiPSe (el libro lo elige explícitamente). Las soluciones escriben
 ### ES-UJI-11 — Gramáticas y análisis de oraciones
 - **Fuente:** ídem, cap. 6, ejercicios 6.1 a 6.7.
 - **Tema:** A
-- **Capítulos:** 21
+- **Capítulos:** 22
 - **Dificultad:** 2
 - **Solución:** en el libro
 - **SWISH:** sí
@@ -574,7 +574,7 @@ Dialecto: ECLiPSe (el libro lo elige explícitamente). Las soluciones escriben
 ### ES-UJI-12 — Compilador reducido de Pascal
 - **Fuente:** ídem, cap. 6, ejercicios 6.8 y 6.9.
 - **Tema:** A, X
-- **Capítulos:** 35, 21, 34
+- **Capítulos:** 36, 22, 35
 - **Dificultad:** 3
 - **Solución:** en el libro
 - **SWISH:** sí
@@ -583,7 +583,7 @@ Dialecto: ECLiPSe (el libro lo elige explícitamente). Las soluciones escriben
 ### ES-UJI-13 — Sistemas expertos: animales, préstamos, sanciones
 - **Fuente:** ídem, cap. 7, ejercicios 7.1 a 7.7.
 - **Tema:** X, 10
-- **Capítulos:** 33, 20
+- **Capítulos:** 34, 21
 - **Dificultad:** 3
 - **Solución:** en el libro
 - **SWISH:** parcial (los que preguntan al usuario necesitan entrada interactiva)
@@ -592,7 +592,7 @@ Dialecto: ECLiPSe (el libro lo elige explícitamente). Las soluciones escriben
 ### ES-UJI-14 — Problemas de restricciones: reinas, parejas de baile, muebles, regalos, crucigrama
 - **Fuente:** ídem, cap. 8, ejercicios 8.1 a 8.12.
 - **Tema:** X
-- **Capítulos:** 23
+- **Capítulos:** 24
 - **Dificultad:** 3
 - **Solución:** en el libro (CLP(FD) de ECLiPSe)
 - **SWISH:** sí, adaptando a `library(clpfd)`
@@ -695,7 +695,7 @@ SWISH en español sirve para practicar en clase.
 ### ES-UNAL-1 — Cuaderno SWISH: grafo, Fibonacci, oraciones, familia
 - **Fuente:** UNAL, "Paradigmas de Programación – Programación lógica", cuaderno SWISH "Paradigma Programacion Logica". https://swish.swi-prolog.org/p/Paradigma%20Programacion%20Logica.swinb (enlazado desde https://ferestrepoca.github.io/paradigmas-de-programacion/proglogica/logica_teoria/lenguaje.html)
 - **Tema:** 0, 1, 5, 6, A
-- **Capítulos:** 1, 21
+- **Capítulos:** 1, 22
 - **Dificultad:** 1
 - **Solución:** sí (es un cuaderno de ejemplos resueltos)
 - **SWISH:** sí (es un cuaderno SWISH)

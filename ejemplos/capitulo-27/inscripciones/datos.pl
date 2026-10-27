@@ -5,8 +5,7 @@
 % Los alumnos, las materias, las correlatividades y las inscripciones. Los
 % predicados dinámicos se consultan desde los demás módulos, pero solo este
 % módulo los modifica: los otros llaman a agregar_inscripcion/3,
-% quitar_inscripcion/3, cambiar_vacantes/2 y contar_operacion/0. La nota
-% mínima es un ajuste de library(settings), con 6 como valor por omisión.
+% quitar_inscripcion/3, cambiar_vacantes/2 y contar_operacion/0.
 %
 % solo-local: SWISH no admite módulos propios en un programa.
 %
@@ -28,8 +27,6 @@
             restaurar/1,
             comprobar_datos/0
           ]).
-
-:- use_module(library(settings)).
 
 :- dynamic inscripcion/3, vacantes/2, operaciones/1.
 
@@ -82,15 +79,10 @@ inscripcion(105, am1, cursando).
 inscripcion(106, log, nota(3)).
 inscripcion(106, am1, nota(6)).
 
-:- setting(nota_minima, between(1, 10), 6,
-           'Nota mínima para aprobar una materia').
-
 %!  nota_minima(-N:integer) is det.
 %
-%   N es la nota mínima para aprobar una materia: el valor del ajuste
-%   nota_minima, que un archivo de ajustes puede cambiar.
-nota_minima(N) :-
-    setting(nota_minima, N).
+%   N es la nota mínima para aprobar una materia.
+nota_minima(6).
 
 % vacantes(Materia, N): quedan N lugares en la materia.
 vacantes(am1, 30).

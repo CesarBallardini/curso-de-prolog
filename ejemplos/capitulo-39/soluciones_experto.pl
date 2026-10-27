@@ -1,54 +1,41 @@
 :- encoding(utf8).
 
-% Capítulo 39 - Solución del ejercicio 15: el árbol de prueba de una
-% conclusión, con la tabla de cierto/3 como guía.
-%
-% cierto/3 dice qué conclusiones son verdaderas, pero no guarda cómo se
-% prueban. como_tabulado/4 reconstruye una prueba: en cada condición
-% atómica usa solo respuestas sin condiciones de cierto/3, y no vuelve a
-% usar una conclusión que ya está en la rama, de modo que el ciclo de r4 y
-% r13 no produce un árbol infinito.
+% Capítulo 39 - Solución del ejercicio 15: dos reglas más en la base del
+% sistema experto, que crean un ciclo con una negación, y su corrección.
+% Usa base/2, regla_clausula/2 y los evaluadores que carga experto.pl; el
+% programa herbivoros(Version) es la base con las reglas nuevas.
 %
 % solo-local: carga experto.pl con ensure_loaded/1, y SWISH no permite
 % cargar otro archivo.
 %
-%?- como_tabulado(vuela, [tiene_plumas, pone_huevos, peso(2)], vuela, A).
+%?- ciclos_negativos(herbivoros(ciclo), P).
+%?- valor(con_hechos(herbivoros(ciclo), [tiene_pelo]), carnivoro, V).
 
 :- ensure_loaded(experto).
 
-%!  como_tabulado(+Version:atom, +Observaciones:list, +Meta, -Arbol)
-%!      is semidet.
-%
-%   Arbol es una prueba de Meta con las reglas de Version y las
-%   Observaciones, con las formas observado(M), deducido(M, Regla, Arbol),
-%   A y B, X > Y y no M. Falla si Meta no es verdadera.
-como_tabulado(Version, Os, Meta, Arbol) :-
-    once(arbol(Version, Os, Meta, [], Arbol)).
+% nueva(Version, Nombre, Regla): Version agrega Regla, llamada Nombre, a la
+% versión puede_volar de la base.
+nueva(ciclo, r14, si mamifero y no carnivoro entonces herbivoro).
+nueva(ciclo, r15, si herbivoro y no tiene_cascos entonces carnivoro).
+nueva(corregida, r14, si mamifero y no come_carne entonces herbivoro).
 
-%!  arbol(+Version:atom, +Os:list, ?Meta, +Rama:list, -Arbol) is nondet.
+%!  con_herbivoros(+Version:atom, -Clausulas:list) is det.
 %
-%   Arbol prueba Meta sin usar las conclusiones de Rama, las que están en
-%   curso en la rama del árbol.
-arbol(_, Os, Meta, _, observado(Meta)) :-
-    member(Meta, Os).
-arbol(Version, Os, Meta, Rama, deducido(Meta, Regla, Arbol)) :-
-    \+ ( member(M, Rama), M == Meta ),
-    regla_de(Version, Regla, si Condiciones entonces Meta),
-    condiciones(Version, Os, Condiciones, [Meta|Rama], Arbol).
+%   Clausulas son las de la versión puede_volar de la base con las reglas
+%   nuevas de Version, ciclo o corregida.
+con_herbivoros(Version, Clausulas) :-
+    must_be(oneof([ciclo, corregida]), Version),
+    base(puede_volar, Base),
+    findall(C,
+            ( nueva(Version, _, Regla),
+              regla_clausula(Regla, C) ),
+            Nuevas),
+    append(Base, Nuevas, Clausulas).
 
-%!  condiciones(+Version:atom, +Os:list, +Condiciones, +Rama:list,
-%!              -Arbol) is nondet.
+:- multifile generado/2.
+
+%!  generado(+Programa, -Clausulas:list) is semidet.
 %
-%   Arbol prueba las Condiciones de una regla. Una condición atómica se
-%   prueba solo si cierto/3 la da como verdadera, sin condiciones.
-condiciones(Version, Os, A y B, Rama, ArbolA y ArbolB) :-
-    condiciones(Version, Os, A, Rama, ArbolA),
-    condiciones(Version, Os, B, Rama, ArbolB).
-condiciones(_, _, X > Y, _, X > Y) :-
-    X > Y.
-condiciones(Version, Os, no A, _, no A) :-
-    valor(cierto(Version, Os, A), falso).
-condiciones(Version, Os, A, Rama, Arbol) :-
-    atomica(A),
-    call_delays(cierto(Version, Os, A), true),
-    arbol(Version, Os, A, Rama, Arbol).
+%   El programa herbivoros(Version): las cláusulas de con_herbivoros/2.
+generado(herbivoros(Version), Clausulas) :-
+    con_herbivoros(Version, Clausulas).

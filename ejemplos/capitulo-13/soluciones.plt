@@ -2,26 +2,40 @@
 
 :- begin_tests(soluciones).
 
-% Ejercicio 1: con persona/1 definido, nieto/2 responde.
-test(los_abuelos_de_luis, all(A == [juan])) :-
-    nieto(luis, A).
+% Ejercicio 2
+test(los_animales, all(X == [felix, gaturro, rocco])) :-
+    animal(X).
 
-% Ejercicio 6: la regla corregida usa el mismo padre para los dos.
-test(los_hermanos_de_ana, all(H == [pedro])) :-
-    hermano(ana, H).
+% Ejercicio 3: juan y marta tienen dos nietos cada uno; una respuesta por nieto.
+test(quienes_tienen_nieto, all(A == [juan, juan, marta, marta])) :-
+    tiene_nieto(A).
 
-% Ejercicio 8: el requisito de toda correlativa es de un año anterior.
-test(requisito_de_un_anio_anterior, [fail]) :-
-    correlativa(Materia, Requisito),
-    materia(Materia, _, Anio),
-    materia(Requisito, _, AnioRequisito),
-    AnioRequisito >= Anio.
+% Ejercicio 4
+test(quienes_pueden_entrar, all(P == [ana, pedro, luis, eva])) :-
+    puede_entrar(P).
 
-% Ejercicio 11: nadie está inscripto dos veces en la misma materia, con
-% notas distintas. Dos hechos idénticos no se detectan así (ver la solución).
-test(sin_inscripciones_repetidas, [fail]) :-
-    inscripcion(Legajo, Materia, Nota1),
-    inscripcion(Legajo, Materia, Nota2),
-    Nota1 \== Nota2.
+test(un_desconocido_no_entra, [fail]) :-
+    puede_entrar(juan).
+
+% Ejercicio 5
+test(siete_es_impar, all(P == [impar])) :-
+    paridad(7, P).
+
+test(ocho_es_par, all(P == [par])) :-
+    paridad(8, P).
+
+% Ejercicio 7
+test(los_que_no_tienen_mascota, all(P == [luis, eva])) :-
+    sin_mascota(P).
+
+test(ana_tiene_mascota, [fail]) :-
+    sin_mascota(ana).
+
+% Ejercicio 10
+test(el_que_tiene_gato_tiene_mascota, all(P == [ana, eva])) :-
+    tiene_mascota(P).
+
+test(nadie_es_padre_de_si_mismo, all(P == [ana, luis, eva])) :-
+    no_es_padre_de_si_mismo(P).
 
 :- end_tests(soluciones).

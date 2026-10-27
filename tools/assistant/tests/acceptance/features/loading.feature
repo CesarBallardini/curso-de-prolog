@@ -13,7 +13,7 @@ Feature: Loading the course into the panel
       | home                                              |
       | capitulo-07-listas/                               |
       | patrones/                                         |
-      | capitulo-87-proyecto-preguntas-en-castellano/     |
+      | capitulo-88-proyecto-preguntas-en-castellano/     |
 
   Scenario: The course is downloaded when the panel opens, not before
     Given a student reading the page "capitulo-07-listas/"
@@ -28,7 +28,7 @@ Feature: Loading the course into the panel
     When the student opens the panel and sends "¿Qué hace findall/3?"
     Then the panel says "Cargando el curso…"
     When the course's index arrives
-    Then "Dónde leerlo" links to "capitulo-17-todas-las-soluciones/#172-findall3"
+    Then "Dónde leerlo" links to "capitulo-18-todas-las-soluciones/#182-findall3"
 
   Scenario: The panel says so when the course cannot be loaded
     Given a student reading the page "capitulo-07-listas/"

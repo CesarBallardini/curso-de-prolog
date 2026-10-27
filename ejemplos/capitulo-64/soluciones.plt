@@ -2,123 +2,160 @@
 
 :- begin_tests(soluciones).
 
-test(tienda, [A, B] == [2, 4]) :-
-    programa(tienda, Reglas),
-    compilar_red(pasos, Reglas, Red),
-    medidas_red(Red, A, B, _).
+test(ejercicio_1, [N, M] == [4, [sobre(a, b), sobre(b, piso)]]) :-
+    H = [sobre(a, piso), sobre(b, a), meta(apilar([b, a]))],
+    cantidad_de_ciclos(cajas, orden, H, N),
+    encadenar(cajas, orden, H, M, nada_aplicable).
 
-test(variantes, [A, B, C] == [1, 6, 10]) :-
-    tamano_red(hermanos_variantes, A, B, C).
+test(ejercicio_2, [M, R] == [[progenitor(juan, ana), madre(ana, sofia),
+                              padre(juan, ana)], limite(50)]) :-
+    encadenar_vigilado(familia, orden, no, 50,
+                       [padre(juan, ana), madre(ana, sofia)], M, R).
 
-test(ascendente, [S1, S2] == [[1], [3]]) :-
-    H = [padre(juan, ana), madre(ana, sofia), padre(juan, pedro)],
-    primera_ascendente(familia, H, instanciacion(_, S1, _, _)),
-    primera_descendente(familia, H, instanciacion(_, S2, _, _)).
-
-test(invertido, S == [[2, 2], [2, 2], [2, 1], [1, 2], [1, 1], [1, 1]]) :-
-    conjunto_invertido(pares, [p(1), p(2)], S).
-
-test(normal, S == [[2, 2], [2, 1], [1, 2], [1, 1]]) :-
-    reconocer_rete(pares, [p(1), p(2)], Is),
-    findall(X, member(instanciacion(_, X, _, _), Is), S).
-
-test(cuentas, C == [[1]-1, [2]-1]) :-
-    cuentas(cajas, [meta(despejar(a)), meta(despejar(b)), sobre(b, a),
-                    sobre(c, b)], 11, C).
-
-test(cambio_cuentas, L == [despejar_encima-[2, 4], despejada-[1]]) :-
-    cambios_rete(cajas, [meta(despejar(a)), meta(despejar(b)), sobre(b, a),
-                         sobre(c, b)], [menos(sobre(b, a))], Is),
-    findall(N-X, member(instanciacion(N, X, _, _), Is), L).
-
-test(sin_registro, [M, R] == [[ocupado, aviso], limite(20)]) :-
-    ciclo_sin_registro(reingreso, orden, 20, [], M, R).
-
-test(sin_registro_familia) :-
+test(ejercicio_2_con_refraccion, [N, R] == [34, nada_aplicable]) :-
     familia(H),
-    ciclo_sin_registro(familia, orden, 100, H, M, R),
-    encadenar(familia, orden, H, M1, R1),
-    M-R == M1-R1.
+    encadenar_vigilado(familia, orden, si, 50, H, M, R),
+    length(M, N).
 
-test(sin_registro_configurador) :-
-    memoria_del_pedido([pedido(nucleos, 8), pedido(memoria, 32),
-                        pedido(video, si)], H),
-    ciclo_sin_registro(configurador, mea, 100, H, M, R),
-    encadenar(configurador, mea, H, M1, R1),
-    M-R == M1-R1.
+test(ejercicio_3, [E1, E2] == [r2, r2]) :-
+    L = [instanciacion(r1, [4, 9], 2, []),
+         instanciacion(r2, [9, 2, 7], 3, []),
+         instanciacion(r3, [9, 7], 3, [])],
+    preferida(lex, L, instanciacion(E1, _, _, _)),
+    preferida(mea, L, instanciacion(E2, _, _, _)).
 
-test(carga, Mayor == true) :-
-    carga_normal(400, A),
-    carga_siempre(400, B),
-    (   B > A
-    ->  Mayor = true
-    ;   Mayor = false
-    ).
+test(ejercicio_4, N == 4) :-
+    cantidad_de_ciclos(cajas, prioridad,
+                       [sobre(a, piso), sobre(b, piso), sobre(c, a),
+                        sobre(d, piso), meta(apilar([b, c])),
+                        meta(apilar([a, d]))], N).
 
-test(cambios, R == nada_aplicable) :-
-    with_output_to(string(S),
-                   rastrear_cambios(cajas, orden,
-                                    [meta(apilar([a, b])), sobre(a, piso),
-                                     sobre(b, piso), sobre(c, a)], R)),
-    once(sub_string(S, _, _, _,
-                    "entran [apilar-[1,3]], salen [despejada-[5]]")).
+test(ejercicio_5, [O, L, M] == [5, 5, 5]) :-
+    H = [sobre(a, piso), sobre(b, a), sobre(c, b), meta(apilar([c, b, a]))],
+    cantidad_de_ciclos(cajas, orden, H, O),
+    cantidad_de_ciclos(cajas, lex, H, L),
+    cantidad_de_ciclos(cajas, mea, H, M).
 
-test(tokens, [T, A] == [270, 210]) :-
-    tokens_al_final(20, T, A).
+test(ejercicio_6, [P, C] == [0, 8]) :-
+    valor_ranura(fuente, [], precio, P),
+    valor_ranura(memoria, [consumo-8], consumo, C).
 
-test(forzado, E = error(instantiation_error, _)) :-
-    configurar_forzado([pedido(nucleos, 8), pedido(memoria, 32),
-                        pedido(video, si)], error(E)).
+test(ejercicio_6_disipador, [fail]) :-
+    valor_ranura(disipador, [], necesita_disipador, _).
 
-test(ganar, [C0, C8] == [nunca, 49]) :-
-    ciclos_para_ganar(0, C0),
-    ciclos_para_ganar(800, C8).
+test(ejercicio_7, [C1, D1, C2, D2] == [65, si, 200, si]) :-
+    valor_ranura(apu, [], consumo, C1),
+    valor_ranura(apu, [], necesita_disipador, D1),
+    valor_ranura(apu_invertida, [], consumo, C2),
+    valor_ranura(apu_invertida, [], necesita_disipador, D2).
 
-% cargar_con/5 con el orden de propagar/6 reúne el mismo conjunto que
-% reconocer_rete/3.
-test(cargar_con) :-
-    red_de(pares, Red),
-    cargar_con(@>=, activar_derecha(mas), Red, [p(1), p(2)], Rete),
-    conjunto_rete(Rete, Is),
-    reconocer_rete(pares, [p(1), p(2)], Is1),
-    Is =@= Is1.
+test(ejercicio_8_mea, [F, W] == [fuente-fuente_a, 0]) :-
+    configurar_sumando(mea, C, W, configurada),
+    last(C, F).
 
-% entrar_con/6 da al hecho el sello S0 y devuelve el siguiente.
-test(entrar_con, [S, Is] == [2, [instanciacion(par, [1, 1], 2,
-                                               [agregar(par(1, 1))])]]) :-
-    red_de(pares, Red),
-    rete_vacio(Red, R0),
-    entrar_con(@>=, activar_derecha(mas), Red, p(1), R0-1, R-S),
-    conjunto_rete(R, Is).
+test(ejercicio_8_orden, R == limite(200)) :-
+    configurar_sumando(orden, _, _, R).
 
-% siempre_derecha/5 activa el nodo aunque el padre no tenga tokens; sin
-% tokens en el padre, no produce ninguno.
-test(siempre_derecha, T == []) :-
-    compilar_red(pasos, [r :: [p(X), q(X)] ---> []], Red),
-    rete_vacio(Red, R0),
-    siempre_derecha(1, Red, 2-alfa(q(a), []), R0, R),
-    tokens(2, R, T).
+test(ejercicio_9, C == [procesador-cpu_c, placa-placa_c, memoria-mem_c,
+                        disipador-dis_a, fuente-fuente_a, gabinete-gab_a]) :-
+    configurar_gabinete([pedido(nucleos, 6), pedido(memoria, 16),
+                         pedido(video, no)], C).
 
-% sin_registro/7 se detiene en el límite.
-test(sin_registro_limite, R == limite(3)) :-
-    red_de(reingreso, Red),
-    cargar(Red, [], Mt, Rete),
-    sin_registro(Red, orden, 3, 0, Mt-Rete, _, R).
+test(ejercicio_9_atx, G == gabinete-gab_b) :-
+    configurar_gabinete([pedido(nucleos, 8), pedido(memoria, 32),
+                         pedido(video, si)], C),
+    last(C, G).
 
-% con_cambios/6 escribe una línea por ciclo hasta nada_aplicable.
-test(con_cambios, [R, N] == [nada_aplicable, 2]) :-
-    red_de(familia, Red),
-    cargar(Red, [padre(juan, ana)], Mt, Rete),
-    with_output_to(string(S),
-                   con_cambios(Red, orden, 1, [], Mt-Rete, R)),
-    aggregate_all(count, sub_string(S, _, _, _, "entran"), N).
+test(ejercicio_10, [P1, P2] == [1125, 415]) :-
+    mas_barata([pedido(nucleos, 8), pedido(memoria, 32), pedido(video, si)],
+               _, P1),
+    mas_barata([pedido(nucleos, 6), pedido(memoria, 16), pedido(video, no)],
+               _, P2).
 
-% forzar/2 lleva cada prueba al patrón anterior, aunque mire otro hecho.
-test(forzar, Ps == [alfa(p(X), []), alfa(q(Y), [X < Y])]) :-
-    forzar([p(X), q(Y), {X < Y}], Ps).
+test(ejercicio_10_imposible, [fail]) :-
+    mas_barata([pedido(nucleos, 6), pedido(memoria, 64), pedido(video, no)],
+               _, _).
 
-% pasos_forzados/2 separa antes la conjunción.
-test(pasos_forzados, Ps == [alfa(q(X, Y), [Y > 2, X \== Y]), no(r(X))]) :-
-    pasos_forzados([q(X, Y), {Y > 2, X \== Y}, no(r(X))], Ps).
+test(ejercicio_10_difieren, [PO, PE] == [480, 490]) :-
+    comparar_disipador_caro(_, PO, _, PE).
+
+test(ejercicio_11, Is == [651, 2640, 10632]) :-
+    findall(I, ( member(K, [1, 2, 4]),
+                 familias(K, H),
+                 medir(familia, orden, H, _, I, _, _) ),
+            Is).
+
+test(ejercicio_12, [nondet], A == por(antepasado(juan, sofia), antepasado_2,
+                     [por(progenitor(juan, ana), progenitor_p,
+                          [inicial(padre(juan, ana))]),
+                      por(antepasado(ana, sofia), antepasado_1,
+                          [por(progenitor(ana, sofia), progenitor_m,
+                               [inicial(madre(ana, sofia))])])])) :-
+    explicar(antepasado(juan, sofia), A).
+
+% Sin refracción, la regla vuelve a dispararse con el mismo hecho hasta
+% el límite; con ella, una sola vez.
+test(vigilado_sin_refraccion, [true(R-H == limite(3)-[b, a])]) :-
+    memoria_con([a], M),
+    vigilado_64([(r :: [a] ---> [agregar(b)])], orden, no, 3, 0, [], M,
+                M1, R),
+    hechos(M1, H).
+
+test(vigilado_con_refraccion, [true(R-H == nada_aplicable-[b, a])]) :-
+    memoria_con([a], M),
+    vigilado_64([(r :: [a] ---> [agregar(b)])], orden, si, 3, 0, [], M,
+                M1, R),
+    hechos(M1, H).
+
+test(candidatas_si, [true(C == [])]) :-
+    candidatas(si, [instanciacion(r, [1], 1, [])], [r-[1]], C).
+
+test(candidatas_no, [true(C == [instanciacion(r, [1], 1, [])])]) :-
+    candidatas(no, [instanciacion(r, [1], 1, [])], [r-[1]], C).
+
+test(prioridad_de, [true(P1-P2 == 1-0)]) :-
+    prioridad_de(apilar, P1),
+    prioridad_de(otra, P2).
+
+% El gabinete pasa a ser una fase obligatoria antes del fin.
+test(memoria_con_gabinete, [true(F-G == no-si)]) :-
+    memoria_con_gabinete([pedido(nucleos, 6)], H),
+    (   memberchk(despues(fuente, fin), H) -> F = si ; F = no ),
+    (   memberchk(despues(gabinete, fin), H) -> G = si ; G = no ).
+
+% compatible/4 enumera las 15 configuraciones del pedido; la más barata
+% es la de mas_barata/3.
+test(compatible, [true(N-P == 15-415)]) :-
+    catalogo(Cat),
+    Pedido = [pedido(nucleos, 6), pedido(memoria, 16), pedido(video, no)],
+    aggregate_all(count, compatible(Cat, Pedido, _, _), N),
+    aggregate_all(min(P0), compatible(Cat, Pedido, _, P0), P).
+
+test(copia, [true(H == padre(juan-2, ana-2))]) :-
+    copia(2, padre(juan, ana), H).
+
+% regla_con_origen/2 agrega el origen después de cada agregar/1, con los
+% patrones de la regla, sin las pruebas ni las negaciones.
+test(regla_con_origen,
+     [true(R =@= (r :: [padre(X, Y), {X \== Y}, no(z)]
+                    ---> [agregar(p(X, Y)),
+                          agregar(origen(p(X, Y), r, [padre(X, Y)])),
+                          quitar(q)]))]) :-
+    regla_con_origen((r :: [padre(X0, Y0), {X0 \== Y0}, no(z)]
+                        ---> [agregar(p(X0, Y0)), quitar(q)]), R).
+
+test(con_su_origen_otra, [true(A == [quitar(b)])]) :-
+    con_su_origen(r, [a], quitar(b), A).
+
+test(con_origen, [true(Rs == [(r :: [a] ---> [agregar(b),
+                                              agregar(origen(b, r, [a]))])])]) :-
+    con_origen([(r :: [a] ---> [agregar(b)])], Rs).
+
+% En placa_de_video gana el valor por omisión; en la subclase, el cálculo,
+% salvo que no pueda calcular y la herencia siga hasta el valor por omisión.
+test(ejercicio13, [true(C1-C2-C3 == 200-260-200)]) :-
+    valor_con_facetas(placa_de_video, [memoria_gb-8], consumo, C1),
+    valor_con_facetas(placa_calculada, [memoria_gb-8], consumo, C2),
+    valor_con_facetas(placa_calculada, [], consumo, C3).
 
 :- end_tests(soluciones).

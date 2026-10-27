@@ -2,127 +2,127 @@
 
 :- begin_tests(soluciones).
 
-% Ejercicio 1
-test(ejercicio_1, [true(Ts == [n(select), n(x), -, i(1), ',', s('it''s'),
-                               n(from), n(t), n(where), n(a), <>, n(b), ;])]) :-
-    tokens("SELECT x-1, 'it''s' FROM t WHERE a != b;", Ts).
+test(expresion, [true(N == 3)]) :-
+    expresion(Cs),
+    problemas(Cs, Ps),
+    length(Ps, N).
 
-% Ejercicio 2
-test(ejercicio_2, [true(I-C == []-[[facundo], [gabriela]])]) :-
-    T = "SELECT nombre FROM alumnos WHERE NOT (carrera = 'civil' OR carrera = 'sistemas')",
-    consulta_ingenua(T, I),
-    filas(T, _, C).
+test(expr_no_termina, [true(R == inference_limit_exceeded)]) :-
+    call_with_inference_limit(expr([id, +, id], _), 100000, R).
 
-% Ejercicio 3
-test(ejercicio_3, [true(K == [13, 1, 3])]) :-
-    findall(N, ( member(T, [ "SELECT COUNT(*) FROM inscripciones WHERE nota <> 4",
-                             "SELECT COUNT(*) FROM inscripciones WHERE NOT (nota <> 4)",
-                             "SELECT COUNT(*) FROM inscripciones WHERE nota IS NULL" ]),
-                 filas(T, _, [[N]]) ),
-            K).
+test(componentes, [true(Ks-Ps == [[d/0, e/0], [c/0], [b/0], [a/0], [f/0]]-[f/0-f/0])]) :-
+    Cs = [(a :- \+ b), (b :- c), (c :- \+ d), (d :- e), (e :- d),
+          (f :- a, \+ f)],
+    componentes(Cs, Ks),
+    ciclos_negativos(Cs, Ps).
 
-% Ejercicio 4
-test(ejercicio_4, [true(Cs == [alumnos-legajo, alumnos-nombre,
-                               inscripciones-legajo, inscripciones-nota])]) :-
-    columnas_usadas("SELECT a.nombre FROM alumnos a, inscripciones i WHERE a.legajo = i.legajo AND nota > 6", Cs).
+test(casados, [true(M-C == [married(adam, anne), married(anne, adam)]-costo(2, 2))]) :-
+    casados(Cs),
+    evaluar(Cs, M, C).
 
-test(ejercicio_4_ambigua, [throws(error(sql(columna_ambigua(legajo)), _))]) :-
-    columnas_usadas("SELECT legajo FROM alumnos a, inscripciones i", _).
+test(casados_magia, [true(Rs == [married(anne, adam)])]) :-
+    casados(Cs),
+    respuestas_magicas(Cs, married(anne, _), Rs, _).
 
-% Ejercicio 5
-test(ejercicio_5, [ setup(estado(E)), cleanup(restaurar(E)),
-                    true(R1-R2 == [[a, 1000], [b, 1300], [c, 1200]]-
-                                  [[a, 1000], [b, 1300], [c, 1400]]) ]) :-
-    U = "UPDATE s SET x = x + 200 WHERE x = (SELECT MAX(x) FROM s) - 100",
-    Crear = "CREATE TABLE s (n TEXT, x INTEGER); INSERT INTO s VALUES ('a', 1000), ('b', 1100), ('c', 1200)",
-    guion(Crear, _),
-    sql(U, actualizadas(1)),
-    sql("SELECT * FROM s", filas(_, R1)),
-    sql("DROP TABLE s", _),
-    guion(Crear, _),
-    actualizar_tupla(U, 2),
-    sql("SELECT * FROM s", filas(_, R2)).
+test(suplementario,
+     [true(Cs =@= [ (sup_p_1_1(X, Z) :- a(X, Z)),
+                    (sup_p_1_2(X, W) :- sup_p_1_1(X, Z), b(Z, W)),
+                    (p(X, Y) :- sup_p_1_2(X, W), c(W, Y)) ])]) :-
+    suplementario((p(X, Y) :- a(X, Z), b(Z, W), c(W, Y)), 1, Cs).
 
-% Ejercicio 6
-consulta_ana("SELECT i.materia, i.nota FROM inscripciones i, alumnos a WHERE a.nombre = 'ana' AND a.legajo = i.legajo").
+test(suplementario_corto, [true(Cs =@= [(p(X) :- q(X))])]) :-
+    suplementario((p(X) :- q(X)), 1, Cs).
 
-test(ejercicio_6_orden, [true(M =@= (base:alumno(L, ana, _, _),
-                                     base:inscripcion(L, Ma, N)))]) :-
-    consulta_ana(T),
-    traducir_ordenado(T, [Ma, N]-M).
+test(conjuncion, [true(C == (s, l))]) :-
+    conjuncion(s, l, C).
 
-test(ejercicio_6_costos) :-
-    consulta_ana(T),
-    traducir(T, _, F1-M1),
-    traducir_ordenado(T, F2-M2),
-    inferencias_meta(F1, M1, N1, Fs1),
-    inferencias_meta(F2, M2, N2, Fs2),
-    Fs1 == Fs2,
-    en_banda(N1, 32),
-    en_banda(N2, 16).
+test(aparece_en, [fail]) :-
+    aparece_en([_], _).
 
-inferencias_meta(F, M, N, Fs) :-
-    findall(F, M, Fs),
-    statistics(inferences, I0),
-    findall(F, M, _),
-    statistics(inferences, I1),
-    N is I1 - I0.
+% El mismo modelo con los suplementarios, sin sus átomos.
+test(suplementarios, [true(R1 == R2)]) :-
+    misma_profundidad(Cs),
+    suplementarios(Cs, Ss),
+    respuestas(Cs, sd(_, _), R1, _),
+    respuestas(Ss, sd(_, _), R2, _).
 
-test(generadores, [true(Gs-R == [base:p(1), base:q(2)]-(X > 1))]) :-
-    generadores((base:p(1), base:q(2), X > 1), Gs, R).
+% Ejercicio 4. Las derivaciones se comparan con su valor exacto; las
+% inferencias, a propósito, con una banda del 10 % alrededor de la cifra
+% impresa, porque cambian de una versión de SWI-Prolog a otra.
+test(suplementarios_sd, [true(D-D1 == 49-159)]) :-
+    misma_profundidad(Cs),
+    suplementarios(Cs, Ss),
+    respuestas(Cs, sd(_, _), _, costo(_, D)),
+    respuestas(Ss, sd(_, _), _, costo(_, D1)),
+    inferencias(respuestas(Cs, sd(_, _), _, _), N),
+    inferencias(respuestas(Ss, sd(_, _), _, _), N1),
+    en_banda(N, 13854),
+    en_banda(N1, 24935).
 
-% Ejercicio 7
-test(ejercicio_7_rechaza, [ setup(estado(E)), cleanup(restaurar(E)),
-                            throws(error(sql(referencia(inscripciones, legajo, 999)), _)) ]) :-
-    insertar_verificado("INSERT INTO inscripciones (legajo, materia) VALUES (999, 'am1')", _).
+test(suplementarios_franjas, [true(D-D1-L == 250000-7000-1000)]) :-
+    franjas(Cs),
+    suplementarios(Cs, Ss),
+    respuestas(Cs, franja_del_anio(_, _), Rs, costo(_, D)),
+    respuestas(Ss, franja_del_anio(_, _), Rs, costo(_, D1)),
+    length(Rs, L),
+    inferencias(respuestas(Cs, franja_del_anio(_, _), _, _), N),
+    inferencias(respuestas(Ss, franja_del_anio(_, _), _, _), N1),
+    en_banda(N, 2315135),
+    en_banda(N1, 1587384).
 
-test(ejercicio_7_repone, [ setup(estado(E)), cleanup(restaurar(E)),
-                           true(K == 17) ]) :-
-    catch(insertar_verificado("INSERT INTO inscripciones (legajo, materia) VALUES (999, 'am1')", _),
-          error(sql(_), _), true),
-    aggregate_all(count, base:inscripcion(_, _, _), K).
+test(misma_profundidad, [true(Rs-D-D1 == [sd(d, d), sd(d, e), sd(d, f)]-49-23)]) :-
+    misma_profundidad(Cs),
+    respuestas(Cs, sd(d, _), Rs, costo(_, D)),
+    respuestas_magicas(Cs, sd(d, _), Rs, costo(_, D1)).
 
-test(ejercicio_7_acepta, [ setup(estado(E)), cleanup(restaurar(E)),
-                           true(R == insertadas(1)) ]) :-
-    insertar_verificado("INSERT INTO inscripciones (legajo, materia) VALUES (107, 'am1')", R).
+test(debe_camino, [true(Y == 100)]) :-
+    debe_camino(99, Y).
 
-% Ejercicio 8
-test(ejercicio_8, [ setup(estado(E)), cleanup(restaurar(E)),
-                    true(K-Fs == 2-[[alg], [log], [pp], [ssl]]) ]) :-
-    recursiva(requisito, "CREATE TABLE requisito (r TEXT)",
-              "SELECT requisito FROM correlativas WHERE materia = 'bd'",
-              "SELECT c.requisito FROM correlativas c, requisito q WHERE c.materia = q.r",
-              K),
-    sql("SELECT r FROM requisito ORDER BY r", filas(_, Fs)).
+test(evita_camino, [true(T1-R1-T2-R2 == 1-99-1-50)]) :-
+    tablas(evita_camino(1, _), T1, R1),
+    tablas(evita_camino(50, _), T2, R2).
 
-% Ejercicio 9: las filas de SQLite con LEFT JOIN, el par 19 del capítulo 42.
-test(ejercicio_9, [ setup(estado(E)), cleanup(restaurar(E)),
-                    true(Fs == [[alg, 4], [am1, 5], [am2, 2], [bd, 0], [log, 4],
-                                [pp, 2], [ssl, 0]]) ]) :-
-    guion("CREATE VIEW materia_legajo AS
-             SELECT m.codigo AS codigo, i.legajo AS legajo
-             FROM materias m, inscripciones i WHERE i.materia = m.codigo
-             UNION ALL
-             SELECT m.codigo, NULL FROM materias m
-             WHERE NOT EXISTS (SELECT * FROM inscripciones i
-                               WHERE i.materia = m.codigo);
-           SELECT codigo, COUNT(legajo) FROM materia_legajo GROUP BY codigo",
-          [creada(materia_legajo), filas(_, Fs)]).
+test(programa_camino, [true(M-A == 1-50)]) :-
+    programa_camino(Cs),
+    magia(Cs, evita(50, _), M, A).
 
-% Ejercicio 10
-test(ejercicio_10, [true(Fs == [])]) :-
-    filas("SELECT nombre FROM alumnos WHERE ingreso NOT IN (SELECT nota FROM inscripciones)", _, Fs).
+test(reducciones, [true(Ys == [c, d, e, h, i, k])]) :-
+    reducciones(Cs),
+    respuestas(Cs, fully_reduce(a, _), Rs, _),
+    findall(Y, member(fully_reduce(a, Y), Rs), Ys).
 
-test(ejercicio_10_meta,
-     [true(M =@= (base:alumno(_, A, _, B),
-                  \+ ( base:inscripcion(C, D, E), E == null ),
-                  \+ ( base:inscripcion(C, D, E), E \== null, B =:= E )))]) :-
-    traducir("SELECT nombre FROM alumnos WHERE ingreso NOT IN (SELECT nota FROM inscripciones)",
-             _, [A]-M).
+test(quitar_hechos, [true(N-C == 439-costo(21, 400))]) :-
+    clausulas(cadena(40), Cs),
+    quitar_hechos(Cs, [arco(20, 21)], M, C),
+    length(M, N).
 
-% Ejercicio 11
-test(ejercicio_11, [true(K-M =@= [[14]]-(base:inscripcion(L, _, N), N \== null))]) :-
-    filas("SELECT COUNT(*) FROM inscripciones WHERE nota = nota", _, K),
-    traducir("SELECT legajo FROM inscripciones WHERE nota = nota", _, [L]-M).
+test(volver_a_agregar, [true(C == costo(21, 420))]) :-
+    clausulas(cadena(40), Cs),
+    volver_a_agregar(Cs, [arco(20, 21)], C).
+
+test(hecho_de) :-
+    hecho_de([p(a)], (p(a) :- true)).
+
+test(segura_magica, [true(Rs-D == [segura(22)]-87)]) :-
+    conocer(4, [1-1-[], 2-1-[brisa], 1-2-[hedor]], K),
+    segura_magica(K, 2-2, Rs, costo(_, D)).
+
+test(restar_con, [true(Ps == [0, 2, 7, 9, 14, 16])]) :-
+    restar_con([1, 3, 4], 20, Js),
+    retrogrado(Js, T, _),
+    findall(P, member(P-pierde(_), T), Ps).
+
+test(evaluar_ingenuo, [true(C == costo(41, 22960))]) :-
+    clausulas(cadena(40), Cs),
+    evaluar_ingenuo(Cs, M, C),
+    evaluar(Cs, M, _).
+
+test(evaluar_ingenuo_negacion, [true(C == costo(6, 48))]) :-
+    clausulas(grafo, Cs),
+    evaluar_ingenuo(Cs, M, C),
+    evaluar(Cs, M, _).
+
+test(cabeza_en) :-
+    cabeza_en([p/1], r(p(a), [])).
 
 :- end_tests(soluciones).

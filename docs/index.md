@@ -7,7 +7,7 @@ pruebas; el que se puede ejecutar en SWISH, en el navegador, incluye un enlace
 "▶ Abrir en SWISH", y el que requiere una instalación local indica el motivo.
 
 !!! info "Estado del curso"
-    El curso está **completo**: ochenta y siete capítulos en cuatro partes,
+    El curso está **completo**: ochenta y ocho capítulos en cuatro partes,
     con sus ejercicios, sus soluciones y sus ejemplos verificados. El autor
     revisó los capítulos [1](capitulo-01-la-primera-hora/index.md) a
     [7](capitulo-07-listas/index.md); los demás están en revisión.
@@ -15,11 +15,13 @@ pruebas; el que se puede ejecutar en SWISH, en el navegador, incluye un enlace
 ## Organización
 
 - **Parte I — Introducción** (capítulos [1](capitulo-01-la-primera-hora/index.md)
-  a [12](capitulo-12-prolog-y-la-logica/index.md)). Para quien no conoce
+  a [13](capitulo-13-prolog-y-la-logica/index.md)). Para quien no conoce
   Prolog: hechos, reglas y consultas, términos y unificación, la forma en que
   Prolog busca las respuestas (árboles de derivación, traza y cajas de Byrd),
   recursión, listas, aritmética y acumuladores, el corte, la negación como
-  falla, el texto y la relación de Prolog con la lógica. Desde el
+  falla, el texto, un capítulo de
+  [ejercicios integradores](capitulo-12-ejercicios-integradores/index.md) que
+  combinan esas herramientas y la relación de Prolog con la lógica. Desde el
   [capítulo 2](capitulo-02-hechos-consultas-y-variables/index.md) cada regla
   lleva su encabezado de documentación (PlDoc), y desde el
   [capítulo 3](capitulo-03-reglas-y-conjunciones/index.md) cada programa tiene
@@ -27,8 +29,8 @@ pruebas; el que se puede ejecutar en SWISH, en el navegador, incluye un enlace
   un recorrido general de una hora, que permite disponer de un programa en
   funcionamiento desde el comienzo.
 - **Parte II — Prolog para programadores** (capítulos
-  [13](capitulo-13-el-entorno-de-trabajo/index.md) a
-  [31](capitulo-31-ejecutables-y-distribucion/index.md)). Empieza por el
+  [14](capitulo-14-el-entorno-de-trabajo/index.md) a
+  [32](capitulo-32-ejecutables-y-distribucion/index.md)). Empieza por el
   entorno de trabajo y sigue con las técnicas de uso profesional cotidiano:
   estilo, control, rendimiento, todas las soluciones, orden superior,
   operadores y reglas como datos, base de datos dinámica, gramáticas,
@@ -38,23 +40,23 @@ pruebas; el que se puede ejecutar en SWISH, en el navegador, incluye un enlace
   Cada capítulo presenta sus predicados con ejemplos breves y después los
   aplica en *Inscripciones*, un proyecto que crece a lo largo de la parte. El
   Buscaminas, armado por partes en varios capítulos, queda completo en el
-  [capítulo 31](capitulo-31-ejecutables-y-distribucion/index.md), con
-  [su código fuente](capitulo-31-ejecutables-y-distribucion/buscaminas.md).
+  [capítulo 32](capitulo-32-ejecutables-y-distribucion/index.md), con
+  [su código fuente](capitulo-32-ejecutables-y-distribucion/buscaminas.md).
 - **Parte III — Lo avanzado** (capítulos
-  [32](capitulo-32-inspeccion-de-terminos/index.md) a
-  [42](capitulo-42-prolog-y-sql/index.md)). Inspección de términos,
+  [33](capitulo-33-inspeccion-de-terminos/index.md) a
+  [43](capitulo-43-prolog-y-sql/index.md)). Inspección de términos,
   introspección y metaintérpretes, estructuras incompletas y listas
   diferencia, transformación y compilación de programas, interfaces de usuario
   (la terminal, las ventanas de XPCE y las páginas web), concurrencia y
   paralelismo, la semántica de los programas lógicos, tabulación, búsqueda y
   planificación, y juegos. *Inscripciones* y el Buscaminas pasan a esas
   interfaces, a los hilos, a la tabulación y a la búsqueda. La parte cierra
-  con Prolog y SQL ([capítulo 42](capitulo-42-prolog-y-sql/index.md)): las
+  con Prolog y SQL ([capítulo 43](capitulo-43-prolog-y-sql/index.md)): las
   correspondencias entre ambos lenguajes, sus diferencias y el uso de una base
   de datos SQL desde Prolog.
 - **Parte IV — Proyectos** (capítulos
-  [43](capitulo-43-proyecto-resolver-ecuaciones/index.md) a
-  [87](capitulo-87-proyecto-preguntas-en-castellano/index.md)). Cada capítulo
+  [44](capitulo-44-proyecto-resolver-ecuaciones/index.md) a
+  [88](capitulo-88-proyecto-preguntas-en-castellano/index.md)). Cada capítulo
   desarrolla un programa completo en versiones sucesivas, con las técnicas de
   las partes anteriores, a partir de las fuentes que cita al final. Los
   proyectos abarcan la matemática (ecuaciones, métodos numéricos, aritmética
@@ -85,7 +87,7 @@ Cada capítulo tiene la misma estructura: objetivos, desarrollo con ejemplos
 ejecutables, actividades intercaladas, ejercicios con nivel de dificultad,
 resumen y una tabla de los temas que se retoman en capítulos posteriores; desde
 la parte III, cada capítulo termina además con las referencias de sus fuentes,
-y el [capítulo 87](capitulo-87-proyecto-preguntas-en-castellano/index.md)
+y el [capítulo 88](capitulo-88-proyecto-preguntas-en-castellano/index.md)
 reemplaza esa tabla por el cierre del curso. Las soluciones de los ejercicios
 están en una página separada de cada capítulo, y las formas de programa de la
 parte I están reunidas en la página de [plantillas](plantillas.md). Las formas
@@ -99,7 +101,7 @@ textos y ejercicios en línea que explican los mismos temas de otra manera.
 
 La parte I y la mayor parte de la II se siguen sin ninguna instalación: sus
 ejemplos se ejecutan en SWISH, en el navegador. Desde el
-[capítulo 24](capitulo-24-modulos-y-organizacion/index.md), que presenta los
+[capítulo 25](capitulo-25-modulos-y-organizacion/index.md), que presenta los
 módulos, muchos ejemplos requieren una instalación local, y también la mayor
 parte de los de la parte IV.
 
@@ -107,28 +109,28 @@ Para trabajar en una instalación local se requiere
 [SWI-Prolog](https://www.swi-prolog.org/) 9; el curso se verificó con la
 versión 9.2.9. Algunos capítulos usan además:
 
-- el pack `reif` ([capítulo 15](capitulo-15-control/index.md));
-- Python 3 (capítulos [29](capitulo-29-prolog-desde-python/index.md) a
-  [31](capitulo-31-ejecutables-y-distribucion/index.md)), con el paquete
-  `janus-swi` en el [capítulo 29](capitulo-29-prolog-desde-python/index.md);
+- el pack `reif` ([capítulo 16](capitulo-16-control/index.md));
+- Python 3 (capítulos [30](capitulo-30-prolog-desde-python/index.md) a
+  [32](capitulo-32-ejecutables-y-distribucion/index.md)), con el paquete
+  `janus-swi` en el [capítulo 30](capitulo-30-prolog-desde-python/index.md);
 - Docker, de manera optativa
-  ([capítulo 31](capitulo-31-ejecutables-y-distribucion/index.md));
+  ([capítulo 32](capitulo-32-ejecutables-y-distribucion/index.md));
 - XPCE, que acompaña a `swipl-win` en Windows: las ventanas del
-  [capítulo 36](capitulo-36-interfaces-de-usuario/index.md) y herramientas
-  optativas de los capítulos [16](capitulo-16-rendimiento/index.md) y
-  [26](capitulo-26-pruebas-y-depuracion/index.md);
+  [capítulo 37](capitulo-37-interfaces-de-usuario/index.md) y herramientas
+  optativas de los capítulos [17](capitulo-17-rendimiento/index.md) y
+  [27](capitulo-27-pruebas-y-depuracion/index.md);
 - una terminal que interprete las secuencias ANSI (capítulos
-  [36](capitulo-36-interfaces-de-usuario/index.md),
-  [41](capitulo-41-juegos/index.md) y
-  [44](capitulo-44-proyecto-aventura-de-texto/index.md));
+  [37](capitulo-37-interfaces-de-usuario/index.md),
+  [42](capitulo-42-juegos/index.md) y
+  [45](capitulo-45-proyecto-aventura-de-texto/index.md));
 - el controlador ODBC de SQLite (capítulos
-  [42](capitulo-42-prolog-y-sql/index.md) y
-  [87](capitulo-87-proyecto-preguntas-en-castellano/index.md)), que en Windows
+  [43](capitulo-43-prolog-y-sql/index.md) y
+  [88](capitulo-88-proyecto-preguntas-en-castellano/index.md)), que en Windows
   se instala como indica [El controlador ODBC en
-  Windows](capitulo-42-prolog-y-sql/odbc.md#el-controlador-odbc-en-windows);
+  Windows](capitulo-43-prolog-y-sql/odbc.md#el-controlador-odbc-en-windows);
 - un procesador de varios núcleos, para que las mediciones de los capítulos
-  [37](capitulo-37-concurrencia-y-paralelismo/index.md) y
-  [41](capitulo-41-juegos/index.md) muestren la ganancia del paralelismo.
+  [38](capitulo-38-concurrencia-y-paralelismo/index.md) y
+  [42](capitulo-42-juegos/index.md) muestren la ganancia del paralelismo.
 
 ## Licencia
 

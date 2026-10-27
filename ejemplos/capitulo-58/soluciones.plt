@@ -2,160 +2,74 @@
 
 :- begin_tests(soluciones).
 
-test(ejercicio_1, [true(VS-VI == top-i(1, sup))]) :-
-    analizar("x := n - 1; escribir 10 / x", P),
-    analisis(signos, P, [n-entre(2, sup)], estado(_, ES), OS),
-    analisis(intervalos, P, [n-entre(2, sup)], estado(_, EI), OI),
-    memberchk(x-VS, ES),
-    memberchk(x-VI, EI),
-    memberchk(division(_, _), OS),
-    \+ memberchk(division(_, _), OI).
+test(perezosa_no_evalua, [true(A-B == 3-2)]) :-
+    lam("(fun x -> 3) (cabeza [])", A),
+    lam("longitud [cabeza [], 2]", B).
 
-test(ejercicio_2, [true(Ss-Ts == [cero, neg]-[cero])]) :-
-    findall(S, op_signos(/, neg, pos, S), Ss0),
-    msort(Ss0, Ss),
-    findall(T, op_signos(*, cero, neg, T), Ts).
+test(estricta_evalua, [error(type_error(lista_no_vacia, []))]) :-
+    ejecutar("(fun x -> 3) (cabeza [])", _).
 
-test(paridad, [true(F-Os == nada-[siempre(rel(<>, id(x), num(0)))])]) :-
-    analizar("x := 2 * n + 1; mientras x <> 0 hacer x := x - 2 fin", P),
-    analisis(paridad, P, [n-entre(inf, sup)], F, Os).
+test(iterar, [true(V == [1, 2, 4, 8, 16, 32, 64, 128])]) :-
+    definiciones(iterar, D),
+    lam("tomar 8 (iterar ((*) 2) 1)", D, V).
 
-test(paridad_par, [true(F == estado(paridad, [x-par]))]) :-
-    analizar("x := 10; mientras x <> 0 hacer x := x - 2 fin", P),
-    analisis(paridad, P, [], F, _).
+test(plegados, [true(A-B == [1, 4, 9, 16, 25]-[2, 4, 6, 8, 10])]) :-
+    definiciones(plegados, D),
+    ejecutar("map2 (fun x -> x * x) (hasta 1 5)", D, A),
+    ejecutar("filtrar2 (fun x -> mod x 2 = 0) (hasta 1 10)", D, B).
 
-test(sin_asignar, [true(Xs == [z])]) :-
-    sin_asignar_texto("escribir z; z := z + 1", Xs).
+test(plegar_der_infinita, [true(V == [2, 4, 6])]) :-
+    definiciones(plegados, D),
+    lam("tomar 3 (filtrar2 (fun x -> mod x 2 = 0) (desde 1))", D, V).
 
-test(sin_asignar_rama, [true(Xs == [y])]) :-
-    sin_asignar_texto("x := 1; si x > 0 entonces y := 1 fin; escribir y",
-                      Xs).
+test(sin_lista, [true(A-B-C == 9-[2, 4, 6, 8, 10]-2)]) :-
+    definiciones(sin_lista, D),
+    lam("maximo [3, 1, 4, 1, 5, 9, 2, 6]", D, A),
+    lam("pares (hasta 1 10)", D, B),
+    lam("cuantos (fun x -> x > 2) [1, 5, 3, 2]", D, C).
 
-test(sin_asignar_ejemplos, [forall(programa_ejemplo(_, P)), true(Xs == [])]) :-
-    sin_asignar(P, Xs).
+test(cond_perezosa, [true(V == 120)]) :-
+    definiciones(cond, D),
+    lam("fact 5", D, V).
 
-test(estrechar, [true(I-Fuera == estado(intervalos, [i-i(0, 10)])-
-                                 estado(intervalos, [i-i(10, 10)]))]) :-
-    diez_estrechado(I, Fuera).
+test(cond_estricta, [true(R == inference_limit_exceeded)]) :-
+    definiciones(cond, D),
+    call_with_inference_limit(ejecutar("fact 5", D, _), 1 000 000, R).
 
-test(signos6, [true(F == estado(signos6, [i-noneg, n-noneg, s-noneg]))]) :-
-    analisis_caso(signos6, promedio, [n-entre(0, sup)], F, _).
+test(z, [true(V == 3628800)]) :-
+    definiciones(z, D),
+    ejecutar("z f 10", D, V).
 
-test(signos6_cubre, [forall(caso(N, _, _))]) :-
-    programa_caso(N, P, Es),
-    analisis(signos6, P, Es, F, Os),
-    muestra(N, Cs),
-    forall(member(C, Cs), cubre(F, Os, C)).
+test(suma_cuadrados_pares, [true(S == 171700)]) :-
+    suma_cuadrados_pares(100, S).
 
-test(mcd_cualquier_a, [true(Fs == [estado([a-pos, b-pos])])]) :-
-    finales_caso(mcd, [a-entre(inf, sup), b-entre(1, sup)], Fs).
+test(igual_que_lam, [true(S1 == S2)]) :-
+    suma_cuadrados_pares(100, S1),
+    ejecutar("suma (map (fun x -> x * x) \c
+              (filtrar (fun x -> mod x 2 = 0) (hasta 1 100)))", S2).
 
-test(caminos, [true(Rs == [[n*n>=0]-[n*n]])]) :-
-    findall(C-S, camino_posible(cuadrado, C, S), Rs).
+test(desazucar, [true(D == sea(f, ap(id(z), lam(f, id(f))),
+                               ap(id(f), num(1))))]) :-
+    desazucar(searec(f, id(f), ap(id(f), num(1))), D).
 
-test(inalcanzable_si, [true(Ss == [escribir(id(x))])]) :-
-    analizar("x := 0 - 1; si x > 0 entonces escribir x fin", P),
-    inalcanzables(signos, P, [], Ss).
+test(sea_recursivo, [true(V == 120)]) :-
+    leer_expresion("fun n -> si n = 0 entonces 1 sino n * f (n - 1)", E1),
+    evaluar_con_rec(searec(f, E1, ap(id(f), num(5))), V).
 
-test(inalcanzable_bucle, [true(Ss == [escribir(id(x))])]) :-
-    analizar("x := 1; mientras x > 0 hacer x := x + 1 fin; escribir x", P),
-    inalcanzables(signos, P, [], Ss).
+test(evaluaciones, [true(N1-N2 == 2539-179)]) :-
+    evaluaciones(contado_nombre, "nesimo 10 fibs", N1),
+    evaluaciones(contado_necesidad, "nesimo 10 fibs", N2).
 
-test(umbrales, [true(F == estado(umbrales([0, 1, 10]), [i-i(10, 10)]))]) :-
-    programa_caso(diez, P, _),
-    analisis_umbrales(P, [], F, _).
+test(lam_con, [true(V == 120)]) :-
+    lam_con(cond, "fact 5", V).
 
-test(umbrales_cubre, [forall(caso(N, _, _))]) :-
-    programa_caso(N, P, Es),
-    analisis_umbrales(P, Es, F, Os),
-    muestra(N, Cs),
-    forall(member(C, Cs), cubre(F, Os, C)).
+test(ejecutar_con, [true(V == 120)]) :-
+    ejecutar_con(z, "z f 5", V).
 
-test(operar_paridad, [true(Vs == [impar, par, top, top])]) :-
-    maplist(operar_paridad(+), [par, impar, top], [impar, impar, par], Vs0),
-    operar_paridad(/, par, par, V4),
-    append(Vs0, [V4], Vs).
+test(suma_cuadrados_pares_vacia, [true(S == 0)]) :-
+    suma_cuadrados_pares(1, S).
 
-% Un factor par hace par el producto aunque el otro sea top.
-test(multiplicar_paridad, [true(Vs == [par, impar, top, par])]) :-
-    maplist(multiplicar_paridad, [par, impar, top, top], [top, impar, impar, par],
-            Vs).
-
-test(refinar_paridad, [true(Vs == [par, impar, top])]) :-
-    refinar_paridad(=, top, par, V1),
-    refinar_paridad(<>, impar, impar, V2),
-    refinar_paridad(<, top, par, V3),
-    Vs = [V1, V2, V3].
-
-test(refinar_paridad_imposible, [fail]) :-
-    refinar_paridad(=, impar, par, _).
-
-test(def_lee_sin_asignar, all(S == [s([x-asignada, y-sin_asignar], [y])])) :-
-    def(asignar(x, bin(+, id(x), id(y))), s([x-asignada, y-sin_asignar], []),
-        S).
-
-% Un mientras sale sin vueltas o después de alguna: dos estados.
-test(def_mientras, set(S == [s([x-asignada], []), s([x-sin_asignar], [])])) :-
-    def(mientras(rel(<, num(0), num(1)), [asignar(x, num(1))]),
-        s([x-sin_asignar], []), S).
-
-test(leer, [true(L == [a, z])]) :-
-    leer(rel(<, id(a), id(b)), [a-sin_asignar, b-asignada], [z], L).
-
-test(estrechar_bucle, [true(I == estado(intervalos, [i-i(0, 10)]))]) :-
-    estrechar(mientras(rel(<, id(i), num(10)),
-                       [asignar(i, bin(+, id(i), num(1)))]),
-              estado(intervalos, [i-i(0, 0)]), I).
-
-test(representa6, all(V == [noneg])) :-
-    representa6(V, [cero, pos]).
-
-% Un conjunto sin valor propio, como neg y pos, se representa con top.
-test(alfa6, [true(Vs == [noneg, top, top, nopos])]) :-
-    maplist(alfa6, [[pos, cero, pos], [], [neg, pos], [neg, cero]], Vs).
-
-test(restriccion_imposible, [fail]) :-
-    Ps = [n-N],
-    restriccion(Ps, n*n < 0),
-    label([N]).
-
-test(restriccion, [true(D == 4..sup)]) :-
-    Ps = [n-N],
-    restriccion(Ps, n > 3),
-    fd_dom(N, D).
-
-test(muertas_desde_muerto, [true(Ss == [escribir(id(x)),
-                                        asignar(x, num(1))])]) :-
-    phrase(muertas([escribir(id(x)), asignar(x, num(1))], muerto, []), Ss).
-
-% Un mientras cuya condición siempre se cumple mata lo que le sigue.
-test(muerta_en_mientras, [true(Ss-Sigue == []-muerto)]) :-
-    phrase(muerta_en(mientras(rel(>, id(x), num(0)), [escribir(id(x))]),
-                     [siempre(rel(>, id(x), num(0)))], Sigue),
-           Ss).
-
-test(rama, [true(Ss1-Ss2 == [escribir(id(x))]-[])]) :-
-    phrase(rama([escribir(id(x))], nunca(c), [nunca(c)]), Ss1),
-    phrase(rama([escribir(id(x))], nunca(c), []), Ss2).
-
-test(umbral_arriba, [true(Fs == [10, 1, sup])]) :-
-    maplist(umbral_arriba([0, 1, 10]), [5, 1, 11], Fs).
-
-test(umbral_abajo, [true(Es == [1, 0, inf])]) :-
-    maplist(umbral_abajo([0, 1, 10]), [5, 0, -1], Es).
-
-test(ej12_cociente, [true(Cs == [])]) :-
-    bloque_caso(cociente, B, Es),
-    contextos_con_error(B, Es, Cs).
-
-test(ej12_directo, [true(Cs == [dividir-[cero]])]) :-
-    cociente_directo(B),
-    contextos_con_error(B, [a-entre(inf, sup)], Cs).
-
-test(ej12_factorial, [true(Cs == [])]) :-
-    contextos_caso(factorial, Cs).
-
-test(ej12_directo_caso, [true(Cs == [dividir-[cero]])]) :-
-    contextos_directo(Cs).
+test(desazucar_sin_searec, [true(D == ap(id(f), num(1)))]) :-
+    desazucar(ap(id(f), num(1)), D).
 
 :- end_tests(soluciones).

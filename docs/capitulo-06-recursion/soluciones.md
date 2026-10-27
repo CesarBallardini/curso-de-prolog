@@ -193,12 +193,12 @@ pueda recorrer.
 
 Se requiere reunir todas las respuestas de `padre(P, H)` en una única estructura
 y contarlas, lo que no es posible con los elementos disponibles hasta aquí. Es
-el tema del [capítulo 17](../capitulo-17-todas-las-soluciones/index.md).
+el tema del [capítulo 18](../capitulo-18-todas-las-soluciones/index.md).
 
 Lo que sí es posible es ejecutar la consulta `padre(juan, H).` y contar de
 manera manual las respuestas que se obtienen con `;`. La diferencia entre ese
 procedimiento y un programa que las cuente es precisamente lo que resuelve el
-[capítulo 17](../capitulo-17-todas-las-soluciones/index.md).
+[capítulo 18](../capitulo-18-todas-las-soluciones/index.md).
 
 ## 9
 
@@ -374,7 +374,7 @@ flowchart TD
 
 En el último nodo, `suma(A₂, B, cero)`, R2 no abre arco: su cabeza tiene
 `s(C)` en el tercer argumento, y `cero` no unifica con él. Ese intento es el
-`false.` final. El árbol de `pegar(A, B, [ana, luis, eva])` de la
+`false.` final. El árbol de `concatenar(A, B, [ana, luis, eva])` de la
 [sección 7.6](../capitulo-07-listas/index.md#76-una-relacion-varios-sentidos) tiene exactamente la misma forma: allí
 el escalón quita un elemento de la lista en lugar de una `s`.
 

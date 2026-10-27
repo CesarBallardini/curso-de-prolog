@@ -1,7 +1,7 @@
 :- encoding(utf8).
 
 % Pruebas de Inscripciones (capítulo 23): las del capítulo 22, y las del
-% calendario de exámenes. Las que modifican la base guardan el estado
+% ranking y del índice por alumno. Las que modifican la base guardan el estado
 % en su setup y lo restauran en su cleanup, con los predicados del programa.
 
 :- begin_tests(inscripciones).
@@ -164,7 +164,7 @@ test(informe_de_aprobadas, true(F == [101-4, 105-0])) :-
 test(informe_vacio, true(F == [])) :-
     informe(aprobadas, [], F).
 
-% with_output_to/2, que captura la salida, se presenta en el capítulo 27.
+% with_output_to/2, que captura la salida, se presenta en el capítulo 28.
 test(mostrar_informe,
      true(S == "Aprobadas
   101 ana: 4
@@ -271,7 +271,7 @@ test(alumno_inexistente, true(R == no_entendido)) :-
 test(ranking, true(R == [101-8.5, 104-8, 103-6, 106-4.5, 102-4])) :-
     ranking(R).
 
-% mejores/2 da el mismo resultado que con order_by/2 en el capítulo 17.
+% mejores/2 da el mismo resultado que con order_by/2 en el capítulo 18.
 test(mejores_con_sort, true(R == [101-8.5, 104-8])) :-
     mejores(2, R).
 
@@ -293,40 +293,5 @@ test(indice_completo, true(N == 6)) :-
     indice_por_alumno(I),
     assoc_to_keys(I, Ks),
     length(Ks, N).
-
-% --- Calendario de exámenes --------------------------------------------------
-
-test(conflictos, true(N == 10)) :-
-    aggregate_all(count, conflicto(_, _), N).
-
-test(horario, true(H == [am1-1, alg-2, log-3, am2-4, pp-5, ssl-1, bd-1])) :-
-    once(horario(5, 6, H)).
-
-% Las cinco materias con ana (101) necesitan cinco días distintos.
-test(cuatro_dias_no_alcanzan, [fail]) :-
-    horario(4, 20, _).
-
-% Con capacidad 5, am1 (5 alumnos) no puede compartir el día con nadie.
-test(capacidad, true(Otras == [])) :-
-    once(horario(5, 5, H)),
-    memberchk(am1-D, H),
-    findall(M, ( member(M-D, H), M \== am1, inscriptos(M, [_|_]) ), Otras).
-
-% Todo horario cumple las dos condiciones.
-test(horarios_validos, [fail]) :-
-    horario(5, 6, H),
-    (   conflicto(M1, M2),
-        memberchk(M1-D, H),
-        memberchk(M2-D, H)
-    ;   between(1, 5, D),
-        aggregate_all(sum(N),
-                      ( member(M-D, H),
-                        cantidad_de_inscriptos(M-D, N) ),
-                      Total),
-        Total > 6
-    ).
-
-test(dominio_incorrecto, [error(domain_error(clpfd_domain, 1..dos), _)]) :-
-    horario(dos, 6, _).
 
 :- end_tests(inscripciones).

@@ -1,7 +1,7 @@
 :- encoding(utf8).
 
-% Pruebas de Inscripciones (capítulo 16): las del capítulo 15, y las de
-% aprobada_por_nombre/2.
+% Pruebas de Inscripciones (capítulo 16): las del capítulo 15, y un caso por
+% cada resultado de inscripcion_posible/3.
 
 :- begin_tests(inscripciones).
 
@@ -98,16 +98,5 @@ test(puede_inscribirse) :-
 
 test(no_puede_inscribirse, [fail]) :-
     puede_inscribirse(102, am2).
-
-% --- aprobada_por_nombre/2 -------------------------------------------------
-
-test(aprobadas_de_ana, all(M == [am1, alg, log, am2])) :-
-    aprobada_por_nombre(ana, M).
-
-test(quienes_aprobaron_logica, all(N == [ana, bruno, diego])) :-
-    aprobada_por_nombre(N, log).
-
-test(un_nombre_que_no_existe, [fail]) :-
-    aprobada_por_nombre(zoe, _).
 
 :- end_tests(inscripciones).

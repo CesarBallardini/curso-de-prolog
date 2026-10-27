@@ -24,7 +24,6 @@
 
 :- module(api,
           [ iniciar_api/1,
-            iniciar_api/2,
             detener_api/1
           ]).
 
@@ -51,16 +50,6 @@
 %   elige uno que no esté en uso.
 iniciar_api(Puerto) :-
     http_server([port(localhost:Puerto)]).
-
-%!  iniciar_api(?Puerto:integer, +Alcance:atom) is det.
-%
-%   Como iniciar_api/1, con Alcance local, que solo acepta pedidos de la
-%   misma máquina, o publico, que los acepta de cualquier interfaz de red:
-%   el que necesita el servicio dentro de un contenedor.
-iniciar_api(Puerto, local) :-
-    iniciar_api(Puerto).
-iniciar_api(Puerto, publico) :-
-    http_server([port(Puerto)]).
 
 %!  detener_api(+Puerto:integer) is det.
 %

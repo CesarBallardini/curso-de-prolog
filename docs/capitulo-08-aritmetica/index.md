@@ -25,7 +25,7 @@ Al terminar el capítulo, el lector puede:
 !!! info "Tiempo estimado"
     Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:10 h**.
     Resolver los 6 ejercicios marcados con ★: **1:10 h**.
-    Resolver los 16 ejercicios del final: **4:55 h**.
+    Resolver los 25 ejercicios del final: **8:10 h**.
 
 ## 8.1 Evaluación de expresiones
 
@@ -52,7 +52,8 @@ comprobación:
 true.
 ```
 
-De ahí se sigue el resultado de una consulta que se escribe con frecuencia:
+De ahí se sigue el resultado de una consulta se usa con frecuencia en otros
+lenguajes de programación, pero en Prolog carece de sentido:
 
 ```prolog
 ?- N is N + 1.
@@ -112,15 +113,15 @@ El árbol de derivación del [capítulo 5](../capitulo-05-como-responde-prolog/i
 muestra ese orden. Con las cláusulas de `cuentas.pl` numeradas en el orden del
 archivo:
 
-| | |
-|---|---|
-| R1 | `edad(juan, 68).` |
-| R2 | `edad(ana, 41).` |
-| R3 | `edad(pedro, 45).` |
-| R4 | `edad(luis, 12).` |
-| R5 | `edad(eva, 8).` |
-| R6 | `edad_en_meses(P, M) :- edad(P, A), M is A * 12.` |
-| R7 | `mayor_de_edad(P) :- edad(P, A), A >= 18.` |
+|     |                                                   |
+| --- | ------------------------------------------------- |
+| R1  | `edad(juan, 68).`                                 |
+| R2  | `edad(ana, 41).`                                  |
+| R3  | `edad(pedro, 45).`                                |
+| R4  | `edad(luis, 12).`                                 |
+| R5  | `edad(eva, 8).`                                   |
+| R6  | `edad_en_meses(P, M) :- edad(P, A), M is A * 12.` |
+| R7  | `mayor_de_edad(P) :- edad(P, A), A >= 18.`        |
 
 ```mermaid
 flowchart TD
@@ -301,7 +302,7 @@ La **hoja de error** tiene una forma distinta de la hoja «falla», porque un
 error no es una falla: la rama no se cierra, se **interrumpe**. Tras una falla
 Prolog retrocede a la alternativa pendiente más cercana; tras un error no
 retrocede a ninguna, aunque exista, y la consulta termina con el mensaje. La
-[sección 12.6](../capitulo-12-prolog-y-la-logica/index.md#126-lo-que-excede-la-logica)
+[sección 13.6](../capitulo-13-prolog-y-la-logica/index.md#136-lo-que-excede-la-logica)
 llama a este desenlace el tercero, junto a `true.` y `false.`
 
 Lo relevante es lo que Prolog **no** hace: no despeja la incógnita. No deduce
@@ -336,7 +337,7 @@ estaba definida como una **relación** entre tres números, mediante el recorrid
 de términos. `is/2` no define una relación: evalúa.
 
 Es el costo de usar los números predefinidos, que son mucho más eficientes y más
-prácticos que la notación `s(s(s(cero)))`. El [capítulo 23](../capitulo-23-programacion-con-restricciones/index.md) presenta una técnica que
+prácticos que la notación `s(s(s(cero)))`. El [capítulo 24](../capitulo-24-programacion-con-restricciones/index.md) presenta una técnica que
 recupera los dos sentidos sin renunciar a los números predefinidos.
 
 Ese costo tiene una segunda mitad, que conviene anticipar. Con la notación
@@ -425,7 +426,7 @@ valores numéricos.
 En las recursiones anteriores que producen un número, la operación aritmética se
 realiza **al retorno** de la llamada recursiva: primero se ejecuta la llamada, y
 con su resultado se calcula la contribución propia. Así están definidos
-`largo/2` del [capítulo 7](../capitulo-07-listas/index.md) y `generaciones/3` del [capítulo 6](../capitulo-06-recursion/index.md).
+`longitud/2` del [capítulo 7](../capitulo-07-listas/index.md) y `generaciones/3` del [capítulo 6](../capitulo-06-recursion/index.md).
 
 Esa forma tiene una limitación, señalada al final de la [sección 7.5](../capitulo-07-listas/index.md#75-construir-una-lista-durante-el-recorrido-de-otra): mientras la
 recursión avanza, el resultado todavía no existe —se arma recién al volver—, de
@@ -487,13 +488,13 @@ quedan elementos por recorrer, el valor acumulado es el resultado.
 Los dos árboles de derivación muestran en qué difieren las dos versiones. Con
 las cinco cláusulas de `acumuladores.pl` numeradas en el orden del archivo:
 
-| | |
-|---|---|
-| R1 | `suma_lista([], 0).` |
-| R2 | `suma_lista([X\|Resto], S) :- suma_lista(Resto, Faltan), S is Faltan + X.` |
-| R3 | `suma_con_acumulador(L, S) :- sumando(L, 0, S).` |
-| R4 | `sumando([], Total, Total).` |
-| R5 | `sumando([X\|Resto], Hasta, Total) :- Ahora is Hasta + X, sumando(Resto, Ahora, Total).` |
+|     |                                                                                          |
+| --- | ---------------------------------------------------------------------------------------- |
+| R1  | `suma_lista([], 0).`                                                                     |
+| R2  | `suma_lista([X\|Resto], S) :- suma_lista(Resto, Faltan), S is Faltan + X.`               |
+| R3  | `suma_con_acumulador(L, S) :- sumando(L, 0, S).`                                         |
+| R4  | `sumando([], Total, Total).`                                                             |
+| R5  | `sumando([X\|Resto], Hasta, Total) :- Ahora is Hasta + X, sumando(Resto, Ahora, Total).` |
 
 Los árboles se dibujan para la lista `[3, 4]`, de dos elementos; con
 `[3, 1, 4]` son los mismos árboles con un nivel más. Cada uso de R2 toma una
@@ -547,23 +548,23 @@ respuesta.
     lista. Verificar que en la última llamada la lista está vacía y el
     acumulador ya contiene el resultado.
 
-El mismo esquema cuenta los elementos de una lista. Es `largo/2` del
+El mismo esquema cuenta los elementos de una lista. Es `longitud/2` del
 [capítulo 7](../capitulo-07-listas/index.md), con un acumulador que empieza en `0` y se incrementa en `1` por
 cada elemento:
 
-<!-- ejemplo: capitulo-08/acumuladores.pl predicado: largo/2 contando/3 consulta: largo([ana, luis, eva], N). -->
+<!-- ejemplo: capitulo-08/acumuladores.pl predicado: longitud/2 contando/3 consulta: longitud([ana, luis, eva], N). -->
 ```prolog
-%!  largo(?L, ?N) is nondet.
+%!  longitud(?L, ?N) is nondet.
 %
 %   N es la cantidad de elementos de L, también con acumulador. Con L libre y
 %   N ligado, da la lista de N variables y después no termina.
-largo(L, N) :-
+longitud(L, N) :-
     contando(L, 0, N).
 
 %!  contando(?L, +Hasta, ?N) is nondet.
 %
 %   N es Hasta más la cantidad de elementos de L. Admite los mismos modos que
-%   largo/2, con la misma limitación: con L libre y N ligado no termina.
+%   longitud/2, con la misma limitación: con L libre y N ligado no termina.
 contando([], N, N).
 contando([_|Resto], Hasta, N) :-
     Ahora is Hasta + 1,
@@ -571,14 +572,14 @@ contando([_|Resto], Hasta, N) :-
 ```
 
 ```prolog
-?- largo([ana, luis, eva], N).
+?- longitud([ana, luis, eva], N).
 N = 3.
 ```
 
 También es significativa la ubicación de `is`. En la versión sin acumulador está
 **después** de la llamada recursiva, porque requiere su resultado. En la versión
 con acumulador está **antes**, porque todos los valores que requiere ya están
-disponibles. Esta diferencia tiene consecuencias: el [capítulo 16](../capitulo-16-rendimiento/index.md) explica por qué
+disponibles. Esta diferencia tiene consecuencias: el [capítulo 17](../capitulo-17-rendimiento/index.md) explica por qué
 la segunda versión usa mucha menos memoria.
 
 !!! abstract "Plantilla 13 — Acumulador"
@@ -604,8 +605,8 @@ la segunda versión usa mucha menos memoria.
     proveer el valor inicial. El caso base no realiza ningún cálculo; solo
     entrega el valor acumulado.
 
-    **En este capítulo se usa en**: `suma_con_acumulador/2`, `largo/2` y
-    `dar_vuelta/2` (8.5 y 8.6). Las demás plantillas están en
+    **En este capítulo se usa en**: `suma_con_acumulador/2`, `longitud/2` y
+    `reversa/2` (8.5 y 8.6). Las demás plantillas están en
     [esta página](../plantillas.md).
 
 ## 8.6 Un acumulador que no es un número
@@ -614,21 +615,21 @@ El acumulador no es necesariamente un número. Puede ser cualquier término que 
 construya de manera incremental; el ejemplo más representativo es la inversión
 de una lista:
 
-<!-- ejemplo: capitulo-08/acumuladores.pl predicado: dar_vuelta/2 dando_vuelta/3 consulta: dar_vuelta([ana, luis, eva], AlReves). -->
+<!-- ejemplo: capitulo-08/acumuladores.pl predicado: reversa/2 invirtiendo/3 consulta: reversa([ana, luis, eva], AlReves). -->
 ```prolog
-%!  dar_vuelta(+L, -R) is det.
+%!  reversa(+L, -R) is det.
 %
 %   R es L en orden inverso. En este caso el acumulador no es un número: es la
 %   lista que se construye.
-dar_vuelta(L, R) :-
-    dando_vuelta(L, [], R).
+reversa(L, R) :-
+    invirtiendo(L, [], R).
 
-%!  dando_vuelta(+L, +Hasta, -R) is det.
+%!  invirtiendo(+L, +Hasta, -R) is det.
 %
 %   R es L en orden inverso, seguida de Hasta.
-dando_vuelta([], R, R).
-dando_vuelta([X|Resto], Hasta, R) :-
-    dando_vuelta(Resto, [X|Hasta], R).
+invirtiendo([], R, R).
+invirtiendo([X|Resto], Hasta, R) :-
+    invirtiendo(Resto, [X|Hasta], R).
 ```
 
 El acumulador comienza en `[]`, y en cada llamada se le agrega al comienzo el
@@ -637,28 +638,28 @@ elementos que se extraen del comienzo de la lista equivale, precisamente, a
 invertirla.
 
 ```prolog
-?- dar_vuelta([ana, luis, eva], AlReves).
+?- reversa([ana, luis, eva], AlReves).
 AlReves = [eva, luis, ana].
 ```
 
 El árbol es lineal, y el acumulador crece por el frente en cada arco. Con
-`dar_vuelta/2` y `dando_vuelta/3` numeradas a continuación de las cláusulas de
-la [sección 8.5](#85-acumuladores) —R6 a R8 son las de `largo/2` y
+`reversa/2` y `invirtiendo/3` numeradas a continuación de las cláusulas de
+la [sección 8.5](#85-acumuladores) —R6 a R8 son las de `longitud/2` y
 `contando/3`—:
 
-| | |
-|---|---|
-| R9 | `dar_vuelta(L, R) :- dando_vuelta(L, [], R).` |
-| R10 | `dando_vuelta([], R, R).` |
-| R11 | `dando_vuelta([X\|Resto], Hasta, R) :- dando_vuelta(Resto, [X\|Hasta], R).` |
+|     |                                                                           |
+| --- | ------------------------------------------------------------------------- |
+| R9  | `reversa(L, R) :- invirtiendo(L, [], R).`                                 |
+| R10 | `invirtiendo([], R, R).`                                                  |
+| R11 | `invirtiendo([X\|Resto], Hasta, R) :- invirtiendo(Resto, [X\|Hasta], R).` |
 
 ```mermaid
 %%{init: {"flowchart": {"rankSpacing": 25}}}%%
 flowchart TD
-    A["dar_vuelta([ana, luis, eva], AlReves)"] -- "R9. θ₁ = {&nbsp;L/[ana, luis, eva], R/AlReves&nbsp;}" --> B["dando_vuelta([ana, luis, eva], [], AlReves)"]
-    B -- "R11. θ₂ = {&nbsp;X/ana, Resto/[luis, eva], Hasta/[], R/AlReves&nbsp;}" --> C["dando_vuelta([luis, eva], [ana], AlReves)"]
-    C -- "R11. θ₃ = {&nbsp;X₂/luis, Resto₂/[eva], Hasta₂/[ana], R₂/AlReves&nbsp;}" --> D["dando_vuelta([eva], [luis, ana], AlReves)"]
-    D -- "R11. θ₄ = {&nbsp;X₃/eva, Resto₃/[], Hasta₃/[luis, ana], R₃/AlReves&nbsp;}" --> E["dando_vuelta([], [eva, luis, ana], AlReves)"]
+    A["reversa([ana, luis, eva], AlReves)"] -- "R9. θ₁ = {&nbsp;L/[ana, luis, eva], R/AlReves&nbsp;}" --> B["invirtiendo([ana, luis, eva], [], AlReves)"]
+    B -- "R11. θ₂ = {&nbsp;X/ana, Resto/[luis, eva], Hasta/[], R/AlReves&nbsp;}" --> C["invirtiendo([luis, eva], [ana], AlReves)"]
+    C -- "R11. θ₃ = {&nbsp;X₂/luis, Resto₂/[eva], Hasta₂/[ana], R₂/AlReves&nbsp;}" --> D["invirtiendo([eva], [luis, ana], AlReves)"]
+    D -- "R11. θ₄ = {&nbsp;X₃/eva, Resto₃/[], Hasta₃/[luis, ana], R₃/AlReves&nbsp;}" --> E["invirtiendo([], [eva, luis, ana], AlReves)"]
     E -- "R10. θ₅ = {&nbsp;R₄/[eva, luis, ana], AlReves/[eva, luis, ana]&nbsp;}" --> S(["consulta vacía<br/>AlReves = [eva, luis, ana]"])
 ```
 
@@ -673,7 +674,7 @@ sola vez. Con tres elementos la diferencia es imperceptible; con tres mil, es
 significativa.
 
 Es el primer caso del curso en el que dos programas correctos se diferencian por
-su costo, y no por sus respuestas. El [capítulo 16](../capitulo-16-rendimiento/index.md) trata ese tema.
+su costo, y no por sus respuestas. El [capítulo 17](../capitulo-17-rendimiento/index.md) trata ese tema.
 
 ## Ejercicios
 
@@ -749,29 +750,172 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     [sección 4.6](../capitulo-04-terminos-y-unificacion/index.md#46-los-operadores-tambien-son-terminos):
     una expresión es un término, y la forma de ese término decide el orden de
     las operaciones.
+17. **(2)** Escribir `enesimo(Lista, N, X)`: `X` es el elemento que ocupa la
+    posición `N` de `Lista`, contando desde 1, sin usar `nth1/3`. Debe
+    funcionar en los dos sentidos: `enesimo([a, b, c, d], 3, E).` responde
+    `E = c`, y `enesimo([a, b, c, d], N, E).` enumera `N = 1, E = a`, después
+    `N = 2, E = b`, y así. La
+    [sección 8.4](#84-cuando-se-admite-la-consulta-inversa) indica qué orden
+    de los objetivos lo permite.
+18. **(2)** Ordenar una lista de números:
+
+    a. Escribir `ordered(Xs)`: la lista de números `Xs` está ordenada en forma
+       ascendente. `ordered([1, 2, 2, 5]).` se cumple y `ordered([3, 1, 2]).`
+       no.
+    b. Escribir `ordena(Xs, Ys)`: `Ys` tiene los elementos de `Xs` en orden
+       ascendente, con las repeticiones incluidas. Usar el ordenamiento por
+       **inserción**: se ordena el resto de la lista y el primer elemento se
+       inserta en su lugar con un predicado auxiliar `insert(X, Ys, Zs)`. Por
+       ejemplo, `ordena([5, 0, 1, 2, 0], L).` responde `L = [0, 0, 1, 2, 5]`.
+19. **(2)** Con la representación de los árboles binarios y el hecho
+    `arbol_ejemplo/1` del
+    [ejercicio 25 del capítulo 7](../capitulo-07-listas/index.md#ejercicios),
+    escribir:
+
+    a. `profundidad(T, P)`: `P` es la profundidad de `T`, la cantidad de
+       aristas del camino más largo desde la raíz hasta una hoja. Un árbol de
+       un solo nodo tiene profundidad 0, y el árbol de ejemplo, 3.
+    b. `sum_tree(T, Suma)`: `Suma` es la suma de los números de los nodos de
+       `T`; para el árbol de ejemplo, 28.
+    c. `cantidad_hojas(T, N)`: `N` es la cantidad de hojas de `T`; para el
+       árbol de ejemplo, 3. Debe dar una sola respuesta.
+    d. `lista_nivel(T, N, L)`: `L` es la lista de los elementos de los nodos
+       del nivel `N` de `T`, de izquierda a derecha, con la raíz en el nivel
+       0. Para el árbol de ejemplo y el nivel 2, `L = [4, 5, 6]`.
+20. **(3)** Escribir `ocurrencias(X, Lista, Posiciones)`: `Posiciones` es la
+    lista de las posiciones, contando desde 1, en que `X` aparece en `Lista`.
+    `ocurrencias(a, [s, 1, 3, a, a, 2, d, a], T).` responde `T = [4, 5, 8]`,
+    `ocurrencias(2, [2, 1, 3, a, a, 2, d, a], [1, 6]).` se cumple, y si `X`
+    no aparece, `Posiciones` es `[]`. La restricción es que la solución no
+    puede usar predicados de más de tres argumentos: no se admite un argumento
+    adicional que lleve la posición actual y que deba llegar instanciado.
+21. **(2)** Escribir `intercala(L1, L2, N1, N2, R)`: `R` alterna tramos de
+    `N1` elementos de `L1` con tramos de `N2` elementos de `L2`. Cada lista
+    tiene los elementos necesarios para formar tramos completos, y cualquiera
+    de las dos puede aportar el tramo inicial o el final. Por ejemplo,
+    `intercala([a1, a2, a3, a4, a5, a6], [b1, b2, b3, b4], 3, 2,
+    [a1, a2, a3, b1, b2, a4, a5, a6, b3, b4]).` se cumple, e
+    `intercala([a1, a2, a3, a4], [b1, b2], 4, 1, X).` responde
+    `X = [b1, a1, a2, a3, a4, b2]`. Determinar cuántas respuestas tiene
+    `intercala([a1, a2, a3, a4], [b1, b2], 2, 1, X).`
+22. **(3)** Árbol binario ponderado. Si a cada hoja de un árbol binario se le
+    asigna un número positivo, su **peso**, el peso total del árbol es la suma,
+    para cada hoja, de su peso multiplicado por su nivel: la cantidad de
+    aristas desde la raíz hasta ella. Los árboles se representan como en el
+    ejercicio 19: una hoja de peso `P` es `tree(P, void, void)`, y un nodo
+    interno, que no tiene peso, lleva el valor 0. Los dos árboles de la figura
+    pesan 46 y 45:
+
+    ```text
+          arbol1                arbol2
+            ·                      ·
+         /     \                 /   \
+        ·       ·               ·     9
+       / \     / \             / \
+      3   9   5   6           ·   6
+                             / \
+                            3   5
+    ```
+
+    ```prolog
+    % arbol_ponderado(Nombre, T): T es uno de los dos árboles del enunciado.
+    arbol_ponderado(arbol1, tree(0, tree(0, tree(3, void, void),
+                                            tree(9, void, void)),
+                                    tree(0, tree(5, void, void),
+                                            tree(6, void, void)))).
+    arbol_ponderado(arbol2, tree(0, tree(0, tree(0, tree(3, void, void),
+                                                    tree(5, void, void)),
+                                            tree(6, void, void)),
+                                    tree(9, void, void))).
+    ```
+
+    a. Escribir `peso_arbol(T, Peso)`: `Peso` es el peso total de `T`.
+    b. Escribir `mapeo_arboles(Arboles, T)`: `T` es el árbol de menor peso de
+       la lista `Arboles`. Usar `peso_arbol/2`.
+23. **(2)** Un árbol **n-ario** admite en cada nodo cualquier cantidad de
+    hijos, incluso ninguna. Se representa con `nodo(R, Hs)`, donde `R` es el
+    valor del nodo y `Hs` la lista de sus hijos, que son a su vez árboles
+    n-arios. El árbol
+
+    ```text
+           a
+        /  |  \
+       b   c   d
+     / | \     |
+    e  f  g    h
+    ```
+
+    se escribe con el hecho:
+
+    ```prolog
+    % arbol_nario(T): T es el árbol n-ario del enunciado.
+    arbol_nario(nodo(a, [nodo(b, [nodo(e, []), nodo(f, []), nodo(g, [])]),
+                         nodo(c, []),
+                         nodo(d, [nodo(h, [])])])).
+    ```
+
+    a. Escribir `es_hoja(T)`: `T` es un nodo sin hijos. `es_hoja(nodo(c, []))`
+       se cumple, y con el árbol de ejemplo, no.
+    b. Escribir `cantidad(T, N)`: `N` es la cantidad de nodos de `T`; 8 para
+       el árbol de ejemplo.
+    c. Escribir `lista_hojas_n(T, L)`: `L` es la lista de los valores de las
+       hojas de `T`, de izquierda a derecha: `[e, f, g, c, h]` para el árbol
+       de ejemplo y `[c]` para `nodo(c, [])`. El nombre la distingue de
+       `lista_hojas/2` del [capítulo 7](../capitulo-07-listas/index.md), que
+       es para árboles binarios.
+    d. Escribir `quita_hojas(T, T2)`: `T2` es `T` sin sus hojas, y el
+       predicado falla si `T` es una hoja. Para el árbol de ejemplo,
+       `T2 = nodo(a, [nodo(b, []), nodo(d, [])])`.
+24. **(2)** El recorrido **horizontal** de un árbol visita los nodos de un
+    nivel, de izquierda a derecha, después los del nivel siguiente, y así hasta
+    el último. El del árbol siguiente es `[a, c, j, t, r, h, m, q, z]`:
+
+    ```text
+           a
+         /   \
+        c     j
+       / \   / \
+      t   r h   m
+         / \
+        q   z
+    ```
+
+    Se calcula con dos listas, `LNodos` y `LDesarrollado`. `LNodos` comienza
+    con la raíz; en cada paso se retira el primer árbol de `LNodos`, su valor
+    se agrega al final de `LDesarrollado` y sus hijos, al final de `LNodos`.
+    Cuando `LNodos` queda vacía, `LDesarrollado` es el recorrido. Escribir
+    `recorrido_horizontal(T, L)` con ese método, para los árboles n-arios del
+    ejercicio 23, y escribir el árbol de la figura con esa representación.
+25. **(2)** Escribir `secuencia_faltante(L1, L2)`: `L1` es una secuencia de
+    enteros en orden estrictamente ascendente, y `L2` es la secuencia
+    ascendente de los enteros que faltan entre elementos consecutivos de
+    `L1`. `secuencia_faltante([1, 4, 6, 12], L2).` responde
+    `L2 = [2, 3, 5, 7, 8, 9, 10, 11]`;
+    `secuencia_faltante([2, 4, 6], [1, 3, 5]).` no se cumple, y
+    `secuencia_faltante([-1, 0, 1, 2], []).` sí.
 
 ## Resumen
 
-| | |
-|---|---|
-| `is/2` | evalúa la expresión de la derecha y unifica el resultado con el término de la izquierda |
-| `+`, `-`, `*`, `/` | los operadores habituales; `/` puede producir punto flotante |
-| `//`, `mod` | división entera y resto |
-| `=:=`, `=\=` | las dos expresiones tienen el mismo valor, o no |
-| `<`, `>`, `=<`, `>=` | comparación; evalúan ambos lados antes de comparar |
-| `=` y `=:=` | unificación de dos términos, y comparación de dos valores numéricos |
-| **acumulador** | un argumento adicional que transporta el resultado parcial durante el avance |
-| argumentos sin instanciar | `is/2` requiere que todas las variables de la expresión tengan valor |
-| `is not a function` | la expresión contiene un término que no es un número y nunca lo será |
-| **hoja de error** | la rama que un error interrumpe: no es una falla y no hay retroceso hacia otra alternativa; en el árbol se dibuja con otra forma y el texto del error |
-| generar y probar | un objetivo anterior a `is/2` genera los candidatos y la aritmética los verifica: así se admite la consulta inversa |
+|                           |                                                                                                                                                       |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `is/2`                    | evalúa la expresión de la derecha y unifica el resultado con el término de la izquierda                                                               |
+| `+`, `-`, `*`, `/`        | los operadores habituales; `/` puede producir punto flotante                                                                                          |
+| `//`, `mod`               | división entera y resto                                                                                                                               |
+| `=:=`, `=\=`              | las dos expresiones tienen el mismo valor, o no                                                                                                       |
+| `<`, `>`, `=<`, `>=`      | comparación; evalúan ambos lados antes de comparar                                                                                                    |
+| `=` y `=:=`               | unificación de dos términos, y comparación de dos valores numéricos                                                                                   |
+| **acumulador**            | un argumento adicional que transporta el resultado parcial durante el avance                                                                          |
+| argumentos sin instanciar | `is/2` requiere que todas las variables de la expresión tengan valor                                                                                  |
+| `is not a function`       | la expresión contiene un término que no es un número y nunca lo será                                                                                  |
+| **hoja de error**         | la rama que un error interrumpe: no es una falla y no hay retroceso hacia otra alternativa; en el árbol se dibuja con otra forma y el texto del error |
+| generar y probar          | un objetivo anterior a `is/2` genera los candidatos y la aritmética los verifica: así se admite la consulta inversa                                   |
 
 ## Temas que se retoman
 
-| Tema | Se retoma en |
-|---|---|
-| Generar y probar, con el corte para evitar trabajo repetido | [capítulo 9](../capitulo-09-backtracking-y-corte/index.md) |
-| `==` y `\==`, similares a `=` y a `=:=` pero distintos de ambos | [capítulo 10](../capitulo-10-negacion-como-falla/index.md) |
-| Por qué el acumulador usa menos memoria | [capítulo 16](../capitulo-16-rendimiento/index.md) |
-| Sumar o contar sin escribir la recursión | capítulos [17](../capitulo-17-todas-las-soluciones/index.md) y [18](../capitulo-18-orden-superior/index.md) |
-| Aritmética que admite consultas en ambos sentidos | [capítulo 23](../capitulo-23-programacion-con-restricciones/index.md) |
+| Tema                                                            | Se retoma en                                                                                                |
+| --------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Generar y probar, con el corte para evitar trabajo repetido     | [capítulo 9](../capitulo-09-backtracking-y-corte/index.md)                                                  |
+| `==` y `\==`, similares a `=` y a `=:=` pero distintos de ambos | [capítulo 10](../capitulo-10-negacion-como-falla/index.md)                                                  |
+| Por qué el acumulador usa menos memoria                         | [capítulo 17](../capitulo-17-rendimiento/index.md)                                                          |
+| Sumar o contar sin escribir la recursión                        | capítulos [18](../capitulo-18-todas-las-soluciones/index.md) y [19](../capitulo-19-orden-superior/index.md) |
+| Aritmética que admite consultas en ambos sentidos               | [capítulo 24](../capitulo-24-programacion-con-restricciones/index.md)                                       |

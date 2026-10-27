@@ -1,53 +1,62 @@
 :- encoding(utf8).
 
-:- use_module(cubos, []).
-:- use_module(robot, []).
-
 :- begin_tests(ciclos).
 
-test(sussman, [true(P == [mover(c, a, mesa), mover(b, mesa, c),
-                          mover(a, mesa, b)])]) :-
-    once(planificar_sin_ciclos(cubos, sussman, [sobre(a, b), sobre(b, c)],
-                               P)).
+test(y_separa, [true(R == separa([-6, 4, 2], [2, 3, 3, 2, 1, 0]))]) :-
+    datos(y, Es),
+    entrenar_o_ciclo(1, Es, [0, 0, 0], R).
 
-test(figura, [true(P == [mover(c, a, mesa), mover(a, mesa, b),
-                         mover(c, mesa, a)])]) :-
-    once(planificar_sin_ciclos(cubos, sussman, [sobre(c, a), sobre(a, b)],
-                               P)).
+% La tercera época vuelve a los pesos del final de la segunda.
+test(o_exclusivo_ciclo, [true(R == ciclo(1, [3, 3, 4]))]) :-
+    datos(o_exclusivo, Es),
+    entrenar_o_ciclo(1, Es, [0, 0, 0], R).
 
-test(luz, [true(L == 4)]) :-
-    once(planificar_sin_ciclos(robot, strips1,
-                               [estado(interruptor(1), encendido)], P)),
-    length(P, L).
+test(o_exclusivo_pesos_repetidos, [true(P2 == P3)]) :-
+    datos(o_exclusivo, Es),
+    epoca(1, Es, [0, 0, 0], P1, _),
+    epoca(1, Es, P1, P2, _),
+    epoca(1, Es, P2, P3, E3),
+    E3 =:= 4.
 
-test(logra, [true]) :-
-    Metas = [sobre(c, a), sobre(a, b)],
-    once(planificar_sin_ciclos(cubos, sussman, Metas, P)),
-    regresion:logra(cubos, sussman, P, Metas).
+test(puntos_separa, [true(length(C, 102))]) :-
+    datos(puntos, Es),
+    entrenar_o_ciclo(0.25, Es, [0.13, -0.51, -0.35], separa(_, C)).
 
-% El árbol de búsqueda es finito, pero en el segundo orden de la anomalía
-% no da un plan en dos millones de inferencias.
-test(segundo_orden, [true(R == inference_limit_exceeded)]) :-
-    call_with_inference_limit(
-        once(planificar_sin_ciclos(cubos, sussman,
-                                   [sobre(b, c), sobre(a, b)], _)),
-        2000000, R).
+test(dieciseis_tablas, [true(N == 16)]) :-
+    aggregate_all(count, tabla(_), N).
 
-test(inconsistente, [fail]) :-
-    planificar_sin_ciclos(cubos, sussman, [sobre(a, b), sobre(a, c)], _).
+test(ejemplos_de, [true(Es == Ey)]) :-
+    ejemplos_de([-1, -1, -1, 1], Es),
+    datos(y, Ey).
 
-% resolver/8 no elige una acción para una meta que ya está en la cadena.
-test(resolver_cadena, [fail]) :-
-    ciclos:resolver(cubos, sussman, libre(a), [libre(a)], [], _, [], _).
+test(no_separables, [true(Ts == [[-1, 1, 1, -1], [1, -1, -1, 1]])]) :-
+    no_separables(Ts).
 
-test(resolver_accion, [true(H == [mover(c, a, mesa)]), nondet]) :-
-    ciclos:resolver(cubos, sussman, libre(a), [], [], _, [], H).
 
-test(planear_vacio, [true(H == []), nondet]) :-
-    ciclos:planear(cubos, sussman, [], [], [], _, [], H).
+test(probar_o_exclusivo, [true(R == ciclo(1, [3, 3, 4]))]) :-
+    probar(o_exclusivo, R).
 
-test(lograr, [true(H == [mover(c, a, mesa)]), nondet]) :-
-    ciclos:lograr(cubos, sussman, libre(a), mover(c, a, mesa), [libre(a)],
-                  [], [], H).
+test(pesos_nulos, [true(P == [0, 0, 0])]) :-
+    pesos_nulos([ej([5, 7], 1)], P).
+
+test(clase, all(C == [-1, 1])) :-
+    ciclos:clase(C).
+
+test(ejemplo_de, [true(E == ej([0, 1], -1))]) :-
+    ciclos:ejemplo_de([0, 1], -1, E).
+
+test(paso_con_memoria_nuevo,
+     [true(S-R-C == ([0, 2, 2]-[[0, 0, 0]])-(2-[0, 2, 2])-1)]) :-
+    datos(y, Es),
+    paso_con_memoria(1, Es, [0, 0, 0]-[], S, R, C).
+
+% Pesos que separan: la época los repite y el cambio es 0.
+test(paso_con_memoria_repetido, [true(C == 0)]) :-
+    datos(y, Es),
+    paso_con_memoria(1, Es, [-3, 2, 2]-[], _, _, C).
+
+test(paso_con_memoria_visto, [true(C == 0)]) :-
+    datos(y, Es),
+    paso_con_memoria(1, Es, [0, 0, 0]-[[0, 2, 2]], _, _, C).
 
 :- end_tests(ciclos).

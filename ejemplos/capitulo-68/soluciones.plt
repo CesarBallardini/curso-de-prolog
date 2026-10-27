@@ -1,109 +1,154 @@
 :- encoding(utf8).
 
+:- use_module(library(apply)).
+:- use_module(library(lists)).
+
+% sin_reducir(C0, Negs, M, C): reductor que deja la cláusula como está.
+sin_reducir(C, _, _, C).
+
 :- begin_tests(soluciones).
 
-test(ejemplos_de, [true(N-P == 36-12)]) :-
-    ejemplos_de(pieza(_, rojo, _, _), Ejs),
-    length(Ejs, N),
-    aggregate_all(count, member(pos(_), Ejs), P).
+test(ej1, [true(R =@= [f(g(A), A), [_, _|_]])]) :-
+    lgg(f(g(a), a), f(g(b), b), G1),
+    lgg([1, 2, 3], [4, 5], G2),
+    R = [G1, G2],
+    subsume((p(X) :- [q(X, _)]), (p(a) :- [q(a, a)])),
+    \+ subsume((p(a) :- []), (p(_) :- [])).
 
-test(todos_convergen, [true]) :-
-    todos_convergen.
+test(ej2, [true(G =@= pertenece(A, [A|_]))]) :-
+    lgg_lista([pertenece(1, [1]), pertenece(z, [z, y]),
+               pertenece(b, [b, c, d])], G).
 
-test(vacio_colapsa, [true(EV-E == ev([vacio], [])-colapso)]) :-
-    ejemplos_de(vacio, Ejs),
-    eliminar(Ejs, EV),
-    estado(EV, E).
+% El orden de la lista no cambia la lgg, salvo el nombre de las variables.
+test(ej2_orden, [true]) :-
+    Ts = [pertenece(1, [1]), pertenece(z, [z, y]), pertenece(b, [b, c, d])],
+    lgg_lista(Ts, G),
+    forall(permutation(Ts, Ps),
+           ( lgg_lista(Ps, G1),
+             G1 =@= G )).
 
-test(interior_fuera_del_lenguaje, [true(C =@= pieza(esfera, A, chico, madera, A))]) :-
-    con_interior(( generalizacion(pieza(esfera, rojo, chico, madera, rojo),
-                                  pieza(esfera, verde, chico, madera, verde),
-                                  C),
-                   \+ ( concepto(D), D =@= C ) )).
+test(ej3, [true(R =@= (p(X) :- [q(X, _)]))]) :-
+    lgg_clausula((p(a) :- [q(a, b), q(a, c)]), (p(d) :- [q(d, e)]), C),
+    reducida(C, R).
 
-test(interior_ingenua, [true(C =@= pieza(esfera, _, chico, madera, _))]) :-
-    generalizacion_ingenua(pieza(esfera, rojo, chico, madera, rojo),
-                           pieza(esfera, verde, chico, madera, verde), C).
+% La cláusula reducida y la original se subsumen mutuamente.
+test(ej3_equivalente, [true]) :-
+    C = (p(X) :- [q(X, Y), q(X, _), r(Y)]),
+    reducida(C, R),
+    subsume(C, R),
+    subsume(R, C).
 
-test(interior_se_quita, [true(N == 4)]) :-
-    con_interior(true),
-    aggregate_all(count, atributo(_, _), N).
+test(ej4, [true(H-N =@= [(abuelo(A, B) :- [progenitor(C, B), padre(A, C)])]
+                        -3)]) :-
+    aprender_asc_corta(abuelo, H, N).
 
-test(cuenta_clases, [true(P-N-D == 4-16-16)]) :-
-    cuenta_clases(P, N, D).
+test(ej5, [true(R == [2-0-0, 2-0-0])]) :-
+    modelo_fondo(M),
+    aprender_asc(abuela, H1, _),
+    evaluar_en(abuela, H1, M, A1, F1, N1),
+    aprender_desc(abuela, H2, _),
+    evaluar_en(abuela, H2, M, A2, F2, N2),
+    R = [A1-F1-N1, A2-F2-N2].
 
-test(desconocidas, [true]) :-
-    desconocidas_esperadas.
+test(ej6, [true(Hechos == [(hermano(pedro, tomas) :- []),
+                           (hermano(tomas, pedro) :- [])])]) :-
+    hermano_con_tomas(_, [_|Hechos], _).
 
-test(promedio_inverso, [true(P =:= 18.74)]) :-
-    promedio_inverso(P).
+test(ej6_distintos, [true(R == 82-3208)]) :-
+    rlgg_con_distintos(Hechos, Literales),
+    R = Hechos-Literales.
 
-test(descarte_tercero, [true(D == [neg(pieza(esfera, rojo, grande, madera))])]) :-
-    eliminar_con_descarte_de(3, EV, D),
-    estado(EV, convergio(_)).
+test(ej7, [true(R == 261-167)]) :-
+    ejemplos(abuelo, [E|_], Negs),
+    modelo_fondo(M),
+    lenguaje(L),
+    generadas_sin_poda(E, Negs, M, L, 2, N1),
+    descendente([E], Negs, M, L, 2, _, N2),
+    R = N1-N2.
 
-test(descarte_primero, [true(D == [pos(pieza(esfera, rojo, grande, metal))])]) :-
-    eliminar_con_descarte_de(0, _, D).
+test(ej8, [true(R == 0-40)]) :-
+    ejemplos(abuelo, Pos, _),
+    modelo_fondo(M),
+    lenguaje(L),
+    inductivo(Pos, [abuelo(pedro, eva)], M, L, 3, H1, _),
+    evaluar_en(abuelo, H1, M, _, F1, _),
+    inductivo(Pos, [abuelo(juan, ana)], M, L, 3, H2, _),
+    evaluar_en(abuelo, H2, M, _, F2, _),
+    R = F1-F2.
 
-test(reglas_abuelo, [true(L == 2)]) :-
-    reglas_abuelo(Rs),
-    length(Rs, L).
+test(ej9, [true(N == 201669)]) :-
+    ejemplos(hermano, Pos, Negs),
+    modelo_fondo(M),
+    lenguaje(L),
+    inductivo(Pos, Negs, M, L, 4, _, N).
 
-test(cobertura_abuelo, [true(P-N == 3-0)]) :-
-    cobertura_abuelo(P, N).
+test(ej10_mismo_resultado, [true(H1 =@= H2)]) :-
+    aprender_asc(hermano, H1, _),
+    aprender_asc_con(reducir_ordenado, hermano, H2, _).
 
-test(reglas_de_tazas, [true(L == 2)]) :-
-    reglas_de_tazas(Rs),
-    length(Rs, L).
+test(ej10_verdadero, [true(Xs == [a-b])]) :-
+    findall(X-Y, verdadero_ordenado([q(X, Y), p(X)], [p(a), q(a, b), q(c, d)]),
+            Xs).
 
-test(costo_crece, [true]) :-
-    costo_con(2, N2),
-    costo_con(4, N4),
-    costo_con(8, N8),
-    N2 < N4,
-    N4 < N8.
+test(ej11, [true(Ns == [139, 272, 676])]) :-
+    findall(N, ( member(K, [1, 3, 10]),
+                 aprender_haz(K, antepasado, _, N) ),
+            Ns).
 
-test(relevantes, [true(L == 9)]) :-
-    relevantes(taza, taza1, taza(taza1), U),
-    length(U, L).
+test(ej11_hermano, [true(H == [(hermano(luis, eva) :- []),
+                               (hermano(pedro, ana) :- [])])]) :-
+    aprender_haz(3, hermano, H, _).
 
-test(irrelevantes, [true(O == [material(taza1, loza), color(taza1, blanco),
-                               color(cuerpo1, blanco)])]) :-
-    irrelevantes(taza, taza1, taza(taza1), O).
+test(reducir_corta, [true(C =@= (abuelo(A, B) :- [progenitor(P, B),
+                                                 padre(A, P)]))]) :-
+    rlgg_de(abuelo, 1, 3, C0),
+    ejemplos(abuelo, _, Negs),
+    modelo_fondo(M),
+    reducir_corta(C0, Negs, M, C).
 
-test(relevantes_familia, [true(U == [varon(juan), padre(juan, pedro),
-                                     padre(pedro, luis)])]) :-
-    relevantes(familia, familia, abuelo(juan, luis), U).
+test(reducir_corta_falla, [fail]) :-
+    reducir_corta((p(_) :- []), [p(a)], [], _).
 
-test(eliminar_todos, [true(EV =@= ev([pieza(A, verde, B, metal)],
-                                     [pieza(C, verde, D, metal)]))]) :-
-    eliminar_todos(pieza(_, verde, _, metal), EV),
-    EV = ev([pieza(A, _, B, _)], [pieza(C, _, D, _)]).
+test(reducir_ordenado_igual, [true(C1 =@= C2)]) :-
+    rlgg_de(abuelo, 1, 3, C0),
+    ejemplos(abuelo, _, Negs),
+    modelo_fondo(M),
+    reducir(C0, Negs, M, C1),
+    reducir_ordenado(C0, Negs, M, C2).
 
-test(pasivo_inverso, [true(N-E =@= 7-convergio(pieza(_, verde, _, metal)))]) :-
-    pasivo_inverso(pieza(_, verde, _, metal), N, E).
+test(cubre_ordenado, [true]) :-
+    cubre_ordenado((p(X) :- [q(X, Y), r(Y)]), p(a), [q(a, b), r(b)]).
 
-% El negativo contradice al positivo anterior: se descarta.
-test(eliminar_con_descarte,
-     [true(D == [neg(pieza(esfera, rojo, chico, madera))])]) :-
-    eliminar_con_descarte([pos(pieza(esfera, rojo, chico, madera)),
-                           neg(pieza(esfera, rojo, chico, madera))], EV, D),
-    EV = ev([pieza(esfera, rojo, chico, madera)], _).
+test(cubre_ordenado_no, [fail]) :-
+    cubre_ordenado((p(X) :- [q(X, Y), r(Y)]), p(a), [q(a, b), r(c)]).
 
-test(eliminar_con_descarte_vacio, [true(EV-D =@= ev([vacio], [T])-[])]) :-
-    eliminar_con_descarte([], EV, D),
-    inicial(ev(_, [T])).
+% Sin la poda, con límite 1 se generan los 29 refinamientos y ninguno es
+% consistente.
+test(sin_poda, [true(R-N == ninguna-29)]) :-
+    ejemplos(abuelo, _, Negs),
+    modelo_fondo(M),
+    lenguaje(L),
+    sin_poda(1, (abuelo(_, _) :- []), abuelo(juan, eva), Negs, M, L, R, 0, N).
 
-test(con_descarte_acepta, [true(Ds == [x])]) :-
-    inicial(EV0),
-    con_descarte(pos(pieza(cubo, azul, chico, metal)), EV0-[x], EV-Ds),
-    EV = ev([pieza(cubo, azul, chico, metal)], _).
+test(haz_uno, [true(R-N =@= encontrada((abuelo(A, B) :- [varon(A),
+                        padre(A, C), progenitor(C, B)]))-109)]) :-
+    ejemplos(abuelo, Pos, Negs),
+    modelo_fondo(M),
+    lenguaje(L),
+    haz(0, 1, 3, [(abuelo(_, _) :- [])], abuelo(juan, eva)-Pos-Negs-M-L,
+        R, 0, N).
 
-test(sin_subsumidas, [true(Rs =@= [(p(X) :- [q(X)]), (r(Y) :- [])])]) :-
-    sin_subsumidas([(p(X) :- [q(X)]), (p(a) :- [q(a), s(a)]), (r(Y) :- []),
-                    (r(b) :- [])], Rs).
+test(haz_limite, [true(R-N == ninguna-29)]) :-
+    ejemplos(abuelo, Pos, Negs),
+    modelo_fondo(M),
+    lenguaje(L),
+    haz(0, 3, 1, [(abuelo(_, _) :- [])], abuelo(juan, eva)-Pos-Negs-M-L,
+        R, 0, N).
 
-test(sin_subsumidas_vacia, [true(Rs == [])]) :-
-    sin_subsumidas([], Rs).
+% Con un reductor que no quita nada, la rlgg de los dos antepasados tiene
+% 253 literales enlazados (la reducción completa tarda decenas de segundos).
+test(reducir_antepasado, [true(K == 253)]) :-
+    reducir_antepasado(sin_reducir, (antepasado(_, _) :- B)),
+    length(B, K).
 
 :- end_tests(soluciones).

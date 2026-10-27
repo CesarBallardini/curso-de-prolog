@@ -1,276 +1,330 @@
 :- encoding(utf8).
 
-% Capítulo 35 - Soluciones de los ejercicios 3 a 8 y 15.
+% Capítulo 35 - Soluciones de los ejercicios 1 a 12, 15 y 16.
 %
-% El archivo repite traducir/2 de gramatica.pl y desplegar/4 y plegar/4 de
-% desplegar.pl, para cargarse solo. Contiene la expansión de tabla/2
-% (ejercicio 3), las dos expansiones corregidas de escribir/1 y anotar/1
-% (ejercicio 4), el traductor con cadenas y pushback (ejercicios 5 y 6), y
-% las derivaciones de ultimo/2 y suma_largo/3 (ejercicios 7 y 8) y la de
-% rotar_dif/2 (ejercicio 15).
+% El archivo repite las definiciones de los ejemplos que usan los
+% ejercicios, para cargarse solo: conocidos/2 de abiertas.pl,
+% concatenar_dif/3, vacia_dif/1, inorden_dif/2, invertir_app/2 e invertir/2
+% de diferencia.pl, las colas de cola.pl y los diccionarios de
+% diccionario.pl.
 %
-%?- capital(peru, C).
-%?- traducir((siguiente(C), [C] --> [C]), R).
-%?- derivar_ultimo(Cs).
-%?- derivar_rotar(Cs).
+%?- longitud_abierta([a, b|_], N).
+%?- bandera([azul, rojo, blanco, rojo, azul], B).
+%?- phrase(preorden(n(n(vacio, 1, vacio), 2, n(vacio, 3, vacio))), L).
+%?- buscar_arbol(b, A, 2), buscar_arbol(a, A, 1), phrase(pares(A), P).
+%?- nivelar(n(n(vacio, 4, vacio), 3, n(vacio, 9, vacio)), N).
+%?- asociar_izquierda((a + b) + (c + d), S).
 
-% Ejercicio 3
+% --- Definiciones repetidas de los ejemplos ---
 
-%!  term_expansion(+Termino, -Hechos:list) is semidet.
+%!  conocidos(+Abierta:list, -Elementos:list) is det.
 %
-%   Un término tabla(Nombre, Pares) se carga como un hecho
-%   Nombre(Clave, Valor) por cada par Clave-Valor de Pares.
-term_expansion(tabla(Nombre, Pares), Hechos) :-
-    findall(Hecho,
-            ( member(Clave-Valor, Pares),
-              Hecho =.. [Nombre, Clave, Valor] ),
-            Hechos).
-
-% tabla(Nombre, Pares): se carga como hechos capital/2.
-tabla(capital, [chile-santiago, peru-lima]).
-
-% Ejercicio 4
-
-%!  goal_expansion(+Meta, -Expandida) is semidet.
-%
-%   escribir(X) se expande a una llamada a otro predicado, que ninguna
-%   cláusula de goal_expansion/2 vuelve a expandir. anotar(X) se expande a
-%   anotar(texto(X)) solo si X no es ya texto(_): el resultado no cumple la
-%   condición, y la expansión se detiene.
-goal_expansion(escribir(X), escribir_texto(texto(X))).
-goal_expansion(anotar(X), anotar(texto(X))) :-
-    X \= texto(_).
-
-%!  escribir_texto(+T) is det.
-%
-%   Escribe T en una línea.
-escribir_texto(T) :-
-    format("~w~n", [T]).
-
-%!  anotar(+T) is det.
-%
-%   Escribe T en una línea.
-anotar(T) :-
-    format("~w~n", [T]).
-
-%!  saludar is det.
-%
-%   Escribe texto(hola) dos veces: sus dos llamadas se expandieron al
-%   cargar.
-saludar :-
-    escribir(hola),
-    anotar(hola).
-
-% Ejercicios 5 y 6
-
-%!  traducir(+Regla, -Clausula) is det.
-%
-%   Clausula es la traducción de Regla. Admite el pushback,
-%   Cabeza, Terminales --> Cuerpo, y los terminales escritos como cadena.
-traducir((Cabeza, Empuje --> Cuerpo), (Cabeza1 :- (Cuerpo1, S = Lista))) :-
-    !,
-    no_terminal(Cabeza, S0, S, Cabeza1),
-    cuerpo(Cuerpo, S0, S1, Cuerpo1),
-    append(Empuje, S1, Lista).
-traducir((Cabeza --> Cuerpo), (Cabeza1 :- Cuerpo1)) :-
-    no_terminal(Cabeza, S0, S, Cabeza1),
-    cuerpo(Cuerpo, S0, S, Cuerpo1).
-
-%!  cuerpo(+Cuerpo, ?S0, ?S, -Meta) is det.
-%
-%   Meta reconoce con Cuerpo la parte de S0 anterior a S.
-cuerpo(Var, S0, S, phrase(Var, S0, S)) :-
-    var(Var),
+%   Elementos es la lista cerrada de los elementos ya presentes en la lista
+%   abierta Abierta, que no cambia.
+conocidos(Final, []) :-
+    var(Final),
     !.
-cuerpo((A, B), S0, S, (A1, B1)) :-
-    !,
-    cuerpo(A, S0, S1, A1),
-    cuerpo(B, S1, S, B1).
-cuerpo((A ; B), S0, S, (A1 ; B1)) :-
-    !,
-    cuerpo(A, S0, S, A1),
-    cuerpo(B, S0, S, B1).
-cuerpo(\+ A, S0, S, (\+ A1, S = S0)) :-
-    !,
-    cuerpo(A, S0, _, A1).
-cuerpo({G}, S0, S, (G, S = S0)) :-
+conocidos([X|Resto], [X|Xs]) :-
+    conocidos(Resto, Xs).
+
+% concatenar_dif(A, B, C): C es la lista diferencia A seguida de B.
+concatenar_dif(L-M, M-F, L-F).
+
+% vacia_dif(D): D es una lista diferencia sin elementos.
+vacia_dif(L-L).
+
+%!  inorden_dif(+Arbol, ?Dif) is det.
+%
+%   Dif, un par L-F, es la lista diferencia de los elementos de Arbol en
+%   orden: L tiene esos elementos seguidos de F.
+inorden_dif(vacio, L-L).
+inorden_dif(n(Izq, X, Der), L-F) :-
+    inorden_dif(Izq, L-[X|M]),
+    inorden_dif(Der, M-F).
+
+%!  invertir_app(+Lista:list, -Invertida:list) is det.
+%
+%   Invertida es Lista en orden inverso. append/3 agrega cada elemento al
+%   final de lo ya invertido.
+invertir_app([], []).
+invertir_app([X|Xs], Invertida) :-
+    invertir_app(Xs, I),
+    append(I, [X], Invertida).
+
+%!  invertir(+Lista:list, -Invertida:list) is det.
+%
+%   La misma relación, con listas diferencia.
+invertir(Lista, Invertida) :-
+    invertir_dif(Lista, Invertida-[]).
+
+%!  invertir_dif(+Lista:list, ?Dif) is det.
+%
+%   Dif, un par L-F, es la lista diferencia de Lista en orden inverso.
+invertir_dif([], L-L).
+invertir_dif([X|Xs], L-F) :-
+    invertir_dif(Xs, L-[X|F]).
+
+% cola_vacia(C): C es la cola con contador sin elementos.
+cola_vacia(cola(0, F, F)).
+
+%!  encolar(+X, +Cola, -Cola1) is det.
+%
+%   Cola1 es Cola con X agregado al final, en un paso.
+encolar(X, cola(N, Frente, [X|Fondo]), cola(N1, Frente, Fondo)) :-
+    N1 is N + 1.
+
+%!  desencolar(-X, +Cola, -Cola1) is semidet.
+%
+%   X es el primer elemento de Cola, y Cola1 el resto. Falla si Cola está
+%   vacía.
+desencolar(X, cola(N, [X|Frente], Fondo), cola(N1, Frente, Fondo)) :-
+    N > 0,
+    N1 is N - 1.
+
+%!  buscar(+Clave, ?Dic:list, ?Valor) is semidet.
+%
+%   Dic es un diccionario incompleto: una lista abierta de pares
+%   Clave-Valor, con claves distintas. Si Clave está en Dic, Valor unifica
+%   con su valor; si no, el par Clave-Valor se agrega al final. Falla si la
+%   clave está con otro valor.
+buscar(Clave, [Clave0-Valor0|Resto], Valor) :-
+    (   Clave = Clave0
+    ->  Valor = Valor0
+    ;   buscar(Clave, Resto, Valor)
+    ).
+
+%!  buscar_arbol(+Clave, ?Arbol, ?Valor) is semidet.
+%
+%   Arbol es un diccionario incompleto en forma de árbol binario de
+%   búsqueda: t(Clave, Valor, Izq, Der), con los subárboles libres donde
+%   todavía no hay entradas. Si Clave está, Valor unifica con su valor; si
+%   no, el par se agrega en el lugar libre que le corresponde.
+buscar_arbol(Clave, Arbol, Valor) :-
+    (   var(Arbol)
+    ->  Arbol = t(Clave, Valor, _, _)
+    ;   Arbol = t(Clave0, Valor0, Izq, Der),
+        compare(Orden, Clave, Clave0),
+        buscar_en(Orden, Clave, Valor, Valor0, Izq, Der)
+    ).
+
+%!  buscar_en(+Orden, +Clave, ?Valor, ?Valor0, ?Izq, ?Der) is semidet.
+%
+%   Sigue la búsqueda de Clave según su Orden respecto de la raíz, cuyo
+%   valor es Valor0.
+buscar_en(=, _, Valor, Valor, _, _).
+buscar_en(<, Clave, Valor, _, Izq, _) :-
+    buscar_arbol(Clave, Izq, Valor).
+buscar_en(>, Clave, Valor, _, _, Der) :-
+    buscar_arbol(Clave, Der, Valor).
+
+% --- Ejercicio 2 ---
+
+%!  longitud_abierta(+Abierta:list, -N:integer) is det.
+%
+%   N es la cantidad de elementos ya presentes en la lista abierta Abierta,
+%   que no cambia.
+longitud_abierta(Abierta, N) :-
+    longitud_abierta(Abierta, 0, N).
+
+%!  longitud_abierta(+Abierta:list, +N0:integer, -N:integer) is det.
+%
+%   N es N0 más la cantidad de elementos presentes en Abierta.
+longitud_abierta(Final, N, N) :-
+    var(Final),
     !.
-cuerpo(!, S0, S, (!, S = S0)) :-
+longitud_abierta([_|Resto], N0, N) :-
+    N1 is N0 + 1,
+    longitud_abierta(Resto, N1, N).
+
+% --- Ejercicio 3 ---
+
+%!  a_dif(+Lista:list, -Dif) is det.
+%
+%   Dif es la lista diferencia L-F con los elementos de Lista. Copia la
+%   lista: recorre todos sus elementos.
+a_dif(Lista, L-F) :-
+    append(Lista, F, L).
+
+%!  de_dif(+Dif, -Lista:list) is det.
+%
+%   Lista es la lista cerrada que representa la lista diferencia Dif. Liga
+%   el final de Dif a [], en un paso: Dif ya no admite agregados.
+de_dif(Lista-[], Lista).
+
+% --- Ejercicio 4 ---
+
+%!  bandera(+Bolitas:list, -Ordenadas:list) is det.
+%
+%   Ordenadas tiene las bolitas rojas, después las blancas y después las
+%   azules de Bolitas, cada color en su orden original. Recorre Bolitas una
+%   sola vez.
+bandera(Bolitas, Ordenadas) :-
+    distribuir(Bolitas, Ordenadas-Blancas, Blancas-Azules, Azules-[]).
+
+%!  distribuir(+Bolitas:list, ?Rojas, ?Blancas, ?Azules) is det.
+%
+%   Rojas, Blancas y Azules son las listas diferencia de las bolitas de cada
+%   color de Bolitas.
+distribuir([], R-R, B-B, A-A).
+distribuir([rojo|Xs], [rojo|R]-R0, B, A) :-
+    distribuir(Xs, R-R0, B, A).
+distribuir([blanco|Xs], R, [blanco|B]-B0, A) :-
+    distribuir(Xs, R, B-B0, A).
+distribuir([azul|Xs], R, B, [azul|A]-A0) :-
+    distribuir(Xs, R, B, A-A0).
+
+% --- Ejercicio 5 ---
+
+%!  preorden(+Arbol)// is det.
+%
+%   Los elementos de Arbol en preorden: la raíz, los del subárbol izquierdo
+%   y los del derecho.
+preorden(vacio) -->
+    [].
+preorden(n(Izq, X, Der)) -->
+    [X],
+    preorden(Izq),
+    preorden(Der).
+
+%!  postorden(+Arbol)// is det.
+%
+%   Los elementos de Arbol en postorden: los del subárbol izquierdo, los del
+%   derecho y la raíz.
+postorden(vacio) -->
+    [].
+postorden(n(Izq, X, Der)) -->
+    postorden(Izq),
+    postorden(Der),
+    [X].
+
+% --- Ejercicio 7 ---
+
+%!  elementos_cola(+Cola, -Lista:list) is det.
+%
+%   Lista tiene los elementos de Cola, del primero al último, como lista
+%   cerrada. Cola no cambia.
+elementos_cola(cola(N, Frente, _), Lista) :-
+    length(Lista, N),
+    append(Lista, _, Frente).
+
+% --- Ejercicio 8 ---
+
+% es_vacia_dif(C): la cola diferencia C no tiene elementos.
+es_vacia_dif(F-F).
+
+% --- Ejercicio 9 ---
+
+%!  claves(+Dic:list, -Claves:list) is det.
+%
+%   Claves tiene las claves del diccionario incompleto Dic, en su orden,
+%   sin ligar el final de Dic.
+claves(Final, []) :-
+    var(Final),
     !.
-cuerpo([], S0, S, S0 = S) :-
+claves([Clave-_|Resto], [Clave|Claves]) :-
+    claves(Resto, Claves).
+
+% --- Ejercicio 10 ---
+
+%!  pares(+Arbol)// is det.
+%
+%   Los pares Clave-Valor del diccionario incompleto Arbol, en el orden de
+%   las claves. Un subárbol libre no tiene pares, y queda libre.
+pares(Arbol) -->
+    { var(Arbol) },
     !.
-cuerpo([X|Xs], S0, S, S0 = Lista) :-
-    !,
-    append([X|Xs], S, Lista).
-cuerpo(Cadena, S0, S, S0 = Lista) :-
-    string(Cadena),
-    !,
-    string_codes(Cadena, Codigos),
-    append(Codigos, S, Lista).
-cuerpo(NoTerminal, S0, S, Meta) :-
-    no_terminal(NoTerminal, S0, S, Meta).
+pares(t(Clave, Valor, Izq, Der)) -->
+    pares(Izq),
+    [Clave-Valor],
+    pares(Der).
 
-%!  no_terminal(+NoTerminal, ?S0, ?S, -Meta) is det.
+% --- Ejercicio 11 ---
+
+%!  hojas(+Arbol)// is det.
 %
-%   Meta es NoTerminal con S0 y S agregados al final de sus argumentos.
-no_terminal(NoTerminal, S0, S, Meta) :-
-    NoTerminal =.. Lista0,
-    append(Lista0, [S0, S], Lista),
-    Meta =.. Lista.
+%   Las hojas del árbol limpio Arbol, de izquierda a derecha: h(X) es una
+%   hoja y n(Hijos) un nodo con la lista de sus hijos.
+hojas(h(X)) -->
+    [X].
+hojas(n(Hijos)) -->
+    hojas_lista(Hijos).
 
-% Ejercicios 7 y 8
-
-%!  desplegar(+Clausula, +N:integer, +Programa:list, -Clausulas:list) is det.
+%!  hojas_lista(+Arboles:list)// is det.
 %
-%   Clausulas son las resolventes de Clausula con las cláusulas de Programa
-%   en el objetivo N de su cuerpo, contando desde 1.
-desplegar((Cabeza :- Cuerpo), N, Programa, Clausulas) :-
-    N1 is N - 1,
-    length(Antes, N1),
-    append(Antes, [Objetivo|Despues], Cuerpo),
-    findall((Cabeza :- Cuerpo1),
-            ( member(Clausula, Programa),
-              copy_term(Clausula, (Objetivo :- CuerpoObjetivo)),
-              append([Antes, CuerpoObjetivo, Despues], Cuerpo1) ),
-            Clausulas).
+%   Las hojas de cada árbol de Arboles, en orden.
+hojas_lista([]) -->
+    [].
+hojas_lista([A|As]) -->
+    hojas(A),
+    hojas_lista(As).
 
-%!  plegar(+Clausula, +N:integer, +Definicion, -Plegada) is semidet.
+% --- Ejercicio 15 ---
+
+%!  nivelar(+Arbol, -Nivelado) is det.
 %
-%   Plegada es Clausula con los objetivos desde la posición N, si son una
-%   instancia del cuerpo de Definicion, reemplazados por su cabeza.
-plegar((Cabeza :- Cuerpo), N, Definicion, (Cabeza :- Cuerpo1)) :-
-    copy_term(Definicion, (CabezaDef :- CuerpoDef)),
-    length(CuerpoDef, K),
-    N1 is N - 1,
-    length(Antes, N1),
-    length(Medio, K),
-    append(Antes, Resto, Cuerpo),
-    append(Medio, Despues, Resto),
-    subsumes_term(CuerpoDef, Medio),
-    CuerpoDef = Medio,
-    append(Antes, [CabezaDef|Despues], Cuerpo1).
+%   Nivelado tiene la forma de Arbol, vacio o n(Izq, X, Der), con el máximo
+%   de los elementos de Arbol en cada nodo. Un solo recorrido: los nodos
+%   nuevos comparten la variable Max, que se liga al terminar.
+nivelar(vacio, vacio).
+nivelar(n(Izq, X, Der), Nivelado) :-
+    nivelar(n(Izq, X, Der), Max, Nivelado, X, Max).
 
-% programa_append(P): P son las cláusulas de append/3 como datos.
-programa_append([ (append([], L, L) :- []),
-                  (append([X|Xs], Ys, [X|Zs]) :- [append(Xs, Ys, Zs)]) ]).
-
-% definicion_ultimo(D): X es el último elemento de L.
-definicion_ultimo((ultimo(X, L) :- [append(_, [X], L)])).
-
-%!  derivar_ultimo(-Clausulas:list) is det.
+%!  nivelar(+Arbol, ?M, -Nivelado, +Max0:number, -Max:number) is det.
 %
-%   Clausulas es la definición recursiva de ultimo/2: la definición
-%   desplegada con append/3, con la segunda resolvente plegada.
-derivar_ultimo([C1, C2]) :-
-    definicion_ultimo(D),
-    programa_append(P),
-    desplegar(D, 1, P, [C1, C2a]),
-    plegar(C2a, 1, D, C2).
+%   Nivelado tiene la forma de Arbol con M en cada nodo, y Max es el mayor
+%   entre Max0 y los elementos de Arbol. M puede estar libre: se liga
+%   después, cuando se conoce el máximo de todo el árbol.
+nivelar(vacio, _, vacio, Max, Max).
+nivelar(n(Izq, X, Der), M, n(Izq1, M, Der1), Max0, Max) :-
+    Max1 is max(Max0, X),
+    nivelar(Izq, M, Izq1, Max1, Max2),
+    nivelar(Der, M, Der1, Max2, Max).
 
-%!  ultimo(?X, ?L:list) is nondet.
+% --- Ejercicio 16 ---
+
+%!  sumandos(+Suma, -Dif) is det.
 %
-%   X es el último elemento de L: las cláusulas que obtiene
-%   derivar_ultimo/1.
-ultimo(X, [X]).
-ultimo(X, [_|Zs]) :-
-    ultimo(X, Zs).
+%   Dif, un par L-F, es la lista diferencia de los sumandos de Suma, de
+%   izquierda a derecha. Un sumando es todo término que no es una suma con
+%   +; Suma es un término cerrado.
+sumandos(Suma, L-F) :-
+    (   Suma = A + B
+    ->  sumandos(A, L-M),
+        sumandos(B, M-F)
+    ;   L = [Suma|F]
+    ).
 
-% programa_suma_largo(P): suma/2 y largo/2 como datos.
-programa_suma_largo([ (suma([], 0) :- []),
-                      (suma([X|Xs], S) :- [suma(Xs, S0), S is S0 + X]),
-                      (largo([], 0) :- []),
-                      (largo([_|Xs], N) :- [largo(Xs, N0), N is N0 + 1]) ]).
-
-% definicion_suma_largo(D): S es la suma y N la longitud de L.
-definicion_suma_largo((suma_largo(L, S, N) :- [suma(L, S), largo(L, N)])).
-
-%!  reordenar(+Clausula, +Orden:list(integer), -Reordenada) is det.
+%!  asociar_izquierda_2(+Suma, -Normal) is det.
 %
-%   Reordenada tiene los objetivos del cuerpo de Clausula en el Orden
-%   dado por sus posiciones, contando desde 1.
-reordenar((Cabeza :- Cuerpo), Orden, (Cabeza :- Cuerpo1)) :-
-    maplist(objetivo(Cuerpo), Orden, Cuerpo1).
+%   Normal tiene los sumandos de Suma, en el mismo orden, asociados a
+%   izquierda. Dos recorridos: uno reúne los sumandos y otro construye la
+%   suma.
+asociar_izquierda_2(Suma, Normal) :-
+    sumandos(Suma, [Primero|Resto]-[]),
+    foldl(agregar_sumando, Resto, Primero, Normal).
 
-%!  objetivo(+Cuerpo:list, +I:integer, -G) is det.
+% agregar_sumando(X, Suma0, Suma): Suma es Suma0 con X sumado a la derecha.
+agregar_sumando(X, Suma0, Suma0 + X).
+
+%!  asociar_izquierda(+Suma, -Normal) is det.
 %
-%   G es el objetivo I de Cuerpo, contando desde 1.
-objetivo(Cuerpo, I, G) :-
-    nth1(I, Cuerpo, G).
+%   Normal tiene los sumandos de Suma, en el mismo orden, asociados a
+%   izquierda. Una sola pasada: el sumando de más a la izquierda es el valor
+%   inicial del acumulador, y agregar/3 suma los demás.
+asociar_izquierda(Suma, Normal) :-
+    (   Suma = A + B
+    ->  asociar_izquierda(A, Normal0),
+        agregar(B, Normal0, Normal)
+    ;   Normal = Suma
+    ).
 
-%!  derivar_suma_largo(-Clausulas:list) is det.
+%!  agregar(+Suma, +Normal0, -Normal) is det.
 %
-%   Clausulas es suma_largo/3 en una sola pasada: los dos objetivos
-%   desplegados, el cuerpo reordenado y las dos llamadas plegadas.
-derivar_suma_largo([C1, C2]) :-
-    definicion_suma_largo(D),
-    programa_suma_largo(P),
-    desplegar(D, 1, P, [A1, A2]),
-    desplegar(A1, 1, P, [C1]),
-    desplegar(A2, 3, P, [B2]),
-    reordenar(B2, [1, 3, 2, 4], B3),
-    plegar(B3, 1, D, C2).
-
-%!  suma_largo(+L:list(number), -S:number, -N:integer) is det.
-%
-%   S es la suma y N la cantidad de elementos de L, en una sola pasada: las
-%   cláusulas que obtiene derivar_suma_largo/1.
-suma_largo([], 0, 0).
-suma_largo([X|Xs], S, N) :-
-    suma_largo(Xs, S0, N0),
-    S is S0 + X,
-    N is N0 + 1.
-
-%!  suma_largo_dos(+L:list(number), -S:number, -N:integer) is det.
-%
-%   La misma relación que suma_largo/3, con dos recorridos.
-suma_largo_dos(L, S, N) :-
-    suma(L, S),
-    largo(L, N).
-
-%!  suma(+L:list(number), -S:number) is det.
-%
-%   S es la suma de los números de L.
-suma([], 0).
-suma([X|Xs], S) :-
-    suma(Xs, S0),
-    S is S0 + X.
-
-%!  largo(+L:list, -N:integer) is det.
-%
-%   N es la cantidad de elementos de L.
-largo([], 0).
-largo([_|Xs], N) :-
-    largo(Xs, N0),
-    N is N0 + 1.
-
-% Ejercicio 15
-
-% programa_concatenar(P): concatenar_dif/3 como datos.
-programa_concatenar([ (concatenar_dif(L-M, M-F, L-F) :- []) ]).
-
-% definicion_rotar(D): R es la lista diferencia [X|Xs]-F con X al final.
-definicion_rotar((rotar_dif([X|Xs]-F, R) :-
-                      [concatenar_dif(Xs-F, [X|G]-G, R)])).
-
-%!  derivar_rotar(-Clausulas:list) is det.
-%
-%   Clausulas es la definición de rotar_dif/2 desplegada con
-%   concatenar_dif/3: un hecho.
-derivar_rotar(Clausulas) :-
-    definicion_rotar(D),
-    programa_concatenar(P),
-    desplegar(D, 1, P, Clausulas).
-
-% rotar_dif(D, R): la lista diferencia R es D con su primer elemento al
-% final; el hecho que obtiene derivar_rotar/1.
-rotar_dif([X|Xs]-[X|F], Xs-F).
-
-%!  mostrar(+Clausulas:list) is det.
-%
-%   Escribe cada cláusula de Clausulas en una línea, con las variables
-%   nombradas A, B, ..., y _ para las que aparecen una sola vez.
-mostrar(Clausulas) :-
-    forall(member(C, Clausulas),
-           ( numbervars(C, 0, _, [singletons(true)]),
-             format("~W~n", [C, [numbervars(true), quoted(true),
-                                 spacing(next_argument)]]) )).
+%   Normal es la suma asociada a izquierda Normal0 con los sumandos de Suma
+%   agregados a la derecha, en orden.
+agregar(Suma, Normal0, Normal) :-
+    (   Suma = A + B
+    ->  agregar(A, Normal0, Normal1),
+        agregar(B, Normal1, Normal)
+    ;   Normal = Normal0 + Suma
+    ).

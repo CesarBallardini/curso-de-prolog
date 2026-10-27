@@ -2,120 +2,83 @@
 
 :- begin_tests(soluciones).
 
-% Ejercicio 2
-test(reglas_antepasado, true(N == 2)) :-
-    reglas(antepasado/2, N).
+test(aridad_maxima, true(N == 3)) :-
+    aridad_maxima(f(a, g(b, c, d), [x]), N).
 
-test(reglas_hechos, true(N == 0)) :-
-    reglas(padre/2, N).
+test(aridad_maxima_atomo, true(N == 0)) :-
+    aridad_maxima(ana, N).
 
-test(reglas_mixto, true(N == 1)) :-
-    reglas(maximo/3, N).
+test(posiciones_iguales, true(Ps == [1, 2])) :-
+    posiciones_iguales(f(a, X, c), f(a, X, d), Ps).
 
-test(reglas_no_definido, [fail]) :-
-    reglas(no_definido/2, _).
+test(posiciones_distinto_functor, [fail]) :-
+    posiciones_iguales(f(a), g(a), _).
 
-% Ejercicio 4
-test(signo, all(S == [negativo])) :-
-    resolver(signo(-3, S)).
+% La versión ingenua liga Y y la reemplaza también.
+test(sustituir_ingenuo, true(Y-T == x-f(3, 3))) :-
+    sustituir_ingenuo(x, 3, f(Y, x), T).
 
-test(signo_cero, all(S == [cero])) :-
-    resolver(signo(0, S)).
+test(profundidad, true(P == 3)) :-
+    profundidad(f(a, g(h(b)), c), P).
 
-test(signo_como_prolog, true(Rs == Ps)) :-
-    findall(X-S, ( member(X, [-2, 0, 5]), resolver(signo(X, S)) ), Rs),
-    findall(X-S, ( member(X, [-2, 0, 5]), signo(X, S) ), Ps).
+test(profundidad_lista, true(P == 2)) :-
+    profundidad([a, b], P).
 
-test(disyuncion, all(X == [luis, juan])) :-
-    resolver(pariente_directo(ana, X)).
+test(profundidad_variable, true(P == 0)) :-
+    profundidad(_, P).
 
-test(disyuncion_como_prolog, true(Rs == Ps)) :-
-    findall(A-B, resolver(pariente_directo(A, B)), Rs),
-    findall(A-B, pariente_directo(A, B), Ps).
+test(apariciones, true(N == 3)) :-
+    apariciones(f(a, g(a, b), a), a, N).
 
-test(limpiar_condicional,
-     true(C == si(sis(x > 0), sis(s = p), si(sis(x < 0), sis(s = n),
-                                             sis(s = c))))) :-
-    limpiar((x > 0 -> s = p ; x < 0 -> s = n ; s = c), C).
+test(apariciones_variable, true(N == 2)) :-
+    apariciones(f(X, g(_, X)), X, N).
 
-% Ejercicio 5
-test(maximo_prolog, all(M == [5])) :-
-    maximo(5, 3, M).
+test(apariciones_ninguna, true(N == 0)) :-
+    apariciones(f(a), b, N).
 
-test(maximo_interpretado, all(M == [5, 3])) :-
-    resolver(maximo(5, 3, M)).
+test(variantes, [true]) :-
+    variantes(f(X, _, X), f(A, _, A)).
 
-test(maximo_interpretado_bien, all(M == [5])) :-
-    resolver(maximo(3, 5, M)).
+test(no_variantes, [fail]) :-
+    variantes(f(_, _), f(A, A)).
 
-% Ejercicio 6
-test(anchura_camino,
-     true(Cs == [[a-b, b-c], [a-b, b-a, a-b, b-c], [a-b, b-c, c-b, b-c]])) :-
-    findall(C, limit(3, resolver_anchura(camino(a, c, C))), Cs).
+test(variantes_no_liga, true(X-Y == a-b)) :-
+    variantes(f(X), f(Y)),
+    X = a,
+    Y = b.
 
-% La recursión a la izquierda da sus tres respuestas en anchura.
-test(anchura_izquierda, true(As == [luis, ana, juan])) :-
-    findall(A, limit(3, resolver_anchura(antepasado_izq(A, eva))), As).
+test(a_limpia, true(L == suma(producto(inc(x), num(2)), inc(y)))) :-
+    a_limpia(x * 2 + y, L).
 
-test(anchura_como_prolog, true(Rs == Ps)) :-
-    findall(D, resolver_anchura(antepasado(juan, D)), Rs0),
-    msort(Rs0, Rs),
-    findall(D, antepasado(juan, D), Ps0),
-    msort(Ps0, Ps).
+test(a_limpia_libre, [error(instantiation_error)]) :-
+    a_limpia(x * _, _).
 
-test(anchura_sin_prueba, [fail]) :-
-    resolver_anchura(padre(eva, _)).
+test(a_limpia_dominio, [error(domain_error(expresion, x / 2))]) :-
+    a_limpia(x / 2, _).
 
-% Ejercicio 7
-test(hechos_usados, true(H == [padre(juan, ana), padre(ana, luis)])) :-
-    once(resolver_arbol(abuelo(juan, _), A)),
-    hechos_usados(A, H).
+test(valor, true(V == 7)) :-
+    a_limpia(x * 2 + y, L),
+    valor(L, [x-3, y-1], V).
 
-test(hechos_usados_con_predefinido,
-     true(H == [edad(juan, 68), edad(ana, 41)])) :-
-    hechos_usados(prueba(mayor(juan, ana),
-                         [ prueba(edad(juan, 68), []),
-                           prueba(edad(ana, 41), []),
-                           sis(68 > 41) ]),
-                  H).
+test(valor_sin_incognita, [fail]) :-
+    valor(inc(z), [x-3], _).
 
-% Ejercicio 8
-test(acotado_corto, all(R == [agotado])) :-
-    resolver_acotado(camino(a, d, _), 3, R).
+test(valor_determinista, true(V == 1)) :-
+    valor(resta(producto(num(2), inc(x)), num(5)), [x-3], V).
 
-test(acotado_largo, all(R == [si, agotado])) :-
-    resolver_acotado(camino(a, d, _), 4, R).
+test(valor_compara, [true]) :-
+    valor(suma(inc(x), num(1)), [x-3], 4).
 
-test(acotado_largo_camino, all(C == [[a-b, b-c, c-d]])) :-
-    resolver_acotado(camino(a, d, C), 4, si).
+test(profundidad_atomo, true(P == 0)) :-
+    profundidad(ana, P).
 
-% La respuesta agotado no liga las variables de Meta.
-test(acotado_sin_ligaduras, true(V == libre)) :-
-    resolver_acotado(camino(a, d, C), 3, agotado),
-    (   var(C)
-    ->  V = libre
-    ;   V = ligada
-    ).
+test(sustituir_ingenuo_sin_variables, true(T == f(3, y))) :-
+    sustituir_ingenuo(x, 3, f(x, y), T).
 
-% Sin prueba y sin llegar al límite: la respuesta es no.
-test(acotado_sin_prueba, [fail]) :-
-    resolver_acotado(padre(eva, _), 3, _).
+test(evaluar, true(V == 10)) :-
+    evaluar(x * x + y, [x-3, y-1], V).
 
-test(acotado_completo, all(R == [si])) :-
-    resolver_acotado(abuelo(juan, luis), 5, R).
-
-% Ejercicio 9
-test(sin_ciclos, all(A == [luis, ana])) :-
-    resolver_sin_ciclos(antepasado_izq(A, eva)).
-
-test(sin_ciclos_derecha, all(D == [ana, pedro, luis, eva])) :-
-    resolver_sin_ciclos(antepasado(juan, D)).
-
-% Ejercicio 10
-test(rastrear_entradas,
-     true(S == "llama abuelo(juan, A)\n  llama padre(juan, A)\n  \c
-                sale padre(juan, ana)\n  llama padre(ana, A)\n  \c
-                sale padre(ana, luis)\nsale abuelo(juan, luis)\n")) :-
-    with_output_to(string(S), once(rastrear_entradas(abuelo(juan, _)))).
+test(evaluar_sin_valor, [error(existence_error(incognita, z))]) :-
+    evaluar(x * z, [x-3], _).
 
 :- end_tests(soluciones).

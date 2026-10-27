@@ -1,48 +1,42 @@
 :- encoding(utf8).
 
-:- use_module(corregida, []).
+:- use_module(nim).
 
 :- begin_tests(partida).
 
-test(mate_en_12, [true(F-N == mate-12)]) :-
-    partida(krk, primera, pos(blancas, 5-5, 1-1, 4-7), Js, F),
-    include([J]>>(J = blancas(_, _)), Js, Bs),
-    length(Bs, N).
+test(primera_contra_suma,
+     [true(Js-R == [sacar(1, 1), sacar(3, 1), sacar(2, 1), sacar(3, 1),
+                    sacar(2, 1), sacar(3, 1)]-gana(dos))]) :-
+    partida(nim([1, 2, 3]), primera, nim:suma, Js, R).
 
-test(primera_jugada, [true(J1 == blancas(torre(1-1, 3-1), dividir_en_2))]) :-
-    partida(krk, primera, pos(blancas, 5-5, 1-1, 4-7), [J1|_], _).
+% Con las dos estrategias perfectas, gana el que empieza si y solo si la
+% posición inicial no es segura.
+test(suma_contra_suma, [true(Rs == [gana(uno), gana(dos)])]) :-
+    findall(R, ( member(Ps, [[1, 3, 5], [1, 2, 3]]),
+                 partida(nim(Ps), nim:suma, nim:suma, _, R) ),
+            Rs).
 
-test(jugadas_hasta_mate, [true(N == 12)]) :-
-    jugadas_hasta_mate(krk, primera, pos(blancas, 5-5, 1-1, 4-7), N).
+test(profundidad_contra_suma, [true(R == gana(uno))]) :-
+    partida(nim([2, 3, 4]), profundidad(20), nim:suma, _, R).
 
-test(resistente, [true(N == 9)]) :-
-    jugadas_hasta_mate(krk, resistente, pos(blancas, 5-5, 1-1, 4-7), N).
+test(desde_posicion, [true(Js-R == [sacar(2, 1)]-gana(dos))]) :-
+    partida(nim([1]), pilas([0, 1], dos), primera, primera, Js, R).
 
-% La tabla original ahoga al rey negro en una jugada.
-test(ahogado, [true(F-Js == ahogado-[blancas(rey(1-3, 2-3),
-                                               mantener_espacio)])]) :-
-    partida(krk, primera, pos(blancas, 1-3, 2-2, 1-1), Js, F).
+test(tiempo, [true(J == sacar(3, 3))]) :-
+    tiempo(1, nim([1, 3, 5]), pilas([1, 3, 5], uno), J).
 
-test(corregida, [true(F == mate)]) :-
-    partida(corregida, primera, pos(blancas, 1-3, 2-2, 1-1), _, F).
+test(primera, [true(J == sacar(2, 1))]) :-
+    primera(nim([0, 4]), pilas([0, 4], uno), J).
 
-% Las negras capturan la torre si la defensa puede.
-test(resistente_captura, [true(J == rey(1-1, 2-2))]) :-
-    resistente(pos(negras, 5-5, 2-2, 1-1), J).
+test(jugar, [true(S == "Pila 1: 1 |\nPila 2: 2 ||\nTu jugada: 2 5\n\c
+Esa jugada no es válida.\nTu jugada: 2 1\nPila 1: 1 |\nPila 2: 1 |\n\c
+La computadora juega sacar(1, 1).\nPila 1: 0\nPila 2: 1 |\n\c
+Tu jugada: 2 1\nPila 1: 0\nPila 2: 0\nGanaste.\n")]) :-
+    open_string("2 5\n2 1\n2 1\n", In),
+    with_output_to(string(S), jugar(nim([1, 2]), persona, nim:tabulada, In)).
 
-test(primera, [true(J == rey(1-1, 2-1))]) :-
-    primera(pos(negras, 3-3, 1-8, 1-1), J).
-
-test(narrar, [true(Lineas == ["1. Ta2 Rb1", "2. Rb3 Rc1"])]) :-
-    with_output_to(string(S),
-                   narrar(corregida, primera, pos(blancas, 1-3, 2-2, 1-1))),
-    split_string(S, "\n", "", [L1, L2|_]),
-    maplist(primeras_palabras, [L1, L2], Lineas).
-
-% primeras_palabras(L, P): P son las tres primeras palabras de L.
-primeras_palabras(L, P) :-
-    split_string(L, " ", " ", [A, B, C|_]),
-    atomic_list_concat([A, B, C], ' ', At),
-    atom_string(At, P).
+test(abandono, [true(S == "Pila 1: 3 |||\nTu jugada: \nPartida abandonada.\n")]) :-
+    open_string("", In),
+    with_output_to(string(S), jugar(nim([3]), persona, primera, In)).
 
 :- end_tests(partida).

@@ -40,7 +40,7 @@ HOME = 'home'
 
 
 def is_solutions(path: str) -> bool:
-    """True for a solutions page: its last path segment, not a substring (chapter 17 has one).
+    """True for a solutions page: its last path segment, not a substring (chapter 18 has one).
 
     Written here again on purpose, rather than imported from sections.py: the test must not share a
     mistake with the code it checks.

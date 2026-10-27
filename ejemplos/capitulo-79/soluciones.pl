@@ -2,274 +2,362 @@
 
 % Capítulo 79 - Soluciones de los ejercicios.
 %
-% Las tablas de consejos de los ejercicios 4, 9 y 11 son módulos propios:
-% sus cláusulas se escriben aquí con el nombre del módulo delante, y
-% mueve/2, meta/3 y jugadas/4 se toman de la biblioteca de krk.pl.
+% Carga nim.pl, candidatos.pl (que carga mastermind.pl) y kalah.pl sin
+% modificarlos. Los juegos nuevos de los ejercicios 3 y 10 agregan sus
+% cláusulas al módulo capitulo42, como nim.pl y kalah.pl.
 %
-% solo-local: carga los archivos del capítulo; exporta también el intérprete,
-% la verificación y la búsqueda, para consultarlos sin cargar otro archivo.
+% solo-local: carga otros archivos.
 %
-%?- por_que(krk, pos(blancas, 5-5, 1-1, 4-7)).
+%?- segura_miseria([1, 1, 1]).
+%?- particion([0, 1, 2, 3], Clases).
 
-:- module(soluciones,
-          [ por_que/2,
-            azar/3,
-            medir_en/4,
-            politica_sin_memoria/2,
-            cuantas/1,
-            historia/4
-          ]).
-
-:- use_module(library(lists)).
+:- use_module(nim).
+:- use_module(candidatos).
+:- use_module(kalah).
 :- use_module(library(apply)).
-:- use_module(library(aggregate)).
-:- use_module(reglas).
-:- reexport(consejos).
-:- use_module(krk, []).
-:- use_module(corregida, []).
-:- reexport(partida, [primera/2, resistente/2]).
-:- use_module(partida).
-:- use_module(finales).
-:- reexport(verificar).
-:- reexport(busqueda).
+:- use_module(library(lists)).
+:- use_module(library(pairs)).
 
-% --- Ejercicio 4: la búsqueda como consejo -------------------------------
+% --- Ejercicio 2: el Nim de la miseria ---------------------------------------
 
-% La tabla ciega tiene un solo consejo, mate_en_3: cualquier jugada de los
-% dos bandos, sin perder la torre, hasta el tercer mate de las blancas.
-ciega:consejo(mate_en_3, mate, no torre_perdida,
-                 profundidad < 5 y legal, profundidad < 4 y legal).
-ciega:mueve(P, B) :-
-    krk:mueve(P, B).
-ciega:meta(M, P, R) :-
-    krk:meta(M, P, R).
-ciega:jugadas(N, P, J, S) :-
-    krk:jugadas(N, P, J, S).
-
-% --- Ejercicio 5: ¿por qué? ----------------------------------------------
-
-%!  por_que(+Tabla, +Posicion) is semidet.
+%!  ganadora_miseria(+Pilas:list(integer)) is semidet.
 %
-%   Escribe la regla de Tabla que se aplica en Posicion y, para cada
-%   consejo de su lista hasta el primero satisfacible, si lo es. Falla si
-%   ninguno lo es.
-por_que(Tabla, Posicion) :-
-    once(( Tabla:regla(Regla, si Condicion entonces Consejos),
-           cumple(Tabla, Condicion, Posicion, Posicion) )),
-    format("regla ~w~n", [Regla]),
-    probar(Consejos, Tabla, Posicion).
+%   En el Nim en que pierde quien saca la última ficha, el que mueve en
+%   Pilas gana. Búsqueda tabulada sobre la forma de la posición.
+ganadora_miseria(Pilas) :-
+    forma(Pilas, Forma),
+    ganadora_miseria_forma(Forma).
 
-%!  probar(+Consejos:list, +Tabla, +Posicion) is semidet.
+:- table ganadora_miseria_forma/1.
+
+%!  ganadora_miseria_forma(+Forma:list(integer)) is semidet.
 %
-%   Escribe, para cada consejo hasta el primero satisfacible, si lo es.
-probar([C|Cs], Tabla, Posicion) :-
-    (   satisfacible(Tabla, C, Posicion, juega(J, _))
-    ->  notacion(J, T),
-        format("  ~w: satisfacible, juega ~w~n", [C, T])
-    ;   format("  ~w: no satisfacible~n", [C]),
-        probar(Cs, Tabla, Posicion)
+%   ganadora_miseria/1 sobre una forma. Sin fichas, el que mueve ganó: el
+%   rival sacó la última.
+ganadora_miseria_forma(Forma) :-
+    (   Forma == []
+    ->  true
+    ;   once(( sacar(Forma, _, Pilas1),
+               forma(Pilas1, Forma1),
+               \+ ganadora_miseria_forma(Forma1) ))
     ).
 
-% --- Ejercicio 6: una defensa al azar ------------------------------------
-
-%!  azar(+Semilla:integer, +Posicion, -Jugada) is semidet.
+%!  segura_miseria(+Pilas:list(integer)) is semidet.
 %
-%   Jugada es una respuesta legal de las negras elegida con un paso del
-%   generador congruencial del capítulo 77, a partir de Semilla y del código
-%   de Posicion: la misma posición con la misma semilla da siempre la misma
-%   respuesta.
-azar(Semilla, Posicion, Jugada) :-
-    findall(J, jugada(Posicion, J, _), Js),
-    length(Js, N),
-    N > 0,
-    Posicion = pos(_, RB, T, RN),
-    codigo(pos(blancas, RB, T, RN), C),
-    X is (1103515245 * (Semilla + C) + 12345) mod 2147483648,
-    I is (X >> 16) mod N,
-    nth0(I, Js, Jugada).
+%   Pilas es segura en el Nim de la miseria: si ninguna pila tiene más de
+%   una ficha, hay una cantidad impar de pilas de una ficha; si no, la
+%   suma de Nim es 0.
+segura_miseria(Pilas) :-
+    max_list([0|Pilas], Mayor),
+    (   Mayor =< 1
+    ->  sum_list(Pilas, Unos),
+        Unos mod 2 =:= 1
+    ;   segura(Pilas)
+    ).
 
-%!  medir_en(+Tabla, :Defensa, +ReyNegro, -R) is det.
+% --- Ejercicio 3: la suma de Nim como evaluación -----------------------------
+
+% nim_suma(Pilas) es nim(Pilas) con una evaluación que no es nula: 50 si
+% la posición es buena para max según la suma de Nim, -50 si no.
+
+%!  capitulo42:inicial(+Juego, -Posicion) is det.
 %
-%   Como medir/3 de partida.pl, sobre las posiciones normales con el rey
-%   negro en la casilla ReyNegro.
-:- meta_predicate medir_en(+, 2, +, -).
-medir_en(Tabla, Defensa, ReyNegro, r(Finales, Mayor)) :-
-    posiciones(blancas, Ps),
-    findall(F-N,
-            ( member(P, Ps),
-              P = pos(_, _, _, ReyNegro),
-              partida(Tabla, Defensa, P, Js, F),
-              include(de_blancas, Js, Bs),
-              length(Bs, N) ),
-            FNs),
-    pairs_keys(FNs, Fs0),
-    msort(Fs0, Fs),
-    clumped(Fs, Finales),
-    aggregate_all(max(N), member(mate-N, FNs), Mayor).
+%   nim_suma(Pilas) empieza como nim(Pilas).
+capitulo42:inicial(nim_suma(Pilas), P) :-
+    capitulo42:inicial(nim(Pilas), P).
 
-% de_blancas(E): el elemento E de una partida es una jugada de las blancas.
-de_blancas(blancas(_, _)).
-
-% --- Ejercicio 8: la política sin memoria --------------------------------
-
-:- dynamic elige/3, asegura/3, cae/3.
-
-% elige(T, C, C1), asegura(T, C, K), cae(T, C, K): como en verificar.pl,
-% pero con un paso por jugada y sobre las posiciones normales.
-
-%!  politica_sin_memoria(+Tabla, -R) is det.
+%!  capitulo42:jugada(+Juego, +Posicion, ?Jugada, -Siguiente) is nondet.
 %
-%   R es r(Aseguradas, Total, Mayor) para la política que en cada jugada
-%   pide un árbol nuevo a Tabla y juega solo su primera jugada, sobre las
-%   posiciones normales. Calcula la tabla de finales si hace falta.
-politica_sin_memoria(Tabla, r(Aseguradas, Total, Mayor)) :-
-    (   nodo(_, _, _)
-    ->  true
-    ;   calcular
-    ),
-    retractall(elige(Tabla, _, _)),
-    retractall(asegura(Tabla, _, _)),
-    retractall(cae(Tabla, _, _)),
-    forall(nodo(blancas, C, _), elegir(Tabla, C)),
-    forall(( nodo(negras, C, []), decodificar(negras, C, P), jaque(P) ),
-           assertz(cae(Tabla, C, 0))),
-    propagar(Tabla, 1),
-    aggregate_all(count, nodo(blancas, _, _), Total),
-    aggregate_all(count, asegura(Tabla, _, _), Aseguradas),
-    aggregate_all(max(K), asegura(Tabla, _, K), Mayor).
+%   Las jugadas de nim_suma(Pilas) son las de nim(Pilas).
+capitulo42:jugada(nim_suma(Pilas), P, J, P1) :-
+    capitulo42:jugada(nim(Pilas), P, J, P1).
 
-%!  elegir(+Tabla, +C:integer) is det.
+%!  capitulo42:turno(+Juego, +Posicion, -Lado) is det.
 %
-%   Registra adónde lleva la primera jugada del árbol que Tabla da en la
-%   posición de las blancas de código C.
-elegir(Tabla, C) :-
-    decodificar(blancas, C, P),
-    (   estrategia(Tabla, P, _, juega(J, _))
-    ->  jugada(P, J, S),
-        (   ahogado(S)
-        ->  C1 = fin(ahogado)
-        ;   sucesora(S, C1)
+%   Como en nim(Pilas).
+capitulo42:turno(nim_suma(Pilas), P, Lado) :-
+    capitulo42:turno(nim(Pilas), P, Lado).
+
+%!  capitulo42:fin(+Juego, +Posicion, -Resultado) is semidet.
+%
+%   Como en nim(Pilas).
+capitulo42:fin(nim_suma(Pilas), P, R) :-
+    capitulo42:fin(nim(Pilas), P, R).
+
+%!  capitulo42:evaluar(+Juego, +Posicion, -Valor) is det.
+%
+%   La evaluación de nim_suma/1, con valor_suma/3.
+capitulo42:evaluar(nim_suma(_), pilas(Pilas, J), Valor) :-
+    valor_suma(Pilas, J, Valor).
+
+%!  valor_suma(+Pilas:list(integer), +Jugador, -Valor:integer) is det.
+%
+%   Valor es 50 si la posición es buena para max: segura con min por
+%   mover, o insegura con max por mover; -50 en los otros casos.
+valor_suma(Pilas, J, Valor) :-
+    suma_nim(Pilas, S),
+    (   ( S =:= 0, J == dos
+        ; S =\= 0, J == uno
         )
-    ;   C1 = fin(sin_consejo)
-    ),
-    assertz(elige(Tabla, C, C1)).
-
-%!  propagar(+Tabla, +K:integer) is det.
-%
-%   Marca las posiciones de las blancas desde las que la política da mate
-%   en K jugadas y las de las negras que lo reciben en K, y sigue mientras
-%   alguna cambie.
-propagar(Tabla, K) :-
-    findall(C,
-            ( elige(Tabla, C, C1),
-              \+ asegura(Tabla, C, _),
-              cae(Tabla, C1, _) ),
-            Ganan),
-    forall(member(C, Ganan), assertz(asegura(Tabla, C, K))),
-    findall(C,
-            ( nodo(negras, C, Cs),
-              Cs \== [],
-              \+ cae(Tabla, C, _),
-              \+ memberchk(captura, Cs),
-              forall(member(C1, Cs), asegura(Tabla, C1, _)) ),
-            Caen),
-    forall(member(C, Caen), assertz(cae(Tabla, C, K))),
-    (   Ganan == [],
-        Caen == []
-    ->  true
-    ;   K1 is K + 1,
-        propagar(Tabla, K1)
+    ->  Valor = 50
+    ;   Valor = -50
     ).
 
-% --- Ejercicio 9: el encierro sin cuidar la torre ------------------------
+% --- Ejercicio 5: la partición de un intento ---------------------------------
 
-sin_cuidado:regla(N, R) :-
-    krk:regla(N, R).
-sin_cuidado:consejo(encierro,
-                    espacio_menor y torre_divide y no ahogado,
-                    no torre_perdida,
-                    profundidad = 0 y torre,
-                    ninguna) :-
-    !.
-sin_cuidado:consejo(N, B, M, U, T) :-
-    krk:consejo(N, B, M, U, T),
-    N \== encierro.
-sin_cuidado:mueve(P, B) :-
-    krk:mueve(P, B).
-sin_cuidado:meta(M, P, R) :-
-    krk:meta(M, P, R).
-sin_cuidado:jugadas(N, P, J, S) :-
-    krk:jugadas(N, P, J, S).
-
-% --- Ejercicio 10: cuántas posiciones por longitud del mate --------------
-
-%!  cuantas(-Pares:list) is det.
+%!  particion(+Intento:list, +Codigos:list, -Clases:list) is det.
 %
-%   Pares tiene un par K-N por cada K de 1 a 16: N posiciones normales de
-%   las blancas dan mate en K jugadas. Calcula la tabla si hace falta.
-cuantas(Pares) :-
-    (   nodo(_, _, _)
-    ->  true
-    ;   calcular
-    ),
-    findall(K-N,
-            ( between(1, 16, K),
-              aggregate_all(count,
-                            ( nodo(blancas, C, _),
-                              decodificar(blancas, C, P),
-                              mate_en(P, K) ),
-                            N) ),
-            Pares).
+%   Clases son los términos Toros-Vacas-K, en orden: K códigos de Codigos
+%   darían la respuesta Toros-Vacas a Intento.
+particion(Intento, Codigos, Clases) :-
+    findall(T-V, ( member(C, Codigos),
+                   respuesta(C, Intento, T, V) ),
+            Respuestas),
+    msort(Respuestas, Ordenadas),
+    clumped(Ordenadas, Clases).
 
-% --- Ejercicio 11: la otra corrección ------------------------------------
+%!  particion(+Intento:list, -Clases:list) is det.
+%
+%   particion/3 sobre los 5040 códigos.
+particion(Intento, Clases) :-
+    candidatos(Codigos),
+    particion(Intento, Codigos, Clases).
 
-meta_mejor:regla(N, R) :-
-    krk:regla(N, R).
-meta_mejor:consejo(N, B1, M, U, T) :-
-    krk:consejo(N, B, M, U, T),
-    (   memberchk(N, [acercamiento, mantener_espacio, dividir_en_2])
-    ->  B1 = (B y no ahogado)
-    ;   B1 = B
+% --- Ejercicio 6: el intento que deja menos códigos en el peor caso ----------
+
+%!  adivinar_minimax(+Secreto:list, -Intentos:list) is det.
+%
+%   Como adivinar_candidatos/2, pero cada intento después del primero es
+%   el código posible cuya mayor clase es la menor; ante un empate, el
+%   primero.
+adivinar_minimax(Secreto, Intentos) :-
+    candidatos(Codigos),
+    minimax_entre(Codigos, [0, 1, 2, 3], Secreto, Intentos).
+
+%!  minimax_entre(+Codigos:list, +Intento:list, +Secreto:list,
+%!                -Intentos:list) is det.
+%
+%   Intentos empiezan con Intento, uno de Codigos, los códigos posibles.
+minimax_entre(Codigos, Intento, Secreto, [Intento|Intentos]) :-
+    respuesta(Secreto, Intento, T, V),
+    (   T =:= 4
+    ->  Intentos = []
+    ;   filtrar(Codigos, Intento, T, V, Codigos1),
+        mejor_intento(Codigos1, Siguiente),
+        minimax_entre(Codigos1, Siguiente, Secreto, Intentos)
     ).
-meta_mejor:mueve(P, B) :-
-    krk:mueve(P, B).
-meta_mejor:meta(M, P, R) :-
-    krk:meta(M, P, R).
-meta_mejor:jugadas(N, P, J, S) :-
-    krk:jugadas(N, P, J, S).
 
-% --- Ejercicio 12: los árboles de una partida ----------------------------
-
-%!  historia(+Tabla, :Defensa, +Posicion, -Consejos:list) is det.
+%!  mejor_intento(+Codigos:list, -Intento:list) is det.
 %
-%   Consejos son los consejos que dieron un árbol nuevo en la partida desde
-%   Posicion, en orden. La partida se repite siguiendo los árboles, como lo
-%   hace partida/5, para saber en qué jugadas empieza uno.
-:- meta_predicate historia(+, 2, +, -).
-historia(Tabla, Defensa, Posicion, Consejos) :-
-    partida(Tabla, Defensa, Posicion, Jugadas, _),
-    arboles(Jugadas, Tabla, Posicion, ninguno, Consejos).
+%   Intento es el código de Codigos cuya mayor clase sobre Codigos es la
+%   menor; ante un empate, el primero.
+mejor_intento(Codigos, Intento) :-
+    map_list_to_pairs(peor_clase(Codigos), Codigos, Pares),
+    keysort(Pares, [_-Intento|_]).
 
-%!  arboles(+Jugadas:list, +Tabla, +Posicion, +Arbol, -Consejos:list)
-%!      is det.
+%!  peor_clase(+Codigos:list, +Intento:list, -Mayor:integer) is det.
 %
-%   Recorre Jugadas desde Posicion con Arbol, el árbol en curso o ninguno,
-%   y reúne el consejo de cada árbol nuevo.
-arboles([], _, _, _, []).
-arboles([blancas(J, C)|Js], Tabla, P, Arbol, Consejos) :-
-    (   Arbol = juega(J, A1)
-    ->  Consejos = Cs
-    ;   estrategia(Tabla, P, C, juega(J, A1)),
-        Consejos = [C|Cs]
-    ),
-    once(jugada(P, J, P1)),
-    (   Js = [negras(R)|Js1]
-    ->  once(jugada(P1, R, P2)),
-        (   A1 = responde(Ramas),
-            memberchk(R-A2, Ramas)
-        ->  true
-        ;   A2 = ninguno
-        ),
-        arboles(Js1, Tabla, P2, A2, Cs)
-    ;   Cs = []
+%   Mayor es la cantidad de códigos de la mayor clase de Intento.
+peor_clase(Codigos, Intento, Mayor) :-
+    particion(Intento, Codigos, Clases),
+    pairs_values(Clases, Ks),
+    max_list(Ks, Mayor).
+
+% --- Ejercicio 7: el Mastermind comercial ------------------------------------
+
+%!  codigo_colores(-Codigo:list(integer)) is multi.
+%
+%   Codigo son cuatro colores, del 1 al 6, que pueden repetirse: 1296
+%   códigos, en orden.
+codigo_colores([A, B, C, D]) :-
+    maplist(color, [A, B, C, D]).
+
+% color(C): C es uno de los seis colores.
+color(C) :-
+    between(1, 6, C).
+
+%!  respuesta_colores(+Secreto:list, +Intento:list, -Toros:integer,
+%!                    -Vacas:integer) is det.
+%
+%   Toros son las posiciones iguales; Vacas, los colores comunes, cada uno
+%   tantas veces como el menor de sus apariciones, menos los toros.
+respuesta_colores(Secreto, Intento, Toros, Vacas) :-
+    aggregate_all(count, ( nth1(I, Secreto, X), nth1(I, Intento, X) ), Toros),
+    aggregate_all(sum(M), ( color(C),
+                            veces(C, Secreto, N1),
+                            veces(C, Intento, N2),
+                            M is min(N1, N2) ),
+                  Comunes),
+    Vacas is Comunes - Toros.
+
+%!  veces(+X, +Lista:list, -N:integer) is det.
+%
+%   N es la cantidad de veces que X aparece en Lista.
+veces(X, Lista, N) :-
+    include(==(X), Lista, Xs),
+    length(Xs, N).
+
+%!  adivinar_colores(+Secreto:list, -Intentos:list) is det.
+%
+%   Intentos son los de la regla de la jugada consistente sobre los 1296
+%   códigos de colores, hasta el que acierta.
+adivinar_colores(Secreto, Intentos) :-
+    findall(C, codigo_colores(C), Codigos),
+    colores_entre(Codigos, Secreto, Intentos).
+
+%!  colores_entre(+Codigos:list, +Secreto:list, -Intentos:list) is det.
+%
+%   Como adivinar_entre/3 de candidatos.pl, con respuesta_colores/4.
+colores_entre([Intento|Codigos0], Secreto, [Intento|Intentos]) :-
+    respuesta_colores(Secreto, Intento, T, V),
+    (   T =:= 4
+    ->  Intentos = []
+    ;   include(explica_colores(Intento, T, V), Codigos0, Codigos),
+        colores_entre(Codigos, Secreto, Intentos)
+    ).
+
+%!  explica_colores(+Intento:list, +T:integer, +V:integer, +Codigo:list)
+%!      is semidet.
+%
+%   Si Codigo fuera el secreto, Intento recibiría T toros y V vacas.
+explica_colores(Intento, T, V, Codigo) :-
+    respuesta_colores(Codigo, Intento, T, V).
+
+%!  medir_colores(-Cuantos:list(pair), -Media:float) is det.
+%
+%   medir/4 de mastermind.pl sobre los 1296 códigos de colores.
+medir_colores(Cuantos, Media) :-
+    findall(C, codigo_colores(C), Secretos),
+    medir(adivinar_colores, Secretos, Cuantos, Media).
+
+% --- Ejercicio 8: la primera contradicción -----------------------------------
+
+%!  primera_contradiccion(+Respuestas:list, -K:integer) is semidet.
+%
+%   K es la posición en Respuestas de la primera respuesta después de la
+%   cual ningún código las explica a todas. Falla si no hay contradicción.
+primera_contradiccion(Respuestas, K) :-
+    candidatos(Codigos),
+    contradiccion(Respuestas, 1, Codigos, K).
+
+%!  contradiccion(+Respuestas:list, +I:integer, +Codigos:list, -K:integer)
+%!      is semidet.
+%
+%   Como primera_contradiccion/2, con I la posición de la primera de
+%   Respuestas y Codigos los que explican las anteriores.
+contradiccion([r(Intento, T, V)|Respuestas], I, Codigos0, K) :-
+    filtrar(Codigos0, Intento, T, V, Codigos),
+    (   Codigos == []
+    ->  K = I
+    ;   I1 is I + 1,
+        contradiccion(Respuestas, I1, Codigos, K)
+    ).
+
+% --- Ejercicio 10: Kalah con las piedras de cada lado ------------------------
+
+% kalah_piedras(N) es kalah(N) con otra evaluación: la diferencia de
+% kalahs más la mitad de la diferencia de las piedras en los hoyos.
+
+%!  capitulo42:inicial(+Juego, -Posicion) is det.
+%
+%   kalah_piedras(N) empieza como kalah(N).
+capitulo42:inicial(kalah_piedras(N), P) :-
+    capitulo42:inicial(kalah(N), P).
+
+%!  capitulo42:jugada(+Juego, +Posicion, ?Jugada, -Siguiente) is nondet.
+%
+%   Las jugadas de kalah_piedras(N) son las de kalah(N).
+capitulo42:jugada(kalah_piedras(N), P, J, P1) :-
+    capitulo42:jugada(kalah(N), P, J, P1).
+
+%!  capitulo42:turno(+Juego, +Posicion, -Lado) is det.
+%
+%   Como en kalah(N).
+capitulo42:turno(kalah_piedras(N), P, Lado) :-
+    capitulo42:turno(kalah(N), P, Lado).
+
+%!  capitulo42:fin(+Juego, +Posicion, -Resultado) is semidet.
+%
+%   Como en kalah(N).
+capitulo42:fin(kalah_piedras(N), P, R) :-
+    capitulo42:fin(kalah(N), P, R).
+
+%!  capitulo42:evaluar(+Juego, +Posicion, -Valor) is det.
+%
+%   La evaluación de kalah_piedras/1, con piedras/3.
+capitulo42:evaluar(kalah_piedras(_), k(T, J), Valor) :-
+    piedras(T, J, Valor).
+
+%!  piedras(+Tablero, +Jugador, -Valor:number) is det.
+%
+%   Valor es, desde sur, la diferencia de los kalahs más la mitad de la
+%   diferencia de las piedras de los hoyos, con Tablero visto desde
+%   Jugador.
+piedras(tablero(Mios, K, Suyos, L), J, Valor) :-
+    sum_list(Mios, A),
+    sum_list(Suyos, B),
+    V is K - L + (A - B) / 2,
+    (   J == sur
+    ->  Valor = V
+    ;   Valor is -V
+    ).
+
+%!  torneo(+Juegos:list, +Profundidades:list, -Resultados:list) is det.
+%
+%   Resultados son los términos r(Sur, Norte, Resultado) de las partidas
+%   de kalah(6) con Sur y Norte, pares Juego-Profundidad con distinto
+%   juego, como estrategias.
+torneo(Juegos, Profundidades, Resultados) :-
+    findall(r(GS-DS, GN-DN, R),
+            ( member(GS, Juegos), member(GN, Juegos), GS \== GN,
+              member(DS, Profundidades), member(DN, Profundidades),
+              partida(kalah(6), profundidad_en(GS, DS),
+                      profundidad_en(GN, DN), _, R) ),
+            Resultados).
+
+%!  profundidad_en(+Juego, +D:integer, +Juego0, +Posicion, -Jugada) is det.
+%
+%   La estrategia que busca D jugadas hacia adelante con la evaluación de
+%   Juego, aunque la partida sea de Juego0: los dos juegos tienen las
+%   mismas posiciones y jugadas.
+profundidad_en(Juego, D, _, Posicion, Jugada) :-
+    alfabeta(Juego, Posicion, D, Jugada, _, _).
+
+%!  puntos(+Resultados:list, -Puntos:list(pair)) is det.
+%
+%   Puntos son los pares Juego-P: una victoria vale 1 y un empate 0,5.
+puntos(Resultados, Puntos) :-
+    findall(G-P, ( member(r(GS-_, GN-_, R), Resultados),
+                   puntaje(R, GS, GN, G, P) ),
+            Todos),
+    keysort(Todos, Ordenados),
+    group_pairs_by_key(Ordenados, Grupos),
+    maplist(sumar_grupo, Grupos, Puntos).
+
+%!  puntaje(+Resultado, +GS, +GN, -G, -P:number) is nondet.
+%
+%   El juego G obtiene P puntos en una partida de GS como sur y GN como
+%   norte.
+puntaje(gana(sur), GS, _, GS, 1).
+puntaje(gana(norte), _, GN, GN, 1).
+puntaje(empate, GS, GN, G, 0.5) :-
+    member(G, [GS, GN]).
+
+%!  sumar_grupo(+Grupo, -Par) is det.
+%
+%   Par es G-Total, con Total la suma de los puntos del Grupo G-Ps.
+sumar_grupo(G-Ps, G-Total) :-
+    sum_list(Ps, Total).
+
+% --- Ejercicio 11: el texto de una jugada de Nim -----------------------------
+
+%!  jugada_nim_texto(+Jugada, -Texto:string) is det.
+%
+%   Texto describe la jugada sacar(K, M) de la computadora.
+jugada_nim_texto(sacar(K, M), Texto) :-
+    (   M =:= 1
+    ->  format(string(Texto), "La computadora saca 1 ficha de la pila ~d.",
+               [K])
+    ;   format(string(Texto),
+               "La computadora saca ~d fichas de la pila ~d.", [M, K])
     ).

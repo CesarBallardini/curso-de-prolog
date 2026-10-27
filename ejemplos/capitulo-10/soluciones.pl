@@ -455,3 +455,66 @@ nadie_despues(_, _).
 ultimo_sin_negacion(X, [X]).
 ultimo_sin_negacion(X, [_|Resto]) :-
     ultimo_sin_negacion(X, Resto).
+
+% --- Ejercicio 18 ----------------------------------------------------------
+
+%!  selecciona(?X, ?Xs, +Ys) is nondet.
+%
+%   Ys es Xs sin una de las apariciones de X: una respuesta por cada
+%   aparición. Con Ys dada y Xs libre, inserta X en cada posición de Ys.
+selecciona(X, [X|Xs], Xs).
+selecciona(X, [Y|Ys], [Y|Zs]) :-
+    selecciona(X, Ys, Zs).
+
+%!  permuta(+Xs, ?Ys) is nondet.
+%
+%   Ys es una permutación de Xs: elige el primer elemento con selecciona/3 y
+%   permuta el resto. Una lista de n elementos distintos da n! respuestas.
+permuta([], []).
+permuta(Xs, [Z|Zs]) :-
+    selecciona(Z, Xs, Ys),
+    permuta(Ys, Zs).
+
+%!  pertenece(?X, ?L) is nondet.
+%
+%   X es uno de los elementos de L.
+%   X es el primer elemento, o es un elemento del resto. Con L libre, enumera
+%   listas cada vez más largas que contienen a X, sin fin.
+pertenece(X, [X|_]).
+pertenece(X, [_|Resto]) :-
+    pertenece(X, Resto).
+
+%!  concatenar(+A, ?B, -C) is det.
+%!  concatenar(?A, ?B, +C) is nondet.
+%
+%   C es la lista A seguida de la lista B.
+concatenar([], B, B).
+concatenar([X|RestoA], B, [X|RestoC]) :-
+    concatenar(RestoA, B, RestoC).
+
+%!  palindrome(+L) is semidet.
+%
+%   L se lee igual en los dos sentidos.
+palindrome(L) :-
+    reverse(L, L).
+
+%!  palindromos(+L, -Ps) is det.
+%
+%   Ps es la lista de todos los palíndromos distintos que se forman con los
+%   elementos de L, en el orden en que permuta/2 los genera. Ps debe llegar
+%   libre.
+palindromos(L, Ps) :-
+    armar_palindromos(L, Ps, []).
+
+%!  armar_palindromos(+L, -Ps, +YaIncluidas) is det.
+%
+%   Ps es la lista de los palíndromos formados con L que no están en
+%   YaIncluidas.
+armar_palindromos(L, [P|Ps], YaIncluidas) :-
+    permuta(L, P),
+    palindrome(P),
+    \+ pertenece(P, YaIncluidas),
+    !,
+    concatenar(YaIncluidas, [P], YaIncluidasConP),
+    armar_palindromos(L, Ps, YaIncluidasConP).
+armar_palindromos(_, [], _).

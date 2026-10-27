@@ -1,20 +1,19 @@
 :- encoding(utf8).
 
-% Capítulo 21 - Soluciones de los ejercicios 14, 15 y 16: el proyecto.
+% Capítulo 21 - Soluciones de los ejercicios 13, 14 y 15: el proyecto.
 %
-% Es inscripciones.pl con el comando vacantes (ejercicio 14), texto_de/2
-% (ejercicio 15) y una respuesta de uso para los comandos mal escritos
-% (ejercicio 16).
+% Es inscripciones.pl con tres agregados: registrar_nota/3 (ejercicio 13),
+% el historial de operaciones (ejercicio 14) y el promedio memorizado que se
+% invalida cuando cambia una nota (ejercicio 15).
 %
-%?- ejecutar("vacantes de logica", Respuesta).
-%?- ejecutar("inscribir 104", Respuesta).
-
-:- use_module(library(dcg/basics)).
+%?- registrar_nota(101, pp, 9), promedio_memo(101, P).
+%?- inscribir(104, ssl, _), dar_de_baja(104, ssl), historial(H).
 
 :- meta_predicate
     informe(2, +, -).
 
-:- dynamic inscripcion/3, vacantes/2, operaciones/1, requisitos_guardados/2.
+:- dynamic inscripcion/3, vacantes/2, operaciones/1, requisitos_guardados/2,
+    registro/2, promedio_guardado/2.
 
 % alumno(Legajo, Nombre, Carrera, Ingreso): el alumno de ese legajo cursa esa
 % carrera desde el año de ingreso.
@@ -128,7 +127,7 @@ puede_inscribirse(Legajo, Materia) :-
 %
 %   El alumno llamado Nombre aprobó Materia. El primer objetivo es el que el
 %   nombre selecciona: con el orden inverso, la consulta recorre todas las
-%   inscripciones de la materia antes de examinar el nombre (sección 16.5).
+%   inscripciones de la materia antes de examinar el nombre (sección 17.5).
 aprobada_por_nombre(Nombre, Materia) :-
     alumno(Legajo, Nombre, _, _),
     aprobada(Legajo, Materia, _Nota).
@@ -253,7 +252,7 @@ inscribir(Legajo, Materia, Resultado) :-
         cambiar_vacantes(Materia, -1)
     ;   true
     ),
-    contar_operacion.
+    contar_operacion(inscribir(Legajo, Materia, Resultado)).
 
 %!  dar_de_baja(+Legajo:integer, +Materia:atom) is semidet.
 %
@@ -262,7 +261,7 @@ inscribir(Legajo, Materia, Resultado) :-
 dar_de_baja(Legajo, Materia) :-
     retract(inscripcion(Legajo, Materia, cursando)),
     cambiar_vacantes(Materia, 1),
-    contar_operacion.
+    contar_operacion(dar_de_baja(Legajo, Materia)).
 
 %!  cambiar_vacantes(+Materia:atom, +Cambio:integer) is det.
 %
@@ -272,13 +271,22 @@ cambiar_vacantes(Materia, Cambio) :-
     N is N0 + Cambio,
     assertz(vacantes(Materia, N)).
 
-%!  contar_operacion is det.
+%!  contar_operacion(+Operacion) is det.
 %
-%   Suma uno al contador de operaciones.
-contar_operacion :-
+%   Suma uno al contador de operaciones y registra Operacion en el historial
+%   con ese número (ejercicio 14).
+contar_operacion(Operacion) :-
     retract(operaciones(N0)),
     N is N0 + 1,
-    assertz(operaciones(N)).
+    assertz(operaciones(N)),
+    assertz(registro(N, Operacion)).
+
+%!  historial(-Operaciones:list) is det.
+%
+%   Operaciones son las operaciones registradas, en el orden en que se
+%   hicieron, como pares Numero-Operacion.
+historial(Operaciones) :-
+    findall(N-Op, registro(N, Op), Operaciones).
 
 %!  requisitos_de(+Materia:atom, -Requisitos:list(atom)) is det.
 %
@@ -307,121 +315,54 @@ requisito(Materia, Requisito) :-
 %!  estado(-Estado) is det.
 %
 %   Estado reúne los datos que cambian durante la ejecución: las
-%   inscripciones, las vacantes y el contador de operaciones.
-estado(estado(Inscripciones, Vacantes, Operaciones)) :-
+%   inscripciones, las vacantes, el contador de operaciones y el historial.
+estado(estado(Inscripciones, Vacantes, Operaciones, Registros)) :-
     findall(inscripcion(L, M, E), inscripcion(L, M, E), Inscripciones),
     findall(vacantes(M, N), vacantes(M, N), Vacantes),
-    operaciones(Operaciones).
+    operaciones(Operaciones),
+    findall(registro(N, Op), registro(N, Op), Registros).
 
 %!  restaurar(+Estado) is det.
 %
 %   Reemplaza los datos que cambian durante la ejecución por los de Estado,
-%   obtenido antes con estado/1.
-restaurar(estado(Inscripciones, Vacantes, Operaciones)) :-
+%   obtenido antes con estado/1, y borra los promedios guardados.
+restaurar(estado(Inscripciones, Vacantes, Operaciones, Registros)) :-
     retractall(inscripcion(_, _, _)),
     retractall(vacantes(_, _)),
     retractall(operaciones(_)),
+    retractall(registro(_, _)),
+    retractall(promedio_guardado(_, _)),
     maplist(assertz, Inscripciones),
     maplist(assertz, Vacantes),
-    assertz(operaciones(Operaciones)).
+    assertz(operaciones(Operaciones)),
+    maplist(assertz, Registros).
 
-%!  ejecutar(+Texto:string, -Respuesta) is det.
+% --- Ejercicio 13 -------------------------------------------------------------
+
+%!  registrar_nota(+Legajo:integer, +Materia:atom, +Nota:integer) is semidet.
 %
-%   Analiza el comando Texto y lo ejecuta. Respuesta es el resultado:
-%   aceptada o rechazada(Motivo) para una inscripción, baja o
-%   rechazada(no_la_cursa) para una baja, inscriptos(Legajos) para un
-%   listado, promedio(P) o sin_notas para un promedio, vacantes(N) para las
-%   vacantes de una materia (ejercicio 14). Si el texto no es un comando pero
-%   empieza con la palabra de uno, Respuesta es uso(Ejemplo), con un comando
-%   de ejemplo que empieza igual (ejercicio 16); si no, no_entendido.
-ejecutar(Texto, Respuesta) :-
-    string_codes(Texto, Codigos),
-    (   phrase(palabras(Palabras), Codigos),
-        phrase(comando(Comando), Palabras)
-    ->  realizar(Comando, Respuesta)
-    ;   phrase(palabras([Verbo|_]), Codigos),
-        once(phrase(comando(_), [Verbo|Resto]))
-    ->  atomic_list_concat([Verbo|Resto], ' ', Ejemplo),
-        Respuesta = uso(Ejemplo)
-    ;   Respuesta = no_entendido
+%   Registra la nota final Nota, de 1 a 10, del alumno Legajo en Materia,
+%   que debe estar cursando. Falla si no la está cursando o si la nota no es
+%   válida. Borra el promedio guardado del alumno (ejercicio 15).
+registrar_nota(Legajo, Materia, Nota) :-
+    integer(Nota),
+    between(1, 10, Nota),
+    retract(inscripcion(Legajo, Materia, cursando)),
+    assertz(inscripcion(Legajo, Materia, nota(Nota))),
+    retractall(promedio_guardado(Legajo, _)),
+    contar_operacion(registrar_nota(Legajo, Materia, Nota)).
+
+% --- Ejercicio 15 -------------------------------------------------------------
+
+%!  promedio_memo(+Legajo:integer, -Promedio:number) is semidet.
+%
+%   El promedio de promedio_de_alumno/2, guardado en promedio_guardado/2 la
+%   primera vez que se calcula. registrar_nota/3 lo borra, porque deja de
+%   ser correcto.
+promedio_memo(Legajo, Promedio) :-
+    (   promedio_guardado(Legajo, Guardado)
+    ->  Promedio = Guardado
+    ;   promedio_de_alumno(Legajo, Calculado),
+        assertz(promedio_guardado(Legajo, Calculado)),
+        Promedio = Calculado
     ).
-
-%!  palabras(-Palabras:list)// is det.
-%
-%   Palabras son las palabras y los números del texto, separados por
-%   blancos. Una palabra es un átomo; un número, un entero.
-palabras([P|Ps]) -->
-    blanks,
-    palabra(P),
-    !,
-    palabras(Ps).
-palabras([]) -->
-    blanks.
-
-%!  palabra(-P)// is semidet.
-%
-%   P es un entero, si el texto empieza con dígitos, o un átomo formado por
-%   letras, dígitos y guiones bajos.
-palabra(N) -->
-    integer(N),
-    !.
-palabra(A) -->
-    csym(A).
-
-%!  comando(?Comando)// is nondet.
-%
-%   La lista de palabras de Comando: inscribir(Legajo, Materia),
-%   baja(Legajo, Materia), listar(Materia) o promedio(Legajo). Las materias
-%   se escriben con su nombre, no con su código.
-comando(inscribir(L, M)) -->
-    [inscribir, a], legajo(L), [en], materia_por_nombre(M).
-comando(baja(L, M)) -->
-    [dar, de, baja, a], legajo(L), [en], materia_por_nombre(M).
-comando(listar(M)) -->
-    [listar], materia_por_nombre(M).
-comando(promedio(L)) -->
-    [promedio, de], legajo(L).
-comando(vacantes(M)) -->
-    [vacantes, de], materia_por_nombre(M).
-
-%!  legajo(?L)// is semidet.
-%
-%   El legajo de un alumno.
-legajo(L) -->
-    [L],
-    { alumno(L, _, _, _) }.
-
-%!  materia_por_nombre(?Codigo)// is semidet.
-%
-%   El nombre de la materia de código Codigo.
-materia_por_nombre(Codigo) -->
-    [Nombre],
-    { materia(Codigo, Nombre, _) }.
-
-%!  realizar(+Comando, -Respuesta) is det.
-%
-%   Ejecuta Comando, ya analizado, y da su Respuesta.
-realizar(inscribir(L, M), Respuesta) :-
-    inscribir(L, M, Respuesta).
-realizar(baja(L, M), Respuesta) :-
-    (   dar_de_baja(L, M)
-    ->  Respuesta = baja
-    ;   Respuesta = rechazada(no_la_cursa)
-    ).
-realizar(listar(M), inscriptos(Legajos)) :-
-    inscriptos(M, Legajos).
-realizar(vacantes(M), vacantes(N)) :-
-    vacantes(M, N).
-realizar(promedio(L), Respuesta) :-
-    (   promedio_de_alumno(L, P)
-    ->  Respuesta = promedio(P)
-    ;   Respuesta = sin_notas
-    ).
-
-%!  texto_de(+Comando, -Texto:atom) is semidet.
-%
-%   Texto es el texto de Comando, generado con la misma gramática que lo
-%   analiza (ejercicio 15).
-texto_de(Comando, Texto) :-
-    once(phrase(comando(Comando), Palabras)),
-    atomic_list_concat(Palabras, ' ', Texto).

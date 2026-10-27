@@ -197,7 +197,7 @@ modo que comenzar por él deja menos alternativas por explorar: la primera cosa
 que se prueba ya es la respuesta, y no hace falta retroceder. Con seis hechos
 la diferencia es imperceptible; en programas de mayor tamaño puede determinar
 que una consulta termine en un tiempo razonable o que no termine. El capítulo
-16 trata este tema.
+17 trata este tema.
 :::
 
 ## Una regla
@@ -266,7 +266,7 @@ respuesta por cada una. Lo mismo ocurre con pedro, padre de luis y de eva.
 Prolog no elimina duplicados ni verifica si una respuesta ya fue entregada. La
 cantidad de respuestas no es la cantidad de soluciones distintas, sino la
 cantidad de demostraciones. Es posible eliminar los duplicados, pero requiere
-herramientas que se presentan en el capítulo 17.
+herramientas que se presentan en el capítulo 18.
 :::
 
 ## Varias cláusulas: «o»
@@ -638,7 +638,7 @@ Para ejecutar las pruebas se cargan juntos el programa y el archivo de pruebas,
 y se llama a run_tests. La salida informa cada prueba y el total.
 
 Todos los ejemplos de este curso tienen su archivo de pruebas, y todas las
-pruebas pasan antes de que el ejemplo se incorpore al texto. El capítulo 26
+pruebas pasan antes de que el ejemplo se incorpore al texto. El capítulo 27
 presenta las demás opciones de plunit.
 
 Actividad del capítulo: eliminar la comparación final de la regla corregida y

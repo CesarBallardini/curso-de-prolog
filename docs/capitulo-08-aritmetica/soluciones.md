@@ -329,7 +329,7 @@ consultando `factorial/2` con valores crecientes —1000, 10 000, 100 000— has
 obtener el error de desbordamiento, `Stack limit (1.0Gb) exceeded`. Con el
 límite predeterminado de SWI-Prolog, `factorial(100000, F)` todavía responde.
 Con un acumulador, el límite se extiende de manera considerable; la
-[sección 16.2](../capitulo-16-rendimiento/index.md#162-la-pila-y-la-recursion)
+[sección 17.2](../capitulo-17-rendimiento/index.md#172-la-pila-y-la-recursion)
 explica qué ocupa la pila en cada caso.
 
 ## 10
@@ -353,7 +353,7 @@ que la lista se obtiene en el orden pedido sin transportar ningún resultado
 parcial.
 
 La versión con acumulador sigue la plantilla 13. Como el acumulador agrega cada
-número **al comienzo** de la lista, igual que `dando_vuelta/3` de la
+número **al comienzo** de la lista, igual que `invirtiendo/3` de la
 [sección 8.6](index.md#86-un-acumulador-que-no-es-un-numero), los números se
 deben recorrer en orden creciente para que `N` quede primero:
 
@@ -596,7 +596,7 @@ en la [sección 8.4](index.md#84-cuando-se-admite-la-consulta-inversa). Es la
 plantilla 15 del
 [capítulo 9](../capitulo-09-backtracking-y-corte/index.md), que presenta
 `between/3` para generar enteros; otra alternativa es la técnica del
-[capítulo 23](../capitulo-23-programacion-con-restricciones/index.md).
+[capítulo 24](../capitulo-24-programacion-con-restricciones/index.md).
 
 ## 15
 
@@ -685,4 +685,575 @@ derecha y la variable que recibe el resultado, a la izquierda:
 ?- X = 3, C is X * X * X.
 X = 3,
 C = 27.
+```
+
+## 17
+
+<!-- ejemplo: capitulo-08/soluciones.pl predicado: enesimo/3 consulta: enesimo([a, b, c, d], N, E). -->
+```prolog
+%!  enesimo(+Lista, ?N, ?X) is nondet.
+%
+%   X es el elemento que ocupa la posición N de Lista, contando desde 1. La
+%   llamada recursiva genera la posición en el resto de la lista, y is/2 la
+%   calcula o la compara: N puede llegar libre o ligado.
+enesimo([X|_], 1, X).
+enesimo([_|Resto], N, X) :-
+    enesimo(Resto, Anterior, X),
+    N is Anterior + 1.
+```
+
+El caso base ubica `X` en la posición 1. El caso recursivo busca `X` en el
+resto de la lista y obtiene su posición `Anterior` en ese resto; en la lista
+completa, la posición es una más. Lo que admite los dos sentidos es el orden de
+los objetivos: la llamada recursiva genera `Anterior` antes de que `is/2` lo
+use, del mismo modo que `edad(P, A)` genera `A` en la
+[sección 8.4](index.md#84-cuando-se-admite-la-consulta-inversa). Con `N` libre,
+`is/2` calcula la posición; con `N` ligado, la compara:
+
+```prolog
+?- enesimo([a, b, c, d], 3, E).
+E = c ;
+false.
+
+?- enesimo([a, b, c, d], N, E).
+N = 1,
+E = a ;
+N = 2,
+E = b ;
+N = 3,
+E = c ;
+N = 4,
+E = d ;
+false.
+
+?- enesimo([a, b, c, d], 4, d).
+true ;
+false.
+```
+
+Con `N` ligado, la recursión igualmente genera todas las posiciones, e `is/2`
+descarta las que no coinciden; por eso la consulta conserva alternativas
+pendientes después de la respuesta. Si el caso recursivo calculara primero
+`Anterior is N - 1`, como `cuenta_atras/2` del [ejercicio 10](#10), con `N`
+libre se produciría un error de argumentos sin instanciar.
+
+## 18
+
+<!-- ejemplo: capitulo-08/soluciones.pl predicado: ordered/1 ordena/2 insert/3 consulta: ordena([5, 0, 1, 2, 0], L). -->
+```prolog
+%!  ordered(+Xs) is semidet.
+%
+%   La lista de números Xs está ordenada en forma ascendente.
+ordered([]).
+ordered([_]).
+ordered([X, Y|Ys]) :-
+    X =< Y,
+    ordered([Y|Ys]).
+
+%!  ordena(+Xs, -Ys) is det.
+%
+%   Ys tiene los elementos de Xs en orden ascendente, con las repeticiones
+%   incluidas. Ordenamiento por inserción: se ordena el resto y se inserta el
+%   primero en su lugar.
+ordena([], []).
+ordena([X|Xs], Ys) :-
+    ordena(Xs, Zs),
+    insert(X, Zs, Ys).
+
+%!  insert(+X, +Ys, -Zs) is det.
+%
+%   Zs es la lista ordenada Ys con X insertado en su lugar.
+insert(X, [], [X]).
+insert(X, [Y|Ys], [Y|Zs]) :-
+    X > Y,
+    insert(X, Ys, Zs).
+insert(X, [Y|Ys], [X, Y|Ys]) :-
+    X =< Y.
+```
+
+`ordered/1` tiene dos casos base, la lista vacía y la de un elemento, y una
+regla que compara los dos primeros elementos y continúa desde el segundo.
+`ordena/2` ordena el resto de la lista y después inserta el primer elemento.
+Las dos últimas cláusulas de `insert/3` tienen condiciones mutuamente
+excluyentes; cuando `X` es igual a `Y`, la tercera lo ubica delante, y las
+repeticiones se conservan. Los nombres `ordered/1` e `insert/3` son los de
+*The Art of Prolog*, de Sterling y Shapiro, que llama `sort/2` al ordenamiento;
+ese nombre corresponde en SWI-Prolog a un predicado predefinido que además
+elimina las repeticiones.
+
+```prolog
+?- ordered([1, 2, 2, 5]).
+true ;
+false.
+
+?- ordered([3, 1, 2]).
+false.
+
+?- ordena([5, 0, 1, 2, 0], L).
+L = [0, 0, 1, 2, 5] ;
+false.
+
+?- ordena([10, 2, 5, -1, 4], [-1, 2, 4, 5, 10]).
+true ;
+false.
+```
+
+La alternativa pendiente es la tercera cláusula de `insert/3`, que falla en la
+comparación `X =< Y`.
+
+## 19
+
+<!-- ejemplo: capitulo-08/soluciones.pl predicado: arbol_ejemplo/1 profundidad/2 sum_tree/2 cantidad_hojas/2 lista_nivel/3 consulta: arbol_ejemplo(T), profundidad(T, P). -->
+```prolog
+% arbol_ejemplo(T): T es el árbol binario de ejemplo.
+arbol_ejemplo(tree(1, tree(2, void, tree(4, void, void)),
+                   tree(3, tree(5, tree(7, void, void), void),
+                        tree(6, void, void)))).
+
+%!  profundidad(+T, -P) is det.
+%
+%   P es la profundidad del árbol T: la cantidad de aristas del camino más
+%   largo desde la raíz hasta una hoja. Un árbol de un solo nodo tiene
+%   profundidad 0 y, por convención, el árbol vacío tiene profundidad -1.
+profundidad(void, -1).
+profundidad(tree(_, Izq, Der), P) :-
+    profundidad(Izq, PIzq),
+    profundidad(Der, PDer),
+    mayor_de_los_dos(PIzq, PDer, Mayor),
+    P is Mayor + 1.
+
+%!  sum_tree(+T, -Suma) is det.
+%
+%   Suma es la suma de los números de los nodos del árbol T.
+sum_tree(void, 0).
+sum_tree(tree(X, Izq, Der), Suma) :-
+    sum_tree(Izq, SumaIzq),
+    sum_tree(Der, SumaDer),
+    Suma is X + SumaIzq + SumaDer.
+
+%!  cantidad_hojas(+T, -N) is det.
+%
+%   N es la cantidad de hojas del árbol T. La tercera cláusula excluye el
+%   caso de la segunda: los dos hijos no son vacíos a la vez.
+cantidad_hojas(void, 0).
+cantidad_hojas(tree(_, void, void), 1).
+cantidad_hojas(tree(_, Izq, Der), N) :-
+    [Izq, Der] \== [void, void],
+    cantidad_hojas(Izq, NIzq),
+    cantidad_hojas(Der, NDer),
+    N is NIzq + NDer.
+
+%!  lista_nivel(+T, +N, -L) is det.
+%
+%   L es la lista de los valores de los nodos del nivel N del árbol T, de
+%   izquierda a derecha. La raíz está en el nivel 0.
+lista_nivel(void, _, []).
+lista_nivel(tree(X, _, _), 0, [X]).
+lista_nivel(tree(_, Izq, Der), N, L) :-
+    N > 0,
+    Anterior is N - 1,
+    lista_nivel(Izq, Anterior, LIzq),
+    lista_nivel(Der, Anterior, LDer),
+    append(LIzq, LDer, L).
+```
+
+La profundidad de un nodo es uno más que la mayor de las profundidades de sus
+dos subárboles. Para que esa regla dé 0 en una hoja, el árbol vacío tiene, por
+convención, profundidad -1; así no hace falta distinguir los nodos con uno o
+con dos hijos. La mayor de las dos se obtiene con `mayor_de_los_dos/3` del
+[ejercicio 5](#5). `sum_tree/2` es el nombre que dan Sterling y Shapiro a este
+ejercicio en *The Art of Prolog*.
+
+En `cantidad_hojas/2`, una hoja unifica con la cabeza de la segunda cláusula y
+también con la de la tercera. La condición `[Izq, Der] \== [void, void]` de la
+tercera excluye ese caso: sin ella, cada hoja aportaría una segunda respuesta,
+la suma de los dos subárboles vacíos, que es 0. Es el mismo problema de la
+[sección 3.5](../capitulo-03-reglas-y-conjunciones/index.md#35-una-regla-que-produce-respuestas-de-mas),
+resuelto con el mismo `\==`. En `lista_nivel/3`, la condición `N > 0` cumple la
+misma función respecto de la segunda cláusula. Un nivel mayor que la
+profundidad da la lista vacía.
+
+```prolog
+?- arbol_ejemplo(T), profundidad(T, P), sum_tree(T, S).
+T = tree(1, tree(2, void, tree(4, void, void)), tree(3, tree(5, tree(7, void, void), void), tree(6, void, void))),
+P = 3,
+S = 28 ;
+false.
+
+?- arbol_ejemplo(T), cantidad_hojas(T, N), lista_nivel(T, 2, L).
+T = tree(1, tree(2, void, tree(4, void, void)), tree(3, tree(5, tree(7, void, void), void), tree(6, void, void))),
+N = 3,
+L = [4, 5, 6] ;
+false.
+
+?- profundidad(tree(9, void, void), P).
+P = 0 ;
+false.
+```
+
+## 20
+
+<!-- ejemplo: capitulo-08/soluciones.pl predicado: ocurrencias/3 suma_uno/2 consulta: ocurrencias(a, [s, 1, 3, a, a, 2, d, a], T). -->
+```prolog
+%!  ocurrencias(+X, +Lista, -Posiciones) is det.
+%
+%   Posiciones es la lista de las posiciones, contando desde 1, en que X
+%   aparece en Lista. Las posiciones del resto se calculan primero y después
+%   se desplazan en uno, porque el resto comienza una posición más adelante.
+ocurrencias(_, [], []).
+ocurrencias(X, [X|Resto], [1|Posiciones]) :-
+    ocurrencias(X, Resto, EnElResto),
+    suma_uno(EnElResto, Posiciones).
+ocurrencias(X, [Y|Resto], Posiciones) :-
+    X \== Y,
+    ocurrencias(X, Resto, EnElResto),
+    suma_uno(EnElResto, Posiciones).
+
+%!  suma_uno(+Ns, -Ms) is det.
+%
+%   Ms es la lista Ns con cada número aumentado en uno.
+suma_uno([], []).
+suma_uno([N|Ns], [M|Ms]) :-
+    M is N + 1,
+    suma_uno(Ns, Ms).
+```
+
+La restricción impide llevar la posición actual en un argumento adicional, como
+el acumulador de la [sección 8.5](index.md#85-acumuladores). La solución
+calcula las posiciones de `X` en el resto de la lista, contadas desde el
+comienzo del resto, y les suma uno, porque el resto comienza una posición más
+adelante. Si el primer elemento es `X`, se agrega además la posición 1. Cada
+cláusula llama primero a la recursión y después a `suma_uno/2`, que recibe la
+lista ya calculada: por eso `Posiciones` puede llegar ligada, como en la segunda
+consulta. La condición `X \== Y` de la tercera cláusula excluye el caso de la
+segunda.
+
+```prolog
+?- ocurrencias(a, [s, 1, 3, a, a, 2, d, a], T).
+T = [4, 5, 8] ;
+false.
+
+?- ocurrencias(2, [2, 1, 3, a, a, 2, d, a], [1, 6]).
+true ;
+false.
+
+?- ocurrencias(4, [s, 1, 3, a, a, 2, d, a], T).
+T = [] ;
+false.
+```
+
+## 21
+
+<!-- ejemplo: capitulo-08/soluciones.pl predicado: intercala/5 intercalando/5 consulta: intercala([a1, a2, a3, a4], [b1, b2], 4, 1, X). -->
+```prolog
+%!  intercala(+L1, +L2, +N1, +N2, -R) is nondet.
+%
+%   R alterna tramos de N1 elementos de L1 con tramos de N2 elementos de L2.
+%   El primer tramo puede ser de cualquiera de las dos listas.
+intercala(L1, L2, N1, N2, R) :-
+    intercalando(L1, L2, N1, N2, R).
+intercala(L1, L2, N1, N2, R) :-
+    intercalando(L2, L1, N2, N1, R).
+
+%!  intercalando(+L1, +L2, +N1, +N2, -R) is semidet.
+%
+%   R comienza con un tramo de N1 elementos de L1 y sigue alternando, con
+%   los papeles de las dos listas intercambiados.
+intercalando([], [], _, _, []).
+intercalando(L1, L2, N1, N2, R) :-
+    length(Tramo, N1),
+    append(Tramo, Resto1, L1),
+    append(Tramo, RestoR, R),
+    intercalando(L2, Resto1, N2, N1, RestoR).
+```
+
+`intercalando/5` toma un tramo de `N1` elementos de `L1`: `length/2` construye
+una lista de `N1` variables libres, el primer `append/3` la unifica con el
+comienzo de `L1` y el segundo la ubica al comienzo de `R`. Después continúa
+con los papeles de las dos listas intercambiados, y termina cuando las dos
+están vacías. Si una lista se agota antes de tiempo, o le falta un elemento
+para completar un tramo, el `append/3` falla. `intercala/5` prueba los dos
+órdenes posibles: primero un tramo de `L1` y, como alternativa, primero uno de
+`L2`.
+
+```prolog
+?- intercala([a1, a2, a3, a4, a5, a6], [b1, b2, b3, b4], 3, 2, [a1, a2, a3, b1, b2, a4, a5, a6, b3, b4]).
+true ;
+false.
+
+?- intercala([a1, a2, a3, a4], [b1, b2], 4, 1, X).
+X = [b1, a1, a2, a3, a4, b2] ;
+false.
+
+?- intercala([a1, a2, a3, a4], [b1, b2], 2, 1, X).
+X = [a1, a2, b1, a3, a4, b2] ;
+X = [b1, a1, a2, b2, a3, a4] ;
+false.
+```
+
+La última consulta tiene dos respuestas porque las dos listas forman la misma
+cantidad de tramos, dos cada una, y cualquiera puede ir primero. En la
+segunda, `L1` forma un tramo y `L2` dos: el único orden posible comienza y
+termina con `L2`.
+
+## 22
+
+<!-- ejemplo: capitulo-08/soluciones.pl predicado: arbol_ponderado/2 peso_arbol/2 peso_desde/3 mapeo_arboles/2 buscando_menor/4 consulta: arbol_ponderado(arbol1, A), peso_arbol(A, P). -->
+```prolog
+% arbol_ponderado(Nombre, T): T es uno de los dos árboles del enunciado.
+arbol_ponderado(arbol1, tree(0, tree(0, tree(3, void, void),
+                                        tree(9, void, void)),
+                                tree(0, tree(5, void, void),
+                                        tree(6, void, void)))).
+arbol_ponderado(arbol2, tree(0, tree(0, tree(0, tree(3, void, void),
+                                                tree(5, void, void)),
+                                        tree(6, void, void)),
+                                tree(9, void, void))).
+
+%!  peso_arbol(+T, -Peso) is det.
+%
+%   Peso es la suma de los pesos de las hojas de T, cada uno multiplicado por
+%   su nivel. Los nodos internos llevan el valor 0 y no aportan al peso.
+peso_arbol(T, Peso) :-
+    peso_desde(T, 0, Peso).
+
+%!  peso_desde(+T, +Nivel, -Peso) is det.
+%
+%   Peso es el peso de T cuando su raíz está en el nivel Nivel.
+peso_desde(void, _, 0).
+peso_desde(tree(X, Izq, Der), Nivel, Peso) :-
+    Siguiente is Nivel + 1,
+    peso_desde(Izq, Siguiente, PesoIzq),
+    peso_desde(Der, Siguiente, PesoDer),
+    Peso is X * Nivel + PesoIzq + PesoDer.
+
+%!  mapeo_arboles(+Arboles, -T) is semidet.
+%
+%   T es el árbol de menor peso de la lista Arboles; si hay varios, el
+%   primero. La lista vacía no tiene un árbol de menor peso.
+mapeo_arboles([A|As], T) :-
+    peso_arbol(A, Peso),
+    buscando_menor(As, A, Peso, T).
+
+%!  buscando_menor(+Arboles, +Hasta, +PesoHasta, -T) is det.
+%
+%   T es el de menor peso entre Hasta, de peso PesoHasta, y los de Arboles.
+buscando_menor([], T, _, T).
+buscando_menor([A|As], _, PesoHasta, T) :-
+    peso_arbol(A, Peso),
+    Peso < PesoHasta,
+    buscando_menor(As, A, Peso, T).
+buscando_menor([A|As], Hasta, PesoHasta, T) :-
+    peso_arbol(A, Peso),
+    Peso >= PesoHasta,
+    buscando_menor(As, Hasta, PesoHasta, T).
+```
+
+La representación `tree/3` requiere un valor en cada nodo, y los nodos internos
+de un árbol ponderado no tienen peso. Darles el valor 0 conserva la
+representación del
+[capítulo 7](../capitulo-07-listas/index.md) y simplifica el cálculo: la suma
+de valor por nivel sobre **todos** los nodos coincide con la suma sobre las
+hojas, porque los nodos internos aportan 0. `peso_desde/3` no necesita, por lo
+tanto, distinguir las hojas. Su segundo argumento es el nivel del nodo, que
+aumenta en uno al bajar a los subárboles.
+
+`mapeo_arboles/2` recorre la lista como `maximo/2` del [ejercicio 8](#8), pero
+el valor acumulado es el árbol de menor peso hasta el momento, junto con su
+peso. Con dos árboles del mismo peso conserva el primero, porque solo reemplaza
+el acumulado cuando el nuevo pesa estrictamente menos.
+
+```prolog
+?- arbol_ponderado(Nombre, A), peso_arbol(A, P).
+Nombre = arbol1,
+A = tree(0, tree(0, tree(3, void, void), tree(9, void, void)), tree(0, tree(5, void, void), tree(6, void, void))),
+P = 46 ;
+Nombre = arbol2,
+A = tree(0, tree(0, tree(0, tree(3, void, void), tree(5, void, void)), tree(6, void, void)), tree(9, void, void)),
+P = 45.
+
+?- mapeo_arboles([tree(0, tree(4, void, void), tree(1, void, void)), tree(0, tree(2, void, void), tree(2, void, void))], A).
+A = tree(0, tree(2, void, void), tree(2, void, void)) ;
+false.
+```
+
+Los dos árboles de la última consulta pesan 5 y 4.
+
+## 23
+
+<!-- ejemplo: capitulo-08/soluciones.pl predicado: arbol_nario/1 es_hoja/1 cantidad/2 cantidad_bosque/2 lista_hojas_n/2 hojas_bosque/2 quita_hojas/2 quita_hojas_bosque/2 consulta: arbol_nario(A), cantidad(A, N). -->
+```prolog
+% arbol_nario(T): T es el árbol n-ario del enunciado.
+arbol_nario(nodo(a, [nodo(b, [nodo(e, []), nodo(f, []), nodo(g, [])]),
+                     nodo(c, []),
+                     nodo(d, [nodo(h, [])])])).
+
+%!  es_hoja(+T) is semidet.
+%
+%   T es un nodo sin descendientes.
+es_hoja(nodo(_, [])).
+
+%!  cantidad(+T, -N) is det.
+%
+%   N es la cantidad de nodos del árbol n-ario T.
+cantidad(nodo(_, Hijos), N) :-
+    cantidad_bosque(Hijos, NHijos),
+    N is NHijos + 1.
+
+%!  cantidad_bosque(+Arboles, -N) is det.
+%
+%   N es la cantidad de nodos de todos los árboles de la lista Arboles.
+cantidad_bosque([], 0).
+cantidad_bosque([A|As], N) :-
+    cantidad(A, NA),
+    cantidad_bosque(As, NAs),
+    N is NA + NAs.
+
+%!  lista_hojas_n(+T, -L) is det.
+%
+%   L es la lista de los valores de las hojas del árbol n-ario T, de izquierda
+%   a derecha.
+lista_hojas_n(nodo(X, []), [X]).
+lista_hojas_n(nodo(_, [H|Hs]), L) :-
+    hojas_bosque([H|Hs], L).
+
+%!  hojas_bosque(+Arboles, -L) is det.
+%
+%   L es la lista de los valores de las hojas de los árboles de Arboles.
+hojas_bosque([], []).
+hojas_bosque([A|As], L) :-
+    lista_hojas_n(A, LA),
+    hojas_bosque(As, LAs),
+    append(LA, LAs, L).
+
+%!  quita_hojas(+T, -T2) is semidet.
+%
+%   T2 es el árbol n-ario T sin sus hojas. Falla si T es una hoja.
+quita_hojas(nodo(X, [H|Hs]), nodo(X, Hijos)) :-
+    quita_hojas_bosque([H|Hs], Hijos).
+
+%!  quita_hojas_bosque(+Arboles, -Arboles2) is det.
+%
+%   Arboles2 son los árboles de Arboles que no son hojas, cada uno sin sus
+%   hojas.
+quita_hojas_bosque([], []).
+quita_hojas_bosque([nodo(_, [])|As], As2) :-
+    quita_hojas_bosque(As, As2).
+quita_hojas_bosque([nodo(X, [H|Hs])|As], [A2|As2]) :-
+    quita_hojas(nodo(X, [H|Hs]), A2),
+    quita_hojas_bosque(As, As2).
+```
+
+Los hijos de un nodo son una lista de árboles. Por eso cada predicado sobre un
+árbol se acompaña de otro sobre una lista de árboles, y los dos se llaman entre
+sí: `cantidad/2` suma uno a la cantidad de nodos de sus hijos, que calcula
+`cantidad_bosque/2` llamando a `cantidad/2` para cada uno. Las cabezas de
+`lista_hojas_n/2` distinguen la hoja, con la lista vacía de hijos, del nodo con
+al menos un hijo, `[H|Hs]`; `quita_hojas/2` exige esa misma forma, y por eso
+falla con una hoja. `quita_hojas_bosque/2` descarta los hijos que son hojas y
+quita las hojas de los demás. Un nodo cuyos hijos son todos hojas, como `b` o
+`d`, queda como hoja en el resultado.
+
+```prolog
+?- arbol_nario(A), es_hoja(A).
+false.
+
+?- es_hoja(nodo(c, [])).
+true.
+
+?- arbol_nario(A), cantidad(A, N), lista_hojas_n(A, L), quita_hojas(A, A2).
+A = nodo(a, [nodo(b, [nodo(e, []), nodo(f, []), nodo(g, [])]), nodo(c, []), nodo(d, [nodo(h, [])])]),
+N = 8,
+L = [e, f, g, c, h],
+A2 = nodo(a, [nodo(b, []), nodo(d, [])]) ;
+false.
+
+?- quita_hojas(nodo(c, []), A2).
+false.
+```
+
+## 24
+
+<!-- ejemplo: capitulo-08/soluciones.pl predicado: arbol_horizontal/1 recorrido_horizontal/2 recorriendo/3 consulta: arbol_horizontal(A), recorrido_horizontal(A, L). -->
+```prolog
+% arbol_horizontal(T): T es el árbol del enunciado, como árbol n-ario.
+arbol_horizontal(nodo(a, [nodo(c, [nodo(t, []),
+                                   nodo(r, [nodo(q, []), nodo(z, [])])]),
+                          nodo(j, [nodo(h, []), nodo(m, [])])])).
+
+%!  recorrido_horizontal(+T, -L) is det.
+%
+%   L es la lista de los valores del árbol n-ario T, nivel por nivel y cada
+%   nivel de izquierda a derecha.
+recorrido_horizontal(T, L) :-
+    recorriendo([T], [], L).
+
+%!  recorriendo(+LNodos, +LDesarrollado, -L) is det.
+%
+%   LNodos son los árboles que faltan visitar, en orden; LDesarrollado son
+%   los valores ya visitados. Se retira el primero de LNodos, su valor pasa
+%   al final de LDesarrollado y sus hijos, al final de LNodos.
+recorriendo([], LDesarrollado, LDesarrollado).
+recorriendo([nodo(X, Hijos)|LNodos], LDesarrollado, L) :-
+    append(LDesarrollado, [X], Desarrollado2),
+    append(LNodos, Hijos, LNodos2),
+    recorriendo(LNodos2, Desarrollado2, L).
+```
+
+El árbol se representa como árbol n-ario, con `nodo(R, Hs)` del
+[ejercicio 23](#23), porque el método necesita los sucesores de un nodo como
+una lista: son exactamente `Hs`, y agregarlos al final de `LNodos` es un
+`append/3`. `recorriendo/3` tiene como argumentos las dos listas del método y
+el resultado. `LNodos` funciona como una fila de espera: los árboles se retiran
+por el comienzo y se agregan por el final, y por eso los nodos de un nivel se
+visitan antes que los del siguiente.
+
+```prolog
+?- arbol_horizontal(A), recorrido_horizontal(A, L).
+A = nodo(a, [nodo(c, [nodo(t, []), nodo(r, [nodo(q, []), nodo(z, [])])]), nodo(j, [nodo(h, []), nodo(m, [])])]),
+L = [a, c, j, t, r, h, m, q, z].
+```
+
+## 25
+
+<!-- ejemplo: capitulo-08/soluciones.pl predicado: secuencia_faltante/2 faltantes_entre/3 consulta: secuencia_faltante([1, 4, 6, 12], L2). -->
+```prolog
+%!  secuencia_faltante(+L1, -L2) is det.
+%
+%   L2 son los enteros que faltan entre elementos consecutivos de L1, que
+%   está ordenada en forma estrictamente ascendente.
+secuencia_faltante([], []).
+secuencia_faltante([_], []).
+secuencia_faltante([A, B|Resto], L2) :-
+    faltantes_entre(A, B, Faltan),
+    secuencia_faltante([B|Resto], FaltanResto),
+    append(Faltan, FaltanResto, L2).
+
+%!  faltantes_entre(+A, +B, -L) is det.
+%
+%   L es la lista de los enteros mayores que A y menores que B.
+faltantes_entre(A, B, []) :-
+    A + 1 >= B.
+faltantes_entre(A, B, [C|Cs]) :-
+    C is A + 1,
+    C < B,
+    faltantes_entre(C, B, Cs).
+```
+
+`faltantes_entre/3` produce los enteros comprendidos entre dos elementos
+consecutivos, de `A + 1` a `B - 1`, y `secuencia_faltante/2` concatena esas
+listas para cada par de la secuencia. Cuando `B` es `A + 1` no falta ningún
+número, y la primera cláusula de `faltantes_entre/3` da la lista vacía.
+
+```prolog
+?- secuencia_faltante([1, 4, 6, 12], L2).
+L2 = [2, 3, 5, 7, 8, 9, 10, 11] ;
+false.
+
+?- secuencia_faltante([2, 4, 6], [1, 3, 5]).
+false.
+
+?- secuencia_faltante([-1, 0, 1, 2], []).
+true ;
+false.
 ```

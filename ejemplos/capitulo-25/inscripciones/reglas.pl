@@ -22,7 +22,6 @@
             requisitos_de/2
           ]).
 
-:- use_module(library(error)).
 :- use_module(datos).
 
 :- dynamic requisitos_guardados/2.
@@ -49,11 +48,7 @@ cursa(Legajo, Materia) :-
 %   o rechazada(Motivo) con el primer motivo que lo impide: alumno_inexistente,
 %   materia_inexistente, ya_aprobada, ya_la_cursa, falta(Requisito) o
 %   sin_vacantes. Una materia desaprobada se puede volver a cursar.
-%   Produce un error de instanciación o de tipo si Legajo no es un entero o
-%   Materia no es un átomo.
 inscripcion_posible(Legajo, Materia, Resultado) :-
-    must_be(integer, Legajo),
-    must_be(atom, Materia),
     (   \+ alumno(Legajo, _, _, _)
     ->  Resultado = rechazada(alumno_inexistente)
     ;   \+ materia(Materia, _, _)
@@ -80,7 +75,7 @@ puede_inscribirse(Legajo, Materia) :-
 %
 %   El alumno llamado Nombre aprobó Materia. El primer objetivo es el que el
 %   nombre selecciona: con el orden inverso, la consulta recorre todas las
-%   inscripciones de la materia antes de examinar el nombre (sección 16.5).
+%   inscripciones de la materia antes de examinar el nombre (sección 17.5).
 aprobada_por_nombre(Nombre, Materia) :-
     alumno(Legajo, Nombre, _, _),
     aprobada(Legajo, Materia, _Nota).
@@ -102,18 +97,15 @@ inscribir(Legajo, Materia, Resultado) :-
 %!  dar_de_baja(+Legajo:integer, +Materia:atom) is semidet.
 %
 %   Quita la inscripción del alumno Legajo en Materia, que debe estar
-%   cursando, y devuelve la vacante. Falla si no la está cursando, y produce
-%   un error si Legajo no es un entero o Materia no es un átomo.
+%   cursando, y devuelve la vacante. Falla si no la está cursando.
 dar_de_baja(Legajo, Materia) :-
-    must_be(integer, Legajo),
-    must_be(atom, Materia),
     quitar_inscripcion(Legajo, Materia, cursando),
     cambiar_vacantes(Materia, 1),
     contar_operacion.
 
 %!  requisitos_de(+Materia:atom, -Requisitos:list(atom)) is det.
 %
-%   Requisitos son todas las materias que se debe aprobar antes de cursar
+%   Requisitos son todas las materias que se deben aprobar antes de cursar
 %   Materia, directa o indirectamente, en orden y sin repetidos. El resultado
 %   se guarda la primera vez que se calcula.
 requisitos_de(Materia, Requisitos) :-

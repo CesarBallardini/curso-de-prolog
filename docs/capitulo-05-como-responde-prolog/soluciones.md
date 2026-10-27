@@ -1,7 +1,7 @@
 # Soluciones del capítulo 5 — Cómo responde Prolog
 
-El código de esta página está en `ejemplos/capitulo-05/soluciones.pl` y pasa sus
-pruebas.
+El código de esta página está en `ejemplos/capitulo-05/soluciones.pl`, salvo el
+del ejercicio 16, que está en `hermana_politica.pl`, y pasa sus pruebas.
 
 ## 1
 
@@ -304,7 +304,7 @@ Lo que el ejercicio quiere mostrar es que esa conveniencia **no se puede decidir
 mirando la regla**. Depende de cuántos hechos unifican con cada objetivo, es
 decir de los datos, y puede invertirse si el programa cambia: con una familia en
 la que `luis` tuviera varios padres registrados y `juan` un solo hijo, la mejor
-sería la primera. El [capítulo 16](../capitulo-16-rendimiento/index.md) retoma el tema.
+sería la primera. El [capítulo 17](../capitulo-17-rendimiento/index.md) retoma el tema.
 
 ## 13
 
@@ -394,3 +394,122 @@ ubicada a la izquierda de la respuesta, que es el caso de la [sección 5.6](inde
 recorrido se pierde antes de llegar.
 
 Infinitas respuestas y no terminar no son lo mismo.
+
+## 16
+
+El programa está en `ejemplos/capitulo-05/hermana_politica.pl`:
+
+<!-- ejemplo: capitulo-05/hermana_politica.pl predicado: hijo/2 mujer/2 distinto/2 hermana_politica/2 hermano/2 consulta: hermana_politica(C, X). -->
+```prolog
+% hijo(H, P): H es hijo de P.
+hijo(antonio, juan).
+hijo(enrique, juan).
+
+% mujer(M, E): M es la mujer, la esposa, de E.
+mujer(belen, enrique).
+
+% distinto(A, B): A y B son dos personas distintas.
+distinto(enrique, antonio).
+
+%!  hermana_politica(?X, ?Y) is nondet.
+%
+%   X es hermana política (cuñada) de Y: es la mujer de un hermano de Y.
+hermana_politica(X, Y) :-
+    mujer(X, Z),
+    hermano(Z, Y).
+
+%!  hermano(?X, ?Y) is nondet.
+%
+%   X es hermano de Y: son hijos del mismo padre y distintos entre sí.
+hermano(X, Y) :-
+    hijo(X, Z),
+    hijo(Y, Z),
+    distinto(X, Y).
+```
+
+Con las cláusulas numeradas en el orden en que están escritas:
+
+| | |
+|---|---|
+| R1 | `hijo(antonio, juan).` |
+| R2 | `hijo(enrique, juan).` |
+| R3 | `mujer(belen, enrique).` |
+| R4 | `distinto(enrique, antonio).` |
+| R5 | `hermana_politica(X, Y) :- mujer(X, Z), hermano(Z, Y).` |
+| R6 | `hermano(X, Y) :- hijo(X, Z), hijo(Y, Z), distinto(X, Y).` |
+
+La consulta usa la variable `X`, y R5 y R6 también. Son variables distintas:
+cada uso de una regla toma una copia con variables nuevas, como dice la nota de
+la [sección 5.2](index.md#52-el-arbol-de-derivacion). Para que el árbol no las
+confunda, la copia de R5 se escribe con subíndice 1 (`X₁`, `Y₁`, `Z₁`) y la de
+R6 con subíndice 2 (`X₂`, `Y₂`, `Z₂`); `C` y `X`, sin subíndice, son las de la
+consulta.
+
+```mermaid
+flowchart TD
+    A["hermana_politica(C, X)"] -- "R5. θ₁ = {&nbsp;X₁/C, Y₁/X&nbsp;}" --> B["mujer(C, Z₁),<br/>hermano(Z₁, X)"]
+    B -- "R3. θ₂ = {&nbsp;C/belen, Z₁/enrique&nbsp;}" --> D["hermano(enrique, X)"]
+    D -- "R6. θ₃ = {&nbsp;X₂/enrique, Y₂/X&nbsp;}" --> E["hijo(enrique, Z₂),<br/>hijo(X, Z₂),<br/>distinto(enrique, X)"]
+    E -- "R2. θ₄ = {&nbsp;Z₂/juan&nbsp;}" --> F["hijo(X, juan),<br/>distinto(enrique, X)"]
+    F -- "R1. θ₅ = {&nbsp;X/antonio&nbsp;}" --> G["distinto(enrique, antonio)"]
+    F -- "R2. θ₇ = {&nbsp;X/enrique&nbsp;}" --> H["distinto(enrique, enrique)"]
+    G -- "R4. θ₆ = {&nbsp;}" --> S(["consulta vacía<br/>C = belen, X = antonio"])
+    H --> K(["falla"])
+```
+
+**Una sola respuesta**: `C = belen, X = antonio`. El árbol tiene dos hojas, una
+de éxito y una de falla.
+
+- `θ₁` liga las variables de la copia de R5 con las de la consulta, y no al
+  revés. Por eso `C` y `X` siguen en las consultas que quedan, y la respuesta se
+  lee en la hoja: `C` recibe su valor en `θ₂` y `X` en `θ₅`.
+- `hijo(enrique, Z₂)` tiene un solo arco. R1 no está en el árbol porque su
+  cabeza, `hijo(antonio, juan)`, no unifica con el objetivo: `antonio` y
+  `enrique` son constantes distintas. Un arco corresponde a una cláusula cuya
+  cabeza unifica.
+- `hijo(X, juan)` unifica con R1 y con R2: dos ramas. La de R2 llega a
+  `distinto(enrique, enrique)`, que no unifica con R4, la única cláusula de
+  `distinto/2`, y falla: `distinto/2` es lo que impide que `enrique` resulte
+  hermano de sí mismo.
+- `θ₆` está vacía: `distinto(enrique, antonio)` ya es idéntico a R4.
+
+La traza recorre las mismas ramas en el mismo orden. La primera parte llega a
+la hoja de éxito; la que sigue a la respuesta es el retroceso a
+`hijo(_, juan)`, la rama de R2:
+
+```text
+   Call: (12) hermana_politica(_10204, _10206)
+   Call: (13) mujer(_10204, _11340)
+   Exit: (13) mujer(belen, enrique)
+   Call: (13) hermano(enrique, _10206)
+   Call: (14) hijo(enrique, _13178)
+   Exit: (14) hijo(enrique, juan)
+   Call: (14) hijo(_10206, juan)
+   Exit: (14) hijo(antonio, juan)
+   Call: (14) distinto(enrique, antonio)
+   Exit: (14) distinto(enrique, antonio)
+   Exit: (13) hermano(enrique, antonio)
+   Exit: (12) hermana_politica(belen, antonio)
+   Redo: (14) hijo(_10206, juan)
+   Exit: (14) hijo(enrique, juan)
+   Call: (14) distinto(enrique, enrique)
+   Fail: (14) distinto(enrique, enrique)
+   Fail: (13) hermano(enrique, _10206)
+   Fail: (12) hermana_politica(_10204, _10206)
+```
+
+La línea `Exit: (14) hijo(enrique, juan)` sigue directamente a su `Call`: como
+en el árbol, R1, cuya cabeza no unifica, no aparece. La consulta responde:
+
+```prolog
+?- hermana_politica(C, X).
+C = belen,
+X = antonio ;
+false.
+```
+
+El `false.` corresponde a la rama de R2, que quedaba pendiente a la derecha de
+la hoja de éxito. `distinto/2` enumera pares en un solo orden: con
+`distinto(antonio, enrique)` agregado, `hermano(antonio, enrique)` también se
+probaría, pero la consulta seguiría teniendo una sola respuesta, porque `belen`
+es la mujer de `enrique` y no de `antonio`.

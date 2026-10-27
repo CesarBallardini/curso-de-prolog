@@ -1,23 +1,24 @@
 :- encoding(utf8).
 
-% Capítulo 20 - El proyecto Inscripciones: inscribir y dar de baja durante la
-% ejecución.
+% Capítulo 20 - El proyecto Inscripciones: los motivos de rechazo como reglas.
 %
-% Respecto del capítulo 18, inscripcion/3 y vacantes/2 son dinámicos:
-% inscribir/3 y dar_de_baja/2 los modifican, y son los únicos predicados que
-% lo hacen. operaciones/1 cuenta las operaciones realizadas.
-% requisitos_de/2 calcula todos los requisitos de una materia, directos e
-% indirectos, y guarda el resultado: las correlatividades no cambian durante
-% la ejecución. estado/1 y restaurar/1 permiten a las pruebas dejar la base
-% como la encontraron.
+% Respecto del capítulo 19, las condiciones que rechazan una inscripción se
+% escriben además como reglas si ... entonces ..., datos que lee el intérprete
+% prueba/3 de la sección 20.4, con una cláusula más para la negación no.
+% situacion/3 traduce la base al vocabulario de las reglas, y
+% motivos_de_rechazo/3 reúne todos los motivos, no solo el primero que
+% encuentra inscripcion_posible/3.
 %
-%?- inscribir(104, ssl, R), inscriptos(ssl, L).
-%?- requisitos_de(bd, Requisitos).
+%?- motivos_de_rechazo(102, am2, Motivos).
+%?- motivos_de_rechazo(101, log, Motivos).
+
+:- op(800, xfx, entonces).
+:- op(790, fx, si).
+:- op(780, xfy, y).
+:- op(770, fy, no).
 
 :- meta_predicate
     informe(2, +, -).
-
-:- dynamic inscripcion/3, vacantes/2, operaciones/1, requisitos_guardados/2.
 
 % alumno(Legajo, Nombre, Carrera, Ingreso): el alumno de ese legajo cursa esa
 % carrera desde el año de ingreso.
@@ -131,7 +132,7 @@ puede_inscribirse(Legajo, Materia) :-
 %
 %   El alumno llamado Nombre aprobó Materia. El primer objetivo es el que el
 %   nombre selecciona: con el orden inverso, la consulta recorre todas las
-%   inscripciones de la materia antes de examinar el nombre (sección 16.5).
+%   inscripciones de la materia antes de examinar el nombre (sección 17.5).
 aprobada_por_nombre(Nombre, Materia) :-
     alumno(Legajo, Nombre, _, _),
     aprobada(Legajo, Materia, _Nota).
@@ -241,89 +242,64 @@ mejores(Cantidad, Ranking) :-
                            promedio_de_alumno(Legajo, Promedio))),
             Ranking).
 
-% operaciones(N): se realizaron N operaciones de inscripción o de baja.
-operaciones(0).
+% regla(Nombre, si Condiciones entonces Conclusion): los motivos que rechazan
+% una inscripción, escritos sobre la situación del alumno frente a la materia.
+regla(v1, si materia(M) y aprobada(M) entonces rechazada(ya_aprobada)).
+regla(v2, si materia(M) y cursando(M) entonces rechazada(ya_la_cursa)).
+regla(v3, si requisito(R) y no aprobada(R) entonces rechazada(falta(R))).
+regla(v4, si vacantes(0) entonces rechazada(sin_vacantes)).
 
-%!  inscribir(+Legajo:integer, +Materia:atom, -Resultado) is det.
+%!  situacion(+Legajo:integer, +Materia:atom, -Observaciones:list) is det.
 %
-%   Si inscripcion_posible/3 acepta la inscripción, la registra con estado
-%   cursando y descuenta una vacante. Resultado es el de
-%   inscripcion_posible/3. Cuenta la operación en los dos casos.
-inscribir(Legajo, Materia, Resultado) :-
-    inscripcion_posible(Legajo, Materia, Resultado),
-    (   Resultado == aceptada
-    ->  assertz(inscripcion(Legajo, Materia, cursando)),
-        cambiar_vacantes(Materia, -1)
-    ;   true
-    ),
-    contar_operacion.
+%   Observaciones describe la situación del alumno Legajo frente a Materia
+%   en el vocabulario de las reglas: la lista de las observaciones de
+%   observacion/3, en el orden de sus cláusulas.
+situacion(Legajo, Materia, Observaciones) :-
+    findall(Obs, observacion(Legajo, Materia, Obs), Observaciones).
 
-%!  dar_de_baja(+Legajo:integer, +Materia:atom) is semidet.
+%!  observacion(+Legajo:integer, +Materia:atom, -Obs) is nondet.
 %
-%   Quita la inscripción del alumno Legajo en Materia, que debe estar
-%   cursando, y devuelve la vacante. Falla si no la está cursando.
-dar_de_baja(Legajo, Materia) :-
-    retract(inscripcion(Legajo, Materia, cursando)),
-    cambiar_vacantes(Materia, 1),
-    contar_operacion.
+%   Obs es una observación sobre el alumno Legajo y la materia Materia:
+%   materia(Materia); aprobada(M) por cada materia que el alumno aprobó;
+%   cursando(M) por cada una que cursa; requisito(R) por cada correlativa de
+%   Materia; y vacantes(N), los lugares que quedan.
+observacion(_, Materia, materia(Materia)).
+observacion(Legajo, _, aprobada(M)) :-
+    aprobada(Legajo, M, _).
+observacion(Legajo, _, cursando(M)) :-
+    cursa(Legajo, M).
+observacion(_, Materia, requisito(R)) :-
+    correlativa(Materia, R).
+observacion(_, Materia, vacantes(N)) :-
+    vacantes(Materia, N).
 
-%!  cambiar_vacantes(+Materia:atom, +Cambio:integer) is det.
+%!  prueba(+Meta, +Observaciones:list, -Arbol) is nondet.
 %
-%   Suma Cambio a las vacantes de Materia.
-cambiar_vacantes(Materia, Cambio) :-
-    retract(vacantes(Materia, N0)),
-    N is N0 + Cambio,
-    assertz(vacantes(Materia, N)).
+%   El intérprete de la sección 20.4 con una cláusula más: no Meta se cumple
+%   cuando Meta no se puede probar, y su árbol es no Meta. Meta debe llegar
+%   sin variables libres.
+prueba(A y B, Observaciones, ArbolA y ArbolB) :-
+    prueba(A, Observaciones, ArbolA),
+    prueba(B, Observaciones, ArbolB).
+prueba(no Meta, Observaciones, no Meta) :-
+    \+ prueba(Meta, Observaciones, _).
+prueba(X > Y, _, X > Y) :-
+    X > Y.
+prueba(X < Y, _, X < Y) :-
+    X < Y.
+prueba(Meta, Observaciones, observado(Meta)) :-
+    member(Meta, Observaciones).
+prueba(Meta, Observaciones, deducido(Meta, Regla, Arbol)) :-
+    regla(Regla, si Condiciones entonces Meta),
+    prueba(Condiciones, Observaciones, Arbol).
 
-%!  contar_operacion is det.
+%!  motivos_de_rechazo(+Legajo:integer, +Materia:atom, -Motivos:list) is det.
 %
-%   Suma uno al contador de operaciones.
-contar_operacion :-
-    retract(operaciones(N0)),
-    N is N0 + 1,
-    assertz(operaciones(N)).
-
-%!  requisitos_de(+Materia:atom, -Requisitos:list(atom)) is det.
-%
-%   Requisitos son todas las materias que se debe aprobar antes de cursar
-%   Materia, directa o indirectamente, en orden y sin repetidos. El resultado
-%   se guarda la primera vez que se calcula.
-requisitos_de(Materia, Requisitos) :-
-    (   requisitos_guardados(Materia, Guardados)
-    ->  Requisitos = Guardados
-    ;   findall(R, requisito(Materia, R), Todos),
-        sort(Todos, Calculados),
-        assertz(requisitos_guardados(Materia, Calculados)),
-        Requisitos = Calculados
-    ).
-
-%!  requisito(+Materia:atom, -Requisito:atom) is nondet.
-%
-%   Requisito es una correlativa de Materia, o una correlativa de una de
-%   ellas.
-requisito(Materia, Requisito) :-
-    correlativa(Materia, Requisito).
-requisito(Materia, Requisito) :-
-    correlativa(Materia, Intermedia),
-    requisito(Intermedia, Requisito).
-
-%!  estado(-Estado) is det.
-%
-%   Estado reúne los datos que cambian durante la ejecución: las
-%   inscripciones, las vacantes y el contador de operaciones.
-estado(estado(Inscripciones, Vacantes, Operaciones)) :-
-    findall(inscripcion(L, M, E), inscripcion(L, M, E), Inscripciones),
-    findall(vacantes(M, N), vacantes(M, N), Vacantes),
-    operaciones(Operaciones).
-
-%!  restaurar(+Estado) is det.
-%
-%   Reemplaza los datos que cambian durante la ejecución por los de Estado,
-%   obtenido antes con estado/1.
-restaurar(estado(Inscripciones, Vacantes, Operaciones)) :-
-    retractall(inscripcion(_, _, _)),
-    retractall(vacantes(_, _)),
-    retractall(operaciones(_)),
-    maplist(assertz, Inscripciones),
-    maplist(assertz, Vacantes),
-    assertz(operaciones(Operaciones)).
+%   Motivos son todos los motivos por los que se rechaza la inscripción del
+%   alumno Legajo en Materia, uno por cada prueba de rechazada(Motivo) con
+%   las reglas; la lista vacía si se acepta. inscripcion_posible/3 da solo
+%   el primero. Supone que el alumno y la materia existen: esas dos
+%   condiciones las verifica inscripcion_posible/3 antes que cualquier regla.
+motivos_de_rechazo(Legajo, Materia, Motivos) :-
+    situacion(Legajo, Materia, Observaciones),
+    findall(Motivo, prueba(rechazada(Motivo), Observaciones, _), Motivos).

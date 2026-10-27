@@ -59,7 +59,7 @@ test: ## Run the plunit tests of every example (just one: make test e=familia)
 swish: ## Check against library(sandbox) that every example can run in SWISH
 	$(UV) tools/check-swish.py $(e)
 
-part-1: ## Check that chapters 1 to 12 use nothing from part II
+part-1: ## Check that chapters 1 to 13 use nothing from part II
 	$(UV) tools/check-part-1.py
 
 part-2: ## Check that part II uses no predicate before the chapter that presents it
@@ -86,29 +86,29 @@ time: ## Recompute every chapter time estimate and report the ones that drifted
 sync: ## Copy into the text the code blocks that declare they come from ejemplos/
 	$(UV) tools/sync-examples.py --write
 
-sql: ## Run the SQL/Prolog pairs of chapter 42 and compare the results
+sql: ## Run the SQL/Prolog pairs of chapter 43 and compare the results
 	$(UV) references/ejercicios/sql-prolog/verificar.py
 
 # Each recipe line is its own shell, so the guard and the command have to be one
 # line: an `exit 0` on the line above would only leave that shell, and pytest
 # would run anyway against a directory that is not there.
-appendix: ## Run the pytest suites of chapters 29 (Janus), 30, 31 (the Python clients) and 36 (web pages, Playwright)
-	@if [ -d ejemplos/capitulo-29 ]; then \
-	  SWI_HOME_DIR="$(SWI_HOME_DIR)" $(UV) --group apendice-a pytest ejemplos/capitulo-29; \
-	else \
-	  echo "There is no ejemplos/capitulo-29 yet: nothing to test."; \
-	fi
-	@# Chapter 30 runs in its own pytest process: its tests start Prolog servers
-	@# as programs, and share nothing with the Prolog that Janus embeds in 29.
+appendix: ## Run the pytest suites of chapters 30 (Janus), 31, 32 (the Python clients) and 37 (web pages, Playwright)
 	@if [ -d ejemplos/capitulo-30 ]; then \
 	  SWI_HOME_DIR="$(SWI_HOME_DIR)" $(UV) --group apendice-a pytest ejemplos/capitulo-30; \
+	else \
+	  echo "There is no ejemplos/capitulo-30 yet: nothing to test."; \
 	fi
+	@# Chapter 31 runs in its own pytest process: its tests start Prolog servers
+	@# as programs, and share nothing with the Prolog that Janus embeds in 29.
 	@if [ -d ejemplos/capitulo-31 ]; then \
 	  SWI_HOME_DIR="$(SWI_HOME_DIR)" $(UV) --group apendice-a pytest ejemplos/capitulo-31; \
 	fi
-	@# Chapter 36 opens its web pages in headless Chromium, through Playwright.
-	@if [ -d ejemplos/capitulo-36 ]; then \
-	  SWI_HOME_DIR="$(SWI_HOME_DIR)" $(UV) --group apendice-a pytest ejemplos/capitulo-36; \
+	@if [ -d ejemplos/capitulo-32 ]; then \
+	  SWI_HOME_DIR="$(SWI_HOME_DIR)" $(UV) --group apendice-a pytest ejemplos/capitulo-32; \
+	fi
+	@# Chapter 37 opens its web pages in headless Chromium, through Playwright.
+	@if [ -d ejemplos/capitulo-37 ]; then \
+	  SWI_HOME_DIR="$(SWI_HOME_DIR)" $(UV) --group apendice-a pytest ejemplos/capitulo-37; \
 	fi
 
 # swipl-win has no output a shell can read, and CI has no XPCE: this target is
@@ -119,18 +119,18 @@ windows: ## Run the XPCE window tests under swipl-win (local only; CI has no XPC
 ## --- The book --------------------------------------------------------------
 
 # PlDoc sites: the HTML documentation that PlDoc generates from the %! headers of
-# some chapters' examples, which the chapter links to (section 14.7 shows what
+# some chapters' examples, which the chapter links to (section 15.7 shows what
 # PlDoc produces). Generated from the example files, like the PDFs, and not
 # versioned. A chapter opts in with one line: its number in PLDOC_CAPITULOS and
 # its files in PLDOC_SRC_<number>; the pages go to docs/<chapter>/pldoc/.
-PLDOC_CAPITULOS := 14
-PLDOC_SRC_14    := estilo.pl encabezados.pl inscripciones.pl
+PLDOC_CAPITULOS := 15
+PLDOC_SRC_15    := estilo.pl encabezados.pl inscripciones.pl
 
 pldoc_dir = $(firstword $(wildcard docs/capitulo-$(1)-*))/pldoc
 PLDOC_DIRS := $(foreach n,$(PLDOC_CAPITULOS),$(call pldoc_dir,$(n)))
 PLDOC      := $(addsuffix /index.html,$(PLDOC_DIRS))
 
-# The PlDoc pages first: chapter 14 links to them, and the strict build fails on
+# The PlDoc pages first: chapter 15 links to them, and the strict build fails on
 # a link to a file that is not there. The PDFs are `make pdf`'s job: the
 # tools/pdf_links.py hook leaves the links of docs/pdf.md to the ones that
 # exist, so run `make pdf` before this for a site that carries them.

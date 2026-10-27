@@ -2,60 +2,145 @@
 
 :- begin_tests(soluciones).
 
-% Ejercicio 3
-test(suma_acc, true(S == 8)) :-
-    suma_lista_acc([3, 1, 4], S).
+% Ejercicio 2
+test(no_de_algo_falso) :-
+    no(fail).
 
-% Ejercicio 4: sin nondet, porque ya no deja alternativas.
-test(contar_bien, true(N == 3)) :-
-    contar_bien([a, b, c], N).
+test(no_de_algo_cierto, [fail]) :-
+    no(true).
 
-% Ejercicio 5: el corte deja la relación en semidet, sin alternativas.
-test(todos_estan_corte) :-
-    todos_estan_corte([a, b], [a, b, c]).
+test(una_vez_la_primera, all(X == [a])) :-
+    una_vez(member(X, [a, b])).
 
-test(falta_uno, [fail]) :-
-    todos_estan_corte([a, z], [a, b, c]).
+test(ignorar_algo_falso) :-
+    ignorar(fail).
 
-% Ejercicio 7: las dos dan lo mismo; la de la izquierda cuesta mucho más.
-test(aplanar_igual, true(L1 == L2)) :-
-    aplanar_izq([[a, b], [c], [], [d, e]], L1),
-    aplanar_der([[a, b], [c], [], [d, e]], L2).
+% Ejercicio 3: las versiones con condicional son estables.
+test(maximo, true(M == 3)) :-
+    maximo(3, 1, M).
 
-% maplist/2, que aplica un predicado a cada elemento,
-% se presenta en el capítulo 18.
-test(aplanar_izq_cuesta_mas, true(Izq > 100 * Der)) :-
-    length(Listas, 1000),
-    maplist(diez, Listas),
-    inferencias(aplanar_izq(Listas, _), Izq),
-    inferencias(aplanar_der(Listas, _), Der).
+test(maximo_ligado_falso, [fail]) :-
+    maximo(3, 1, 1).
 
-% diez(L): L es la lista de 1 a 10; arma las mil listas de la prueba.
-diez(L) :-
-    numlist(1, 10, L).
+test(descuento_de_un_chico, true(D == 50)) :-
+    descuento(8, D).
 
-% Ejercicio 15: las dos versiones cuentan lo mismo y no dejan alternativas.
-% El comportamiento de la pila se observa con árboles de un millón de nodos,
-% fuera de las pruebas.
-test(hojas_una, true(N == 1)) :-
-    hojas(hoja, N).
+test(descuento_ligado_falso, [fail]) :-
+    descuento(8, 0).
 
-test(hojas_iguales, true(N1-N2 == 3-3)) :-
-    A = nodo(nodo(hoja, hoja), hoja),
-    hojas(A, N1),
-    hojas_acc(A, N2).
+% Ejercicio 4
+test(valor_absoluto_negativo, true(A == 5)) :-
+    valor_absoluto(-5, A).
 
-test(hojas_peine_derecho, true(N1-N2 == 11-11)) :-
-    peine_derecho(10, A),
-    hojas(A, N1),
-    hojas_acc(A, N2).
+test(valor_absoluto_positivo, true(A == 5)) :-
+    valor_absoluto(5, A).
 
-test(hojas_peine_izquierdo, true(N1-N2 == 11-11)) :-
-    peine_izquierdo(10, A),
-    hojas(A, N1),
-    hojas_acc(A, N2).
+test(valor_absoluto_ligado_verdadero) :-
+    valor_absoluto(-5, 5).
 
-test(peine_derecho_forma, true(A == nodo(hoja, nodo(hoja, hoja)))) :-
-    peine_derecho(2, A).
+test(valor_absoluto_ligado_falso, [fail]) :-
+    valor_absoluto(-5, 4).
+
+% Ejercicio 5
+test(cuatro_es_par, true(P == par)) :-
+    paridad(4, P).
+
+test(tres_es_impar, true(P == impar)) :-
+    paridad(3, P).
+
+test(tres_no_es_par, [fail]) :-
+    paridad(3, par).
+
+% Ejercicio 6
+test(primera_aprobada_de_ana, true(M == am1)) :-
+    primera_aprobada(101, M).
+
+% with_output_to/2, que captura la salida, se presenta en el capítulo 28.
+% Ejercicio 7
+test(aprobadas_de_diego, true(S == "log: 9\nalg: 7\npp: 8\n")) :-
+    with_output_to(string(S), listar_aprobadas(104)).
+
+% Ejercicios 8 y 14
+test(menu_todas,
+     true(S == "juan: 68\nana: 41\npedro: 45\nluis: 12\neva: 8\nsofia: 3\nFin\n")) :-
+    open_string("todas. salir.", In),
+    with_output_to(string(S), menu(In)).
+
+test(menu_orden_incompleta,
+     true(S == "Orden incompleta: falta el nombre\nFin\n")) :-
+    open_string("edad(X). salir.", In),
+    with_output_to(string(S), menu(In)).
+
+% Ejercicio 9
+test(contar_hasta_tres, true(S == "1\n2\n3\n")) :-
+    with_output_to(string(S), contar_hasta(3)).
+
+test(contar_hasta_tres_con_recursion, true(S == "1\n2\n3\n")) :-
+    with_output_to(string(S), contar_hasta_rec(3)).
+
+test(suma_hasta_cuatro, true(S == 10)) :-
+    suma_hasta(4, S).
+
+% Ejercicio 11: bruno no aprobó ninguno de los dos requisitos de análisis 2.
+test(faltan_los_dos_requisitos, true(F == [am1, alg])) :-
+    requisitos_faltantes(102, am2, F).
+
+test(no_falta_ninguno, true(F == [])) :-
+    requisitos_faltantes(104, ssl, F).
+
+% Ejercicio 12: elena ingresó en 2025; bases de datos es de tercer año.
+test(elena_no_puede_cursar_bases_de_datos,
+     true(R == rechazada(anio_no_permitido))) :-
+    inscripcion_posible_por_anio(105, bd, R).
+
+test(sin_cambios_para_los_demas, true(R == rechazada(falta(am1)))) :-
+    inscripcion_posible_por_anio(102, am2, R).
+
+% Ejercicio 16: las dos versiones dan las mismas respuestas, en el mismo orden.
+test(tomada_por_ana, all(M-A == [pp-2, am1-1, alg-1, log-1, am2-2])) :-
+    tomada_en_dos(101, M, A).
+
+test(tomada_con_disyuncion,
+     all(L-M-A == [101-pp-2, 103-am2-2, 105-am1-1,
+                   101-am1-1, 101-alg-1, 101-log-1, 101-am2-2, 102-log-1,
+                   103-am1-1, 104-log-1, 104-alg-1, 104-pp-2, 106-am1-1])) :-
+    tomada(L, M, A).
+
+test(tomada_con_dos_clausulas,
+     all(L-M-A == [101-pp-2, 103-am2-2, 105-am1-1,
+                   101-am1-1, 101-alg-1, 101-log-1, 101-am2-2, 102-log-1,
+                   103-am1-1, 104-log-1, 104-alg-1, 104-pp-2, 106-am1-1])) :-
+    tomada_en_dos(L, M, A).
+
+% call_with_inference_limit/3, que acota las inferencias,
+% se presenta en el capítulo 27.
+% Ejercicio 17: eco/1 no termina por sí mismo; el límite de inferencias lo
+% detiene. La versión corregida termina al final del stream, sin alternativas.
+test(eco_no_termina, true(R == inference_limit_exceeded)) :-
+    open_string("a. b.", In),
+    with_output_to(string(_),
+                   call_with_inference_limit(eco(In), 200, R)).
+
+test(eco_hasta_el_final, true(S == "a\nb\n")) :-
+    open_string("a. b.", In),
+    with_output_to(string(S), eco_hasta_el_final(In)).
+
+test(eco_vacio, true(S == "")) :-
+    open_string("", In),
+    with_output_to(string(S), eco_hasta_el_final(In)).
+
+% Ejercicio 18: *-> recorre todas las propiedades; sin nondet, las pruebas
+% verifican que cumple/1 y presentar/1 no dejan alternativas pendientes.
+test(cumple_tres_propiedades, true(S == "par\npositivo\nmayor_que_10\n")) :-
+    with_output_to(string(S), cumple(12)).
+
+test(cumple_ninguna, true(S == "ninguna\n")) :-
+    with_output_to(string(S), cumple(-3)).
+
+test(presentar_con_edad, true(S == "ana (41 años)\n")) :-
+    with_output_to(string(S), presentar(ana)).
+
+test(presentar_sin_edad, true(S == "marta\n")) :-
+    with_output_to(string(S), presentar(marta)).
 
 :- end_tests(soluciones).

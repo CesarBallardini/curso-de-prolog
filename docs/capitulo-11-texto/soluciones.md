@@ -669,10 +669,98 @@ porque `[eva]` no unifica con `[A, B|Resto]`. A diferencia del `false.` de
 no dibuja esta alternativa, porque solo abre ramas para las cabezas que
 unifican; que la alternativa quede abierta o no depende de la indexación de
 cláusulas, que describe la
-[sección 16.3](../capitulo-16-rendimiento/index.md#163-indexacion). El
+[sección 17.3](../capitulo-17-rendimiento/index.md#173-indexacion). El
 encabezado declara `semidet` porque la cantidad de respuestas es una o
 ninguna.
 
 `compare/3` da la misma solución con otra forma: `compare(O, A, B)` deja en `O`
 uno de `<`, `=` o `>`, y la condición es que `O` no sea `>`. Con `@=<` la
 condición se escribe de una vez.
+
+## 18
+
+El árbol del enunciado está en `soluciones.pl` como el hecho `arbol_palabras/1`.
+
+<!-- ejemplo: capitulo-11/soluciones.pl predicado: orden_lexicografico/1 todos_preceden/2 todos_siguen/2 precede/2 codigos_preceden/2 consulta: arbol_palabras(T), orden_lexicografico(T). -->
+```prolog
+%!  orden_lexicografico(+Arbol) is semidet.
+%
+%   El árbol binario de átomos Arbol está ordenado alfabéticamente: cada
+%   nodo va después de todos los de su subárbol izquierdo y antes de todos
+%   los de su subárbol derecho.
+orden_lexicografico(void).
+orden_lexicografico(tree(X, Izq, Der)) :-
+    todos_preceden(Izq, X),
+    todos_siguen(Der, X),
+    orden_lexicografico(Izq),
+    orden_lexicografico(Der).
+
+%!  todos_preceden(+Arbol, +X) is semidet.
+%
+%   Todos los átomos de Arbol preceden al átomo X.
+todos_preceden(void, _).
+todos_preceden(tree(Y, Izq, Der), X) :-
+    precede(Y, X),
+    todos_preceden(Izq, X),
+    todos_preceden(Der, X).
+
+%!  todos_siguen(+Arbol, +X) is semidet.
+%
+%   El átomo X precede a todos los átomos de Arbol.
+todos_siguen(void, _).
+todos_siguen(tree(Y, Izq, Der), X) :-
+    precede(X, Y),
+    todos_siguen(Izq, X),
+    todos_siguen(Der, X).
+
+%!  precede(+A, +B) is semidet.
+%
+%   El átomo A va antes que el átomo B en el orden de sus códigos.
+precede(A, B) :-
+    atom_codes(A, CodigosA),
+    atom_codes(B, CodigosB),
+    codigos_preceden(CodigosA, CodigosB).
+
+%!  codigos_preceden(+Xs, +Ys) is semidet.
+%
+%   La lista de códigos Xs va antes que Ys: en la primera posición en que
+%   difieren, el código de Xs es menor, o Xs es un prefijo propio de Ys.
+%   El corte es verde: las dos últimas cláusulas no se superponen.
+codigos_preceden([], [_|_]).
+codigos_preceden([X|_], [Y|_]) :-
+    X < Y,
+    !.
+codigos_preceden([X|Xs], [X|Ys]) :-
+    codigos_preceden(Xs, Ys).
+```
+
+```prolog
+?- atom_codes(arbol, C).
+C = [97, 114, 98, 111, 108].
+
+?- precede(arbol, arboles).
+true.
+
+?- precede('Zoe', ana).
+true.
+
+?- orden_lexicografico(tree(lista, tree(corte, void, tree(zeta, void, void)), void)).
+false.
+```
+
+`codigos_preceden/2` compara las dos listas de códigos desde el principio: si
+los primeros códigos son iguales, la cabeza de la tercera cláusula los
+unifica y la comparación sigue con el resto; si el de la primera lista es
+menor, esa lista va antes. La lista vacía precede a cualquier lista no vacía,
+y por eso `arbol` va antes que `arboles`. Como los códigos de las mayúsculas
+son menores que los de las minúsculas, `'Zoe'` precede a `ana`: es el mismo
+orden de `@<` en la [sección 11.6](index.md#116-mayusculas-espacios-y-comparacion).
+El corte después de `X < Y` es verde, porque la tercera cláusula exige códigos
+iguales y no podría cumplirse.
+
+La condición del enunciado se refiere a **todos** los nodos de cada subárbol,
+no solamente a sus raíces. `todos_preceden/2` y `todos_siguen/2` recorren un
+subárbol completo y comparan cada nodo con la raíz. En el árbol de la última
+consulta, `zeta` está bien ubicado respecto de `corte`, su padre, pero está a
+la izquierda de `lista` y va después de ella: comparar cada nodo solo con sus
+hijos no lo detectaría.

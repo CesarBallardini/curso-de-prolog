@@ -1,112 +1,76 @@
 :- encoding(utf8).
 
-% Capítulo 56 - Versión 1: órdenes reconocidas con plantillas.
+% Capítulo 56 - Versión 1 de los diálogos: plantillas con variables de
+% segmento.
 %
-% Un sistema de plantillas en dos etapas. Las reglas de simplificación
-% reescriben la lista de palabras: quitan las que no aportan («por favor»,
-% los artículos) y unifican los sinónimos («muestra» pasa a «lista»). Las
-% plantillas relacionan la lista simplificada entera con el significado de
-% la orden. Las palabras son strings en minúsculas y sin tildes.
+% Una regla empareja un patrón con una respuesta. El patrón es una lista de
+% palabras, sin mayúsculas ni tildes, y de variables; cada variable
+% representa un segmento de la frase, de cero o más palabras. La respuesta
+% es una lista de textos y de esas mismas variables: al emparejar el patrón,
+% cada variable queda ligada a sus palabras, y la respuesta las repite. Las
+% palabras de la frase salen de palabras/2, del capítulo 45.
 %
-%?- traducir("Muéstrame los archivos de la carpeta informes, por favor.", O).
-%?- palabras("¿Cuánto ocupa notas.txt?", Ps).
-%?- traducir("Borra los archivos .tmp", O).
+% solo-local: carga un archivo del capítulo 45, y SWISH no admite módulos
+% propios.
+%
+%?- coincide([_, estoy, X], [hoy, estoy, muy, cansado]), X = Y.
 
-%!  palabras(+Texto:string, -Palabras:list(string)) is det.
-%
-%   Palabras son las palabras de Texto en minúsculas y sin tildes, sin los
-%   signos de pregunta y de exclamación, sin las comas y sin el punto
-%   final. Un punto dentro de una palabra se conserva: «notas.txt».
-palabras(Texto, Palabras) :-
-    string_lower(Texto, Minusculas),
-    string_chars(Minusculas, Cs0),
-    maplist(sin_tilde, Cs0, Cs),
-    string_chars(Limpio, Cs),
-    split_string(Limpio, " ", " ¿?¡!,;", Partes0),
-    exclude(==(""), Partes0, Partes),
-    ultima_sin_punto(Partes, Palabras).
+:- module(plantillas,
+          [ coincide/2,
+            rellenar/2,
+            responder/2
+          ]).
 
-%!  ultima_sin_punto(+Ps0:list(string), -Ps:list(string)) is det.
+:- use_module('../capitulo-45/lenguaje', [palabras/2]).
+
+%!  coincide(+Patron:list, +Palabras:list(atom)) is nondet.
 %
-%   Ps es Ps0 sin el punto con que termina su última palabra, que es el
-%   punto final de la oración; una palabra que era solo ese punto
-%   desaparece.
-ultima_sin_punto(Ps0, Ps) :-
-    (   append(Iniciales, [Ultima0], Ps0)
-    ->  sin_punto_final(Ultima0, Ultima),
-        append(Iniciales, [Ultima], Ps1),
-        exclude(==(""), Ps1, Ps)
-    ;   Ps = Ps0
+%   Palabras sigue el Patron: cada palabra del patrón aparece en su lugar,
+%   y cada variable del patrón queda ligada a la lista de palabras que
+%   ocupa su lugar, que puede ser vacía. Las alternativas dan segmentos
+%   cada vez más largos a las primeras variables.
+coincide([], []).
+coincide([E|Es], Palabras) :-
+    (   var(E)
+    ->  append(E, Resto, Palabras)
+    ;   Palabras = [E|Resto]
+    ),
+    coincide(Es, Resto).
+
+%!  rellenar(+Plantilla:list, -Texto:string) is det.
+%
+%   Texto es la concatenación de los elementos de Plantilla: cada texto tal
+%   como está escrito y cada lista de palabras con las palabras separadas
+%   por un blanco.
+rellenar(Plantilla, Texto) :-
+    maplist(pieza, Plantilla, Piezas),
+    atomics_to_string(Piezas, Texto).
+
+%!  pieza(+Elemento, -Pieza:string) is det.
+%
+%   Pieza es el texto de un elemento de una plantilla: un texto, o una
+%   lista de palabras.
+pieza(Elemento, Pieza) :-
+    (   is_list(Elemento)
+    ->  atomic_list_concat(Elemento, ' ', Atomo),
+        atom_string(Atomo, Pieza)
+    ;   text_to_string(Elemento, Pieza)
     ).
 
-%!  sin_tilde(+C0:char, -C:char) is det.
+% regla(Patron, Respuesta): si la frase sigue Patron, se responde con la
+% plantilla Respuesta.
+regla([_, estoy, X], ["¿Por qué estás ", X, "?"]).
+regla([_, necesito, X], ["¿Qué harías si consiguieras ", X, "?"]).
+regla([_, madre, _], ["Háblame más de tu familia."]).
+regla([_, padre, _], ["Háblame más de tu familia."]).
+regla([_, porque, _], ["¿Es esa la verdadera razón?"]).
+regla([_], ["Continúa, por favor."]).
+
+%!  responder(+Frase:string, -Respuesta:string) is det.
 %
-%   C es C0 sin tilde ni diéresis; la eñe pasa a ene.
-sin_tilde(C0, C) :-
-    (   sub_atom('áéíóúüñ', I, 1, _, C0)
-    ->  sub_atom(aeiouun, I, 1, _, C)
-    ;   C = C0
-    ).
-
-%!  sin_punto_final(+P0:string, -P:string) is det.
-%
-%   P es P0 sin el punto con que termina, si termina con uno.
-sin_punto_final(P0, P) :-
-    (   string_concat(P, ".", P0)
-    ->  true
-    ;   P = P0
-    ).
-
-% simplifica(Antes, Despues): la secuencia de palabras Antes se reescribe
-% como Despues. Se prueban en este orden: la primera que aplica gana.
-simplifica(["por", "favor"], []).
-simplifica(["muestrame"], ["lista"]).
-simplifica(["muestra"], ["lista"]).
-simplifica(["elimina"], ["borra"]).
-simplifica(["quita"], ["borra"]).
-simplifica(["que", "archivos", "hay"], ["lista"]).
-simplifica(["todos"], []).
-simplifica(["el"], []).
-simplifica(["la"], []).
-simplifica(["los"], []).
-simplifica(["las"], []).
-simplifica(["archivos"], []).
-simplifica(["archivo"], []).
-simplifica(["carpeta"], []).
-simplifica(["en"], ["de"]).
-
-%!  simplificar(+Palabras:list(string), -Simples:list(string)) is det.
-%
-%   Simples es Palabras después de aplicar las reglas de simplificación en
-%   cada posición, de izquierda a derecha. Lo que una regla produce vuelve
-%   a simplificarse.
-simplificar([], []).
-simplificar([P|Ps], Simples) :-
-    (   simplifica(Antes, Despues),
-        append(Antes, Resto, [P|Ps])
-    ->  append(Despues, Resto, Otra),
-        simplificar(Otra, Simples)
-    ;   Simples = [P|Ss],
-        simplificar(Ps, Ss)
-    ).
-
-% plantilla(Palabras, Orden): la lista simplificada Palabras significa
-% Orden. Las variables ocupan el lugar de una sola palabra.
-plantilla(["salir"], salir).
-plantilla(["lista"], listar(".", todos)).
-plantilla(["lista", "de", C], listar(C, todos)).
-plantilla(["cuantos", "hay", "de", C], contar(C, todos)).
-plantilla(["copia", A, "a", D], copiar(archivo(A), a(D))).
-plantilla(["mueve", A, "a", D], mover(archivo(A), a(D))).
-plantilla(["borra", A], borrar(archivo(A))).
-plantilla(["cuanto", "ocupa", A], tamano(archivo(A))).
-plantilla(["busca", A], buscar(patron(A))).
-
-%!  traducir(+Texto:string, -Orden) is semidet.
-%
-%   Orden es el significado de Texto según la primera plantilla que
-%   coincide con sus palabras simplificadas. Falla si ninguna coincide.
-traducir(Texto, Orden) :-
-    palabras(Texto, Palabras),
-    simplificar(Palabras, Simples),
-    once(plantilla(Simples, Orden)).
+%   Respuesta es la respuesta de la primera regla cuyo patrón sigue Frase.
+responder(Frase, Respuesta) :-
+    palabras(Frase, Palabras),
+    once(( regla(Patron, Plantilla),
+           coincide(Patron, Palabras) )),
+    rellenar(Plantilla, Respuesta).

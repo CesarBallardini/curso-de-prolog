@@ -1,130 +1,128 @@
 :- encoding(utf8).
 
-:- use_module(claves, [responder_claves/2]).
-
 :- begin_tests(soluciones).
 
-% Ejercicio 1.
-test(quienes, [true(R == lista([101, 103]))]) :-
-    analizar("¿Quiénes cursan análisis 2?", F),
-    evaluar(F, R).
+% Ejercicio 1
+test(ejercicio_1, [true(Ts == [n(select), n(x), -, i(1), ',', s('it''s'),
+                               n(from), n(t), n(where), n(a), <>, n(b), ;])]) :-
+    tokens("SELECT x-1, 'it''s' FROM t WHERE a != b;", Ts).
 
-test(cuantas, [true(R == numero(3))]) :-
-    analizar("¿Cuántas materias cursa carla?", F),
-    evaluar(F, R).
+% Ejercicio 2
+test(ejercicio_2, [true(I-C == []-[[facundo], [gabriela]])]) :-
+    T = "SELECT nombre FROM alumnos WHERE NOT (carrera = 'civil' OR carrera = 'sistemas')",
+    consulta_ingenua(T, I),
+    filas(T, _, C).
 
-% Ejercicio 2.
-test(no_cursa_claves, [true(R == lista(["ana", "bruno", "diego", "facundo"]))]) :-
-    responder_claves("¿Quién no cursa lógica?", R).
+% Ejercicio 3
+test(ejercicio_3, [true(K == [13, 1, 3])]) :-
+    findall(N, ( member(T, [ "SELECT COUNT(*) FROM inscripciones WHERE nota <> 4",
+                             "SELECT COUNT(*) FROM inscripciones WHERE NOT (nota <> 4)",
+                             "SELECT COUNT(*) FROM inscripciones WHERE nota IS NULL" ]),
+                 filas(T, _, [[N]]) ),
+            K).
 
-test(no_cursa, [true(R == lista([103, 105, 107]))]) :-
-    analizar("¿Quién no cursa lógica?", F),
-    evaluar(F, R).
+% Ejercicio 4
+test(ejercicio_4, [true(Cs == [alumnos-legajo, alumnos-nombre,
+                               inscripciones-legajo, inscripciones-nota])]) :-
+    columnas_usadas("SELECT a.nombre FROM alumnos a, inscripciones i WHERE a.legajo = i.legajo AND nota > 6", Cs).
 
-% Ejercicio 3.
-test(sin_analisis, [all(T == ["¿Qué nota tiene ana en lógica?",
-                              "¿Aprobó ana lógica?",
-                              "¿Cuántas materias de primer año aprobó ana?"])]) :-
-    member(T, ["¿Qué nota tiene ana en lógica?",
-               "¿Aprobó ana lógica?",
-               "¿Cuántas materias de primer año aprobó ana?"]),
-    lecturas(T, []).
+test(ejercicio_4_ambigua, [throws(error(sql(columna_ambigua(legajo)), _))]) :-
+    columnas_usadas("SELECT legajo FROM alumnos a, inscripciones i", _).
 
-% Ejercicio 4.
-test(desaprobar, [true(R == lista([102, 103]))]) :-
-    analizar("¿Quién desaprobó álgebra?", F),
-    evaluar(F, R).
+% Ejercicio 5
+test(ejercicio_5, [ setup(estado(E)), cleanup(restaurar(E)),
+                    true(R1-R2 == [[a, 1000], [b, 1300], [c, 1200]]-
+                                  [[a, 1000], [b, 1300], [c, 1400]]) ]) :-
+    U = "UPDATE s SET x = x + 200 WHERE x = (SELECT MAX(x) FROM s) - 100",
+    Crear = "CREATE TABLE s (n TEXT, x INTEGER); INSERT INTO s VALUES ('a', 1000), ('b', 1100), ('c', 1200)",
+    guion(Crear, _),
+    sql(U, actualizadas(1)),
+    sql("SELECT * FROM s", filas(_, R1)),
+    sql("DROP TABLE s", _),
+    guion(Crear, _),
+    actualizar_tupla(U, 2),
+    sql("SELECT * FROM s", filas(_, R2)).
 
-test(desaprobar_sql, [true(sub_string(S, _, _, _, "t2.nota < 6"))]) :-
-    analizar("¿Quién desaprobó álgebra?", F),
-    sql(F, S).
+% Ejercicio 6
+consulta_ana("SELECT i.materia, i.nota FROM inscripciones i, alumnos a WHERE a.nombre = 'ana' AND a.legajo = i.legajo").
 
-% Ejercicio 5.
-test(simplificar, [true(S =@= cual(X, y(carrera(X, sistemas), cursar(X, pp))))]) :-
-    analizar("¿Qué alumnos de sistemas cursan paradigmas?", F),
-    simplificar(F, S).
+test(ejercicio_6_orden, [true(M =@= (base:alumno(L, ana, _, _),
+                                     base:inscripcion(L, Ma, N)))]) :-
+    consulta_ana(T),
+    traducir_ordenado(T, [Ma, N]-M).
 
-test(simplificar_igual, [true(R1 == R2)]) :-
-    analizar("¿Qué alumnos de sistemas cursan paradigmas?", F),
-    simplificar(F, S),
-    evaluar(F, R1),
-    evaluar(S, R2).
+test(ejercicio_6_costos) :-
+    consulta_ana(T),
+    traducir(T, _, F1-M1),
+    traducir_ordenado(T, F2-M2),
+    inferencias_meta(F1, M1, N1, Fs1),
+    inferencias_meta(F2, M2, N2, Fs2),
+    Fs1 == Fs2,
+    en_banda(N1, 32),
+    en_banda(N2, 16).
 
-test(simplificar_sql, [true(SQL == "SELECT DISTINCT t1.legajo, t1.nombre\nFROM \c
-                                    alumnos t1, inscripciones t2\nWHERE \c
-                                    t1.carrera = 'sistemas'\n  AND \c
-                                    t2.legajo = t1.legajo\n  AND \c
-                                    t2.materia = 'pp'\nORDER BY t1.legajo")]) :-
-    analizar("¿Qué alumnos de sistemas cursan paradigmas?", F),
-    simplificar(F, S),
-    sql(S, SQL).
+inferencias_meta(F, M, N, Fs) :-
+    findall(F, M, Fs),
+    statistics(inferences, I0),
+    findall(F, M, _),
+    statistics(inferences, I1),
+    N is I1 - I0.
 
-% Ejercicio 6.
-test(elena, [true(M == sin_nota(inscripcion(105, am1, null)))]) :-
-    por_que_no_esta("¿Quién aprobó análisis 1?", "elena", M).
+test(generadores, [true(Gs-R == [base:p(1), base:q(2)]-(X > 1))]) :-
+    generadores((base:p(1), base:q(2), X > 1), Gs, R).
 
-test(ana, [true(M == se_prueba(prueba(aprobar(101, log),
-                                      [inscripcion(101, log, 10),
-                                       10 >= 6])))]) :-
-    por_que_no_esta("¿Quién no aprobó lógica?", "ana", M).
+% Ejercicio 7
+test(ejercicio_7_rechaza, [ setup(estado(E)), cleanup(restaurar(E)),
+                            throws(error(sql(referencia(inscripciones, legajo, 999)), _)) ]) :-
+    insertar_verificado("INSERT INTO inscripciones (legajo, materia) VALUES (999, 'am1')", _).
 
-test(esta, [fail]) :-
-    por_que_no_esta("¿Quién aprobó lógica?", "ana", _).
+test(ejercicio_7_repone, [ setup(estado(E)), cleanup(restaurar(E)),
+                           true(K == 17) ]) :-
+    catch(insertar_verificado("INSERT INTO inscripciones (legajo, materia) VALUES (999, 'am1')", _),
+          error(sql(_), _), true),
+    aggregate_all(count, base:inscripcion(_, _, _), K).
 
-% Ejercicio 7.
-test(sin_tabla, [true(R == inference_limit_exceeded)]) :-
-    call_with_inference_limit(findall(Q-N, pasos_sin_tabla(bd, Q, N), _),
-                              1000000, R).
+test(ejercicio_7_acepta, [ setup(estado(E)), cleanup(restaurar(E)),
+                           true(R == insertadas(1)) ]) :-
+    insertar_verificado("INSERT INTO inscripciones (legajo, materia) VALUES (107, 'am1')", R).
 
-test(ciclo, [true(Ps == [alg-2, bd-3, log-2, pp-1, ssl-1])]) :-
-    snapshot(( assertz(base:correlativa(log, bd)),
-               abolish_all_tables,
-               setof(Q-N, pasos(bd, Q, N), Ps) )),
-    abolish_all_tables.
+% Ejercicio 8
+test(ejercicio_8, [ setup(estado(E)), cleanup(restaurar(E)),
+                    true(K-Fs == 2-[[alg], [log], [pp], [ssl]]) ]) :-
+    recursiva(requisito, "CREATE TABLE requisito (r TEXT)",
+              "SELECT requisito FROM correlativas WHERE materia = 'bd'",
+              "SELECT c.requisito FROM correlativas c, requisito q WHERE c.materia = q.r",
+              K),
+    sql("SELECT r FROM requisito ORDER BY r", filas(_, Fs)).
 
-% Ejercicio 8.
-test(lecturas, [true(Rs == [lista([alg, log, pp, ssl]), lista([])])]) :-
-    responder_lecturas("¿Qué necesita bases de datos?", Ps),
-    pairs_values(Ps, Rs).
+% Ejercicio 9: las filas de SQLite con LEFT JOIN, el par 19 del capítulo 43.
+test(ejercicio_9, [ setup(estado(E)), cleanup(restaurar(E)),
+                    true(Fs == [[alg, 4], [am1, 5], [am2, 2], [bd, 0], [log, 4],
+                                [pp, 2], [ssl, 0]]) ]) :-
+    guion("CREATE VIEW materia_legajo AS
+             SELECT m.codigo AS codigo, i.legajo AS legajo
+             FROM materias m, inscripciones i WHERE i.materia = m.codigo
+             UNION ALL
+             SELECT m.codigo, NULL FROM materias m
+             WHERE NOT EXISTS (SELECT * FROM inscripciones i
+                               WHERE i.materia = m.codigo);
+           SELECT codigo, COUNT(legajo) FROM materia_legajo GROUP BY codigo",
+          [creada(materia_legajo), filas(_, Fs)]).
 
-% Ejercicio 9.
-test(por_que, [true(S == "> Sí\n>   inscripcion(101, log, 10), 10 >= 6\n\c
-                          > No hay una pregunta anterior.\n> ")]) :-
-    open_string("¿Ana aprobó lógica?\n¿por qué?\n", E1),
-    with_output_to(string(S1), conversar_por_que(E1, current_output)),
-    open_string("¿por qué?\n", E2),
-    with_output_to(string(S2), conversar_por_que(E2, current_output)),
-    sub_string(S1, 0, _, 2, Primera),
-    string_concat(Primera, S2, S).
+% Ejercicio 10
+test(ejercicio_10, [true(Fs == [])]) :-
+    filas("SELECT nombre FROM alumnos WHERE ingreso NOT IN (SELECT nota FROM inscripciones)", _, Fs).
 
-% Ejercicio 10.
-test(presuposicion, [true(sub_string(S, 0, _, _, "SELECT CASE WHEN"))]) :-
-    ejemplo(14, T),
-    analizar(T, F),
-    sql_presuposicion(F, S).
+test(ejercicio_10_meta,
+     [true(M =@= (base:alumno(_, A, _, B),
+                  \+ ( base:inscripcion(C, D, E), E == null ),
+                  \+ ( base:inscripcion(C, D, E), E \== null, B =:= E )))]) :-
+    traducir("SELECT nombre FROM alumnos WHERE ingreso NOT IN (SELECT nota FROM inscripciones)",
+             _, [A]-M).
 
-test(presuposicion_otra, [true(S == S0)]) :-
-    analizar("¿Ana aprobó lógica?", F),
-    sql_presuposicion(F, S),
-    sql(F, S0).
-
-% Ejercicio 11.
-test(coordinacion, [true(R == lista([101, 102, 104]))]) :-
-    analizar("¿Quién cursa lógica y álgebra?", F),
-    evaluar(F, R).
-
-test(coordinacion_sujeto, [true(R == lista([alg, log, pp]))]) :-
-    analizar("¿Qué materias cursan ana y diego?", F),
-    evaluar(F, R).
-
-test(aplicar, [true(F =@= cursar(101, M))]) :-
-    aplicar(Y^cursar(Y, M), 101, F).
-
-test(aplicar_mal, [true(F \== cursar(101, M))]) :-
-    aplicar_mal(Y^cursar(Y, M), 101, F).
-
-% Antes del verbo la propiedad no está construida: no se analiza.
-test(antes_del_verbo, [fail]) :-
-    analizar("¿Ana y diego cursan lógica?", _).
+% Ejercicio 11
+test(ejercicio_11, [true(K-M =@= [[14]]-(base:inscripcion(L, _, N), N \== null))]) :-
+    filas("SELECT COUNT(*) FROM inscripciones WHERE nota = nota", _, K),
+    traducir("SELECT legajo FROM inscripciones WHERE nota = nota", _, [L]-M).
 
 :- end_tests(soluciones).

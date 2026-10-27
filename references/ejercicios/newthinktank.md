@@ -13,7 +13,7 @@
 
 - **Fuente:** newthinktank.com (cheat sheet, sección INTRODUCTION); video 05:40
 - **Tema:** 0
-- **Capítulos:** 1, 13
+- **Capítulos:** 1, 14
 - **Dificultad:** 1
 - **Solución:** sí (en la página)
 - **SWISH:** sí (salvo `halt/0` y `consult/1` de archivos locales)
@@ -68,7 +68,7 @@
 
 - **Fuente:** cheat sheet, VARIABLES y COMPLEX TERMS; video 15:30–28:38
 - **Tema:** 3
-- **Capítulos:** 2, 14
+- **Capítulos:** 2, 15
 - **Dificultad:** 1
 - **Solución:** sí
 - **SWISH:** sí
@@ -79,7 +79,7 @@
 
 - **Fuente:** cheat sheet, WHERE IS IF?; video 23:54
 - **Tema:** 8
-- **Capítulos:** 9, 15
+- **Capítulos:** 9, 16
 - **Dificultad:** 2
 - **Solución:** parcial (el original tiene un error)
 - **SWISH:** sí
@@ -145,7 +145,7 @@
 
 - **Fuente:** cheat sheet, MATH; video 39:10
 - **Tema:** 7
-- **Capítulos:** 8, 23
+- **Capítulos:** 8, 24
 - **Dificultad:** 1
 - **Solución:** sí
 - **SWISH:** sí
@@ -156,7 +156,7 @@
 
 - **Fuente:** cheat sheet, INPUT / OUTPUT; video 44:08–49:29
 - **Tema:** 0 (E/S), 8
-- **Capítulos:** 27, 28
+- **Capítulos:** 28, 29
 - **Dificultad:** 2
 - **Solución:** sí
 - **SWISH:** no (SWISH no permite leer ni escribir archivos; `read/1` funciona con un diálogo)
@@ -167,7 +167,7 @@
 
 - **Fuente:** cheat sheet, HOW TO LOOP; video 49:29
 - **Tema:** 5, 4
-- **Capítulos:** 6, 15
+- **Capítulos:** 6, 16
 - **Dificultad:** 2
 - **Solución:** sí
 - **SWISH:** sí
@@ -178,7 +178,7 @@
 
 - **Fuente:** cheat sheet, HOW TO LOOP (`guess_num`, `loop/1`); video 49:29
 - **Tema:** 5
-- **Capítulos:** 28, 26
+- **Capítulos:** 29, 27
 - **Dificultad:** 2
 - **Solución:** no (hay que corregir el original)
 - **SWISH:** parcial (`read/1` en SWISH abre un diálogo)
@@ -189,7 +189,7 @@
 
 - **Fuente:** cheat sheet, CHANGING THE DATABASE; video 53:31
 - **Tema:** 10
-- **Capítulos:** 20
+- **Capítulos:** 21
 - **Dificultad:** 2
 - **Solución:** sí
 - **SWISH:** sí (el estado no persiste entre consultas)

@@ -2,122 +2,125 @@
 
 :- begin_tests(soluciones).
 
-test(casa_tres, [true(R-Ca-B-D == 12-27-27-27)]) :-
-    ejemplo(casa, P0),
-    con_procesadores(P0, 3, P),
-    inicial(datos(P, combinada), E),
-    reparto(P, E, R),
-    camino(P, E, Ca),
-    cota_inferior(P, B),
-    planificar(P, 1000000, C, optima(por_lista)),
-    duracion(C, D).
+test(profundizando, [true(L-C-Ps == 4-131-[alamos, bosque, molino, fuente,
+                                          islas])]) :-
+    profundizando(rio(cero), ruta(alamos, islas), A, L),
+    costo(A, C),
+    pueblos(A, Ps).
 
-test(mejor_de_todas, [true(D == 33)]) :-
-    ejemplo(coffman, P),
-    mejor_de_todas(P, D).
+test(limitado_falla, [fail]) :-
+    resolver_limitado(rio(cero), ruta(alamos, islas), 3, _).
 
-test(cabezas, [true(L == [t1-0, t2-0, t3-0, t4-4, t5-4, t6-2, t7-2])]) :-
-    ejemplo(coffman, P),
-    findall(T-C, ( tarea(P, T, _), cabeza(P, T, C) ), L).
+test(contar, [true(N == 177)]) :-
+    contar_arboles(rio(cero), ruta(alamos, paso), N).
 
-test(criticas, [true(Ts == [t1, t4, t5])]) :-
-    ejemplo(coffman, P),
-    criticas(P, Ts).
+test(contar_primitivo, [true(N == 1)]) :-
+    contar_arboles(rio(cero), ruta(paso, paso), N).
 
-test(criticas_casa, [true(Ts == [cimientos, paredes, techo, revoque,
-                                 pintura])]) :-
-    ejemplo(casa, P),
-    criticas(P, Ts).
+test(peaje, [true(R == [0-70-[dique, barca, jardin],
+                        15-85-[dique, barca, jardin],
+                        40-107-[dique, ermita, paso, huerta, jardin]])]) :-
+    findall(T-C-Ps,
+            ( member(T, [0, 15, 40]),
+              mejor(peaje(distancia, T), ruta(dique, jardin), A, C, _),
+              pueblos(A, Ps) ),
+            R).
 
-test(suma, [true(D-K == 33-7)]) :-
-    ejemplo(coffman, P),
-    optimo(P, suma, C, K),
-    valido(P, C),
-    duracion(C, D).
+test(doble, [true(R == 15-65-566-434)]) :-
+    comparar_doble(D, E, K1, K2),
+    R = D-E-K1-K2.
 
-test(comparar_voraz,
-     [true(F == [ 6-voraz(16, 23)-optimo(15, 29),
-                  12-voraz(30, 15)-optimo(26, 43) ])]) :-
-    comparar_voraz([6, 12], F).
+test(costo_compartido, [true(C == 1048575)]) :-
+    compartido(hanoi, torre(20, a, c), A, _),
+    costo_compartido(A, C).
 
-test(ida, [true(L == [24-11, 24-9, 28-1022, 28-24])]) :-
-    findall(D-K,
-            ( member(E, [coffman, casa]),
-              member(H, [reparto, combinada]),
-              ejemplo(E, P),
-              optimo_ida(P, H, D, K) ),
-            L).
+test(costo_compartido_mapa, [true(C == 106)]) :-
+    mejor(rio(distancia), ruta(alamos, islas), A, _, _),
+    costo_compartido(A, C).
 
-test(curva, [true(L == [1-36, 2-28, 3-27, 4-27])]) :-
-    ejemplo(casa, P),
-    curva(P, [1, 2, 3, 4], L).
+test(esquina, [true(Rs == [2-21, 3-21, 4-21, 5-ninguna, 6-21, 7-21, 8-21,
+                           9-21])]) :-
+    respuestas_a_la_esquina(Rs).
 
-test(curva_coffman, [true(L == [1-70, 2-35, 3-24, 4-24])]) :-
-    ejemplo(coffman, P),
-    curva(P, [1, 2, 3, 4], L).
+test(memoria_en_el_mapa, [true(R == inference_limit_exceeded)]) :-
+    call_with_inference_limit(compartido(rio(cero), ruta(alamos, islas),
+                                         _, _),
+                              1000000, R).
 
-test(regla, [true(R == "   0         5         10")]) :-
-    regla(12, R).
+test(integral, [true(C-F == 4-(3*(x^3/3)+2*(-cos(x)+sin(x))))]) :-
+    mejor(integral, int(3*x^2+2*(sin(x)+cos(x))), A, C, _),
+    primitiva(A, F).
 
-test(errores, [true(E == [repetida(a), duracion(b, 0), desconocida(x),
-                          procesadores(0)])]) :-
-    errores(proyecto([tarea(a, 1), tarea(a, 2), tarea(b, 0)],
-                     [antes(a, x), antes(b, b)], 0), E).
+test(integral_exp, [true(C-F == 2-2*(x^2/2+exp(x)))]) :-
+    mejor(integral, int(2*(x+exp(x))), A, C, _),
+    primitiva(A, F).
 
-test(errores_ciclo, [true(E == [ciclo])]) :-
-    errores(proyecto([tarea(a, 1), tarea(b, 2)],
-                     [antes(a, b), antes(b, a)], 2), E).
+test(sin_primitiva, [fail]) :-
+    mejor(integral, int(x*sin(x)), _, _, _).
 
-test(sin_errores, [true(E == [])]) :-
-    ejemplo(coffman, P),
-    errores(P, E).
+test(medir_esquina, [true(Rs == [2-[170, 102, 73], 3-[129, 91, 73],
+                                  4-[28, 24, 66], 5-[431, 170, 362],
+                                  6-[73, 61, 85], 7-[26, 23, 68],
+                                  8-[92, 69, 85], 9-[84, 67, 80]])]) :-
+    medir_esquina(Rs).
 
-test(suma_estado, [true(H == 24)]) :-
-    ejemplo(coffman, P),
-    suma(P, e([t1, t4], [0, 0, 0], []), H).
+test(mostrar_estrategia, [true(N == 10)]) :-
+    with_output_to(string(S),
+                   mostrar_estrategia(mejor, [x,o,v, v,x,v, v,v,o])),
+    split_string(S, "
+", "", Ls),
+    length(Ls, N0),
+    N is N0 - 1.
 
-test(sumar, [true(S == 23)]) :-
-    ejemplo(coffman, P),
-    soluciones:sumar(P, t4, 3, S).
+test(limitado_o, [true(A == o(n, meta(ruta(paso, paso))-3)), nondet]) :-
+    limitado(o, rio(cero), n, [ruta(paso, paso)-3], 0, A).
 
-test(multiplo_de_5) :-
-    soluciones:multiplo_de_5(10).
+test(arco_limitado, [true(A == meta(ruta(paso, paso))-4), nondet]) :-
+    arco_limitado(rio(cero), 0, ruta(paso, paso)-4, A).
 
-test(no_multiplo_de_5, [fail]) :-
-    soluciones:multiplo_de_5(7).
+test(arco_limitado_sin_limite, [fail]) :-
+    arco_limitado(rio(cero), 0, ruta(alamos, cantera)-4, _).
 
-test(marca, [true(L == "abc        4")]) :-
-    soluciones:marca(4, "abc", L).
+test(contar_ancestro, [true(N == 0)]) :-
+    contar(rio(cero), ruta(a, b), [ruta(a, b)], N).
 
-test(duracion_con, [true(R == 2-35)]) :-
-    ejemplo(coffman, P),
-    soluciones:duracion_con(P, 2, R).
+test(contar_hijo, [true(N == 1)]) :-
+    contar_hijo(rio(cero), [], ruta(paso, paso)-7, N).
 
-test(fila_voraz, [true(F == 6-voraz(16, 23)-optimo(15, 29))]) :-
-    soluciones:fila_voraz(6, F).
+test(cobrar, [true(Hs == [cruce(a, barca, b)-15, cruce(a, paso, b)-0])]) :-
+    maplist(cobrar(15), [cruce(a, barca, b)-0, cruce(a, paso, b)-0], Hs).
 
-% La regla va sobre el calendario: una línea más que mostrar/2.
-test(mostrar_con_regla, [true(N1 =:= N0 + 1)]) :-
-    ejemplo(coffman, P),
-    calendario_coffman(C),
-    with_output_to(string(S1), mostrar_con_regla(P, C)),
-    with_output_to(string(S0), mostrar(P, C)),
-    split_string(S1, [10], "", L1),
-    split_string(S0, [10], "", L0),
-    length(L1, N1),
-    length(L0, N0).
+test(costo_m_memoria, [true(C-Ns == 2-[x, y])]) :-
+    empty_assoc(M0),
+    costo_m(y(x, [meta(y)-1, meta(y)-1]), C, M0, M),
+    assoc_to_keys(M, Ns).
 
-test(por_colas, [true(Ds == [ base-12, otra_lista-12,
-                              sin_dos_precedencias-12, mas_cortas-10,
-                              cuatro_procesadores-12 ])]) :-
-    findall(N-D, ( variante(N, P, _), por_colas(P, D) ), Ds).
+test(costo_nodo_o, [true(C == 5)]) :-
+    empty_assoc(M0),
+    costo_nodo(o(x, meta(y)-5), C, M0, _).
 
-test(por_colas_coffman, [true(D == 33)]) :-
-    ejemplo(coffman, P),
-    por_colas(P, D).
+test(costo_arco, [true(S == 10)]) :-
+    empty_assoc(M0),
+    costo_arco(meta(y)-3, 7-M0, S-_).
 
-test(por_colas_ciclo, [fail]) :-
-    por_colas(proyecto([tarea(a, 1), tarea(b, 1)],
-                       [antes(a, b), antes(b, a)], 1), _).
+test(posicion_esquina, [true(P == pos([x, v, o, v, v, v, v, v, v], x))]) :-
+    posicion_esquina(3, P).
+
+test(casilla_esquina, [true(Ms == [x, o, v])]) :-
+    length(Ms, 3),
+    foldl(casilla_esquina(2), Ms, 1, _).
+
+test(inmediata, [true(Fs == [3*x, x^2/2, x^4/4, -cos(x), sin(x), exp(x)])]) :-
+    maplist(inmediata, [3, x, x^3, sin(x), cos(x), exp(x)], Fs).
+
+test(inmediata_inversa, [fail]) :-
+    inmediata(x^(-1), _).
+
+test(transformacion, [all(T == [suma(2*(x+1), x)])]) :-
+    transformacion(2*(x+1)+x, T).
+
+test(transformacion_producto, [all(T == [factor(2, x+1),
+                                         distribuir(2*x+2*1)])]) :-
+    transformacion(2*(x+1), T).
 
 :- end_tests(soluciones).

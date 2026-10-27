@@ -22,7 +22,7 @@
 - **Fuente:** Triska, *Basic Concepts*, "Example: Collatz conjecture". https://www.metalevel.at/prolog/concepts#collatz
 - **Tipo:** tarea derivada de un ejemplo
 - **Tema:** 2, 5, 7
-- **Capítulos:** 23
+- **Capítulos:** 24
 - **Dificultad:** 2
 - **Solución:** verificada: `?- hailstone(3, N).` da, por backtracking, 3, 10, 5, 16, 8, 4, 2, 1, 4, …
 - **SWISH:** sí (con `library(clpfd)`)
@@ -52,7 +52,7 @@
 - **Fuente:** Triska, *CLP(FD) and CLP(Z)*, "Example: Length of a list" ("left as an exercise"). https://www.metalevel.at/prolog/clpz#list_length
 - **Tipo:** ejercicio explícito
 - **Tema:** 5, 6, 7
-- **Capítulos:** 23, 7
+- **Capítulos:** 24, 7
 - **Dificultad:** 2
 - **Solución:** propia, verificada: agregar `Length #> 0` antes de la llamada recursiva. Con eso, `list_length(Ls, 3)` da una sola respuesta y termina.
   ```prolog
@@ -68,7 +68,7 @@
 - **Fuente:** Triska, *CLP(FD) and CLP(Z)*, "Example: Length of a list" (segundo "left as an exercise"). https://www.metalevel.at/prolog/clpz#list_length
 - **Tipo:** ejercicio explícito
 - **Tema:** 5, 6, 7
-- **Capítulos:** 23, 7
+- **Capítulos:** 24, 7
 - **Dificultad:** 3
 - **Solución:** propia, verificada: en la cláusula recursiva de `list_length_/3`, agregar `L #>= L1` después de calcular `L1`, para acotar la longitud final.
 - **SWISH:** sí
@@ -78,7 +78,7 @@
 - **Fuente:** Triska, *Prolog Coding Horror*, "Horror factorial". https://www.metalevel.at/prolog/horror
 - **Tipo:** tarea derivada de un ejemplo
 - **Tema:** 7, 8
-- **Capítulos:** 23, 8, 9
+- **Capítulos:** 24, 8, 9
 - **Dificultad:** 2
 - **Solución:** propia, verificada: `n_factorial(N, F)` da 0-1, 1-1, 2-2, 3-6, … y `n_factorial(N, 720)` da `N = 6`.
   ```prolog
@@ -93,7 +93,7 @@
 - **Fuente:** Triska, *Nontermination*, "Failure slicing". https://www.metalevel.at/prolog/nontermination
 - **Tipo:** tarea derivada de un ejemplo
 - **Tema:** 4, 5
-- **Capítulos:** 5, 39
+- **Capítulos:** 5, 40
 - **Dificultad:** 2
 - **Solución:** texto, verificada: separar los hechos en `adjacent_/2` y definir `adjacent/2` con dos reglas no recursivas. Así, `?- adjacent(X, Y), false.` termina.
 - **SWISH:** sí
@@ -109,7 +109,7 @@
 - **Fuente:** Triska, *Writing Prolog Programs*, "How to begin" ("left as an exercise"). https://www.metalevel.at/prolog/writing
 - **Tipo:** ejercicio explícito
 - **Tema:** 6
-- **Capítulos:** 7, 14
+- **Capítulos:** 7, 15
 - **Dificultad:** 1
 - **Solución:** no (hay muchas respuestas válidas)
 - **SWISH:** sí
@@ -124,7 +124,7 @@
 - **Fuente:** Triska, *Reading Prolog Programs*, "Declarative reading". https://www.metalevel.at/prolog/reading#declarative
 - **Tipo:** tarea derivada de un ejemplo
 - **Tema:** 2, 5, 6
-- **Capítulos:** 7, 12
+- **Capítulos:** 7, 13
 - **Dificultad:** 1
 - **Solución:** está en el texto
 - **SWISH:** sí
@@ -138,7 +138,7 @@
 - **Fuente:** Triska, *Prolog Data Structures*, "Clean vs. defaulty representations". https://www.metalevel.at/prolog/data#clean
 - **Tipo:** tarea derivada de un ejemplo
 - **Tema:** 3, 5
-- **Capítulos:** 7, 14
+- **Capítulos:** 7, 15
 - **Dificultad:** 2
 - **Solución:** no
 - **SWISH:** sí
@@ -163,7 +163,7 @@
 - **Fuente:** Triska, *Expert Systems in Prolog* ("It is a straight-forward exercise…"). https://www.metalevel.at/prolog/expertsystems
 - **Tipo:** ejercicio explícito
 - **Tema:** 3, 6, X
-- **Capítulos:** 18, 33
+- **Capítulos:** 19, 34
 - **Dificultad:** 2
 - **Solución:** parcial en el texto (el fragmento `animal/1` que le sigue)
 - **SWISH:** sí (sin la parte interactiva de preguntas al usuario)
@@ -182,7 +182,7 @@
 - **Fuente:** Triska, *Prolog DCG Primer*, "List reversal, palindromes and other exercises" (**Challenge**). https://www.metalevel.at/prolog/dcg
 - **Tipo:** ejercicio explícito
 - **Tema:** A, 6
-- **Capítulos:** 21
+- **Capítulos:** 22
 - **Dificultad:** 2
 - **Solución:** propia, verificada (dos definiciones):
   ```prolog
@@ -203,7 +203,7 @@
 - **Fuente:** Triska, *Prolog DCG Primer*, "Relating trees to lists". https://www.metalevel.at/prolog/dcg
 - **Tipo:** tarea derivada de un ejemplo
 - **Tema:** A, 3
-- **Capítulos:** 21
+- **Capítulos:** 22
 - **Dificultad:** 1
 - **Solución:** no (alcanza con mover el terminal `[Name]` dentro del cuerpo de la regla)
 - **SWISH:** sí
@@ -218,7 +218,7 @@
 - **Fuente:** Triska, *Fun Facts about Prolog*, "Iterative deepening is often a good strategy" (**Exercise: Why?**). https://www.metalevel.at/prolog/fun
 - **Tipo:** ejercicio explícito
 - **Tema:** 4, X
-- **Capítulos:** 40
+- **Capítulos:** 41
 - **Dificultad:** 2
 - **Solución:** no (es un argumento matemático: la suma de b^j·(k+1−j) está dominada por el término b^k cuando b ≥ 2)
 - **SWISH:** no corresponde
@@ -229,7 +229,7 @@
 - **Fuente:** Triska, *Memoization*, "Tabling". https://www.metalevel.at/prolog/memoization#tabling
 - **Tipo:** tarea derivada de un ejemplo
 - **Tema:** 5, 7, X
-- **Capítulos:** 39, 8
+- **Capítulos:** 40, 8
 - **Dificultad:** 1
 - **Solución:** texto, verificada: con `:- table fibonacci/2.`, `fibonacci(100, F)` da `F = 573147844013817084101` (con la convención F0 = F1 = 1).
 - **SWISH:** sí (SWI-Prolog tiene `table/1` incorporado)
@@ -244,7 +244,7 @@
 - **Fuente:** Triska, *Logic Puzzles with Prolog*, "Knights and Knaves". https://www.metalevel.at/prolog/puzzles
 - **Tipo:** tarea derivada de un ejemplo (cinco casos resueltos en el texto)
 - **Tema:** X
-- **Capítulos:** 23, 12
+- **Capítulos:** 24, 13
 - **Dificultad:** 1
 - **Solución:** texto, verificada: en el ejemplo 1, `sat(A =:= ~A+B)` da `A = 1, B = 1`; en el ejemplo 5, C es bribón.
 - **SWISH:** sí (con `library(clpb)`)
@@ -255,7 +255,7 @@
 - **Fuente:** Triska, *Logic Puzzles with Prolog*, "Which answer is correct?". https://www.metalevel.at/prolog/puzzles
 - **Tipo:** tarea derivada de un ejemplo
 - **Tema:** X
-- **Capítulos:** 23, 12
+- **Capítulos:** 24, 13
 - **Dificultad:** 2
 - **Solución:** en el texto (solo la opción 5 es consistente)
 - **SWISH:** sí (con `library(clpb)`)
@@ -265,7 +265,7 @@
 - **Fuente:** Triska, *Logic Puzzles with Prolog*, "Lewis Carroll". https://www.metalevel.at/prolog/puzzles
 - **Tipo:** tarea derivada de un ejemplo
 - **Tema:** X
-- **Capítulos:** 12, 23, 21
+- **Capítulos:** 13, 24, 22
 - **Dificultad:** 3
 - **Solución:** en el texto ("nunca vi una sirena")
 - **SWISH:** sí (con `library(clpb)`)
@@ -276,7 +276,7 @@
 - **Fuente:** Triska, *Logic Puzzles with Prolog*, "Cryptoarithmetic puzzles". https://www.metalevel.at/prolog/puzzles#cryptoarithmetic
 - **Tipo:** tarea derivada de un ejemplo
 - **Tema:** X, 7
-- **Capítulos:** 23
+- **Capítulos:** 24
 - **Dificultad:** 2
 - **Solución:** texto, verificada: la primera solución es 12+83+579=674; con `T #\= 0`, el texto da 23+74+968=1065.
 - **SWISH:** sí (con `library(clpfd)`)
@@ -287,7 +287,7 @@
 - **Fuente:** Triska, *Logic Puzzles with Prolog*, "Zebra Puzzle". https://www.metalevel.at/prolog/puzzles
 - **Tipo:** tarea derivada de un ejemplo
 - **Tema:** 4, X
-- **Capítulos:** 23, 7
+- **Capítulos:** 24, 7
 - **Dificultad:** 3
 - **Solución:** texto, verificada: el noruego bebe agua y el japonés tiene la cebra (`Water = 1, Zebra = 5`).
 - **SWISH:** sí (con `library(clpfd)`)
@@ -298,7 +298,7 @@
 - **Fuente:** Triska, *Logic Puzzles with Prolog*, "Wolf and Goat etc.". https://www.metalevel.at/prolog/puzzles (ejemplo completo en https://www.metalevel.at/zurg/)
 - **Tipo:** tarea derivada de un ejemplo (el texto solo describe el método)
 - **Tema:** 4, 6
-- **Capítulos:** 22, 40
+- **Capítulos:** 23, 41
 - **Dificultad:** 3
 - **Solución:** no para el lobo, la cabra y el repollo; *Escape from Zurg* está resuelto en el enlace.
 - **SWISH:** sí
@@ -309,7 +309,7 @@
 - **Fuente:** Triska, *Combinatorial Optimization*, "Example: Map Colouring". https://www.metalevel.at/prolog/optimization#mapcolouring
 - **Tipo:** tarea derivada de un ejemplo
 - **Tema:** 4, X
-- **Capítulos:** 5, 23
+- **Capítulos:** 5, 24
 - **Dificultad:** 2
 - **Solución:** en el texto (con CLP(B) y CLP(FD))
 - **SWISH:** sí
@@ -320,7 +320,7 @@
 - **Fuente:** Triska, *N-queens* (showcase). https://www.metalevel.at/queens/
 - **Tipo:** tarea derivada de un ejemplo
 - **Tema:** 4, X
-- **Capítulos:** 8, 23
+- **Capítulos:** 8, 24
 - **Dificultad:** 3
 - **Solución:** sí, en la página (con CLP(FD))
 - **SWISH:** sí
@@ -331,7 +331,7 @@
 - **Fuente:** Triska, *Sudoku* (showcase). https://www.metalevel.at/sudoku/
 - **Tipo:** tarea derivada de un ejemplo
 - **Tema:** X
-- **Capítulos:** 23
+- **Capítulos:** 24
 - **Dificultad:** 3
 - **Solución:** sí, en la página
 - **SWISH:** sí (con `library(clpfd)`)
@@ -345,7 +345,7 @@
 - **Fuente:** Triska, *Attributed Variables*, **Exercise (hard)**. https://www.metalevel.at/prolog/attributedvariables
 - **Tipo:** ejercicio explícito
 - **Tema:** X
-- **Capítulos:** 23
+- **Capítulos:** 24
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí (el código usa `put_attr/3` de SWI)
@@ -355,7 +355,7 @@
 - **Fuente:** Triska, *Attributed Variables*, "left as an exercise". https://www.metalevel.at/prolog/attributedvariables
 - **Tipo:** ejercicio explícito
 - **Tema:** X
-- **Capítulos:** 20, 39
+- **Capítulos:** 21, 40
 - **Dificultad:** 3
 - **Solución:** no
 - **SWISH:** sí

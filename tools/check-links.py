@@ -9,7 +9,7 @@ are exempt, and so is a chapter's mention of itself):
     sección 5.6                 -> [sección 5.6](../capitulo-05-slug/index.md#56-slug)
                                    (same page: [sección 5.6](#56-slug); from soluciones.md:
                                    [sección 5.6](index.md#56-slug))
-    solución 11 del capítulo 15 -> [solución 11 del capítulo 15](../capitulo-15-control/soluciones.md#11)
+    solución 11 del capítulo 16 -> [solución 11 del capítulo 16](../capitulo-16-control/soluciones.md#11)
     ejercicio 7 del capítulo 7  -> [ejercicio 7 del capítulo 7](../capitulo-07-listas/soluciones.md#7)
     Patrón 26                   -> [Patrón 26](../patrones.md#26-slug)
 

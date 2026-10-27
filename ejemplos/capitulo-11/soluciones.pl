@@ -237,3 +237,60 @@ en_orden([_]).
 en_orden([A, B|Resto]) :-
     A @=< B,
     en_orden([B|Resto]).
+
+% --- Ejercicio 18 ----------------------------------------------------------
+
+%!  orden_lexicografico(+Arbol) is semidet.
+%
+%   El árbol binario de átomos Arbol está ordenado alfabéticamente: cada
+%   nodo va después de todos los de su subárbol izquierdo y antes de todos
+%   los de su subárbol derecho.
+orden_lexicografico(void).
+orden_lexicografico(tree(X, Izq, Der)) :-
+    todos_preceden(Izq, X),
+    todos_siguen(Der, X),
+    orden_lexicografico(Izq),
+    orden_lexicografico(Der).
+
+%!  todos_preceden(+Arbol, +X) is semidet.
+%
+%   Todos los átomos de Arbol preceden al átomo X.
+todos_preceden(void, _).
+todos_preceden(tree(Y, Izq, Der), X) :-
+    precede(Y, X),
+    todos_preceden(Izq, X),
+    todos_preceden(Der, X).
+
+%!  todos_siguen(+Arbol, +X) is semidet.
+%
+%   El átomo X precede a todos los átomos de Arbol.
+todos_siguen(void, _).
+todos_siguen(tree(Y, Izq, Der), X) :-
+    precede(X, Y),
+    todos_siguen(Izq, X),
+    todos_siguen(Der, X).
+
+%!  precede(+A, +B) is semidet.
+%
+%   El átomo A va antes que el átomo B en el orden de sus códigos.
+precede(A, B) :-
+    atom_codes(A, CodigosA),
+    atom_codes(B, CodigosB),
+    codigos_preceden(CodigosA, CodigosB).
+
+%!  codigos_preceden(+Xs, +Ys) is semidet.
+%
+%   La lista de códigos Xs va antes que Ys: en la primera posición en que
+%   difieren, el código de Xs es menor, o Xs es un prefijo propio de Ys.
+%   El corte es verde: las dos últimas cláusulas no se superponen.
+codigos_preceden([], [_|_]).
+codigos_preceden([X|_], [Y|_]) :-
+    X < Y,
+    !.
+codigos_preceden([X|Xs], [X|Ys]) :-
+    codigos_preceden(Xs, Ys).
+
+% arbol_palabras(T): T es el árbol de átomos del enunciado.
+arbol_palabras(tree(lista, tree(corte, tree(arbol, void, void),
+                                       tree(hecho, void, void)),
+                           tree(regla, tree(prolog, void, void), void))).

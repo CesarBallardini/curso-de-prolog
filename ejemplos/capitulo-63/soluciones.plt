@@ -2,160 +2,128 @@
 
 :- begin_tests(soluciones).
 
-test(ejercicio_1, [N, M] == [4, [sobre(a, b), sobre(b, piso)]]) :-
-    H = [sobre(a, piso), sobre(b, a), meta(apilar([b, a]))],
-    cantidad_de_ciclos(cajas, orden, H, N),
-    encadenar(cajas, orden, H, M, nada_aplicable).
+test(clasificar, [true(Cs == [tautologia, contradiccion, contingente,
+                              tautologia])]) :-
+    maplist(clasificar, ["p ∨ ¬p", "p ∧ ¬p", "p → q", "(p → q) ∨ (q → p)"],
+            Cs).
 
-test(ejercicio_2, [M, R] == [[progenitor(juan, ana), madre(ana, sofia),
-                              padre(juan, ana)], limite(50)]) :-
-    encadenar_vigilado(familia, orden, no, 50,
-                       [padre(juan, ana), madre(ana, sofia)], M, R).
+% La forma definicional crece en forma lineal: 3n cláusulas contra 2^n.
+test(definicional, [forall(between(1, 8, N)),
+                    true(D-E =:= (2 ** N)-(3 * N))]) :-
+    comparar_def(N, D, E).
 
-test(ejercicio_2_con_refraccion, [N, R] == [34, nada_aplicable]) :-
-    familia(H),
-    encadenar_vigilado(familia, orden, si, 50, H, M, R),
-    length(M, N).
+test(definicional_refuta) :-
+    leer_formula("(p ∧ q) ∨ (p ∧ ¬q) → p", F),
+    clausulas_def(no(F), Cs),
+    refutar(Cs, 8, _).
 
-test(ejercicio_3, [E1, E2] == [r2, r2]) :-
-    L = [instanciacion(r1, [4, 9], 2, []),
-         instanciacion(r2, [9, 2, 7], 3, []),
-         instanciacion(r3, [9, 7], 3, [])],
-    preferida(lex, L, instanciacion(E1, _, _, _)),
-    preferida(mea, L, instanciacion(E2, _, _, _)).
+% Una fórmula que no es un teorema sigue sin refutación.
+test(definicional_no_teorema, [true(R == saturada)]) :-
+    leer_formula("(p ∧ q) ∨ (r ∧ s) → p", F),
+    clausulas_def(no(F), Cs),
+    saturar(Cs, _, R).
 
-test(ejercicio_4, N == 4) :-
-    cantidad_de_ciclos(cajas, prioridad,
-                       [sobre(a, piso), sobre(b, piso), sobre(c, a),
-                        sobre(d, piso), meta(apilar([b, c])),
-                        meta(apilar([a, d]))], N).
+test(primer_error_ninguno, [true(K == ninguno)]) :-
+    primer_error(prueba([[-p, +q], [+p, +q], [+p, -q], [-p, -q]],
+                        [r(1, 2, [+q]), r(3, 4, [-q]), r(5, 6, [])]), K).
 
-test(ejercicio_5, [O, L, M] == [5, 5, 5]) :-
-    H = [sobre(a, piso), sobre(b, a), sobre(c, b), meta(apilar([c, b, a]))],
-    cantidad_de_ciclos(cajas, orden, H, O),
-    cantidad_de_ciclos(cajas, lex, H, L),
-    cantidad_de_ciclos(cajas, mea, H, M).
+test(primer_error, [true(K == 2)]) :-
+    primer_error(prueba([[-p, +q], [+p, +q], [+p, -q], [-p, -q]],
+                        [r(1, 2, [+q]), r(2, 4, [-q]), r(5, 6, [])]), K).
 
-test(ejercicio_6, [P, C] == [0, 8]) :-
-    valor_ranura(fuente, [], precio, P),
-    valor_ranura(memoria, [consumo-8], consumo, C).
+test(primer_error_incompleta, [true(K == incompleta)]) :-
+    primer_error(prueba([[-p, +q], [+p, +q]], [r(1, 2, [+q])]), K).
 
-test(ejercicio_6_disipador, [fail]) :-
-    valor_ranura(disipador, [], necesita_disipador, _).
+% Skolemizar en el alcance da términos de un argumento.
+test(alcance, [true(Cs =@= [[+ama(X, sk1(X))], [-ama(sk2(Y), Y)]])]) :-
+    leer_formula("¬((∀x ∃y ama(x, y)) → ∃y ∀x ama(x, y))", F),
+    clausulas_alcance(F, Cs).
 
-test(ejercicio_7, [C1, D1, C2, D2] == [65, si, 200, si]) :-
-    valor_ranura(apu, [], consumo, C1),
-    valor_ranura(apu, [], necesita_disipador, D1),
-    valor_ranura(apu_invertida, [], consumo, C2),
-    valor_ranura(apu_invertida, [], necesita_disipador, D2).
+test(unitaria_horn, [true(N == 3)]) :-
+    clausulas_texto("¬((a → b) ∧ (b → c) → (a → c))", Cs),
+    refutar_unitaria(Cs, 5, P),
+    length(P, N).
 
-test(ejercicio_8_mea, [F, W] == [fuente-fuente_a, 0]) :-
-    configurar_sumando(mea, C, W, configurada),
-    last(C, F).
+test(unitaria_hein, [fail]) :-
+    refutar_unitaria([[-p, +q], [+p, +q], [+p, -q], [-p, -q]], 10, _).
 
-test(ejercicio_8_orden, R == limite(200)) :-
-    configurar_sumando(orden, _, _, R).
+test(decidir_teorema) :-
+    decidir("((p → q) → p) → p", teorema(P)),
+    verificar(P).
 
-test(ejercicio_9, C == [procesador-cpu_c, placa-placa_c, memoria-mem_c,
-                        disipador-dis_a, fuente-fuente_a, gabinete-gab_a]) :-
-    configurar_gabinete([pedido(nucleos, 6), pedido(memoria, 16),
-                         pedido(video, no)], C).
+test(decidir_contraejemplo, [true(V == 0)]) :-
+    decidir("(p → q) → (q → p)", contraejemplo(A)),
+    leer_formula("(p → q) → (q → p)", F),
+    valor_en(F, A, V).
 
-test(ejercicio_9_atx, G == gabinete-gab_b) :-
-    configurar_gabinete([pedido(nucleos, 8), pedido(memoria, 32),
-                         pedido(video, si)], C),
-    last(C, G).
+test(saturar, [true(N-R == 4-refutada)]) :-
+    palomar(2, F),
+    clausulas_fo(no(F), Cs),
+    saturar(Cs, N, R).
 
-test(ejercicio_10, [P1, P2] == [1125, 415]) :-
-    mas_barata([pedido(nucleos, 8), pedido(memoria, 32), pedido(video, si)],
-               _, P1),
-    mas_barata([pedido(nucleos, 6), pedido(memoria, 16), pedido(video, no)],
-               _, P2).
+test(saturar_no_teorema, [true(R == saturada)]) :-
+    clausulas_texto("¬((p → q) → (q → p))", Cs),
+    saturar(Cs, _, R).
 
-test(ejercicio_10_imposible, [fail]) :-
-    mas_barata([pedido(nucleos, 6), pedido(memoria, 64), pedido(video, no)],
-               _, _).
+test(clasificar, [true(Cs == [tautologia, contradiccion, contingente])]) :-
+    maplist(clasificar, ["p ∨ ¬p", "p ∧ ¬p", "p → q"], Cs).
 
-test(ejercicio_10_difieren, [PO, PE] == [480, 490]) :-
-    comparar_disipador_caro(_, PO, _, PE).
+% definir/5 da un átomo d(N) a cada conjunción y disyunción.
+test(definir, [true(N-L-Cs == 2-(+d(0))-[ [-d(0), +d(1), -c],
+                                         [-d(1), +a],
+                                         [-d(1), +b]
+                                       ])]) :-
+    definir(o(y(at(a), at(b)), no(at(c))), 0, N, L, Cs).
 
-test(ejercicio_11, Is == [651, 2640, 10632]) :-
-    findall(I, ( member(K, [1, 2, 4]),
-                 familias(K, H),
-                 medir(familia, orden, H, _, I, _, _) ),
-            Is).
+test(definir_literal, [true(N-L-Cs == 3-(-a)-[])]) :-
+    definir(no(at(a)), 3, N, L, Cs).
 
-test(ejercicio_12, [nondet], A == por(antepasado(juan, sofia), antepasado_2,
-                     [por(progenitor(juan, ana), progenitor_p,
-                          [inicial(padre(juan, ana))]),
-                      por(antepasado(ana, sofia), antepasado_1,
-                          [por(progenitor(ana, sofia), progenitor_m,
-                               [inicial(madre(ana, sofia))])])])) :-
-    explicar(antepasado(juan, sofia), A).
+% La variable existencial depende de la universal que la rodea.
+test(skolemizar_fnn, [true(N-H =@= 1-todo(X, at(p(X, sk0(X)))))]) :-
+    skolemizar_fnn(todo(X0, existe(Y, at(p(X0, Y)))), [], 0, N, H).
 
-% Sin refracción, la regla vuelve a dispararse con el mismo hecho hasta
-% el límite; con ella, una sola vez.
-test(vigilado_sin_refraccion, [true(R-H == limite(3)-[b, a])]) :-
-    memoria_con([a], M),
-    vigilado_63([(r :: [a] ---> [agregar(b)])], orden, no, 3, 0, [], M,
-                M1, R),
-    hechos(M1, H).
+test(skolemizar_fnn_afuera, [true(H =@= y(at(p(sk0)), todo(X, at(q(X)))))]) :-
+    skolemizar_fnn(y(existe(Y, at(p(Y))), todo(X0, at(q(X0)))), [], 0, _, H).
 
-test(vigilado_con_refraccion, [true(R-H == nada_aplicable-[b, a])]) :-
-    memoria_con([a], M),
-    vigilado_63([(r :: [a] ---> [agregar(b)])], orden, si, 3, 0, [], M,
-                M1, R),
-    hechos(M1, H).
+% Con los dos padres unitarios, la derivación aparece una sola vez.
+test(derivar_unitaria, all(P == [[r(1, 2, [])]])) :-
+    length(P, 1),
+    derivar_unitaria(P, [[+p], [-p]]).
 
-test(candidatas_si, [true(C == [])]) :-
-    candidatas(si, [instanciacion(r, [1], 1, [])], [r-[1]], C).
+test(derivar_unitaria_sin_unitarias, [fail]) :-
+    length(P, 1),
+    derivar_unitaria(P, [[+p, +q], [-p, -q]]).
 
-test(candidatas_no, [true(C == [instanciacion(r, [1], 1, [])])]) :-
-    candidatas(no, [instanciacion(r, [1], 1, [])], [r-[1]], C).
+test(subsumida, [true]) :-
+    subsumida([+p, +q], [[+q], [+r]]).
 
-test(prioridad_de, [true(P1-P2 == 1-0)]) :-
-    prioridad_de(apilar, P1),
-    prioridad_de(otra, P2).
+test(no_subsumida, [fail]) :-
+    subsumida([+p], [[+p, +q]]).
 
-% El gabinete pasa a ser una fase obligatoria antes del fin.
-test(memoria_con_gabinete, [true(F-G == no-si)]) :-
-    memoria_con_gabinete([pedido(nucleos, 6)], H),
-    (   memberchk(despues(fuente, fin), H) -> F = si ; F = no ),
-    (   memberchk(despues(gabinete, fin), H) -> G = si ; G = no ).
+% El modelo no mínimo de Flach se descarta.
+test(modelo_minimo, all(M == [[amable(maria), estudiante(maria),
+                               gusta(pedro, maria)]])) :-
+    modelo_minimo([ [+gusta(pedro, maria)],
+                    [+estudiante(maria)],
+                    [+docente(X), +amable(Y), -gusta(X, Y), -estudiante(Y)],
+                    [+amable(Y1), -docente(X1), -gusta(X1, Y1)]
+                  ], M).
 
-% compatible/4 enumera las 15 configuraciones del pedido; la más barata
-% es la de mas_barata/3.
-test(compatible, [true(N-P == 15-415)]) :-
-    catalogo(Cat),
-    Pedido = [pedido(nucleos, 6), pedido(memoria, 16), pedido(video, no)],
-    aggregate_all(count, compatible(Cat, Pedido, _, _), N),
-    aggregate_all(min(P0), compatible(Cat, Pedido, _, P0), P).
+test(es_modelo, [true]) :-
+    es_modelo([[+p, -q], [+q]], [p, q]).
 
-test(copia, [true(H == padre(juan-2, ana-2))]) :-
-    copia(2, padre(juan, ana), H).
+test(no_es_modelo, [fail]) :-
+    es_modelo([[+p, -q], [+q]], [q]).
 
-% regla_con_origen/2 agrega el origen después de cada agregar/1, con los
-% patrones de la regla, sin las pruebas ni las negaciones.
-test(regla_con_origen,
-     [true(R =@= (r :: [padre(X, Y), {X \== Y}, no(z)]
-                    ---> [agregar(p(X, Y)),
-                          agregar(origen(p(X, Y), r, [padre(X, Y)])),
-                          quitar(q)]))]) :-
-    regla_con_origen((r :: [padre(X0, Y0), {X0 \== Y0}, no(z)]
-                        ---> [agregar(p(X0, Y0)), quitar(q)]), R).
+test(subconjunto_propio, all(S == [[a], [b], []])) :-
+    subconjunto_propio([a, b], S).
 
-test(con_su_origen_otra, [true(A == [quitar(b)])]) :-
-    con_su_origen(r, [a], quitar(b), A).
+test(subconjunto, all(S == [[a, b], [a], [b], []])) :-
+    subconjunto([a, b], S).
 
-test(con_origen, [true(Rs == [(r :: [a] ---> [agregar(b),
-                                              agregar(origen(b, r, [a]))])])]) :-
-    con_origen([(r :: [a] ---> [agregar(b)])], Rs).
-
-% En placa_de_video gana el valor por omisión; en la subclase, el cálculo,
-% salvo que no pueda calcular y la herencia siga hasta el valor por omisión.
-test(ejercicio13, [true(C1-C2-C3 == 200-260-200)]) :-
-    valor_con_facetas(placa_de_video, [memoria_gb-8], consumo, C1),
-    valor_con_facetas(placa_calculada, [memoria_gb-8], consumo, C2),
-    valor_con_facetas(placa_calculada, [], consumo, C3).
+% Quitar una fórmula por vez no alcanza: de [a, b, c] no se puede quitar
+% ninguna sola, pero [c] es un modelo.
+test(de_a_una, all(M == [[c]])) :-
+    modelo_minimo([[+a, +c], [-a, +b], [-b, +a], [+c, -b]], M).
 
 :- end_tests(soluciones).

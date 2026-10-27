@@ -28,7 +28,7 @@ needs something that file does not define is reported as skipped, not as a
 failure. Where no code block belongs, a context comment sets that file for the
 transcripts that follow without rendering anything:
 
-    <!-- contexto: capitulo-67/subsuncion.pl -->
+    <!-- contexto: capitulo-68/subsuncion.pl -->
 
 The slides of a chapter, `diapositivas/capitulo-NN.md`, are checked with it: they
 take the chapter from the file name, and are selected by the same argument.
@@ -102,7 +102,7 @@ def transcripts(page: Path) -> list[Transcript]:
     for number, text in enumerate(page.read_text(encoding='utf-8').splitlines(), start=1):
         marker = MARKER_LINE.match(text)
         if marker:
-            # Chapter 29 also marks Python files; a query runs against Prolog
+            # Chapter 30 also marks Python files; a query runs against Prolog
             # only, so those markers leave the context as it was.
             if marker.group('file').endswith('.pl'):
                 context = examples.EXAMPLES / marker.group('file')
@@ -201,7 +201,7 @@ ENVIRONMENT = re.compile(r'^\s*(consult|halt|listing|trace|notrace|edit|make)\b'
 LOCAL_LOAD = re.compile(r'^\s*(use_module|ensure_loaded)\(\s*[a-z]\w*\s*[,)]')
 
 #  A `$Name` reuses the binding of an earlier answer in the same toplevel session
-#  (chapter 42 reuses an ODBC connection as `$C`); each query is probed on its own,
+#  (chapter 43 reuses an ODBC connection as `$C`); each query is probed on its own,
 #  so such a query cannot be reproduced.
 SESSION_VARIABLE = re.compile(r'\$[A-Z_]')
 
@@ -236,7 +236,7 @@ def run_once(swipl: str, item: Transcript, context: list[Path]) -> tuple[str, st
         # in place of the `-t` toplevel after the probe.
         done = subprocess.run(  # noqa: S603
             [swipl, '-q', '--stack-limit=64m', '-g', f'probe(({query})),halt', '-t', 'halt', *files],
-            # A query that reads user_input (chapter 33's consultar/1 asks the
+            # A query that reads user_input (chapter 34's consultar/1 asks the
             # reader) gets end of file at once. Inheriting stdin made it wait on
             # make's: an open pipe in a background run, so it hit LIMIT there
             # and passed when run by hand.

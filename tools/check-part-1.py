@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 """Check that part I never uses what part I has not taught yet.
 
-Chapters 1 to 12 go as far as the cut, negation as failure and derivation trees,
+Chapters 1 to 13 go as far as the cut, negation as failure and derivation trees,
 and do everything with facts, rules, unification, recursion and lists. No
 higher-order predicates and no dynamic database: those start in part II, and an
 example that jumps ahead leaves the student looking at something the text has
 not explained.
 
 It reads the `.pl` and `.plt` files of `ejemplos/capitulo-01/` to `capitulo-11/`,
-and the prolog code blocks of chapters 1 to 12 under `docs/`, solutions included.
+and the prolog code blocks of chapters 1 to 13 under `docs/`, solutions included.
 
     ./tools/check-part-1.py
 
@@ -23,29 +23,29 @@ import examples
 # The forbidden predicate, and the chapter where the book introduces it, which is
 # what whoever sees this check fail needs to be told.
 FORBIDDEN = {
-    'findall': 17,
-    'bagof': 17,
-    'setof': 17,
-    'aggregate_all': 17,
-    'forall': 17,
-    'maplist': 18,
-    'foldl': 18,
-    'include': 18,
-    'exclude': 18,
-    'partition': 18,
-    'convlist': 18,
-    'call': 18,
-    'apply': 18,
-    'assert': 19,
-    'asserta': 19,
-    'assertz': 19,
-    'retract': 19,
-    'retractall': 19,
-    'abolish': 19,
-    'nb_setval': 19,
-    'nb_getval': 19,
-    'b_setval': 19,
-    'b_getval': 19,
+    'findall': 18,
+    'bagof': 18,
+    'setof': 18,
+    'aggregate_all': 18,
+    'forall': 18,
+    'maplist': 19,
+    'foldl': 19,
+    'include': 19,
+    'exclude': 19,
+    'partition': 19,
+    'convlist': 19,
+    'call': 19,
+    'apply': 19,
+    'assert': 21,
+    'asserta': 21,
+    'assertz': 21,
+    'retract': 21,
+    'retractall': 21,
+    'abolish': 21,
+    'nb_setval': 21,
+    'nb_getval': 21,
+    'b_setval': 21,
+    'b_getval': 21,
 }
 
 CALL = re.compile(r'\b({})\s*\('.format('|'.join(sorted(FORBIDDEN))))
@@ -72,7 +72,7 @@ def in_examples():
 
 
 def in_text():
-    """The code blocks of chapters 1 to 12, solutions included."""
+    """The code blocks of chapters 1 to 13, solutions included."""
     found = []
     if not examples.DOCS.is_dir():
         return found

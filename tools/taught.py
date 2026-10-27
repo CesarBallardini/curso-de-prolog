@@ -5,8 +5,8 @@ primitive, with the indicator in backticks: `findall/3`, `phrase//1`, `maplist/2
 `py_call/2,3`) and its numbered section headings. `taught_by()` reads both from every
 written chapter and gives, per predicate name, the first chapter that presents it.
 
-Part I is assumed known from chapter 13 on: every name that appears in a prolog code block
-of chapters 1 to 12 counts as taught in chapter 12 at the latest.
+Part I is assumed known from chapter 14 on: every name that appears in a prolog code block
+of chapters 1 to 13 counts as taught in chapter 13 at the latest.
 
 `in_swi()` asks the local SWI-Prolog which of a set of name/arity pairs are predicates it
 knows (system or autoloadable library), so that a data functor like `estado(...)`, or one
@@ -82,7 +82,7 @@ def arities() -> dict[str, set[int]]:
 
 
 def used_in_part_1() -> set[str]:
-    """Every name called or defined in the prolog blocks of chapters 1 to 12."""
+    """Every name called or defined in the prolog blocks of chapters 1 to 13."""
     names = set()
     for chapter, index in chapter_pages():
         if chapter > examples.LAST_OF_PART_1:
@@ -96,7 +96,7 @@ def used_in_part_1() -> set[str]:
 
 
 def taught_by() -> dict[str, int]:
-    """{name: first chapter that presents it}; Part I names map to chapter 12 at most."""
+    """{name: first chapter that presents it}; Part I names map to chapter 13 at most."""
     first: dict[str, int] = {}
     for chapter, index in chapter_pages():
         for name in declared(index):

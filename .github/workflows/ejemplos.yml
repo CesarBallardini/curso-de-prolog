@@ -1,7 +1,7 @@
 # The course's main promise: every example runs, and prints what the text says
 # it prints. The plunit tests of every example, every transcript of the book
 # against SWI-Prolog 9, the SWISH sandbox (the «▶ Abrir en SWISH» links), the
-# Python side of chapters 29 to 31 and 36, and the lint of the tooling, with the
+# Python side of chapters 30 to 32 and 37, and the lint of the tooling, with the
 # types of the course assistant's tools and the vendored libraries of the site.
 #
 # Checking the whole book takes about twelve minutes, and most changes touch one
@@ -82,7 +82,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
-      # No Chromium: only the pytest suite of chapter 36 opens a browser, and
+      # No Chromium: only the pytest suite of chapter 37 opens a browser, and
       # that runs in the python job below.
       - name: Prepare
         uses: ./.github/actions/preparar
@@ -98,7 +98,7 @@ jobs:
       - name: SWISH sandbox
         run: make swish e="$CAPITULOS"
 
-  # The Python side of chapters 29 to 31 and 36, when one of them is selected.
+  # The Python side of chapters 30 to 32 and 37, when one of them is selected.
   python:
     needs: partes
     if: needs.partes.outputs.python == 'true'
@@ -107,7 +107,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
-      # Chromium too: the web pages of chapter 36 are tested in a browser.
+      # Chromium too: the web pages of chapter 37 are tested in a browser.
       - name: Prepare
         uses: ./.github/actions/preparar
         with:
@@ -118,7 +118,7 @@ jobs:
       # pointer type that the 9.2.9 headers do not declare; GCC 15 makes that an
       # error, older compilers a warning, and it works at run time. The flag
       # turns that one error back into a warning.
-      - name: Python examples (chapters 29 to 31 and 36)
+      - name: Python examples (chapters 30 to 32 and 37)
         env:
           CFLAGS: -Wno-error=incompatible-pointer-types
         run: make appendix

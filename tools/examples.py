@@ -46,8 +46,8 @@ SLIDES = ROOT / 'diapositivas'
 # The chapter comes from the directory name, with or without a slug after the
 # number: ejemplos/capitulo-07/ and docs/capitulo-07-listas/ are both chapter 7.
 CHAPTER_DIR = re.compile(r'^capitulo-(\d+)')
-# Part I is chapters 1 to 12: no higher-order and no database predicates there.
-LAST_OF_PART_1 = 12
+# Part I is chapters 1 to 13: no higher-order and no database predicates there.
+LAST_OF_PART_1 = 13
 
 
 def is_written(directory: Path) -> bool:
@@ -94,8 +94,8 @@ class Example:
     def chapter(self) -> int | None:
         """Its chapter number, or None for anything not under a `capitulo-NN/`.
 
-        From chapter 24 on a program can be several modules in a subdirectory,
-        `capitulo-24/inscripciones/datos.pl`, so the chapter is the first
+        From chapter 25 on a program can be several modules in a subdirectory,
+        `capitulo-25/inscripciones/datos.pl`, so the chapter is the first
         directory under `ejemplos/`, not the file's own.
         """
         found = CHAPTER_DIR.match(self.path.relative_to(EXAMPLES).parts[0])
@@ -143,9 +143,9 @@ def all_examples(wanted: list[str] | None = None) -> list[Example]:
 
     `wanted` filters by example name or by chapter directory, to run just one.
     A file that loads `library(janus)` is left out: it starts Python inside `swipl`,
-    which needs the environment `make appendix` sets up (chapter 29, whose pytest
-    suite runs those files too). The rest of chapter 29 is plain Prolog, and is here.
-    So is every `pack.pl` left out: it describes a pack (chapter 31) and is not an example, and
+    which needs the environment `make appendix` sets up (chapter 30, whose pytest
+    suite runs those files too). The rest of chapter 30 is plain Prolog, and is here.
+    So is every `pack.pl` left out: it describes a pack (chapter 32) and is not an example, and
     `pack_install/2` rejects any term in it that is not a description, the
     `:- encoding(utf8).` every example starts with included.
     """

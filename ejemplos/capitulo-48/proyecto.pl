@@ -2,19 +2,18 @@
 
 % Capítulo 48 - El programa terminado.
 %
-% Carga los seis archivos del proyecto: las compuertas y la descripción de
-% los circuitos, sus fórmulas, la verificación con library(clpb), los
-% circuitos secuenciales y sus estados alcanzables.
+% Carga las versiones finales del proyecto: la inversa exacta, el
+% producto de matrices con símbolos y el planificador de rutas con
+% combustible. Cada archivo carga a su vez lo que necesita: matriz.pl, el
+% simplificador del capítulo 33 y rutas.pl.
 %
-% solo-local: carga módulos propios, y SWISH no los admite.
+% solo-local: carga otros archivos, y SWISH no lo admite.
 %
-%?- simular(sumador3, [1, 1, 0, 1, 0, 1], Ss).
-%?- formula(sumador, co, F), suma_de_productos(F, Ps).
-%?- equivalentes(sumador, sumador_mayoria).
-%?- alcanzables(contador_gray, [0, 0, 0], Es).
+%?- hilbert(4, racional, H), inversa(H, I).
+%?- desvio_hilbert(12, flotante, E).
+%?- rotacion(y, t, A), rotacion(x, f, B), producto_simbolico(A, B, P).
+%?- horario_con_carga(pradera_alta, ermita_vieja, 60, 8:00, H).
 
-:- use_module(circuitos).
-:- use_module(formulas).
-:- use_module(verificar).
-:- use_module(secuenciales).
-:- use_module(estados).
+:- ensure_loaded(inversa).
+:- ensure_loaded(matriz_simbolica).
+:- ensure_loaded(rutas_combustible).

@@ -1,14 +1,15 @@
 :- encoding(utf8).
 
-% Capítulo 22 - El proyecto Inscripciones: el ranking y un índice por alumno.
+% Capítulo 22 - El proyecto Inscripciones: un lenguaje de comandos.
 %
-% Respecto del capítulo 21, mejores/2 se calcula con ranking/1, que ordena los
-% promedios con sort/4 en lugar de order_by/2. indice_por_alumno/1 construye
-% un assoc de cada legajo a sus inscripciones, para consultar muchas veces
-% las materias de un alumno sin recorrer todas las inscripciones.
+% Respecto del capítulo 21, ejecutar/2 recibe un comando escrito en texto,
+% como "inscribir a 104 en sintaxis", lo analiza con dos gramáticas y lo
+% ejecuta. palabras//1 separa el texto en palabras y números; comando//1
+% relaciona esa lista con un término, como inscribir(104, ssl), y sirve
+% también para generar el texto de un comando.
 %
-%?- ranking(R).
-%?- indice_por_alumno(I), materias_de(I, 101, Materias).
+%?- ejecutar("inscribir a 104 en sintaxis", Respuesta).
+%?- ejecutar("listar analisis_1", Respuesta).
 
 :- use_module(library(dcg/basics)).
 
@@ -36,7 +37,7 @@ materia(pp,  paradigmas,     2).
 materia(ssl, sintaxis,       2).
 materia(bd,  bases_de_datos, 3).
 
-% correlativa(Materia, Requisito): para cursar Materia es necesario aprobar
+% correlativa(Materia, Requisito): para cursar Materia se debe aprobar
 % Requisito.
 correlativa(am2, am1).
 correlativa(am2, alg).
@@ -129,7 +130,7 @@ puede_inscribirse(Legajo, Materia) :-
 %
 %   El alumno llamado Nombre aprobó Materia. El primer objetivo es el que el
 %   nombre selecciona: con el orden inverso, la consulta recorre todas las
-%   inscripciones de la materia antes de mirar el nombre (sección 16.5).
+%   inscripciones de la materia antes de examinar el nombre (sección 17.5).
 aprobada_por_nombre(Nombre, Materia) :-
     alumno(Legajo, Nombre, _, _),
     aprobada(Legajo, Materia, _Nota).
@@ -228,43 +229,16 @@ mostrar_fila(Legajo-Valor) :-
     alumno(Legajo, Nombre, _, _),
     format("  ~d ~w: ~w~n", [Legajo, Nombre, Valor]).
 
-%!  ranking(-Ranking:list(pair)) is det.
-%
-%   Ranking son los pares Legajo-Promedio de los alumnos con alguna nota, de
-%   mayor a menor promedio; con el mismo promedio, en el orden de los legajos.
-ranking(Ranking) :-
-    findall(Legajo-Promedio, promedio_de_alumno(Legajo, Promedio), Pares),
-    sort(2, @>=, Pares, Ranking).
-
 %!  mejores(+Cantidad:integer, -Ranking:list(pair)) is det.
 %
 %   Ranking es la lista de los Cantidad mejores promedios, de mayor a menor,
 %   como pares Legajo-Promedio.
 mejores(Cantidad, Ranking) :-
-    ranking(Todos),
-    findall(Par, limit(Cantidad, member(Par, Todos)), Ranking).
-
-%!  indice_por_alumno(-Indice) is det.
-%
-%   Indice es un assoc de cada legajo con inscripciones a la lista de sus
-%   pares Materia-Estado, en el orden de los hechos.
-indice_por_alumno(Indice) :-
-    findall(Legajo-(Materia-Estado),
-            inscripcion(Legajo, Materia, Estado),
-            Pares),
-    keysort(Pares, Ordenados),
-    group_pairs_by_key(Ordenados, Grupos),
-    list_to_assoc(Grupos, Indice).
-
-%!  materias_de(+Indice, +Legajo:integer, -Materias:list(pair)) is det.
-%
-%   Materias son los pares Materia-Estado del alumno Legajo en Indice; la
-%   lista vacía si no tiene inscripciones.
-materias_de(Indice, Legajo, Materias) :-
-    (   get_assoc(Legajo, Indice, Encontradas)
-    ->  Materias = Encontradas
-    ;   Materias = []
-    ).
+    findall(Legajo-Promedio,
+            limit(Cantidad,
+                  order_by([desc(Promedio)],
+                           promedio_de_alumno(Legajo, Promedio))),
+            Ranking).
 
 % operaciones(N): se realizaron N operaciones de inscripción o de baja.
 operaciones(0).
@@ -310,7 +284,7 @@ contar_operacion :-
 
 %!  requisitos_de(+Materia:atom, -Requisitos:list(atom)) is det.
 %
-%   Requisitos son todas las materias que se deben aprobar antes de cursar
+%   Requisitos son todas las materias que se debe aprobar antes de cursar
 %   Materia, directa o indirectamente, en orden y sin repetidos. El resultado
 %   se guarda la primera vez que se calcula.
 requisitos_de(Materia, Requisitos) :-

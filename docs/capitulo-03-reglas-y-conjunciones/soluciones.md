@@ -250,7 +250,7 @@ caminos distintos: una por `padre/2`, con `P = juan`, y otra por `madre/2`, con
 [sección 3.5](index.md#35-una-regla-que-produce-respuestas-de-mas).
 
 Es posible eliminar los duplicados, pero requiere herramientas que se presentan
-en el [capítulo 17](../capitulo-17-todas-las-soluciones/index.md).
+en el [capítulo 18](../capitulo-18-todas-las-soluciones/index.md).
 
 ## 9
 

@@ -1,8 +1,8 @@
 :- encoding(utf8).
 
 % Pruebas de Inscripciones (capítulo 22): las del capítulo 21, y las del
-% ranking y del índice por alumno. Las que modifican la base guardan el estado
-% en su setup y lo restauran en su cleanup, con los predicados del programa.
+% lenguaje de comandos. Las que modifican la base guardan el estado en su
+% setup y lo restauran en su cleanup, con los predicados del programa.
 
 :- begin_tests(inscripciones).
 
@@ -164,7 +164,7 @@ test(informe_de_aprobadas, true(F == [101-4, 105-0])) :-
 test(informe_vacio, true(F == [])) :-
     informe(aprobadas, [], F).
 
-% with_output_to/2, que captura la salida, se presenta en el capítulo 27.
+% with_output_to/2, que captura la salida, se presenta en el capítulo 28.
 test(mostrar_informe,
      true(S == "Aprobadas
   101 ana: 4
@@ -265,33 +265,5 @@ test(no_entendido, true(R == no_entendido)) :-
 
 test(alumno_inexistente, true(R == no_entendido)) :-
     ejecutar("promedio de 999", R).
-
-% --- Ranking e índice -------------------------------------------------------
-
-test(ranking, true(R == [101-8.5, 104-8, 103-6, 106-4.5, 102-4])) :-
-    ranking(R).
-
-% mejores/2 da el mismo resultado que con order_by/2 en el capítulo 17.
-test(mejores_con_sort, true(R == [101-8.5, 104-8])) :-
-    mejores(2, R).
-
-test(mejores_mas_que_alumnos, true(N == 5)) :-
-    mejores(10, R),
-    length(R, N).
-
-test(materias_de_ana,
-     true(M == [am1-nota(8), alg-nota(9), log-nota(10), am2-nota(7),
-                pp-cursando])) :-
-    indice_por_alumno(I),
-    materias_de(I, 101, M).
-
-test(materias_de_gabriela, true(M == [])) :-
-    indice_por_alumno(I),
-    materias_de(I, 107, M).
-
-test(indice_completo, true(N == 6)) :-
-    indice_por_alumno(I),
-    assoc_to_keys(I, Ks),
-    length(Ks, N).
 
 :- end_tests(inscripciones).

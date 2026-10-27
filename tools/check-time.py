@@ -7,8 +7,11 @@
 
 Each chapter opens with an `!!! info "Tiempo estimado"` block holding three figures
 in h:mm: reading the chapter with its examples and activities, solving the starred
-exercises, and solving all of them. They are written by hand, so an exercise added,
-removed or re-graded leaves them wrong with nothing to say so.
+exercises, and solving all of them. Reading covers the chapter's extra pages too: a
+long chapter moves some sections out of index.md into pages of their own in the same
+folder, and those are part of the chapter; only soluciones.md is left out. The
+figures are written by hand, so an exercise added, removed or re-graded, or a page
+added to the chapter, leaves them wrong with nothing to say so.
 
 The model is the one the figures were written from:
 
@@ -43,6 +46,7 @@ TOLERANCE = 5  # minutes; the published figures are rounded to five
 STAR = '★'
 READING = re.compile(r'hacer las actividades: \*\*(\d+):(\d\d) h\*\*')
 STARRED = re.compile(rf'Resolver los (\d+) ejercicios marcados con {STAR}: \*\*(\d+):(\d\d) h\*\*')
+NONE_STARRED = re.compile(rf'Ningún ejercicio está marcado con {STAR}\.')  # a count of 0 and 0:00
 EVERY = re.compile(r'Resolver los (\d+) ejercicios del final: \*\*(\d+):(\d\d) h\*\*')
 
 FENCE = re.compile(r'^```.*?^```', re.M | re.S)
@@ -97,15 +101,21 @@ def hm(minutes: float) -> str:
 def claimed(text: str, page: Path) -> tuple[int, int, int, int, int]:
     """The five numbers the chapter states: three times in minutes and two counts."""
     reading, starred, every = READING.search(text), STARRED.search(text), EVERY.search(text)
-    if not (reading and starred and every):
+    none_starred = NONE_STARRED.search(text)
+    if not (reading and (starred or none_starred) and every):
         raise SystemExit(f'{page}: no "Tiempo estimado" block, or one this tool cannot read')
     return (
         int(reading.group(1)) * 60 + int(reading.group(2)),
-        int(starred.group(2)) * 60 + int(starred.group(3)),
+        int(starred.group(2)) * 60 + int(starred.group(3)) if starred else 0,
         int(every.group(2)) * 60 + int(every.group(3)),
-        int(starred.group(1)),
+        int(starred.group(1)) if starred else 0,
         int(every.group(1)),
     )
+
+
+def extra_pages(page: Path) -> list[Path]:
+    """The pages of the chapter besides index.md and soluciones.md."""
+    return sorted(other for other in page.parent.glob('*.md') if other.name not in ('index.md', 'soluciones.md'))
 
 
 def check(page: Path) -> tuple[list[str], tuple[float, int, int]]:
@@ -117,6 +127,7 @@ def check(page: Path) -> tuple[list[str], tuple[float, int, int]]:
     starred = [item for item in items if item[0]]
 
     read = reading_minutes(body)
+    read += sum(reading_minutes(other.read_text(encoding='utf-8')) for other in extra_pages(page))
     star_time = solving_minutes(starred)
     all_time = solving_minutes(items)
     says_read, says_star, says_all, says_star_count, says_count = claimed(text, page)

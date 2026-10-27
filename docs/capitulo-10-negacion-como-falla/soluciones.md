@@ -482,7 +482,7 @@ posibles de P. Los elementos vistos hasta aquí examinan las respuestas de un
 objetivo de a una, a medida que se producen, y `\+` es la única construcción de
 la parte I que evalúa un objetivo completo y produce un resultado sobre el
 conjunto. El elemento que falta es la posibilidad de reunir todas las respuestas
-en una lista y operar sobre ella. Es el tema del [capítulo 17](../capitulo-17-todas-las-soluciones/index.md), que presenta
+en una lista y operar sobre ella. Es el tema del [capítulo 18](../capitulo-18-todas-las-soluciones/index.md), que presenta
 `findall/3` y también `forall/2`, un predicado que expresa «para todos» de
 manera directa.
 
@@ -1072,6 +1072,81 @@ responde `X = ana`. La lista ya es el dato completo, y la pregunta «nadie lleg�
 después» se reemplaza por «no queda nada después».
 
 Líneas de código: con `\+`, 10; con corte y falla, 15; sin negación, 3; las dos primeras incluyen `llego_despues/3` y `esta_en_lista/2`.
+
+## 18
+
+`selecciona/3` y `permuta/2` son los del
+[ejercicio 21 del capítulo 7](../capitulo-07-listas/soluciones.md#21), copiados
+en `soluciones.pl`. `palindrome/1` es el de *Learn Prolog Now*: una lista es un
+palíndromo si es igual a su inversa.
+
+<!-- ejemplo: capitulo-10/soluciones.pl predicado: selecciona/3 permuta/2 palindrome/1 palindromos/2 armar_palindromos/3 consulta: palindromos([1, 2, 0, 0, 2], Ps). -->
+```prolog
+%!  selecciona(?X, ?Xs, +Ys) is nondet.
+%
+%   Ys es Xs sin una de las apariciones de X: una respuesta por cada
+%   aparición. Con Ys dada y Xs libre, inserta X en cada posición de Ys.
+selecciona(X, [X|Xs], Xs).
+selecciona(X, [Y|Ys], [Y|Zs]) :-
+    selecciona(X, Ys, Zs).
+
+%!  permuta(+Xs, ?Ys) is nondet.
+%
+%   Ys es una permutación de Xs: elige el primer elemento con selecciona/3 y
+%   permuta el resto. Una lista de n elementos distintos da n! respuestas.
+permuta([], []).
+permuta(Xs, [Z|Zs]) :-
+    selecciona(Z, Xs, Ys),
+    permuta(Ys, Zs).
+
+%!  palindrome(+L) is semidet.
+%
+%   L se lee igual en los dos sentidos.
+palindrome(L) :-
+    reverse(L, L).
+
+%!  palindromos(+L, -Ps) is det.
+%
+%   Ps es la lista de todos los palíndromos distintos que se forman con los
+%   elementos de L, en el orden en que permuta/2 los genera. Ps debe llegar
+%   libre.
+palindromos(L, Ps) :-
+    armar_palindromos(L, Ps, []).
+
+%!  armar_palindromos(+L, -Ps, +YaIncluidas) is det.
+%
+%   Ps es la lista de los palíndromos formados con L que no están en
+%   YaIncluidas.
+armar_palindromos(L, [P|Ps], YaIncluidas) :-
+    permuta(L, P),
+    palindrome(P),
+    \+ pertenece(P, YaIncluidas),
+    !,
+    concatenar(YaIncluidas, [P], YaIncluidasConP),
+    armar_palindromos(L, Ps, YaIncluidasConP).
+armar_palindromos(_, [], _).
+```
+
+```prolog
+?- palindromos([1, 2, 0, 0, 2], Ps).
+Ps = [[2, 0, 1, 0, 2], [0, 2, 1, 2, 0]].
+
+?- palindromos([0, 1, 1, 1, 2, 2], []).
+true.
+```
+
+Es la estrategia de la [sección 10.9](index.md#109-estrategia-para-recolectar-soluciones)
+con un generador de dos objetivos: `permuta(L, P)` propone una permutación y
+`palindrome(P)` la verifica. La prueba `\+ pertenece(P, YaIncluidas)` es la que evita
+las repeticiones: con elementos repetidos, `permuta/2` produce varias veces
+la misma lista —`[1, 2, 0, 0, 2]` tiene dos `0` y dos `2`, y cada palíndromo
+sale cuatro veces—, y solo la primera supera la prueba. Cada llamada recorre
+las permutaciones desde el principio, de modo que el método sirve para listas
+cortas: con n elementos, cada llamada puede examinar n! permutaciones.
+`soluciones.pl` copia el `pertenece/2` de la
+[sección 7.3](../capitulo-07-listas/index.md#73-recorrer-una-lista) y el
+`concatenar/3` de la
+[sección 7.5](../capitulo-07-listas/index.md#75-construir-una-lista-durante-el-recorrido-de-otra).
 
 ## Comparación de las tres versiones
 

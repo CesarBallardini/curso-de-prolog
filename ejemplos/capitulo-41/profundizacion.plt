@@ -2,37 +2,29 @@
 
 :- begin_tests(profundizacion).
 
-% Con tiempo suficiente, la profundización llega al final de la partida y
-% da el mismo valor que la búsqueda completa.
-test(completa, [true(V-D == 0-5)]) :-
-    P = pos([x, o, v, v, x, v, v, v, o], o),
-    profundizar(tateti(3), P, 10, _, V, D),
-    alfabeta(tateti(3), P, 5, _, V, _).
+% Con límite 5 hay dos planes: el de cuatro acciones y uno de cinco.
+test(con_limite, [true(Ls == [4, 5])]) :-
+    findall(L, ( con_limite(jarras(4, 3, 2), 5, P), length(P, L) ), Ls0),
+    msort(Ls0, Ls).
 
-% Una victoria encontrada a profundidad 3 detiene la profundización.
-test(victoria, [true(J-V-D == 4-102-3)]) :-
-    profundizar(tateti(3), pos([x, o, v, v, x, v, v, v, o], x), 10, J, V, D).
+test(limite_corto, [fail]) :-
+    con_limite(jarras(4, 3, 2), 3, _).
 
-test(sin_tiempo, [true(J-V-D == ninguna-0-0)]) :-
-    profundizar(tateti(3), pos([x, o, v, v, x, v, v, v, o], x), 0, J, V, D).
+test(iterativo, [true(P == [llenar(2), pasar(2, 1), llenar(2),
+                            pasar(2, 1)])]) :-
+    once(iterativo(jarras(4, 3, 2), P)).
 
-% Con poco tiempo, el 4 por 4 queda a una profundidad intermedia, que
-% depende de la máquina.
-test(interrumpida, [true((integer(J), D >= 1, D < 16))]) :-
-    inicial(tateti(4), P),
-    profundizar(tateti(4), P, 0.2, J, _, D).
+% Los planes salen de menor a mayor longitud.
+test(orden, [true(Ls == [4, 5, 6, 6, 6, 6])]) :-
+    findall(L, ( limit(6, iterativo(jarras(4, 3, 2), P)), length(P, L) ),
+            Ls).
 
-% La jugada que ya fue la mejor se busca primero.
-test(primero, [true(J-V == 4-0)]) :-
-    primero(tateti(3), pos([x, o, v, v, x, v, v, v, o], o), 5, 4, J, V).
+test(mas_corto, [true(L == 6)]) :-
+    once(iterativo(jarras(7, 2, 1), P)),
+    length(P, L).
 
-test(completa_llena, [true]) :-
-    completa(tateti(3), pos([x, o, v, v, x, v, v, v, o], o), 5, 0).
-
-test(completa_victoria, [true]) :-
-    completa(tateti(3), pos([x, o, v, v, x, v, v, v, o], x), 3, 102).
-
-test(no_completa, [fail]) :-
-    completa(tateti(3), pos([x, o, v, v, x, v, v, v, o], o), 3, 0).
+% Sin solución, la profundización iterativa no termina.
+test(sin_solucion, [true(R == inference_limit_exceeded)]) :-
+    call_with_inference_limit(iterativo(jarras(4, 2, 1), _), 1000000, R).
 
 :- end_tests(profundizacion).

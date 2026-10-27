@@ -1,14 +1,13 @@
 :- encoding(utf8).
 
-% Capítulo 23 - Soluciones de los ejercicios 14, 15 y 16: el proyecto.
+% Capítulo 23 - Soluciones de los ejercicios 14 y 15: el proyecto.
 %
-% Es inscripciones.pl con horario_minimo/3 (ejercicio 14), horario_separado/3
-% (ejercicio 15) y horario_con_aulas/3 (ejercicio 16).
+% Es inscripciones.pl con ranking_de_carrera/2 (ejercicio 14) y un índice de
+% cada materia a sus alumnos como conjunto ordenado (ejercicio 15).
 %
-%?- horario_minimo(20, Dias, Horario).
-%?- horario_con_aulas([4, 6], 5, Horario).
+%?- ranking_de_carrera(sistemas, R).
+%?- indice_por_materia(I), alumnos_en_comun(I, am1, log, L).
 
-:- use_module(library(clpfd)).
 :- use_module(library(dcg/basics)).
 
 :- meta_predicate
@@ -128,7 +127,7 @@ puede_inscribirse(Legajo, Materia) :-
 %
 %   El alumno llamado Nombre aprobó Materia. El primer objetivo es el que el
 %   nombre selecciona: con el orden inverso, la consulta recorre todas las
-%   inscripciones de la materia antes de mirar el nombre (sección 16.5).
+%   inscripciones de la materia antes de mirar el nombre (sección 17.5).
 aprobada_por_nombre(Nombre, Materia) :-
     alumno(Legajo, Nombre, _, _),
     aprobada(Legajo, Materia, _Nota).
@@ -435,154 +434,44 @@ realizar(promedio(L), Respuesta) :-
     ;   Respuesta = sin_notas
     ).
 
-%!  horario(+Dias:integer, +Capacidad:integer, -Horario:list(pair)) is nondet.
-%
-%   Horario son pares Materia-Dia, con días de 1 a Dias, tales que dos
-%   materias con un alumno inscripto en común rinden en días distintos y la
-%   cantidad de alumnos que rinden cada día no supera Capacidad.
-horario(Dias, Capacidad, Horario) :-
-    findall(M-_, materia(M, _, _), Horario),
-    pairs_values(Horario, Ds),
-    Ds ins 1..Dias,
-    findall(M1-M2, conflicto(M1, M2), Conflictos),
-    maplist(dias_distintos(Horario), Conflictos),
-    numlist(1, Dias, Todos),
-    maplist(capacidad_del_dia(Horario, Capacidad), Todos),
-    label(Ds).
-
-%!  conflicto(?M1:atom, ?M2:atom) is nondet.
-%
-%   M1 y M2 son materias distintas, M1 antes que M2 en orden alfabético, con
-%   al menos un alumno inscripto en las dos. Una respuesta por par.
-conflicto(M1, M2) :-
-    materia(M1, _, _),
-    materia(M2, _, _),
-    M1 @< M2,
-    once(( inscripcion(L, M1, _),
-           inscripcion(L, M2, _) )).
-
-%!  dias_distintos(+Horario:list(pair), +Conflicto:pair) is semidet.
-%
-%   Las dos materias de Conflicto tienen el examen en días distintos.
-dias_distintos(Horario, M1-M2) :-
-    memberchk(M1-D1, Horario),
-    memberchk(M2-D2, Horario),
-    D1 #\= D2.
-
-%!  capacidad_del_dia(+Horario:list(pair), +Capacidad:integer, +Dia:integer)
-%!      is semidet.
-%
-%   Los alumnos inscriptos en las materias que rinden el día Dia no son más
-%   que Capacidad. Cada materia aporta sus inscriptos si su día es Dia: la
-%   comparación se refleja en una variable 0 o 1.
-capacidad_del_dia(Horario, Capacidad, Dia) :-
-    maplist(rinde_ese_dia(Dia), Horario, Rinden),
-    maplist(cantidad_de_inscriptos, Horario, Cantidades),
-    scalar_product(Cantidades, Rinden, #=<, Capacidad).
-
-%!  rinde_ese_dia(+Dia:integer, +MateriaDia:pair, -B) is det.
-%
-%   B es 1 si la materia rinde el día Dia, y 0 si no.
-rinde_ese_dia(Dia, _-D, B) :-
-    B #<==> (D #= Dia).
-
-%!  cantidad_de_inscriptos(+MateriaDia:pair, -N:integer) is det.
-%
-%   N es la cantidad de alumnos inscriptos en la materia.
-cantidad_de_inscriptos(M-_, N) :-
-    inscriptos(M, Legajos),
-    length(Legajos, N).
-
 % --- Ejercicio 14 ---------------------------------------------------------
 
-%!  horario_minimo(+Capacidad:integer, -Dias:integer, -Horario:list(pair))
-%!      is semidet.
+%!  ranking_de_carrera(+Carrera:atom, -Ranking:list(pair)) is det.
 %
-%   Dias es la menor cantidad de días con la que hay un horario, y Horario el
-%   primero de esos horarios. Prueba 1, 2, … días, hasta la cantidad de
-%   materias. Falla si no hay horario con ninguna cantidad de días.
-horario_minimo(Capacidad, Dias, Horario) :-
-    aggregate_all(count, materia(_, _, _), Materias),
-    between(1, Materias, Dias),
-    horario(Dias, Capacidad, Horario),
-    !.
+%   Ranking es el ranking de los alumnos de Carrera, de mayor a menor
+%   promedio.
+ranking_de_carrera(Carrera, Ranking) :-
+    ranking(Todos),
+    include({Carrera}/[L-_]>>alumno(L, _, Carrera, _), Todos, Ranking).
 
 % --- Ejercicio 15 ---------------------------------------------------------
 
-%!  horario_separado(+Dias:integer, +Capacidad:integer, -Horario:list(pair))
-%!      is nondet.
+%!  indice_por_materia(-Indice) is det.
 %
-%   Como horario/3, con una diferencia de al menos dos días entre los
-%   exámenes de dos materias con un alumno en común.
-horario_separado(Dias, Capacidad, Horario) :-
-    findall(M-_, materia(M, _, _), Horario),
-    pairs_values(Horario, Ds),
-    Ds ins 1..Dias,
-    findall(M1-M2, conflicto(M1, M2), Conflictos),
-    maplist(dias_separados(Horario), Conflictos),
-    numlist(1, Dias, Todos),
-    maplist(capacidad_del_dia(Horario, Capacidad), Todos),
-    label(Ds).
+%   Indice es un assoc de cada materia con inscriptos al conjunto ordenado
+%   de sus legajos.
+indice_por_materia(Indice) :-
+    findall(M-L, inscripcion(L, M, _), Pares),
+    keysort(Pares, Ordenados),
+    group_pairs_by_key(Ordenados, Grupos),
+    maplist([M-Ls, M-Conjunto]>>list_to_ord_set(Ls, Conjunto), Grupos,
+            Conjuntos),
+    list_to_assoc(Conjuntos, Indice).
 
-%!  dias_separados(+Horario:list(pair), +Conflicto:pair) is semidet.
+%!  alumnos_en_comun(+Indice, +M1:atom, +M2:atom, -Legajos:list) is det.
 %
-%   Los exámenes de las dos materias de Conflicto están a dos días o más.
-dias_separados(Horario, M1-M2) :-
-    memberchk(M1-D1, Horario),
-    memberchk(M2-D2, Horario),
-    abs(D1 - D2) #>= 2.
+%   Legajos son los alumnos inscriptos en M1 y en M2, en orden.
+alumnos_en_comun(Indice, M1, M2, Legajos) :-
+    alumnos_de_materia(Indice, M1, A),
+    alumnos_de_materia(Indice, M2, B),
+    ord_intersection(A, B, Legajos).
 
-% --- Ejercicio 16 ---------------------------------------------------------
-
-%!  horario_con_aulas(+Capacidades:list(integer), +Dias:integer,
-%!                    -Horario:list) is nondet.
+%!  alumnos_de_materia(+Indice, +Materia:atom, -Legajos:list) is det.
 %
-%   Horario tiene un término examen(Materia, Dia, Aula) por materia. Las
-%   aulas son 1, 2, … con las Capacidades dadas: cada aula tiene un examen
-%   por día como máximo, y los inscriptos de la materia caben en el aula.
-%   Dos materias con un alumno en común rinden en días distintos.
-horario_con_aulas(Capacidades, Dias, Horario) :-
-    length(Capacidades, Aulas),
-    findall(examen(M, _, _), materia(M, _, _), Horario),
-    maplist(dominio_de_examen(Dias, Aulas, Capacidades), Horario),
-    findall(M1-M2, conflicto(M1, M2), Conflictos),
-    maplist(examenes_en_dias_distintos(Horario), Conflictos),
-    turnos_distintos(Horario),
-    append_variables(Horario, Vs),
-    label(Vs).
-
-%!  dominio_de_examen(+Dias, +Aulas, +Capacidades, +Examen) is semidet.
-%
-%   El día del Examen va de 1 a Dias, el aula de 1 a Aulas, y la capacidad
-%   del aula elegida alcanza para los inscriptos de la materia.
-dominio_de_examen(Dias, Aulas, Capacidades, examen(M, Dia, Aula)) :-
-    Dia in 1..Dias,
-    Aula in 1..Aulas,
-    inscriptos(M, Legajos),
-    length(Legajos, N),
-    element(Aula, Capacidades, Capacidad),
-    N #=< Capacidad.
-
-%!  examenes_en_dias_distintos(+Horario:list, +Conflicto:pair) is semidet.
-%
-%   Las dos materias de Conflicto rinden en días distintos. Falla si los
-%   dominios de los dos días no admiten valores distintos.
-examenes_en_dias_distintos(Horario, M1-M2) :-
-    memberchk(examen(M1, D1, _), Horario),
-    memberchk(examen(M2, D2, _), Horario),
-    D1 #\= D2.
-
-%!  turnos_distintos(+Horario:list) is semidet.
-%
-%   Dos exámenes no ocupan la misma aula el mismo día: cada par Dia-Aula se
-%   codifica como un número distinto. Falla si hay más exámenes que pares
-%   Dia-Aula posibles.
-turnos_distintos(Horario) :-
-    maplist([examen(_, D, A), T]>>(T #= D * 100 + A), Horario, Turnos),
-    all_different(Turnos).
-
-%!  append_variables(+Horario:list, -Vs:list) is det.
-%
-%   Vs son las variables de día y aula de Horario, en orden.
-append_variables(Horario, Vs) :-
-    foldl([examen(_, D, A), V0, V]>>append(V0, [D, A], V), Horario, [], Vs).
+%   Legajos son los alumnos de Materia en Indice; el conjunto vacío si no
+%   tiene inscriptos.
+alumnos_de_materia(Indice, Materia, Legajos) :-
+    (   get_assoc(Materia, Indice, Encontrados)
+    ->  Legajos = Encontrados
+    ;   Legajos = []
+    ).

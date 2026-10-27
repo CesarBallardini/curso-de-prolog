@@ -1,62 +1,137 @@
 :- encoding(utf8).
 
-:- begin_tests(soluciones, [setup(abolish_all_tables)]).
+:- begin_tests(soluciones).
 
-test(camino_der, [setup(abolish_all_tables),
-                  true(Ys-T == [a, b, c, d]-4)]) :-
-    findall(Y, camino_der(a, Y), Ys0),
-    msort(Ys0, Ys),
-    tablas(T).
+test(modelos_lluvia, [true(Ms == [[calle_mojada, llueve, riego],
+                                  [calle_mojada, llueve]])]) :-
+    modelos(lluvia, [calle_mojada, llueve, riego], Ms).
 
-test(suma_hasta, [setup(abolish_all_tables), true(S-T == 5050-100)]) :-
-    suma_hasta(100, S),
-    tablas(T).
+% La intersección de los modelos es el modelo mínimo.
+test(interseccion) :-
+    modelos(lluvia, [calle_mojada, llueve, riego], [M1, M2]),
+    ord_intersection(M1, M2, I),
+    modelo_minimo(lluvia, M),
+    assertion(I == M).
 
-test(suma_hasta_cero, [fail]) :-
-    suma_hasta(0, _).
+test(subconjuntos, [true(Ss == [[a, b], [a], [b], []])]) :-
+    findall(S, subconjunto([a, b], S), Ss).
 
-test(formas, [true(N == 292)]) :-
-    formas(100, [1, 5, 10, 25, 50], N).
+test(base_caminos, [true(N-NM == 32-16)]) :-
+    base_herbrand(caminos, B),
+    length(B, N),
+    modelo_minimo(caminos, M),
+    length(M, NM),
+    assertion(ord_subset(M, B)).
 
-test(formas_iguales, [forall(member(M, [0, 7, 30, 64])), true(N1 == N2)]) :-
-    formas(M, [1, 5, 10, 25, 50], N1),
-    formas_sin_tabla(M, [1, 5, 10, 25, 50], N2).
+test(base_lluvia, [true(B == [calle_mojada, llueve, riego])]) :-
+    base_herbrand(lluvia, B).
 
-test(formas_imposible, [true(N == 0)]) :-
-    formas(3, [2], N).
+test(circular_modelo) :-
+    modelo_minimo(circular, M),
+    assertion(M == [p, q, r, s]),
+    assertion(es_modelo(circular, M)).
 
-test(distancia_desde_b, [true(Ps == [a-8, b-11, c-9, d-5])]) :-
-    findall(Y-D, distancia(b, Y, D), Ps0),
-    msort(Ps0, Ps).
+test(circular_minimales, [true(Ms == [[p, r, s], [p, r, t], [q, r, s],
+                                      [q, r, t]])]) :-
+    modelos(circular, [p, q, r, s, t], Todos),
+    minimales(Todos, Ms).
 
-test(distancia_max_no_termina, [true(R == inference_limit_exceeded)]) :-
-    call_with_inference_limit(distancia_max(a, b, _), 1000000, R).
+test(estratos_a, [true(E == [0-[d/0], 1-[b/0, c/0], 2-[a/0]])]) :-
+    estratos_de([(a :- \+ b), (b :- c), (c :- \+ d)], E).
 
-% De a a b: un tramo, de longitud 4; el más corto tiene dos, y mide 3.
-test(saltos, [true(N-D == 1-3)]) :-
-    saltos(a, b, N),
-    distancia(a, b, D).
+test(ciclos_b, [true(P == [a/0-c/0, c/0-a/0])]) :-
+    ciclos_negativos_de([(a :- b, \+ c), (c :- \+ a)], P).
 
-test(saltos_todos, [true(Ps == [a-3, b-1, c-1, d-2])]) :-
-    findall(Y-N, saltos(a, Y, N), Ps0),
-    msort(Ps0, Ps).
+test(ciclos_c, [true(P == [a/0-b/0])]) :-
+    ciclos_negativos_de([(a :- \+ b), (b :- a)], P).
 
-test(mas_larga, [true(R == 9-[s, b, a, t])]) :-
-    ruta_mas_larga(s, t, R).
+test(paridad_no_estratificada, [fail]) :-
+    estratos(paridad, _).
 
-test(j3, [true(Vs == [a-verdadero, b-falso, c-verdadero, d-falso,
-                      e-falso])]) :-
-    findall(X-V, ( member(X, [a, b, c, d, e]), valor(gana(j3, X), V) ), Vs).
+test(paridad, [true(Ps-I == [0, 2, 4, 6]-[])]) :-
+    bien_fundado(paridad, V, I),
+    findall(N, member(par(N), V), Ps).
 
-test(j2_empate, [true(V == indefinido)]) :-
-    valor(gana(j2, b), V).
+test(alternancia_j2, [true(Gs == [[]-[a, b, c], [c]-[a, b, c]])]) :-
+    alternancia(juego(j2), Pasos),
+    findall(GV-GP,
+            ( member(V-P, Pasos),
+              findall(X, member(gana(j2, X), V), GV),
+              findall(X, member(gana(j2, X), P), GP) ),
+            Gs).
 
-test(pqr, [true(Vs == [indefinido, indefinido, indefinido])]) :-
-    findall(V, ( member(A, [p, q, r]), valor(A, V) ), Vs).
+test(estables_pq, [true(Ms == [[p], [q]])]) :-
+    estables_de([(p :- \+ q), (q :- \+ p)], Ms).
 
-test(r_prolog, [true(R == inference_limit_exceeded)]) :-
-    call_with_inference_limit(catch(r_prolog, error(resource_error(_), _),
-                                    true),
-                              1000000, R).
+test(estables_circular, [true(Ms == [])]) :-
+    estables(circular, Ms).
+
+test(estables_j2, [true(Gs == [[a, c], [b, c]])]) :-
+    estables(juego(j2), Ms),
+    findall(G,
+            ( member(M, Ms),
+              findall(X, member(gana(j2, X), M), G) ),
+            Gs).
+
+% Un programa estratificado tiene un solo modelo estable: el estándar.
+test(estable_estratificado, [true(Ms == [[b, c]])]) :-
+    Cs = [(a :- \+ b), (b :- c), (c :- \+ d)],
+    estables_de(Cs, Ms),
+    modelo_estandar_de(Cs, M),
+    assertion(Ms == [M]).
+
+test(alcanza, [true(C == costo(42, 80))]) :-
+    semi_ingenua(alcanzables(40), [], M, C),
+    findall(Y, member(alcanza(Y), M), Ys),
+    assertion(length(Ys, 40)).
+
+test(estricta_doble, [true(C1-C2-C3 == costo(8, 1600)-costo(8, 1370)-
+                                     costo(8, 4055))]) :-
+    semi_ingenua(cadena_doble(20), [], M1, C1),
+    semi_ingenua_estricta(cadena_doble(20), [], M2, C2),
+    ingenua(cadena_doble(20), [], M3, C3),
+    assertion(M1 == M2),
+    assertion(M2 == M3).
+
+% Con un solo literal recursivo, las dos semi-ingenuas cuentan lo mismo.
+test(estricta_simple, [true(C1 == C2)]) :-
+    cadena(20, Cs),
+    semi_ingenua_de(Cs, [], _, C1),
+    semi_ingenua_estricta_de(Cs, [], _, C2).
+
+% Los programas de las soluciones se nombran con generado/2.
+test(juego_j2, [true(Js == [j2])]) :-
+    clausulas(juego(j2), Cs),
+    findall(J, member((mueve(J, _, _) :- true), Cs), Js0),
+    sort(Js0, Js).
+
+test(base_de_lista, [true(B == [p(a), p(b)])]) :-
+    base_herbrand_de([(p(a) :- p(b))], B).
+
+test(modelos_de_lista, [true(Ms == [[p]])]) :-
+    modelos_de([(p :- true)], [p], Ms).
+
+% p es verdadero desde el segundo paso, y ahí termina la alternancia.
+test(alternancia_de_lista, [true(Ps == [[]-[p], [p]-[p]])]) :-
+    alternancia_de([(p :- \+ q)], Ps).
+
+% Los auxiliares de las soluciones 2, 3, 11 y 13.
+test(atomos_de_clausula, [all(A == [p(a), q(b), r])]) :-
+    atomo_de((p(a) :- q(b), \+ r, 1 < 2), A).
+
+test(constantes_de_clausula, [all(C == [a, b])]) :-
+    constante((p(a, _) :- q(b)), C).
+
+test(minimales_sin_contenidos, [true(M == [[a], [c]])]) :-
+    minimales([[a], [a, b], [c]], M).
+
+test(del_juego_j1, [true(N-Ms == 4-[a-b, b-a, b-c])]) :-
+    del_juego(j1, Cs),
+    length(Cs, N),
+    findall(X-Y, member((mueve(_, X, Y) :- true), Cs), Ms).
+
+test(es_arco) :-
+    assertion(es_arco((arco(0, 1) :- true))),
+    assertion(\+ es_arco((camino(0, 1) :- true))).
 
 :- end_tests(soluciones).

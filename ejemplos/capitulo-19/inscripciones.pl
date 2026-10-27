@@ -1,21 +1,14 @@
 :- encoding(utf8).
 
-% Capítulo 19 - El proyecto Inscripciones: los motivos de rechazo como reglas.
+% Capítulo 19 - El proyecto Inscripciones: los informes con orden superior.
 %
-% Respecto del capítulo 18, las condiciones que rechazan una inscripción se
-% escriben además como reglas si ... entonces ..., datos que lee el intérprete
-% prueba/3 de la sección 19.4, con una cláusula más para la negación no.
-% situacion/3 traduce la base al vocabulario de las reglas, y
-% motivos_de_rechazo/3 reúne todos los motivos, no solo el primero que
-% encuentra inscripcion_posible/3.
+% Respecto del capítulo 18, los promedios se calculan con foldl/4 sobre la
+% lista de notas, sin_notas/1 usa exclude/3, y informe/3 aplica a una lista
+% de alumnos cualquier cálculo de dos argumentos: el mismo predicado sirve
+% para todos los informes por alumno.
 %
-%?- motivos_de_rechazo(102, am2, Motivos).
-%?- motivos_de_rechazo(101, log, Motivos).
-
-:- op(800, xfx, entonces).
-:- op(790, fx, si).
-:- op(780, xfy, y).
-:- op(770, fy, no).
+%?- legajos(Ls), informe(promedio_de_alumno, Ls, Filas).
+%?- legajos(Ls), informe(aprobadas, Ls, Filas).
 
 :- meta_predicate
     informe(2, +, -).
@@ -39,7 +32,7 @@ materia(pp,  paradigmas,     2).
 materia(ssl, sintaxis,       2).
 materia(bd,  bases_de_datos, 3).
 
-% correlativa(Materia, Requisito): para cursar Materia se debe aprobar
+% correlativa(Materia, Requisito): para cursar Materia es necesario aprobar
 % Requisito.
 correlativa(am2, am1).
 correlativa(am2, alg).
@@ -132,7 +125,7 @@ puede_inscribirse(Legajo, Materia) :-
 %
 %   El alumno llamado Nombre aprobó Materia. El primer objetivo es el que el
 %   nombre selecciona: con el orden inverso, la consulta recorre todas las
-%   inscripciones de la materia antes de examinar el nombre (sección 16.5).
+%   inscripciones de la materia antes de examinar el nombre (sección 17.5).
 aprobada_por_nombre(Nombre, Materia) :-
     alumno(Legajo, Nombre, _, _),
     aprobada(Legajo, Materia, _Nota).
@@ -241,65 +234,3 @@ mejores(Cantidad, Ranking) :-
                   order_by([desc(Promedio)],
                            promedio_de_alumno(Legajo, Promedio))),
             Ranking).
-
-% regla(Nombre, si Condiciones entonces Conclusion): los motivos que rechazan
-% una inscripción, escritos sobre la situación del alumno frente a la materia.
-regla(v1, si materia(M) y aprobada(M) entonces rechazada(ya_aprobada)).
-regla(v2, si materia(M) y cursando(M) entonces rechazada(ya_la_cursa)).
-regla(v3, si requisito(R) y no aprobada(R) entonces rechazada(falta(R))).
-regla(v4, si vacantes(0) entonces rechazada(sin_vacantes)).
-
-%!  situacion(+Legajo:integer, +Materia:atom, -Observaciones:list) is det.
-%
-%   Observaciones describe la situación del alumno Legajo frente a Materia
-%   en el vocabulario de las reglas: la lista de las observaciones de
-%   observacion/3, en el orden de sus cláusulas.
-situacion(Legajo, Materia, Observaciones) :-
-    findall(Obs, observacion(Legajo, Materia, Obs), Observaciones).
-
-%!  observacion(+Legajo:integer, +Materia:atom, -Obs) is nondet.
-%
-%   Obs es una observación sobre el alumno Legajo y la materia Materia:
-%   materia(Materia); aprobada(M) por cada materia que el alumno aprobó;
-%   cursando(M) por cada una que cursa; requisito(R) por cada correlativa de
-%   Materia; y vacantes(N), los lugares que quedan.
-observacion(_, Materia, materia(Materia)).
-observacion(Legajo, _, aprobada(M)) :-
-    aprobada(Legajo, M, _).
-observacion(Legajo, _, cursando(M)) :-
-    cursa(Legajo, M).
-observacion(_, Materia, requisito(R)) :-
-    correlativa(Materia, R).
-observacion(_, Materia, vacantes(N)) :-
-    vacantes(Materia, N).
-
-%!  prueba(+Meta, +Observaciones:list, -Arbol) is nondet.
-%
-%   El intérprete de la sección 19.4 con una cláusula más: no Meta se cumple
-%   cuando Meta no se puede probar, y su árbol es no Meta. Meta debe llegar
-%   sin variables libres.
-prueba(A y B, Observaciones, ArbolA y ArbolB) :-
-    prueba(A, Observaciones, ArbolA),
-    prueba(B, Observaciones, ArbolB).
-prueba(no Meta, Observaciones, no Meta) :-
-    \+ prueba(Meta, Observaciones, _).
-prueba(X > Y, _, X > Y) :-
-    X > Y.
-prueba(X < Y, _, X < Y) :-
-    X < Y.
-prueba(Meta, Observaciones, observado(Meta)) :-
-    member(Meta, Observaciones).
-prueba(Meta, Observaciones, deducido(Meta, Regla, Arbol)) :-
-    regla(Regla, si Condiciones entonces Meta),
-    prueba(Condiciones, Observaciones, Arbol).
-
-%!  motivos_de_rechazo(+Legajo:integer, +Materia:atom, -Motivos:list) is det.
-%
-%   Motivos son todos los motivos por los que se rechaza la inscripción del
-%   alumno Legajo en Materia, uno por cada prueba de rechazada(Motivo) con
-%   las reglas; la lista vacía si se acepta. inscripcion_posible/3 da solo
-%   el primero. Supone que el alumno y la materia existen: esas dos
-%   condiciones las verifica inscripcion_posible/3 antes que cualquier regla.
-motivos_de_rechazo(Legajo, Materia, Motivos) :-
-    situacion(Legajo, Materia, Observaciones),
-    findall(Motivo, prueba(rechazada(Motivo), Observaciones, _), Motivos).

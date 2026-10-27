@@ -47,9 +47,4 @@ test(no_entendido, true(R == no_entendido)) :-
 test(alumno_inexistente, true(R == no_entendido)) :-
     ejecutar("promedio de 999", R).
 
-% --- Errores --------------------------------------------------------------
-
-test(texto_no_es_texto, [error(type_error(text, 42))]) :-
-    ejecutar(42, _).
-
 :- end_tests(comandos).

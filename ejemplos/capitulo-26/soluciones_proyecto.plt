@@ -1,98 +1,42 @@
 :- encoding(utf8).
 
-% Ejercicio 3: una prueba por modo de aprobada/3 y por caso límite.
-:- begin_tests(aprobada_por_modo).
+:- begin_tests(soluciones_proyecto,
+               [ cleanup(retractall(user:error_registrado(_, _))) ]).
 
-% (+, +, -): legajo y materia dados; una respuesta o ninguna.
-test(legajo_y_materia, true(N == 10)) :-
-    aprobada(101, log, N).
+% Ejercicio 11
+test(nota_invalida, [error(domain_error(nota, 11))]) :-
+    registrar_nota(101, pp, 11).
 
-% (+, -, -): las materias aprobadas de un alumno, en el orden de los hechos.
-test(materias_de_un_alumno, all(M-N == [am1-8, alg-9, log-10, am2-7])) :-
-    aprobada(101, M, N).
+test(no_la_cursa, [error(existence_error(cursada, 101-am1))]) :-
+    registrar_nota(101, am1, 9).
 
-% (-, +, -): quiénes aprobaron una materia.
-test(alumnos_de_una_materia, all(L == [101, 102, 104])) :-
-    aprobada(L, log, _).
+test(tipo, [error(type_error(integer, nueve))]) :-
+    registrar_nota(101, pp, nueve).
 
-% (-, -, -): la consulta más general.
-test(todas, true(N == 10)) :-
-    aggregate_all(count, aprobada(_, _, _), N).
+test(registrar, [ setup(estado(E)), cleanup(restaurar(E)),
+                  true(Estado == nota(9)) ]) :-
+    registrar_nota(101, pp, 9),
+    inscripcion(101, pp, Estado).
 
-% Caso límite: la nota mínima aprueba; una menos, no.
-test(nota_minima_aprueba) :-
-    aprobada(106, am1, 6).
+% Ejercicio 12
+test(comando_con_error, true(R == error(domain_error(nota, 11)))) :-
+    ejecutar_ampliado("nota de 101 en paradigmas 11", R).
 
-test(nota_menor_no_aprueba, [fail]) :-
-    aprobada(106, log, _).
+test(comando_registrado, [ setup(estado(E)), cleanup(restaurar(E)),
+                           true(R == registrada) ]) :-
+    ejecutar_ampliado("nota de 101 en paradigmas 9", R).
 
-% Caso límite: una materia que se está cursando no está aprobada.
-test(cursando_no_aprobada, [fail]) :-
-    aprobada(101, pp, _).
+test(comando_anterior, true(R == inscriptos([101, 102, 104, 106]))) :-
+    ejecutar_ampliado("listar logica", R).
 
-:- end_tests(aprobada_por_modo).
+% Ejercicio 13
+test(errores_registrados,
+     [ setup(retractall(user:error_registrado(_, _))),
+       true(L == ["nota de 101 en paradigmas 11"-domain_error(nota, 11),
+                  "nota de 104 en logica 8"-
+                      existence_error(cursada, 104-log)]) ]) :-
+    ejecutar_ampliado("nota de 101 en paradigmas 11", _),
+    ejecutar_ampliado("nota de 104 en logica 8", _),
+    errores(L).
 
-% Ejercicio 4: una tabla de casos con la opción forall.
-:- begin_tests(tabla_de_inscripciones).
-
-caso(104, ssl, aceptada).
-caso(102, alg, aceptada).
-caso(999, am1, rechazada(alumno_inexistente)).
-caso(101, quimica, rechazada(materia_inexistente)).
-caso(101, log, rechazada(ya_aprobada)).
-caso(101, pp, rechazada(ya_la_cursa)).
-caso(102, am2, rechazada(falta(am1))).
-caso(105, log, rechazada(sin_vacantes)).
-
-test(inscripcion_posible,
-     [forall(caso(L, M, Esperado)), true(R == Esperado)]) :-
-    inscripcion_posible(L, M, R).
-
-:- end_tests(tabla_de_inscripciones).
-
-% Ejercicio 5: la cláusula de comprobar_datos/0 que ninguna prueba cubría.
-:- begin_tests(cobertura).
-
-:- dynamic advertido/1.
-
-user:message_hook(inscripcion_sin_datos(L, M), warning, _) :-
-    assertz(plunit_cobertura:advertido(L-M)).
-
-test(advertencia, [ setup(estado(E)),
-                    cleanup(( restaurar(E), retractall(advertido(_)) )),
-                    true(A == [999-am1]) ]) :-
-    agregar_inscripcion(999, am1, cursando),
-    comprobar_datos,
-    findall(X, advertido(X), A).
-
-:- end_tests(cobertura).
-
-% Ejercicios 7 y 8.
-:- begin_tests(depuracion).
-
-test(registrado, [ setup(estado(E)), cleanup(restaurar(E)),
-                   true(R == aceptada) ]) :-
-    inscribir_registrado(104, ssl, R).
-
-test(invariante) :-
-    vacantes_no_negativas.
-
-:- end_tests(depuracion).
-
-% Ejercicio 13: la segunda llamada a requisitos_de/2 usa el valor guardado.
-:- begin_tests(memoria).
-
-inferencias(G, I) :-
-    statistics(inferences, I0),
-    once(G),
-    statistics(inferences, I1),
-    I is I1 - I0.
-
-test(segunda_llamada_mas_barata) :-
-    retractall(reglas:requisitos_guardados(_, _)),
-    inferencias(requisitos_de(bd, _), Primera),
-    inferencias(requisitos_de(bd, _), Segunda),
-    Segunda < Primera,
-    Segunda < 10.
-
-:- end_tests(memoria).
+:- end_tests(soluciones_proyecto).

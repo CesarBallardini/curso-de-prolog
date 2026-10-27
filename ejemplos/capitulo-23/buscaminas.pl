@@ -1,74 +1,38 @@
 :- encoding(utf8).
 
-% Capítulo 23 - Buscaminas: deducir dónde están las minas.
+% Capítulo 23 - Buscaminas: el tablero como assoc, y un tablero al azar.
 %
-% El tablero visible es una lista de cadenas, una por fila: # en las celdas
-% ocultas y el número de minas vecinas en las descubiertas. Cada celda
-% oculta tiene una variable, 1 si tiene mina y 0 si no; cada número exige
-% que sus vecinas ocultas sumen ese número. Una celda es segura si ninguna
-% solución le pone una mina, y es una mina si todas se la ponen.
+% Un tablero es tablero(Filas, Columnas, Celdas): Celdas es un assoc de cada
+% celda Fila-Columna a mina, o a la cantidad de minas vecinas. tablero/4 lo
+% construye a partir de la lista de minas, sin azar; minas_al_azar/4 elige
+% las minas al azar, y es el único predicado que usa library(random).
 %
-%?- deducir(["#100", "1211", "01##", "01##"], Seguras, Minas).
-%?- deducir(["#100", "1211", "01##", "01##"], 2, Seguras, Minas).
+%?- tablero(3, 4, [1-1, 2-3], T), valor(T, 2-2, V).
+%?- tablero(3, 4, [1-1, 2-3], T), mostrar(T).
 
-:- use_module(library(clpfd)).
-
-%!  deducir(+Lineas:list(string), -Seguras:list, -Minas:list) is det.
+%!  tablero(+Filas:integer, +Columnas:integer, +Minas:list, -Tablero) is det.
 %
-%   Seguras son las celdas ocultas que no tienen mina en ninguna solución, y
-%   Minas las que la tienen en todas, sin conocer el total de minas.
-deducir(Lineas, Seguras, Minas) :-
-    modelo(Lineas, Ocultas),
-    clasificar(Ocultas, Seguras, Minas).
+%   Tablero es el tablero de Filas por Columnas con minas en las celdas de
+%   Minas, pares Fila-Columna.
+tablero(Filas, Columnas, Minas, tablero(Filas, Columnas, Celdas)) :-
+    list_to_ord_set(Minas, ConjuntoDeMinas),
+    findall(F-C, ( between(1, Filas, F), between(1, Columnas, C) ), Todas),
+    maplist(valor_inicial(Filas, Columnas, ConjuntoDeMinas), Todas, Valores),
+    pairs_keys_values(Pares, Todas, Valores),
+    list_to_assoc(Pares, Celdas).
 
-%!  deducir(+Lineas:list(string), +Total:integer, -Seguras:list,
-%!          -Minas:list) is det.
+%!  valor_inicial(+Filas:integer, +Columnas:integer, +Minas:list,
+%!                +Celda:pair, -Valor) is det.
 %
-%   Como deducir/3, sabiendo además que el tablero tiene Total minas.
-deducir(Lineas, Total, Seguras, Minas) :-
-    modelo(Lineas, Ocultas),
-    pairs_values(Ocultas, Bs),
-    sum(Bs, #=, Total),
-    clasificar(Ocultas, Seguras, Minas).
-
-%!  modelo(+Lineas:list(string), -Ocultas:list(pair)) is semidet.
-%
-%   Ocultas son pares Celda-B, uno por celda oculta, con B en 0..1 y
-%   restringido por los números de las celdas descubiertas.
-%   Falla si algún número no se puede cumplir.
-modelo(Lineas, Ocultas) :-
-    length(Lineas, Filas),
-    Lineas = [Primera|_],
-    string_length(Primera, Columnas),
-    findall((F-C)-X,
-            ( nth1(F, Lineas, Linea),
-              string_chars(Linea, Cs),
-              nth1(C, Cs, X) ),
-            Celdas),
-    findall(Celda-_, member(Celda-'#', Celdas), Ocultas),
-    pairs_values(Ocultas, Bs),
-    Bs ins 0..1,
-    findall(Celda-N, ( member(Celda-X, Celdas),
-                       atom_number(X, N) ), Numeros),
-    maplist(restringir(Filas, Columnas, Ocultas), Numeros).
-
-%!  restringir(+Filas, +Columnas, +Ocultas:list(pair), +Numero:pair)
-%!      is semidet.
-%
-%   Numero es Celda-N: las celdas ocultas vecinas de Celda suman N minas.
-%   Falla si las restricciones ya planteadas excluyen esa suma.
-restringir(Filas, Columnas, Ocultas, Celda-N) :-
-    findall(V, vecina(Filas, Columnas, Celda, V), Vecinas),
-    convlist(variable_de(Ocultas), Vecinas, Bs),
-    sum(Bs, #=, N).
-
-%!  variable_de(+Ocultas:list(pair), +Celda:pair, -B) is semidet.
-%
-%   B es la variable de Celda en Ocultas. Falla si Celda no está oculta. Las
-%   variables se buscan con memberchk/2, fuera de findall/3, que copiaría
-%   las variables en lugar de devolver las mismas.
-variable_de(Ocultas, Celda, B) :-
-    memberchk(Celda-B, Ocultas).
+%   Valor es mina si Celda está en Minas, o la cantidad de minas vecinas.
+valor_inicial(Filas, Columnas, Minas, F-C, Valor) :-
+    (   ord_memberchk(F-C, Minas)
+    ->  Valor = mina
+    ;   aggregate_all(count,
+                      ( vecina(Filas, Columnas, F-C, V),
+                        ord_memberchk(V, Minas) ),
+                      Valor)
+    ).
 
 %!  vecina(+Filas:integer, +Columnas:integer, +Celda:pair, -Vecina:pair)
 %!      is nondet.
@@ -83,13 +47,54 @@ vecina(Filas, Columnas, F-C, VF-VC) :-
     between(1, Filas, VF),
     between(1, Columnas, VC).
 
-%!  clasificar(+Ocultas:list(pair), -Seguras:list, -Minas:list) is det.
+%!  valor(+Tablero, +Celda:pair, -Valor) is semidet.
 %
-%   Seguras son las celdas que no pueden tener mina, y Minas las que no
-%   pueden no tenerla, según las restricciones de Ocultas.
-clasificar(Ocultas, Seguras, Minas) :-
-    pairs_values(Ocultas, Bs),
-    findall(C, ( member(C-B, Ocultas),
-                 \+ ( B = 1, label(Bs) ) ), Seguras),
-    findall(C, ( member(C-B, Ocultas),
-                 \+ ( B = 0, label(Bs) ) ), Minas).
+%   Valor es lo que hay en Celda: mina o la cantidad de minas vecinas. Falla
+%   si Celda está fuera del tablero.
+valor(tablero(_, _, Celdas), Celda, Valor) :-
+    get_assoc(Celda, Celdas, Valor).
+
+%!  mostrar(+Tablero) is det.
+%
+%   Escribe el tablero completo, una fila por línea: * en las minas y el
+%   número de minas vecinas en las demás celdas.
+mostrar(tablero(Filas, Columnas, Celdas)) :-
+    forall(between(1, Filas, F),
+           ( forall(between(1, Columnas, C),
+                    ( get_assoc(F-C, Celdas, V),
+                      simbolo(V, S),
+                      write(S) )),
+             nl )).
+
+%!  simbolo(+Valor, -Simbolo) is det.
+%
+%   Simbolo es el carácter con que se muestra Valor.
+simbolo(mina, '*') :-
+    !.
+simbolo(N, N).
+
+%!  minas_al_azar(+Filas:integer, +Columnas:integer, +Cantidad:integer,
+%!                -Minas:list) is det.
+%
+%   Minas son Cantidad celdas distintas del tablero, elegidas al azar, en
+%   orden.
+minas_al_azar(Filas, Columnas, Cantidad, Minas) :-
+    Total is Filas * Columnas,
+    randseq(Cantidad, Total, Numeros),
+    maplist(celda_numero(Columnas), Numeros, Celdas),
+    sort(Celdas, Minas).
+
+%!  celda_numero(+Columnas:integer, +K:integer, -Celda:pair) is det.
+%
+%   Celda es la celda número K del tablero, contando por filas desde 1.
+celda_numero(Columnas, K, F-C) :-
+    F is (K - 1) // Columnas + 1,
+    C is (K - 1) mod Columnas + 1.
+
+%!  tablero_al_azar(+Filas:integer, +Columnas:integer, +Cantidad:integer,
+%!                  -Tablero) is det.
+%
+%   Tablero es un tablero de Filas por Columnas con Cantidad minas al azar.
+tablero_al_azar(Filas, Columnas, Cantidad, Tablero) :-
+    minas_al_azar(Filas, Columnas, Cantidad, Minas),
+    tablero(Filas, Columnas, Minas, Tablero).
