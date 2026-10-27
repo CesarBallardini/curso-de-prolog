@@ -37,8 +37,9 @@ Un ejercicio integrador no se resuelve con un único predicado. Conviene
 abordarlo en tres pasos, en este orden.
 
 **Elegir la representación de los datos.** Antes de escribir una regla se
-decide qué términos representan el problema: hechos o listas, qué functor
-agrupa los datos de cada elemento, qué argumento vincula dos relaciones. La
+decide qué términos representan el problema: hechos o listas, qué término
+compuesto agrupa los datos de cada elemento, qué argumento vincula dos
+relaciones. La
 representación decide qué predicados resultan simples. Un tablero con una sola
 pieza queda determinado por la casilla de esa pieza; un grafo puede ser la
 lista de sus aristas; una base de datos de libros vincula sus relaciones por
@@ -73,7 +74,7 @@ $$\forall x \, P \quad \equiv \quad \lnot \, \exists x \, \lnot P$$
 «Para todo x, P» equivale a «no existe un x para el que no valga P». La
 [sección 10.10](../capitulo-10-negacion-como-falla/index.md#1010-todas-las-materias-de-un-ciclo)
 la aplicó a las materias de un ciclo, y la
-[sección 13.3](../capitulo-13-prolog-y-la-logica/index.md#133-las-variables-y-los-cuantificadores)
+[sección 13.4](../capitulo-13-prolog-y-la-logica/index.md#134-las-variables-y-los-cuantificadores)
 la usa para leer las variables de un `\+`. Esta sección la presenta como una
 estrategia general.
 
@@ -205,7 +206,7 @@ aprobada que la base no registra cuenta como no aprobada, y una materia que la
 carrera exige pero que la base omite no se verifica. El resultado coincide con
 el «para todo» de la lógica solo cuando la base contiene toda la información
 relevante, que es la diferencia entre `\+` y $\lnot$ de la
-[sección 13.6](../capitulo-13-prolog-y-la-logica/index.md#136-lo-que-excede-la-logica).
+[sección 13.12](../capitulo-13-prolog-y-la-logica/evaluacion.md#1312-la-negacion).
 
 ## 12.3 Recolectar soluciones
 

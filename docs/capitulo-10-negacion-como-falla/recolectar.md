@@ -325,7 +325,7 @@ Es la forma de la [sección 10.7](index.md#107-obtener-una-respuesta-por-negacio
 ciclo sin aprobar. Para santiago existe, `algebra`, y el `\+` falla; para
 jorge y romina, el árbol subordinado de `materia_sin_aprobar/3` recorre las
 tres materias del ciclo 1 sin llegar a ninguna hoja de éxito. La
-[sección 13.3](../capitulo-13-prolog-y-la-logica/index.md#133-las-variables-y-los-cuantificadores)
+[sección 13.4](../capitulo-13-prolog-y-la-logica/index.md#134-las-variables-y-los-cuantificadores)
 presenta la equivalencia entre «no existe» y «para todo, no» en que se apoya
 la reformulación.
 

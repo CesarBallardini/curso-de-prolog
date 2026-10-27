@@ -2060,7 +2060,7 @@
    ]
   },
   "capitulo-08-aritmetica/#81-evaluacion-de-expresiones": {
-   "hash": "f4c46bac8c466c66",
+   "hash": "f7bbd42716b5c911",
    "words": [
     "calcular una expresión",
     "evaluar una operación aritmética",
@@ -2108,7 +2108,7 @@
    ]
   },
   "capitulo-08-aritmetica/#83-argumentos-sin-instanciar": {
-   "hash": "cba7f1f7dc50c78a",
+   "hash": "3e7780f43b755bec",
    "words": [
     "arguments are not sufficiently instantiated",
     "error de argumentos sin instanciar",
@@ -2152,7 +2152,7 @@
    ]
   },
   "capitulo-08-aritmetica/#85-acumuladores": {
-   "hash": "04afde5f6eaba673",
+   "hash": "921312dbc19a3ebb",
    "words": [
     "acumulador",
     "accumulator",
@@ -2176,7 +2176,7 @@
    ]
   },
   "capitulo-08-aritmetica/#86-un-acumulador-que-no-es-un-numero": {
-   "hash": "739705a219524617",
+   "hash": "948e08cac8a128af",
    "words": [
     "invertir una lista",
     "dar vuelta una lista",
@@ -2198,12 +2198,12 @@
    ]
   },
   "capitulo-08-aritmetica/#ejercicios": {
-   "hash": "013d76a2006957dc",
+   "hash": "e179a0671e78bb15",
    "words": [],
    "questions": []
   },
   "capitulo-08-aritmetica/#objetivos-del-capitulo": {
-   "hash": "8e72ef068ed6f428",
+   "hash": "d153093d70968ec1",
    "words": [],
    "questions": []
   },
@@ -2549,7 +2549,7 @@
    ]
   },
   "capitulo-10-negacion-como-falla/#107-obtener-una-respuesta-por-negacion": {
-   "hash": "b577e5037eae2027",
+   "hash": "e04f03eaa093e4ae",
    "words": [
     "máximo por negación",
     "el mayor valor",
@@ -2671,7 +2671,7 @@
    ]
   },
   "capitulo-10-negacion-como-falla/recolectar/#todas-las-materias-de-un-ciclo": {
-   "hash": "e034dcf534da9221",
+   "hash": "0c1f6bb754124f8f",
    "words": [
     "aprobó todas las materias",
     "para todo",
@@ -2928,7 +2928,7 @@
    ]
   },
   "capitulo-12-ejercicios-integradores/#121-como-se-aborda-un-ejercicio-integrador": {
-   "hash": "1969bc32195006c3",
+   "hash": "bbde9b47facba672",
    "words": [
     "cómo empiezo un ejercicio grande",
     "dividir un problema en predicados",
@@ -2951,7 +2951,7 @@
    ]
   },
   "capitulo-12-ejercicios-integradores/#122-para-todo-la-doble-negacion": {
-   "hash": "b614a1803900efaa",
+   "hash": "029bd20233e648a2",
    "words": [
     "para todo",
     "cuantificador universal",
@@ -3060,193 +3060,148 @@
    "questions": []
   },
   "capitulo-13-prolog-y-la-logica/": {
-   "hash": "69f2f738a734d7a8",
+   "hash": "9e4edb64da7098c8",
    "words": [
-    "prolog y la lógica",
-    "lectura declarativa",
-    "programa como fórmulas lógicas",
-    "lógica de primer orden",
+    "lógica y prolog",
+    "declarativo y procedimental",
+    "qué afirma un programa",
+    "consecuencia lógica",
+    "resolución y refutación",
+    "sustituciones y unificadores",
+    "relación entre prolog y lógica de primer orden",
     "cláusulas de horn",
-    "cierre de la parte i",
-    "relación con la asignatura de lógica",
-    "deducción lógica"
+    "fundamentos teóricos",
+    "prolog y lógica de la materia"
    ],
    "questions": [
-    "¿qué relación hay entre un programa prolog y la lógica?",
-    "¿cómo se lee una regla como fórmula lógica?"
+    "¿qué relación hay entre prolog y la lógica que se ve en la materia?",
+    "¿qué significa un programa prolog en términos lógicos?",
+    "¿en qué casos prolog difiere de la lógica?"
    ]
   },
   "capitulo-13-prolog-y-la-logica/#131-las-dos-lecturas": {
-   "hash": "f440f08535dbeee1",
+   "hash": "0455b78599a92017",
    "words": [
     "lectura declarativa",
     "lectura procedimental",
-    "regla como fórmula lógica",
+    "significado de una regla",
     "para todo",
-    "cuantificador universal",
-    "implicación",
-    "declarativo vs procedural",
-    "significado lógico de una regla",
-    "traducir una regla a lógica",
-    "fórmula de una regla"
+    "relación como conjunto de pares",
+    "qué hace prolog vs qué afirma",
+    "declarative reading",
+    "procedural reading",
+    "regla en notación lógica",
+    "madre/2",
+    "consulta con variables pide los pares"
    ],
    "questions": [
-    "¿cuál es la diferencia entre la lectura declarativa y la procedimental?",
-    "¿cómo escribo una regla de prolog como fórmula lógica?"
+    "¿cómo se escribe una regla de prolog en notación lógica?",
+    "¿qué relación define un predicado?"
    ]
   },
-  "capitulo-13-prolog-y-la-logica/#132-los-conectivos": {
-   "hash": "f7ed26b0892d1d1e",
+  "capitulo-13-prolog-y-la-logica/#132-terminos-formulas-y-programas": {
+   "hash": "711bd604a361548c",
+   "words": [
+    "término",
+    "fórmula atómica",
+    "constante",
+    "variable",
+    "functor",
+    "aridad",
+    "términos compuestos",
+    "predicado se aplica a términos",
+    "vocabulario de un programa",
+    "diferencia entre término y fórmula",
+    "un término no es un hecho",
+    "fórmula compuesta",
+    "cláusula",
+    "padre(juan, ana) = ana"
+   ],
+   "questions": [
+    "¿qué es un término y qué es una fórmula atómica?",
+    "¿por qué q(p(a)) no es una fórmula bien formada?",
+    "¿cuál es la diferencia entre un functor y un nombre de predicado?"
+   ]
+  },
+  "capitulo-13-prolog-y-la-logica/#133-los-conectivos": {
+   "hash": "28fb319e8a3d046f",
    "words": [
     "conectivos lógicos",
-    "conjunción disyunción implicación negación",
-    "coma y :-",
-    "∧ ∨ → ¬",
+    "conjunción",
+    "disyunción",
+    "implicación",
+    "negación",
     "traducir lógica a prolog",
-    "disyunción con varias cláusulas",
-    "orden de la implicación",
-    "flecha invertida",
-    "or en prolog",
-    "fórmula a regla"
+    "coma como y",
+    "cláusulas múltiples como o",
+    "flecha :- invertida",
+    "\\+",
+    "operadores lógicos y prolog",
+    "ascendiente/2",
+    "símbolo de disyunción"
    ],
    "questions": [
-    "¿cómo traduzco una fórmula lógica a una regla de prolog?",
     "¿cómo se expresa la disyunción en prolog?",
-    "¿por qué :- invierte el orden de la implicación?"
+    "¿a qué corresponde :- en lógica?",
+    "¿qué equivale a ∧, ∨, → y ¬ en un programa?"
    ]
   },
-  "capitulo-13-prolog-y-la-logica/#133-las-variables-y-los-cuantificadores": {
-   "hash": "ab76f56a0961ea0e",
+  "capitulo-13-prolog-y-la-logica/#134-las-variables-y-los-cuantificadores": {
+   "hash": "c163b6fad58f5e5d",
    "words": [
     "cuantificador universal",
     "cuantificador existencial",
     "para todo",
     "existe",
-    "forall lógico",
-    "variable que solo aparece en el cuerpo",
+    "variable de la cabeza",
+    "variable solo en el cuerpo",
+    "alcance de los cuantificadores",
     "variable anónima",
-    "variable en la cabeza de la regla",
-    "leer una regla como fórmula",
-    "respuestas repetidas por cada hijo",
-    "una respuesta por cada demostración",
-    "negación con variable libre",
-    "alcance de un cuantificador",
-    "\\+",
-    "∀ ∃"
+    "_",
+    "\\+ y cuantificador",
+    "tiene_hijos/1",
+    "respuestas repetidas",
+    "quantifiers",
+    "forall exists"
    ],
    "questions": [
-    "¿qué cuantificador tiene cada variable de una regla?",
-    "¿por qué obtengo la misma respuesta repetida varias veces?",
-    "¿qué significa una variable que aparece solo en el cuerpo?"
+    "¿qué cuantificador tiene cada variable de una cláusula?",
+    "¿por qué dos cláusulas pueden usar el mismo nombre de variable?"
    ]
   },
-  "capitulo-13-prolog-y-la-logica/#134-clausulas-de-horn": {
-   "hash": "a1d1cffec422581d",
+  "capitulo-13-prolog-y-la-logica/#135-clausulas-de-horn": {
+   "hash": "d120cada23b5ebc2",
    "words": [
-    "cláusulas de horn",
-    "horn clause",
-    "una sola conclusión",
+    "cláusula de horn",
     "hecho regla y consulta",
-    "forma de las reglas de prolog",
-    "implicación con una conclusión",
-    "lógica restringida",
-    "consulta como cláusula sin conclusión",
-    "hecho sin condiciones",
-    "no se puede expresar una disyunción en la cabeza"
+    "forma clausal",
+    "horn clause",
+    "a lo sumo una conclusión",
+    "cláusula vacía",
+    "disyunción de fórmulas atómicas",
+    "consulta como cláusula negada",
+    "implicación con una sola conclusión",
+    "toda persona es varón o mujer",
+    "consulta sin conclusión"
    ],
    "questions": [
     "¿qué es una cláusula de horn?",
-    "¿por qué prolog solo admite cláusulas de horn?",
-    "¿hechos, reglas y consultas son casos de la misma forma?"
+    "¿por qué prolog no admite dos conclusiones en una regla?",
+    "¿cómo son hecho, regla y consulta vistos como cláusulas?"
    ]
-  },
-  "capitulo-13-prolog-y-la-logica/#135-como-prueba-prolog": {
-   "hash": "ceb59439a35b7112",
-   "words": [
-    "demostración por refutación",
-    "resolución",
-    "refutación",
-    "cómo prueba prolog",
-    "prueba por contradicción",
-    "negación de la consulta",
-    "resolución sobre cláusulas de horn",
-    "resolución sld",
-    "método de demostración",
-    "sld",
-    "supone que es falsa"
-   ],
-   "questions": [
-    "¿cómo demuestra prolog que una consulta es verdadera?",
-    "¿qué es la demostración por refutación?",
-    "¿qué es la resolución?"
-   ]
-  },
-  "capitulo-13-prolog-y-la-logica/#136-lo-que-excede-la-logica": {
-   "hash": "2d8e584484b692ec",
-   "words": [
-    "diferencias entre prolog y la lógica",
-    "lo que excede la lógica",
-    "orden de las cláusulas",
-    "corte",
-    "\\+ no es negación lógica",
-    "is/2",
-    "errores",
-    "unificación sin occurs check",
-    "occurs check",
-    "x = padre(x)",
-    "términos cíclicos",
-    "no coincide la lectura lógica",
-    "rama infinita",
-    "respuestas repetidas"
-   ],
-   "questions": [
-    "¿en qué casos difiere el comportamiento de prolog de la lógica?",
-    "¿por qué el orden de los objetivos importa en prolog pero no en lógica?",
-    "¿qué pasa con x = padre(x)?"
-   ]
-  },
-  "capitulo-13-prolog-y-la-logica/#cierre-de-la-parte-i": {
-   "hash": "1e03876b63d94eef",
-   "words": [],
-   "questions": []
   },
   "capitulo-13-prolog-y-la-logica/#ejercicios": {
-   "hash": "bb85450bf1443616",
+   "hash": "8e2d0a1f8fab4663",
    "words": [],
    "questions": []
   },
-  "capitulo-13-prolog-y-la-logica/#la-refutacion-en-forma-clausal": {
-   "hash": "565b26e53237aa5c",
-   "words": [
-    "resolución",
-    "refutación",
-    "forma clausal",
-    "cláusula vacía",
-    "resolvente",
-    "disyunción de literales",
-    "negar la consulta",
-    "demostración por refutación",
-    "prueba por contradicción",
-    "unificar y resolver",
-    "resolución sld",
-    "paso de resolución",
-    "árbol como resoluciones",
-    "lógica de primer orden",
-    "cláusulas de horn"
-   ],
-   "questions": [
-    "¿cómo se relaciona la resolución de lógica con el árbol de prolog?",
-    "¿qué es la cláusula vacía?",
-    "¿cómo se escribe una regla de prolog en forma clausal?"
-   ]
-  },
   "capitulo-13-prolog-y-la-logica/#objetivos-del-capitulo": {
-   "hash": "f69fce720ef576ce",
+   "hash": "0ed0ed7683a3f12b",
    "words": [],
    "questions": []
   },
   "capitulo-13-prolog-y-la-logica/#por-que-se-usa-esa-forma": {
-   "hash": "fad6cfb98fc7e726",
+   "hash": "6b217bbfd82aab40",
    "words": [
     "por qué cláusulas de horn",
     "disyunción en la cabeza",
@@ -3265,15 +3220,289 @@
     "¿qué afirmaciones lógicas no se pueden expresar en prolog?"
    ]
   },
+  "capitulo-13-prolog-y-la-logica/#referencias": {
+   "hash": "c7c0528da263724d",
+   "words": [],
+   "questions": []
+  },
   "capitulo-13-prolog-y-la-logica/#resumen": {
-   "hash": "21a98cae004ab30c",
+   "hash": "a72dc5987e08290f",
    "words": [],
    "questions": []
   },
   "capitulo-13-prolog-y-la-logica/#temas-que-se-retoman": {
-   "hash": "13e5cad095c33c1f",
+   "hash": "56e75b4e25e478ea",
    "words": [],
    "questions": []
+  },
+  "capitulo-13-prolog-y-la-logica/evaluacion/": {
+   "hash": "18d36f90b82b5364",
+   "words": [
+    "evaluación de programas",
+    "cuatro pasos de la evaluación",
+    "intérprete no determinista",
+    "estrategias en profundidad y anchura",
+    "consecutivos/3",
+    "concatenar/3",
+    "evaluacion.pl",
+    "cómo recorre prolog el árbol de derivación"
+   ],
+   "questions": [
+    "¿cómo se evalúa un programa prolog en detalle?",
+    "¿dónde se explica la diferencia entre profundidad y anchura?"
+   ]
+  },
+  "capitulo-13-prolog-y-la-logica/evaluacion/#1310-los-cuatro-pasos": {
+   "hash": "b1230aabcd5109fc",
+   "words": [
+    "cuatro pasos",
+    "elegir objetivo y cláusula",
+    "variables nuevas en cada uso",
+    "unificar objetivo con cabeza",
+    "reemplazar objetivo por cuerpo",
+    "aplicar unificador",
+    "seguir una evaluación en papel",
+    "concatenar/3",
+    "composición de unificadores",
+    "respuesta restringida a las variables de la consulta",
+    "hoja de falla",
+    "cláusula que no sirve"
+   ],
+   "questions": [
+    "¿cómo sigo en papel la evaluación de concatenar([a], [b], w)?",
+    "¿cuándo falla un paso y cuándo falla una rama?",
+    "¿cómo se obtiene la respuesta w = [a, b] de los unificadores?"
+   ]
+  },
+  "capitulo-13-prolog-y-la-logica/evaluacion/#1311-el-interprete-no-determinista-y-las-estrategias-de-evaluacion": {
+   "hash": "4ddad48c26c671e8",
+   "words": [
+    "intérprete no determinista",
+    "puntos de elección",
+    "estrategia de evaluación",
+    "en profundidad",
+    "en anchura",
+    "consecutivos/3",
+    "árbol de derivación completo",
+    "hojas de éxito y de falla",
+    "ramas infinitas",
+    "consulta pendiente",
+    "computaciones posibles",
+    "no determinismo"
+   ],
+   "questions": [
+    "¿qué significa que un intérprete sea no determinista?",
+    "¿qué diferencia hay entre la estrategia de prolog y la de anchura?",
+    "¿cómo es el árbol de ?- consecutivos(2, z, [2, 3, 2, 4])?"
+   ]
+  },
+  "capitulo-13-prolog-y-la-logica/evaluacion/#1312-la-negacion": {
+   "hash": "90ae6f4f0b4bdbdd",
+   "words": [
+    "negación en lógica",
+    "negación como falla",
+    "\\+",
+    "supuesto de mundo cerrado",
+    "closed world assumption",
+    "no se puede probar",
+    "sin_hijos/1",
+    "corte y fail",
+    "no es lo mismo que ¬",
+    "negar con variable libre",
+    "un programa no afirma que algo es falso",
+    "cuantificador en \\+"
+   ],
+   "questions": [
+    "¿por qué un programa de cláusulas de horn no puede afirmar que algo es falso?",
+    "¿en qué se diferencia \\+ de la negación lógica?",
+    "¿qué es el supuesto de mundo cerrado?"
+   ]
+  },
+  "capitulo-13-prolog-y-la-logica/evaluacion/#1313-lo-que-excede-la-logica": {
+   "hash": "feae1ff44544f605",
+   "words": [
+    "diferencias entre prolog y lógica",
+    "orden de los objetivos",
+    "corte sin lectura lógica",
+    "!",
+    "is/2",
+    "errores de ejecución",
+    "verificación de ocurrencia",
+    "occurs check",
+    "x = padre(x)",
+    "término que se contiene a sí mismo",
+    "respuestas repetidas",
+    "cuándo prolog no es lógica"
+   ],
+   "questions": [
+    "¿en qué casos prolog no se comporta como la lógica?",
+    "¿qué hace prolog con x = padre(x)?"
+   ]
+  },
+  "capitulo-13-prolog-y-la-logica/evaluacion/#cierre-de-la-parte-i": {
+   "hash": "1dbb914722bdd77d",
+   "words": [],
+   "questions": []
+  },
+  "capitulo-13-prolog-y-la-logica/inferencia/": {
+   "hash": "ed1fbf6918468831",
+   "words": [
+    "interpretaciones y modelos",
+    "cómo prueba prolog",
+    "consecuencia lógica",
+    "resolución",
+    "refutación",
+    "modus ponens",
+    "torta.pl",
+    "qué afirma un programa",
+    "corrección y completitud"
+   ],
+   "questions": [
+    "¿dónde se explica qué es un modelo y cómo prueba prolog?",
+    "¿dónde veo una refutación paso a paso?"
+   ]
+  },
+  "capitulo-13-prolog-y-la-logica/inferencia/#136-interpretaciones-modelos-y-consecuencia-logica": {
+   "hash": "d0d040aa8b3725ab",
+   "words": [
+    "interpretación",
+    "modelo",
+    "dominio de una interpretación",
+    "consecuencia lógica",
+    "satisfacer un programa",
+    "significado de los nombres",
+    "varios modelos de un programa",
+    "interpretación prevista",
+    "modelo de logica.pl",
+    "madre/2",
+    "p ⊨ f"
+   ],
+   "questions": [
+    "¿qué es una interpretación de un programa?",
+    "¿cuándo es una interpretación un modelo del programa?",
+    "¿cómo decido si una fórmula es consecuencia lógica?"
+   ]
+  },
+  "capitulo-13-prolog-y-la-logica/inferencia/#137-como-prueba-prolog": {
+   "hash": "88d773bde7036804",
+   "words": [
+    "modus ponens",
+    "regla de inferencia",
+    "deducción",
+    "demostración",
+    "consistente",
+    "corrección",
+    "completitud",
+    "refutación",
+    "regla de resolución",
+    "p ⊢ f",
+    "inconsistente",
+    "suponer la negación de la consulta",
+    "correcta y completa"
+   ],
+   "questions": [
+    "¿qué es modus ponens?",
+    "¿qué quiere decir que una regla de inferencia es correcta o completa?",
+    "¿por qué prolog empieza suponiendo que la consulta es falsa?"
+   ]
+  },
+  "capitulo-13-prolog-y-la-logica/inferencia/#la-refutacion-en-forma-clausal": {
+   "hash": "36194c9e14585d03",
+   "words": [
+    "refutación en forma clausal",
+    "resolvente",
+    "cláusula vacía",
+    "□",
+    "consulta negada",
+    "paso de resolución",
+    "abuelo(juan, quien)",
+    "árbol de refutación",
+    "árbol de derivación como resoluciones",
+    "padre/2",
+    "cláusula con literales negados"
+   ],
+   "questions": [
+    "¿cómo se refuta paso a paso ?- abuelo(juan, quien)?",
+    "¿cómo se escribe un programa como cláusulas con negaciones?",
+    "¿qué es un resolvente?"
+   ]
+  },
+  "capitulo-13-prolog-y-la-logica/inferencia/#una-refutacion-sin-variables": {
+   "hash": "1f417c845066e3a2",
+   "words": [
+    "refutación sin variables",
+    "torta.pl",
+    "?- torta.",
+    "resolventes sucesivos",
+    "cláusula vacía",
+    "sustitución vacía",
+    "hay_huevos",
+    "programa sin variables",
+    "cinco pasos de resolución"
+   ],
+   "questions": [
+    "¿cómo se refuta una consulta sin variables?",
+    "¿cómo se prueba ?- torta. con resolución?"
+   ]
+  },
+  "capitulo-13-prolog-y-la-logica/sustituciones/": {
+   "hash": "1fc480488de7557b",
+   "words": [
+    "sustituciones y unificadores",
+    "sustitución",
+    "unificador más general",
+    "composición",
+    "instancia",
+    "unificadores.pl",
+    "= en las consultas",
+    "árbol de derivación"
+   ],
+   "questions": [
+    "¿dónde se explican las sustituciones y los unificadores?",
+    "¿cómo se calcula el unificador más general?"
+   ]
+  },
+  "capitulo-13-prolog-y-la-logica/sustituciones/#138-sustituciones": {
+   "hash": "7c07cd7471965586",
+   "words": [
+    "sustitución",
+    "pares variable/término",
+    "aplicar una sustitución",
+    "sustitución vacía",
+    "instancia",
+    "más general",
+    "composición de sustituciones",
+    "aplicación simultánea",
+    "ligar variables de a una",
+    "qué no es una sustitución"
+   ],
+   "questions": [
+    "¿qué es una sustitución?",
+    "¿cómo se aplica una sustitución a un término?",
+    "¿cómo se calcula la composición de dos sustituciones?"
+   ]
+  },
+  "capitulo-13-prolog-y-la-logica/sustituciones/#139-unificadores-y-el-unificador-mas-general": {
+   "hash": "98eef9bc08fbe0d2",
+   "words": [
+    "unificador",
+    "unificador más general",
+    "mgu",
+    "muchos unificadores",
+    "sin unificador",
+    "más general que",
+    "único salvo renombre de variables",
+    "= muestra el unificador",
+    "x = w, w = 3",
+    "unificar listas [x|y]",
+    "unificar p(q(x, y), x, h(4))",
+    "ligar lo mínimo"
+   ],
+   "questions": [
+    "¿qué es un unificador y cuándo no existe?",
+    "¿cuál es el unificador más general de dos términos?",
+    "¿por qué dos términos pueden tener muchos unificadores?"
+   ]
   },
   "capitulo-14-el-entorno-de-trabajo/": {
    "hash": "f5f30445c073a4dc",
@@ -8976,7 +9205,7 @@
    ]
   },
   "capitulo-34-introspeccion-y-metainterpretes/#343-variar-el-interprete": {
-   "hash": "ad6853c80655721c",
+   "hash": "052f34279499c6d4",
    "words": [
     "variar un intérprete",
     "cambiar la estrategia de búsqueda",
@@ -9001,7 +9230,7 @@
    ]
   },
   "capitulo-34-introspeccion-y-metainterpretes/#344-arboles-de-prueba": {
-   "hash": "fd71c79d12172a1a",
+   "hash": "7ce3a70f7e4ab056",
    "words": [
     "árbol de prueba",
     "árbol de derivación de una respuesta",
@@ -10353,7 +10582,7 @@
    ]
   },
   "capitulo-39-semantica-de-los-programas-logicos/#391-modelos-y-consecuencia-logica": {
-   "hash": "503626c98cf71109",
+   "hash": "2251a2e86d39f5e4",
    "words": [
     "qué es un modelo",
     "interpretación de un programa",
@@ -10518,12 +10747,12 @@
    ]
   },
   "capitulo-39-semantica-de-los-programas-logicos/#ejercicios": {
-   "hash": "18c6850408e35364",
+   "hash": "b9db90234582ed8b",
    "words": [],
    "questions": []
   },
   "capitulo-39-semantica-de-los-programas-logicos/#formulas-que-no-son-clausulas-de-horn": {
-   "hash": "b4b060e2a347bf24",
+   "hash": "75898732f1703fc0",
    "words": [
     "forma clausal",
     "skolemización",
@@ -10565,7 +10794,7 @@
    ]
   },
   "capitulo-39-semantica-de-los-programas-logicos/#objetivos-del-capitulo": {
-   "hash": "0e4c51a2399f5433",
+   "hash": "e209f74dd74f174f",
    "words": [],
    "questions": []
   },
@@ -10671,7 +10900,7 @@
    ]
   },
   "capitulo-39-semantica-de-los-programas-logicos/resolucion/#negacion-como-falla-la-complecion-de-clark-y-sldnf": {
-   "hash": "d6cf08c7bcf5c9f3",
+   "hash": "6a66824fda96a6fb",
    "words": [
     "negación como falla",
     "compleción de clark",
@@ -10696,7 +10925,7 @@
    ]
   },
   "capitulo-39-semantica-de-los-programas-logicos/resolucion/#resolucion-sld": {
-   "hash": "88f46cdf95627f93",
+   "hash": "4145139578da0b5a",
    "words": [
     "resolución sld",
     "paso de resolución",
@@ -19145,7 +19374,7 @@
    ]
   },
   "capitulo-63-proyecto-demostrador-teoremas/": {
-   "hash": "819489a9bea07a0b",
+   "hash": "19522d4c14bc7839",
    "words": [
     "demostrador de teoremas",
     "probar teoremas automáticamente",
@@ -19262,7 +19491,7 @@
    ]
   },
   "capitulo-63-proyecto-demostrador-teoremas/#634-version-3-resolucion-con-profundizacion-iterativa": {
-   "hash": "0c66d0954bcbf62d",
+   "hash": "a14ed6ed1493c4a2",
    "words": [
     "resolución",
     "profundización iterativa",
@@ -19407,7 +19636,7 @@
    "questions": []
   },
   "capitulo-63-proyecto-demostrador-teoremas/#objetivos-del-capitulo": {
-   "hash": "6cb59d2295b98dbf",
+   "hash": "2965a03766fe3e04",
    "words": [],
    "questions": []
   },
@@ -29566,7 +29795,7 @@
    ]
   },
   "licencia/#lo-que-este-curso-cita": {
-   "hash": "c646399113c0d985",
+   "hash": "9cce10329544ec95",
    "words": [
     "fuentes de terceros",
     "licencias no comerciales",

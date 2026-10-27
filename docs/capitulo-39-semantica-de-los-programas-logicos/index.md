@@ -61,7 +61,7 @@ Al terminar el capítulo, el lector puede:
 
 Un programa sin negación, un **programa definido**, es un conjunto de
 cláusulas de Horn con una conclusión cada una
-([sección 13.4](../capitulo-13-prolog-y-la-logica/index.md#134-clausulas-de-horn)). Para decir qué afirma, se fijan los
+([sección 13.5](../capitulo-13-prolog-y-la-logica/index.md#135-clausulas-de-horn)). Para decir qué afirma, se fijan los
 objetos de los que habla y los hechos posibles sobre ellos:
 
 - el **universo de Herbrand** $U_P$ son los términos sin variables que se
@@ -251,7 +251,7 @@ apartado 2.5). El resultado es un conjunto de cláusulas, pero no
 necesariamente de Horn:
 
 - $\lnot \mathit{remar} \lor \lnot \mathit{llueve}$, la restricción del
-  [ejercicio 17 del capítulo 13](../capitulo-13-prolog-y-la-logica/soluciones.md#17), no tiene ningún literal positivo: tiene
+  [ejercicio 16 del capítulo 13](../capitulo-13-prolog-y-la-logica/soluciones.md#16), no tiene ningún literal positivo: tiene
   la forma de una consulta negada, y como parte de un programa es una
   **restricción de integridad**, que prohíbe modelos en lugar de afirmar
   átomos;
@@ -666,7 +666,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
    buscar uno menor, y explicar por qué la sucesión de $T_P$ deja de crecer
    de manera ordenada cuando el programa tiene negación.
 4. **(1)** Escribir, como la tabla de la
-   [sección 13.5](../capitulo-13-prolog-y-la-logica/index.md#135-como-prueba-prolog), los resolventes de la refutación de
+   [sección 13.7](../capitulo-13-prolog-y-la-logica/inferencia.md#la-refutacion-en-forma-clausal), los resolventes de la refutación de
    `conexion(a, c)` con la regla de la izquierda, y comprobarlos con
    `paso/4`.
 5. ★ **(2)** Predecir cuántas respuestas, nodos y ramas cortadas da

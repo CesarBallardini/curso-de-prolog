@@ -8,6 +8,7 @@
 %
 %?- madre(Quien, luis).
 %?- tiene_hijos(Quien).
+%?- sin_hijos(luis).
 
 % mujer(P): P es mujer.
 mujer(marta).
@@ -61,3 +62,15 @@ ascendiente(A, D) :-
 ascendiente(A, D) :-
     progenitor(A, Medio),
     ascendiente(Medio, D).
+
+%!  sin_hijos(+P) is semidet.
+%
+%   No se puede probar que P tenga hijos. Es la negación escrita con el corte
+%   y fail, la definición de \+ que describe la sección 10.2. P debe llegar
+%   ligada: con P libre, tiene_hijos(P) encuentra a alguien con hijos, el corte
+%   descarta la segunda cláusula y fail hace fallar al predicado para todos.
+sin_hijos(P) :-
+    tiene_hijos(P),
+    !,
+    fail.
+sin_hijos(_).

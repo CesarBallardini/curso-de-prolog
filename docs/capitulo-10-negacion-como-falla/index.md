@@ -599,7 +599,7 @@ false.
 ```
 
 **Las variables del interior.** `Otra` aparece solamente dentro del `\+`. Como
-se verá en la [sección 13.3](../capitulo-13-prolog-y-la-logica/index.md#133-las-variables-y-los-cuantificadores), una variable en esa posición está cuantificada
+se verá en la [sección 13.4](../capitulo-13-prolog-y-la-logica/index.md#134-las-variables-y-los-cuantificadores), una variable en esa posición está cuantificada
 universalmente: la regla afirma que, **para toda** edad `Otra` de la base, `Otra`
 no es mayor que `E`. Es la lectura de la [sección 10.4](#104-donde-ubicar) usada a favor: allí una
 variable libre dentro del `\+` era un error, porque se esperaba que tuviera

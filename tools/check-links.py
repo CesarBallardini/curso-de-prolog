@@ -8,7 +8,8 @@ are exempt, and so is a chapter's mention of itself):
     capítulos 3 y 4             -> capítulos [3](...) y [4](...)
     sección 5.6                 -> [sección 5.6](../capitulo-05-slug/index.md#56-slug)
                                    (same page: [sección 5.6](#56-slug); from soluciones.md:
-                                   [sección 5.6](index.md#56-slug))
+                                   [sección 5.6](index.md#56-slug); a section numbered on
+                                   another page of its chapter: [sección 13.8](sustituciones.md#138-slug))
     solución 11 del capítulo 16 -> [solución 11 del capítulo 16](../capitulo-16-control/soluciones.md#11)
     ejercicio 7 del capítulo 7  -> [ejercicio 7 del capítulo 7](../capitulo-07-listas/soluciones.md#7)
     Patrón 26                   -> [Patrón 26](../patrones.md#26-slug)
@@ -74,14 +75,21 @@ def chapters():
 
 
 def sections():
-    """{(chapter, section): anchor}"""
+    """{(chapter, section): (page name, anchor)}
+
+    A long chapter may number sections on pages of its own (chapter 13), so every page of the
+    chapter but soluciones.md is read.
+    """
     out = {}
-    for index in DOCS.glob('capitulo-*/index.md'):
-        for line in index.read_text(encoding='utf-8').split('\n'):
+    for page in DOCS.glob('capitulo-*/*.md'):
+        if page.name == 'soluciones.md':
+            continue
+        for line in page.read_text(encoding='utf-8').split('\n'):
             m = SECTION_RE.match(line)
             if m:
                 title = m.group(3).replace('`', '')
-                out[(int(m.group(1)), int(m.group(2)))] = slugify(f'{m.group(1)}.{m.group(2)} {title}', '-')
+                anchor = slugify(f'{m.group(1)}.{m.group(2)} {title}', '-')
+                out[(int(m.group(1)), int(m.group(2)))] = (page.name, anchor)
     return out
 
 
@@ -124,13 +132,14 @@ class Page:
         return f'{self.up}{self.dirs[n]}/{page}'
 
     def section_target(self, n, k):
-        anchor = self.sections.get((n, k))
-        if anchor is None:
+        found = self.sections.get((n, k))
+        if found is None:
             self.note('unknown section', f'{n}.{k}')
             return None
+        page, anchor = found
         if self.chapter == n:
-            return f'#{anchor}' if self.is_index else f'index.md#{anchor}'
-        return f'{self.up}{self.dirs[n]}/index.md#{anchor}'
+            return f'#{anchor}' if self.path.name == page else f'{page}#{anchor}'
+        return f'{self.up}{self.dirs[n]}/{page}#{anchor}'
 
     def pattern_target(self, n):
         anchor = self.patterns.get(n)
