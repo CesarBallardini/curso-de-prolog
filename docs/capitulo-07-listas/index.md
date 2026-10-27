@@ -754,6 +754,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 
     La corrección consiste en escribir el resultado donde corresponde, de
     acuerdo con la plantilla 12.
+
 14. ★ **(2)** Explorar los modos de `concatenar/3`. Para cada una de estas consultas,
     determinar **antes de ejecutarla** si produce una respuesta, varias,
     ninguna, o no termina:
@@ -803,6 +804,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
        `selecciona/3` para elegir el primer elemento de `Ys`. Si `Xs` tiene
        n elementos distintos, `permuta/2` debe dar n! respuestas:
        `permuta([a, b, c], P).` da las seis.
+
 22. **(2)** Escribir `substitute(X, Y, Xs, Ys)`: `Ys` es `Xs` con **todas**
     las apariciones de `X` reemplazadas por `Y`. Por ejemplo,
     `substitute(b, 9, [a, b, c, d, b, b, c, 1], L).` responde
@@ -853,6 +855,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
        nodo con los dos subárboles vacíos. Para el árbol de ejemplo,
        `Hojas = [4, 7, 6]`, y `lista_hojas(tree(9, void, void), [9]).` se
        cumple. `lista_hojas/2` debe dar una sola respuesta.
+
 26. **(2)** Con la representación del ejercicio 25, escribir los tres
     recorridos de un árbol binario, cada uno como una lista con los elementos
     de todos los nodos:

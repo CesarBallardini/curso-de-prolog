@@ -290,6 +290,7 @@ nombra el controlador en la cadena de conexión.
     La respuesta incluye `Name : SQLite3 ODBC Driver`. El mismo nombre
     aparece en la pestaña «Controladores» de «Orígenes de datos ODBC (64
     bits)», en el menú Inicio.
+
 5. **Verificar la conexión desde Prolog.** En `ejemplos/capitulo-43/`:
 
     ```text

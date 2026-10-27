@@ -517,12 +517,14 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
        atómica, una fórmula compuesta o ninguna de las tres cosas, y por qué:
        `p(a, f(a))`, `g(Z, Z)`, `f(f(a))`, $p(X) \land q(X)$, `q(p(X))`,
        `q(f(f(a)))`, `r(f, a, b)`, $p(X, f(g(Y, Y))) \rightarrow q(X)$.
+
     b. De estas fórmulas en forma clausal, decir cuáles son cláusulas de Horn
        y, para cada una que lo sea, escribirla como hecho, regla o consulta de
        Prolog: $\forall X \, \bigl( q(X) \lor \lnot r(f(X), a, a) \bigr)$;
        $\forall Z \; q(Z)$;
        $\forall X \, \forall Y \, \forall Z \, \bigl( q(X) \lor \lnot p(Z, Y) \lor q(Z) \bigr)$;
        $p(a, b) \land r(a, b, f(a)) \rightarrow q(b)$.
+
 3. **(1)** Traducir a Prolog: "para todo X, si X es un gato entonces X es un
    animal".
 4. ★ **(2)** ¿Qué cuantificador corresponde a cada variable de la siguiente regla?
@@ -556,8 +558,11 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 9. **(2)** Traducir a cláusulas de Prolog, o explicar por qué no se puede:
 
     a. "Todo el que tiene un gato tiene una mascota."
+
     b. "Nadie es padre de sí mismo."
+
     c. "Toda persona es varón o mujer."
+
 10. **(2)** La [sección 13.5](#135-clausulas-de-horn) afirma que un hecho es
     una cláusula de Horn sin condiciones y una consulta es una cláusula de Horn
     sin conclusión.
@@ -565,12 +570,14 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     a. Escribir la fórmula que corresponde a la consulta
        `?- padre(juan, Quien).` y explicar en qué sentido Prolog la **refuta**
        en lugar de demostrarla.
+
     b. Decir cuáles de estas afirmaciones son verdaderas, y corregir las
        falsas: un programa es un conjunto de hechos y reglas; la consulta forma
        parte del programa; `odia(X, Y), odia(Y, X) :- enemigo(X, Y).` puede
        ser una cláusula de un programa; un hecho es una cláusula sin
        condiciones; una consulta sin variables pregunta si el programa contiene
        esa afirmación como hecho.
+
 11. **(2)** Explicar por qué ninguna de estas dos cláusulas es una cláusula de
     Horn. Para la segunda, conviene escribir en forma clausal lo que afirma su
     cuerpo.
@@ -583,6 +590,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     Después, cargar cada una en un archivo, junto con los hechos
     `enemigo(juan, pedro).` y `r(ana).`, consultar `p(ana).`, y explicar qué
     informa SWI-Prolog en cada caso.
+
 12. **(1)** Calcular el valor de verdad de
     $(p \rightarrow q) \leftrightarrow (\lnot q \rightarrow \lnot p)$ en las
     cuatro interpretaciones de la
@@ -599,10 +607,13 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
        falsos a los demás; la que hace verdaderos a `hay_huevos`, `masa` y
        `torta`; la que hace verdaderos a los cinco átomos menos `torta`; la que
        hace verdaderos a los cinco átomos y además a `hay_azucar`.
+
     b. ¿Es $\mathit{torta}$ consecuencia lógica del programa? ¿Lo es
        $\mathit{hay\_azucar}$? ¿Lo es $\lnot \mathit{hay\_azucar}$?
+
     c. Verdadero o falso, con la razón: «si $P \models f$, entonces todo modelo
        de $P$ es modelo de $P \cup \{f\}$».
+
 14. **(2)** La resolución no exige que una de las dos cláusulas sea una consulta.
     Resolver la regla `madre/2` de `logica.pl` con el hecho `mujer(marta).`,
     escribir el resolvente como una cláusula de Prolog, y explicar por qué es
@@ -632,28 +643,35 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
        demostrar en papel, por refutación, que no se rema: agregar la negación
        de esa conclusión y derivar la cláusula vacía, indicando cada
        resolvente.
+
     b. Explicar por qué $\lnot \mathit{remar} \lor \lnot \mathit{llueve}$ no es un hecho ni una
        regla de Prolog, y a cuál de los tres casos de la
        [sección 13.5](#135-clausulas-de-horn) corresponde su forma.
+
     c. Sin ejecutarla, explicar por qué `?- \+ remar.` tiene éxito sobre las
        cuatro cláusulas del programa, y por qué la razón de ese éxito es otra
        que la de la demostración del punto a. Comprobarlo después. El
        [capítulo 10](../capitulo-10-negacion-como-falla/index.md) describe
        `\+`, y el [capítulo 39](../capitulo-39-semantica-de-los-programas-logicos/index.md)
        trata la forma clausal de fórmulas cualesquiera.
+
 17. ★ **(2)** Composición de sustituciones
     ([sección 13.8](sustituciones.md#138-sustituciones)):
 
     a. Con θ = { X/f(W), Y/X } y σ = { Y/Z, X/a, W/g(a) }, calcular θσ y σθ, y
        decir cuáles de estos pares pertenecen a θσ: `Y/Z`, `X/f(g(a))`,
        `W/g(a)`, `Y/X`.
+
     b. Calcular { X/a, Y/c, U/c }{ Z/W, X/b },
        { W/a, Y/f(Z) }{ W/b, Y/a, Z/c } y
        { X/g(Y, a), Z/f(W), U/W }{ Y/f(b), W/U, T/g(a, f(b)) }. En la última,
        un par se vuelve trivial.
+
     c. Componer de a dos, en ese orden, { P/d, Q/f(X, Y), R/Z },
        { X/a, Y/T } y { Z/R, X/b, T/c }.
+
     d. ¿Existe, para toda θ, una γ con θγ = θ? ¿Y una con γθ = θ?
+
 18. **(1)** Sobre las definiciones de la página
     [Sustituciones y unificadores](sustituciones.md):
 
@@ -662,22 +680,31 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
        puede ser una constante; un unificador no puede contener variables en
        sus términos; todo unificador es una sustitución; toda sustitución es un
        unificador de algún par de términos.
+
     b. Decir si `padre(juan, ana)` es instancia de `padre(X, Y)`, de
        `padre(juan, Y)`, de `padre(X, X)` y de `padre(Y, X)`, y dar la θ cuando
        existe.
+
     c. Verdadero o falso: «si Q es instancia de P, entonces Pθ = Q para
        cualquier θ».
+
 19. ★ **(2)** Para cada par, dar un unificador más general o explicar por qué no
     existe, y comprobar con `=` qué imprime SWI-Prolog:
 
     a. `padre(Z, diego)` y `padre(jorge, diego)`.
+
     b. `tio(X, diego)` y `tio(W, diego)`. Mostrar además que
        { X/guillermo, W/guillermo } también es un unificador, y escribir la γ
        que lo obtiene a partir de { X/W }.
+
     c. `p(q(X, Y), X, h(4))` y `p(q(3, Z), W, h(Z))`.
+
     d. `r([X|Y])` y `r([[a, b], c, d])`.
+
     e. `r([X|Y])` y `r([])`.
+
     f. `[[X, 2], [Y]]` y `[A|[B|C]]`.
+
 20. **(2)** Evaluar `?- concatenar(X, Y, [a, b]).` con los cuatro pasos de la
     [sección 13.10](evaluacion.md#1310-los-cuatro-pasos): para cada paso, la
     cláusula elegida, el unificador más general y la consulta que queda.
@@ -700,15 +727,20 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     ```
 
     a. Escribir su lectura declarativa y explicar por qué es verdadera.
+
     b. Dibujar el árbol de `?- ascendiente(juan, Quien).` hasta profundidad 3,
        con las ramas de la segunda cláusula.
+
     c. Decir qué respuestas obtiene el recorrido en profundidad, y cuáles, y en
        qué orden, obtendría el recorrido en anchura de la
        [sección 13.11](evaluacion.md#1311-el-interprete-no-determinista-y-las-estrategias-de-evaluacion).
+
     d. Intercambiar las dos cláusulas: qué cambia para el recorrido en
        profundidad, y si termina después de dar las respuestas.
+
     e. Verdadero o falso: «las respuestas corresponden a nodos intermedios del
        árbol, y las fallas a sus hojas».
+
 22. **(2)** Con los hechos `p(a, b)`, `p(a, e)`, `p(b, c)`, `p(b, d)` y
     `p(e, f)` y las reglas
 
@@ -720,11 +752,14 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 
     a. Mostrar que `?- q(e, b).` falla con cualquier estrategia: ninguna rama
        de su árbol llega a la consulta vacía.
+
     b. Mostrar una respuesta de `?- r(X, X), s(X, Y).` que el intérprete no
        determinista puede obtener eligiendo primero el **segundo** objetivo,
        con cada elección anotada.
+
     c. Decir qué respuesta da Prolog primero, y por qué. Comprobarlo con el
        programa.
+
 23. **(3)** El siguiente programa y la siguiente fórmula no tienen el mismo
     significado. Identificar la diferencia:
 
@@ -745,12 +780,17 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     uno de estos comportamientos:
 
     a. `?- categoria(sofia, adulto).` responde `true.`
+
     b. `?- tiene_hijos(P).` informa dos veces a `juan`.
+
     c. `?- X is 3 + Y.` no responde `true.` ni `false.`
+
     d. Un programa correcto no produce una respuesta que sus cláusulas afirman.
+
     e. Sobre la versión de `ascendiente/2` del ejercicio 21,
        `?- \+ ascendiente(eva, luis).` no responde nunca, aunque eva no es
        ascendiente de nadie.
+
 25. **(3)** Elegir un predicado de cualquier capítulo anterior, escribir su
     lectura declarativa, e indicar si el programa cumple exactamente lo que la
     fórmula afirma.

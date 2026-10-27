@@ -255,16 +255,21 @@ varios de ellos se describen después del último ejercicio.
 
     a. Escribir `elemento(M, posicion(F, C), E)`: `E` es el elemento de la
        fila `F` y la columna `C` de `M`. En `a`, el de `posicion(2, 1)` es 1.
+
     b. Escribir `actualiza(M, posicion(F, C), E, M2)`: `M2` es `M` con `E` en
        esa posición. Con `a`, `posicion(2, 1)` y 9,
        `M2 = [[1, 2, 3], [9, 3, 5], [4, 4, 4]]`.
+
     c. Escribir `transpuesta(M, T)`: `T` es la transpuesta de `M`. Con `at` y
        `a` se cumple, y la de `b` es `[[0, 7], [0, 2], [4, 10]]`.
+
     d. Escribir `suma(M1, M2, S)`: `S` es la suma de `M1` y `M2`. La de `a`
        consigo misma es `[[2, 4, 6], [2, 6, 10], [8, 8, 8]]`.
+
     e. Escribir `suma_diagonales(M, SD)`: el elemento i de `SD` es la suma del
        elemento i de la diagonal principal de la matriz cuadrada `M` y del
        elemento i de su diagonal secundaria. Para `a`, `SD = [4, 6, 8]`.
+
 2. **(2)** Una matriz es **rala** cuando la mayoría de sus elementos son
    ceros, y conviene guardar solo los distintos de cero. Escribir
    `convierte(M, Rala)`: `M` es una matriz representada como en el ejercicio
@@ -311,14 +316,17 @@ varios de ellos se describen después del último ejercicio.
     a. Escribir `remover_aristas(G, V, G2)`: `G2` es `G` sin las aristas que
        incluyen al vértice `V`; con `V` libre, una respuesta por vértice. Sin
        `e`, al grafo 1 le quedan `[a(a, b), a(a, d), a(b, c), a(b, d)]`.
+
     b. Una cobertura de vértices es un subconjunto de los vértices que contiene
        al menos un extremo de cada arista. Escribir `cobertura_vertices(G, C)`
        con `remover_aristas/3`. En el grafo 2, `[e, c, b]` es una cobertura y
        `[a, e]` no lo es.
+
     c. Un clique es un subconjunto de los vértices en el que cada par de
        vértices distintos es adyacente. Escribir `clique(G, C)` con doble
        negación. `[d, a, b]` es un clique del grafo 1, `[b, c]` lo es del
        grafo 2 y `[f, e, d]` no.
+
 6. **(3)** Sobre los grafos del ejercicio 5:
 
     a. Escribir `trail(G, Camino, Vertices)`: `Camino` es una lista no vacía de
@@ -326,9 +334,11 @@ varios de ellos se describen después del último ejercicio.
        los vértices por los que pasa. Cada arista se escribe en el sentido del
        recorrido: en el grafo 1, `[a(b, c), a(c, e), a(e, d), a(d, b)]` es un
        camino, con los vértices `[b, c, e, d, b]`.
+
     b. Un grafo es conexo si para todo par de vértices distintos existe un
        camino que los une. Escribir `conexo(G)` con `trail/3`. El grafo 1 es
        conexo y el grafo 2 no lo es.
+
 7. **(3)** Con los grafos dirigidos 3 y 4, cuyos vértices son los que aparecen
    en alguna arista:
 
@@ -337,11 +347,13 @@ varios de ellos se describen después del último ejercicio.
        vértices se arma con la
        [estrategia para recolectar soluciones](../capitulo-10-negacion-como-falla/recolectar.md#estrategia-para-recolectar-soluciones).
        En el grafo 3, los vértices de grado 2 son `a` y `c`.
+
     b. Escribir `ordenados_x_grado(G, Vs)`: `Vs` son los vértices de `G` en
        orden ascendente de grado de salida, con `grado_salida/3` y un
        ordenamiento por inserción como el de `ordena/2` del
        [capítulo 8](../capitulo-08-aritmetica/index.md#ejercicios). Para el
        grafo 3 es `[e, b, d, a, c]`.
+
 8. **(3)** Escribir `genera_grafo(G1, N, G2)`: `G2` tiene una arista de `X` a
    `Y` si en `G1` hay un camino de `N` aristas, que se pueden repetir, de `X`
    a `Y`. Los grafos son dirigidos, con la representación del ejercicio 7, y
@@ -373,6 +385,7 @@ varios de ellos se describen después del último ejercicio.
     cada región entre los disponibles. Determinar si alcanzan tres colores. El
     [capítulo 24](../capitulo-24-programacion-con-restricciones/index.md#248-coloreo-de-un-mapa)
     resuelve el mismo problema con restricciones.
+
 10. **(2)** Sobre la [base de libros](#base-de-libros), escribir:
 
     a. `edicion_impresa(T, Id, A)`: el libro de título `T` tiene una edición
@@ -385,6 +398,7 @@ varios de ellos se describen después del último ejercicio.
     c. `lista_editoriales(L)`: `L` es la lista de todas las editoriales, armada
        con la estrategia de la
        [sección 12.3](#123-recolectar-soluciones).
+
 11. **(2)** Con la [base de libros](#base-de-libros), escribir
     `precio_maximo(T)`: el libro de título `T` tiene la edición impresa de
     mayor precio. «Ninguna edición impresa tiene un precio mayor» es la forma
@@ -425,10 +439,12 @@ varios de ellos se describen después del último ejercicio.
        de los jugadores que ganaron todos los partidos que jugaron. La
        condición se escribe con doble negación. La respuesta es
        `["Karacic", "Estrada", "Mendy"]`.
+
     b. Escribir `partidos_jugados(Ps)`: `Ps` es la lista de los partidos, cada
        uno `[NroPartido, Eq1, Eq2]`, en orden ascendente de `NroPartido`, sin
        ordenar la lista después de armarla: en cada paso se agrega el partido
        para el que no existe otro de menor número todavía sin recolectar.
+
 13. **(3)** Una agencia de viajes arma tours con las ciudades de `ciudad/2`, y
     su política establece que después de salir de un país no se puede volver a
     ingresar a él. Con las ciudades Venecia, Atenas y Roma, un tour comienza en
@@ -455,6 +471,7 @@ varios de ellos se describen después del último ejercicio.
     [ejercicios del capítulo 7](../capitulo-07-listas/index.md#ejercicios), y
     escribir la política como la negación de que exista un reingreso.
     `tour([roma, atenas, venecia], T).` tiene cuatro respuestas.
+
 14. **(3)** La tabla de posiciones de un torneo es una lista de filas
     `[Equipo, Puntaje, Ganados, Empatados, Perdidos]`, ordenada por puntaje de
     mayor a menor. Cada resultado es `[Equipo1, Equipo2, R]`: con `R = 1` ganó
@@ -503,15 +520,19 @@ varios de ellos se describen después del último ejercicio.
     a. `vuelo_completo(T, D)`: el vuelo `T` del día `D` no tiene asientos
        disponibles en al menos uno de sus tramos, con una sola respuesta por
        vuelo y día.
+
     b. `asientos_disponibles(T, D, N)`: `N` es el mínimo de los asientos
        disponibles en los tramos del vuelo `T` del día `D`.
+
     c. `tramo_mas_popular(Desde, Hasta)`: todos los vuelos entre el 1/1/2023 y
        el 28/2/2023 que unen `Desde` con `Hasta` estuvieron completos.
+
     d. `cantidad_km(T, N)`: `N` es la cantidad total de kilómetros del vuelo
        `T`, con todos sus tramos.
 
     Explicar por qué las fechas son términos `fecha(Anio, Mes, Dia)`, con el
     año primero, y no `fecha(Dia, Mes, Anio)` ni átomos como `'10/1/2023'`.
+
 16. **(3)** La subsecuencia creciente más larga de una secuencia es la de
     valores en orden estrictamente creciente de mayor longitud: en
     `[20, 19, 1, 5, 2, 4, 6]` es `[1, 2, 4, 6]`. Escribir `sub_crec_mayor(L, S)`:

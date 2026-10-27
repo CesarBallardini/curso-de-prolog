@@ -775,6 +775,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 
     Anotar en cada fila qué valor toma `Que` y en qué momento deja de tenerlo.
     Después ejecutar la consulta y comprobar la respuesta.
+
 12. **(2)** Hacer lo mismo con `?- progenitor(marta, H), varon(H).` sobre
     `reglas.pl`. Esta consulta tiene una diferencia con la anterior: su primer
     objetivo se resuelve con una **regla** y no con un hecho, de modo que

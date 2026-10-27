@@ -610,8 +610,11 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     ```
 
     a. ¿Qué consulta produjo este árbol? Es lo que está en la raíz, marcada `?`.
+
     b. ¿Cuántas respuestas tiene, y cuál es?
+
     c. ¿Por qué `θ₄` está vacía?
+
 10. ★ **(2)** Dibujar el árbol de `?- antepasado(juan, luis).` sobre `orden.pl`,
     numerando las cláusulas y etiquetando cada arco con la cláusula y la
     sustitución. Contar las hojas de éxito y las de falla, y comprobar el
@@ -630,6 +633,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 
     Dibujar los dos árboles y contar los nodos de cada uno. ¿Cuál conviene, y
     por qué esa conveniencia no se puede decidir mirando solo la regla?
+
 13. **(2)** Agregar a `orden.pl` el hecho `padre(pedro, eva).` y determinar,
     **sin ejecutar**, cuántas respuestas produce entonces
     `?- antepasado(juan, Quien).` y en qué orden. Verificarlo después.
@@ -650,6 +654,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     Determinar con el árbol cuál es esa rama al consultar
     `descendiente(luis, juan)`, y reordenar los objetivos o las cláusulas para
     evitarla. Comprobar que las respuestas no cambian.
+
 15. **(3)** ¿Puede un árbol tener infinitas hojas de éxito y, sin embargo,
     responder la primera consulta sin dificultad? Construir un ejemplo con
     `natural/1` del [capítulo 6](../capitulo-06-recursion/index.md), o explicar por qué no es posible.

@@ -468,7 +468,7 @@
    ]
   },
   "capitulo-01-la-primera-hora/#ejercicios": {
-   "hash": "de62c3903fe10a73",
+   "hash": "5db44db90a877c4e",
    "words": [],
    "questions": []
   },
@@ -752,7 +752,7 @@
    ]
   },
   "capitulo-02-hechos-consultas-y-variables/#ejercicios": {
-   "hash": "45049f45a1462c15",
+   "hash": "d4bb12ae8780fd44",
    "words": [],
    "questions": []
   },
@@ -1040,7 +1040,7 @@
    ]
   },
   "capitulo-03-reglas-y-conjunciones/#ejercicios": {
-   "hash": "d6c5b1bbdb5b023a",
+   "hash": "3741d8b5e566ef74",
    "words": [],
    "questions": []
   },
@@ -1410,7 +1410,7 @@
    ]
   },
   "capitulo-04-terminos-y-unificacion/#ejercicios": {
-   "hash": "8c5a7017b2c72a56",
+   "hash": "82323215698a493d",
    "words": [],
    "questions": []
   },
@@ -1808,7 +1808,7 @@
    ]
   },
   "capitulo-06-recursion/#ejercicios": {
-   "hash": "5e72fe6c95a6db4a",
+   "hash": "2fe8c912a4922392",
    "words": [],
    "questions": []
   },
@@ -2198,7 +2198,7 @@
    ]
   },
   "capitulo-08-aritmetica/#ejercicios": {
-   "hash": "e179a0671e78bb15",
+   "hash": "0ea80c49a4ac9b59",
    "words": [],
    "questions": []
   },
@@ -2607,7 +2607,7 @@
    ]
   },
   "capitulo-10-negacion-como-falla/#ejercicios": {
-   "hash": "5d479307cd6230d1",
+   "hash": "e77e353638174c00",
    "words": [],
    "questions": []
   },
@@ -3018,7 +3018,7 @@
    ]
   },
   "capitulo-12-ejercicios-integradores/#ejercicios": {
-   "hash": "bf45efc7d4cfbe56",
+   "hash": "79d9fdaba11bb090",
    "words": [],
    "questions": []
   },
@@ -3191,7 +3191,7 @@
    ]
   },
   "capitulo-13-prolog-y-la-logica/#ejercicios": {
-   "hash": "8e2d0a1f8fab4663",
+   "hash": "63028318af8438b9",
    "words": [],
    "questions": []
   },
@@ -4302,7 +4302,7 @@
    ]
   },
   "capitulo-16-control/#ejercicios": {
-   "hash": "d2a435a8428eb1fd",
+   "hash": "428bc936a886d47c",
    "words": [],
    "questions": []
   },
@@ -12542,7 +12542,7 @@
    ]
   },
   "capitulo-43-prolog-y-sql/odbc/#el-controlador-odbc-en-windows": {
-   "hash": "2eb81b3f64fe971f",
+   "hash": "24921f36849b9e3e",
    "words": [
     "instalar controlador odbc en windows",
     "sqliteodbc_w64.exe",
@@ -25094,7 +25094,7 @@
    ]
   },
   "capitulo-78-proyecto-mundo-wumpus/#ejercicios": {
-   "hash": "845087aeabbd3f3e",
+   "hash": "e38a5361a7292991",
    "words": [],
    "questions": []
   },

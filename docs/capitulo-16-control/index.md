@@ -714,6 +714,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     queda repetido. Escribir una prueba que verifique que las dos versiones dan
     las mismas respuestas en el mismo orden. Después, determinar si el orden se
     conservaría con `materia(Materia, _, Anio)` escrito antes de la disyunción.
+
 17. **(2)** El predicado siguiente es un bucle por falla que pretende escribir
     los términos que lee de un stream:
 
@@ -733,6 +734,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     con un máximo de 200 inferencias y, si las agota, lo detiene y liga `R` con
     `inference_limit_exceeded` (la [sección 27.8](../capitulo-27-pruebas-y-depuracion/index.md#278-el-proyecto-la-bateria-completa) lo usa en las pruebas).
     Corregir `eco/1` según el [Patrón 7](../patrones.md#7-bucle-por-falla).
+
 18. **(2)** Dadas las reglas `propiedad(par, N) :- 0 =:= N mod 2.`,
     `propiedad(positivo, N) :- N > 0.` y `propiedad(mayor_que_10, N) :- N > 10.`,
     escribir `cumple(N)`, que escribe una línea por cada propiedad que `N`

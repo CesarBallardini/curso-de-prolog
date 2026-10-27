@@ -779,10 +779,13 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 11. ★ **(2)** Sobre `suma/3` de la [sección 6.4](#64-la-suma), en tres partes:
 
     a. Ejecutar `suma(s(cero), s(s(cero)), R).` y explicar qué hace cada cláusula.
+
     b. Ejecutar `suma(s(cero), B, s(s(s(cero)))).` El mismo predicado ahora resta.
        Explicar por qué, con el árbol de derivación.
+
     c. Ejecutar `suma(A, B, s(s(cero))).` y solicitar todas las respuestas.
        ¿Cuántas hay, y por qué termina?
+
 12. ★ **(2)** `valor/2` traduce un natural en notación `s` a un entero
     predefinido. Determinar, sin ejecutarlas, cuáles de estas consultas
     funcionan y cuáles no, y por qué: `valor(s(s(cero)), V).` ·
