@@ -608,6 +608,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     `color(C).` · `primero(C).` · `primero(verde).` · `primero(rojo).`
 
     La tercera es la que requiere más atención.
+
 12. ★ **(2)** Seguir a mano `?- categoria(luis, C).` sobre `corte.pl`,
     completando una tabla con una fila por paso, e indicando en cuál de ellos se
     ejecuta el `!` y qué alternativas descarta:
@@ -673,6 +674,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     `color(C)` y al final del cuerpo. Explicar cada resultado con las reglas de
     la [sección 9.3](#93-que-poda-exactamente), e indicar en cuáles de los cuatro
     casos se llega a la tercera cláusula.
+
 17. **(2)** Una secuencia de números se clasifica por su forma: `maximo` si
     crece y después decrece, `minimo` si decrece y después crece, `meseta` si
     crece, se mantiene constante en dos o más valores y decrece, y `sinorden`
@@ -689,6 +691,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     `[1, 3, 4, 10, 99, 98, 23, 2]` es `maximo`, `[34, 3, 6, 99, 100]` es
     `minimo`, `[34, 35, 67, 67, 67, 30, 21]` es `meseta` y
     `[23, 45, 46, 2, 1, 4]` es `sinorden`.
+
 18. **(2)** Escribir `sust(L1, P1, P2, L2)`, con todos sus argumentos listas:
     `L2` resulta de reemplazar en `L1` cada aparición de la secuencia `P1` por
     la secuencia `P2`. `sust([p, r, o, l, g, g, o, g, g, g], [g, g], [], L)` da

@@ -728,8 +728,8 @@ que cargan los del capítulo, sin modificarlos.
    jugador. Escribir `jugada_estricta/5`, que rechaza con el mensaje
    `ruta_invalida` una ruta que pasa por la sala del jugador o que repite
    la sala de dos pasos antes, y juega las demás con `jugada/5`.
-4. ★ **(2)** Jugar el agente prudente en los mundos de las semillas 1 a
-   10. Para cada partida que termina en `salio(no)`, reconstruir el
+4. ★ **(2)** Jugar el agente prudente en los mundos de las semillas 1 a 10.
+   Para cada partida que termina en `salio(no)`, reconstruir el
    conocimiento al salir y explicar, con `frontera/2` y `clasificar/3`,
    por qué ninguna celda de la frontera es segura.
 5. ★ **(2)** Agregar a las reglas de `enfoques.pl` una regla para dos

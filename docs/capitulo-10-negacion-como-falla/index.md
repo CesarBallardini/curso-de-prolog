@@ -978,6 +978,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 
     Dos de estas seis responden de manera distinta de lo que sugiere su lectura
     en castellano. Identificarlas.
+
 12. ★ **(2)** El predicado siguiente pretende hallar las personas que no tienen
     mascota, y produce respuestas incorrectas. Explicar la causa con la regla de
     ubicación de la [sección 10.4](#104-donde-ubicar) y corregirlo:

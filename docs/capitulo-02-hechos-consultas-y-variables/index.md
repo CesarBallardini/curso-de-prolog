@@ -654,17 +654,23 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     comentario:
 
     a. "Ana nació en 1985."
+
     b. "La materia Lógica tiene cuatro horas semanales."
+
     c. "Ana y Luis son compañeros de trabajo."
 
     El tercero requiere una decisión que los otros dos no: conviene ejecutar la
     consulta inversa y ver qué ocurre.
+
 14. ★ **(2)** Los tres enunciados siguientes **no** se pueden escribir como
     hechos. Explicar en una línea por qué, en cada caso:
 
     a. "Ana es mayor que Luis."
+
     b. "Toda persona tiene madre."
+
     c. "Ana no tiene hijos."
+
 15. **(1)** Con la base de `hechos.pl`, predecir cuántas respuestas produce cada
     consulta antes de ejecutarla: `mujer(Quien).` · `madre(marta, Quien).` ·
     `padre(Quien, ana).` · `padre(juan, Quien).`

@@ -589,6 +589,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     la consulta `p(b, [a, b, c, b], z, L)`. Después, nombrar el predicado y sus
     variables según la [sección 15.1](#151-nombres), escribir su encabezado completo y
     compararlo con `select/4` de la biblioteca.
+
 16. **(2)** Reemplazar en `maximo/3` de `estilo.pl` el `!` por `$`, y
     consultar `maximo(3, 1, M)`, `maximo(1, 3, M)` y `maximo(3, 1, 1)`. Después
     hacer el mismo reemplazo en `mal_maximo/3`: ¿qué cambia en

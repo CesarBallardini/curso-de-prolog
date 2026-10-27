@@ -727,6 +727,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 
     Conviene tener presente lo que dice la [sección 8.3](#83-argumentos-sin-instanciar) sobre lo que se pierde al
     pasar de `s(s(cero))` a los números predefinidos.
+
 13. ★ **(2)** Explorar los modos de `promedio/2` del ejercicio 7. Para cada
     consulta, determinar si funciona, falla o produce un error, y por qué:
     `promedio([2, 4], P).` · `promedio([2, 4], 3).` · `promedio([2, 4], 5).` ·
@@ -762,11 +763,13 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     a. Escribir `ordered(Xs)`: la lista de números `Xs` está ordenada en forma
        ascendente. `ordered([1, 2, 2, 5]).` se cumple y `ordered([3, 1, 2]).`
        no.
+
     b. Escribir `ordena(Xs, Ys)`: `Ys` tiene los elementos de `Xs` en orden
        ascendente, con las repeticiones incluidas. Usar el ordenamiento por
        **inserción**: se ordena el resto de la lista y el primer elemento se
        inserta en su lugar con un predicado auxiliar `insert(X, Ys, Zs)`. Por
        ejemplo, `ordena([5, 0, 1, 2, 0], L).` responde `L = [0, 0, 1, 2, 5]`.
+
 19. **(2)** Con la representación de los árboles binarios y el hecho
     `arbol_ejemplo/1` del
     [ejercicio 25 del capítulo 7](../capitulo-07-listas/index.md#ejercicios),
@@ -775,13 +778,17 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     a. `profundidad(T, P)`: `P` es la profundidad de `T`, la cantidad de
        aristas del camino más largo desde la raíz hasta una hoja. Un árbol de
        un solo nodo tiene profundidad 0, y el árbol de ejemplo, 3.
+
     b. `sum_tree(T, Suma)`: `Suma` es la suma de los números de los nodos de
        `T`; para el árbol de ejemplo, 28.
+
     c. `cantidad_hojas(T, N)`: `N` es la cantidad de hojas de `T`; para el
        árbol de ejemplo, 3. Debe dar una sola respuesta.
+
     d. `lista_nivel(T, N, L)`: `L` es la lista de los elementos de los nodos
        del nivel `N` de `T`, de izquierda a derecha, con la raíz en el nivel
        0. Para el árbol de ejemplo y el nivel 2, `L = [4, 5, 6]`.
+
 20. **(3)** Escribir `ocurrencias(X, Lista, Posiciones)`: `Posiciones` es la
     lista de las posiciones, contando desde 1, en que `X` aparece en `Lista`.
     `ocurrencias(a, [s, 1, 3, a, a, 2, d, a], T).` responde `T = [4, 5, 8]`,
@@ -830,8 +837,10 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     ```
 
     a. Escribir `peso_arbol(T, Peso)`: `Peso` es el peso total de `T`.
+
     b. Escribir `mapeo_arboles(Arboles, T)`: `T` es el árbol de menor peso de
        la lista `Arboles`. Usar `peso_arbol/2`.
+
 23. **(2)** Un árbol **n-ario** admite en cada nodo cualquier cantidad de
     hijos, incluso ninguna. Se representa con `nodo(R, Hs)`, donde `R` es el
     valor del nodo y `Hs` la lista de sus hijos, que son a su vez árboles
@@ -856,16 +865,20 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 
     a. Escribir `es_hoja(T)`: `T` es un nodo sin hijos. `es_hoja(nodo(c, []))`
        se cumple, y con el árbol de ejemplo, no.
+
     b. Escribir `cantidad(T, N)`: `N` es la cantidad de nodos de `T`; 8 para
        el árbol de ejemplo.
+
     c. Escribir `lista_hojas_n(T, L)`: `L` es la lista de los valores de las
        hojas de `T`, de izquierda a derecha: `[e, f, g, c, h]` para el árbol
        de ejemplo y `[c]` para `nodo(c, [])`. El nombre la distingue de
        `lista_hojas/2` del [capítulo 7](../capitulo-07-listas/index.md), que
        es para árboles binarios.
+
     d. Escribir `quita_hojas(T, T2)`: `T2` es `T` sin sus hojas, y el
        predicado falla si `T` es una hoja. Para el árbol de ejemplo,
        `T2 = nodo(a, [nodo(b, []), nodo(d, [])])`.
+
 24. **(2)** El recorrido **horizontal** de un árbol visita los nodos de un
     nivel, de izquierda a derecha, después los del nivel siguiente, y así hasta
     el último. El del árbol siguiente es `[a, c, j, t, r, h, m, q, z]`:
@@ -886,6 +899,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     Cuando `LNodos` queda vacía, `LDesarrollado` es el recorrido. Escribir
     `recorrido_horizontal(T, L)` con ese método, para los árboles n-arios del
     ejercicio 23, y escribir el árbol de la figura con esa representación.
+
 25. **(2)** Escribir `secuencia_faltante(L1, L2)`: `L1` es una secuencia de
     enteros en orden estrictamente ascendente, y `L2` es la secuencia
     ascendente de los enteros que faltan entre elementos consecutivos de

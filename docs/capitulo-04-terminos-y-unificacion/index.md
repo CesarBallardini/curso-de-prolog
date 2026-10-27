@@ -487,22 +487,36 @@ tiene de propio, y los capítulos siguientes los dan por resueltos.
     4.7 decide cada caso:
 
     a. `ana` con `ana`
+
     b. `ana` con `Persona`
+
     c. `12` con `12.0`
+
     d. `mascota(gato, felix)` con `mascota(gato, gaturro)`
+
     e. `mascota(E, N)` con `mascota(perro, rocco)`
+
     f. `fecha(A, M, D)` con `fecha(2021, 5, 3)`
+
     g. `ficha(M, F, ana)` con `ficha(mascota(gato, felix), F2, P)`
+
 12. ★ **(2)** El mismo ejercicio, con pares que requieren la regla 4, porque una
     variable aparece más de una vez:
 
     a. `par(X, X)` con `par(ana, ana)`
+
     b. `par(X, X)` con `par(ana, eva)`
+
     c. `par(X, Y)` con `par(ana, ana)`
+
     d. `f(X, g(X))` con `f(ana, g(ana))`
+
     e. `f(X, g(X))` con `f(ana, g(eva))`
+
     f. `f(X, X)` con `f(Y, ana)`
+
     g. `terna(X, Y, Z)` con `terna(M, M, M)`
+
 13. ★ **(2)** Escribir `propietario_y_especie(F, P, E)`, que extrae de una ficha
     el propietario y la especie de la mascota, en una sola cláusula y sin
     cuerpo. Es la plantilla 7 con dos componentes en lugar de uno.

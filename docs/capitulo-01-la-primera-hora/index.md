@@ -858,11 +858,14 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 14. ★ **(2)** Sobre `edades.pl`, en tres partes:
 
     a. Escribir `mayor_de(P, N)`, que se cumple cuando P tiene más de N años.
+
     b. Usarlo para escribir `en_edad_escolar(P)`: P tiene más de 5 años y menos
        de 18.
+
     c. Ejecutar `mayor_de(Quien, 40).` Funciona sin que se le haya indicado a
        Prolog cómo buscar a esas personas. Explicar por qué este predicado
        admite esa consulta y `triple(X, 33).` del ejercicio 8 no.
+
 15. **(1)** ¿Qué responden estas tres consultas?
     `mascota(gato, felix) = mascota(Especie, felix).` · `2 + 5 = 7.` ·
     `X = 2 * 8.` Predecirlo antes de ejecutarlas.
