@@ -2,7 +2,7 @@
 
 Prolog prueba por resolución, pero solo sobre cláusulas de Horn y con un
 recorrido en profundidad que puede no alcanzar una prueba que existe
-([sección 13.6](../capitulo-13-prolog-y-la-logica/index.md#136-lo-que-excede-la-logica)).
+([sección 13.11](../capitulo-13-prolog-y-la-logica/evaluacion.md#1311-el-interprete-no-determinista-y-las-estrategias-de-evaluacion)).
 Un **demostrador de teoremas** escrito en Prolog no tiene esos límites:
 acepta fórmulas cualesquiera de la lógica de predicados, con disyunciones en
 la conclusión, negaciones y cuantificadores anidados, y organiza la búsqueda
@@ -517,7 +517,7 @@ P = prueba([[+p, +q], [+r, -p], [+r, -q], [-r]], [r(1, 2, [+q, +r]), r(3, 5, [+r
 
 La segunda es un razonamiento por casos: `p ∨ q` tiene dos literales
 positivos y no es una cláusula de Horn. Prolog no puede cargarla como
-programa ([sección 13.4](../capitulo-13-prolog-y-la-logica/index.md#134-clausulas-de-horn)),
+programa ([sección 13.5](../capitulo-13-prolog-y-la-logica/index.md#135-clausulas-de-horn)),
 y la resolución general la usa como cualquier otra.
 
 Una fórmula que no es un teorema no tiene refutación. En la lógica

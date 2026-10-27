@@ -13,6 +13,14 @@ Varias de esas fuentes tienen licencias que no permiten el uso comercial ni la
 redistribución, y este curso sí lo permite. Mantener la distancia no es una
 formalidad: es lo que hace que la licencia MIT de arriba sea cierta.
 
+Hay una excepción, con permiso: el
+[capítulo 13](capitulo-13-prolog-y-la-logica/index.md) adapta, con autorización
+de sus autores, la prosa de la parte I de Álvaro Tasistro y Jorge Vidart,
+*Programación lógica y funcional* (1988): las definiciones, los ejemplos y el
+orden de la exposición de sus capítulos 2 a 4, reescritos en el registro del
+curso y con la notación de SWI-Prolog. El libro se cita en las referencias del
+capítulo.
+
 ## Imágenes de otros autores
 
 Las imágenes de otros autores se usan con atribución para explicar un

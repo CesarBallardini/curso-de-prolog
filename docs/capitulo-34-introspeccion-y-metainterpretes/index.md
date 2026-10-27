@@ -286,7 +286,7 @@ cuya recursión está a la derecha, `resolver_der/1` no termina después de la
 **El procedimiento de prueba.** `resolver_lista/1` trabaja sobre la
 **resolvente**, la lista de objetivos pendientes: en cada paso reemplaza el
 primero por el cuerpo de una de sus cláusulas, puesto delante de los demás,
-como la resolución de la [sección 13.5](../capitulo-13-prolog-y-la-logica/index.md#135-como-prueba-prolog). Es la forma que necesita
+como la resolución de la [sección 13.7](../capitulo-13-prolog-y-la-logica/inferencia.md#137-como-prueba-prolog). Es la forma que necesita
 cualquier estrategia que guarde varias resolventes a la vez, como la búsqueda
 en anchura del [ejercicio 6](#ejercicios).
 
@@ -354,7 +354,7 @@ true.
 ```
 
 Cada prueba tiene su árbol: dos pruebas de la misma respuesta dan dos árboles, y
-así se distinguen las respuestas repetidas de la [sección 13.6](../capitulo-13-prolog-y-la-logica/index.md#136-lo-que-excede-la-logica). La explicación
+así se distinguen las respuestas repetidas de la [sección 13.13](../capitulo-13-prolog-y-la-logica/evaluacion.md#1313-lo-que-excede-la-logica). La explicación
 de `prueba/3` en el [capítulo 20](../capitulo-20-operadores-y-reglas-como-datos/index.md) tenía la misma forma, escrita dentro del
 intérprete de un lenguaje de reglas; `resolver/2` la obtiene para cualquier
 programa. Un objetivo que falla, en cambio, no tiene árbol, y explicar una falla

@@ -196,6 +196,9 @@ nav:
           - Soluciones: capitulo-12-ejercicios-integradores/soluciones.md
       - Capítulo 13 — Prolog y la lógica:
           - capitulo-13-prolog-y-la-logica/index.md
+          - Qué afirma un programa y cómo se prueba: capitulo-13-prolog-y-la-logica/inferencia.md
+          - Sustituciones y unificadores: capitulo-13-prolog-y-la-logica/sustituciones.md
+          - La evaluación de un programa y los límites de la lógica: capitulo-13-prolog-y-la-logica/evaluacion.md
           - Soluciones: capitulo-13-prolog-y-la-logica/soluciones.md
   - Parte II — Prolog para programadores:
       - Capítulo 14 — El entorno de trabajo:

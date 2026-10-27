@@ -12,7 +12,7 @@ final, que está en `semantica.pl`; los dos corren en SWISH. Como en la
 
 ## Resolución SLD
 
-La resolución del [capítulo 13](../capitulo-13-prolog-y-la-logica/index.md#135-como-prueba-prolog) y el árbol del [capítulo 5](../capitulo-05-como-responde-prolog/index.md)
+La resolución del [capítulo 13](../capitulo-13-prolog-y-la-logica/inferencia.md#137-como-prueba-prolog) y el árbol del [capítulo 5](../capitulo-05-como-responde-prolog/index.md)
 se enuncian con precisión así. Una consulta es una lista de átomos,
 $\leftarrow A_1, \dots, A_n$. Un **paso de resolución SLD** tiene tres
 decisiones:
@@ -197,7 +197,7 @@ la regla de la izquierda y recorre el árbol en profundidad, y un recorrido
 en profundidad no llega a las ramas que están a la derecha de una rama
 infinita ([sección 5.6](../capitulo-05-como-responde-prolog/index.md#56-ramas-infinitas)); un recorrido en anchura las alcanza todas. Y la
 corrección supone la unificación con verificación de ocurrencia: sin ella,
-que SWI-Prolog omite por defecto ([sección 13.6](../capitulo-13-prolog-y-la-logica/index.md#136-lo-que-excede-la-logica)), una refutación
+que SWI-Prolog omite por defecto ([sección 13.13](../capitulo-13-prolog-y-la-logica/evaluacion.md#1313-lo-que-excede-la-logica)), una refutación
 puede calcular un término infinito que no corresponde a ninguna respuesta.
 `unify_with_occurs_check/2` hace la unificación completa, y la bandera
 `occurs_check` la activa en todo el programa.
@@ -325,7 +325,7 @@ La última es
 $\forall A \, \forall N \, \bigl( \mathit{abuelo}(A, N) \leftrightarrow \exists P \, (\mathit{padre}(A, P) \land \mathit{padre}(P, N)) \bigr)$:
 la variable P, que en la cláusula está cuantificada universalmente sobre
 toda la regla, en la compleción queda existencial, como anticipaba la
-[sección 13.3](../capitulo-13-prolog-y-la-logica/index.md#133-las-variables-y-los-cuantificadores). Un predicado sin cláusulas se completa como
+[sección 13.4](../capitulo-13-prolog-y-la-logica/index.md#134-las-variables-y-los-cuantificadores). Un predicado sin cláusulas se completa como
 $p \leftrightarrow \mathit{falso}$.
 
 Clark demostró que la negación como falla es correcta respecto de la

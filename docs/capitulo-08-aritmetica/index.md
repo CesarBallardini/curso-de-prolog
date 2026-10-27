@@ -302,7 +302,7 @@ La **hoja de error** tiene una forma distinta de la hoja «falla», porque un
 error no es una falla: la rama no se cierra, se **interrumpe**. Tras una falla
 Prolog retrocede a la alternativa pendiente más cercana; tras un error no
 retrocede a ninguna, aunque exista, y la consulta termina con el mensaje. La
-[sección 13.6](../capitulo-13-prolog-y-la-logica/index.md#136-lo-que-excede-la-logica)
+[sección 13.13](../capitulo-13-prolog-y-la-logica/evaluacion.md#1313-lo-que-excede-la-logica)
 llama a este desenlace el tercero, junto a `true.` y `false.`
 
 Lo relevante es lo que Prolog **no** hace: no despeja la incógnita. No deduce
