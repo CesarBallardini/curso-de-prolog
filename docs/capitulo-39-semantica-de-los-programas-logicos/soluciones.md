@@ -1,9 +1,9 @@
 # Soluciones del capítulo 39 — Semántica de los programas lógicos
 
 El código de esta página está en `ejemplos/capitulo-39/`: `soluciones.pl`
-para los ejercicios 1, 2, 3, 9, 10, 11, 12, 13 y 14, que carga los
-evaluadores de `semantica.pl`; `soluciones_sld.pl` para el 4, el 5, el 6, el
-7 y el 8, que carga `sld.pl`; y `soluciones_experto.pl` para el 15, que carga
+para los ejercicios 1, 2, 7, 9, 10, 11, 12, 13 y 14, que carga los
+evaluadores de `semantica.pl`; `soluciones_sld.pl` para el 3, el 4, el 5, el
+6 y el 8, que carga `sld.pl`; y `soluciones_experto.pl` para el 15, que carga
 `experto.pl`. Cada uno tiene sus pruebas. Como cargan otro archivo con
 `ensure_loaded/1`, ninguno corre en SWISH; los archivos que cargan, sí.
 
@@ -147,6 +147,117 @@ son falsos en el modelo mínimo.
 
 ## 3
 
+<!-- ejemplo: capitulo-39/soluciones_sld.pl predicado: refutacion_de/5 -->
+```prolog
+%!  refutacion_de(+Seleccion, +Clausulas:list, +Metas:list,
+%!                 +Limite:integer, -Resolventes:list) is nondet.
+%
+%   Resolventes son las consultas de una refutación de Metas con la regla
+%   Seleccion, de Limite pasos o menos: la primera es Metas y la última la
+%   consulta vacía. Cada una es una copia tomada en su paso, sin las
+%   ligaduras de los pasos siguientes. Una respuesta por refutación, en el
+%   orden del árbol SLD; la respuesta calculada queda en Metas.
+refutacion_de(Seleccion, Clausulas, Metas, Limite, [Copia|Resolventes]) :-
+    copy_term(Metas, Copia),
+    (   Metas == []
+    ->  Resolventes = []
+    ;   Limite > 0,
+        Limite1 is Limite - 1,
+        paso_de(Seleccion, Clausulas, Metas, Resolvente),
+        refutacion_de(Seleccion, Clausulas, Resolvente, Limite1, Resolventes)
+    ).
+```
+
+```prolog
+?- refutacion(izquierda, enlaces, [conexion(a, X)], 4, Rs).
+X = b,
+Rs = [[conexion(a, _)], [enlace(a, _)], []] ;
+X = c,
+Rs = [[conexion(a, _)], [conexion(a, _A), enlace(_A, _)], [enlace(a, _B), enlace(_B, _)], [enlace(b, _)], []] ;
+false.
+```
+
+Con la consulta `conexion(a, c)`, la primera cláusula da `enlace(a, c)`, que
+falla, y la refutación usa la segunda:
+
+| Paso | Se resuelve | Sustitución | Resolvente |
+|---|---|---|---|
+| 1 | `conexion(a, c)` con la regla recursiva | θ₁ = { X/a, Y/c } | `conexion(a, Z), enlace(Z, c)` |
+| 2 | `conexion(a, Z)` con la primera regla | θ₂ = { X₂/a, Y₂/Z } | `enlace(a, Z), enlace(Z, c)` |
+| 3 | `enlace(a, Z)` con `enlace(a, b)` | θ₃ = { Z/b } | `enlace(b, c)` |
+| 4 | `enlace(b, c)` con `enlace(b, c)` | θ₄ = { } | la consulta vacía |
+
+`refutacion_de/5` guarda una copia de cada resolvente en su paso, antes de que
+los pasos siguientes liguen sus variables; por eso la variable intermedia
+aparece libre hasta el paso 3.
+
+## 4
+
+```prolog
+?- arbol_sld(izquierda, familia, [abuelo(A, luis)], 5, T).
+T = arbol([[abuelo(juan, luis)]], 6, 2, 0).
+
+?- arbol_sld(derecha, familia, [abuelo(A, luis)], 5, T).
+T = arbol([[abuelo(juan, luis)]], 4, 0, 0).
+```
+
+Con la regla de la izquierda, `padre(A, P)` con los dos argumentos libres
+tiene tres soluciones, y cada una deja un objetivo `padre(P, luis)`: con P
+ana y con P luis, fallan; con P pedro, tiene éxito. Son seis nodos y dos
+fallos. Con la de la
+derecha se elige primero `padre(P, luis)`, que liga P a pedro, y después
+`padre(A, pedro)`: cuatro nodos, ninguno de fallo. Para esta consulta
+conviene la regla de la derecha. La misma forma del árbol se obtiene en
+Prolog escribiendo los objetivos al revés,
+`abuelo(A, N) :- padre(P, N), padre(A, P).`: con N ligado, el objetivo que
+lo usa va primero, como recomendó la
+[sección 5.5](../capitulo-05-como-responde-prolog/index.md#55-el-orden-de-los-objetivos-determina-el-trabajo).
+
+## 5
+
+Es `refutacion_de/5` de la solución 4: recorre el árbol como `nodo/6`, pero
+devuelve solo las ramas que llegan a la consulta vacía, con la lista de sus
+resolventes. Da una respuesta por refutación, en el orden en que Prolog las
+encuentra, y falla en las ramas que llegan al límite.
+
+## 6
+
+<!-- ejemplo: capitulo-39/soluciones_sld.pl predicado: mostrar_complecion/1 escribir_formula/1 -->
+```prolog
+%!  mostrar_complecion(+Programa:atom) is det.
+%
+%   Escribe la definición completada de cada predicado de Programa, uno por
+%   línea, con las variables nombradas A, B, C…
+mostrar_complecion(Programa) :-
+    clausulas(Programa, Clausulas),
+    programa(Programa, Indicadores),
+    forall(member(Indicador, Indicadores),
+           ( complecion_de(Clausulas, Indicador, Formula),
+             escribir_formula(Formula) )).
+
+%!  escribir_formula(+Formula) is det.
+%
+%   Escribe Formula y un salto de línea, con sus variables nombradas A, B,
+%   C…, sin ligarlas.
+escribir_formula(Formula) :-
+    \+ \+ ( numbervars(Formula, 0, _),
+            print(Formula),
+            nl ).
+```
+
+```prolog
+?- mostrar_complecion(familia).
+sii(padre(A,B),(A=juan,B=ana;A=juan,B=pedro;A=pedro,B=luis))
+sii(abuelo(A,B),existe([C],(padre(A,C),padre(C,B))))
+true.
+```
+
+`numbervars/3` liga las variables a términos que `print/1` escribe como A,
+B, C; la doble negación deshace esas ligaduras al terminar, y la fórmula
+queda como estaba.
+
+## 7
+
 La interpretación es un modelo: en ella q es verdadero, así que el cuerpo de
 `p :- \+ q` es falso; lo mismo pasa con q y con r, y s está. Pero no es
 mínimo. Con los cinco átomos del programa:
@@ -196,88 +307,13 @@ Desde la interpretación vacía, todas las negaciones se cumplen y $T_P$ da
 p, q, r y s; con esos átomos, casi ninguna se cumple, y $T_P$ da solo s. Con
 negación, $T_P$ no es **monótono**: agregar átomos a I puede quitar átomos de
 $T_P(I)$. El teorema del punto fijo de la
-[sección 39.6](index.md#396-evaluacion-de-abajo-hacia-arriba) necesita la
+[sección 39.6](negacion.md#396-evaluacion-de-abajo-hacia-arriba) necesita la
 monotonía; `ingenua_de/4` une cada paso con el anterior, y así llega a
 `[p, q, r, s]`, un modelo que no es el significado de nada. Por eso
 `modelo_estandar/2` evalúa por estratos: dentro de un estrato, los
 predicados negados ya no cambian, y $T_P$ vuelve a ser monótono.
 
-## 4
-
-<!-- ejemplo: capitulo-39/soluciones_sld.pl predicado: refutacion_de/5 -->
-```prolog
-%!  refutacion_de(+Seleccion, +Clausulas:list, +Metas:list,
-%!                 +Limite:integer, -Resolventes:list) is nondet.
-%
-%   Resolventes son las consultas de una refutación de Metas con la regla
-%   Seleccion, de Limite pasos o menos: la primera es Metas y la última la
-%   consulta vacía. Cada una es una copia tomada en su paso, sin las
-%   ligaduras de los pasos siguientes. Una respuesta por refutación, en el
-%   orden del árbol SLD; la respuesta calculada queda en Metas.
-refutacion_de(Seleccion, Clausulas, Metas, Limite, [Copia|Resolventes]) :-
-    copy_term(Metas, Copia),
-    (   Metas == []
-    ->  Resolventes = []
-    ;   Limite > 0,
-        Limite1 is Limite - 1,
-        paso_de(Seleccion, Clausulas, Metas, Resolvente),
-        refutacion_de(Seleccion, Clausulas, Resolvente, Limite1, Resolventes)
-    ).
-```
-
-```prolog
-?- refutacion(izquierda, enlaces, [conexion(a, X)], 4, Rs).
-X = b,
-Rs = [[conexion(a, _)], [enlace(a, _)], []] ;
-X = c,
-Rs = [[conexion(a, _)], [conexion(a, _A), enlace(_A, _)], [enlace(a, _B), enlace(_B, _)], [enlace(b, _)], []] ;
-false.
-```
-
-Con la consulta `conexion(a, c)`, la primera cláusula da `enlace(a, c)`, que
-falla, y la refutación usa la segunda:
-
-| Paso | Se resuelve | Sustitución | Resolvente |
-|---|---|---|---|
-| 1 | `conexion(a, c)` con la regla recursiva | θ₁ = { X/a, Y/c } | `conexion(a, Z), enlace(Z, c)` |
-| 2 | `conexion(a, Z)` con la primera regla | θ₂ = { X₂/a, Y₂/Z } | `enlace(a, Z), enlace(Z, c)` |
-| 3 | `enlace(a, Z)` con `enlace(a, b)` | θ₃ = { Z/b } | `enlace(b, c)` |
-| 4 | `enlace(b, c)` con `enlace(b, c)` | θ₄ = { } | la consulta vacía |
-
-`refutacion_de/5` guarda una copia de cada resolvente en su paso, antes de que
-los pasos siguientes liguen sus variables; por eso la variable intermedia
-aparece libre hasta el paso 3.
-
-## 5
-
-```prolog
-?- arbol_sld(izquierda, familia, [abuelo(A, luis)], 5, T).
-T = arbol([[abuelo(juan, luis)]], 6, 2, 0).
-
-?- arbol_sld(derecha, familia, [abuelo(A, luis)], 5, T).
-T = arbol([[abuelo(juan, luis)]], 4, 0, 0).
-```
-
-Con la regla de la izquierda, `padre(A, P)` con los dos argumentos libres
-tiene tres soluciones, y cada una deja un objetivo `padre(P, luis)`: con P
-ana y con P luis, fallan; con P pedro, tiene éxito. Son seis nodos y dos
-fallos. Con la de la
-derecha se elige primero `padre(P, luis)`, que liga P a pedro, y después
-`padre(A, pedro)`: cuatro nodos, ninguno de fallo. Para esta consulta
-conviene la regla de la derecha. La misma forma del árbol se obtiene en
-Prolog escribiendo los objetivos al revés,
-`abuelo(A, N) :- padre(P, N), padre(A, P).`: con N ligado, el objetivo que
-lo usa va primero, como recomendó la
-[sección 5.5](../capitulo-05-como-responde-prolog/index.md#55-el-orden-de-los-objetivos-determina-el-trabajo).
-
-## 6
-
-Es `refutacion_de/5` de la solución 4: recorre el árbol como `nodo/6`, pero
-devuelve solo las ramas que llegan a la consulta vacía, con la lista de sus
-resolventes. Da una respuesta por refutación, en el orden en que Prolog las
-encuentra, y falla en las ramas que llegan al límite.
-
-## 7
+## 8
 
 Con los movimientos del juego j2, la compleción es:
 
@@ -321,42 +357,6 @@ el movimiento de b a c no sirve: las dos interpretaciones, con a ganadora o
 con b ganadora, satisfacen la compleción, y ninguno de los dos átomos ni su
 negación es consecuencia. La de `r/0`, $r \leftrightarrow \lnot r$, es falsa
 tanto si r es verdadero como si es falso: no tiene modelos.
-
-## 8
-
-<!-- ejemplo: capitulo-39/soluciones_sld.pl predicado: mostrar_complecion/1 escribir_formula/1 -->
-```prolog
-%!  mostrar_complecion(+Programa:atom) is det.
-%
-%   Escribe la definición completada de cada predicado de Programa, uno por
-%   línea, con las variables nombradas A, B, C…
-mostrar_complecion(Programa) :-
-    clausulas(Programa, Clausulas),
-    programa(Programa, Indicadores),
-    forall(member(Indicador, Indicadores),
-           ( complecion_de(Clausulas, Indicador, Formula),
-             escribir_formula(Formula) )).
-
-%!  escribir_formula(+Formula) is det.
-%
-%   Escribe Formula y un salto de línea, con sus variables nombradas A, B,
-%   C…, sin ligarlas.
-escribir_formula(Formula) :-
-    \+ \+ ( numbervars(Formula, 0, _),
-            print(Formula),
-            nl ).
-```
-
-```prolog
-?- mostrar_complecion(familia).
-sii(padre(A,B),(A=juan,B=ana;A=juan,B=pedro;A=pedro,B=luis))
-sii(abuelo(A,B),existe([C],(padre(A,C),padre(C,B))))
-true.
-```
-
-`numbervars/3` liga las variables a términos que `print/1` escribe como A,
-B, C; la doble negación deshace esas ligaduras al terminar, y la fórmula
-queda como estaba.
 
 ## 9
 
@@ -614,7 +614,7 @@ generado(herbivoros(Version), Clausulas) :-
 
 La observación `tiene_pelo` se agrega con el programa
 `con_hechos(Programa, Hechos)` de `experto.pl`, como en
-`diagnostico/3` de la [sección 39.7](index.md#397-las-reglas-del-sistema-experto):
+`diagnostico/3` de la [sección 39.7](negacion.md#397-las-reglas-del-sistema-experto):
 
 ```prolog
 ?- estratos(herbivoros(ciclo), E).

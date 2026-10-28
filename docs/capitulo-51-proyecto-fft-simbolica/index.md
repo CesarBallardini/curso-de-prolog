@@ -545,7 +545,7 @@ Salidas = [4].
 
 En el primer grafo, los nodos 5 y 7 usan los dos el nodo 4. En el segundo,
 el producto usa dos veces el mismo nodo: $(a+b)^2$ se calcula con una suma
-y un producto. Es lo mismo que hace `compartir/2` en el ejercicio 12 del
+y un producto. Es lo mismo que hace `compartir/2` en el ejercicio 11 del
 [capítulo 46](../capitulo-46-proyecto-compilador/index.md), con una diferencia de alcance: aquel comparte solo
 las subexpresiones que aparecen más de una vez y las nombra con variables
 nuevas del programa; `grafo/3` da un nodo a cada subexpresión, y las

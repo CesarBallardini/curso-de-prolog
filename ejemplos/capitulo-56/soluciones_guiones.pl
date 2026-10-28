@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 56 - Soluciones de los ejercicios 10 y 11: un guion para una
+% Capítulo 56 - Soluciones de los ejercicios 11 y 12: un guion para una
 % consulta médica, y una gramática que lee la historia en castellano.
 %
 % El guion nuevo se agrega con cláusulas de los predicados que guiones.pl
@@ -15,7 +15,7 @@
 :- ensure_loaded(guiones).
 :- use_module('../capitulo-45/lenguaje', [palabras/2]).
 
-% Ejercicio 10.
+% Ejercicio 11.
 
 guion(consulta,
       [ ir(Paciente, Antes, Clinica),
@@ -46,7 +46,7 @@ oracion(atender(M, Q)) -->
 oracion(recetar(M, R, Q)) -->
     sujeto(M), " le recetó ", un(R), " ", al(Q), ".".
 
-% Ejercicio 11.
+% Ejercicio 12.
 
 %!  relato(-Sucesos:list)// is semidet.
 %

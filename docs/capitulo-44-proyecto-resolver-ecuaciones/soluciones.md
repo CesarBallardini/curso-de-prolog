@@ -213,101 +213,6 @@ sumar exponentes que contienen la incógnita, que es trabajo de la atracción.
 
 ## 5
 
-<!-- ejemplo: capitulo-44/soluciones_reglas.pl fragmento: Ejercicio 5: .. atraccion((A ^ U / A ^ V -->
-```prolog
-% Ejercicio 5: cocientes de exponenciales de la misma base.
-atraccion((exp(U) / exp(V) ~> exp(U - V) si con(U), con(V))).
-atraccion((A ^ U / A ^ V ~> A ^ (U - V) si libre(A), con(U), con(V))).
-```
-
-```prolog
-?- ecuaciones:resolver(exp(2 * x) / exp(x) = 5, x, S).
-S = (x=log(5)) ;
-false.
-
-?- ecuaciones:valores(exp(2 * x) / exp(x) = 5, x, Vs).
-Vs = [1.6094379124341003].
-
-?- ecuaciones:resolver(3 ^ (x + 2) / 3 ^ x = 9, x, S).
-false.
-
-?- ecuaciones:valores(3 ^ (x + 2) / 3 ^ x = 9, x, Vs).
-Vs = [].
-```
-
-La primera se atrae en `exp(2 * x - x) = 5`; la forma normal del exponente
-es `x`, con una sola aparición, y el aislamiento da `log(5)`. La segunda se
-atrae en `3 ^ (x + 2 - x) = 9`, y la forma normal de `x + 2 - x` es 2: la
-ecuación queda `3 ^ 2 = 9`, sin la incógnita, y verdadera. Toda `x` es
-solución, pero el programa no tiene forma de decir «todo número»: ningún
-método se aplica a una ecuación sin incógnita, y `resolver/3` falla.
-`valores/3` da la lista vacía, que tampoco dice lo correcto. Una extensión
-razonable es reconocer ese caso antes de despachar: si la ecuación no
-contiene la incógnita, evaluar sus dos lados y responder `identidad` o
-fallar.
-
-## 6
-
-<!-- ejemplo: capitulo-44/soluciones_metodos.pl predicado: resolver_factores/3 factores/3 -->
-```prolog
-%!  resolver_factores(+Ecuacion, +X:atom, -Solucion) is nondet.
-%
-%   Si la Ecuacion es A * B = 0, Solucion es una solución de F = 0 para
-%   uno de los factores F que contienen X; si no, una solución de
-%   resolver/3.
-resolver_factores(Ecuacion, X, Solucion) :-
-    (   Ecuacion = (A * B = 0)
-    ->  factores(A * B, X, Fs0),
-        list_to_set(Fs0, Fs),
-        member(F, Fs),
-        resolver_factores(F = 0, X, Solucion)
-    ;   resolver(Ecuacion, X, Solucion)
-    ).
-
-%!  factores(+E, +X:atom, -Fs:list) is det.
-%
-%   Fs son los factores del producto E que contienen X, en orden.
-factores(E, X, Fs) :-
-    (   E = A * B
-    ->  factores(A, X, FA),
-        factores(B, X, FB),
-        append(FA, FB, Fs)
-    ;   con(X, E)
-    ->  Fs = [E]
-    ;   Fs = []
-    ).
-```
-
-```prolog
-?- resolver_factores(cos(x) * (1 - 2 * sin(x)) = 0, x, S).
-S = (x=acos(0)) ;
-S = (x= -acos(0)) ;
-S = (x=asin(1/2)) ;
-S = (x=pi-asin(1/2)) ;
-false.
-
-?- resolver_factores(x * (x ^ 2 - 4) = 0, x, S).
-S = (x=0) ;
-S = (x=sqrt(4)) ;
-S = (x= -sqrt(4)) ;
-false.
-
-?- ecuaciones:resolver(x * (x ^ 2 - 4) = 0, x, S).
-S = (x= -2.0) ;
-S = (x=2.0).
-```
-
-La factorización se prueba antes que todo lo demás, porque la condición es
-barata: unificar con `A * B = 0`. Cada factor se resuelve con el mismo
-predicado, para que un factor que es a su vez un producto también se
-factorice. Sin la factorización, la primera ecuación no se resuelve: tiene
-dos apariciones, no es un polinomio y `derivar/3` no deriva el coseno. La
-segunda es un polinomio de grado 3, y la versión final la resuelve con
-Newton, que pierde la raíz 0: desde los cuatro valores iniciales, Newton
-llega solo a -2 y a 2. La factorización da las tres, exactas.
-
-## 7
-
 <!-- ejemplo: capitulo-44/soluciones_metodos.pl predicado: resolver_homogeneo/3 homogeneizar/5 homogeneo/5 lineal/3 -->
 ```prolog
 %!  resolver_homogeneo(+Ecuacion, +X:atom, -Solucion) is nondet.
@@ -382,7 +287,7 @@ aparecía fuera de un exponente, el método no se aplica. El átomo `u` no
 debe aparecer en la ecuación original; una versión más general lo elegiría
 entre los que no aparecen.
 
-## 8
+## 6
 
 <!-- ejemplo: capitulo-44/soluciones_metodos.pl predicado: resolver_bicuadrada/3 grado_par/1 mitad/2 -->
 ```prolog
@@ -432,6 +337,101 @@ soluciones son las mismas que Newton halla en la
 expresiones. Newton las encuentra porque los valores iniciales -1 y 1 son
 raíces y -10 y 10 convergen a -2 y 2; con otros valores iniciales podría
 perder alguna, y la sustitución no depende de eso.
+
+## 7
+
+<!-- ejemplo: capitulo-44/soluciones_reglas.pl fragmento: Ejercicio 7: .. atraccion((A ^ U / A ^ V -->
+```prolog
+% Ejercicio 7: cocientes de exponenciales de la misma base.
+atraccion((exp(U) / exp(V) ~> exp(U - V) si con(U), con(V))).
+atraccion((A ^ U / A ^ V ~> A ^ (U - V) si libre(A), con(U), con(V))).
+```
+
+```prolog
+?- ecuaciones:resolver(exp(2 * x) / exp(x) = 5, x, S).
+S = (x=log(5)) ;
+false.
+
+?- ecuaciones:valores(exp(2 * x) / exp(x) = 5, x, Vs).
+Vs = [1.6094379124341003].
+
+?- ecuaciones:resolver(3 ^ (x + 2) / 3 ^ x = 9, x, S).
+false.
+
+?- ecuaciones:valores(3 ^ (x + 2) / 3 ^ x = 9, x, Vs).
+Vs = [].
+```
+
+La primera se atrae en `exp(2 * x - x) = 5`; la forma normal del exponente
+es `x`, con una sola aparición, y el aislamiento da `log(5)`. La segunda se
+atrae en `3 ^ (x + 2 - x) = 9`, y la forma normal de `x + 2 - x` es 2: la
+ecuación queda `3 ^ 2 = 9`, sin la incógnita, y verdadera. Toda `x` es
+solución, pero el programa no tiene forma de decir «todo número»: ningún
+método se aplica a una ecuación sin incógnita, y `resolver/3` falla.
+`valores/3` da la lista vacía, que tampoco dice lo correcto. Una extensión
+razonable es reconocer ese caso antes de despachar: si la ecuación no
+contiene la incógnita, evaluar sus dos lados y responder `identidad` o
+fallar.
+
+## 8
+
+<!-- ejemplo: capitulo-44/soluciones_metodos.pl predicado: resolver_factores/3 factores/3 -->
+```prolog
+%!  resolver_factores(+Ecuacion, +X:atom, -Solucion) is nondet.
+%
+%   Si la Ecuacion es A * B = 0, Solucion es una solución de F = 0 para
+%   uno de los factores F que contienen X; si no, una solución de
+%   resolver/3.
+resolver_factores(Ecuacion, X, Solucion) :-
+    (   Ecuacion = (A * B = 0)
+    ->  factores(A * B, X, Fs0),
+        list_to_set(Fs0, Fs),
+        member(F, Fs),
+        resolver_factores(F = 0, X, Solucion)
+    ;   resolver(Ecuacion, X, Solucion)
+    ).
+
+%!  factores(+E, +X:atom, -Fs:list) is det.
+%
+%   Fs son los factores del producto E que contienen X, en orden.
+factores(E, X, Fs) :-
+    (   E = A * B
+    ->  factores(A, X, FA),
+        factores(B, X, FB),
+        append(FA, FB, Fs)
+    ;   con(X, E)
+    ->  Fs = [E]
+    ;   Fs = []
+    ).
+```
+
+```prolog
+?- resolver_factores(cos(x) * (1 - 2 * sin(x)) = 0, x, S).
+S = (x=acos(0)) ;
+S = (x= -acos(0)) ;
+S = (x=asin(1/2)) ;
+S = (x=pi-asin(1/2)) ;
+false.
+
+?- resolver_factores(x * (x ^ 2 - 4) = 0, x, S).
+S = (x=0) ;
+S = (x=sqrt(4)) ;
+S = (x= -sqrt(4)) ;
+false.
+
+?- ecuaciones:resolver(x * (x ^ 2 - 4) = 0, x, S).
+S = (x= -2.0) ;
+S = (x=2.0).
+```
+
+La factorización se prueba antes que todo lo demás, porque la condición es
+barata: unificar con `A * B = 0`. Cada factor se resuelve con el mismo
+predicado, para que un factor que es a su vez un producto también se
+factorice. Sin la factorización, la primera ecuación no se resuelve: tiene
+dos apariciones, no es un polinomio y `derivar/3` no deriva el coseno. La
+segunda es un polinomio de grado 3, y la versión final la resuelve con
+Newton, que pierde la raíz 0: desde los cuatro valores iniciales, Newton
+llega solo a -2 y a 2. La factorización da las tres, exactas.
 
 ## 9
 
@@ -582,7 +582,7 @@ S = (x= -1.7692923542386314).
 raíces reales; desde 1 la tangente lleva a 0, donde la derivada se anula y
 la tangente es horizontal. `x ^ 2 - 2` tiene raíces, pero en 0 la derivada
 es nula y Newton no puede dar un paso. Son las tres formas de fallar de la
-[sección 44.6](newton.md#el-metodo-de-newton-y-la-comprobacion): la derivada nula, la
+[sección 44.6](newton.md#446-version-5-el-metodo-de-newton-y-la-comprobacion): la derivada nula, la
 iteración que no converge y la raíz que no se alcanza desde el valor
 inicial. `resolver/3` encuentra la raíz de la cúbica porque prueba cuatro
 valores iniciales y -10 y -1 convergen; los otros dos fallan después de 100

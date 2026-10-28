@@ -107,7 +107,7 @@ Al terminar el capítulo, el lector puede:
 !!! info "Tiempo estimado"
     Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **2:35 h**.
     Resolver los 5 ejercicios marcados con ★: **1:05 h**.
-    Resolver los 14 ejercicios del final: **3:55 h**.
+    Resolver los 14 ejercicios del capítulo: **3:55 h**.
 
 ## 69.1 Versión 1: el espacio de conceptos
 
@@ -523,7 +523,7 @@ decidir qué preguntar. Un aprendiz que elige la próxima instancia y pide
 su clase conviene que elija la que divide el espacio en dos partes
 parecidas, porque cualquier respuesta descarta la mitad. Es la idea de la
 ganancia de información con la que el árbol de decisión de la
-[sección 67.5](../capitulo-67-proyecto-evidencia-arboles-decision/index.md#675-version-4-el-arbol-de-preguntas) elige sus preguntas, en su forma más simple: se
+[sección 67.5](../capitulo-67-proyecto-evidencia-arboles-decision/arbol.md#675-version-4-el-arbol-de-preguntas) elige sus preguntas, en su forma más simple: se
 maximiza el menor de los dos lados:
 
 <!-- ejemplo: capitulo-69/preguntas.pl predicado: mejor_pregunta/2 -->
@@ -595,52 +595,15 @@ E = colapso.
 
 Es el límite que comparten las cuatro versiones: el espacio no tolera
 ruido y solo contiene conjunciones de valores, y los dos defectos se
-manifiestan de la misma manera. La [sección 69.5](#695-version-5-explicar-un-ejemplo) cambia de enfoque:
-en lugar de muchos ejemplos sin conocimiento, un ejemplo con una teoría.
+manifiestan de la misma manera.
 
-## 69.5 Versión 5: explicar un ejemplo
-
-La quinta versión cambia de enfoque: un solo ejemplo, con una teoría del
-dominio que dice qué hace falta para que un objeto sirva de taza. Un
-metaintérprete con el árbol de prueba del [capítulo 34](../capitulo-34-introspeccion-y-metainterpretes/index.md) explica por
-qué el ejemplo es una taza, y la explicación selecciona los hechos que
-importan. Está en la página
-[Explicar un ejemplo y generalizar la explicación](explicacion.md#version-5-explicar-un-ejemplo).
-
-## 69.6 Versión 6: generalizar la explicación
-
-La sexta versión prueba a la vez el ejemplo y una copia general, con las
-mismas reglas, y extrae una regla que reconoce sin buscar a todos los
-objetos que se explican de la misma manera. Con la teoría de la familia,
-la regla aprendida de `abuelo(juan, luis)` es un caso de la del
-[capítulo 3](../capitulo-03-reglas-y-conjunciones/index.md), y se compara con la que induce el [capítulo 68](../capitulo-68-proyecto-aprender-reglas-ejemplos/index.md). Está
-en la página
-[Explicar un ejemplo y generalizar la explicación](explicacion.md#version-6-generalizar-la-explicacion).
-
-## 69.7 Versión 7: otras generalizaciones e incorporar las reglas
-
-Luger y Stubblefield enumeran cuatro operaciones de generalización, y las
-versiones anteriores usan una: reemplazar una constante por una
-variable. La séptima versión escribe las otras tres sobre las mismas
-piezas. Quitar condiciones de una conjunción resulta ser la misma
-operación vista de otra manera; subir en una jerarquía de clases agrega
-conceptos intermedios, como `redondeada`, y permite aprender un concepto
-con el que el espacio de la [sección 69.3](#693-version-3-eliminacion-de-candidatos)
-colapsa; agregar un disyunto hace que todo conjunto de ejemplos tenga un
-concepto consistente, a costa de no generalizar. La versión agrega
-además a la base cada regla que aprende la generalización por
-explicación, como proponen los autores en un ejercicio, y cuenta cuántos
-objetos se reconocen con las reglas guardadas y cuántos necesitan la
-teoría. Está en la página
-[Otras generalizaciones e incorporar las reglas](otras-generalizaciones.md#otras-generalizaciones-e-incorporar-las-reglas).
-
-!!! success "Criterios de calidad"
-    | Criterio | En este capítulo |
-    |---|---|
-    | C1 | cada predicado declara modos y determinación; los que calculan bordes y reglas son `det` o `semidet`, y `explicar/4` y `ebg/5` son `nondet`, una respuesta por prueba |
-    | C2 | los conceptos, los ejemplos, las teorías y las descripciones son datos; la teoría y la descripción de cada ejemplo están separadas, y las reglas de la familia se leen del [capítulo 3](../capitulo-03-reglas-y-conjunciones/index.md), sin copiarlas |
-    | C4 | `cubre/2` y `generaliza/2` no ligan los conceptos: comparan con `subsumes_term/2`; `con_extra/2` quita los atributos agregados aunque la medición falle |
-    | C7 | 143 pruebas en los diez archivos del programa y 46 en las soluciones; los bordes de las versiones 2 y 3 se comparan con los de la enumeración en cada prefijo, el aprendiz activo con los 144 conceptos, y las reglas aprendidas con la teoría en la población |
+El capítulo continúa en la página
+[Explicar un ejemplo y generalizar la explicación](explicacion.md#695-version-5-explicar-un-ejemplo),
+que cambia de enfoque: en lugar de muchos ejemplos sin conocimiento, un
+ejemplo con una teoría. La página siguiente,
+[Otras generalizaciones e incorporar las reglas](otras-generalizaciones.md#697-version-7-otras-generalizaciones-e-incorporar-las-reglas),
+termina el capítulo con la versión 7. Antes, los [ejercicios](#ejercicios)
+de esta página practican las versiones 1 a 4.
 
 ## Ejercicios
 
@@ -678,42 +641,7 @@ tiene de propio.
    las esferas rojas con el negativo mal clasificado de la
    [sección 69.4](#694-version-4-preguntar-antes-de-converger) insertado en tercer lugar, y explicar por qué el
    resultado depende de dónde está el error.
-7. ★ **(1)** Predecir la regla que se aprende de `taza1` con `tiene_asa/1`
-   y `estable/1` agregados a los operacionales de la teoría, y cuántas
-   condiciones tiene. Comprobarlo con `mostrar_aprendida_con/4`.
-8. ★ **(2)** Aprender reglas de `abuelo/2` con la teoría `familia` a
-   partir de cada positivo de `ejemplos/3` del [capítulo 68](../capitulo-68-proyecto-aprender-reglas-ejemplos/index.md), quitar
-   las que otra subsume con `subsume/2` del mismo capítulo, y contar
-   cuántos positivos y cuántos negativos cubren las restantes. Comparar
-   con la hipótesis de `aprender_asc/3`.
-9. **(2)** Agregar `is/2` a los predefinidos del intérprete, en una copia
-   de `explicacion.pl` y `ebg.pl`, y una teoría `pesado` con la regla
-   `pesado(X) :- peso(X, P), volumen(X, V), D is P / V, D > 1`. Aprender
-   una regla del ejemplo `bloque1`, descrito por su peso y su volumen, y
-   explicar qué parte del cálculo queda en ella.
-10. **(3)** Aprender una regla de cada una de las cuatro tazas de la
-    población, quitar las repetidas con `subsume/2`, y medir las
-    inferencias de `reconocidas/3` con 1, 2, 4 y 8 reglas, repitiendo las
-    mismas si hace falta. Explicar qué muestra la medición sobre el
-    costo de acumular reglas aprendidas.
-11. **(2)** Escribir `relevantes(T, E, Meta, Hs)`, los hechos de la
-    descripción de E que usa la primera explicación de Meta, e
-    `irrelevantes/4`, los que no usa, con los encabezados de PlDoc de los
-    dos predicados; elegir sus
-    modos y su determinación es parte del ejercicio. Aplicarlo a `taza1`
-    y a `abuelo(juan, luis)`.
-12. **(2)** Escribir `disyunciones(Nombre, Ds)`, las disyunciones
-    distintas que da `disyuncion_de/2` de la
-    [sección 69.7](otras-generalizaciones.md#agregar-un-disyunto) con cada
-    orden de los positivos de la secuencia Nombre, seguidos de los
-    negativos. Aplicarlo a `esferas_y_cubos_verdes` y a `rojo_o_esfera`,
-    y explicar de qué depende que el orden cambie el resultado.
-13. **(2)** Medir con `inferencias/2` el costo de `recorrer(taza, _)`,
-    el de `clasificar_con_teoria(taza, _)` y el de una segunda pasada de
-    `reconocer/3` por la población, con las reglas que dejó la primera.
-    Explicar por qué guardar las reglas no abarata el reconocimiento en
-    esta población, y en qué población lo abarataría.
-14. **(2)** Escribir `aprender_interactivo(EV)`, el lazo con el que Luger
+7. **(2)** Escribir `aprender_interactivo(EV)`, el lazo con el que Luger
     y Stubblefield ejecutan la eliminación de candidatos: lee ejemplos de
     la entrada actual con `read_term/2`, uno por término, actualiza el
     espacio de la versión 3 con `actualizar/3` y escribe, después de cada
@@ -725,40 +653,6 @@ tiene de propio.
     cadena abierta con `open_string/2`, como en la
     [sección 16.7](../capitulo-16-control/index.md#167-bucles-por-falla).
 
-## Resumen
-
-| | |
-|---|---|
-| **instancia, concepto** | una pieza sin variables; un término con valores y variables, o `vacio` |
-| **orden de generalidad** | G es al menos tan general como E si cubre todo lo que E cubre: la θ-subsunción |
-| **espacio de versiones** | los conceptos consistentes con los ejemplos vistos |
-| **bordes S y G** | los conceptos mínimos y máximos del espacio de versiones |
-| **generalización mínima** | la lgg de un concepto y una instancia |
-| **especialización mínima** | fijar un atributo libre en un valor distinto del del negativo |
-| **eliminación de candidatos** | mantener S y G juntos, cada uno podado por el otro |
-| **convergencia, colapso** | S y G iguales y únicos; un borde vacío |
-| **aprendiz activo** | elige la instancia que divide el espacio en partes parecidas y pide su clase |
-| **teoría del dominio** | reglas que definen el concepto a partir de predicados operacionales |
-| **criterio de operacionalidad** | los predicados en los que se detiene la generalización de la prueba |
-| **generalización basada en la explicación** | la prueba del ejemplo y la de su copia general, con las mismas reglas |
-| `varnumbers/2` | el inverso de `numbervars/3`: cada `'$VAR'(N)` pasa a ser una variable nueva |
-| `atributo/2`, `concepto/1`, `cubre/2`, `generaliza/2`, `version/2`, `minimos/2`, `maximos/2` | la versión 1 |
-| `generalizacion/3`, `especializacion/3`, `especifico/2`, `general/2` | la versión 2 |
-| `actualizar/3`, `eliminar/2`, `entre_bordes/2` | la versión 3 |
-| **[Patrón 67](../patrones.md#67-bordes-en-lugar-del-conjunto)** | bordes en lugar del conjunto |
-| `clasificar/3`, `votos/4`, `mejor_pregunta/2`, `activo/3`, `pasivo/3` | la versión 4 |
-| `regla/2`, `operacionales/2`, `explicar/4`, `como/3` | la versión 5 |
-| `ebg/5`, `aprender/4`, `aprender_con/5`, `aplicar/4`, `reconocidas/3` | la versión 6 |
-| **sesgo del lenguaje** | lo que un aprendiz puede aprender queda fijado por los conceptos que puede representar |
-| `condiciones_de/2`, `comunes/3`, `clase/2`, `generalizacion_jerarquia/3`, `cubre_jerarquia/2`, `especifico_jerarquia/2`, `disyuncion/2`, `disyuncion_de/2` | la versión 7: otras generalizaciones |
-| `reconocer/3`, `recorrer/2`, `aprendidas/2`, `olvidar/1` | la versión 7: incorporar las reglas |
-
-## Temas que se retoman
-
-| Tema | Se retoma en |
-|---|---|
-| Aprender un concepto ajustando números en lugar de buscar en un espacio de términos | [capítulo 70](../capitulo-70-proyecto-perceptron/index.md) |
-
 ## Referencias
 
 - George F. Luger y William A. Stubblefield, *AI Algorithms, Data
@@ -767,56 +661,16 @@ tiene de propio.
   secciones «Machine Learning: Version Space Search» y «Explanation Based
   Learning in Prolog».
   [Edición en línea del autor](https://www.cs.unm.edu/~luger/ai-final2/CH7_Machine%20Learning%20Algorithms%20in%20Prolog.pdf).
-  El capítulo toma los conceptos como vectores de rasgos con variables,
-  el orden de generalidad por cobertura, la generalización que reemplaza
-  una constante por una variable y la especialización que fija un valor,
-  las otras tres operaciones de generalización (quitar condiciones,
-  subir en una jerarquía de clases, agregar un disyunto), las búsquedas
-  de lo específico a lo general y de lo general a lo
-  específico, la eliminación de candidatos con los dos bordes, la
-  generalización basada en la explicación como prueba simultánea del
-  ejemplo y de su copia general, el corte en los nodos operacionales y el
-  dominio de la taza, el ejercicio de agregar a la base las reglas
-  aprendidas, y el lazo que lee los ejemplos uno por uno con `read/1` y
-  escribe los bordes después de cada uno. Las referencias siguientes son las que Luger y
+  Esta página toma de allí los conceptos como vectores de rasgos con
+  variables, el orden de generalidad por cobertura, la generalización que
+  reemplaza una constante por una variable y la especialización que fija
+  un valor, las búsquedas de lo específico a lo general y de lo general a
+  lo específico, la eliminación de candidatos con los dos bordes, y el
+  lazo que lee los ejemplos uno por uno con `read/1` y escribe los bordes
+  después de cada uno. La referencia siguiente es la que Luger y
   Stubblefield citan para esas ideas.
 - Tom M. Mitchell, «Generalization as search», *Artificial Intelligence*
   18(2), 1982, págs. 203–226,
   [doi:10.1016/0004-3702(82)90040-6](https://doi.org/10.1016/0004-3702(82)90040-6).
   Define el espacio de versiones, lo representa por sus bordes S y G y
   presenta la eliminación de candidatos: las versiones 1 a 3.
-- Tom M. Mitchell, Richard M. Keller y Smadar T. Kedar-Cabelli,
-  «Explanation-based generalization: a unifying view», *Machine Learning*
-  1(1), 1986, págs. 47–80,
-  [doi:10.1007/BF00116250](https://doi.org/10.1007/BF00116250), de acceso
-  abierto. Formula la generalización basada en la explicación con la
-  regresión de la meta, y adapta a ella el dominio de la taza: la
-  versión 6.
-- Gerald DeJong y Raymond Mooney, «Explanation-based learning: an
-  alternative view», *Machine Learning* 1(2), 1986, págs. 145–176,
-  [doi:10.1007/BF00114116](https://doi.org/10.1007/BF00114116), de acceso
-  abierto. Da las cuatro entradas del aprendizaje por explicación que usa
-  la versión 5: el concepto, el ejemplo, la teoría del dominio y el
-  criterio de operacionalidad.
-- Smadar T. Kedar-Cabelli y L. Thorne McCarty, «Explanation-based
-  generalization as resolution theorem proving», en *Proceedings of the
-  Fourth International Workshop on Machine Learning*, Morgan Kaufmann,
-  1987. Sin edición en línea de acceso libre verificada. Construye la
-  prueba del ejemplo y la de su copia general a la vez, en un
-  metaintérprete: es la forma de la versión 6.
-- Patrick H. Winston, Thomas O. Binford, Boris Katz y Michael Lowry,
-  «Learning physical descriptions from functional definitions, examples,
-  and precedents», en *Proceedings of the National Conference on
-  Artificial Intelligence (AAAI-83)*, 1983, págs. 433–439.
-  [Edición en línea de AAAI](https://cdn.aaai.org/AAAI/1983/AAAI83-060.pdf).
-  Plantea el problema de la taza: reconocer un objeto por una descripción
-  funcional y un ejemplo.
-
-El código del capítulo es propio, escrito para el curso: de Luger y
-Stubblefield se toman las ideas y la estructura de los algoritmos, no el
-código. Son del curso las piezas y sus atributos, el concepto `vacio`, la
-comparación de los bordes con la enumeración, la medición con atributos
-extra, el aprendiz activo, la teoría separada de la descripción del
-ejemplo, el árbol de prueba del [capítulo 34](../capitulo-34-introspeccion-y-metainterpretes/index.md), la teoría de la familia leída
-del [capítulo 3](../capitulo-03-reglas-y-conjunciones/index.md), la medición del costo de las reglas aprendidas, y la jerarquía
-de clases, las secuencias y la disyunción voraz de la versión 7.

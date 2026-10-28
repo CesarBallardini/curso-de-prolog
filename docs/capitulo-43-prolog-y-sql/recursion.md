@@ -1,11 +1,13 @@
 # Consultas recursivas
 
-Esta página contiene la sección [43.5](index.md#435-consultas-recursivas-with-recursive-y-tablas) del
-[capítulo 43](index.md): las consultas recursivas con `WITH RECURSIVE` y con
-reglas tabuladas. Los ejemplos están en `recursion.pl`, en
+Esta página continúa el [capítulo 43](index.md) después de la
+[sección 43.4](index.md#434-donde-difieren-bolsas-conjuntos-y-null), con la
+sección [43.5](#435-consultas-recursivas-with-recursive-y-tablas): las
+consultas recursivas con `WITH RECURSIVE` y con reglas tabuladas. Los
+ejemplos están en `recursion.pl`, en
 `ejemplos/capitulo-43/`, con sus pruebas, y corren en SWISH.
 
-## Consultas recursivas
+## 43.5 Consultas recursivas: `WITH RECURSIVE` y tablas
 
 Los superiores de un empleado son su jefe, el jefe de su jefe, y así hasta
 la directora. `recursion.pl` guarda las tablas `empleados` y `vuelos`, y
@@ -65,7 +67,7 @@ las filas nuevas. La parte no recursiva la llena; después, en cada paso,
 reúne con `empleados` solo las filas de la tabla de trabajo, agrega al
 resultado las que no estaban (con `UNION`) y las pone como nueva tabla de
 trabajo, hasta que un paso no agrega nada. Es la **evaluación
-semi-ingenua** de la [sección 39.6](../capitulo-39-semantica-de-los-programas-logicos/index.md#396-evaluacion-de-abajo-hacia-arriba): cada paso usa solo lo derivado en el
+semi-ingenua** de la [sección 39.6](../capitulo-39-semantica-de-los-programas-logicos/negacion.md#396-evaluacion-de-abajo-hacia-arriba): cada paso usa solo lo derivado en el
 paso anterior, y el cálculo termina en el punto fijo (Nilsson y
 Małuszyński, capítulo «Query-answering in Deductive Databases»).
 `iteraciones/2` la reproduce para los destinos que se alcanzan desde un
@@ -208,7 +210,7 @@ Ordenadas = [aep-50, brc-160, cor-120, mdz-140, sla-200, ush-200].
 ```
 
 En SQL, la forma de terminar es acotar la recursión, por ejemplo con un
-contador de vuelos, y calcular el mínimo afuera; el [ejercicio 13](index.md#ejercicios)
+contador de vuelos, y calcular el mínimo afuera; el [ejercicio 12](#ejercicios)
 lo hace.
 
 !!! question "Actividad"
@@ -216,3 +218,45 @@ lo hace.
     `iteraciones(igr, Is)`: cuántos pasos da cada una y qué agrega cada
     paso. Comprobarlo, y escribir la consulta SQL con `UNION` que da el
     mismo conjunto de aeropuertos.
+
+El capítulo continúa en la página
+[Claves, restricciones y actualizaciones](restricciones.md#436-claves-restricciones-y-actualizaciones),
+con las claves y las referencias que SQL verifica solo y Prolog no.
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio, y los capítulos siguientes los dan por hechos. Cada
+ejercicio se plantea en SQL y en Prolog; la sentencia SQL se ejecuta sobre
+`schema.sql` en cualquier SQLite, y la consulta Prolog con `universidad.pl`
+o con `recursion.pl` cargado.
+
+9. ★ **(2)** Predecir las filas de
+    `SELECT nombre FROM empleados WHERE jefe <> 1;` y las respuestas de
+    `empleado(_, N, _, _, J), J \== 1`, con `recursion.pl`. Explicar la
+    diferencia y escribir `no_depende_de(Nombre, Jefe)` para que Prolog dé
+    lo mismo que SQL.
+10. **(2)** Predecir el resultado de cada consulta, en SQL y en Prolog:
+    `SELECT COUNT(*) FROM alumnos WHERE carrera = 'quimica';` ·
+    la misma con `GROUP BY carrera` · `SELECT SUM(salario), MAX(salario)
+    FROM empleados WHERE depto = 'legal';`, con `aggregate_all/3` y
+    `bagof/3`.
+11. **(2)** El nivel de cada empleado es la cantidad de jefes que tiene
+    por encima; la directora tiene nivel 0. Escribirlo en SQL con
+    `WITH RECURSIVE` y en Prolog con `nivel(Id, Nivel)`.
+12. ★ **(3)** Escribir en SQL una consulta con `WITH RECURSIVE` que dé el
+    menor precio para llegar desde ros a cada destino y que termine, con un
+    contador de vuelos acotado. Justificar la cota elegida, escribir la
+    misma idea en Prolog sin tabla, `tarifa_con_tope/3`, y comparar el
+    resultado con `tarifa/3`.
+
+## Referencias
+
+- Ulf Nilsson y Jan Małuszyński, *Logic, Programming and Prolog*, 2.ª
+  edición, John Wiley & Sons, 1995 — capítulo «Query-answering in
+  Deductive Databases».
+  [Edición en línea de los autores](https://www.ida.liu.se/~ulfni53/lpp/).
+  Esta página toma de allí la evaluación de abajo hacia arriba de las
+  consultas recursivas.

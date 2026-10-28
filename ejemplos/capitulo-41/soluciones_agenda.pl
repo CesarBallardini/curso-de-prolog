@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 41 - Solución del ejercicio 6: la agenda dinámica, borrada al
+% Capítulo 41 - Solución del ejercicio 1: la agenda dinámica, borrada al
 % empezar y al terminar.
 %
 % buscar_limpio/2 envuelve buscar_con_agenda/2 en setup_call_cleanup/3:

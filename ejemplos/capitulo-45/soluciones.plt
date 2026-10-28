@@ -26,7 +26,7 @@ en_el_sotano :-
 por_inicial(Opciones, Valor, In) :-
     menu_por_inicial(In, Opciones, Valor).
 
-% Ejercicio 4
+% Ejercicio 7
 
 test(sacar_del_baul, true(O == tomar(lente))) :-
     en_el_sotano,
@@ -40,7 +40,7 @@ test(sin_origen, true(O == tomar(lente))) :-
     en_el_sotano,
     entender_con_origen("tomar la lente", O).
 
-% Ejercicio 5
+% Ejercicio 8
 
 test(varias, true(S == "Tomas la llave de bronce. Estás en el vestíbulo. \c
                         Un vestíbulo con baldosas gastadas y olor a \c
@@ -59,7 +59,7 @@ test(se_detiene_en_la_bloqueada, true(S-A == "La puerta del taller está \c
     ejecutar_varias("taller y biblioteca", S),
     aqui(A).
 
-% Ejercicio 6
+% Ejercicio 9
 
 test(limite, true(Ultima == "Se terminó el tiempo.")) :-
     iniciar,
@@ -68,7 +68,7 @@ test(limite, true(Ultima == "Se terminó el tiempo.")) :-
     split_string(Salida, "\n", "", Lineas),
     once(append(_, [Ultima, ""], Lineas)).
 
-% Ejercicio 7
+% Ejercicio 10
 
 test(tomar_todo, true(S-Os == "Tomas la lente. Tomas la linterna."-
                               [lente, linterna])) :-
@@ -83,7 +83,7 @@ test(nada_para_tomar, true(S == "No hay nada para tomar.")) :-
     iniciar,
     ejecutar_con_todo("tomar todo", S).
 
-% Ejercicio 9
+% Ejercicio 2
 
 test(con_formato, true(H == H0)) :-
     iniciar,

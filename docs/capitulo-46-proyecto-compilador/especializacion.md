@@ -1,13 +1,15 @@
 # El intérprete especializado
 
-Esta página contiene la sección [46.7](index.md#467-el-interprete-especializado) del
-[capítulo 46](index.md): el intérprete de Mini evaluado parcialmente con
+Esta página continúa la página [Optimización](optimizacion.md#466-optimizacion)
+del [capítulo 46](index.md), con la sección [46.7](#467-el-interprete-especializado):
+el intérprete de Mini, que se escribió con una cláusula por caso para poder
+evaluarlo parcialmente, evaluado parcialmente con
 `parcial/3` del [capítulo 36](../capitulo-36-transformacion-de-programas-y-compilacion/index.md), que resulta un compilador de Mini a Prolog,
 y la comparación de las cuatro formas de ejecutar un programa. El código
 está en `especializar.pl`, en `ejemplos/capitulo-46/`, con sus pruebas en
 `especializar.plt`.
 
-## El intérprete especializado
+## 46.7 El intérprete especializado
 
 La [sección 36.4](../capitulo-36-transformacion-de-programas-y-compilacion/index.md#364-evaluacion-parcial) evaluó parcialmente un intérprete respecto de un
 programa, y el [Patrón 50](../patrones.md#50-especializar-el-interprete) lo resume: el intérprete especializado hace
@@ -120,6 +122,24 @@ plegar ni saltos que acortar. La versión especializada usa la novena parte
 de las inferencias del intérprete, incluido el costo de especializarlo, y
 es el único de los dos compiladores que no hubo que escribir: salió del
 intérprete y de `control_mini/3`. El compilador de las secciones
-[46.4](index.md#464-la-generacion-de-codigo-y-el-ensamblador) a [46.6](index.md#466-optimizacion) sigue teniendo su lugar: produce código para una máquina que no es
+[46.4](index.md#464-la-generacion-de-codigo-y-el-ensamblador) a [46.6](optimizacion.md#466-optimizacion) sigue teniendo su lugar: produce código para una máquina que no es
 Prolog, decide cómo se usan la pila y la memoria, y puede optimizar lo que
 el especializador no ve.
+
+El capítulo continúa en la página
+[Otras máquinas y extensiones de Mini](extensiones.md#468-la-reduccion-de-fuerza),
+con la reducción de fuerza, las máquinas de acumulador y de registros, la
+lectura de datos y las funciones con marcos de pila.
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio, y los capítulos siguientes los dan por hechos.
+
+12. ★ **(2)** Predecir la versión especializada del ejemplo `cuenta`, que
+    tiene un `mientras` dentro de un `si`, y comprobarla con
+    `listar_ejemplo(cuenta)`. Después, cambiar en una copia de `suma` el
+    1000 por 100 000 y medir con `time/1` las cuatro formas de ejecutarlo.
+    ¿Se mantiene la proporción?

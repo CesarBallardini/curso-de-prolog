@@ -1,11 +1,11 @@
 # Soluciones del capítulo 42 — Juegos
 
 El código de esta página está en `ejemplos/capitulo-42/`: `soluciones.pl`
-para los ejercicios 3, 4, 5, 6, 9 y 11, `soluciones_orden.pl` para el 7 y
-el 8, y `soluciones_simetria.pl` para el 10; los tres copian al final lo que
+para los ejercicios 3, 4, 5, 6, 7 y 12, `soluciones_orden.pl` para el 8 y
+el 9, y `soluciones_simetria.pl` para el 11; los tres copian al final lo que
 usan de los archivos del capítulo y corren en SWISH. `soluciones_terminal.pl`,
 para el 13 y el 14, carga `tateti_terminal.pl` y no corre en SWISH. Cada
-uno tiene sus pruebas. Los ejercicios 1, 2 y 12 se resuelven con los
+uno tiene sus pruebas. Los ejercicios 1, 2 y 10 se resuelven con los
 archivos del capítulo.
 
 ## 1
@@ -333,6 +333,50 @@ listas de `lineas/2` para 3 y 4.
 
 ## 7
 
+<!-- ejemplo: capitulo-42/soluciones.pl fragmento: inicial(restar(K), r(K, x)). .. V < 0 ), Pilas). -->
+```prolog
+inicial(restar(K), r(K, x)).
+
+jugada(restar(_), r(K, J), S, r(K1, Otro)) :-
+    between(1, 3, S),
+    S =< K,
+    K1 is K - S,
+    otro(J, Otro).
+
+turno(restar(_), r(_, J), Lado) :-
+    lado(J, Lado).
+
+fin(restar(_), r(0, J), restar(gana(Otro))) :-
+    otro(J, Otro).
+
+valor_final(restar(gana(J)), _, V) :-
+    signo(J, S),
+    V is S * 100.
+
+%!  perdedoras(+Maximo:integer, -Pilas:list(integer)) is det.
+%
+%   Pilas son las pilas de 1 a Maximo fichas en las que pierde el que
+%   mueve, según la poda buscada hasta el final.
+perdedoras(Maximo, Pilas) :-
+    findall(K, ( between(1, Maximo, K),
+                 alfabeta(restar(K), r(K, x), K, _, V, _),
+                 V < 0 ), Pilas).
+```
+
+```prolog
+?- perdedoras(12, Pilas).
+Pilas = [4, 8, 12].
+```
+
+Pierde el que mueve con un múltiplo de 4: saque lo que saque, de 1 a 3, el
+rival saca lo que falta para volver a un múltiplo de 4, y termina sacando
+la última. Con cualquier otra pila, el que mueve deja un múltiplo de 4. El
+resultado de `fin/3` es `restar(gana(J))` y no `gana(J)`: con `gana(J)`,
+`valor_final/3` tenía dos cláusulas posibles, la del ta-te-ti y la de
+restar, y la búsqueda dejaba un punto de elección.
+
+## 8
+
 <!-- ejemplo: capitulo-42/soluciones_orden.pl predicado: evaluar_amenazas/3 amenaza/3 -->
 ```prolog
 %!  evaluar_amenazas(+Juego, +Posicion, -Valor:integer) is det.
@@ -379,7 +423,7 @@ arriba: las líneas abiertas dan 0, y la amenaza, 10. Una amenaza vale poco
 si mueve el que la tiene que tapar, como aquí, y mucho si mueve el que la
 puede completar; una evaluación que lo distinga necesita saber quién mueve.
 
-## 8
+## 9
 
 <!-- ejemplo: capitulo-42/soluciones_orden.pl fragmento: %!  ordenar(+Orden, +Juego, +Lado, +Hijos0:list, -Hijos:list) is det. .. Clave is -K. -->
 ```prolog
@@ -415,51 +459,44 @@ las líneas de una casilla con `memberchk/2`, sin examinar el tablero. Es el
 único de los tres que baja las inferencias. Las líneas de cada casilla no
 dependen de la posición, y se podrían calcular una sola vez por juego.
 
-## 9
-
-<!-- ejemplo: capitulo-42/soluciones.pl fragmento: inicial(restar(K), r(K, x)). .. V < 0 ), Pilas). -->
-```prolog
-inicial(restar(K), r(K, x)).
-
-jugada(restar(_), r(K, J), S, r(K1, Otro)) :-
-    between(1, 3, S),
-    S =< K,
-    K1 is K - S,
-    otro(J, Otro).
-
-turno(restar(_), r(_, J), Lado) :-
-    lado(J, Lado).
-
-fin(restar(_), r(0, J), restar(gana(Otro))) :-
-    otro(J, Otro).
-
-valor_final(restar(gana(J)), _, V) :-
-    signo(J, S),
-    V is S * 100.
-
-%!  perdedoras(+Maximo:integer, -Pilas:list(integer)) is det.
-%
-%   Pilas son las pilas de 1 a Maximo fichas en las que pierde el que
-%   mueve, según la poda buscada hasta el final.
-perdedoras(Maximo, Pilas) :-
-    findall(K, ( between(1, Maximo, K),
-                 alfabeta(restar(K), r(K, x), K, _, V, _),
-                 V < 0 ), Pilas).
-```
-
-```prolog
-?- perdedoras(12, Pilas).
-Pilas = [4, 8, 12].
-```
-
-Pierde el que mueve con un múltiplo de 4: saque lo que saque, de 1 a 3, el
-rival saca lo que falta para volver a un múltiplo de 4, y termina sacando
-la última. Con cualquier otra pila, el que mueve deja un múltiplo de 4. El
-resultado de `fin/3` es `restar(gana(J))` y no `gana(J)`: con `gana(J)`,
-`valor_final/3` tenía dos cláusulas posibles, la del ta-te-ti y la de
-restar, y la búsqueda dejaba un punto de elección.
-
 ## 10
+
+<!-- ejemplo: capitulo-42/profundizacion.pl predicado: evaluar/3 -->
+```prolog
+%!  evaluar(+Juego, +Posicion, -Valor:integer) is det.
+%
+%   Valor es la cantidad de líneas de Posicion en las que no hay ninguna o,
+%   que x todavía puede completar, menos la cantidad de líneas en las que
+%   no hay ninguna x.
+evaluar(Juego, pos(Tablero, _), Valor) :-
+    lineas(Juego, Lineas),
+    aggregate_all(count, ( member(L, Lineas), abierta(Tablero, o, L) ), X),
+    aggregate_all(count, ( member(L, Lineas), abierta(Tablero, x, L) ), O),
+    Valor is X - O.
+```
+
+```prolog
+?- inicial(tateti(4), P), findall(D-V, (between(1, 6, D), alfabeta(tateti(4), P, D, _, V, _)), Vs).
+P = pos([v, v, v, v, v, v, v, v|...], x),
+Vs = [1-3, 2-0, 3-3, 4-0, 5-2, 6-0].
+
+?- evaluar(tateti(4), pos([x,v,v,v, v,v,v,v, v,v,v,v, v,v,v,v], o), V).
+V = 3.
+
+?- evaluar(tateti(4), pos([x,o,v,v, v,v,v,v, v,v,v,v, v,v,v,v], x), V).
+V = 1.
+```
+
+Con profundidad impar, la última jugada de la búsqueda es de x, y la
+evaluación se aplica sin la respuesta de o: una x en la esquina cierra tres
+líneas para o y vale 3. Con profundidad par, la última es de o, que cierra
+líneas de x: en un borde, como la 2, deja 1, y en una casilla de tres
+líneas, como la 6, la mejor respuesta, deja 0. Es el efecto horizonte en su forma más
+simple: el que hace la última jugada antes del límite parece llevar
+ventaja. Por eso los programas comparan valores de búsquedas con la misma
+paridad, o extienden la búsqueda hasta una posición tranquila.
+
+## 11
 
 <!-- ejemplo: capitulo-42/soluciones_simetria.pl predicado: valor_simetrico/3 valor_canonico/3 canonica/2 simetria/1 -->
 ```prolog
@@ -518,7 +555,7 @@ calcular las ocho simetrías de cada posición cuesta lo que ahorra la tabla.
 La tabla es siete veces más pequeña, y eso importa cuando la memoria es el
 límite.
 
-## 11
+## 12
 
 <!-- ejemplo: capitulo-42/soluciones.pl predicado: acotado_tabulado/5 cotas_tabuladas/6 tablas_de_la_poda/1 -->
 ```prolog
@@ -572,43 +609,6 @@ posiciones, pero cada posición visitada con cotas distintas es otra
 variante y abre otra tabla. El valor guardado con unas cotas es una cota,
 y no sirve para otras. Tarda 0,17 segundos, poco menos que minimax
 tabulado.
-
-## 12
-
-<!-- ejemplo: capitulo-42/profundizacion.pl predicado: evaluar/3 -->
-```prolog
-%!  evaluar(+Juego, +Posicion, -Valor:integer) is det.
-%
-%   Valor es la cantidad de líneas de Posicion en las que no hay ninguna o,
-%   que x todavía puede completar, menos la cantidad de líneas en las que
-%   no hay ninguna x.
-evaluar(Juego, pos(Tablero, _), Valor) :-
-    lineas(Juego, Lineas),
-    aggregate_all(count, ( member(L, Lineas), abierta(Tablero, o, L) ), X),
-    aggregate_all(count, ( member(L, Lineas), abierta(Tablero, x, L) ), O),
-    Valor is X - O.
-```
-
-```prolog
-?- inicial(tateti(4), P), findall(D-V, (between(1, 6, D), alfabeta(tateti(4), P, D, _, V, _)), Vs).
-P = pos([v, v, v, v, v, v, v, v|...], x),
-Vs = [1-3, 2-0, 3-3, 4-0, 5-2, 6-0].
-
-?- evaluar(tateti(4), pos([x,v,v,v, v,v,v,v, v,v,v,v, v,v,v,v], o), V).
-V = 3.
-
-?- evaluar(tateti(4), pos([x,o,v,v, v,v,v,v, v,v,v,v, v,v,v,v], x), V).
-V = 1.
-```
-
-Con profundidad impar, la última jugada de la búsqueda es de x, y la
-evaluación se aplica sin la respuesta de o: una x en la esquina cierra tres
-líneas para o y vale 3. Con profundidad par, la última es de o, que cierra
-líneas de x: en un borde, como la 2, deja 1, y en una casilla de tres
-líneas, como la 6, la mejor respuesta, deja 0. Es el efecto horizonte en su forma más
-simple: el que hace la última jugada antes del límite parece llevar
-ventaja. Por eso los programas comparan valores de búsquedas con la misma
-paridad, o extienden la búsqueda hasta una posición tranquila.
 
 ## 13
 

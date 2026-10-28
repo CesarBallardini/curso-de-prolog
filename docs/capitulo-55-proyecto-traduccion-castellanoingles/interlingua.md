@@ -1,14 +1,14 @@
 # Interlingua lógica y trato
 
-Esta página contiene las secciones
-[55.8](index.md#558-version-6-una-interlingua-con-cuantificadores) y
-[55.9](index.md#559-version-7-tu-y-usted) del [capítulo 55](index.md): la
+Esta página continúa el [capítulo 55](index.md) después de la
+[sección 55.7](index.md#557-version-5-los-dos-sentidos), con las secciones
+[55.8](#558-version-6-una-interlingua-con-cuantificadores) y [55.9](#559-version-7-tu-y-usted): la
 versión 6, `cuantificadores.pl`, que traduce por una interlingua de
 fórmulas lógicas con cuantificadores, como el traductor inglés–latín de
 Covington, y la versión 7, `tratamiento.pl`, que agrega al traductor de
 transferencia el trato de tú y de usted.
 
-## Una interlingua con cuantificadores
+## 55.8 Versión 6: una interlingua con cuantificadores
 
 El traductor del capítulo transfiere árboles: cada lengua tiene el suyo, y
 `transferir/2` relaciona uno con el otro. Covington traduce de otra
@@ -156,7 +156,7 @@ artículo definido ni número, así que el vocabulario se reduce a «todo» y
 «un» en singular. Covington lo señala al traducir al latín, cuya gramática
 tiene dos maneras de decir «some».
 
-## Tú y usted
+## 55.9 Versión 7: tú y usted
 
 Covington pone entre las dificultades de la traducción que las lenguas
 expresan distinta cantidad de información, y da como ejemplo el trato:
@@ -280,3 +280,74 @@ traductor humano la deduce de quién habla con quién.
     el contexto cambia muchas decisiones repartidas en la derivación:
     filtrar el resultado genera primero todas las variantes, y conviene
     pasar el dato a los no terminales que deciden.
+
+!!! success "Criterios de calidad"
+    | Criterio | En este capítulo |
+    |---|---|
+    | C1 | cada predicado declara sus modos; los que se usan en los dos sentidos (`oracion_es//1`, `oracion_en//1`, `transferir/2`) declaran `?` y dicen qué argumento debe llegar instanciado, y `traducir/2` declara sus dos modos por separado |
+    | C2 | los árboles son representaciones limpias, un functor por clase de nodo; la transferencia elige la cláusula por la cabeza, sin examinar tipos |
+    | C3 | los no terminales y la transferencia no tienen cortes ni efectos: por eso funcionan en los dos sentidos; los cortes de `antes_de/2` y `empieza_con_vocal/1`, y el si-entonces-sino de `numero_es/3`, actúan sobre argumentos que llegan instanciados en los dos sentidos |
+    | C7 | 180 pruebas en diez archivos; cada gramática y la transferencia se prueban en los dos sentidos, y los dos defectos del capítulo están probados: el error de `sn_ingenuo//2` al generar y la búsqueda sin fin de `adjetivos_ingenuo/2` y `traducir_ingenuo/2`, detenida con un límite de inferencias |
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio, y los capítulos siguientes los dan por hechos.
+
+13. ★ **(1)** Con `cuantificadores.pl` cargado, predecir las dos lecturas
+    de «un alumno lee todo libro» y su valor en el modelo, y comprobarlo
+    con `lecturas/2`. ¿Cuál de las dos es la que se lee primero en
+    castellano, y por qué la gramática la da primero?
+14. **(3)** Agregar la lectura de usted del sujeto omitido en tercera
+    persona: «Come manzanas.» también puede ser «You eat apples.». Contar
+    las traducciones de «Come manzanas.», y mostrar qué da
+    `traducir_con_trato(tu, Es, "You eat apples.")`. Corregirlo con un
+    predicado que examine también el sujeto inglés.
+
+## Resumen
+
+| | |
+|---|---|
+| **traducción por transferencia** | análisis de la oración de origen en un árbol, transferencia a un árbol de la otra lengua, generación de la oración de destino |
+| **interlingua** | una representación común a todas las lenguas; la traducción es análisis a ella y generación desde ella |
+| **gramática reversible** | una gramática que sirve para analizar y para generar: sin cortes ni efectos, y con cada condición después de lo que examina |
+| **sujeto tácito** | el sujeto que el castellano omite; se traduce por un pronombre inglés, con tantas traducciones como pronombres posibles |
+| **plural genérico** | «los gatos» en general; en inglés, el plural sin artículo |
+| **restricción de selección** | la condición que un verbo impone a su sujeto o a su objeto, como ser animado |
+| **[Patrón 62](../patrones.md#62-informacion-de-contexto-como-parametro)** | información de contexto como parámetro |
+| `palabra_por_palabra/2` | la traducción de cada forma por su equivalente |
+| `oracion_es//1`, `oracion_en//1` | las gramáticas: oración y árbol |
+| `transferir/2`, `sujeto/2`, `sn/2`, `adjetivos/2` | la transferencia entre los árboles |
+| `sn_ingenuo//2` | el artículo elegido antes de conocer la palabra siguiente: analiza pero no genera |
+| `es_en/2`, `en_es/2`, `traducir/2`, `traducciones/2` | el traductor en cada sentido y sobre textos |
+| `call_with_inference_limit/3` | ejecuta una meta con un límite de inferencias; `R` dice si lo alcanzó |
+| `split_string/4`, `atomic_list_concat/3` | de un texto a sus palabras, y de las palabras a un texto |
+| **ambigüedad de alcance** | una oración con dos cuantificadores admite los dos órdenes: «todo alumno lee un libro» |
+| `oracion_logica_es//1`, `alcance/2`, `traducciones_logicas/2`, `lecturas/2` | la interlingua con cuantificadores |
+| `traducir_con_trato/3` | la traducción al castellano con el trato como dato del contexto |
+
+## Temas que se retoman
+
+| Tema | Se retoma en |
+|---|---|
+| Plantillas de diálogo sobre oraciones en castellano | [capítulo 56](../capitulo-56-proyecto-dialogos-plantillas/index.md) |
+| Oraciones en castellano traducidas a operaciones del sistema | [capítulo 57](../capitulo-57-proyecto-ordenes-castellano/index.md) |
+| Una gramática del castellano que produce formas lógicas, una interlingua para consultar una base de datos | [capítulo 88](../capitulo-88-proyecto-preguntas-en-castellano/index.md) |
+
+## Referencias
+
+- Michael A. Covington, *Natural Language Processing for Prolog Programmers*,
+  Prentice-Hall, 1994; edición digital del autor, 2013,
+  <https://www.covingtoninnovations.com/books/NLPPP.pdf>. Apartado 8.2,
+  «Language Translation»: de «A Simple Technique» y «A Working Translator», la
+  interlingua de fórmulas con cuantificadores y su composición por unificación
+  de términos con `^` (figuras 8.1 y 8.3), que sigue la
+  [sección 55.8](#558-version-6-una-interlingua-con-cuantificadores); de «Why
+  Translation Is Hard», el trato de confianza y de respeto que el inglés no
+  distingue, de la [sección 55.9](#559-version-7-tu-y-usted).
+
+El código del capítulo es propio del curso: las gramáticas, el vocabulario,
+la transferencia y el traductor se escribieron para él; de la fuente se
+toman las ideas, no los programas.

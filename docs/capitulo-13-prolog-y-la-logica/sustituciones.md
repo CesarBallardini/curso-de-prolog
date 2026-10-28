@@ -123,7 +123,7 @@ primera sustitución liga `Cuanto` a `s(C)`, un término con una variable
 adentro, y la última liga esa `C`, de modo que
 `{ Cuanto/s(C) }{ C/s(s(cero)) }` es `{ Cuanto/s(s(s(cero))), C/s(s(cero)) }`
 y la respuesta es `Cuanto = s(s(s(cero)))`. El
-[capítulo 39](../capitulo-39-semantica-de-los-programas-logicos/resolucion.md#resolucion-sld)
+[capítulo 39](../capitulo-39-semantica-de-los-programas-logicos/resolucion.md#392-resolucion-sld)
 llama a esa composición restringida la respuesta calculada.
 
 ## 13.9 Unificadores y el unificador más general
@@ -230,3 +230,70 @@ muestra la unificación que la comprueba.
 El capítulo continúa en la página
 [La evaluación de un programa y los límites de la lógica](evaluacion.md#1310-los-cuatro-pasos), que usa
 el unificador más general en cada paso.
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio, y los capítulos siguientes los dan por hechos.
+
+17. ★ **(2)** Composición de sustituciones
+    ([sección 13.8](#138-sustituciones)):
+
+    a. Con θ = { X/f(W), Y/X } y σ = { Y/Z, X/a, W/g(a) }, calcular θσ y σθ, y
+       decir cuáles de estos pares pertenecen a θσ: `Y/Z`, `X/f(g(a))`,
+       `W/g(a)`, `Y/X`.
+
+    b. Calcular { X/a, Y/c, U/c }{ Z/W, X/b },
+       { W/a, Y/f(Z) }{ W/b, Y/a, Z/c } y
+       { X/g(Y, a), Z/f(W), U/W }{ Y/f(b), W/U, T/g(a, f(b)) }. En la última,
+       un par se vuelve trivial.
+
+    c. Componer de a dos, en ese orden, { P/d, Q/f(X, Y), R/Z },
+       { X/a, Y/T } y { Z/R, X/b, T/c }.
+
+    d. ¿Existe, para toda θ, una γ con θγ = θ? ¿Y una con γθ = θ?
+
+18. **(1)** Sobre las definiciones de las secciones [13.8](#138-sustituciones)
+    y [13.9](#139-unificadores-y-el-unificador-mas-general):
+
+    a. Verdadero o falso, con la razón: una sustitución es un par
+       `Variable/término`; en una sustitución, el término de cada par solo
+       puede ser una constante; un unificador no puede contener variables en
+       sus términos; todo unificador es una sustitución; toda sustitución es un
+       unificador de algún par de términos.
+
+    b. Decir si `padre(juan, ana)` es instancia de `padre(X, Y)`, de
+       `padre(juan, Y)`, de `padre(X, X)` y de `padre(Y, X)`, y dar la θ cuando
+       existe.
+
+    c. Verdadero o falso: «si Q es instancia de P, entonces Pθ = Q para
+       cualquier θ».
+
+19. ★ **(2)** Para cada par, dar un unificador más general o explicar por qué no
+    existe, y comprobar con `=` qué imprime SWI-Prolog:
+
+    a. `padre(Z, diego)` y `padre(jorge, diego)`.
+
+    b. `tio(X, diego)` y `tio(W, diego)`. Mostrar además que
+       { X/guillermo, W/guillermo } también es un unificador, y escribir la γ
+       que lo obtiene a partir de { X/W }.
+
+    c. `p(q(X, Y), X, h(4))` y `p(q(3, Z), W, h(Z))`.
+
+    d. `r([X|Y])` y `r([[a, b], c, d])`.
+
+    e. `r([X|Y])` y `r([])`.
+
+    f. `[[X, 2], [Y]]` y `[A|[B|C]]`.
+
+## Referencias
+
+- Álvaro Tasistro y Jorge Vidart, *Programación lógica y funcional*, 1988 —
+  parte I, «Programación en lógica», caps. 2 «Introducción a la
+  programación en lógica», 3 «Interpretación lógica» y 4 «Interpretación
+  algorítmica». Esta página adapta de allí, con la notación de SWI-Prolog y
+  los nombres de este curso, las definiciones de sustitución, de
+  composición, de unificador y de unificador más general, con sus
+  ejemplos.

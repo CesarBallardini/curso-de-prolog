@@ -1,13 +1,14 @@
 # Por qué sí y por qué no
 
-Esta página contiene la sección [66.5](index.md#665-version-4-por-que-si-y-por-que-no) del
-[capítulo 66](index.md): la cuarta versión del intérprete, que explica sus
+Esta página continúa el [capítulo 66](index.md) después de la
+[sección 66.4](index.md#664-version-3-refutadores-y-presunciones), con la
+sección [66.5](#665-version-4-por-que-si-y-por-que-no): la cuarta versión del intérprete, que explica sus
 conclusiones y sus silencios, y su relación con la abducción del
 [capítulo 50](../capitulo-50-proyecto-diagnostico-abduccion/index.md). Los ejemplos están en `explicaciones.pl` y `explicar.pl`, en
 `ejemplos/capitulo-66/`, con sus pruebas, y se ejecutan en una instalación
 local.
 
-## Por qué sí y por qué no
+## 66.5 Versión 4: por qué sí y por qué no
 
 `respuesta/3` dice qué se concluye, no por qué. `explicaciones.pl` agrega
 lo que el sistema experto de la
@@ -144,4 +145,53 @@ fallidas a las presunciones que hay que retirar. Flach escribe el
 razonamiento por defecto de ese modo, como un intérprete que agrega un
 supuesto a la explicación cuando no contradice las reglas, igual que el
 intérprete abductivo de la
-[sección 50.3](../capitulo-50-proyecto-diagnostico-abduccion/index.md#503-version-2-el-interprete-abductivo); el ejercicio 10 lo escribe y lo compara con este.
+[sección 50.3](../capitulo-50-proyecto-diagnostico-abduccion/index.md#503-version-2-el-interprete-abductivo); el ejercicio 7 lo escribe y lo compara con este.
+
+El capítulo continúa en la página
+[Excepciones en las correlativas y la anticipación de los rivales](anticipacion.md#666-version-5-excepciones-en-las-correlativas), con la quinta
+versión, que aplica el intérprete a las correlativas de *Inscripciones*, y
+la sexta, que agrega la anticipación de los rivales.
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio.
+
+5. ★ **(2)** Continuar el automóvil de la [sección 66.5](#665-version-4-por-que-si-y-por-que-no) con la abducción del
+   [capítulo 50](../capitulo-50-proyecto-diagnostico-abduccion/index.md): escribir `sospechosas(Auto, Piezas)`, las piezas cuyas
+   presunciones sostienen una predicción que una observación refutó.
+   Agregar la observación de que las luces del segundo automóvil encienden,
+   y una regla estricta que de ella derive que la batería está bien, y
+   mostrar cómo se reducen las sospechosas.
+6. **(2)** Escribir `escribir_derivacion(Arbol)`, que escribe un árbol de
+   `derivacion/3` con una línea por nodo, sangrada según su profundidad, y
+   que dice de cada literal si se concluyó en forma estricta o con qué
+   regla.
+7. **(3)** Escribir el intérprete de Flach para el razonamiento por
+    defecto: una meta se explica con reglas y con supuestos por defecto, y
+    un supuesto se agrega a la explicación solo si su conclusión no
+    contradice lo que las reglas derivan con la explicación. Aplicarlo a
+    Drácula, y comparar sus explicaciones con las respuestas de la
+    [sección 66.3](index.md#663-version-2-la-regla-mas-especifica).
+
+## Referencias
+
+- Michael A. Covington, Donald Nute y André Vellino, *Prolog Programming
+  in Depth*, Prentice Hall, 1997 — capítulo «Defeasible Prolog».
+  [Edición en PDF de los autores](https://www.covingtoninnovations.com/books/PPID.pdf).
+  Esta página toma los tres casos de la explicación de un fracaso del
+  predicado `whynot/1` («A Special Explanatory Facility»).
+- Peter Flach, *Simply Logical: Intelligent Reasoning by Example*, John
+  Wiley & Sons, 1994 — apartados 8.1, «Default reasoning», y 8.2, «The
+  semantics of incomplete information».
+  [Edición en línea](https://book.simply-logical.space/src/text/3_part_iii/8.1.html).
+  Esta página toma la idea de un intérprete que agrega supuestos por
+  defecto cuando no contradicen las reglas, con los supuestos nombrados que
+  una regla puede cancelar, que escribe el ejercicio 7.
+- David Poole, «A Logical Framework for Default Reasoning», *Artificial
+  Intelligence* 36 (1), 1988, págs. 27–47.
+  [DOI 10.1016/0004-3702(88)90077-X](https://doi.org/10.1016/0004-3702(88)90077-X).
+  Flach atribuye a este artículo la distinción entre reglas y supuestos
+  por defecto que el ejercicio 7 implementa.

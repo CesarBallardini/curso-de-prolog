@@ -75,7 +75,7 @@ Al terminar el capítulo, el lector puede:
 !!! info "Tiempo estimado"
     Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **2:50 h**.
     Resolver los 6 ejercicios marcados con ★: **1:25 h**.
-    Resolver los 13 ejercicios del final: **3:55 h**.
+    Resolver los 13 ejercicios del capítulo: **3:55 h**.
 
 ## 68.1 El problema
 
@@ -639,7 +639,7 @@ K = 29.
 Las cláusulas y sus refinamientos forman un grafo, el **grafo de
 especialización**, en el que se busca una cláusula consistente. Se busca
 en profundidad con un límite que crece de a uno, la profundización
-iterativa de la [sección 34.5](../capitulo-34-introspeccion-y-metainterpretes/index.md#345-limites-de-profundidad-y-profundizacion-iterativa) y la [sección 41.4](../capitulo-41-busqueda-y-planificacion/index.md#414-profundidad-limitada-y-profundizacion-iterativa), porque el
+iterativa de la [sección 34.5](../capitulo-34-introspeccion-y-metainterpretes/index.md#345-limites-de-profundidad-y-profundizacion-iterativa) y la [sección 41.4](../capitulo-41-busqueda-y-planificacion/heuristicas.md#414-profundidad-limitada-y-profundizacion-iterativa), porque el
 grafo es ancho y guardar una frontera por anchura ocuparía mucha memoria.
 La búsqueda explica un ejemplo positivo por vez, y aprovecha una propiedad
 de la especialización: un refinamiento cubre a lo sumo lo que cubría la
@@ -708,7 +708,7 @@ madre». La hipótesis es exacta en la familia, pero tiene dos cláusulas
 donde una sola, con `progenitor/2`, cubriría los tres ejemplos: la
 búsqueda se queda con la **primera** cláusula consistente, y `padre/2`
 está antes que `progenitor/2` en el lenguaje. La
-[sección 68.6](#686-version-5-la-mejor-clausula-y-la-recursion) cambia ese criterio.
+[sección 68.6](recursion.md#686-version-5-la-mejor-clausula-y-la-recursion) cambia ese criterio.
 
 El costo crece rápido con la profundidad. `hermano/2` necesita cuatro
 literales, porque el lenguaje no puede decir que dos personas son
@@ -740,36 +740,11 @@ cláusula aprendida tiene la misma forma que la de la versión 3, con
     límite en 1, y cuántas cláusulas genera. Comprobarlo, y explicar por
     qué la búsqueda con límite 1 no puede terminar de otra manera.
 
-## 68.6 Versión 5: la mejor cláusula y la recursión
-
-La quinta versión cambia la búsqueda: por niveles, y en el primer nivel
-con cláusulas consistentes elige la que cubre más positivos. Con ella el
-programa aprende la regla esperada de `abuelo/2` y la definición
-recursiva de `antepasado/2`, y muestra dos maneras de equivocarse: con
-pocos negativos, y con la cobertura extensional de una cláusula
-recursiva. Está en la página
-[La mejor cláusula y la recursión](recursion.md#la-mejor-clausula-y-la-recursion).
-
-## 68.7 Versión 6: otras formas de inducir
-
-El capítulo de Flach contiene cuatro ideas que las versiones anteriores
-no usan. La primera plantea la inducción como abducción de cláusulas:
-un metaintérprete que, para explicar un ejemplo, supone cláusulas de una
-lista de cláusulas posibles. La segunda es la búsqueda incremental del
-sistema MIS de Shapiro: los ejemplos llegan de a uno, y un negativo que
-la hipótesis deduce se corrige quitando la cláusula falsa de su prueba.
-La tercera agrega términos y tipos al lenguaje, y con ellos el programa
-aprende `append/3` y una traducción entre listas. La cuarta es el
-ejercicio de Flach de aprender `reverse/3`, un programa con acumulador.
-Están en la página [Otras formas de inducir](otras-formas.md#otras-formas-de-inducir).
-
-!!! success "Criterios de calidad"
-    | Criterio | En este capítulo |
-    |---|---|
-    | C1 | cada predicado declara modos y determinación; `refinar/3` e `incluido/2` son `nondet` porque enumeran alternativas, y los que aprenden son `det`: devuelven una hipótesis y la cuenta de cláusulas |
-    | C2 | el problema es de datos: los ejemplos salen de `ejemplos/3`, el fondo de `de_fondo/1` y el lenguaje de `lenguaje/1`; los hechos son los del [capítulo 3](../capitulo-03-reglas-y-conjunciones/index.md), sin copiarlos |
-    | C4 | `subsume/2`, `cubre/3` y `cubre_alguno/3` no dejan ligaduras ni alternativas: usan `\+ \+` o un corte después de la primera prueba |
-    | C7 | 150 pruebas en nueve archivos; cada versión se verifica contra la anterior o contra la relación esperada: la lgg subsume a los dos términos, cada refinamiento es subsumido por su cláusula, y la extensión de cada hipótesis se compara con `esperado/2` |
+El capítulo continúa en la página
+[La mejor cláusula y la recursión](recursion.md#686-version-5-la-mejor-clausula-y-la-recursion),
+con la quinta versión, que elige la cláusula que cubre más positivos y
+aprende una definición recursiva. Antes, los [ejercicios](#ejercicios) de
+esta página practican las secciones 68.1 a 68.5.
 
 ## Ejercicios
 
@@ -809,68 +784,6 @@ tiene de propio.
 7. **(2)** Medir cuántas cláusulas genera `buscar/6` para `abuelo/2` con
    límite 2 cuando no descarta los refinamientos que dejan de cubrir el
    ejemplo, y compararlo con las que genera con la poda.
-8. ★ **(2)** Aprender `abuelo/2` con `inductivo/7`, todos los
-   positivos y un solo negativo: primero `abuelo(pedro, eva)`, después
-   `abuelo(juan, ana)`. Medir los falsos positivos de cada hipótesis con
-   `evaluar_en/6` y explicar, con los niveles de la búsqueda, por qué uno
-   de los dos negativos alcanza y el otro no.
-9. **(1)** Aprender `hermano/2` con `inductivo/7` sin la relación en el
-   lenguaje y con límite 4, y comparar la cantidad de cláusulas generadas
-   con la de la [sección 68.5](#685-version-4-induccion-descendente).
-10. **(3)** `cubre/3` prueba los literales del cuerpo en su orden.
-    Escribir una versión que pruebe primero el literal que unifica con
-    menos átomos del modelo, y la reducción que la usa. Medir con
-    `time/1` las dos reducciones en `aprender_asc/3` para `abuelo/2` y
-    `hermano/2`, y en la rlgg de `antepasado(juan, luis)` y
-    `antepasado(pedro, sofia)` con los positivos en el modelo, con un
-    límite de tiempo.
-11. **(3)** Reemplazar en `mejor_clausula/9` la búsqueda por niveles
-    completa por una **búsqueda en haz**: en cada nivel se conservan solo
-    las K cláusulas que cubren más positivos. Medir, con K = 1, 3 y 10,
-    las cláusulas generadas y el resultado para `antepasado/2` y
-    `hermano/2`.
-12. ★ **(2)** Flach propone procesar todos los ejemplos a la vez, con
-    cláusulas supuestas sin instanciar, para que una cláusula sirva a
-    varios ejemplos. Escribir `inducir_todos(Ejemplos, Inducibles, Fondo,
-    H)`, con su encabezado de PlDoc, y aplicarlo a los positivos de
-    `abuelo/2` con las cláusulas de `inducibles/2`. Comparar su primera
-    respuesta con las explicaciones de la
-    [sección 68.7](otras-formas.md#la-induccion-como-abduccion).
-13. **(1)** La hipótesis de `numerales` en la
-    [sección 68.7](otras-formas.md#refutar-la-clausula-falsa) tiene la
-    cláusula base `listnum([], _)`. Agregar a los ejemplos los negativos
-    necesarios para que `mis/4` aprenda `listnum([], [])`, y explicar por
-    qué con uno solo, `listnum([], [uno])`, la cláusula base pasa a ser
-    `listnum(_, [])`.
-
-## Resumen
-
-| | |
-|---|---|
-| **ejemplo positivo, negativo** | un hecho sin variables que pertenece, o no, a la relación que se aprende |
-| **conocimiento de fondo** | las relaciones conocidas; aquí, su modelo mínimo como lista de hechos |
-| **cobertura extensional** | la cabeza unifica con el ejemplo y el cuerpo es verdadero en el modelo |
-| **cobertura intensional** | el ejemplo se deduce de la hipótesis y del fondo |
-| **completa, consistente** | la hipótesis cubre todos los positivos; no cubre ningún negativo |
-| **θ-subsunción** | una sustitución lleva un término o una cláusula a otro, o a una parte de otro |
-| **lgg, antiunificación** | la generalización menos general; se calcula con una sustitución inversa |
-| **rlgg** | la lgg de dos ejemplos con el modelo de fondo como cuerpo |
-| **refinamiento** | especialización mínima: unificar dos variables o agregar un literal |
-| **sobregeneralización** | la extensión de la hipótesis incluye átomos que no pertenecen a la relación |
-| `mas_general/2`, `lgg/3`, `lgg/5` | la versión 1 |
-| `subsume/2`, `lgg_clausula/3` | la versión 2 |
-| `rlgg/4`, `cubre/3`, `reducir/4`, `aprender_asc/3`, `evaluar/5` | la versión 3 |
-| `refinar/3`, `buscar_clausula/8`, `aprender_desc/3`, `evaluar_en/6` | la versión 4 |
-| **[Patrón 66](../patrones.md#66-especializar-podando-por-el-ejemplo)** | especializar podando por el ejemplo |
-| `mejor_clausula/9`, `aprender_rec/3`, `probar/4` | la versión 5 |
-| **cláusula falsa** | la cláusula más alta de una prueba que deduce una cabeza falsa de un cuerpo verdadero |
-| `inducir/5`, `refinar_tipado/3`, `clausula_falsa/3`, `mis/4`, `bien_fundada/2` | la versión 6 |
-
-## Temas que se retoman
-
-| Tema | Se retoma en |
-|---|---|
-| El espacio de hipótesis ordenado por generalidad, con sus dos bordes, y la generalización guiada por una prueba | [capítulo 69](../capitulo-69-proyecto-espacios-versiones-generalizacion-explicacion/index.md) |
 
 ## Referencias
 
@@ -879,13 +792,12 @@ tiene de propio.
   «Generalisation and specialisation», «Bottom-up induction» y «Top-down
   induction».
   [Edición en línea](https://book.simply-logical.space/src/text/3_part_iii/9.1.html).
-  El capítulo toma los ejemplos positivos y negativos, la cobertura
+  Esta página toma los ejemplos positivos y negativos, la cobertura
   extensional e intensional, la θ-subsunción probada con las variables
   congeladas, la antiunificación con sustituciones inversas, la lgg de
   cláusulas y la relativa a un modelo con su reducción por los negativos,
-  el algoritmo de cobertura, y la búsqueda descendente con refinamientos,
-  tipos y profundización iterativa, y de su ejercicio final la búsqueda
-  en haz del ejercicio 11. Flach basa la inducción ascendente en GOLEM y
+  el algoritmo de cobertura, y la búsqueda descendente con refinamientos
+  y profundización iterativa. Flach basa la inducción ascendente en GOLEM y
   la descendente en MIS; las referencias siguientes son las que él cita
   para esas ideas, y el capítulo las conoce a través de él.
 - Stephen H. Muggleton y Cao Feng, «Efficient induction of logic
@@ -897,10 +809,7 @@ tiene de propio.
 - Ehud Y. Shapiro, *Algorithmic Program Debugging*, MIT Press, 1983. Sin
   edición en línea de acceso libre verificada. Su sistema MIS aprende
   cláusulas buscando de la más general a las más específicas con un
-  operador de refinamiento: es el origen de la versión 4. La versión 6
-  toma de él, a través de Flach, el procesamiento incremental de los
-  ejemplos y la búsqueda de la cláusula falsa en la prueba de un
-  negativo, la idea de su depuración algorítmica.
+  operador de refinamiento: es el origen de la versión 4.
 - Georg Gottlob, «Subsumption and implication», *Information Processing
   Letters* 24(2), 1987, págs. 109–111. Sin edición en línea de acceso
   libre verificada. Caracteriza la diferencia entre la θ-subsunción y la
@@ -912,16 +821,3 @@ tiene de propio.
   verificada. Es la referencia de Flach para el orden de generalidad
   entre cláusulas y la generalización menos general de las versiones 1
   y 2.
-- J. Ross Quinlan, «Learning logical definitions from relations»,
-  *Machine Learning* 5(3), 1990, págs. 239–266,
-  [doi:10.1007/BF00117105](https://doi.org/10.1007/BF00117105). Es la
-  referencia de Flach para guiar la búsqueda descendente con una
-  heurística. La versión 5 usa un criterio mucho más simple, la cantidad
-  de positivos cubiertos, y no la ganancia de información del artículo.
-
-El código del capítulo es propio, escrito para el curso sobre la familia
-de los [capítulos 2](../capitulo-02-hechos-consultas-y-variables/index.md) y [3](../capitulo-03-reglas-y-conjunciones/index.md): de Flach se toman las ideas y la
-estructura de los algoritmos, no el código; las variables enlazadas en
-lugar de las cláusulas restringidas, el conteo de cláusulas generadas, la
-elección de la mejor cláusula y la medición de la extensión con el modelo
-mínimo son del curso.

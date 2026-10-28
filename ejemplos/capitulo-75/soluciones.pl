@@ -14,7 +14,7 @@
 :- ensure_loaded(mejoras).
 :- ensure_loaded(descubrir).
 
-% --- Ejercicio 2: los giros de las capas del medio -------------------------
+% --- Ejercicio 1: los giros de las capas del medio -------------------------
 
 %!  destino_capa(+Eje, +K:integer, +I:integer, -J:integer) is det.
 %
@@ -97,7 +97,7 @@ tres_capas(Cara, Opuesta) :-
     C3 == R,
     caras_uniformes(R).
 
-% --- Ejercicio 3: repeticiones entre paréntesis ------------------------------
+% --- Ejercicio 5: repeticiones entre paréntesis ------------------------------
 
 %!  leer_notacion_rep(+Texto, -Movimientos:list) is semidet.
 %
@@ -139,7 +139,7 @@ grupo(Ms) --> escrito(Ms).
 veces(N) --> [C], { code_type(C, digit(N)), N > 0 }, !.
 veces(1) --> [].
 
-% --- Ejercicio 4: esquinas y aristas ----------------------------------------
+% --- Ejercicio 6: esquinas y aristas ----------------------------------------
 
 %!  tipo_efecto(+Texto, -Esquinas:integer, -Aristas:integer) is semidet.
 %
@@ -159,7 +159,7 @@ capa_de_abajo_movida(Texto) :-
     sub_atom(P, 0, 1, _, 'D'),
     !.
 
-% --- Ejercicio 5: leer el cubo desplegado -------------------------------------
+% --- Ejercicio 2: leer el cubo desplegado -------------------------------------
 
 %!  leer_red(+Lineas:list(string), -Cubo) is semidet.
 %
@@ -212,7 +212,7 @@ ligar_casilla(Cubo, K, Fila, Letra, C0, C) :-
     arg(I, Cubo, Color),
     C is C0 + 1.
 
-% --- Ejercicio 6: el cubo en colores ------------------------------------------
+% --- Ejercicio 3: el cubo en colores ------------------------------------------
 
 % fondo(Cara, Codigo): el código ANSI del color de fondo de Cara.
 fondo(u, 47).

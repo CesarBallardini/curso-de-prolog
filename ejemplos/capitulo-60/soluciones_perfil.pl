@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 60 - Solución del ejercicio 9: el grafo de llamadas que recorre
+% Capítulo 60 - Solución del ejercicio 11: el grafo de llamadas que recorre
 % una ejecución, comparado con el que se lee del programa.
 %
 % arcos_usados/2 ejecuta una meta con una variante del intérprete de

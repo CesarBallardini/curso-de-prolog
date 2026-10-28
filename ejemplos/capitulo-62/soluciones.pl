@@ -6,7 +6,7 @@
 % ejercicios son listas de cláusulas que se pasan a medir_clausulas/4 y a
 % resolver_clausulas/3 de almacen.pl; nativas/3 los ejecuta con Prolog,
 % como respuestas_nativas/3. Las versiones traza, sin_rastro y aritmetica
-% de los ejercicios 6, 9 y 10 están en soluciones_traza.pl,
+% de los ejercicios 5, 8 y 9 están en soluciones_traza.pl,
 % soluciones_sin_rastro.pl y soluciones_aritmetica.pl.
 %
 % solo-local: carga maquina.pl.
@@ -38,7 +38,7 @@ nativas(Clausulas, Meta, Respuestas) :-
                         forall(member(C, Clausulas), assertz(Modulo:C)),
                         findall(Meta, Modulo:Meta, Respuestas)).
 
-% Ejercicio 4
+% Ejercicio 3
 
 % tipos(Cs): hechos tipo(Valor, Tipo), con el tipo en el segundo argumento.
 tipos([ (tipo(1, entero) :- true),
@@ -66,7 +66,7 @@ medir_tipos(Segundo, Primero) :-
     tipos_invertidos(Cs2),
     medir_clausulas(indice, Cs2, tipo(entero, _), Primero).
 
-% Ejercicio 5
+% Ejercicio 4
 
 %!  unificar_con_prueba(+X, +Y, +Marca:integer, +Estado0, -Estado)
 %!      is semidet.
@@ -125,7 +125,7 @@ ligar_celda(N, Valor, Marca, Almacen0-Rastro0, Almacen-Rastro) :-
     ;   Rastro = Rastro0
     ).
 
-% Ejercicio 7
+% Ejercicio 6
 
 %!  transformar(+Clausulas0:list, -Clausulas:list) is det.
 %
@@ -210,7 +210,7 @@ transformado(Programa, Meta) :-
     transformar(Clausulas0, Clausulas),
     resolver_clausulas(indice, Clausulas, Meta).
 
-% Ejercicios 8 y 11
+% Ejercicios 7 y 10
 
 % acumuladores(Cs): invertir/3 y longitud/3 con acumulador.
 acumuladores([ (invertir_acc(L, R) :- invertir(L, [], R)),

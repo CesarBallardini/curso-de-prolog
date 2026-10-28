@@ -4,7 +4,7 @@
 %
 % Carga el planificador terminado (que reexporta las versiones 2 a 4 y la
 % representación), la planificación por lista y la búsqueda del capítulo
-% 40, sin modificarlos. La solución del ejercicio 8, que define otro
+% 40, sin modificarlos. La solución del ejercicio 3, que define otro
 % espacio de estados, está en soluciones_estados.pl.
 %
 % solo-local: carga otros archivos, y SWISH no permite cargar otro archivo.
@@ -34,7 +34,7 @@
 :- use_module(busqueda).
 :- reexport(anomalias, [variante/3]).
 
-% --- Ejercicios 1 y 7 ---------------------------------------------------------
+% --- Ejercicios 6 y 10 --------------------------------------------------------
 
 %!  con_procesadores(+Proyecto0, +N:integer, -Proyecto) is det.
 %
@@ -58,7 +58,7 @@ duracion_con(Proyecto0, N, N-D) :-
     optimo(Proyecto, combinada, C, _),
     duracion(C, D).
 
-% --- Ejercicio 2 --------------------------------------------------------------
+% --- Ejercicio 1 --------------------------------------------------------------
 
 %!  mejor_de_todas(+Proyecto, -D:integer) is det.
 %
@@ -73,7 +73,7 @@ mejor_de_todas(Proyecto, D) :-
                     duracion(C, D0) ),
                   D).
 
-% --- Ejercicio 3 --------------------------------------------------------------
+% --- Ejercicio 7 --------------------------------------------------------------
 
 %!  cabeza(+Proyecto, +Tarea, -Cabeza:integer) is det.
 %
@@ -104,7 +104,7 @@ criticas(Proyecto, Tareas) :-
               Cabeza + Cola =:= Largo ),
             Tareas).
 
-% --- Ejercicio 4 --------------------------------------------------------------
+% --- Ejercicio 2 --------------------------------------------------------------
 
 %!  suma(+Proyecto, +Estado, -H:integer) is det.
 %
@@ -121,7 +121,7 @@ sumar(Proyecto, Tarea, S0, S) :-
     tarea(Proyecto, Tarea, D),
     S is S0 + D.
 
-% --- Ejercicio 5 --------------------------------------------------------------
+% --- Ejercicio 8 --------------------------------------------------------------
 
 %!  comparar_voraz(+Ns:list, -Filas:list) is det.
 %
@@ -142,7 +142,7 @@ fila_voraz(N, N-voraz(D1, K1)-optimo(D2, K2)) :-
     optimo(P, combinada, C2, K2),
     duracion(C2, D2).
 
-% --- Ejercicio 6 --------------------------------------------------------------
+% --- Ejercicio 9 --------------------------------------------------------------
 
 %!  optimo_ida(+Proyecto, +Heuristica, -D:integer, -Expandidos:integer)
 %!      is semidet.
@@ -154,7 +154,7 @@ optimo_ida(Proyecto, Heuristica, D, Expandidos) :-
     ida_estrella(problema(espacio, datos(Proyecto, soluciones:Heuristica)),
                  _, D, Expandidos).
 
-% --- Ejercicio 9 --------------------------------------------------------------
+% --- Ejercicio 4 --------------------------------------------------------------
 
 %!  regla(+D:integer, -Linea:string) is det.
 %
@@ -192,7 +192,7 @@ mostrar_con_regla(Proyecto, Calendario) :-
     format("~s~n", [Regla]),
     mostrar(Proyecto, Calendario).
 
-% --- Ejercicio 10 -------------------------------------------------------------
+% --- Ejercicio 5 --------------------------------------------------------------
 
 %!  errores(+Proyecto, -Errores:list) is det.
 %

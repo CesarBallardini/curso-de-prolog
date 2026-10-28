@@ -1135,7 +1135,7 @@ Ps = [[2, 0, 1, 0, 2], [0, 2, 1, 2, 0]].
 true.
 ```
 
-Es la estrategia de la [sección 10.9](index.md#109-estrategia-para-recolectar-soluciones)
+Es la estrategia de la [sección 10.9](recolectar.md#109-estrategia-para-recolectar-soluciones)
 con un generador de dos objetivos: `permuta(L, P)` propone una permutación y
 `palindrome(P)` la verifica. La prueba `\+ pertenece(P, YaIncluidas)` es la que evita
 las repeticiones: con elementos repetidos, `permuta/2` produce varias veces

@@ -1,9 +1,9 @@
 # Soluciones del capítulo 71 — Proyecto: planificación por regresión
 
 Las soluciones que piden código están en `ejemplos/capitulo-71/`:
-`soluciones_cubos.pl` (ejercicios 2, 9 y 11), `soluciones_robot.pl`
-(ejercicios 4 y 5), `soluciones_pinza.pl` (ejercicio 7) y `soluciones.pl`
-(ejercicios 6 y 8), que reexporta `warplan.pl` y `regresion.pl` y carga
+`soluciones_cubos.pl` (ejercicios 2, 8 y 10), `soluciones_robot.pl`
+(ejercicios 4 y 5), `soluciones_pinza.pl` (ejercicio 11) y `soluciones.pl`
+(ejercicios 6 y 7), que reexporta `warplan.pl` y `regresion.pl` y carga
 los otros tres. Cada archivo tiene sus pruebas en el `.plt` del mismo
 nombre. Los mundos nuevos son módulos que reexportan el mundo del que
 parten y cambian solo lo que el ejercicio pide. Las inferencias se
@@ -44,7 +44,7 @@ de `puede/2`.
 
 El mundo `cubos2` reexporta el de `cubos.pl` y define otro `dado/2`, que
 incluye los estados de `cubos.pl` y agrega `torre` y el `cuatro` del
-ejercicio 9:
+ejercicio 8:
 
 <!-- ejemplo: capitulo-71/soluciones_cubos.pl predicado: dado/2 -->
 ```prolog
@@ -245,30 +245,6 @@ profundización cuando no.
 
 ## Ejercicio 7
 
-<!-- ejemplo: capitulo-71/soluciones_pinza.pl predicado: imposible/1 -->
-```prolog
-% imposible(Hs): los hechos de Hs no pueden valer juntos.
-imposible([sostiene(_), mano_vacia]).
-imposible([sostiene(X), sostiene(Y), distinto(X, Y)]).
-imposible([sostiene(X), sobre(X, _)]).
-imposible([sobre(X, Y), sobre(X, Z), distinto(Y, Z)]).
-imposible([sobre(_, Y), libre(Y)]).
-```
-
-| Metas | sin `imposible/1` | con `imposible/1` |
-|---|---|---|
-| `[sobre(a, b), sobre(b, c)]` | 115 764 | 202 929 |
-| `[sobre(b, c), sobre(a, b)]` | 276 542 | 236 055 |
-
-El plan es el mismo. La prueba de consistencia se hace en cada acción que
-se intenta, y en este mundo casi nunca descarta algo que la búsqueda no
-descartaría enseguida por otro camino: en el primer orden cuesta más de lo
-que ahorra, en el segundo ahorra un poco. Las combinaciones imposibles
-valen la pena cuando las precondiciones pueden contradecirse con los
-protegidos lejos de la raíz, antes de una búsqueda larga.
-
-## Ejercicio 8
-
 <!-- ejemplo: capitulo-71/soluciones.pl predicado: estado_final/4 -->
 ```prolog
 %!  estado_final(+Mundo, +Inicio, +Plan:list, -Estado:list) is det.
@@ -292,7 +268,7 @@ habitación 1, el robot en la habitación 1 y en el piso, y el interruptor
 apagado. Los hechos de `siempre/1` no aparecen, porque `vale/4` no los
 consulta: son parte del mundo, no del estado.
 
-## Ejercicio 9
+## Ejercicio 8
 
 ```prolog
 ?- once(planificar(cubos2, cuatro, [sobre(a, b), sobre(b, c), sobre(c, d)], 8, Plan)).
@@ -316,7 +292,7 @@ cinco y siete veces más, y lo que compra es el plan más corto en los dos
 órdenes. En el robot, los planes de la búsqueda sin cota ya eran los más
 cortos, y la profundización solo agregaba costo.
 
-## Ejercicio 10
+## Ejercicio 9
 
 | Orden de las metas | `planificar/5` | `planificar_sin_cota/4` |
 |---|---|---|
@@ -333,7 +309,7 @@ caro. Con la cota, el orden se invierte: el costo lo deciden las cotas 0
 a 9, que fallan, y el tamaño de lo que recorren depende de qué meta se
 resuelve primero, no del plan que se encuentra al final.
 
-## Ejercicio 11
+## Ejercicio 10
 
 <!-- contexto: capitulo-71/soluciones.pl -->
 ```prolog
@@ -363,6 +339,30 @@ imposible([sobre(X, Y), sobre(Y, X)]).
 `inconsistente/3` hace la prueba sobre una copia con `numbervars/3`: X
 se convierte en un objeto desconocido, el mismo en las dos metas, y la
 combinación `[sobre(X, Y), sobre(Y, X)]` unifica con las dos.
+
+## Ejercicio 11
+
+<!-- ejemplo: capitulo-71/soluciones_pinza.pl predicado: imposible/1 -->
+```prolog
+% imposible(Hs): los hechos de Hs no pueden valer juntos.
+imposible([sostiene(_), mano_vacia]).
+imposible([sostiene(X), sostiene(Y), distinto(X, Y)]).
+imposible([sostiene(X), sobre(X, _)]).
+imposible([sobre(X, Y), sobre(X, Z), distinto(Y, Z)]).
+imposible([sobre(_, Y), libre(Y)]).
+```
+
+| Metas | sin `imposible/1` | con `imposible/1` |
+|---|---|---|
+| `[sobre(a, b), sobre(b, c)]` | 115 764 | 202 929 |
+| `[sobre(b, c), sobre(a, b)]` | 276 542 | 236 055 |
+
+El plan es el mismo. La prueba de consistencia se hace en cada acción que
+se intenta, y en este mundo casi nunca descarta algo que la búsqueda no
+descartaría enseguida por otro camino: en el primer orden cuesta más de lo
+que ahorra, en el segundo ahorra un poco. Las combinaciones imposibles
+valen la pena cuando las precondiciones pueden contradecirse con los
+protegidos lejos de la raíz, antes de una búsqueda larga.
 
 ## Ejercicio 12
 

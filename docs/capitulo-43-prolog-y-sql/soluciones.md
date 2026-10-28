@@ -1,8 +1,8 @@
 # Soluciones del capítulo 43 — Prolog y SQL
 
 El código de esta página está en `ejemplos/capitulo-43/`: `soluciones.pl`
-para los ejercicios 3 a 10 y 12 a 14, que carga `universidad.pl` y
-`recursion.pl` y tiene sus pruebas. Los ejercicios 1, 2 y 11 se resuelven
+para los ejercicios 3 a 9 y 11 a 14, que carga `universidad.pl` y
+`recursion.pl` y tiene sus pruebas. Los ejercicios 1, 2 y 10 se resuelven
 con consultas sobre esos dos archivos. Cada sentencia SQL se ejecutó en
 SQLite sobre `references/ejercicios/sql-prolog/schema.sql`, y cada prueba de
 `soluciones.plt` compara el resultado de Prolog con el de SQLite.
@@ -263,43 +263,6 @@ representa «sin promedio».
 
 ## 9
 
-```sql
-SELECT i.legajo, i.materia, c.requisito
-FROM inscripciones i JOIN correlativas c ON c.materia = i.materia
-WHERE NOT EXISTS (SELECT * FROM inscripciones r
-                  WHERE r.legajo = i.legajo
-                    AND r.materia = c.requisito
-                    AND r.nota >= 6);
-```
-
-<!-- ejemplo: capitulo-43/soluciones.pl predicado: correlativa_pendiente/3 -->
-```prolog
-%!  correlativa_pendiente(?Legajo, ?Materia, ?Requisito) is nondet.
-%
-%   El alumno de Legajo está inscripto en Materia sin haber aprobado
-%   Requisito, una de sus correlativas.
-correlativa_pendiente(Legajo, Materia, Requisito) :-
-    inscripcion(Legajo, Materia, _),
-    correlativa(Materia, Requisito),
-    \+ aprobada(Legajo, Requisito, _).
-```
-
-```prolog
-?- correlativa_pendiente(L, M, R).
-L = 103,
-M = am2,
-R = alg ;
-false.
-```
-
-Los datos no la cumplen: carla cursa analisis_2 con algebra desaprobada
-(nota 5). Un `CHECK` de SQL examina una sola fila, y esta restricción examina
-otras filas de otras tablas: en SQL se verifica con un disparador o con
-una consulta como esta. En Prolog es una cláusula más de las violaciones,
-y `insertar/1` podría consultarla antes de agregar una inscripción.
-
-## 10
-
 `jefe <> 1` da cinco filas: pablo, sofia, tomas, valeria y nicolas. La
 consulta Prolog da seis, marta incluida:
 
@@ -333,7 +296,7 @@ Si lo buscado es «todos los que no dependen de 1, incluidos los que no
 tienen jefe», la consulta Prolog original es la correcta, y en SQL hace
 falta `WHERE jefe IS NULL OR jefe <> 1`, que da seis filas.
 
-## 11
+## 10
 
 El `COUNT(*)` da una fila con 0; con `GROUP BY carrera` no hay ningún
 grupo y no hay filas; `SUM` y `MAX` sobre ninguna fila dan `NULL` los dos.
@@ -358,7 +321,7 @@ Prolog y `NULL` en SQL, y el máximo de nada no existe: Prolog falla, y SQL
 responde `NULL`. Un programa que traduce consultas de un lenguaje al otro
 tiene que tratar esos dos casos aparte.
 
-## 12
+## 11
 
 ```sql
 WITH RECURSIVE nivel(id, k) AS (
@@ -395,7 +358,7 @@ valeria en 2; nicolas en 3. La consulta SQL baja desde la directora; la
 regla sube desde el empleado hasta ella. `UNION ALL` basta porque la
 jerarquía es un árbol: cada empleado se alcanza por un único camino.
 
-## 13
+## 12
 
 ```sql
 WITH RECURSIVE viaje(destino, precio, tramos) AS (
@@ -479,6 +442,43 @@ comprueba. La diferencia está en el trabajo: la versión acotada enumera
 todos los viajes de hasta ocho vuelos, con sus vueltas al ciclo, y después
 elige el mínimo; la tabla con `min` descarta un precio en cuanto no mejora
 el guardado.
+
+## 13
+
+```sql
+SELECT i.legajo, i.materia, c.requisito
+FROM inscripciones i JOIN correlativas c ON c.materia = i.materia
+WHERE NOT EXISTS (SELECT * FROM inscripciones r
+                  WHERE r.legajo = i.legajo
+                    AND r.materia = c.requisito
+                    AND r.nota >= 6);
+```
+
+<!-- ejemplo: capitulo-43/soluciones.pl predicado: correlativa_pendiente/3 -->
+```prolog
+%!  correlativa_pendiente(?Legajo, ?Materia, ?Requisito) is nondet.
+%
+%   El alumno de Legajo está inscripto en Materia sin haber aprobado
+%   Requisito, una de sus correlativas.
+correlativa_pendiente(Legajo, Materia, Requisito) :-
+    inscripcion(Legajo, Materia, _),
+    correlativa(Materia, Requisito),
+    \+ aprobada(Legajo, Requisito, _).
+```
+
+```prolog
+?- correlativa_pendiente(L, M, R).
+L = 103,
+M = am2,
+R = alg ;
+false.
+```
+
+Los datos no la cumplen: carla cursa analisis_2 con algebra desaprobada
+(nota 5). Un `CHECK` de SQL examina una sola fila, y esta restricción examina
+otras filas de otras tablas: en SQL se verifica con un disparador o con
+una consulta como esta. En Prolog es una cláusula más de las violaciones,
+y `insertar/1` podría consultarla antes de agregar una inscripción.
 
 ## 14
 

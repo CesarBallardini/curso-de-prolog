@@ -6,7 +6,7 @@ valores(Soluciones, Vs) :-
     findall(V, ( member(_ = E, Soluciones), V is E ), Vs0),
     msort(Vs0, Vs).
 
-% Ejercicio 6.
+% Ejercicio 8.
 test(factores, all(S == [x = acos(0), x = -acos(0),
                          x = asin(1 / 2), x = pi - asin(1 / 2)])) :-
     resolver_factores(cos(x) * (1 - 2 * sin(x)) = 0, x, S).
@@ -20,7 +20,7 @@ test(factor_x, all(S == [x = 0, x = sqrt(4), x = -sqrt(4)])) :-
 test(no_producto, all(S == [x = 9 / 3])) :-
     resolver_factores(3 * x + 2 = 11, x, S).
 
-% Ejercicio 7.
+% Ejercicio 5.
 test(homogeneo, true(Vs =@= [1.0, 3.0])) :-
     findall(S, resolver_homogeneo(2 ^ (2 * x) - 5 * 2 ^ (x + 1) + 16 = 0,
                                   x, S), Ss),
@@ -35,7 +35,7 @@ test(no_lineal, [fail]) :-
 test(una_potencia, all(S == [x = log(16 / 2) / log(2)])) :-
     resolver_homogeneo(2 ^ (x + 1) = 16, x, S).
 
-% Ejercicio 8.
+% Ejercicio 6.
 test(bicuadrada, all(S == [x = sqrt(4.0), x = -sqrt(4.0),
                            x = sqrt(1.0), x = -sqrt(1.0)])) :-
     resolver_bicuadrada(x ^ 4 - 5 * x ^ 2 + 4 = 0, x, S).

@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 43 - Soluciones de los ejercicios 3 a 10 y 12 a 14.
+% Capítulo 43 - Soluciones de los ejercicios 3 a 9 y 11 a 14.
 %
 % Carga las tablas académicas de universidad.pl y las de empleados y
 % vuelos de recursion.pl.
@@ -80,7 +80,7 @@ promedio_alumno(Legajo, Promedio) :-
     length(Notas, Cantidad),
     Promedio is Suma / Cantidad.
 
-% Ejercicio 9
+% Ejercicio 13
 
 %!  correlativa_pendiente(?Legajo, ?Materia, ?Requisito) is nondet.
 %
@@ -91,7 +91,7 @@ correlativa_pendiente(Legajo, Materia, Requisito) :-
     correlativa(Materia, Requisito),
     \+ aprobada(Legajo, Requisito, _).
 
-% Ejercicio 10
+% Ejercicio 9
 
 %!  no_depende_de(?Nombre, +Jefe) is nondet.
 %
@@ -102,7 +102,7 @@ no_depende_de(Nombre, Jefe) :-
     J \== null,
     J \== Jefe.
 
-% Ejercicio 12
+% Ejercicio 11
 
 %!  nivel(?Id, ?Nivel) is nondet.
 %
@@ -115,7 +115,7 @@ nivel(Id, Nivel) :-
     nivel(Jefe, Nivel0),
     Nivel is Nivel0 + 1.
 
-% Ejercicio 13
+% Ejercicio 12
 
 %!  viaje(+Origen, ?Destino, -Precio, +Tope) is nondet.
 %

@@ -4,7 +4,7 @@ El código de esta página está en `ejemplos/capitulo-63/soluciones.pl`, con
 sus pruebas en `soluciones.plt`. El archivo carga `comparacion.pl`, que
 carga todas las versiones del capítulo, el demostrador proposicional de
 `resolucion.pl` y el verificador, y no modifica ninguno de ellos. Los
-ejercicios 1, 3, 5 y 7 se resuelven con los archivos del capítulo: sus
+ejercicios 1, 2, 4 y 7 se resuelven con los archivos del capítulo: sus
 consultas usan `leer_formula/2` de `lector.pl`, `clausulas_texto/2` de
 `clausal.pl` y `clausulas_fo/2` y `clausulas_fo_texto/2` de
 `primer_orden.pl`. Es `% solo-local`, porque carga otros archivos.
@@ -39,38 +39,6 @@ probablemente quiere decir, se escribe `∀x (∃y ama(x, y) ∧ ∃y ama(y, x))
 
 ## 2
 
-Una contradicción es una fórmula cuya negación es una tautología, de modo
-que `clasificar/2` pregunta dos veces a `tautologia/2`:
-
-<!-- ejemplo: capitulo-63/soluciones.pl predicado: clasificar/2 -->
-```prolog
-%!  clasificar(+Texto, -Clase) is det.
-%
-%   Clase es tautologia, contradiccion o contingente, según la fórmula
-%   sin cuantificadores que Texto escribe: una contradicción es una
-%   fórmula cuya negación es una tautología.
-clasificar(Texto, Clase) :-
-    leer_formula(Texto, F),
-    (   tautologia(clpb, F)
-    ->  Clase = tautologia
-    ;   tautologia(clpb, no(F))
-    ->  Clase = contradiccion
-    ;   Clase = contingente
-    ).
-```
-
-```prolog
-?- clasificar("p ∨ ¬p", C1), clasificar("p ∧ ¬p", C2), clasificar("p → q", C3), clasificar("(p → q) ∨ (q → p)", C4).
-C1 = C4, C4 = tautologia,
-C2 = contradiccion,
-C3 = contingente.
-```
-
-La cuarta es una tautología: si `q` es verdadera, `p → q` lo es; si es
-falsa, `q → p` lo es.
-
-## 3
-
 ```prolog
 ?- clausulas_texto("(p ∧ q) ∨ (r ∧ s)", Cs), length(Cs, N).
 Cs = [[+p, +r], [+p, +s], [+q, +r], [+q, +s]],
@@ -95,7 +63,7 @@ tres átomos es falsa; cada cláusula excluye una de las cuatro asignaciones
 con una cantidad impar de átomos falsos: una cláusula de tres literales
 es falsa en exactamente una asignación de sus tres átomos.
 
-## 4
+## 3
 
 `definir/5` da a cada conjunción y a cada disyunción un átomo `d(N)` y
 las cláusulas que dicen que `d(N)` implica la subfórmula. Alcanza con la
@@ -165,7 +133,7 @@ P = [r(2, 4, [+d(3), +d(4), -d(1)]), r(5, 9, [+p, +d(4), -d(1)]), r(7, 10, [+p, 
 L = 5.
 ```
 
-## 5
+## 4
 
 El conjunto de Hein tiene dos pares de cláusulas que se resuelven en una
 cláusula unitaria: `¬p ∨ q` con `p ∨ q` da `q`, y `p ∨ ¬q` con `¬p ∨ ¬q`
@@ -193,9 +161,9 @@ false.
 
 En la segunda, el paso 2 resuelve `p ∨ q` con `¬p ∨ ¬q`: el resolvente
 es `q ∨ ¬q`, no `¬q`, y el verificador no puede rehacer el paso. El
-[ejercicio 6](#6) dice cuál es el paso incorrecto.
+[ejercicio 5](#5) dice cuál es el paso incorrecto.
 
-## 6
+## 5
 
 `primer_error/2` recorre los pasos con `paso_correcto/3` del verificador,
 sin cambiarlo, y se detiene en el primero que no puede rehacer:
@@ -231,6 +199,50 @@ primer_error([Paso|Pasos], Clausulas, I, K) :-
 ?- primer_error(prueba([[-p, +q], [+p, +q], [+p, -q], [-p, -q]], [r(1, 2, [+q]), r(2, 4, [-q]), r(5, 6, [])]), K).
 K = 2.
 ```
+
+## 6
+
+`derivar_unitaria/2` es `derivar/2` de `resolucion.pl` con una condición
+más: uno de los dos padres tiene un solo literal.
+
+<!-- ejemplo: capitulo-63/soluciones.pl predicado: derivar_unitaria/2 -->
+```prolog
+%!  derivar_unitaria(?Pasos:list, +Clausulas:list) is nondet.
+%
+%   Como derivar/2 de resolucion.pl, con un padre unitario en cada paso.
+%   La condición es un condicional y no una disyunción: con los dos
+%   padres unitarios, la disyunción daría cada derivación dos veces.
+derivar_unitaria([], Clausulas) :-
+    memberchk([], Clausulas).
+derivar_unitaria([r(I, J, R)|Pasos], Clausulas) :-
+    nth1(J, Clausulas, C2),
+    nth1(I, Clausulas, C1),
+    I < J,
+    (   C1 = [_]
+    ->  true
+    ;   C2 = [_]
+    ),
+    resolvente(C1, C2, R),
+    \+ memberchk(R, Clausulas),
+    append(Clausulas, [R], Clausulas1),
+    derivar_unitaria(Pasos, Clausulas1).
+```
+
+```prolog
+?- clausulas_texto("¬((a → b) ∧ (b → c) → (a → c))", Cs), refutar_unitaria(Cs, 5, P).
+Cs = [[+a], [+b, -a], [+c, -b], [-c]],
+P = [r(1, 2, [+b]), r(3, 4, [-b]), r(5, 6, [])].
+
+?- refutar_unitaria([[-p, +q], [+p, +q], [+p, -q], [-p, -q]], 10, P).
+false.
+```
+
+El conjunto de Hein no tiene ninguna cláusula unitaria, y la resolución
+unitaria no puede dar el primer paso. La resolución unitaria es completa
+para las cláusulas de Horn, porque en un conjunto insatisfacible de
+cláusulas de Horn siempre hay un hecho, una cláusula unitaria positiva;
+`p ∨ q` no es de Horn, y el conjunto de Hein necesita un paso entre dos
+cláusulas de dos literales.
 
 ## 7
 
@@ -321,47 +333,35 @@ de `clausulas_fo/2` la había puesto después de los dos.
 
 ## 9
 
-`derivar_unitaria/2` es `derivar/2` de `resolucion.pl` con una condición
-más: uno de los dos padres tiene un solo literal.
+Una contradicción es una fórmula cuya negación es una tautología, de modo
+que `clasificar/2` pregunta dos veces a `tautologia/2`:
 
-<!-- ejemplo: capitulo-63/soluciones.pl predicado: derivar_unitaria/2 -->
+<!-- ejemplo: capitulo-63/soluciones.pl predicado: clasificar/2 -->
 ```prolog
-%!  derivar_unitaria(?Pasos:list, +Clausulas:list) is nondet.
+%!  clasificar(+Texto, -Clase) is det.
 %
-%   Como derivar/2 de resolucion.pl, con un padre unitario en cada paso.
-%   La condición es un condicional y no una disyunción: con los dos
-%   padres unitarios, la disyunción daría cada derivación dos veces.
-derivar_unitaria([], Clausulas) :-
-    memberchk([], Clausulas).
-derivar_unitaria([r(I, J, R)|Pasos], Clausulas) :-
-    nth1(J, Clausulas, C2),
-    nth1(I, Clausulas, C1),
-    I < J,
-    (   C1 = [_]
-    ->  true
-    ;   C2 = [_]
-    ),
-    resolvente(C1, C2, R),
-    \+ memberchk(R, Clausulas),
-    append(Clausulas, [R], Clausulas1),
-    derivar_unitaria(Pasos, Clausulas1).
+%   Clase es tautologia, contradiccion o contingente, según la fórmula
+%   sin cuantificadores que Texto escribe: una contradicción es una
+%   fórmula cuya negación es una tautología.
+clasificar(Texto, Clase) :-
+    leer_formula(Texto, F),
+    (   tautologia(clpb, F)
+    ->  Clase = tautologia
+    ;   tautologia(clpb, no(F))
+    ->  Clase = contradiccion
+    ;   Clase = contingente
+    ).
 ```
 
 ```prolog
-?- clausulas_texto("¬((a → b) ∧ (b → c) → (a → c))", Cs), refutar_unitaria(Cs, 5, P).
-Cs = [[+a], [+b, -a], [+c, -b], [-c]],
-P = [r(1, 2, [+b]), r(3, 4, [-b]), r(5, 6, [])].
-
-?- refutar_unitaria([[-p, +q], [+p, +q], [+p, -q], [-p, -q]], 10, P).
-false.
+?- clasificar("p ∨ ¬p", C1), clasificar("p ∧ ¬p", C2), clasificar("p → q", C3), clasificar("(p → q) ∨ (q → p)", C4).
+C1 = C4, C4 = tautologia,
+C2 = contradiccion,
+C3 = contingente.
 ```
 
-El conjunto de Hein no tiene ninguna cláusula unitaria, y la resolución
-unitaria no puede dar el primer paso. La resolución unitaria es completa
-para las cláusulas de Horn, porque en un conjunto insatisfacible de
-cláusulas de Horn siempre hay un hecho, una cláusula unitaria positiva;
-`p ∨ q` no es de Horn, y el conjunto de Hein necesita un paso entre dos
-cláusulas de dos literales.
+La cuarta es una tautología: si `q` es verdadera, `p → q` lo es; si es
+falsa, `q → p` lo es.
 
 ## 10
 

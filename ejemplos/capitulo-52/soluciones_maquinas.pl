@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 52 - Soluciones de los ejercicios 10 y 11.
+% Capítulo 52 - Soluciones de los ejercicios 12 y 13.
 %
 % Agregan un autómata de pila y una máquina de Turing a los de
 % maquinas.pl, que se carga con ensure_loaded/1.
@@ -15,7 +15,7 @@
 :- multifile inicial/2, final/2, fondo/2, pila/6, turing/6.
 :- discontiguous inicial/2, final/2, fondo/2, pila/6, turing/6.
 
-% Ejercicio 10: iguales guarda en la pila el excedente de a o de b: una
+% Ejercicio 12: iguales guarda en la pila el excedente de a o de b: una
 % letra igual al tope se apila, y una distinta lo desapila.
 
 inicial(iguales, q).
@@ -30,7 +30,7 @@ pila(iguales, q, [S], T, [], q) :-
     member(S-T, [a-b, b-a]).
 pila(iguales, q, [], z, [z], fin).
 
-% Ejercicio 11: palindromo_mt borra el primer símbolo, recuerda cuál era
+% Ejercicio 13: palindromo_mt borra el primer símbolo, recuerda cuál era
 % con el estado, va hasta el último, lo compara y lo borra, y vuelve.
 
 inicial(palindromo_mt, q0).

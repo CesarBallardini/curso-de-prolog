@@ -121,7 +121,7 @@ agregados -->
 entre_comillas -->
     "\"", string_without(`"`, _), "\"".
 
-% Ejercicio 4
+% Ejercicio 5
 
 %!  metricas_presentes(+Pedidos:list, -Horas:list) is det.
 %
@@ -153,7 +153,7 @@ metricas_anomalas(Modelo, Archivo, Pares) :-
     anomalias_presentes(Archivo, Umbrales, Anomalias),
     findall(H-M, member(anomalia(H, M, _, _), Anomalias), Pares).
 
-% Ejercicio 5
+% Ejercicio 6
 
 %!  ajustar_con_minimo(+Z, +Minimo, +Valores:list(number), -Intervalo)
 %!      is det.
@@ -168,7 +168,7 @@ ajustar_con_minimo(Z, Minimo, Valores, entre(Inferior, Superior)) :-
     Inferior is Mediana - Ancho,
     Superior is Mediana + Ancho.
 
-% Ejercicio 6
+% Ejercicio 7
 
 %!  ajustar_cuantil(+P:number, +Valores:list(number), -Limite) is det.
 %
@@ -194,7 +194,7 @@ umbrales_cuantil(P, [pedidos-menor(PI), fallos-mayor(FS), cpu-mayor(CS)]) :-
     valores_de_referencia(cpu, Cs),
     ajustar_cuantil(P, Cs, CS).
 
-% Ejercicio 8
+% Ejercicio 9
 
 %!  perfiles_diarios(+Pedidos:list, -Perfiles:list) is det.
 %
@@ -263,18 +263,6 @@ entrenamiento_diario(N, Pesos, Curva) :-
     length(Ejemplos, N),
     entrenar(1, Ejemplos, [0, 0, 0], Pesos, Curva).
 
-% Ejercicio 9
-
-%!  repetidos(+K:integer, -Archivos:list) is det.
-%
-%   Archivos es la lista de los cuatro días repetida K veces.
-repetidos(K, Archivos) :-
-    Dias = [ registros('2026-09-28.log'), registros('2026-09-29.log'),
-             registros('2026-09-30.log'), registros('2026-10-01.log') ],
-    length(Copias, K),
-    maplist(=(Dias), Copias),
-    append(Copias, Archivos).
-
 % Ejercicio 10
 
 %!  limites_ponderados(+D, +Alfa, +Valores:list(number),
@@ -305,3 +293,15 @@ ajustar_ponderado(D, Alfa, [X|Xs], entre(Inferior, Superior)) :-
     Desvio is sqrt(V),
     Inferior is M - D * Desvio,
     Superior is M + D * Desvio.
+
+% Ejercicio 11
+
+%!  repetidos(+K:integer, -Archivos:list) is det.
+%
+%   Archivos es la lista de los cuatro días repetida K veces.
+repetidos(K, Archivos) :-
+    Dias = [ registros('2026-09-28.log'), registros('2026-09-29.log'),
+             registros('2026-09-30.log'), registros('2026-10-01.log') ],
+    length(Copias, K),
+    maplist(=(Dias), Copias),
+    append(Copias, Archivos).

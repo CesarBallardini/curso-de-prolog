@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 66 - Soluciones de los ejercicios 2, 3, 6, 7, 9 y 10.
+% Capítulo 66 - Soluciones de los ejercicios 2, 3, 5, 6, 7 y 10.
 %
 % Una sola base con varios dominios que no comparten predicados: Hans y el
 % dialecto de Pensilvania (2), Inés, la estudiante sin el eslabón derrotado
@@ -49,7 +49,7 @@ empleado(X) :~ adulto(X).
 se_mantiene(X) :~ empleado(X).
 neg se_mantiene(X) :~ estudiante(X).
 
-% Ejercicio 6 ----------------------------------------------------------
+% Ejercicio 5 ----------------------------------------------------------
 
 % neg arranca(A): se observó que el automóvil A no arranca.
 neg arranca(auto2).
@@ -100,7 +100,7 @@ literal(Literal, (A, B)) :-
     ).
 literal(Literal, Literal).
 
-% Ejercicio 7 ----------------------------------------------------------
+% Ejercicio 6 ----------------------------------------------------------
 
 %!  escribir_derivacion(+Arbol) is det.
 %
@@ -121,32 +121,7 @@ escribir_derivacion(regla(Regla, Arboles), S) :-
     S1 is S + 2,
     forall(member(A, Arboles), escribir_derivacion(A, S1)).
 
-% Ejercicio 9 ----------------------------------------------------------
-
-% murcielago(X): X es un murciélago.
-murcielago(rufo).
-murcielago(dracula).
-
-% muerto(X): X está muerto.
-muerto(dracula).
-
-:- table vuela_t/1, no_vuela_t/1.
-
-%!  vuela_t(?X) is nondet.
-%
-%   X vuela: es un murciélago del que no se prueba que no vuela.
-vuela_t(X) :-
-    murcielago(X),
-    tnot(no_vuela_t(X)).
-
-%!  no_vuela_t(?X) is nondet.
-%
-%   X no vuela: está muerto. La regla de los muertos, superior, ya no
-%   tiene la excepción.
-no_vuela_t(X) :-
-    muerto(X).
-
-% Ejercicio 10 ---------------------------------------------------------
+% Ejercicio 7 ----------------------------------------------------------
 
 % regla_f(Cabeza, Cuerpo): regla sin excepciones del intérprete de Flach.
 regla_f(mamifero(X), murcielago(X)).
@@ -200,3 +175,28 @@ contradice(no(A)) :-
     probar_f(A).
 contradice(A) :-
     probar_f(no(A)).
+
+% Ejercicio 10 ---------------------------------------------------------
+
+% murcielago(X): X es un murciélago.
+murcielago(rufo).
+murcielago(dracula).
+
+% muerto(X): X está muerto.
+muerto(dracula).
+
+:- table vuela_t/1, no_vuela_t/1.
+
+%!  vuela_t(?X) is nondet.
+%
+%   X vuela: es un murciélago del que no se prueba que no vuela.
+vuela_t(X) :-
+    murcielago(X),
+    tnot(no_vuela_t(X)).
+
+%!  no_vuela_t(?X) is nondet.
+%
+%   X no vuela: está muerto. La regla de los muertos, superior, ya no
+%   tiene la excepción.
+no_vuela_t(X) :-
+    muerto(X).

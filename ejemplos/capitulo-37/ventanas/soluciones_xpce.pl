@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 37 - Soluciones de los ejercicios 8 y 9: la sugerencia en la
+% Capítulo 37 - Soluciones de los ejercicios 7 y 8: la sugerencia en la
 % ventana del Buscaminas y los inscriptos en la de Inscripciones.
 %
 % Las dos ventanas se construyen con los predicados de buscaminas_xpce.pl
@@ -29,7 +29,7 @@
 :- use_module('../../capitulo-32/inscripciones/datos').
 :- use_module('../../capitulo-32/inscripciones/informes').
 
-% --- Ejercicio 8 ------------------------------------------------------------
+% --- Ejercicio 7 ------------------------------------------------------------
 
 %!  texto_de_sugerencia(+Partida, -Texto:string) is det.
 %
@@ -63,7 +63,7 @@ sugerir(Ventana) :-
     get(Controles, member, estado, Rotulo),
     send(Rotulo, selection, Atomo).
 
-% --- Ejercicio 9 ------------------------------------------------------------
+% --- Ejercicio 8 ------------------------------------------------------------
 
 %!  lineas_de_inscriptos(+Materia:atom, -Lineas:list(string)) is det.
 %

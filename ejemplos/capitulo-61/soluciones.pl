@@ -16,7 +16,7 @@
 :- ensure_loaded(resolucion).
 :- ensure_loaded(terminacion).
 
-% Ejercicios 2, 3, 4, 7, 8, 9 y 12: programas nuevos.
+% Ejercicios 2, 3, 6, 9, 10, 11 y 12: programas nuevos.
 programa(maximo,
     [ menor :: [numero(X), numero(Y), {X < Y}]
            ---> [quitar(numero(X))],
@@ -84,7 +84,7 @@ numeros(Desde, Hasta, Hechos) :-
 
 %!  clave(+Estrategia, +Largo:integer, +Instancia, -Clave) is det.
 %
-%   Ejercicio 5: la estrategia lejana. Al ordenar, las acciones de una
+%   Ejercicio 4: la estrategia lejana. Al ordenar, las acciones de una
 %   instancia nombran las dos posiciones que intercambia; la clave prefiere
 %   la mayor distancia entre ellas. Una instancia sin intercambio tiene
 %   clave 0.
@@ -104,7 +104,7 @@ distancia(Acciones, Clave) :-
 %!  historia(+Programa, +Estrategia, +Memoria0:list, -Historia:list,
 %!           -Resultado) is semidet.
 %
-%   Ejercicio 10. Historia es la traza de la ejecución como datos: un
+%   Ejercicio 7. Historia es la traza de la ejecución como datos: un
 %   término ciclo(N, Nombre, Cantidad, Hechos) por ciclo, con el módulo
 %   elegido, el tamaño del conjunto de conflicto y los hechos que usa.
 %   Falla si falla una acción de la instancia elegida.
@@ -145,14 +145,14 @@ escribir_historia(Historia) :-
 
 %!  ruido(+Cantidad:integer, -Hechos:list) is det.
 %
-%   Ejercicio 11. Hechos son Cantidad hechos ruido(I) que ningún módulo
+%   Ejercicio 8. Hechos son Cantidad hechos ruido(I) que ningún módulo
 %   usa.
 ruido(Cantidad, Hechos) :-
     findall(ruido(I), between(1, Cantidad, I), Hechos).
 
 %!  primos_hasta(+N:integer, -Primos:list(integer)) is det.
 %
-%   Ejercicio 3. Primos son los primos hasta N, en orden, según el
+%   Ejercicio 9. Primos son los primos hasta N, en orden, según el
 %   programa criba.
 primos_hasta(N, Primos) :-
     numeros(2, N, Hechos),
@@ -163,7 +163,7 @@ primos_hasta(N, Primos) :-
 %!  vigilar_formula(+Programa, +Formula, +Limite:integer, -Resultado,
 %!                  -Hechos:integer) is det.
 %
-%   Ejercicio 9. Ejecuta el Programa de resolución sobre la negación de
+%   Ejercicio 11. Ejecuta el Programa de resolución sobre la negación de
 %   Formula con vigilar/6. Hechos es la cantidad de hechos de la memoria
 %   final.
 vigilar_formula(Programa, Formula, Limite, Resultado, Hechos) :-
@@ -174,7 +174,7 @@ vigilar_formula(Programa, Formula, Limite, Resultado, Hechos) :-
 %!  ciclos_invertida(+Programa, +Estrategia, +Largo:integer,
 %!                   -Ciclos:integer) is det.
 %
-%   Ejercicios 4 y 5. Ciclos es la cantidad de ciclos del Programa de
+%   Ejercicios 3 y 4. Ciclos es la cantidad de ciclos del Programa de
 %   ordenamiento, con la Estrategia, para la lista Largo, ..., 2, 1.
 ciclos_invertida(Programa, Estrategia, Largo, Ciclos) :-
     numlist(1, Largo, Creciente),

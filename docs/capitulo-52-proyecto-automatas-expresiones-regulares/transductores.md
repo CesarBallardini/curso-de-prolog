@@ -1,14 +1,18 @@
 # Transductores
 
-Esta página contiene la [sección 52.7](index.md#527-transductores) del
-[capítulo 52](index.md): los transductores finitos, las máquinas de Mealy, y los
-circuitos secuenciales del [capítulo 49](../capitulo-49-proyecto-circuitos-logicos/index.md) ejecutados como máquinas de Mealy. Los
+Esta página continúa la página
+[Expresiones regulares y un analizador léxico](expresiones.md#526-un-analizador-lexico)
+del [capítulo 52](index.md), con la sección [52.7](#527-transductores): los
+transductores finitos, las máquinas de Mealy, los circuitos secuenciales del
+[capítulo 49](../capitulo-49-proyecto-circuitos-logicos/index.md) ejecutados
+como máquinas de Mealy, y las máquinas de Moore, con la salida en los
+estados. Los
 ejemplos están en `transductores.pl` y `secuencial.pl`, en `ejemplos/capitulo-52/`,
 con sus pruebas; son módulos, y se ejecutan localmente. El
 [capítulo 54](../capitulo-54-proyecto-morfologia-castellano/index.md) carga el
 módulo `transductores`.
 
-## Transductores
+## 52.7 Transductores
 
 Un **transductor** es un autómata que escribe mientras lee. `transductores.pl`
 lo describe con las mismas relaciones del módulo `automatas`, con un
@@ -129,7 +133,7 @@ true.
 La segunda consulta usa `gray` como un autómata sobre pares: el par de
 palabras 10 y 11 es una traducción de gray.
 
-## Un circuito secuencial es una máquina de Mealy
+### Un circuito secuencial es una máquina de Mealy
 
 Un circuito secuencial sincrónico del
 [capítulo 49](../capitulo-49-proyecto-circuitos-logicos/secuenciales.md#circuitos-secuenciales)
@@ -196,7 +200,7 @@ Ps = [[0, 0], [0, 1], [0, 1]].
 1 + 3 = 4, y los siete pares de números de tres bits que suman 6: 3 + 3,
 1 + 5, 5 + 1, 2 + 4, 6 + 0, 0 + 6 y 4 + 2, en el orden de la tabla.
 
-## Máquinas de Moore
+### Máquinas de Moore
 
 En una máquina de Mealy la salida está en las transiciones. En una
 **máquina de Moore** está en los estados: cada estado escribe un símbolo
@@ -272,3 +276,50 @@ S = [1, 2, 2].
 La conversión inversa, de Mealy a Moore, también existe, pero no es un
 cambio de nombre: un estado de Mealy al que se llega escribiendo símbolos
 distintos tiene que desdoblarse en un estado de Moore por cada símbolo.
+
+El capítulo continúa en la página
+[Autómatas de pila y máquinas de Turing](pila-y-turing.md#528-automatas-de-pila-y-maquinas-de-turing),
+con los modelos que agregan al autómata una memoria sin límite.
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio, y el [capítulo 54](../capitulo-54-proyecto-morfologia-castellano/index.md)
+los da por hechos.
+
+9. ★ **(2)** El complemento a dos de un número binario escrito con el bit
+   menos significativo primero se obtiene copiando los bits hasta el
+   primer 1 inclusive, e invirtiendo los que siguen. Escribirlo como una
+   máquina de Mealy `complemento2` con dos estados, verificar para todos
+   los números de 4 bits que el resultado es 16 − N módulo 16, y explicar
+   por qué `transducir(complemento2, B, S)` y
+   `transducir(complemento2, S, B)` dan lo mismo.
+10. **(3)** Describir con `secuencial/3` del [capítulo 49](../capitulo-49-proyecto-circuitos-logicos/index.md), en un archivo que
+   cargue `secuencial.pl`, un contador de dos bits sin entradas cuya
+   salida es 1 cuando el contador vale 0 o 2, y 0 en los otros casos.
+   Calcular los estados de `circuito(Nombre, [0, 0])` y de su mínimo,
+   explicar qué estados se funden, y proponer un circuito con un solo bit
+   de estado que tenga la misma salida.
+11. **(3)** Escribir la construcción `moore_de(M, S0)`, la máquina de
+    Moore de una máquina de Mealy M, con S0 como salida del estado
+    inicial: sus estados son pares `Q-S`, un estado de M y la salida que M
+    escribió al llegar a él. Verificar para todas las entradas de hasta 5
+    bits que `moore(moore_de(gray, 0), E, S)` da S = [0|G] cuando
+    `transducir(gray, E, G)` da G, y contar sus estados alcanzables.
+
+## Referencias
+
+- James L. Hein, *Prolog Experiments in Discrete Mathematics, Logic, and
+  Computability*, Jones and Bartlett, 2009 ([edición en línea](https://samples.jbpub.com/9780763772062/PrologLabBook09.pdf)) — «Computability»
+  (máquinas de Mealy y de Moore). Esta página toma de allí la forma de los
+  intérpretes de esas máquinas, con otra representación y otros ejemplos.
+- George H. Mealy, «A method for synthesizing sequential circuits», *Bell
+  System Technical Journal* 34 (5), 1955, págs. 1045–1079, y Edward F.
+  Moore, «Gedanken-experiments on sequential machines», en *Automata
+  Studies*, Princeton University Press, 1956. De Mealy vienen las máquinas
+  con salida en las transiciones de la [sección 52.7](#527-transductores);
+  de Moore, las máquinas con salida en los estados de
+  [Máquinas de Moore](#maquinas-de-moore). No tienen edición en línea
+  gratuita.

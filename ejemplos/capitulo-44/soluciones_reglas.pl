@@ -49,7 +49,7 @@ coleccion((W ^ N * W ~> W ^ (N + 1) si con(W), libre(N))).
 coleccion((W * W ^ N ~> W ^ (N + 1) si con(W), libre(N))).
 coleccion((W + U * W ~> (1 + U) * W si con(W), libre(U))).
 
-% Ejercicio 5: cocientes de exponenciales de la misma base.
+% Ejercicio 7: cocientes de exponenciales de la misma base.
 atraccion((exp(U) / exp(V) ~> exp(U - V) si con(U), con(V))).
 atraccion((A ^ U / A ^ V ~> A ^ (U - V) si libre(A), con(U), con(V))).
 

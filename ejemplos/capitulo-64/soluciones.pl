@@ -98,6 +98,65 @@ marco(apu_invertida, [placa_de_video, procesador], []).
 
 % Ejercicio 8 -------------------------------------------------------------
 
+%!  con_origen(+Reglas0:list, -Reglas:list) is det.
+%
+%   Reglas son las Reglas0 con una acción agregar(origen(F, Regla, Hechos))
+%   después de cada agregar(F): Hechos son los hechos que cumplen los
+%   patrones de la Regla.
+con_origen(Reglas0, Reglas) :-
+    maplist(regla_con_origen, Reglas0, Reglas).
+
+%!  regla_con_origen(+Regla0, -Regla) is det.
+%
+%   Regla es Regla0 con los origen/3 agregados.
+regla_con_origen(Nombre :: Condiciones ---> Acciones0,
+                 Nombre :: Condiciones ---> Acciones) :-
+    include(patron_de_hecho, Condiciones, Patrones),
+    maplist(con_su_origen(Nombre, Patrones), Acciones0, Partes),
+    append(Partes, Acciones).
+
+%!  patron_de_hecho(+Condicion) is semidet.
+%
+%   Condicion es un patrón, ni una prueba ni una negación.
+patron_de_hecho(Condicion) :-
+    patron(Condicion).
+
+%!  con_su_origen(+Nombre, +Patrones:list, +Accion, -Acciones:list) is det.
+%
+%   Acciones es [Accion] seguida de su origen si Accion es agregar/1.
+con_su_origen(Nombre, Patrones, Accion, Acciones) :-
+    (   Accion = agregar(F)
+    ->  Acciones = [Accion, agregar(origen(F, Nombre, Patrones))]
+    ;   Acciones = [Accion]
+    ).
+
+programa(familia_con_origen, Reglas) :-
+    programa(familia, Reglas0),
+    con_origen(Reglas0, Reglas).
+
+%!  explicar(+Hecho, -Arbol) is nondet.
+%
+%   Arbol es la explicación de Hecho en la memoria final de
+%   familia_con_origen: por(Hecho, Regla, Arboles) si una regla lo agregó,
+%   con los árboles de los hechos que usó, o inicial(Hecho).
+explicar(Hecho, Arbol) :-
+    familia(Hechos),
+    encadenar(familia_con_origen, orden, Hechos, Memoria, _),
+    explicar(Memoria, Hecho, Arbol).
+
+%!  explicar(+Memoria:list, +Hecho, -Arbol) is nondet.
+%
+%   Como explicar/2, en la Memoria dada.
+explicar(Memoria, Hecho, Arbol) :-
+    (   memberchk(origen(Hecho, _, _), Memoria)
+    ->  member(origen(Hecho, Regla, Usados), Memoria),
+        maplist(explicar(Memoria), Usados, Arboles),
+        Arbol = por(Hecho, Regla, Arboles)
+    ;   Arbol = inicial(Hecho)
+    ).
+
+% Ejercicio 9 -------------------------------------------------------------
+
 % El configurador con el consumo sumado por una regla aparte.
 programa(configurador_sumando, Reglas) :-
     programa(configurador, Reglas0),
@@ -133,7 +192,7 @@ configurar_sumando(Estrategia, Componentes, Consumo, Resultado) :-
 %   Regla se llama Nombre.
 regla_llamada(Nombre, Nombre :: _ ---> _).
 
-% Ejercicio 9 -------------------------------------------------------------
+% Ejercicio 10 ------------------------------------------------------------
 
 % Una segunda cláusula de marco/3 para placa le agrega una ranura.
 marco(gabinete, [componente], [formatos-[atx]]).
@@ -176,7 +235,7 @@ configurar_gabinete(Pedido, Componentes) :-
     encadenar(configurador_gabinete, mea, Hechos, Memoria, configurada),
     componentes(Memoria, Componentes, _).
 
-% Ejercicio 10 ------------------------------------------------------------
+% Ejercicio 11 ------------------------------------------------------------
 
 %!  mas_barata(+Pedido:list, -Componentes:list, -Precio:number) is semidet.
 %
@@ -294,7 +353,7 @@ comparar_disipador_caro(Optima, PrecioOptimo, Elegida, PrecioElegido) :-
     mas_barata(Catalogo, Pedido, Optima, PrecioOptimo),
     configurar_con(Catalogo, Pedido, Elegida, PrecioElegido).
 
-% Ejercicio 11 ------------------------------------------------------------
+% Ejercicio 12 ------------------------------------------------------------
 
 %!  familias(+K:integer, -Hechos:list) is det.
 %
@@ -313,65 +372,6 @@ familias(K, Hechos) :-
 copia(I, Hecho0, Hecho) :-
     Hecho0 =.. [F, A, B],
     Hecho =.. [F, A-I, B-I].
-
-% Ejercicio 12 ------------------------------------------------------------
-
-%!  con_origen(+Reglas0:list, -Reglas:list) is det.
-%
-%   Reglas son las Reglas0 con una acción agregar(origen(F, Regla, Hechos))
-%   después de cada agregar(F): Hechos son los hechos que cumplen los
-%   patrones de la Regla.
-con_origen(Reglas0, Reglas) :-
-    maplist(regla_con_origen, Reglas0, Reglas).
-
-%!  regla_con_origen(+Regla0, -Regla) is det.
-%
-%   Regla es Regla0 con los origen/3 agregados.
-regla_con_origen(Nombre :: Condiciones ---> Acciones0,
-                 Nombre :: Condiciones ---> Acciones) :-
-    include(patron_de_hecho, Condiciones, Patrones),
-    maplist(con_su_origen(Nombre, Patrones), Acciones0, Partes),
-    append(Partes, Acciones).
-
-%!  patron_de_hecho(+Condicion) is semidet.
-%
-%   Condicion es un patrón, ni una prueba ni una negación.
-patron_de_hecho(Condicion) :-
-    patron(Condicion).
-
-%!  con_su_origen(+Nombre, +Patrones:list, +Accion, -Acciones:list) is det.
-%
-%   Acciones es [Accion] seguida de su origen si Accion es agregar/1.
-con_su_origen(Nombre, Patrones, Accion, Acciones) :-
-    (   Accion = agregar(F)
-    ->  Acciones = [Accion, agregar(origen(F, Nombre, Patrones))]
-    ;   Acciones = [Accion]
-    ).
-
-programa(familia_con_origen, Reglas) :-
-    programa(familia, Reglas0),
-    con_origen(Reglas0, Reglas).
-
-%!  explicar(+Hecho, -Arbol) is nondet.
-%
-%   Arbol es la explicación de Hecho en la memoria final de
-%   familia_con_origen: por(Hecho, Regla, Arboles) si una regla lo agregó,
-%   con los árboles de los hechos que usó, o inicial(Hecho).
-explicar(Hecho, Arbol) :-
-    familia(Hechos),
-    encadenar(familia_con_origen, orden, Hechos, Memoria, _),
-    explicar(Memoria, Hecho, Arbol).
-
-%!  explicar(+Memoria:list, +Hecho, -Arbol) is nondet.
-%
-%   Como explicar/2, en la Memoria dada.
-explicar(Memoria, Hecho, Arbol) :-
-    (   memberchk(origen(Hecho, _, _), Memoria)
-    ->  member(origen(Hecho, Regla, Usados), Memoria),
-        maplist(explicar(Memoria), Usados, Arboles),
-        Arbol = por(Hecho, Regla, Arboles)
-    ;   Arbol = inicial(Hecho)
-    ).
 
 % Ejercicio 13 ------------------------------------------------------------
 

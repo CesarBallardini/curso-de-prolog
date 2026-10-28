@@ -1,12 +1,16 @@
 # La base en SQLite
 
-Esta página contiene la sección [43.7](index.md#437-libraryodbc-la-base-en-sqlite) del
-[capítulo 43](index.md): la base académica copiada en SQLite y consultada
+Esta página continúa la página
+[Claves, restricciones y actualizaciones](restricciones.md#436-claves-restricciones-y-actualizaciones)
+del [capítulo 43](index.md), con la sección
+[43.7](#437-libraryodbc-la-base-en-sqlite) y el
+[cierre de la parte III](#cierre-de-la-parte-iii): la base académica
+copiada en SQLite y consultada
 desde Prolog con `library(odbc)`. Los ejemplos están en `base.pl` y
 `sqlite.pl`, en `ejemplos/capitulo-43/`, con sus pruebas; necesitan el
 controlador ODBC de SQLite y no corren en SWISH.
 
-## La base en SQLite
+## 43.7 `library(odbc)`: la base en SQLite
 
 ODBC es una interfaz estándar para comunicarse con bases de datos a través de
 un controlador por cada sistema. `library(odbc)` de SWI-Prolog la usa, y
@@ -247,7 +251,7 @@ Hay otra forma de tener una base SQL junto a Prolog sin ODBC: la del
 `sqlite3` de su biblioteca estándar y consulta las reglas con Janus; cada
 lenguaje cumple su parte, y los datos cruzan la frontera como listas.
 
-## El controlador ODBC en Windows
+### El controlador ODBC en Windows
 
 Los pasos siguientes instalan el controlador ODBC de SQLite en Windows 11,
 en cualquiera de sus ediciones (Home incluida), para una instalación de
@@ -305,3 +309,81 @@ nombra el controlador en la cadena de conexión.
 
 El controlador se desinstala desde Configuración, «Aplicaciones»,
 «Aplicaciones instaladas», con la entrada «SQLite ODBC Driver for Win64».
+
+!!! success "Criterios de calidad"
+    | Criterio | En este capítulo |
+    |---|---|
+    | C1 | cada regla declara modos y determinación; las vistas admiten sus argumentos en cualquier modo, como una tabla, y las que tienen un modo que no terminaría (`destino_sin_tabla/2`) lo declaran |
+    | C3 | las vistas son las cláusulas del álgebra relacional sin argumentos de control: `acta/3` o `de_carrera/3` se consultan también en sentido inverso |
+    | C5 | una fila que viola el esquema produce un error, `error(restriccion(V), _)`, como en SQLite, y no un `false.` que se confunda con «no hay filas»; la nota `null` no llega a una comparación aritmética, que lanzaría un error de tipo |
+    | C6 | el esquema es un conjunto de hechos, y `violacion/1` es una consulta pura sobre ellos; las actualizaciones, `insertar/1`, `borrar/1` y `poner_nota/3`, verifican antes de cambiar la base y dejan todo el efecto al final |
+    | C7 | 80 pruebas, y 8 más con el controlador ODBC; cada consulta del texto se compara con el resultado de SQLite, y las pruebas que actualizan la base corren dentro de `snapshot/1`; las pruebas de ODBC se bloquean con un aviso si falta el controlador |
+
+## Cierre de la parte III
+
+La parte III recorrió lo que Prolog permite una vez que las prácticas
+profesionales de la parte II están en su lugar. Los capítulos
+[33](../capitulo-33-inspeccion-de-terminos/index.md) a [36](../capitulo-36-transformacion-de-programas-y-compilacion/index.md) trataron los términos y los programas como datos:
+inspeccionarlos, interpretarlos con un metaintérprete, completarlos por
+unificación con estructuras incompletas, y transformarlos al cargarlos.
+Los capítulos [37](../capitulo-37-interfaces-de-usuario/index.md) y [38](../capitulo-38-concurrencia-y-paralelismo/index.md) llevaron los programas a una pantalla, a una
+ventana, a la web y a varios hilos. El [capítulo 39](../capitulo-39-semantica-de-los-programas-logicos/index.md) definió qué significa
+un programa, y el [40](../capitulo-40-tabulacion/index.md) mostró cómo SWI-Prolog calcula ese significado
+con tablas. Los capítulos [41](../capitulo-41-busqueda-y-planificacion/index.md) y [42](../capitulo-42-juegos/index.md) resolvieron problemas como
+búsquedas en un espacio de estados, y este capítulo relacionó los programas
+lógicos con las bases de datos relacionales.
+
+La parte IV, «Proyectos», va del [capítulo 44](../capitulo-44-proyecto-resolver-ecuaciones/index.md) al
+[88](../capitulo-88-proyecto-preguntas-en-castellano/index.md). Cada capítulo construye un programa completo, en versiones, con las
+técnicas de las tres partes: un programa que resuelve ecuaciones, una aventura de
+texto, un compilador, y así hasta un motor Datalog, un intérprete de SQL y
+un programa que responde preguntas en castellano sobre la base de este
+capítulo.
+
+## Resumen
+
+| | |
+|---|---|
+| **base extensional** | los hechos sin variables: las filas de las tablas |
+| **base intensional** | las reglas: las vistas que se calculan a partir de los hechos |
+| **vista** | una relación calculada; en Prolog, una regla |
+| **bolsa** | una colección con repeticiones: las filas de SQL y las respuestas de Prolog |
+| **lógica de tres valores** | en SQL, una comparación con `NULL` es desconocida, y `WHERE` descarta la fila |
+| **supuesto de dominio cerrado** | los únicos individuos que existen son los que la base nombra |
+| **tabla de trabajo** | las filas nuevas de un paso de `WITH RECURSIVE`; lo único que se reúne en el paso siguiente |
+| **sentencia preparada** | una sentencia SQL con parámetros `?`, compilada una vez y ejecutada con valores |
+| `odbc_driver_connect/3` | abre una conexión con una cadena de controlador; la opción `null(T)` elige cómo llega `NULL` |
+| `odbc_query/2`, `odbc_query/3`, `odbc_query/4` | ejecuta una sentencia; las filas llegan como `row(…)` al reintentar, o en una lista con `findall/2` |
+| `odbc_prepare/4`, `odbc_execute/2`, `odbc_execute/3` | prepara una sentencia con parámetros y la ejecuta con una lista de valores |
+| `odbc_free_statement/1`, `odbc_disconnect/1` | libera una sentencia preparada; cierra una conexión |
+| `universidad.pl` | las tablas académicas, las vistas (`acta/3`, `companeros/3`, …, y la `aprobada` de *Inscripciones*, del [capítulo 15](../capitulo-15-estilo-y-documentacion/index.md)) y los agregados |
+| `tabla/3`, `clave/2`, `referencia/4`, `violacion/1` | el esquema como hechos, y sus restricciones como consulta |
+| `insertar/1`, `borrar/1`, `poner_nota/3` | `INSERT`, `DELETE` y `UPDATE` que respetan el esquema |
+| `superior/2`, `destino/2`, `tarifa/3`, `iteraciones/2` | la recursión con regla, con tabla, con tabla y mínimo, y paso a paso como SQL |
+| `base.pl`, `sqlite.pl` | la base como módulo, y su copia en SQLite con ODBC |
+| `nb_current/2` | el valor de una variable global, si existe; en las pruebas |
+
+## Temas que se retoman
+
+| Tema | Se retoma en |
+|---|---|
+| Un motor Datalog, de abajo hacia arriba, con evaluación semi-ingenua | [capítulo 86](../capitulo-86-proyecto-motor-datalog/index.md) |
+| Un intérprete de un subconjunto de SQL escrito en Prolog | [capítulo 87](../capitulo-87-proyecto-mini-sql-prolog/index.md) |
+| Preguntas en castellano traducidas a SQL y ejecutadas contra `base.pl` | [capítulo 88](../capitulo-88-proyecto-preguntas-en-castellano/index.md) |
+
+## Referencias
+
+- Jan Wielemaker, *SWI-Prolog ODBC Interface*, el manual de
+  `library(odbc)`.
+  [Manual en línea](https://www.swi-prolog.org/pldoc/doc_for?object=section(%27packages/odbc.html%27)).
+  Describe `odbc_driver_connect/3`, `odbc_query/2..4`, las sentencias
+  preparadas y la opción `null(T)` que usa la
+  [sección 43.7](#437-libraryodbc-la-base-en-sqlite).
+- Christian Werner, *SQLite ODBC Driver*.
+  [Página del controlador](http://www.ch-werner.de/sqliteodbc/). Es el
+  controlador que la [sección 43.7](#437-libraryodbc-la-base-en-sqlite)
+  instala en Windows.
+
+Los programas y los datos del capítulo son propios del curso: ninguno se
+copia de las fuentes, que aportan las ideas y la correspondencia entre los
+dos lenguajes.

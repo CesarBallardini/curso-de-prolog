@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 40 - Soluciones de los ejercicios 2, 4, 5, 6, 7, 8, 9 y 10.
+% Capítulo 40 - Soluciones de los ejercicios 3, 4, 5, 6, 7, 8, 9 y 11.
 %
 % Cada ejercicio repite los datos que usa, para que el archivo se cargue
 % solo: el grafo de camino.pl, el de distancias.pl y el juego de juego.pl.
@@ -16,7 +16,7 @@ arco(b, c).
 arco(c, a).
 arco(c, d).
 
-% Ejercicio 2
+% Ejercicio 11
 
 :- table camino_der/2.
 
@@ -35,7 +35,7 @@ camino_der(X, Y) :-
 tablas(N) :-
     aggregate_all(count, current_table(_, _), N).
 
-% Ejercicio 4
+% Ejercicio 3
 
 :- table suma_hasta/2.
 
@@ -49,7 +49,7 @@ suma_hasta(N, S) :-
     suma_hasta(N1, S1),
     S is S1 + N.
 
-% Ejercicio 5
+% Ejercicio 4
 
 :- table formas/3.
 
@@ -91,7 +91,7 @@ formas_sin_tabla(Monto, Monedas, N) :-
         )
     ).
 
-% Ejercicios 6 y 7
+% Ejercicios 5 y 6
 
 % tramo(X, Y, D): hay un tramo de X a Y de longitud D.
 tramo(a, b, 4).
@@ -138,7 +138,7 @@ saltos(X, Y, N) :-
     tramo(Z, Y, _),
     N is N0 + 1.
 
-% Ejercicio 8
+% Ejercicio 7
 
 % dag(X, Y, D): hay un tramo de X a Y de longitud D, en un grafo sin
 % ciclos.
@@ -173,7 +173,7 @@ mas_larga(D1-N1, D2-N2, R) :-
     ;   R = D2-N2
     ).
 
-% Ejercicio 9
+% Ejercicio 8
 
 % mueve(Juego, X, Y): en Juego, un jugador puede pasar de la posición X a
 % la posición Y. j3 es j2 con un movimiento más, de a a e.
@@ -211,7 +211,7 @@ valor(Meta, Valor) :-
     ;   Valor = indefinido
     ).
 
-% Ejercicio 10
+% Ejercicio 9
 
 :- table p/0, q/0, r/0.
 

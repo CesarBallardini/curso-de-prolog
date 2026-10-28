@@ -1,14 +1,14 @@
 # Mastermind
 
-Esta página contiene las secciones
-[79.6](index.md#796-mastermind-version-1-la-jugada-consistente),
-[79.7](index.md#797-mastermind-version-2-los-codigos-que-todavia-son-posibles)
-y [79.8](index.md#798-mastermind-version-3-restricciones) del
-[capítulo 79](index.md): las tres versiones del programa que adivina el
-código. Los ejemplos están en `mastermind.pl`, `candidatos.pl` y
+Esta página continúa el [capítulo 79](index.md) después de la
+[sección 79.5](index.md#795-nim-version-3-la-suma-de-nim), con las
+secciones [79.6](#796-mastermind-version-1-la-jugada-consistente),
+[79.7](#797-mastermind-version-2-los-codigos-que-todavia-son-posibles)
+y [79.8](#798-mastermind-version-3-restricciones): las tres versiones del
+programa que adivina el código. Los ejemplos están en `mastermind.pl`, `candidatos.pl` y
 `restricciones.pl`, en `ejemplos/capitulo-79/`, con sus pruebas.
 
-## Mastermind, versión 1: la jugada consistente
+## 79.6 Mastermind, versión 1: la jugada consistente
 
 En la variante de Mastermind que juegan Sterling y Shapiro, con lápiz y
 papel, un jugador elige un código secreto de cuatro dígitos distintos. El
@@ -177,13 +177,13 @@ M = 4.333333333333333.
 ```
 
 Sobre los 5040 secretos, con la medición de la
-[sección 79.8](#mastermind-version-3-restricciones): una partida se
+[sección 79.8](#798-mastermind-version-3-restricciones): una partida se
 gana con 1 intento, 13 con 2, 108 con 3, 596 con 4, 1 668 con 5, 1 768
 con 6, 752 con 7, 129 con 8 y 5 con 9; la media es 5,56. El libro informa
 de cuatro a seis intentos de media y un máximo observado de ocho; con este
 orden de los códigos, cinco secretos necesitan nueve.
 
-## Mastermind, versión 2: los códigos que todavía son posibles
+## 79.7 Mastermind, versión 2: los códigos que todavía son posibles
 
 La versión 1 examina de nuevo, en cada intento, los códigos que ya
 descartó. La versión 2 guarda los que todavía son posibles, como el agente
@@ -281,7 +281,7 @@ compara con cada respuesta una sola vez, en el momento en que se filtra.
 La ganancia, sin embargo, es pequeña: la versión 1 descarta la mayoría de
 los códigos con la primera respuesta que examina, que es barata, y la
 versión 2 paga una lista de 5040 códigos al principio de cada partida. La
-tabla de la [sección 79.8](#mastermind-version-3-restricciones) lo
+tabla de la [sección 79.8](#798-mastermind-version-3-restricciones) lo
 mide.
 
 Con la lista, la partida contra una persona puede reconocer que sus
@@ -373,7 +373,7 @@ Tu código es 4 3 9 2: encontrado en 6 intentos.
     `4 5 6 7` la partida termina con el mensaje de contradicción.
     Comprobarlo con `quedan/2` y con `jugar/1`.
 
-## Mastermind, versión 3: restricciones
+## 79.8 Mastermind, versión 3: restricciones
 
 La consistencia también se puede escribir como restricciones del
 [capítulo 24](../capitulo-24-programacion-con-restricciones/index.md): los
@@ -456,4 +456,59 @@ perdía por diez veces, aquí no pierde: hay solo 5040 candidatos, y la
 primera respuesta descarta casi todos con una comparación barata. Lo que
 el conjunto de la versión 2 sí da es la posibilidad de **elegir** entre
 los códigos posibles en lugar de tomar el primero: el
-[ejercicio 6](index.md#ejercicios) elige el que deja menos códigos en el peor caso.
+[ejercicio 7](#ejercicios) elige el que deja menos códigos en el peor caso.
+
+El capítulo continúa en la página
+[Kalah](kalah.md#799-kalah-version-1-el-tablero-y-la-siembra), con el
+tercer juego, en el que ni hay fórmula ni cabe la búsqueda completa: el
+tablero y la siembra, y el jugador con la poda alfa-beta.
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio. Los ejercicios que piden código se resuelven en archivos
+que cargan los del capítulo, sin modificarlos.
+
+6. ★ **(2)** Escribir `particion(+Intento, +Codigos, -Clases)`: Clases
+   son pares `Toros-Vacas-K`, con K la cantidad de códigos de Codigos que
+   darían esa respuesta a Intento. Calcular las clases del primer intento
+   sobre los 5040 códigos, y decir cuál es la mayor y qué significa para
+   el segundo intento.
+7. **(3)** Escribir `adivinar_minimax/2`, que elige el intento entre los
+   códigos posibles: el que deja la menor clase mayor, con
+   `particion/3`. Medir la media y el máximo de intentos sobre once
+   secretos, uno de cada 500 en el orden de `codigo/1`, contra los de
+   `adivinar/2`.
+8. ★ **(2)** En el Mastermind comercial, el código son cuatro colores
+   entre seis, que pueden repetirse, y las vacas cuentan los colores
+   comunes, cada uno tantas veces como el menor de sus apariciones, menos
+   los toros. Escribir `respuesta_colores/4` y `adivinar_colores/2` con la
+   regla de la jugada consistente, y medir la media y el máximo sobre los
+   1296 códigos.
+9. **(2)** Escribir `primera_contradiccion(+Respuestas, -K)`: K es la
+   posición de la primera respuesta de la lista después de la cual ningún
+   código las explica a todas. Probarlo con las respuestas de la actividad
+   de la [sección 79.7](#797-mastermind-version-2-los-codigos-que-todavia-son-posibles).
+
+## Referencias
+
+- Leon Sterling y Ehud Shapiro, *The Art of Prolog: Advanced Programming
+  Techniques*, 2.ª edición, MIT Press, 1994 — capítulo «Game-Playing
+  Programs», sección «Mastermind» (programa 21.1).
+  [Edición en línea](https://archive.org/details/artofprologadvan00ster).
+  Esta página toma de allí la variante de Mastermind con dígitos
+  distintos, la regla de la jugada consistente y su cuenta de toros y
+  vacas.
+- Ehud Shapiro, «Playing Mastermind logically», *SIGART Newsletter*,
+  número 85, 1983, páginas 28–29.
+  [Edición en línea](https://doi.org/10.1145/1056635.1056637).
+  Es el artículo en el que apareció el programa de Mastermind del libro,
+  y la fuente de la regla de la jugada consistente. Sterling y Shapiro
+  citan también la respuesta de David Powers, «Playing Mastermind more
+  logically, or writing Prolog more efficiently», *SIGART Newsletter*,
+  número 89, 1984, que aceleró el programa cincuenta veces; sin edición
+  en línea de acceso libre.
+- *SWI-Prolog Reference Manual*, sección de `library(clpfd)`:
+  [manual en línea](https://www.swi-prolog.org/pldoc/doc_for?object=manual).

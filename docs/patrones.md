@@ -1146,7 +1146,7 @@ contador que crece—: la tabla no se completa nunca. Cuando el predicado
 tiene efectos, que se ejecutarían una vez por tabla y no por llamada.
 Cuando hace falta la primera respuesta pronto: una tabla entrega sus
 respuestas al completarse. Y en un predicado barato y sin repeticiones,
-donde la tabla solo agrega costo ([sección 40.6](capitulo-40-tabulacion/index.md#406-lo-que-cuesta)).
+donde la tabla solo agrega costo ([sección 40.6](capitulo-40-tabulacion/incremental.md#406-lo-que-cuesta)).
 
 Capítulo 40, [sección 40.2](capitulo-40-tabulacion/index.md#402-memorizacion-sin-estado-escrito-a-mano).
 
@@ -1198,7 +1198,7 @@ sola vez: minimax es más simple. Cuando se necesita el valor exacto de
 todas las jugadas y no solo de la mejor, para mostrarlas o para
 ordenarlas: la poda da cotas. Y cuando las posiciones se repiten mucho
 y el juego se busca hasta el final: una tabla de transposición
-([sección 42.6](capitulo-42-juegos/index.md#426-tablas-de-transposicion-con-tabulacion)) ahorra
+([sección 42.6](capitulo-42-juegos/transposicion.md#426-tablas-de-transposicion-con-tabulacion)) ahorra
 más, y las cotas dificultan reutilizar lo guardado.
 
 Capítulo 42, [sección 42.3](capitulo-42-juegos/index.md#423-la-poda-alfa-beta).
@@ -1227,9 +1227,9 @@ apariciones.
 **Cuándo no usarlo.** Cuando el paso necesario aumenta toda medida
 sencilla, como distribuir un producto: entonces conviene un cálculo
 recursivo sobre la estructura del término, como la forma normal de la
-[sección 44.5](capitulo-44-proyecto-resolver-ecuaciones/index.md#445-version-4-la-forma-normal-de-un-polinomio). Y
+[sección 44.5](capitulo-44-proyecto-resolver-ecuaciones/forma-normal.md#445-version-4-la-forma-normal-de-un-polinomio). Y
 cuando el proceso es numérico, como el método de Newton de la
-[sección 44.6](capitulo-44-proyecto-resolver-ecuaciones/index.md#446-version-5-el-metodo-de-newton-y-la-comprobacion):
+[sección 44.6](capitulo-44-proyecto-resolver-ecuaciones/newton.md#446-version-5-el-metodo-de-newton-y-la-comprobacion):
 ahí no hay un natural que baje, y lo que asegura el final es una cota
 de pasos y una tolerancia.
 
@@ -1254,7 +1254,7 @@ predicados que deja abiertos: `mundo.pl` los nueve predicados de
 datos, `lenguaje.pl` `forma/2`, `puntaje.pl` `logro/2` y
 `personajes.pl` `ruta/2` y `bloquea/3`. Otro archivo carga el módulo
 y escribe sus cláusulas con el nombre del módulo delante, como la
-solución del ejercicio 2, que agrega el jardín: las salas pasan a ser
+solución del ejercicio 5, que agrega el jardín: las salas pasan a ser
 seis, y `conecta/3`, `objeto/1` y la gramática las usan sin cambio
 alguno. En el
 [capítulo 46](capitulo-46-proyecto-compilador/index.md), los
@@ -1301,7 +1301,7 @@ como `requiere_luz/1`. `realizar/2` la consulta primero y, si no hay
 impedimento, aplica un solo efecto, `efecto/2`. El orden de las
 cláusulas decide qué aviso se da cuando hay varios. Como la relación
 no cambia nada, también sirve para otras preguntas: `entender/2`, en la
-[sección 45.5](capitulo-45-proyecto-aventura-de-texto/index.md#455-version-4-ordenes-y-respuestas-en-castellano), elige
+[sección 45.5](capitulo-45-proyecto-aventura-de-texto/lenguaje.md#455-version-4-ordenes-y-respuestas-en-castellano), elige
 la lectura de una orden que ningún impedimento bloquea.
 
 **Cuándo no usarlo.** Cuando lo que impide la orden solo se conoce al
@@ -1368,8 +1368,8 @@ copias.
 recorre y recibe como argumento la **conducta** de cada pieza. Cada
 significado es una conducta: `normal/4` da los valores, `simbolica/4`
 las fórmulas, la de la
-[sección 49.4](capitulo-49-proyecto-circuitos-logicos/index.md#494-verificar-con-libraryclpb) una restricción
-booleana; el ejercicio 5 agrega una falla y el ejercicio 11, la
+[sección 49.4](capitulo-49-proyecto-circuitos-logicos/verificacion.md#494-verificar-con-libraryclpb) una restricción
+booleana; el ejercicio 3 agrega una falla y el ejercicio 8, la
 profundidad del circuito. Es la misma idea que el ciclo `iterar/4` del
 [capítulo 47](capitulo-47-proyecto-metodos-numericos/index.md#472-la-ecuacion-como-termino-y-el-ciclo-de-iteracion),
 que recibe el paso de cada método, y que el
@@ -1430,7 +1430,7 @@ entonces dos formas de escribir una regla. Y la compilación al cargar
 no sirve cuando las reglas se agregan durante la ejecución: una regla
 agregada después no se compila.
 
-Capítulo 54, página [«Notación de dos niveles y derivación»](capitulo-54-proyecto-morfologia-castellano/derivacion.md), apartado [«La notación de dos niveles»](capitulo-54-proyecto-morfologia-castellano/derivacion.md#la-notacion-de-dos-niveles).
+Capítulo 54, [sección 54.7](capitulo-54-proyecto-morfologia-castellano/derivacion.md#547-version-5-reglas-en-notacion-de-dos-niveles).
 
 ## 62 — Información de contexto como parámetro
 
@@ -1475,7 +1475,7 @@ el contexto cambia muchas decisiones repartidas en la derivación:
 filtrar el resultado genera primero todas las variantes, y conviene
 pasar el dato a los no terminales que deciden.
 
-Capítulo 55, página [«Interlingua lógica y trato»](capitulo-55-proyecto-traduccion-castellanoingles/interlingua.md), apartado [«Tú y usted»](capitulo-55-proyecto-traduccion-castellanoingles/interlingua.md#tu-y-usted).
+Capítulo 55, [sección 55.9](capitulo-55-proyecto-traduccion-castellanoingles/interlingua.md#559-version-7-tu-y-usted).
 
 ## 63 — Estado como resultado, no como falla
 
@@ -1503,7 +1503,7 @@ prueba una sola cabeza, sigue siendo `semidet`. Y cuando el paso tiene
 varias soluciones que Prolog debe enumerar, el resultado ya no es
 uno solo.
 
-Capítulo 62, [sección 62.4](capitulo-62-proyecto-maquina-prolog/index.md#624-celdas-almacen-y-rastro).
+Capítulo 62, [sección 62.4](capitulo-62-proyecto-maquina-prolog/alternativas.md#624-celdas-almacen-y-rastro).
 
 ## 64 — Superioridad como parámetro
 
@@ -1524,7 +1524,7 @@ fuentes de superioridad, y un solo predicado, `supera/3`, lo consulta.
 La base no cambia: la misma consulta con `[]`, `[especificidad]` o
 `[declarada, especificidad]` muestra qué decide cada criterio, y un
 criterio nuevo, como la anticipación de la
-[sección 66.7](capitulo-66-proyecto-razonamiento-rebatible/index.md#667-version-6-la-anticipacion-de-los-rivales), es un elemento más de la lista. Es un caso del
+[sección 66.7](capitulo-66-proyecto-razonamiento-rebatible/anticipacion.md#667-version-6-la-anticipacion-de-los-rivales), es un elemento más de la lista. Es un caso del
 [Patrón 60](patrones.md#60-interprete-con-conducta-como-parametro): allí el argumento es la conducta de cada pieza; aquí, la
 política que resuelve los conflictos entre las piezas.
 
@@ -1713,7 +1713,7 @@ Y cuando el mundo necesita algo que la interfaz no expresa, como
 acciones con costo o efectos que dependen del estado: entonces cambia
 la interfaz, y con ella todos los mundos.
 
-Capítulo 71, [sección 71.6](capitulo-71-proyecto-planificacion-regresion/index.md#716-version-4-el-mundo-del-capitulo-41).
+Capítulo 71, [sección 71.6](capitulo-71-proyecto-planificacion-regresion/comparacion.md#716-version-4-el-mundo-del-capitulo-41).
 
 ## 70 — Resultado recordado, sin copiar
 
@@ -1784,7 +1784,7 @@ informa nada. Y cuando el costo de la búsqueda exacta está acotado de
 antemano, como en los proyectos chicos: el límite y la cota agregan
 trabajo a una respuesta que igual llega.
 
-Capítulo 73, [sección 73.7](capitulo-73-proyecto-planificacion-tareas/index.md#737-version-5-el-planificador).
+Capítulo 73, [sección 73.7](capitulo-73-proyecto-planificacion-tareas/camino.md#737-version-5-el-planificador).
 
 ## 72 — Verificar una propiedad en todo el espacio de estados de un caso chico
 
@@ -1827,7 +1827,7 @@ ejemplo. Y cuando hay un argumento general, como el de `reparto/3`:
 el argumento es la garantía, y el recorrido solo lo confirma en los
 casos chicos.
 
-Capítulo 73, página [«Anomalías, consistencia y holguras»](capitulo-73-proyecto-planificacion-tareas/extensiones.md), apartado [«Heurísticas consistentes»](capitulo-73-proyecto-planificacion-tareas/extensiones.md#heuristicas-consistentes).
+Capítulo 73, [sección 73.8](capitulo-73-proyecto-planificacion-tareas/extensiones.md#738-anomalias-consistencia-y-holguras).
 
 ## 73 — Restricción redundante que cuenta
 
@@ -1901,7 +1901,7 @@ aplicación liga sus variables, y cada uso siguiente necesita antes
 una copia con `copy_term/2`; por eso `term_expansion/2` guarda cada
 macro compilada como un hecho.
 
-Capítulo 75, [sección 75.5](capitulo-75-proyecto-cubo-rubik/index.md#755-version-4-los-macrooperadores).
+Capítulo 75, [sección 75.5](capitulo-75-proyecto-cubo-rubik/espacio.md#755-version-4-los-macrooperadores).
 
 ## 75 — Dos representaciones unidas por un hecho que comparte las variables
 
@@ -1946,7 +1946,7 @@ hecho. Y cuando la segunda representación no tiene forma fija, como
 una lista de largo variable u ordenada por valor: un hecho solo
 relaciona términos de forma fija.
 
-Capítulo 75, página [«Piezas y una ayuda para la búsqueda»](capitulo-75-proyecto-cubo-rubik/piezas.md), apartado [«El cubo como lista de piezas»](capitulo-75-proyecto-cubo-rubik/piezas.md#el-cubo-como-lista-de-piezas).
+Capítulo 75, [sección 75.9](capitulo-75-proyecto-cubo-rubik/piezas.md#759-version-8-piezas-y-una-ayuda-para-la-busqueda).
 
 ## 76 — Forma canónica de la clase
 
@@ -2058,7 +2058,7 @@ múltiplos de un mismo número, como los 10 y 11 de los giros: el
 redondeo a enteros sigue siendo admisible, pero las cotas de IDA\*
 siguen siendo muchas, porque los valores de f se distinguen igual.
 
-Capítulo 77, [sección 77.7](capitulo-77-proyecto-robots-laberintos-caballo/index.md#777-version-6-el-caballo-de-una-casilla-a-otra).
+Capítulo 77, [sección 77.7](capitulo-77-proyecto-robots-laberintos-caballo/recorrido.md#777-version-6-el-caballo-de-una-casilla-a-otra).
 
 ## 79 — Cláusulas para un módulo cargado
 
@@ -2105,7 +2105,7 @@ escribir una partida para cada par.
 **Versión ingenua.** Una partida por combinación, o una partida con un
 `(   Max == suma -> … ;   Max == tabulada -> … )` que enumera las
 estrategias: cada estrategia nueva cambia la partida, y el torneo de
-la [sección 79.10](capitulo-79-proyecto-kalah-mastermind-nim/index.md#7910-kalah-version-2-el-jugador-con-alfa-beta),
+la [sección 79.10](capitulo-79-proyecto-kalah-mastermind-nim/kalah.md#7910-kalah-version-2-el-jugador-con-alfa-beta),
 con cinco profundidades, necesitaría veinte combinaciones.
 
 **Patrón.** Una estrategia es un predicado que recibe el juego y la
@@ -2180,7 +2180,7 @@ y encuentra las 48.
 memoria o no se puede enumerar: entonces solo queda probar la
 estrategia con partidas o demostrar su corrección.
 
-Capítulo 80, [sección 80.7](capitulo-80-proyecto-lenguaje-consejos-ajedrez/index.md#807-version-7-verificar-la-tabla).
+Capítulo 80, [sección 80.7](capitulo-80-proyecto-lenguaje-consejos-ajedrez/verificacion.md#807-version-7-verificar-la-tabla).
 
 ## 83 — Restricción como tabla
 
@@ -2309,7 +2309,7 @@ de datos indexaría los hechos. Y cuando el estado no tiene que
 persistir entre consultas: entonces no hace falta la capa, y el
 valor pasa de una relación a otra en los argumentos.
 
-Capítulo 82, página [«Una colección de estampillas»](capitulo-82-proyecto-coleccion-problemas/estampillas.md), apartado [«Versión 2: el álbum como valor»](capitulo-82-proyecto-coleccion-problemas/estampillas.md#version-2-el-album-como-valor).
+Capítulo 82, [sección 82.6](capitulo-82-proyecto-coleccion-problemas/estampillas.md#826-una-coleccion-de-estampillas).
 
 ## 87 — Valor propio o heredado sin corte rojo
 
@@ -2344,7 +2344,7 @@ caro: la condición deriva el primero y la rama vuelve a derivarlo;
 conviene reunir los propios una vez con `findall/3` y decidir por la
 lista vacía.
 
-Capítulo 82, página [«Reglas de tránsito y marcos»](capitulo-82-proyecto-coleccion-problemas/transito-y-marcos.md), apartado [«Marcos»](capitulo-82-proyecto-coleccion-problemas/transito-y-marcos.md#marcos).
+Capítulo 82, [sección 82.8](capitulo-82-proyecto-coleccion-problemas/transito-y-marcos.md#828-marcos).
 
 ## 88 — Calcular y después comparar
 
@@ -2388,7 +2388,7 @@ que dicen, lo hace con datos que cualquiera pudo fabricar o alterar.
 
 **Versión ingenua.** Interpretar primero y comprobar después, o no
 comprobar: `abrir_sin_mac/3`, de la
-[versión 6](capitulo-83-proyecto-criptografia/canal.md#canal-version-6-un-secreto-acordado-y-un-canal-cifrado),
+[versión 6](capitulo-83-proyecto-criptografia/canal.md#838-version-6-un-secreto-acordado-y-un-canal-cifrado),
 descifra sin mirar el código, y un cambio de un dígito hexadecimal en
 el cifrado hace leer «Pagar 900 pesos a Ana» donde se envió «Pagar 100
 pesos a Ana».
@@ -2417,7 +2417,7 @@ cada bloque. Y la separación mínima que ubica el código dentro de los
 datos, como la de `atomic_list_concat/3` en `validar/4`, precede
 necesariamente a la comprobación.
 
-Capítulo 83, página [«Firmas»](capitulo-83-proyecto-criptografia/firmas.md), apartado [«Firmas, versión 5: la entrega firmada»](capitulo-83-proyecto-criptografia/firmas.md#firmas-version-5-la-entrega-firmada).
+Capítulo 83, [sección 83.7](capitulo-83-proyecto-criptografia/firmas.md#837-version-5-la-entrega-firmada).
 
 ## 90 — El autómata como relación de paso
 
@@ -2500,7 +2500,7 @@ la forma no acota el costo de lo que se calcula después: un extremo
 `2**(10**9)` es una expresión cerrada y válida, y el desborde de
 punto flotante aparece en `muestra/5`, sin número de línea.
 
-Capítulo 84, página [«Las curvas»](capitulo-84-proyecto-procesamiento-textos/curvas.md), apartado [«Las curvas, versión 3: un archivo de especificaciones»](capitulo-84-proyecto-procesamiento-textos/curvas.md#las-curvas-version-3-un-archivo-de-especificaciones).
+Capítulo 84, [sección 84.8](capitulo-84-proyecto-procesamiento-textos/curvas.md#848-las-curvas-version-3-un-archivo-de-especificaciones).
 
 ## 92 — Límites como argumento
 
@@ -2521,7 +2521,7 @@ límites, una lista de pares `Metrica-mayor(L)` o `Metrica-menor(L)`:
 dice también qué métricas se examinan, y quien la produce queda
 afuera de las reglas: `umbrales_fijos/1` aquí, y
 `umbrales_de_referencia/2` y `umbrales_del_dia/3` en la
-[sección 85.6](capitulo-85-proyecto-analisis-registros/index.md#856-version-4-umbrales-ajustados-a-partir-de-los-datos).
+[sección 85.6](capitulo-85-proyecto-analisis-registros/aprendido.md#856-version-4-umbrales-ajustados-a-partir-de-los-datos).
 `anomalias/3` e `informe_anomalias/2` las usan sin cambios, y el
 jueves se examina con los tres juegos de límites, una consulta cada
 uno. Los pesos del perceptrón de la versión 5 no caben en la forma
@@ -2543,7 +2543,7 @@ depende del período, como un tráfico normal distinto a las 8 y a las
 necesitan la hora en la clave, o el argumento pasa a ser un predicado
 que da el límite de cada hora.
 
-Capítulo 85, [sección 85.5](capitulo-85-proyecto-analisis-registros/index.md#855-version-3-metricas-por-hora-e-informes).
+Capítulo 85, [sección 85.5](capitulo-85-proyecto-analisis-registros/lectura.md#855-version-3-metricas-por-hora-e-informes).
 
 ## 93 — Ajuste robusto
 
@@ -2570,7 +2570,7 @@ intervalo se reduce a un punto, como el `entre(0.0, 0.0)` de las rutas
 inexistentes de los días de referencia; hace falta una dispersión
 mínima, la MAD o un mínimo, la que sea mayor. Con un mínimo de 1, la
 resolución de un contador, `ajustar_con_minimo/4` del
-[ejercicio 5](capitulo-85-proyecto-analisis-registros/index.md#ejercicios) pone el límite en 5,2.
+[ejercicio 6](capitulo-85-proyecto-analisis-registros/aprendido.md#ejercicios) pone el límite en 5,2.
 
 **Cuándo no usarlo.** Cuando los valores anómalos son la mitad o más,
 como un día con media jornada sin servicio: ningún ajuste con esos
@@ -2579,9 +2579,9 @@ días. Y cuando los valores llegan de a uno o se resumen por partes: la
 media y el desvío se actualizan con tres números, la cantidad, la suma
 y la suma de los cuadrados, mientras que la mediana necesita todos los
 valores o su histograma, como en la
-[sección 85.8](capitulo-85-proyecto-analisis-registros/index.md#858-version-6-muchos-dias-en-paralelo).
+[sección 85.8](capitulo-85-proyecto-analisis-registros/paralelo.md#858-version-6-muchos-dias-en-paralelo).
 
-Capítulo 85, [sección 85.6](capitulo-85-proyecto-analisis-registros/index.md#856-version-4-umbrales-ajustados-a-partir-de-los-datos).
+Capítulo 85, [sección 85.6](capitulo-85-proyecto-analisis-registros/aprendido.md#856-version-4-umbrales-ajustados-a-partir-de-los-datos).
 
 ## 94 — Resumen que se combina
 
@@ -2621,9 +2621,9 @@ costa de una mediana aproximada. Cuando hay una sola parte, porque no
 hay nada que repartir. Y cuando las partes pueden superponerse: el
 resumen no sabe de dónde vino cada valor, y un día combinado dos veces
 pesa el doble, como mide el
-[ejercicio 9](capitulo-85-proyecto-analisis-registros/index.md#ejercicios).
+[ejercicio 11](capitulo-85-proyecto-analisis-registros/paralelo.md#ejercicios).
 
-Capítulo 85, página [«Muchos días en paralelo»](capitulo-85-proyecto-analisis-registros/paralelo.md), apartado [«Versión 6: muchos días en paralelo»](capitulo-85-proyecto-analisis-registros/paralelo.md#version-6-muchos-dias-en-paralelo).
+Capítulo 85, [sección 85.8](capitulo-85-proyecto-analisis-registros/paralelo.md#858-version-6-muchos-dias-en-paralelo).
 
 ## 95 — Propagar solo lo nuevo
 
@@ -2633,7 +2633,7 @@ y termina cuando un paso no agrega nada.
 
 **Versión ingenua.** En cada paso, volver a combinar todo lo conocido:
 la evaluación ingenua de la
-[sección 39.6](capitulo-39-semantica-de-los-programas-logicos/index.md#396-evaluacion-de-abajo-hacia-arriba)
+[sección 39.6](capitulo-39-semantica-de-los-programas-logicos/negacion.md#396-evaluacion-de-abajo-hacia-arriba)
 o las rondas de la tabla de finales del
 [capítulo 80](capitulo-80-proyecto-lenguaje-consejos-ajedrez/index.md),
 que vuelven a derivar en cada paso lo que derivaron los anteriores.
@@ -2686,7 +2686,7 @@ lo que la consulta usa está bajo una negación, que necesita la
 relación entera: en el Wumpus y en los marcos, la ganancia es pequeña
 o nula.
 
-Capítulo 86, página [«La transformación mágica»](capitulo-86-proyecto-motor-datalog/magia.md), apartado [«Los predicados mágicos»](capitulo-86-proyecto-motor-datalog/magia.md#los-predicados-magicos).
+Capítulo 86, [sección 86.6](capitulo-86-proyecto-motor-datalog/magia.md#866-version-4-las-consultas-y-la-transformacion-magica).
 
 ## 97 — Una condición, dos metas
 
@@ -2830,48 +2830,9 @@ operación cambia y un error a mitad del camino no deja la base
 inconsistente, como al agregar hechos que no tienen restricciones
 entre sí: el bucle de falla es más simple y basta.
 
-Capítulo 87, página [«Las sentencias que cambian las tablas»](capitulo-87-proyecto-mini-sql-prolog/modificaciones.md), apartado [«Las sentencias que cambian las tablas»](capitulo-87-proyecto-mini-sql-prolog/modificaciones.md#las-sentencias-que-cambian-las-tablas).
+Capítulo 87, [sección 87.9](capitulo-87-proyecto-mini-sql-prolog/modificaciones.md#879-version-7-las-sentencias-que-cambian-las-tablas).
 
-## 101 — Construir la propiedad antes de aplicarla
-
-**Problema.** En una gramática que construye la forma lógica mientras
-analiza, el significado de un sintagma depende de otro: el
-cuantificador del sujeto necesita la propiedad que el predicado dice
-de él, y el objeto, el átomo del verbo del que es argumento.
-
-**Versión ingenua.** Analizar primero y construir la forma lógica
-después, en una segunda pasada sobre el árbol sintáctico que
-reordena los cuantificadores; o hacer que cada sintagma nominal dé
-solo su variable, y agregar su cuantificador desde afuera, donde ya
-no se sabe cuál es su alcance.
-
-**Patrón.** Representar lo que falta como una **propiedad**, el
-término `X^P`, y pasarla al sintagma que la aplica: un sintagma
-nominal es `(X^P)^F`, y aplicarlo es unificar. Un nombre propio pone
-su constante en lugar de X; un determinante pone P como alcance de
-su cuantificador. `sv//3` arma el átomo del verbo con `=..` **antes**
-de analizar el objeto, que recibe `(Y^A)^F` con la propiedad ya
-construida. Construida antes, la propiedad es un término que el
-sintagma puede examinar y copiar: la coordinación del
-[ejercicio 11](capitulo-88-proyecto-preguntas-en-castellano/soluciones.md#11) la aplica una vez a cada nombre, lo
-que no se puede hacer con una variable. Como en el
-[Patrón 75](patrones.md#75-dos-representaciones-unidas-por-un-hecho-que-comparte-las-variables),
-las variables compartidas unen las dos partes sin ningún paso de
-conversión.
-
-**Cuándo no usarlo.** Cuando la propiedad no se puede construir
-antes de que se aplique: en `oracion//1` el sujeto se analiza antes
-que el verbo, y recibe `X^P` con P todavía libre. La aplicación por
-unificación sigue funcionando, pero nada que examine la propiedad:
-«¿Ana y diego cursan lógica?» no se analiza. Ahí hace falta un
-término que represente la aplicación pendiente, como los árboles de
-cuantificadores del apartado 4.1.6 de Pereira y Shieber. Y cuando el
-significado de un sintagma no depende de ningún otro, como en las
-plantillas de la [versión 1](capitulo-88-proyecto-preguntas-en-castellano/index.md#883-version-1-palabras-clave).
-
-Capítulo 88, [sección 88.5](capitulo-88-proyecto-preguntas-en-castellano/index.md#885-version-2-la-gramatica-y-la-forma-logica).
-
-## 102 — Tabla para lo que la gramática prueba varias veces
+## 101 — Tabla para lo que la gramática prueba varias veces
 
 **Problema.** Una gramática con vuelta atrás vuelve a examinar las
 mismas palabras: cada regla que podría empezar por una palabra la
@@ -2903,7 +2864,46 @@ léxico al que se agregan palabras: la tabla conserva el análisis
 viejo hasta que se la vacía, o hasta que los predicados de los que
 depende se declaran incrementales.
 
-Capítulo 88, página [«Las palabras de la pregunta»](capitulo-88-proyecto-preguntas-en-castellano/palabras.md), apartado [«Las palabras, los lemas y los nombres»](capitulo-88-proyecto-preguntas-en-castellano/palabras.md#las-palabras-los-lemas-y-los-nombres).
+Capítulo 88, [sección 88.4](capitulo-88-proyecto-preguntas-en-castellano/palabras.md#884-las-palabras-de-la-pregunta).
+
+## 102 — Construir la propiedad antes de aplicarla
+
+**Problema.** En una gramática que construye la forma lógica mientras
+analiza, el significado de un sintagma depende de otro: el
+cuantificador del sujeto necesita la propiedad que el predicado dice
+de él, y el objeto, el átomo del verbo del que es argumento.
+
+**Versión ingenua.** Analizar primero y construir la forma lógica
+después, en una segunda pasada sobre el árbol sintáctico que
+reordena los cuantificadores; o hacer que cada sintagma nominal dé
+solo su variable, y agregar su cuantificador desde afuera, donde ya
+no se sabe cuál es su alcance.
+
+**Patrón.** Representar lo que falta como una **propiedad**, el
+término `X^P`, y pasarla al sintagma que la aplica: un sintagma
+nominal es `(X^P)^F`, y aplicarlo es unificar. Un nombre propio pone
+su constante en lugar de X; un determinante pone P como alcance de
+su cuantificador. `sv//3` arma el átomo del verbo con `=..` **antes**
+de analizar el objeto, que recibe `(Y^A)^F` con la propiedad ya
+construida. Construida antes, la propiedad es un término que el
+sintagma puede examinar y copiar: la coordinación del
+[ejercicio 3](capitulo-88-proyecto-preguntas-en-castellano/soluciones.md#3) la aplica una vez a cada nombre, lo
+que no se puede hacer con una variable. Como en el
+[Patrón 75](patrones.md#75-dos-representaciones-unidas-por-un-hecho-que-comparte-las-variables),
+las variables compartidas unen las dos partes sin ningún paso de
+conversión.
+
+**Cuándo no usarlo.** Cuando la propiedad no se puede construir
+antes de que se aplique: en `oracion//1` el sujeto se analiza antes
+que el verbo, y recibe `X^P` con P todavía libre. La aplicación por
+unificación sigue funcionando, pero nada que examine la propiedad:
+«¿Ana y diego cursan lógica?» no se analiza. Ahí hace falta un
+término que represente la aplicación pendiente, como los árboles de
+cuantificadores del apartado 4.1.6 de Pereira y Shieber. Y cuando el
+significado de un sintagma no depende de ningún otro, como en las
+plantillas de la [versión 1](capitulo-88-proyecto-preguntas-en-castellano/index.md#883-version-1-palabras-clave).
+
+Capítulo 88, [sección 88.5](capitulo-88-proyecto-preguntas-en-castellano/palabras.md#885-version-2-la-gramatica-y-la-forma-logica).
 
 ## 103 — Una forma lógica, dos evaluadores
 
@@ -2939,4 +2939,4 @@ pruebas tienen que separar ese caso en lugar de esconderlo. Y cuando
 hay un solo destino: la forma lógica agrega un lenguaje intermedio
 que nadie más lee.
 
-Capítulo 88, página [«La forma lógica en SQL»](capitulo-88-proyecto-preguntas-en-castellano/sql.md), apartado [«La sentencia en SQLite»](capitulo-88-proyecto-preguntas-en-castellano/sql.md#la-sentencia-en-sqlite).
+Capítulo 88, [sección 88.7](capitulo-88-proyecto-preguntas-en-castellano/sql.md#887-version-4-la-forma-logica-en-sql).

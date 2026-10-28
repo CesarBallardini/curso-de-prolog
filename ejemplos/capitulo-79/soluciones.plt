@@ -87,7 +87,7 @@ test(contradiccion, [true(K == 2)]) :-
 test(sin_contradiccion, [fail]) :-
     primera_contradiccion([r([0, 1, 2, 3], 0, 1)], _).
 
-test(ejercicio_9, [true(U-T == 3-tablero([1, 1, 0, 1, 1, 1], 3,
+test(ejercicio_10, [true(U-T == 3-tablero([1, 1, 0, 1, 1, 1], 3,
                                          [1, 1, 1, 0, 3, 1], 0))]) :-
     sembrar(3, tablero([0, 0, 13, 0, 0, 0], 0, [0, 0, 0, 0, 2, 0], 0), U, T0),
     capturar(U, T0, T).

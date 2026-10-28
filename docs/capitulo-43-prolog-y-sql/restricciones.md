@@ -1,12 +1,15 @@
 # Claves, restricciones y actualizaciones
 
-Esta página contiene la sección [43.6](index.md#436-claves-restricciones-y-actualizaciones) del
-[capítulo 43](index.md): el esquema escrito como hechos, las restricciones
+Esta página continúa la página
+[Consultas recursivas](recursion.md#435-consultas-recursivas-with-recursive-y-tablas)
+del [capítulo 43](index.md), con la sección
+[43.6](#436-claves-restricciones-y-actualizaciones): el esquema escrito
+como hechos, las restricciones
 verificadas como consultas, y las actualizaciones que las respetan. Los
 ejemplos están en `universidad.pl`, en `ejemplos/capitulo-43/`, con sus
 pruebas, y corren en SWISH.
 
-## Claves, restricciones y actualizaciones
+## 43.6 Claves, restricciones y actualizaciones
 
 `INSERT`, `DELETE` y `UPDATE` son `assertz/1` y `retract/1` sobre los
 predicados dinámicos del [capítulo 21](../capitulo-21-base-de-datos-dinamica/index.md); un `UPDATE` es un `retract/1`
@@ -140,3 +143,35 @@ inscripciones. `poner_nota/3` es el `UPDATE` de una nota. Las dos están en
 entera o no hacerse se envuelve en `transaction/1`, del [capítulo 38](../capitulo-38-concurrencia-y-paralelismo/index.md):
 es el `BEGIN` … `COMMIT` de SQL, y si la meta falla o lanza un error, los
 cambios se deshacen como con `ROLLBACK`.
+
+El capítulo continúa en la página
+[La base en SQLite](odbc.md#437-libraryodbc-la-base-en-sqlite), con la
+misma base copiada en SQLite y consultada desde Prolog.
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio, y los capítulos siguientes los dan por hechos. Cada
+ejercicio se plantea en SQL y en Prolog; la sentencia SQL se ejecuta sobre
+`schema.sql` en cualquier SQLite, y la consulta Prolog con `universidad.pl`
+o con `recursion.pl` cargado.
+
+13. **(2)** Una restricción que ningún `CHECK` expresa: un alumno no puede
+    estar inscripto en una materia sin haber aprobado sus correlativas.
+    Escribir en SQL la consulta que da las inscripciones que la violan, y en
+    Prolog `correlativa_pendiente(Legajo, Materia, Requisito)`. ¿Cumplen los
+    datos la restricción?
+14. **(2)** Escribir `aumentar(Depto, Porcentaje)`, el
+    `UPDATE empleados SET salario = salario * 110 / 100 WHERE depto = 'it';`
+    de Prolog, con `retract/1` y `assertz/1`. ¿Por qué los empleados que
+    agrega no se vuelven a aumentar?
+
+## Referencias
+
+- Feliks Kluźniak y Stanisław Szpakowicz, *Prolog for Programmers*,
+  Academic Press, 1985 — apartado 8.2, «Prolog and Relational Data
+  Bases». Sin edición en línea de acceso libre verificada. Esta página
+  toma la observación de que la integridad de la base queda a cargo del
+  programa.

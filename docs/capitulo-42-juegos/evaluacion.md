@@ -1,12 +1,13 @@
 # Funciones de evaluación y orden de las jugadas
 
-Esta página contiene la sección
-[42.4](index.md#424-funciones-de-evaluacion-y-orden-de-las-jugadas) del
-[capítulo 42](index.md): la evaluación de las posiciones por líneas
-abiertas, y la poda con las jugadas ordenadas, medida. El ejemplo está en
-`orden.pl`, en `ejemplos/capitulo-42/`, con sus pruebas, y corre en SWISH.
+Esta página continúa el [capítulo 42](index.md) después de la
+[sección 42.3](index.md#423-la-poda-alfa-beta), con la sección
+[42.4](#424-funciones-de-evaluacion-y-orden-de-las-jugadas): la evaluación
+de las posiciones por líneas abiertas, y la poda con las jugadas ordenadas,
+medida. El ejemplo está en `orden.pl`, en `ejemplos/capitulo-42/`, con sus
+pruebas, y corre en SWISH.
 
-## Funciones de evaluación y orden de las jugadas
+## 42.4 Funciones de evaluación y orden de las jugadas
 
 Una búsqueda con límite depende de la evaluación de las posiciones del
 límite. Una evaluación clásica del ta-te-ti cuenta las **líneas abiertas**:
@@ -152,4 +153,31 @@ ta-te-ti de 3 × 3 y en el de 4 × 4 a profundidad 6, ese costo supera la
 ganancia, porque `evaluar/3` recorre todas las líneas dos veces y cuesta más
 que visitar un nodo. A profundidad 7, los nodos ahorrados crecen más que el
 costo de ordenar, y la búsqueda ordenada tarda algo más de la mitad. El
-[ejercicio 8](index.md#ejercicios) ordena con una clave más barata.
+[ejercicio 9](#ejercicios) ordena con una clave más barata.
+
+El capítulo continúa en la página
+[Profundización progresiva con límite de tiempo](profundizacion.md#425-profundizacion-progresiva-con-limite-de-tiempo),
+con la búsqueda que profundiza mientras dura el tiempo de una jugada.
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio, y los capítulos siguientes los dan por hechos.
+
+8. **(2)** Escribir una evaluación `evaluar_amenazas/3` que, además de las
+   líneas abiertas, sume 10 por cada línea con dos marcas de x y ninguna de
+   o, y reste 10 por cada una al revés. Comparar las dos evaluaciones en
+   `pos([x,v,v, v,o,v, v,v,x], o)` y en `pos([x,x,v, v,o,v, v,v,v], o)`.
+9. ★ **(2)** Ordenar las jugadas con una clave barata: la cantidad de
+   líneas que pasan por la casilla, que no depende de la posición.
+   Agregarla como el orden `central` y medir nodos, inferencias y tiempo en
+   el tablero de 4 × 4 a profundidad 6, contra `natural` y `mejores`.
+
+## Referencias
+
+- Ivan Bratko, *Prolog Programming for Artificial Intelligence*,
+  Addison-Wesley, 1986 — capítulo «Game Playing». Sin edición en línea de
+  acceso libre. Esta página toma de allí la importancia del orden de las jugadas,
+  las posiciones tranquilas y el efecto horizonte.

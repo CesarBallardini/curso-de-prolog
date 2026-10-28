@@ -72,9 +72,9 @@ reglas restantes. Los factores de certeza de MYCIN, tal como los
 implementa el *shell* Clam de Dennis Merritt en *Building Expert Systems in
 Prolog*, y el *shell* CONMAN de Covington, Nute y Vellino en *Prolog
 Programming in Depth*, con la crítica que ese libro hace de los números de
-confianza, dan la comparación con la práctica de los sistemas expertos. La
-lista completa, con lo que se toma de cada fuente, está en las
-[Referencias](#referencias).
+confianza, dan la comparación con la práctica de los sistemas expertos.
+Las referencias de cada página dicen qué toma ella de cada fuente; las de
+esta están en [Referencias](#referencias).
 
 El capítulo no copia el sistema experto: lo carga del
 [capítulo 34](../capitulo-34-introspeccion-y-metainterpretes/index.md),
@@ -109,9 +109,9 @@ Al terminar el capítulo, el lector puede:
   árbol como reticulado.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **3:50 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **3:45 h**.
     Resolver los 5 ejercicios marcados con ★: **1:35 h**.
-    Resolver los 14 ejercicios del final: **4:15 h**.
+    Resolver los 14 ejercicios del capítulo: **4:15 h**.
 
 ## 67.1 El problema
 
@@ -474,7 +474,7 @@ toda la evidencia la apoye. La conservadora resta: cada condición de grado
 $g$ quita $1 - g$, y con cuatro condiciones de 0,7 el grado llega a 0. La
 liberal toma el mínimo y no ve la longitud de la cadena: cuatro
 observaciones de 0,7 valen lo mismo que una. El
-[ejercicio 2](#ejercicios) tabula las tres para varios grados.
+[ejercicio 1](#ejercicios) tabula las tres para varios grados.
 
 Que el intervalo sea ancho no es un defecto del programa, es lo que dicen
 los datos. Lo que sí se puede decir con seguridad es cuándo una hipótesis
@@ -527,7 +527,7 @@ mezclan. Clam, el *shell* con factores de certeza de Merritt, que sigue el
 modelo de Shortliffe y Buchanan para MYCIN, toma el mínimo para la conjunción de las premisas y acumula las
 reglas con la fórmula de la independencia; CONMAN, el de Covington, Nute y
 Vellino, toma el mínimo para la conjunción y el máximo para la
-disyunción, que es la mejor regla sola. El [ejercicio 3](#ejercicios) los
+disyunción, que es la mejor regla sola. El [ejercicio 2](#ejercicios) los
 agrega como métodos nuevos, con cláusulas `multifile` de `metodo/1`, `y/4`
 y `o/4`. Rowe propone cuatro condiciones para aceptar una fórmula propia:
 que no salte ante cambios pequeños de los grados, que quede entre las
@@ -653,33 +653,12 @@ reglas. Rowe advierte además que colapsar pierde los niveles
 intermedios, que agrupan conceptos y dan dónde explicar; el árbol que
 sigue decide bien, pero ya no puede responder «¿por qué?» con una regla.
 
-## 67.5 Versión 4: el árbol de preguntas
-
-La cuarta versión construye, con las reglas colapsadas, un árbol que hace
-una pregunta en cada nodo y da una hipótesis, o ninguna, en cada hoja.
-Compara tres estrategias para elegir la pregunta de cada nodo —el orden
-del encadenamiento hacia atrás, la pregunta más frecuente y la ganancia de
-información de ID3 sobre una población de prototipos— y las mide en
-tamaño y en preguntas por consulta, contra el mínimo que da una búsqueda
-exhaustiva. Está en la página
-[El árbol de preguntas y su compilación](arbol.md#version-4-el-arbol-de-preguntas).
-
-## 67.6 Versión 5: el árbol compilado
-
-La quinta versión convierte el árbol en cláusulas al cargar el archivo,
-con `term_expansion/2`, lo consulta con las respuestas de una lista o del
-usuario, y lo compara con el encadenamiento hacia atrás del
-[capítulo 34](../capitulo-34-introspeccion-y-metainterpretes/index.md) en
-preguntas y en inferencias. Está en la página
-[El árbol de preguntas y su compilación](arbol.md#version-5-el-arbol-compilado).
-
-!!! success "Criterios de calidad"
-    | Criterio | En este capítulo |
-    |---|---|
-    | C1 | cada predicado declara modos y determinación; `grado/4`, `arbol/2` y `nodo/3` son `det` |
-    | C2 | las reglas son las del [capítulo 34](../capitulo-34-introspeccion-y-metainterpretes/index.md), cargadas y no copiadas; las fuerzas son una tabla aparte y los métodos, cláusulas `multifile` que otro archivo puede extender |
-    | C4 | `se_cumple/2` no liga las preguntas y no deja alternativas; el árbol se consulta con `->/2` |
-    | C7 | 171 pruebas en catorce archivos; los tres árboles y el compilado se comparan con el sistema original sobre los 24 576 animales posibles, y la estimación independiente con las dos cotas |
+El capítulo continúa en la página
+[El árbol de preguntas y su compilación](arbol.md#675-version-4-el-arbol-de-preguntas),
+con la cuarta versión, que construye con las reglas colapsadas un árbol de
+preguntas, y la quinta, que lo compila en cláusulas. Antes, los
+[ejercicios](#ejercicios) de esta página practican las secciones 67.1 a
+67.4.
 
 ## Ejercicios
 
@@ -688,112 +667,33 @@ va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia
 Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
 tiene de propio.
 
-1. ★ **(1)** Predecir, con `proyecto.pl` cargado, qué responde cada
-   consulta, y comprobarlo:
-   `grado(ave, [tiene_plumas-0.5, vuela-0.8, pone_huevos-0.8], M, P)` con
-   cada uno de los tres métodos ·
-   `colapsada(pinguino, Ps).` ·
-   `consulta(frecuente, [tiene_plumas, no_vuela, nada], H, Ps).`
-2. ★ **(2)** Escribir `atenuacion(G, Filas)`: para mamifero, carnivoro y
+1. ★ **(2)** Escribir `atenuacion(G, Filas)`: para mamifero, carnivoro y
    guepardo, sus grados con los tres métodos cuando las cuatro
    observaciones del caso 1 tienen grado G. Tabular G = 1,0, 0,9 y 0,7 y
    explicar, con las fórmulas, por qué cada método se comporta así con la
    longitud de la cadena.
-3. ★ **(2)** Agregar los métodos `mycin` y `conman` de la
+2. ★ **(2)** Agregar los métodos `mycin` y `conman` de la
    [sección 67.3](#673-version-2-cotas-conservadora-y-liberal), con
    cláusulas `multifile` de `evidencia`, y calcular con ellos el grado de
    mamífero con pelo y leche de 0,6. Verificar que los dos quedan entre
    las cotas.
-4. ★ **(2)** Rowe advierte que `\+` no sirve con evidencias: una regla
+3. ★ **(2)** Rowe advierte que `\+` no sirve con evidencias: una regla
    «A y no B» falla con cualquier evidencia de B, por débil que sea.
    Escribir `y_no(Metodo, PA, PB, P)`, que usa $1 - p_B$ como grado de no
    B, calcularlo para $p_A = 0{,}9$ y $p_B = 0{,}2$ con los tres métodos, y
    explicar qué da la versión con `\+`.
-5. **(1)** Una conclusión a tiene dos reglas: una da 0,6 cuando b es
+4. **(1)** Una conclusión a tiene dos reglas: una da 0,6 cuando b es
    seguro, la otra da el grado de c. Con b seguro y c de 0,8, calcular el
    grado de a con los tres métodos, a mano y con `y/4` y `combinar/4`.
-6. **(1)** Escribir `mas_probable(Observaciones, Metodo, H)`, la hipótesis
+5. **(1)** Escribir `mas_probable(Observaciones, Metodo, H)`, la hipótesis
    de mayor grado, con su encabezado de PlDoc. Justificar los modos y la
    determinación, y decidir qué hace cuando ninguna hipótesis tiene grado.
-7. **(3)** `vuela` y `no_vuela` son preguntas distintas para el árbol, que
-   puede preguntar las dos. Declarar `excluyentes/2` y escribir
-   `arbol_excluyentes(Estrategia, Arbol)`, que después de un sí descarta
-   las reglas con la pregunta excluida. Medir el árbol `orden` y
-   comprobarlo contra el sistema original sobre los animales que no
-   tienen las dos observaciones.
-8. ★ **(3)** Escribir `costo_minimo(C)`: la menor suma de preguntas sobre
-   los doce prototipos que alcanza algún árbol, probando en cada nodo todas
-   las preguntas posibles, con `:- table` para no repetir los subárboles.
-   Comparar el resultado con los árboles de las tres estrategias.
-9. **(2)** Suponer que de cada cien animales consultados 10 son guepardos,
-   10 tigres, 5 jirafas, 15 cebras, 40 pingüinos y 20 avestruces. Escribir
-   `promedio_ponderado(Arbol, P)`, la media de preguntas sobre los
-   prototipos con esos pesos, y decidir qué estrategia conviene.
-10. **(2)** Escribir `escribir_arbol(Archivo)`, que guarda las cláusulas
-    de `nodo/3` y un `responde/2` para listas de observaciones en un
-    archivo que no carga nada, y comprobar que ese archivo, cargado solo,
-    identifica la cebra del caso 2.
-11. **(3)** Unir las dos mitades del capítulo: escribir
-    `consultar_con_grado(Arbol, Observaciones, Umbral, H, P)`, que recorre
-    el árbol respondiendo que sí a las observaciones de grado al menos
-    Umbral y da el grado de la hipótesis de la hoja. Aplicarlo al animal
-    del atardecer con umbrales 0,5 y 0,7 y explicar el resultado.
-12. **(1)** Una fuerza se puede estimar con datos: la fracción $F$ de los
+6. **(1)** Una fuerza se puede estimar con datos: la fracción $F$ de los
     casos en que, cumplidas las condiciones, se cumplió la conclusión, con
     error estándar $\sqrt{F(1 - F)/N}$. Escribir
     `fuerza_estimada(Exitos, Total, F, Error)` y aplicarlo a 200 de 500, 7
     de 20 y 2 de 2000. Decidir en cuáles se puede confiar, con el criterio
     de Rowe: no, si el error es comparable a $F$.
-13. **(2)** Merritt propone que una regla pueda tener su propio umbral,
-    que reemplaza al general. Declarar `umbral_regla(Regla, U)` para c1
-    (0,4) y r7 (0,5), y escribir
-    `factor_con_umbrales(Meta, Observaciones, General, F)`, como
-    `factor/4` de la
-    [sección 67.9](ampliaciones.md#679-evidencia-a-favor-y-en-contra) con
-    el umbral de cada regla. Calcularlo para el guepardo del atardecer, y
-    con rayas de grado 0,5, y explicar los resultados.
-14. **(2)** Agregar a los sábados de la
-    [sección 67.10](ampliaciones.md#6710-aprender-el-arbol-de-ejemplos) un
-    atributo `dia`, el número del ejemplo. Calcular su ganancia y su razón
-    de ganancia, decidir qué atributo elige cada criterio para la raíz, y
-    explicar qué ocurre al clasificar un sábado nuevo.
-
-## Resumen
-
-| | |
-|---|---|
-| **fuerza de una regla** | la probabilidad de la conclusión cuando las condiciones son seguras; se combina como una condición más |
-| **grado de una observación** | la seguridad con que se observó un hecho: el par `Hecho-Grado` |
-| **combinación de la conjunción y de la disyunción** | cómo se juntan los grados de las condiciones de una regla, y los de las reglas que concluyen lo mismo |
-| **método independiente** | producto para la conjunción; $p_A + p_B - p_A p_B$ para la disyunción |
-| **métodos conservador y liberal** | los grados menor y mayor compatibles con los de las partes; las cotas de cualquier otro método |
-| **atenuación** | la pérdida de grado a lo largo de una cadena de reglas: fuerte con la independencia, total con el conservador, nula con el liberal |
-| **regla colapsada** | una regla de hipótesis cuyas condiciones son solo preguntas, sin conclusiones intermedias |
-| **árbol de preguntas** | una pregunta por nodo y una hipótesis, o ninguna, por hoja |
-| **ganancia de información** | lo que una respuesta reduce la entropía de las hipótesis de una población |
-| `fuerza/2`, `y/4`, `o/4`, `combinar/4`, `grado/4`, `ranking/3` | la evidencia combinada |
-| `intervalo/4`, `estimaciones/2`, `domina/3` | las cotas y la ventaja segura |
-| `colapsada/2`, `preguntas/1`, `se_cumple/2` | las reglas colapsadas |
-| `arbol/2`, `consultar/4`, `medir/4`, `prototipo/2` | el árbol, su consulta y sus medidas |
-| `identificar_compilado/2`, `consulta_interactiva/1`, `preguntas_encadenando/2` | el árbol compilado y la comparación con el encadenamiento |
-| **regla de Bayes** | $p(A \mid B) = p(B \mid A) \, p(A) / p(B)$: una probabilidad condicional a partir de la inversa |
-| **entropía máxima** | la estimación que menos información agrega; para la conjunción, el producto de la independencia |
-| **factor de certeza** | un número entre $-1$ y $1$ que reúne evidencia a favor y en contra; la premisa debe llegar a un umbral |
-| **razón de ganancia** | la ganancia dividida por la información del valor del atributo; corrige el sesgo hacia los atributos con muchos valores |
-| **ventana** | la parte de los ejemplos de la que ID3 aprende, que crece con los que el árbol clasifica mal |
-| **reticulado de decisión** | un árbol en el que los subárboles iguales se guardan una vez |
-| **[Patrón 65](../patrones.md#65-una-tabla-de-valores-como-conjunto-de-nodos-compartidos)** | una tabla de valores como conjunto de nodos compartidos |
-| `bayes/4`, `posterior/3`, `y_maxima_entropia/3` | la regla de Bayes, la probabilidad de cada animal, y la conjunción de entropía máxima |
-| `balance/4`, `factor/4`, `cf_combinar/3` | la evidencia a favor menos la en contra, y los factores de certeza con signo |
-| `id3/4`, `ventana/5`, `reticulado/3` | el árbol aprendido de ejemplos, el esquema de la ventana, y el reticulado |
-| `transpose_pairs/2` | invierte cada par `Clave-Valor` y ordena por la clave nueva |
-
-## Temas que se retoman
-
-| Tema | Se retoma en |
-|---|---|
-| Aprender las reglas a partir de ejemplos en lugar de escribirlas | [capítulo 68](../capitulo-68-proyecto-aprender-reglas-ejemplos/index.md) |
-| Ajustar números con datos, en lugar de pedirlos a un experto | [capítulo 70](../capitulo-70-proyecto-perceptron/index.md) |
 
 ## Referencias
 
@@ -802,61 +702,24 @@ tiene de propio.
   apartado «Decision lattices: a compilation of a rule-based system» del
   capítulo sobre el control de los sistemas de reglas.
   [Edición en línea del autor](https://faculty.nps.edu/ncrowe/book/book.html).
-  El capítulo toma de allí las probabilidades en las reglas y en los
+  Esta página toma de allí las probabilidades en las reglas y en los
   hechos, la fuerza de la regla como una condición oculta, las fórmulas
   independiente, conservadora y liberal con sus casos de uso, la negación
   como complemento, los criterios para aceptar una fórmula, la estimación
-  de las fuerzas con su error estándar, y el colapso de las reglas y la
-  elección de la pregunta que las reparte. La
-  [página de ampliaciones](ampliaciones.md) toma además, del primero, la
-  regla de Bayes con sus desigualdades de consistencia, la conjunción de
-  entropía máxima y la resta de la evidencia en contra, y del segundo,
-  junto con el apartado «Decision lattices» del capítulo sobre el
-  control, el reticulado
-  y sus ventajas y desventajas.
+  de las fuerzas con su error estándar, y el colapso de las reglas.
 - Dennis Merritt, *Building Expert Systems in Prolog*, Springer, 1989 —
   «Backward Chaining with Uncertainty».
   [Edición en línea de Amzi!](https://www.amzi.com/ExpertSystemsInProlog/03backwarduncertainty.php).
   De allí vienen los factores de certeza de MYCIN, con el mínimo para las
-  premisas y la acumulación de las reglas, que el ejercicio 3 compara con
-  los tres métodos; la página de ampliaciones agrega los factores
-  negativos, la combinación de tres casos según los signos y el umbral de
-  la premisa, y el ejercicio 13, el umbral por regla de su ejercicio 3.4.
+  premisas y la acumulación de las reglas, que el ejercicio 2 compara con
+  los tres métodos.
 - Michael A. Covington, Donald Nute y André Vellino, *Prolog Programming in
   Depth*, Prentice Hall, 1997 — «An Expert System Shell with Uncertainty».
   [Edición en línea](https://www.covingtoninnovations.com/books/PPID.pdf).
-  El capítulo toma las reglas de combinación de CONMAN y las objeciones de
+  Esta página toma las reglas de combinación de CONMAN y las objeciones de
   su apartado «No confidence in "confidence"».
-- J. Ross Quinlan, «Induction of decision trees», *Machine Learning* 1,
-  1986, pp. 81–106.
-  [Página de la editorial](https://doi.org/10.1007/BF00116251).
-  De allí viene la ganancia de información de la estrategia
-  `informacion` (apartado «ID3»), y la presentación de ID3 como
-  descendiente del *Concept Learning System*. La página de ampliaciones
-  toma los catorce sábados de su tabla 1, el árbol de su figura 2, la
-  ventana, el ruido con la prueba de chi-cuadrado (apartado «Noise») y la
-  razón de ganancia (apartado «The selection criterion»).
-- Claude E. Shannon, «A Mathematical Theory of Communication», *Bell
-  System Technical Journal* 27 (3), 1948, págs. 379–423.
-  [DOI 10.1002/j.1538-7305.1948.tb01338.x](https://doi.org/10.1002/j.1538-7305.1948.tb01338.x).
-  La entropía que la ganancia de información de Quinlan resta antes y
-  después de cada pregunta.
-- Earl B. Hunt, Janet Marin y Philip J. Stone, *Experiments in Induction*,
-  Academic Press, 1966. El *Concept Learning System*, que construye un
-  árbol de decisión partiendo los ejemplos por un atributo en cada nodo;
-  Quinlan lo cita como el origen de ID3.
 - Edward H. Shortliffe y Bruce G. Buchanan, «A Model of Inexact Reasoning
   in Medicine», *Mathematical Biosciences* 23, 1975, págs. 351–379.
   [DOI 10.1016/0025-5564(75)90047-4](https://doi.org/10.1016/0025-5564(75)90047-4).
   Los factores de certeza de MYCIN que Merritt implementa en Clam y que el
-  ejercicio 3 agrega como método.
-
-El código del capítulo es propio, escrito para el curso sobre el sistema
-experto del
-[capítulo 34](../capitulo-34-introspeccion-y-metainterpretes/index.md): de
-las fuentes se toman ideas, fórmulas y ejemplos, no código; las cotas
-como intervalo, la comparación de estrategias con su medición y la
-consulta del encadenamiento por repetición son del curso, como la
-búsqueda numérica de la entropía máxima, la probabilidad de cada animal
-con un error de registro, y el reticulado construido numerando los
-subárboles.
+  ejercicio 2 agrega como método.

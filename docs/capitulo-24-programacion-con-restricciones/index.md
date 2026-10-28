@@ -479,7 +479,7 @@ verdadera, y `taut/2` dice si una fórmula es siempre verdadera o siempre falsa.
 Conecta con la lógica proposicional del [capítulo 13](../capitulo-13-prolog-y-la-logica/index.md). Este capítulo no la
 desarrolla más allá de un ejemplo, que se puede omitir; el
 [capítulo 49](../capitulo-49-proyecto-circuitos-logicos/index.md) la retoma para verificar circuitos
-([sección 49.4](../capitulo-49-proyecto-circuitos-logicos/index.md#494-verificar-con-libraryclpb)). El ejemplo es un circuito de cuatro
+([sección 49.4](../capitulo-49-proyecto-circuitos-logicos/verificacion.md#494-verificar-con-libraryclpb)). El ejemplo es un circuito de cuatro
 compuertas NAND. Una compuerta es una relación entre sus entradas y su salida,
 y se escribe como su tabla de verdad; el circuito es la conjunción de sus
 compuertas, con una variable por cable:

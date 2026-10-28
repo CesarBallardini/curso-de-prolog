@@ -1,6 +1,6 @@
 # Capítulo 71 — Proyecto: planificación por regresión
 
-La [sección 41.6](../capitulo-41-busqueda-y-planificacion/planificacion.md#planificacion-operadores-strips-y-analisis-de-medios-y-fines)
+La [sección 41.6](../capitulo-41-busqueda-y-planificacion/planificacion.md#416-planificacion-operadores-strips-y-analisis-de-medios-y-fines)
 planifica en el mundo de bloques por análisis de medios y fines: elige una
 meta que el estado no cumple, un operador que la logra, planifica antes sus
 precondiciones y sigue desde el estado al que llega. Ese método logra las
@@ -78,7 +78,7 @@ Al terminar el capítulo, el lector puede:
 !!! info "Tiempo estimado"
     Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **2:00 h**.
     Resolver los 5 ejercicios marcados con ★: **1:35 h**.
-    Resolver los 12 ejercicios del final: **3:45 h**.
+    Resolver los 12 ejercicios del capítulo: **3:45 h**.
 
 ## 71.1 El mundo como descripción
 
@@ -334,7 +334,7 @@ protegidos es la de antes más la meta.
 Esta búsqueda puede no terminar. Para liberar c hay que mover lo que está
 sobre c, cuya precondición es que algo esté sobre c; para lograr eso hay
 que mover un cubo a c, que exige que c esté libre; y así sin fin. Como en
-la [sección 41.4](../capitulo-41-busqueda-y-planificacion/index.md#414-profundidad-limitada-y-profundizacion-iterativa),
+la [sección 41.4](../capitulo-41-busqueda-y-planificacion/heuristicas.md#414-profundidad-limitada-y-profundizacion-iterativa),
 la solución es una cota: cada acción gasta una unidad, y `planificar/5`
 prueba cotas de 0 a un máximo y exige gastarlas todas. Los planes salen de
 menor a mayor longitud, y el primero es uno de los más cortos que el
@@ -388,7 +388,7 @@ porque saca b de encima; para eso b tiene que estar sobre a
 (`mover(b, mesa, a)`), y para eso a tiene que estar libre
 (`mover(c, a, mesa)`). El rodeo deja b sobre c de paso, y la segunda meta
 ya vale cuando llega su turno. Es el mismo efecto lateral que
-[en el capítulo 41](../capitulo-41-busqueda-y-planificacion/planificacion.md#planificacion-operadores-strips-y-analisis-de-medios-y-fines)
+[en el capítulo 41](../capitulo-41-busqueda-y-planificacion/planificacion.md#416-planificacion-operadores-strips-y-analisis-de-medios-y-fines)
 lleva al análisis de medios y fines a su plan de cuatro acciones en el
 mundo sin pinza. El plan de tres pone `mover(b, mesa, c)` **entre**
 `mover(c, a, mesa)` y `mover(a, mesa, b)`, y una versión que solo agrega
@@ -649,81 +649,15 @@ cota menor. Ninguna de las dos estrategias gana en los dos mundos: en los
 cubos, la búsqueda sin cota no termina para un orden de las metas; en el
 robot, la profundización multiplica el costo casi por cuatrocientos.
 
-## 71.6 Versión 4: el mundo del capítulo 41
-
-La cuarta versión no cambia el planificador: traduce a la descripción de
-WARPLAN los operadores STRIPS del
-[capítulo 41](../capitulo-41-busqueda-y-planificacion/planificacion.md#planificacion-operadores-strips-y-analisis-de-medios-y-fines),
-cargando sus archivos, y compara los dos planificadores sobre el mismo
-mundo. Con pinza dan el mismo plan de seis acciones; sin pinza, WARPLAN da
-el de tres que el análisis de medios y fines no construye, y cuesta menos.
-La descripción con acciones sin variables cuesta más del doble que la de
-`cubos.pl`, y sin la cota agota la pila. Está en la página
-[El mundo del capítulo 41](comparacion.md#el-mundo-del-capitulo-41).
-
-!!! example "Patrón 69 — Descripción del mundo como parámetro"
-    **Problema.** Un planificador tiene que servir para más de un mundo
-    —los cubos, el robot de STRIPS, el mundo con pinza del
-    [capítulo 41](../capitulo-41-busqueda-y-planificacion/index.md)—, y algunos de esos mundos ya están descritos
-    en otro formato.
-
-    **Versión ingenua.** Escribir las acciones del mundo dentro del
-    planificador, como cláusulas de la regresión, o copiar el planificador
-    para cada mundo; y, para un mundo que ya existe, reescribir su
-    descripción, cláusula por cláusula, en el formato nuevo, con dos copias que hay que
-    mantener iguales.
-
-    **Patrón.** El planificador recibe el nombre del módulo del mundo como
-    primer argumento de `planificar/5` y solo llama a un conjunto fijo de
-    predicados descriptivos: `agrega/2`, `borra/2`, `puede/2`,
-    `imposible/1`, `siempre/1`, `prueba/1` y `dado/2`, siempre como
-    `Mundo:agrega(H, A)`. Otro mundo es otro módulo con los mismos siete
-    predicados: `robot.pl` los define en parte con reglas, y el mismo
-    código planifica en los dos. Una descripción existente se reutiliza con
-    una traducción pequeña: `pinza.pl` carga los operadores STRIPS del
-    [capítulo 41](../capitulo-41-busqueda-y-planificacion/index.md) en un módulo propio y define `agrega/2`, `borra/2`,
-    `puede/2` y `dado/2` con una o dos líneas cada uno, sin copiar el
-    mundo. Se diferencia del
-    [Patrón 54](../patrones.md#54-la-frontera-decide-la-estrategia), en el
-    que el problema es fijo y la estrategia de búsqueda es el parámetro, y
-    del [Patrón 60](../patrones.md#60-interprete-con-conducta-como-parametro),
-    en el que la estructura es fija y el parámetro da el significado de sus
-    piezas: aquí el algoritmo y su significado son fijos, y lo que varía
-    son los datos sobre los que razona, una descripción de varias
-    relaciones y no una sola función de sucesores.
-
-    **Cuándo no usarlo.** Cuando hay un solo mundo y no se espera otro: la
-    llamada calificada y la interfaz fija agregan una indirección sin
-    beneficio. Cuando la traducción deja de ser pequeña: la versión 4 mide
-    que los operadores sin variables del
-    [capítulo 41](../capitulo-41-busqueda-y-planificacion/index.md) cuestan más del doble
-    de inferencias que `cubos.pl`, y sin la cota agotan la pila; un mundo
-    que el planificador recorre mal se describe de nuevo, con variables.
-    Y cuando el mundo necesita algo que la interfaz no expresa, como
-    acciones con costo o efectos que dependen del estado: entonces cambia
-    la interfaz, y con ella todos los mundos.
-
-!!! success "Criterios de calidad"
-    | Criterio | En este capítulo |
-    |---|---|
-    | C1 | cada predicado declara modos y determinación; `planificar/5` es `nondet` y da los planes de menor a mayor longitud, y `preservada/3` e `inconsistente/3` aclaran cómo tratan las variables libres |
-    | C3 | el planificador no conoce el mundo: recibe su módulo y solo llama a los siete predicados de la descripción; el mismo código planifica en los cubos, en el robot y en los dos mundos del [capítulo 41](../capitulo-41-busqueda-y-planificacion/index.md) |
-    | C4 | `preservada/3`, `inconsistente/3` y `es_prueba/2` trabajan sobre una copia dentro de `\+ \+`: no ligan nada ni dejan alternativas |
-    | C7 | 92 pruebas en siete archivos, y 33 más sobre las soluciones; cada plan que se prueba pasa además por `logra/4`, que lo ejecuta por regresión desde el estado inicial |
-
-## 71.7 Más allá de WARPLAN
-
-Las fuentes del capítulo describen tres cosas que las cuatro versiones no
-hacen, y que la página [Más allá de WARPLAN](extensiones.md) agrega. Los
-**planes condicionales** de Warren (1976) examinan un hecho del mundo y
-siguen por una rama u otra; `condicional.pl` construye una versión simple,
-para un estado inicial que puede ser uno de varios. El **control de
-ciclos** que el memo de 1974 propone entre sus mejoras vuelve finita la
-búsqueda sin cota, pero en el segundo orden de la anomalía no la hace
-practicable: `ciclos.pl` lo mide. Y el **mundo de las llaves y las cajas**
-del apéndice del memo, `llaves.pl`, reproduce el plan de ocho acciones
-que Warren publica, con dos versiones de la acción de llevar, una por cada
-clase de destino.
+El capítulo continúa en la página
+[El mundo del capítulo 41](comparacion.md#716-version-4-el-mundo-del-capitulo-41),
+con la cuarta versión, que aplica el mismo planificador a los mundos de
+bloques del [capítulo 41](../capitulo-41-busqueda-y-planificacion/index.md),
+y la página siguiente,
+[Más allá de WARPLAN](extensiones.md#717-mas-alla-de-warplan), lo termina
+con lo que las fuentes describen y las cuatro versiones no hacen. Antes,
+los [ejercicios](#ejercicios) de esta página practican las versiones 1 a
+3.
 
 ## Ejercicios
 
@@ -762,59 +696,23 @@ tiene de propio.
    inferencias en la anomalía, en el orden `[sobre(b, c), sobre(a, b)]` con
    techo 6 y 12, y en el robot para encender la luz y llegar al punto 6,
    con techo 12, y compararlas con las de `planificar/5`.
-7. **(2)** Declarar combinaciones imposibles para el mundo con pinza —la
-   pinza vacía y sosteniendo un bloque, dos bloques sostenidos, un bloque
-   sostenido y apoyado, un bloque en dos lugares, un bloque con algo encima
-   y libre— y medir cómo cambian las inferencias de la versión 2 en la
-   anomalía, en los dos órdenes de las metas.
-8. **(1)** Escribir `estado_final(Mundo, Inicio, Plan, Estado)`, que da
+7. **(1)** Escribir `estado_final(Mundo, Inicio, Plan, Estado)`, que da
    todos los hechos que valen después de Plan como un conjunto ordenado,
    con `vale/4`. Aplicarlo al plan de la anomalía y a `ir_a(punto(4),
    habitacion(1))` en el robot.
-9. ★ **(3)** Agregar al mundo del ejercicio 2 el estado inicial `cuatro`:
+8. ★ **(3)** Agregar al mundo del ejercicio 2 el estado inicial `cuatro`:
    d sobre c sobre b sobre a. Planificar `[sobre(a, b), sobre(b, c),
    sobre(c, d)]` y el orden inverso con `planificar/5` y
    `planificar_sin_cota/4`, comparar longitudes e inferencias, y explicar
    por qué aquí la profundización paga lo que cuesta y en el robot no.
-10. **(2)** Planificar en el robot las metas encender la luz y llegar al
+9. **(2)** Planificar en el robot las metas encender la luz y llegar al
     punto 6 en los dos órdenes, con la cota y sin ella. Comparar los planes
     y las inferencias, y explicar por qué el orden de las metas cambia el
     costo y no el plan.
-11. **(2)** Predecir qué responde `planificar(cubos, sussman, [sobre(X,
+10. **(2)** Predecir qué responde `planificar(cubos, sussman, [sobre(X,
     b), sobre(b, X)], 4, Plan)`, medir sus inferencias, y agregar al mundo
     del ejercicio 2 una combinación imposible que haga fallar la consulta
     sin buscar.
-12. **(2)** Con `condicional.pl` y el mundo `dudoso.pl`, predecir el plan
-    condicional para `[sobre(c, a)]` y para `[sobre(b, c)]` desde los
-    estados `c_sobre_a` y `c_sobre_b`. Comprobarlo con
-    `planificar_casos/5`, obtener con `ejecutar_casos/4` las acciones de
-    cada rama y explicar por qué una de las ramas de la primera meta está
-    vacía.
-
-## Resumen
-
-| | |
-|---|---|
-| **descripción del mundo** | siete predicados: lo que cada acción agrega, borra y exige, las combinaciones imposibles, los hechos que no cambian, las pruebas y el estado inicial |
-| **regresión de un hecho** | vale después de un plan si la última acción lo agrega, o si vale antes y la acción no lo borra |
-| **hecho protegido** | una meta lograda, que ninguna acción nueva puede borrar |
-| **objeto desconocido** | una variable libre de un plan parcial, que se compara sobre una copia hecha con `numbervars/3` |
-| **extensión, inserción** | la acción nueva va al final del plan, o antes de una acción que no borra la meta |
-| **regresar los protegidos** | a través de una acción: se quitan los que la acción agrega y se agregan sus precondiciones |
-| **intercalar** | poner una acción de una meta entre las acciones de otra; resuelve la anomalía de Sussman |
-| `vale/4`, `preservada/3`, `logra/4` | lo que vale después de un plan, y la comprobación de un plan |
-| `planificar/5` de `extension.pl` | la versión 1: extensión, metas protegidas y cota |
-| `planificar/5` de `warplan.pl`, `regresar/4`, `planificar_sin_cota/4` | la versión 2, WARPLAN |
-| `robot.pl` | la versión 3: el mundo del robot, con hechos deducidos |
-| `pinza.pl`, `sin_pinza.pl`, `medios_fines/3` | la versión 4: los mundos del [capítulo 41](../capitulo-41-busqueda-y-planificacion/index.md), traducidos |
-| `planificar_casos/5`, `planificar_sin_ciclos/4`, `llaves.pl` | más allá de WARPLAN: planes condicionales, control de ciclos y el mundo de las llaves y las cajas |
-| **[Patrón 69](../patrones.md#69-descripcion-del-mundo-como-parametro)** | descripción del mundo como parámetro |
-
-## Temas que se retoman
-
-| Tema | Se retoma en |
-|---|---|
-| La planificación de tareas con duraciones y procesadores, como búsqueda de costo mínimo | [capítulo 73](../capitulo-73-proyecto-planificacion-tareas/index.md) |
 
 ## Referencias
 
@@ -836,11 +734,7 @@ tiene de propio.
   notas bibliográficas remiten además a Helder Coelho, José Carlos Cotta y
   Luís Moniz Pereira, *How to Solve It with Prolog* (Laboratório Nacional
   de Engenharia Civil, Lisboa, 1980), de donde proviene el texto del
-  programa y de los mundos, y a Warren (1976), *Generating Conditional
-  Plans and Programs* (AISB, Edimburgo, 1976), la extensión a planes
-  condicionales; sin edición en línea de acceso libre, el capítulo la
-  conoce por esa nota, y la versión por casos de la página
-  [Más allá de WARPLAN](extensiones.md#planes-condicionales) es propia.
+  programa y de los mundos.
 - David H. D. Warren, *WARPLAN: a system for generating plans*, Memo 76
   del Department of Computational Logic, Universidad de Edimburgo, 1974 —
   apartados «The 3 blocks problem», «Specifying a problem»,
@@ -855,11 +749,6 @@ tiene de propio.
   `preserved` antes y después de planificar las precondiciones, y las
   deficiencias que el memo mismo señala: búsqueda en profundidad sin
   control de ciclos, planes no óptimos, orden de las metas fijado a mano.
-  La página [Más allá de WARPLAN](extensiones.md) toma de su apartado
-  «Deficiencies of the system» el control de ciclos y de su apéndice el
-  problema de las llaves y las cajas, una simplificación que Warren hace
-  de una prueba de Donald Michie (*On Machine Intelligence*, Edinburgh
-  University Press, 1974), con su plan de ocho acciones.
   El capítulo toma de él las versiones 1 y 2 como «sin la cláusula de
   inserción» y «con ella», y la observación de que intercambiar las dos
   cláusulas de `achieve` da otra versión del planificador.
@@ -879,9 +768,3 @@ tiene de propio.
   que el capítulo llama anomalía de Sussman; Warren lo cita de esta tesis
   y atribuye a Austin Tate haberlo señalado primero como un problema que
   un planificador lineal no resuelve de manera óptima.
-
-El código del capítulo es propio, escrito para el curso: del libro se
-toman las ideas y la estructura del algoritmo, no el código. La cota de
-acciones con profundización, las listas de hechos en lugar de
-conjunciones, las pruebas declaradas con `prueba/1`, la traducción de los
-operadores del [capítulo 41](../capitulo-41-busqueda-y-planificacion/index.md) y las mediciones son del curso.

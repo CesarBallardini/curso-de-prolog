@@ -55,7 +55,7 @@ El capítulo reutiliza las gramáticas del
 [capítulo 45](../capitulo-45-proyecto-aventura-de-texto/index.md), cuyo
 `palabras/2` importa, con su técnica para redactar respuestas con
 gramáticas. Cumple así el anuncio del
-[capítulo 45](../capitulo-45-proyecto-aventura-de-texto/index.md#temas-que-se-retoman): diálogos en castellano
+[capítulo 45](../capitulo-45-proyecto-aventura-de-texto/colossal-cave.md#temas-que-se-retoman): diálogos en castellano
 con plantillas de respuesta. Las cinco versiones del diálogo son módulos que
 cargan archivos de otros capítulos, y se ejecutan en una instalación local;
 ANALOGY y los guiones corren también en SWISH. Los bucles de conversación
@@ -84,7 +84,7 @@ Al terminar el capítulo, el lector puede:
 !!! info "Tiempo estimado"
     Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **3:10 h**.
     Resolver los 5 ejercicios marcados con ★: **1:35 h**.
-    Resolver los 13 ejercicios del final: **3:50 h**.
+    Resolver los 13 ejercicios del capítulo: **3:50 h**.
 
 ## 56.1 El programa terminado
 
@@ -150,15 +150,15 @@ flowchart TD
     T --> S
 ```
 
-Las secciones [56.7](#567-analogy-analogias-geometricas) y
-[56.8](#568-guiones-completar-una-historia) presentan ANALOGY y los guiones,
-y la [56.9](#569-el-guion-doctor-de-weizenbaum), el guion DOCTOR tal como lo
+Las secciones [56.7](analogia.md#567-analogy-analogias-geometricas) y
+[56.8](guiones.md#568-guiones-completar-una-historia) presentan ANALOGY y los guiones,
+y la [56.9](guiones.md#569-el-guion-doctor-de-weizenbaum), el guion DOCTOR tal como lo
 describe Weizenbaum.
 
 ## 56.2 Versión 1: plantillas con segmentos
 
 Las palabras de una frase salen de `palabras/2`, del
-[capítulo 45](../capitulo-45-proyecto-aventura-de-texto/lenguaje.md#ordenes-y-respuestas-en-castellano),
+[capítulo 45](../capitulo-45-proyecto-aventura-de-texto/lenguaje.md#ordenes-en-castellano-el-bucle-del-juego-y-la-pantalla-completa),
 que pasa el texto a minúsculas, quita las tildes y separa las palabras; el
 módulo la importa con `use_module('../capitulo-45/lenguaje', [palabras/2])`
 y no carga nada más en su espacio de nombres. Un patrón es una lista de esas
@@ -584,355 +584,9 @@ conversar(In, Responder, Estado0) :-
 repetirlo. Una agenda tiene que entender la frase lo bastante para
 guardar sus datos y responder preguntas sobre ellos.
 
-## 56.5 Versión 4: una agenda en castellano
-
-El proyecto 15 de Clocksin y Mellish pide analizar frases sobre citas en una
-oficina, resumirlas en quién, qué, dónde y cuándo, guardar el resumen y
-responder preguntas. La versión 4 lo hace en castellano: una gramática sobre
-las palabras reconoce una cita, con los complementos en cualquier orden, y
-tres preguntas; `atender/4` aplica el acto a una agenda que entra y sale por
-argumentos, y redacta la respuesta con otra gramática. Falla si la frase no
-es de la agenda, y la versión 5 depende de esa falla:
-
-<!-- ejemplo: capitulo-56/agenda.pl predicado: atender/4 -->
-```prolog
-%!  atender(+Frase:string, +Agenda0:list, -Agenda:list,
-%!          -Respuesta:string) is semidet.
-%
-%   Frase es una frase de la agenda: Agenda es Agenda0 con la cita anotada
-%   al final,
-%   o Agenda0 si la frase pregunta o la cita choca con otra, y Respuesta es
-%   la respuesta. Falla si Frase no es una frase de la agenda.
-atender(Frase, Agenda0, Agenda, Respuesta) :-
-    palabras(Frase, Palabras),
-    once(phrase(acto(Acto), Palabras)),
-    efecto(Acto, Frase, Agenda0, Agenda, Resultado),
-    phrase(oracion(Resultado), Codigos),
-    string_codes(Respuesta, Codigos).
-```
-
-```prolog
-?- atender("Tengo una reunión con Pérez el martes a las 10", [], A, R).
-A = [cita(dia(martes), hora(10, 0), nombre(una, "reunión"), nombre(ninguno, "Pérez"), ninguno)],
-R = "Anotado: el martes a las 10:00, una reunión con Pérez.".
-```
-
-La página [Una agenda en castellano](agenda.md#una-agenda-en-castellano)
-desarrolla la versión entera: la gramática de las citas, los días y las
-horas, las fechas validadas con `fecha_valida/3` del
-[capítulo 22](../capitulo-22-gramaticas-dcg/index.md) y la redacción de las
-respuestas, con una actividad.
-
-**Lo que falta.** La agenda y ELIZA son dos programas: con la agenda, una
-frase que no es una cita queda sin respuesta; con ELIZA, una cita recibe una
-respuesta de terapeuta.
-
-## 56.6 Versión 5: la agenda y ELIZA en una conversación
-
-La gramática de la agenda es la plantilla más específica que tiene el
-programa: si reconoce la frase, la agenda responde; si no, responde ELIZA. El
-estado de la conversación reúne los dos estados, y el bucle es `conversar/3`
-de la versión 3, con otro predicado para responder:
-
-<!-- ejemplo: capitulo-56/dialogo.pl predicado: responder/4 -->
-```prolog
-%!  responder(+Frase:string, +Estado0, -Estado, -Respuesta:string) is det.
-%
-%   Respuesta es la respuesta de la agenda a Frase, si la agenda la
-%   reconoce, o la de ELIZA si no; Estado es el estado que queda.
-responder(Frase, dialogo(Eliza0, Agenda0), dialogo(Eliza, Agenda),
-          Respuesta) :-
-    (   atender(Frase, Agenda0, Agenda1, Respuesta0)
-    ->  Eliza = Eliza0,
-        Agenda = Agenda1,
-        Respuesta = Respuesta0
-    ;   Agenda = Agenda0,
-        responder_eliza(Frase, Eliza0, Eliza, Respuesta)
-    ).
-```
-
-`dialogo.pl` importa el `responder/4` de ELIZA con otro nombre,
-`use_module(eliza, [responder/4 as responder_eliza, …])`, porque define el
-suyo. «Tengo miedo de esa reunión» empieza como una cita, pero la gramática
-no la reconoce, y la frase pasa a ELIZA; «Tengo un examen el lunes a las 9»
-va a la agenda. La prueba `agenda_o_eliza` verifica los dos casos.
-
-## 56.7 ANALOGY: analogías geométricas
-
-El programa ANALOGY, de Thomas Evans (1963), resolvía los problemas de los
-tests de inteligencia que muestran tres diagramas A, B y C, y preguntan cuál
-de varias respuestas es a C lo que B es a A. La reconstrucción de Sterling y
-Shapiro representa cada diagrama como un término, `inside(square,
-triangle)`, y usa el mismo predicado dos veces: con A y B encuentra la
-operación que convierte uno en el otro, y con la operación y C construye la
-respuesta. Es la plantilla de las versiones anteriores sobre otros datos: el
-diagrama es el patrón, y la unificación lo empareja.
-
-`analogia.pl` generaliza esa reconstrucción: seis operaciones en lugar de una
-y sucesiones de operaciones en lugar de una sola, buscadas de la más corta a
-la más larga:
-
-<!-- ejemplo: capitulo-56/analogia.pl predicado: analogia/3 -->
-```prolog
-%!  analogia(+Par1, +Par2, +Respuestas:list) is semidet.
-%
-%   Par1 es A es_a B y Par2 es C es_a X: X es la respuesta de Respuestas a
-%   la que la sucesión más corta de operaciones que convierte A en B, de
-%   hasta tres, convierte C. Entre las sucesiones de igual largo, la
-%   primera que se encuentra.
-analogia(A es_a B, C es_a X, Respuestas) :-
-    analogia(A es_a B, C es_a X, Respuestas, _).
-```
-
-```prolog
-?- analogia(dentro(cuadrado, triangulo) es_a encima(triangulo, cuadrado), dentro(circulo, rombo) es_a X, [encima(circulo, rombo), dentro(rombo, circulo), encima(rombo, circulo)], Ops).
-X = encima(rombo, circulo),
-Ops = [invertir, relacion(encima)].
-```
-
-La página [ANALOGY](analogia.md#analogy-analogias-geometricas) desarrolla el
-programa, con una actividad.
-
-## 56.8 Guiones: completar una historia
-
-«Juan fue a Leones, comió una hamburguesa y se fue.» Quien lee la historia
-entiende que Juan fue a un restaurante, se sentó, pidió, le trajeron la
-comida y pagó, aunque nada de eso está escrito: conoce el guion de un
-restaurante. SAM, el aplicador de guiones de Roger Schank y su grupo de Yale,
-y su versión para la enseñanza, McSAM, hacían esa inferencia: la historia se
-empareja con un guion, en orden, y los pasos que la historia omite se
-completan con los del guion. `guiones.pl` es la versión de Sterling y
-Shapiro con estructuras en lugar de listas, como propone uno de sus
-ejercicios, y con una gramática que cuenta la historia entendida:
-
-<!-- ejemplo: capitulo-56/guiones.pl predicado: contar/2 -->
-```prolog
-%!  contar(+Sucesos:list, -Texto:string) is det.
-%
-%   Texto cuenta los Sucesos en castellano, una oración por suceso.
-contar(Sucesos, Texto) :-
-    phrase(oraciones(Sucesos), Codigos),
-    string_codes(Texto, Codigos).
-```
-
-```prolog
-?- historia(leones, H), entender(H, Guion, E), contar(E, T).
-H = [ir(juan, casa, leones), comer(juan, hamburguesa), ir(juan, leones, otro_lugar)],
-Guion = restaurante,
-E = [ir(juan, casa, leones), sentarse(juan, mesa), pedir(juan, hamburguesa, mozo), traer(mozo, hamburguesa, juan), comer(juan, hamburguesa), pagar(juan, cuenta, mozo), ir(juan, leones, otro_lugar)],
-T = "Juan fue de su casa a Leones. Juan se sentó a una mesa. Juan le pidió una hamburguesa al mozo. El mozo le trajo una hamburguesa a Juan. Juan comió una hamburguesa. Juan le pagó la cuenta al mozo. Juan fue de Leones a otro lugar." ;
-false.
-```
-
-La página [Guiones](guiones.md#guiones-completar-una-historia) desarrolla el
-programa.
-
-## 56.9 El guion DOCTOR de Weizenbaum
-
-La ELIZA de la versión 3 toma de Weizenbaum el rango, los turnos y la
-memoria, pero no su manera de escribir las reglas. En el artículo de 1966,
-ELIZA es un intérprete y DOCTOR es el **guion** que interpreta: una tabla
-de palabras clave en la que cada clave tiene un rango y una lista de
-**reglas de descomposición**, y cada regla de descomposición, una lista de
-**reglas de reensamblado**. La descomposición `(0 YOU 0 ME)` reparte la
-frase en cuatro partes —cualquier cantidad de palabras, «you», cualquier
-cantidad, «me»—, y el reensamblado `(WHAT MAKES YOU THINK I 3 YOU)` arma la
-respuesta con la tercera parte. Un número `n` distinto de cero en una
-descomposición abarca exactamente `n` palabras. `doctor.pl` reconstruye ese
-mecanismo con un guion propio en castellano, más chico que el original.
-
-**El recorrido de la frase.** Weizenbaum recorre la frase una sola vez, de
-izquierda a derecha. Cada palabra se sustituye según una tabla —el cambio
-de persona: «mi» pasa a «tu», «estoy» a «estás»—, y cada palabra clave
-entra en la **pila de claves**: arriba, si su rango supera al de la clave
-que está arriba; abajo, si no. Al terminar, la clave de mayor rango está
-arriba, y las reglas se escriben sobre el texto ya sustituido:
-
-<!-- ejemplo: capitulo-56/doctor.pl predicado: explorar/3 explorar_palabra/4 -->
-```prolog
-%!  explorar(+Palabras:list(atom), -Texto:list, -Pila:list(atom)) is det.
-%
-%   Texto son las Palabras sustituidas y Pila las palabras clave de
-%   Palabras, con la de mayor rango arriba.
-explorar(Palabras, Texto, Pila) :-
-    foldl(explorar_palabra, Palabras, Texto, [], Pila).
-
-%!  explorar_palabra(+P:atom, -Q, +Pila0:list, -Pila:list) is det.
-%
-%   Q es P sustituida, y Pila es Pila0 con P arriba si P es una clave de
-%   rango mayor que la de arriba, abajo si es una clave de rango menor o
-%   igual, o sin cambios si P no es una clave.
-explorar_palabra(P, Q, Pila0, Pila) :-
-    (   sustituye(P, Q0)
-    ->  Q = Q0
-    ;   Q = P
-    ),
-    (   clave(P, Rango, _)
-    ->  (   Pila0 = [Arriba|_],
-            clave(Arriba, RangoArriba, _),
-            Rango =< RangoArriba
-        ->  append(Pila0, [P], Pila)
-        ;   Pila = [P|Pila0]
-        )
-    ;   Pila = Pila0
-    ).
-```
-
-```prolog
-?- explorar([mi, padre, siempre, dice, que, eres, una, computadora], T, P).
-T = ["tu", padre, siempre, dice, que, "soy", una, computadora],
-P = [computadora, mi, siempre].
-```
-
-«mi» entra primero; «siempre», de rango 1, va abajo de «mi», de rango 2;
-«computadora», de rango 50, va arriba. La palabra clave se reconoce por su
-forma original y sus reglas miran la sustituida: la clave `mi` tiene reglas
-que buscan `"tu"`.
-
-**El guion.** Cada clave es un hecho `clave(Palabra, Rango, Reglas)`. Una
-regla es `Descomposicion - Reensamblados`, o `ir_a(Clave)`, que usa las
-reglas de otra clave —en DOCTOR, `(ALIKE 10 (=DIT))`: «iguales» y
-«pareces» comparten las reglas de `parecido`, y también sus turnos—. En una
-descomposición, `0` abarca cualquier cantidad de palabras, un entero `N`
-exactamente `N`, `clase(C)` una palabra de la clase `C` —la marca `/FAMILY`
-de DOCTOR— y `alguna(Ps)` una de las palabras de `Ps`. En un reensamblado,
-cada número repite la parte de ese número:
-
-<!-- ejemplo: capitulo-56/doctor.pl fragmento: clave(mi, 2, .. ["¿Por qué dices tu ", 3, "?"] ] ]). -->
-```prolog
-clave(mi, 2,
-      [ [0, "tu", 0, clase(familia), 0]
-        - [ ["Háblame más de tu familia."],
-            ["¿Quién más en tu familia ", 5, "?"],
-            ["Tu ", 4, "."],
-            ["¿Qué más se te ocurre cuando piensas en tu ", 4, "?"] ],
-        [0, "tu", 0]
-        - [ ["Tu ", 3, "."],
-            ["¿Por qué dices tu ", 3, "?"] ] ]).
-```
-
-<!-- ejemplo: capitulo-56/doctor.pl predicado: parte/4 -->
-```prolog
-%!  parte(+Elemento, +Texto:list, -Parte:list, -Resto:list) is nondet.
-%
-%   Parte es el comienzo de Texto que corresponde a Elemento, y Resto lo
-%   que queda.
-parte(0, Texto, Parte, Resto) :-
-    !,
-    append(Parte, Resto, Texto).
-parte(N, Texto, Parte, Resto) :-
-    integer(N),
-    !,
-    length(Parte, N),
-    append(Parte, Resto, Texto).
-parte(clase(C), [P|Resto], [P], Resto) :-
-    !,
-    etiqueta(P, C).
-parte(alguna(Ps), [P|Resto], [P], Resto) :-
-    !,
-    memberchk(P, Ps).
-parte(P, [P|Resto], [P], Resto).
-```
-
-```prolog
-?- descomponer([0, "tu", 0, clase(familia), 0], ["tu", madre, "te", cuida], Ps).
-Ps = [[], ["tu"], [], [madre], ["te", cuida]].
-```
-
-`descomponer/3` toma el primer reparto que encuentra, con las partes `0`
-lo más cortas posible. `transformar/6` prueba las descomposiciones de la
-clave en orden y, con la primera que coincide, toma el reensamblado al que
-le toca el turno en esa regla. Dos reensamblados especiales cambian el
-camino: `ir_a(Clave)` pasa a las reglas de otra clave, y `nueva_clave`
-—`(NEWKEY)` en DOCTOR— abandona la clave y deja la frase a la siguiente de
-la pila. La clave `porque` responde «¿Es esa la verdadera razón?» la
-primera vez, y la segunda cede la frase:
-
-<!-- ejemplo: capitulo-56/doctor.pl predicado: transformar/6 -->
-```prolog
-%!  transformar(+Reglas:list, +K, +Texto:list, +T0, -T, -Resultado)
-%!      is semidet.
-%
-%   Resultado es Reensamblado-Partes, con Reensamblado el que le toca a la
-%   primera regla de descomposición que coincide con Texto y Partes la
-%   descomposición, o nueva_clave. ir_a(Clave) sigue con las reglas de
-%   Clave. Falla si ninguna regla coincide.
-transformar([Regla|Reglas], K, Texto, T0, T, Resultado) :-
-    (   Regla = ir_a(K2)
-    ->  clave(K2, _, Reglas2),
-        transformar(Reglas2, K2, Texto, T0, T, Resultado)
-    ;   Regla = Descomposicion-Reensamblados,
-        descomponer(Descomposicion, Texto, Partes)
-    ->  turno(K-Descomposicion, Reensamblados, T0, T1, R),
-        (   R = ir_a(K2)
-        ->  clave(K2, _, Reglas2),
-            transformar(Reglas2, K2, Texto, T1, T, Resultado)
-        ;   R == nueva_clave
-        ->  T = T1,
-            Resultado = nueva_clave
-        ;   T = T1,
-            Resultado = R-Partes
-        )
-    ;   transformar(Reglas, K, Texto, T0, T, Resultado)
-    ).
-```
-
-**La memoria.** En DOCTOR, la clave `MY` tiene además cuatro
-transformaciones de memoria: cuando es la clave principal de una frase, la
-frase se reensambla con una de ellas y se guarda; cuando una frase no tiene
-ninguna clave, la respuesta es el recuerdo más antiguo. Weizenbaum elige la
-transformación con una función de dispersión sobre la última palabra;
-`recordar_frase/5` usa el largo de esa palabra, módulo cuatro. Sin claves
-ni recuerdos, responde la clave `ninguna`, el `NONE` de DOCTOR.
-
-La conversación del artículo, en castellano, con `doctor/0`:
-
-```text
-¿Cómo estás? Cuéntame tu problema.
-> Los hombres son todos iguales.
-¿En qué sentido?
-> Siempre nos molestan con algo.
-¿Puedes pensar en un ejemplo concreto?
-> Bueno, mi novio me hizo venir aquí.
-Tu novio te hizo venir aquí.
-> Dice que estoy deprimida la mayor parte del tiempo.
-Lamento oír que estás deprimida.
-> Es verdad. Soy infeliz.
-¿Crees que venir aquí te ayudará a no ser infeliz?
-> Necesito un poco de ayuda.
-¿Qué significaría para ti conseguir un poco de ayuda?
-> Quizás podría llevarme bien con mi madre.
-Háblame más de tu familia.
-> Mi madre me cuida.
-¿Quién más en tu familia te cuida?
-> Mi padre.
-Tu padre.
-> Te pareces a mi padre en algunas cosas.
-¿Qué parecido ves?
-> Bueno.
-Hablemos más de por qué tu novio te hizo venir aquí.
-```
-
-«Mi madre me cuida» y «Mi padre» usan la misma descomposición, `(0 tu 0
-(/familia) 0)`, y reciben sus reensamblados segundo y tercero; «Te pareces»
-toma el segundo turno de `parecido`, que «iguales» ya usó; «Bueno.» no
-tiene claves, y la respuesta sale de la memoria. La prueba `conversacion`
-de `doctor.plt` compara las respuestas una por una.
-
-| | Versión 3, `eliza.pl` | `doctor.pl` |
-|---|---|---|
-| patrón | variables de Prolog | `0`, `N`, `clase/1`, `alguna/1` y números en el reensamblado |
-| elección | la regla de mayor rango que coincide | la pila de claves, en una sola pasada |
-| cambio de persona | `persona//1`, con contexto | `sustituye/2`, palabra por palabra, en el recorrido |
-| redirección | — | `ir_a/1` y `nueva_clave` |
-
-!!! success "Criterios de calidad"
-    | Criterio | En este capítulo |
-    |---|---|
-    | C1 | cada predicado declara modos y determinación; `responder/2`, `responder/4`, `reflejar/2` y las gramáticas de respuesta son `det`, `atender/4` es `semidet` porque falla con una frase que no es de la agenda, y `coincide/2` y `entender/3` son `nondet` |
-    | C4 | las reglas de contexto de `persona//1` y la elección de regla cortan después de decidir, y las pruebas, que fallan si queda una alternativa pendiente, lo confirman |
-    | C6 | ningún programa usa la base de datos dinámica: el estado de ELIZA y la agenda viajan en argumentos, y la lectura y la escritura están solo en `conversar/3`, que recibe el stream como argumento |
-    | C7 | 136 pruebas en ocho archivos, y 46 más en las soluciones: los patrones con todas sus respuestas, el cambio de persona en los dos sentidos, la prioridad, los turnos y la memoria, cada forma de día y de hora, y dos conversaciones enteras leídas de una cadena |
+El capítulo continúa en la página
+[Una agenda en castellano y una conversación con ELIZA](agenda.md#565-version-4-una-agenda-en-castellano), con la agenda de la
+versión 4 y la versión 5, que la reúne con ELIZA en una conversación.
 
 ## Ejercicios
 
@@ -942,149 +596,57 @@ Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
 tiene de propio. Los ejercicios extienden los programas: cada solución es un
 archivo que carga los del capítulo, sin modificarlos.
 
-1. ★ **(1)** Predecir la respuesta de `dialogo.pl`, desde el estado inicial,
-   a cada frase de esta secuencia, y comprobarlo: «Tú no me entiendes» ·
-   «Necesito unas vacaciones» · «Tengo una cena con Luis el viernes a las 9
-   de la noche» · «Mi hermana dice que exagero» · «Estoy harta» · «¿Cuándo
-   veo a Luis?» · «Sí».
-2. **(1)** Escribir el encabezado PlDoc de `coincide/2` con todos sus modos
+1. **(1)** Escribir el encabezado PlDoc de `coincide/2` con todos sus modos
    útiles y su determinación. ¿Por qué el primer argumento tiene que llegar
    instanciado como una lista completa? Relacionarlo con la primera
    actividad.
-3. ★ **(2)** Agregar a ELIZA, en un archivo aparte y con cláusulas
+2. ★ **(2)** Agregar a ELIZA, en un archivo aparte y con cláusulas
    `eliza:regla(…)`, una regla para «no puedo X» («¿Qué te impide X?») y una
    de rango 4 para la palabra «siempre» («¿Puedes pensar en un ejemplo
    concreto?»). Comprobar que «Siempre estoy cansado» elige la segunda
    aunque la regla de «estoy» esté escrita antes.
-4. ★ **(2)** Después de una preposición, «mí» es un pronombre y pasa a
+3. ★ **(2)** Después de una preposición, «mí» es un pronombre y pasa a
    «ti»: «para mí es difícil» debe volver como «para ti es difícil».
    Escribir `reflejar_prep/2`, una variante de `reflejar/2` que lo hace
    después de «para», «por», «sin» y «a», y explicar por qué la regla no se
    puede aplicar después de «de».
-5. **(1)** Escribir `verbo_regular/1` para declarar los verbos regulares por
+4. **(1)** Escribir `verbo_regular/1` para declarar los verbos regulares por
    su infinitivo (`verbo_regular(caminar)`), y `conjugada_inf/2`, que los
    conjuga como `conjugada/2` a partir del infinitivo.
-6. ★ **(2)** Agregar a la agenda la orden «cancela la reunión del martes»,
-   que borra las citas de esa actividad ese día y responde «Cancelado: …»,
-   o «No tienes nada de eso anotado el martes.». Escribir
-   `atender_con_cancelar/4`, que prueba la cancelación y después
-   `atender/4`.
-7. **(2)** Agregar a la agenda la pregunta «¿cuándo tengo la reunión?», que
-   responde con el día y la hora de cada cita de esa actividad.
-8. **(2)** Escribir `guardar_agenda(+Archivo, +Agenda)` y
-   `cargar_agenda(+Archivo, -Agenda)`, que escriben las citas como hechos y
-   las leen con `read_term/3`, rechazando con un error de dominio un término
-   que no es una cita.
-9. **(3)** Extender ANALOGY a diagramas anidados, como
-   `dentro(circulo, encima(cuadrado, triangulo))`: una operación
-   `en_exterior(Op)` aplica la operación `Op` a la segunda parte de una
-   relación. Resolver con ella un problema en el que A es
-   `dentro(circulo, encima(cuadrado, triangulo))` y B es
-   `dentro(circulo, encima(triangulo, cuadrado))`.
-10. **(2)** Agregar un guion para una consulta médica (llegar, esperar,
-    pasar al consultorio, ser revisado, recibir una receta, irse), con sus
-    palabras que lo activan y sus oraciones, y una historia que lo use.
-11. ★ **(3)** Escribir una gramática que lea una historia en castellano,
-    como «Juan fue a Leones, comió una hamburguesa y se fue.», y dé la lista
-    de sucesos de `entender/3`, con variables donde el texto no dice nada: el
-    sujeto que falta es el de la oración anterior. Encadenar la gramática,
-    `entender/3` y `contar/2` en `comprender(+Texto, -Relato)`.
-12. **(2)** Escribir un `responder/4` que pase cada frase primero a la
-    aventura del [capítulo 45](../capitulo-45-proyecto-aventura-de-texto/index.md)
-    —`entender/2` y `responder/2` de `lenguaje.pl`— y, si no es una orden
-    del juego, a ELIZA, y probarlo con `conversar/3`.
-13. **(2)** Agregar al guion DOCTOR, en un archivo aparte, la clave
-    «recuerdo», de rango 5, que se sustituye por «recuerdas», con la regla
-    `(0 recuerdas 0)` y dos reensamblados. Explicar por qué «Recuerdo mi
-    barrio.» no deja un recuerdo en la memoria.
-
-## Resumen
-
-| | |
-|---|---|
-| **plantilla** | un patrón con variables de segmento y una respuesta con las mismas variables; `append/3` reparte la frase entre los segmentos |
-| **cambio de persona** | pronombres, posesivos y verbos en una sola pasada; el contexto (determinante, pronombre ante verbo) lo decide una gramática, y la pasada única evita el ciclo yo–tú–yo |
-| **forma escrita** | las palabras se comparan sin tildes y se devuelven con la escritura que tenían en la frase |
-| **prioridad** | cada regla tiene un rango; gana la de mayor rango que coincide, y a igual rango la primera escrita |
-| **turnos y memoria** | respuestas que se alternan y frases guardadas para volver sobre ellas, en un estado que viaja en argumentos |
-| **bucle con el responder como argumento** | `conversar/3` con `meta_predicate`: el mismo bucle para ELIZA y para el diálogo completo |
-| **agenda** | complementos en cualquier orden, días, fechas y horas; una lista de citas; respuestas redactadas con una gramática |
-| **analogía** | diagramas como términos; la misma relación encuentra la operación y la aplica; la sucesión más corta primero |
-| **guion DOCTOR** | claves con rango en una pila, descomposiciones con `0` y `N`, reensamblados por turnos, `ir_a/1`, `nueva_clave` y la memoria |
-| **guion** | una historia emparejada en orden con un guion activado por una palabra; los papeles no nombrados toman su valor por omisión |
-| `plantillas.pl`, `persona.pl`, `eliza.pl` | las plantillas, el cambio de persona y ELIZA |
-| `agenda.pl`, `dialogo.pl` | la agenda y el programa terminado |
-| `doctor.pl` | el guion DOCTOR de Weizenbaum |
-| `analogia.pl`, `guiones.pl` | ANALOGY y los guiones; corren en SWISH |
-
-## Temas que se retoman
-
-| Tema | Se retoma en |
-|---|---|
-| Órdenes en castellano traducidas a operaciones con archivos y procesos | [capítulo 57](../capitulo-57-proyecto-ordenes-castellano/index.md) |
-| Reglas de condición y acción sobre una base de datos | [capítulo 61](../capitulo-61-proyecto-interprete-dirigido-patrones/index.md) |
-| Preguntas en castellano sobre una base de datos, traducidas a formas lógicas | [capítulo 88](../capitulo-88-proyecto-preguntas-en-castellano/index.md) |
 
 ## Referencias
 
-- Michael A. Covington, *Natural Language Processing for Prolog
-  Programmers*, Prentice Hall, 1994 — apartado 2.1, «Template matching», y
-  el ejercicio de proyecto «ELIZA in Prolog» del apartado 2.2.4.
-  [Edición en línea](https://www.covingtoninnovations.com/books/NLPPP.pdf).
-  El capítulo toma la presentación de ELIZA como un sistema de plantillas y
-  los requisitos que el ejercicio enumera: variables de varias palabras, el
-  cambio de persona sin ciclos, la palabra más importante como criterio de
-  elección y respuestas que varían.
-- William F. Clocksin y Christopher S. Mellish, *Programming in Prolog*,
-  5.ª edición, Springer, 2003 — apartado 11.2, «Advanced Projects»,
-  proyectos 14 y 15, y apartado 3.4, «Mapping», al que remite el proyecto
-  14. El capítulo toma dos enunciados: el psiquiatra simulado que responde
-  según palabras clave y el analizador de frases sobre citas de oficina,
-  que es la agenda de la versión 4. Del apartado 3.4 toma el cambio de una
-  frase palabra por palabra con una tabla de reemplazos, que
-  `palabra_a_palabra/2` reproduce para mostrar su límite; el libro no tiene
-  edición legal en línea.
+- Michael A. Covington, *Natural Language Processing for Prolog Programmers*,
+  Prentice Hall, 1994 — apartado 2.1, «Template matching», y el ejercicio de
+  proyecto «ELIZA in Prolog» del apartado 2.2.4.
+  [Edición en línea](https://www.covingtoninnovations.com/books/NLPPP.pdf). El
+  capítulo toma la presentación de ELIZA como un sistema de plantillas y los
+  requisitos que el ejercicio enumera: variables de varias palabras, el cambio
+  de persona sin ciclos, la palabra más importante como criterio de elección y
+  respuestas que varían.
+- William F. Clocksin y Christopher S. Mellish, *Programming in Prolog*, 5.ª
+  edición, Springer, 2003 — apartado 11.2, «Advanced Projects», proyecto 14, y
+  apartado 3.4, «Mapping», al que remite el proyecto 14. El capítulo toma de
+  allí el enunciado del psiquiatra simulado que responde según palabras clave.
+  Del apartado 3.4 toma el cambio de una frase palabra por palabra con una tabla
+  de reemplazos, que `palabra_a_palabra/2` reproduce para mostrar su límite; el
+  libro no tiene edición legal en línea.
 - Leon Sterling y Ehud Shapiro, *The Art of Prolog: Advanced Programming
   Techniques*, 2.ª edición, MIT Press, 1994 — apartado 14.3, «Artificial
-  Intelligence Classics: ANALOGY, ELIZA, and McSAM».
-  1.ª edición (1986) en [préstamo en el Internet Archive](https://archive.org/details/artofprologadvan00ster).
-  El capítulo toma los pares de estímulo y respuesta con ranuras, la
-  analogía como una operación que se encuentra y se aplica con el mismo
-  predicado, el guion que se activa por una palabra y se empareja como una
-  subsucesión, y los ejercicios que proponen corregir el cambio de persona
-  y reescribir McSAM con estructuras; los programas de Thomas Evans y del
-  grupo de Roger Schank se conocen a través de esta reconstrucción.
-- Joseph Weizenbaum, «ELIZA—a computer program for the study of natural
-  language communication between man and machine», *Communications of the
-  ACM* 9 (1), 1966, pp. 36–45.
-  [Edición en línea](https://doi.org/10.1145/365153.365168). Es la fuente
-  que citan Covington y Sterling y Shapiro. El capítulo toma de este
-  artículo la memoria de ELIZA y el ejemplo de conversación en que la usa,
-  y, en la [sección 56.9](#569-el-guion-doctor-de-weizenbaum), el guion
-  DOCTOR: la sustitución en el recorrido, la pila de claves por rango, las
-  descomposiciones con `0` y `n`, los reensamblados por turnos, `=` y
-  `NEWKEY`, y las transformaciones de memoria de la clave `MY`.
-- Peter Norvig, *Paradigms of Artificial Intelligence Programming: Case
-  Studies in Common Lisp*, Morgan Kaufmann, 1992 — el capítulo «ELIZA:
-  Dialog with a Machine».
+  Intelligence Classics: ANALOGY, ELIZA, and McSAM». 1.ª edición (1986) en
+  [préstamo en el Internet Archive](https://archive.org/details/artofprologadvan00ster).
+  El capítulo toma los pares de estímulo y respuesta con ranuras, y el ejercicio
+  que propone corregir el cambio de persona.
+- Joseph Weizenbaum, «ELIZA—a computer program for the study of natural language
+  communication between man and machine», *Communications of the ACM* 9 (1),
+  1966, pp. 36–45. [Edición en línea](https://doi.org/10.1145/365153.365168). Es
+  la fuente que citan Covington y Sterling y Shapiro. El capítulo toma de este
+  artículo la memoria de ELIZA y el ejemplo de conversación en que la usa.
+- Peter Norvig, *Paradigms of Artificial Intelligence Programming: Case Studies
+  in Common Lisp*, Morgan Kaufmann, 1992 — el capítulo «ELIZA: Dialog with a
+  Machine».
   [Edición en línea](https://github.com/norvig/paip-lisp/blob/main/docs/chapter5.md).
-  Covington lo cita como la descripción de una ELIZA programada; de él
-  viene la variable de segmento, que abarca una sucesión de palabras y se
-  prueba con prefijos cada vez más largos, la misma estrategia que
-  `coincide/2` obtiene de `append/3`.
-- Thomas G. Evans, «A Program for the Solution of Geometric-Analogy
-  Intelligence Test Questions», en Marvin Minsky (ed.), *Semantic
-  Information Processing*, MIT Press, 1968. Es la descripción de ANALOGY
-  que cita *The Art of Prolog*; el capítulo conoce el programa a través de
-  esa reconstrucción.
-- Roger C. Schank y Christopher K. Riesbeck (eds.), *Inside Computer
-  Understanding: Five Programs Plus Miniatures*, Lawrence Erlbaum, 1981, y
-  Roger C. Schank y Robert P. Abelson, *Scripts, Plans, Goals, and
-  Understanding*, Lawrence Erlbaum, 1977. Son las fuentes de SAM, McSAM y
-  la dependencia conceptual que cita *The Art of Prolog*; de ellas vienen
-  el guion como sucesión de sucesos con papeles y los nombres `ptrans` e
-  `ingest` que usa la página [Guiones](guiones.md#guiones-completar-una-historia).
-
-El código del capítulo es propio, escrito para el curso: las reglas, los
-textos en castellano y los programas son nuevos, y de las fuentes se toman
-ideas, enunciados y representaciones, no código.
+  Covington lo cita como la descripción de una ELIZA programada; de él viene la
+  variable de segmento, que abarca una sucesión de palabras y se prueba con
+  prefijos cada vez más largos, la misma estrategia que `coincide/2` obtiene de
+  `append/3`.

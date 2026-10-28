@@ -357,7 +357,7 @@ afirman. Tres observaciones cierran la sección:
 
 - la elección del objetivo cambia la forma y el tamaño del árbol, pero no el
   conjunto de respuestas que contiene; el
-  [capítulo 39](../capitulo-39-semantica-de-los-programas-logicos/resolucion.md#resolucion-sld)
+  [capítulo 39](../capitulo-39-semantica-de-los-programas-logicos/resolucion.md#392-resolucion-sld)
   enuncia ese resultado;
 - la elección de la cláusula, es decir el orden de las cláusulas, cambia el
   orden de las respuestas y, cuando hay ramas infinitas, cuáles se alcanzan;
@@ -424,7 +424,7 @@ que el programa contiene toda la información relevante, de modo que lo que no
 se deduce de él es falso. El cuantificador universal que la
 [sección 12.2](../capitulo-12-ejercicios-integradores/index.md#122-para-todo-la-doble-negacion)
 escribe con dos `\+` anidados hereda la misma condición. La
-[sección 39.3](../capitulo-39-semantica-de-los-programas-logicos/index.md#393-negacion-como-falla-la-complecion-de-clark-y-sldnf)
+[sección 39.3](../capitulo-39-semantica-de-los-programas-logicos/resolucion.md#393-negacion-como-falla-la-complecion-de-clark-y-sldnf)
 da la cuenta precisa de qué afirma un programa con `\+`.
 
 ## 13.13 Lo que excede la lógica
@@ -528,5 +528,170 @@ búsqueda, los juegos y la relación con SQL; la parte IV, «Proyectos», va del
 [88](../capitulo-88-proyecto-preguntas-en-castellano/index.md) y construye con
 todo lo anterior proyectos completos.
 
-Los [ejercicios](index.md#ejercicios) del capítulo están en su página
-principal.
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio, y los capítulos siguientes los dan por hechos.
+
+20. **(2)** Evaluar `?- concatenar(X, Y, [a, b]).` con los cuatro pasos de la
+    [sección 13.10](#1310-los-cuatro-pasos): para cada paso, la
+    cláusula elegida, el unificador más general y la consulta que queda.
+    Componer las sustituciones de cada rama de éxito hasta obtener las tres
+    respuestas, dibujar el árbol, y compararlo con lo que pide el
+    [ejercicio 14 del capítulo 7](../capitulo-07-listas/index.md#ejercicios)
+    para la misma consulta.
+21. ★ **(3)** El programa siguiente tiene una lectura declarativa correcta y no
+    produce ninguna respuesta:
+
+    ```prolog
+    %!  ascendiente(?A, ?D) is nondet.
+    %
+    %   A es ascendiente de D.
+    ascendiente(A, D) :-
+        ascendiente(A, X),
+        progenitor(X, D).
+    ascendiente(A, D) :-
+        progenitor(A, D).
+    ```
+
+    a. Escribir su lectura declarativa y explicar por qué es verdadera.
+
+    b. Dibujar el árbol de `?- ascendiente(juan, Quien).` hasta profundidad 3,
+       con las ramas de la segunda cláusula.
+
+    c. Decir qué respuestas obtiene el recorrido en profundidad, y cuáles, y en
+       qué orden, obtendría el recorrido en anchura de la
+       [sección 13.11](#1311-el-interprete-no-determinista-y-las-estrategias-de-evaluacion).
+
+    d. Intercambiar las dos cláusulas: qué cambia para el recorrido en
+       profundidad, y si termina después de dar las respuestas.
+
+    e. Verdadero o falso: «las respuestas corresponden a nodos intermedios del
+       árbol, y las fallas a sus hojas».
+
+22. **(2)** Con los hechos `p(a, b)`, `p(a, e)`, `p(b, c)`, `p(b, d)` y
+    `p(e, f)` y las reglas
+
+    ```prolog
+    q(X, Y) :- p(X, Z), p(Z, Y).
+    r(X, Y) :- p(Z, X), p(Z, Y).
+    s(X, Y) :- p(Z, Y), r(Z, X).
+    ```
+
+    a. Mostrar que `?- q(e, b).` falla con cualquier estrategia: ninguna rama
+       de su árbol llega a la consulta vacía.
+
+    b. Mostrar una respuesta de `?- r(X, X), s(X, Y).` que el intérprete no
+       determinista puede obtener eligiendo primero el **segundo** objetivo,
+       con cada elección anotada.
+
+    c. Decir qué respuesta da Prolog primero, y por qué. Comprobarlo con el
+       programa.
+
+23. **(3)** El siguiente programa y la siguiente fórmula no tienen el mismo
+    significado. Identificar la diferencia:
+
+    ```prolog
+    %!  sin_mascota(?P) is nondet.
+    %
+    %   P es una persona sin mascota.
+    sin_mascota(P) :-
+        persona(P),
+        \+ tiene(P, _).
+    ```
+
+    $$\forall P \; \bigl( \mathit{persona}(P) \land \lnot \, \exists M \; \mathit{tiene}(P, M)
+  \rightarrow \mathit{sin\_mascota}(P) \bigr)$$
+
+24. **(2)** De las diferencias que enumera la
+    [sección 13.13](#1313-lo-que-excede-la-logica), indicar cuál explica cada
+    uno de estos comportamientos:
+
+    a. `?- categoria(sofia, adulto).` responde `true.`
+
+    b. `?- tiene_hijos(P).` informa dos veces a `juan`.
+
+    c. `?- X is 3 + Y.` no responde `true.` ni `false.`
+
+    d. Un programa correcto no produce una respuesta que sus cláusulas afirman.
+
+    e. Sobre la versión de `ascendiente/2` del ejercicio 21,
+       `?- \+ ascendiente(eva, luis).` no responde nunca, aunque eva no es
+       ascendiente de nadie.
+
+25. **(3)** Elegir un predicado de cualquier capítulo anterior, escribir su
+    lectura declarativa, e indicar si el programa cumple exactamente lo que la
+    fórmula afirma.
+
+## Resumen
+
+| | |
+|---|---|
+| **lectura procedimental** | qué hace Prolog para responder una consulta |
+| **lectura declarativa** | qué afirma el programa |
+| **término**, **fórmula atómica** | un objeto; una afirmación: un nombre de predicado aplicado a tantos términos como su aridad |
+| **cláusula**, **programa** | una fórmula de la forma de Horn; un conjunto de hechos y reglas, del que la consulta no forma parte |
+| `,` | $\land$ |
+| varias cláusulas | $\lor$ |
+| `:-` | $\rightarrow$, con los operandos en orden inverso |
+| variable en la cabeza | $\forall$, con alcance sobre toda la cláusula |
+| variable solo en el cuerpo | $\exists$, con alcance sobre el antecedente |
+| **cláusula de Horn** | una implicación con una única conclusión |
+| hecho, regla, consulta | los tres casos de la misma forma |
+| **interpretación** | un dominio y un significado para cada constante, functor y nombre de predicado |
+| **modelo** | una interpretación que satisface todas las cláusulas del programa |
+| **consecuencia lógica**, $P \models f$ | $f$ es verdadera en todos los modelos de $P$; es lo que pregunta una consulta |
+| **regla de inferencia**, **modus ponens** | produce fórmulas nuevas mirando solo la forma; de $A$ y $A \rightarrow B$ se infiere $B$ |
+| **deducción**, $P \vdash f$ | una sucesión de pasos de inferencia que termina en $f$ |
+| **corrección**, **completitud** | todo lo deducido es consecuencia; toda consecuencia se puede deducir |
+| **resolución** | reemplazar un objetivo por el cuerpo de una cláusula cuya cabeza unifica con él |
+| **refutación** | probar una afirmación suponiendo su negación y derivando una contradicción |
+| **resolvente** | la disyunción que queda al resolver dos cláusulas; la cláusula vacía, $\square$, es la contradicción |
+| **árbol de refutación** | el árbol de derivación leído como resoluciones: cada nodo es un resolvente, cada arco un paso, y la consulta vacía de la hoja de éxito es la cláusula vacía $\square$ |
+| **sustitución**, $P\theta$ | un conjunto de pares `Variable/término`; su aplicación reemplaza cada variable ligada por su término |
+| **instancia** | $Q$ es instancia de $P$ si $P\theta = Q$ para alguna θ |
+| **composición** θσ, **sustitución vacía** ε | aplicar σ a los términos de θ y agregar los pares de σ que θ no liga; θε = εθ = θ |
+| **unificador**, **unificador más general** | θ con $E_1\theta = E_2\theta$; el que tiene a todos los demás como instancias, y el que Prolog calcula |
+| **los cuatro pasos** | elegir objetivo y cláusula, unificar, reemplazar, aplicar la sustitución a toda la consulta |
+| **intérprete no determinista** | el procedimiento que elige objetivo y cláusula sin fijar cómo: describe todas las ramas a la vez |
+| **recorrido en profundidad**, **recorrido en anchura** | el de Prolog; el que alcanza toda hoja de éxito aun con ramas infinitas |
+| **negación como falla** | `\+ p` tiene éxito cuando `p` no se puede probar; coincide con $\lnot$ solo bajo el supuesto de mundo cerrado |
+
+## Temas que se retoman
+
+| Tema | Se retoma en |
+|---|---|
+| Reunir todas las respuestas de una consulta | [capítulo 18](../capitulo-18-todas-las-soluciones/index.md) |
+| Predicados que reciben predicados como argumento | [capítulo 19](../capitulo-19-orden-superior/index.md) |
+| Programas que se modifican durante la ejecución | [capítulo 21](../capitulo-21-base-de-datos-dinamica/index.md) |
+| Gramáticas, que son cláusulas con otra notación | [capítulo 22](../capitulo-22-gramaticas-dcg/index.md) |
+| Restricciones, donde la lectura declarativa vuelve a ser exacta | [capítulo 24](../capitulo-24-programacion-con-restricciones/index.md) |
+| Metaintérpretes: un intérprete de Prolog escrito en Prolog | [capítulo 34](../capitulo-34-introspeccion-y-metainterpretes/index.md) |
+| Un metaintérprete que recorre el árbol en anchura | [capítulo 34](../capitulo-34-introspeccion-y-metainterpretes/index.md#ejercicios), ejercicio 6 |
+| Modelos de Herbrand, resolución SLD y SLDNF enunciados con precisión, estratificación | [capítulo 39](../capitulo-39-semantica-de-los-programas-logicos/index.md) |
+| Unificación con verificación de ocurrencia | [capítulo 39](../capitulo-39-semantica-de-los-programas-logicos/resolucion.md), página «Resolución SLD y SLDNF» |
+| Recorrido en anchura, profundidad limitada y profundización iterativa sobre espacios de estados | [capítulo 41](../capitulo-41-busqueda-y-planificacion/index.md) |
+| Resolución sobre fórmulas que no son cláusulas de Horn | [capítulo 63](../capitulo-63-proyecto-demostrador-teoremas/index.md) |
+| Tablas de verdad calculadas con un programa | [capítulo 63](../capitulo-63-proyecto-demostrador-teoremas/index.md) |
+
+## Referencias
+
+- Álvaro Tasistro y Jorge Vidart, *Programación lógica y funcional*, 1988 —
+  parte I, «Programación en lógica», caps. 2 «Introducción a la
+  programación en lógica», 3 «Interpretación lógica» y 4 «Interpretación
+  algorítmica». Esta página adapta de allí, con la notación de SWI-Prolog y
+  los nombres de este curso, los cuatro pasos de la evaluación, el
+  intérprete no determinista, las estrategias de evaluación y el
+  tratamiento de la negación.
+- Robert Kowalski, «Algorithm = Logic + Control», 1979 — citado a través de la
+  obra de Tasistro y Vidart: la ecuación que resume la [sección 13.11](#1311-el-interprete-no-determinista-y-las-estrategias-de-evaluacion).
+- Christopher J. Hogger, *Introduction to Logic Programming*, 1984 — el
+  ejemplo de los elementos consecutivos de la [sección 13.11](#1311-el-interprete-no-determinista-y-las-estrategias-de-evaluacion) proviene de allí, a
+  través de la obra de Tasistro y Vidart.
+
+Los programas del capítulo son propios, escritos para el curso; la obra citada
+aporta las definiciones, los teoremas que el capítulo enuncia sin demostrar y
+los ejemplos de unificación y de evaluación, reescritos con la notación de
+SWI-Prolog.

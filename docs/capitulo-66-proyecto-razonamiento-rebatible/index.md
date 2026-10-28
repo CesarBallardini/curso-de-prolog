@@ -82,9 +82,9 @@ Al terminar el capítulo, el lector puede:
   construir el programa pretendido de uno con negaciones.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **3:35 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **3:30 h**.
     Resolver los 5 ejercicios marcados con ★: **1:20 h**.
-    Resolver los 13 ejercicios del final: **4:15 h**.
+    Resolver los 13 ejercicios del capítulo: **4:15 h**.
 
 ## 66.1 El problema: excepciones con negación como falla
 
@@ -161,7 +161,7 @@ ERROR: Stack limit (1.0Gb) exceeded
 ```
 
 Es un ciclo a través de la negación, como el de la regla r13 de la
-[sección 39.7](../capitulo-39-semantica-de-los-programas-logicos/index.md#397-las-reglas-del-sistema-experto): el programa no es estratificado, y la resolución SLDNF
+[sección 39.7](../capitulo-39-semantica-de-los-programas-logicos/negacion.md#397-las-reglas-del-sistema-experto): el programa no es estratificado, y la resolución SLDNF
 no termina. Las tres cosas que faltan —una negación que se concluya,
 reglas que se escriban sin enumerar sus excepciones y un criterio para los
 conflictos— son las que agrega el razonamiento rebatible.
@@ -429,7 +429,7 @@ supera(Cr, R1, R2) :-
     La base no cambia: la misma consulta con `[]`, `[especificidad]` o
     `[declarada, especificidad]` muestra qué decide cada criterio, y un
     criterio nuevo, como la anticipación de la
-    [sección 66.7](#667-version-6-la-anticipacion-de-los-rivales), es un elemento más de la lista. Es un caso del
+    [sección 66.7](anticipacion.md#667-version-6-la-anticipacion-de-los-rivales), es un elemento más de la lista. Es un caso del
     [Patrón 60](../patrones.md#60-interprete-con-conducta-como-parametro): allí el argumento es la conducta de cada pieza; aquí, la
     política que resuelve los conflictos entre las piezas.
 
@@ -573,7 +573,7 @@ impide aplicar la regla de los pingüinos, pero esa regla sigue refutando
 la de las aves, porque es más específica. Sin ninguna de las dos, no hay
 conclusión. Covington discute una variante, la **anticipación** de los
 rivales, en la que un rival refutado por una regla superior deja de
-derrotar; la [sección 66.7](#667-version-6-la-anticipacion-de-los-rivales) la agrega como un criterio más. Con Folio no
+derrotar; la [sección 66.7](anticipacion.md#667-version-6-la-anticipacion-de-los-rivales) la agrega como un criterio más. Con Folio no
 cambia nada: la regla de los pingüinos está socavada, no refutada por una
 regla superior.
 
@@ -607,194 +607,11 @@ pie, porque nada se opone a ninguna en particular. La base contiene el
 daño, pero no dice cuál de las presunciones falla. Esa pregunta es la de
 la abducción del [capítulo 50](../capitulo-50-proyecto-diagnostico-abduccion/index.md).
 
-## 66.5 Versión 4: por qué sí y por qué no
-
-`respuesta/3` dice qué se concluye, no por qué. La página
-[Por qué sí y por qué no](explicaciones.md#por-que-si-y-por-que-no) agrega al intérprete
-un argumento con el árbol de la derivación, como los árboles de prueba del
-[capítulo 34](../capitulo-34-introspeccion-y-metainterpretes/index.md); junta con `supuestos/2` las reglas rebatibles y las presunciones
-que una conclusión da por supuestas; y responde con `por_que_no/3` qué
-rivales derrotaron cada regla de una meta. Sobre el automóvil que no
-arranca, las dos preguntas dan los candidatos que la abducción del
-[capítulo 50](../capitulo-50-proyecto-diagnostico-abduccion/index.md) examina: el razonamiento por defecto va de las presunciones a
-las predicciones, y la abducción, de las predicciones fallidas a las
-presunciones que hay que retirar.
-
-## 66.6 Versión 5: excepciones en las correlativas
-
-*Inscripciones* rechaza una inscripción si falta una correlativa: es el
-primer motivo que encuentra `inscripcion_posible/3`, de la
-[sección 16.10](../capitulo-16-control/index.md#1610-el-proyecto-las-validaciones-de-una-inscripcion), que el [capítulo 32](../capitulo-32-ejecutables-y-distribucion/index.md) conserva en el módulo `reglas`.
-Una facultad real admite excepciones: quien está cursando la correlativa
-puede inscribirse de manera condicional, y el departamento puede autorizar
-a un alumno a cursar sin un requisito. Y las excepciones tienen a su vez
-excepciones: quien cursa de nuevo una materia que desaprobó podría no
-estar en condiciones. `correlativas.pl` carga los dos módulos sin cambiarlos
-y decide cada requisito con reglas rebatibles:
-
-<!-- ejemplo: capitulo-66/correlativas.pl fragmento: autorizacion(105, am2, alg). .. neg cumple(L, M, R) :^ correlativa(M, R), cursa(L, R), desaprobada(L, R). -->
-```prolog
-autorizacion(105, am2, alg).
-
-%!  cumple(?Legajo:integer, ?Materia:atom, ?Requisito:atom) is nondet.
-%
-%   El alumno Legajo cumple el Requisito de Materia en forma estricta:
-%   lo aprobó.
-cumple(Legajo, Materia, Requisito) :-
-    correlativa(Materia, Requisito),
-    aprobada(Legajo, Requisito, _).
-
-%!  desaprobada(?Legajo:integer, ?Materia:atom) is nondet.
-%
-%   El alumno Legajo tiene una nota menor que la mínima en Materia.
-desaprobada(Legajo, Materia) :-
-    inscripcion(Legajo, Materia, nota(Nota)),
-    nota_minima(Minima),
-    Nota < Minima.
-
-% Un requisito no aprobado normalmente no se cumple; sí, si el alumno lo
-% está cursando o si está autorizado.
-neg cumple(_L, M, R) :~ correlativa(M, R).
-cumple(L, M, R) :~ correlativa(M, R), cursa(L, R).
-cumple(L, M, R) :~ correlativa(M, R), autorizacion(L, M, R).
-
-% Quien cursa de nuevo un requisito que desaprobó podría no cumplirlo.
-neg cumple(L, M, R) :^ correlativa(M, R), cursa(L, R), desaprobada(L, R).
-```
-
-`correlativa/2`, `cursa/2` y `aprobada/3` vienen de los módulos del
-[capítulo 32](../capitulo-32-ejecutables-y-distribucion/index.md). El intérprete llama a un predicado importado en la base
-entera, y en una base `cuerpo(C)` lo acepta solo como uno de los literales
-de C: si lo llamara, la especificidad dependería de los datos de un alumno
-y no de las reglas. La regla de quien cursa es más específica que la
-general, y lo mismo la de la autorización; el refutador es más específico
-que la regla de quien cursa, y la socava.
-
-La decisión sobre cada requisito es rebatible; la decisión sobre la
-inscripción, en cambio, junta las respuestas de todos los requisitos, y
-esa parte procedural queda en Prolog común, como aconseja Covington:
-
-<!-- ejemplo: capitulo-66/correlativas.pl predicado: inscripcion_rebatible/3 por_requisitos/3 -->
-```prolog
-%!  inscripcion_rebatible(+Legajo:integer, +Materia:atom, -Resultado) is det.
-%
-%   Resultado es el de inscripcion_posible/3, salvo cuando esta rechaza
-%   por una correlativa: entonces es rechazada(falta(R)) con el primer
-%   requisito que presumiblemente no se cumple, a_revisar(R) con el primero
-%   del que las reglas no concluyen nada, rechazada(sin_vacantes), o
-%   condicional(Rs), con los requisitos que se dan por cumplidos por una
-%   excepción.
-inscripcion_rebatible(Legajo, Materia, Resultado) :-
-    inscripcion_posible(Legajo, Materia, Resultado0),
-    (   Resultado0 = rechazada(falta(_))
-    ->  por_requisitos(Legajo, Materia, Resultado)
-    ;   Resultado = Resultado0
-    ).
-
-%!  por_requisitos(+Legajo:integer, +Materia:atom, -Resultado) is det.
-%
-%   Resultado decide la inscripción del alumno Legajo en Materia por la
-%   respuesta de las reglas sobre cada correlativa.
-por_requisitos(Legajo, Materia, Resultado) :-
-    findall(R-V,
-            ( correlativa(Materia, R),
-              respuesta([especificidad], cumple(Legajo, Materia, R), V) ),
-            Vs),
-    (   member(R-presumiblemente_no, Vs)
-    ->  Resultado = rechazada(falta(R))
-    ;   member(R-sin_conclusion, Vs)
-    ->  Resultado = a_revisar(R)
-    ;   vacantes(Materia, 0)
-    ->  Resultado = rechazada(sin_vacantes)
-    ;   findall(R, member(R-presumiblemente_si, Vs), Rs),
-        Resultado = condicional(Rs)
-    ).
-```
-
-!!! question "Actividad"
-    Elena, legajo 105, cursa Análisis I, no aprobó Álgebra y tiene una
-    autorización para cursar Análisis II sin ella. Predecir la respuesta
-    de `inscripcion_posible(105, am2, R)` y la de
-    `inscripcion_rebatible(105, am2, R)`, y comprobarlas.
-
-```prolog
-?- respuesta([especificidad], cumple(102, am2, am1), R).
-R = presumiblemente_no.
-
-?- inscripcion_posible(105, am2, R).
-R = rechazada(falta(am1)).
-
-?- inscripcion_rebatible(105, am2, R).
-R = condicional([am1, alg]).
-
-?- inscripcion_posible(101, bd, R).
-R = rechazada(falta(pp)).
-
-?- inscripcion_rebatible(101, bd, R).
-R = rechazada(falta(ssl)).
-```
-
-De las 49 combinaciones de un alumno y una materia, solo esas dos cambian.
-Ana, legajo 101, está cursando Paradigmas, y la excepción la cubre; el
-rechazo pasa al requisito que de verdad falta, Sintaxis. La no monotonía
-se ve con una operación del [capítulo 32](../capitulo-32-ejecutables-y-distribucion/index.md): Bruno, legajo 102, desaprobó
-Álgebra y se inscribe de nuevo en ella.
-
-```prolog
-?- costo(posible, P), costo(rebatible, R).
-P = 1275,
-R = 40656.
-
-?- inscripcion_rebatible(102, ssl, R0), inscribir(102, alg, R1), inscripcion_rebatible(102, ssl, R).
-R0 = rechazada(falta(alg)),
-R1 = aceptada,
-R = a_revisar(alg).
-```
-
-Antes de inscribirse, Bruno no cumplía Álgebra para cursar Sintaxis.
-Después, la regla de quien cursa lo favorece, pero el refutador de quien
-cursa de nuevo una materia desaprobada la socava; ninguna regla decide, y
-la inscripción queda para que la decida una persona. Un dato nuevo no
-agregó una conclusión: quitó una. `costo/2` mide las inferencias de
-decidir las 49 combinaciones con cada versión, en una sesión recién
-iniciada: la rebatible cuesta unas 32 veces más, y todo ese costo está en
-las 21 combinaciones que el [capítulo 32](../capitulo-32-ejecutables-y-distribucion/index.md) rechaza por una correlativa,
-donde cada requisito se decide comparando reglas. Las cifras cambian un
-poco si antes se ejecutaron otras consultas, que ya cargaron las
-bibliotecas; la proporción, no.
-
-## 66.7 Versión 6: la anticipación de los rivales
-
-Sin anticipación, una regla derrota a otra aunque ella misma esté
-refutada por una regla superior. La página
-[La anticipación de los rivales](anticipacion.md#la-anticipacion-de-los-rivales)
-agrega a `rival/4` el criterio `anticipacion` de d-Prolog: un rival
-rebatible o un refutador deja de contar si una regla que lo supera lo
-refuta. Con dos cadenas de reglas sobre el pago de la matrícula, una
-alumna de intercambio y becaria pasa de no tener conclusión a no pagar,
-presumiblemente, a cambio de un 50 % más de inferencias; las respuestas de
-las versiones anteriores no cambian.
-
-## 66.8 Tres lecturas de una regla con excepciones
-
-El curso tiene ahora tres maneras de leer una regla con excepciones: la
-negación como falla, la semántica bien fundada de los capítulos
-[39](../capitulo-39-semantica-de-los-programas-logicos/index.md) y [40](../capitulo-40-tabulacion/index.md), y la derivación rebatible. La página
-[Tres lecturas de una regla con excepciones](comparacion.md#tres-lecturas-de-una-regla-con-excepciones)
-las aplica al diamante de Drácula y al ave de la regla r13 de la
-[sección 39.7](../capitulo-39-semantica-de-los-programas-logicos/index.md#397-las-reglas-del-sistema-experto), y resume en una tabla dónde coinciden y dónde difieren: el
-mundo cerrado para todos los predicados o solo para algunos, la negación
-que se supone o que se concluye, y el conflicto que queda indefinido o que
-un criterio de superioridad decide.
-
-!!! success "Criterios de calidad"
-    | Criterio | En este capítulo |
-    |---|---|
-    | C1 | cada predicado declara modos y determinación; `derivable/2` es `nondet`, y `respuesta/3`, que resume la búsqueda con `->`, es `det` y exige una meta sin variables |
-    | C2 | la base es de datos: hechos, cláusulas y términos `:~` y `:^` que el intérprete examina; los datos de *Inscripciones* son los del [capítulo 32](../capitulo-32-ejecutables-y-distribucion/index.md), cargados sin cambios, y el `experto.pl` del [capítulo 40](../capitulo-40-tabulacion/index.md) también |
-    | C5 | `derivable/2`, `derivacion/3` y `por_que_no/3` validan el criterio y la meta con `must_be/2`: un criterio desconocido produce un error de tipo, no una respuesta vacía |
-    | C6 | el intérprete no cambia de la versión 1 a la 3: la especificidad y la superioridad son un argumento, los refutadores, una cláusula de `rival/4` que una base sin refutadores no usa, y la anticipación, un elemento más del criterio; las explicaciones son un módulo aparte |
-    | C7 | 158 pruebas en veinte archivos; `derivacion/3` se compara con `derivable/2`, e `inscripcion_rebatible/3` con `inscripcion_posible/3` en las 49 combinaciones, donde solo dos difieren |
+El capítulo continúa en la página
+[Por qué sí y por qué no](explicaciones.md#665-version-4-por-que-si-y-por-que-no),
+con la cuarta versión, que explica las conclusiones del intérprete y sus
+silencios. Antes, los [ejercicios](#ejercicios) de esta página practican
+las secciones 66.1 a 66.4.
 
 ## Ejercicios
 
@@ -820,125 +637,33 @@ tiene de propio.
    estudiantes normalmente no tienen empleo», y predecir qué responde la
    base sobre si Juana se mantiene sola. Explicar qué cambió en la
    comparación de las dos reglas.
-4. **(2)** Escribir el encabezado de PlDoc, con modos y determinación, y
-   el código de `excepciones(Legajo, Materia, Rs)`: los requisitos de
-   Materia que el alumno Legajo cumple solo por una excepción. Justificar
-   el modo de cada argumento.
-5. **(2)** En una base con individuos, agregar la regla estricta
-   contrapuesta de «los pingüinos no vuelan», `neg pinguino(X) :- vuela(X)`.
-   Predecir qué responde la base sobre un ave que nada y vuela, y sobre una
-   que solo nada, y explicar el resultado de la segunda con la
-   observación de Covington sobre los ciclos entre reglas.
-6. ★ **(2)** Continuar el automóvil de la [sección 66.5](#665-version-4-por-que-si-y-por-que-no) con la abducción del
-   [capítulo 50](../capitulo-50-proyecto-diagnostico-abduccion/index.md): escribir `sospechosas(Auto, Piezas)`, las piezas cuyas
-   presunciones sostienen una predicción que una observación refutó.
-   Agregar la observación de que las luces del segundo automóvil encienden,
-   y una regla estricta que de ella derive que la batería está bien, y
-   mostrar cómo se reducen las sospechosas.
-7. **(2)** Escribir `escribir_derivacion(Arbol)`, que escribe un árbol de
-   `derivacion/3` con una línea por nodo, sangrada según su profundidad, y
-   que dice de cada literal si se concluyó en forma estricta o con qué
-   regla.
-8. **(3)** Una cadena de N clases, cada una incluida en la anterior, en la
+4. **(3)** Una cadena de N clases, cada una incluida en la anterior, en la
    que cada clase tiene normalmente la propiedad contraria a la de la
    anterior, como el nautilo desnudo de Covington. Generar la base con
    `assertz/1` para N de 2 a 8, medir las inferencias de la respuesta sobre
    un individuo de la última clase, y explicar cómo crecen.
-9. ★ **(2)** Escribir con `tnot/1` el diamante de Drácula con la superioridad
-   de la regla de los muertos, y comparar el resultado y el programa con
-   los de la [sección 66.8](#668-tres-lecturas-de-una-regla-con-excepciones). ¿Qué propiedad del programa cambia?
-10. **(3)** Escribir el intérprete de Flach para el razonamiento por
-    defecto: una meta se explica con reglas y con supuestos por defecto, y
-    un supuesto se agrega a la explicación solo si su conclusión no
-    contradice lo que las reglas derivan con la explicación. Aplicarlo a
-    Drácula, y comparar sus explicaciones con las respuestas de la
-    [sección 66.3](#663-version-2-la-regla-mas-especifica).
-11. ★ **(2)** Agregar a *Inscripciones* una autorización para Bruno, legajo
-    102, para cursar Sintaxis sin Álgebra, y una versión de
-    `inscripcion_rebatible/3` que reciba el criterio. Declarar que la regla
-    de la autorización prevalece sobre el refutador, y mostrar la decisión
-    antes y después de que Bruno se inscriba de nuevo en Álgebra, con los
-    dos criterios.
-12. **(2)** Agregar al disparo de Yale de la
-    [sección 66.11](ampliaciones.md#6611-la-persistencia-el-disparo-de-yale)
-    un evento `descarga`, después del cual el arma normalmente no está
-    cargada, y mostrar la historia de los eventos `descarga`, `espera` y
-    `disparo` con la especificidad. Explicar por qué la especificidad no
-    decide entre la regla de la descarga y la persistencia, resolver el
-    conflicto con la superioridad declarada, y explicar qué regla falta
-    para que el arma siga descargada después de la espera.
-13. **(2)** Escribir `completo(Nombre, Modelo)`, que tiene éxito si la
-    compleción del programa Nombre de la
-    [sección 66.12](ampliaciones.md#6612-el-programa-pretendido) tiene un
-    único modelo. Aplicarlo al programa de Flach en que Pedro es amistoso
-    si no lo es, a `p :- p`, y a `antepasado/2` sobre dos hechos de
-    `progenitor/2`, y explicar cada resultado.
-
-## Resumen
-
-| | |
-|---|---|
-| **regla rebatible** | `Cabeza :~ Cuerpo`: si Cuerpo, normalmente Cabeza; otra regla puede derrotarla |
-| **regla estricta** | una cláusula común: no admite excepciones, y solo la derrota otra regla estricta o un hecho |
-| **presunción** | una regla rebatible de cuerpo `true` |
-| **refutador** | `Cabeza :^ Cuerpo`: no concluye su cabeza, solo impide aplicar una regla rebatible de cabeza contraria |
-| **negación fuerte** | `neg Atomo`: se concluye con reglas, a diferencia de `\+`, que solo comprueba que no se puede probar |
-| **refutar, socavar** | derrotar una regla concluyendo lo contrario, o mostrando que podría no aplicarse |
-| **especificidad** | una regla es más específica si el cuerpo de la otra se deriva del suyo y no a la inversa, sin usar los hechos |
-| **anticipación** | un rival rebatible o un refutador deja de derrotar si una regla que lo supera lo refuta |
-| **[Patrón 64](../patrones.md#64-superioridad-como-parametro)** | superioridad como parámetro |
-| **no monotonía** | agregar información puede quitar conclusiones |
-| `estricto/1`, `derivable/2`, `respuesta/3` | la derivación estricta, la rebatible y su resumen en seis valores |
-| `rival/4`, `supera/3` | lo que derrota a una regla, y el criterio de superioridad |
-| `derivacion/3`, `supuestos/2`, `por_que_no/3` | el árbol de una derivación, lo que da por supuesto, y lo que derrotó a cada regla |
-| `inscripcion_rebatible/3` | la inscripción de *Inscripciones* con excepciones en las correlativas |
-| **conclusiones incompatibles** | dos literales que se excluyen sin ser uno la negación del otro: `incompatible/2`; con el complemento, los **contrarios** |
-| **contradicción** | un literal y un contrario derivados los dos en forma estricta: algún hecho o regla de la base es falso |
-| **persistencia** | lo que vale en una situación normalmente sigue valiendo después de un evento: el único axioma de marco |
-| **programa pretendido** | un programa completo, con un solo modelo, que se obtiene del original con el supuesto de mundo cerrado o con la compleción |
-| `respuestas/3`, `contradicciones/1` | la consulta exhaustiva sobre cada instancia con evidencia, y las contradicciones de la base |
-| `cwa/2`, `completar/2`, `modelos/2` | los átomos que el supuesto de mundo cerrado niega, la compleción del programa entero, y sus modelos |
-
-## Temas que se retoman
-
-| Tema | Se retoma en |
-|---|---|
-| La fuerza de una conclusión en grados, en lugar de definitiva o presumible | [capítulo 67](../capitulo-67-proyecto-evidencia-arboles-decision/index.md) |
 
 ## Referencias
 
 - Michael A. Covington, Donald Nute y André Vellino, *Prolog Programming
   in Depth*, Prentice Hall, 1997 — capítulo «Defeasible Prolog».
   [Edición en PDF de los autores](https://www.covingtoninnovations.com/books/PPID.pdf).
-  El capítulo toma las cuatro clases de reglas (estrictas, rebatibles,
+  Esta página toma las cuatro clases de reglas (estrictas, rebatibles,
   presunciones y refutadores), la negación fuerte, la diferencia entre
   refutar y socavar, la superioridad declarada, la especificidad calculada
   derivando el cuerpo de una regla desde el de otra sin usar los hechos,
   los ejemplos del triángulo de Tweety, del estudiante empleado y del
-  pingüino alterado, la presunción negativa como supuesto de mundo cerrado,
-  la advertencia de que la parte procedural queda en Prolog común, la
-  anticipación de los rivales («Preemption of Defeaters»), que el capítulo
-  agrega como un criterio más, y los tres casos de la explicación de un
-  fracaso del predicado `whynot/1` («A Special Explanatory Facility»).
-  La [página de ampliaciones](ampliaciones.md) toma además las
-  conclusiones incompatibles y el ciclo de Ping (apartado 11.4,
-  `incompatible/2`), la consulta exhaustiva `@@`, el diccionario y la
-  búsqueda de contradicciones (apartados 11.11 a 11.16), y la persistencia
-  temporal con su versión del disparo de Yale (apartado 11.21). Covington escribe las reglas
+  pingüino alterado, y la presunción negativa como supuesto de mundo
+  cerrado. Covington escribe las reglas
   rebatibles con `:=`, que en SWI-Prolog ya es un operador con otro
   significado (las funciones sobre diccionarios); el curso escribe `:~`.
 - Peter Flach, *Simply Logical: Intelligent Reasoning by Example*, John
   Wiley & Sons, 1994 — apartados 8.1, «Default reasoning», y 8.2, «The
   semantics of incomplete information».
   [Edición en línea](https://book.simply-logical.space/src/text/3_part_iii/8.1.html).
-  El capítulo toma la regla con excepciones escrita con la negación como
-  falla, la no monotonía, el ejemplo de Drácula, la idea de un intérprete
-  que agrega supuestos por defecto cuando no contradicen las reglas, con
-  los supuestos nombrados que una regla puede cancelar, y el supuesto de
-  mundo cerrado; la página de ampliaciones toma del apartado 8.2 el
-  programa pretendido, el supuesto de mundo cerrado como transformación,
-  la compleción del programa entero y sus ejemplos (los alumnos de Pedro,
-  Tweety, el sabio y el docente), sin el código del apéndice B.2.
+  Esta página toma la regla con excepciones escrita con la negación como
+  falla, la no monotonía, el ejemplo de Drácula y el supuesto de mundo
+  cerrado.
 - Donald Nute, «Basic Defeasible Logic», en L. Fariñas del Cerro y
   M. Penttonen (eds.), *Intensional Logics for Programming*, Oxford
   University Press, 1992, págs. 125–154,
@@ -948,44 +673,3 @@ tiene de propio.
   Elsevier, 1994, págs. 263–284. Son la teoría sobre la que Covington
   construye d-Prolog: reglas estrictas, rebatibles y refutadores, y la
   superioridad entre reglas rivales.
-- David Poole, «A Logical Framework for Default Reasoning», *Artificial
-  Intelligence* 36 (1), 1988, págs. 27–47.
-  [DOI 10.1016/0004-3702(88)90077-X](https://doi.org/10.1016/0004-3702(88)90077-X).
-  Flach atribuye a este artículo la distinción entre reglas y supuestos
-  por defecto que el ejercicio 10 implementa.
-- Raymond Reiter, «On Closed World Data Bases», en H. Gallaire y J. Minker
-  (eds.), *Logic and Data Bases*, Plenum Press, 1978, págs. 55–76.
-  [DOI 10.1007/978-1-4684-3384-5_3](https://doi.org/10.1007/978-1-4684-3384-5_3).
-  La formulación del supuesto de mundo cerrado, que Flach cita y que el
-  capítulo escribe como una presunción negativa.
-- Keith L. Clark, «Negation as Failure», en H. Gallaire y J. Minker
-  (eds.), *Logic and Data Bases*, Plenum Press, 1978, págs. 293–322.
-  [DOI 10.1007/978-1-4684-3384-5_11](https://doi.org/10.1007/978-1-4684-3384-5_11).
-  La compleción de un programa, que la
-  [sección 66.12](ampliaciones.md#6612-el-programa-pretendido) aplica al
-  programa entero con el `complecion_de/3` del
-  [capítulo 39](../capitulo-39-semantica-de-los-programas-logicos/index.md).
-- John McCarthy y Patrick J. Hayes, «Some Philosophical Problems from the
-  Standpoint of Artificial Intelligence», en B. Meltzer y D. Michie
-  (eds.), *Machine Intelligence 4*, Edinburgh University Press, 1969,
-  págs. 463–502.
-  [Versión en el sitio de McCarthy](http://jmc.stanford.edu/articles/mcchay69.html).
-  El cálculo de situaciones y el problema del marco, que Covington cita.
-- Drew McDermott, «We've Been Framed: Or, Why AI Is Innocent of the Frame
-  Problem», en Z. Pylyshyn (ed.), *The Robot's Dilemma: The Frame Problem
-  in Artificial Intelligence*, Ablex, 1987, págs. 113–122. La regla de
-  persistencia como único axioma de marco, según Covington.
-- Steve Hanks y Drew McDermott, «Nonmonotonic Logic and Temporal
-  Projection», *Artificial Intelligence* 33 (3), 1987, págs. 379–412.
-  [DOI 10.1016/0004-3702(87)90043-9](https://doi.org/10.1016/0004-3702(87)90043-9).
-  El problema del disparo de Yale, que la
-  [sección 66.11](ampliaciones.md#6611-la-persistencia-el-disparo-de-yale)
-  resuelve en la versión de Covington.
-
-El código del capítulo es propio, escrito para el curso: de Covington se
-toman el diseño de d-Prolog y sus ejemplos, no su código, con otra
-notación (`:~` en lugar de `:=`); de Flach, ideas y ejemplos. Las
-excepciones de *Inscripciones*, las explicaciones y la comparación con la
-semántica bien fundada son del curso, como las utilidades, el disparo de
-Yale y la compleción de la página de ampliaciones, escritos a partir de
-las descripciones de las fuentes.

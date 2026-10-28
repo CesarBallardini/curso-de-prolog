@@ -26,7 +26,7 @@ Programs» de Sterling y Shapiro, *The Art of Prolog*, cuyo editor de líneas
 guarda el texto antes y después del cursor; las ventanas como objetos que
 responden a mensajes enviados por un único predicado son las del capítulo
 «User Interface» de Merritt, *Building Expert Systems in Prolog*. Las
-referencias completas están al final del capítulo.
+referencias completas están al final de cada página del capítulo.
 
 ## Objetivos del capítulo
 
@@ -48,7 +48,7 @@ Al terminar el capítulo, el lector puede:
 !!! info "Tiempo estimado"
     Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **2:10 h**.
     Resolver los 6 ejercicios marcados con ★: **1:55 h**.
-    Resolver los 14 ejercicios del final: **4:10 h**.
+    Resolver los 14 ejercicios del capítulo: **4:10 h**.
 
 ## 37.1 El núcleo y las interfaces
 
@@ -693,67 +693,11 @@ test(ventana, [ condition(hay_xpce),
     Predecir cuántas pruebas corre cada uno antes de ejecutarlas, y explicar
     la diferencia.
 
-## 37.6 Páginas web sobre los servicios
-
-El servicio de *Inscripciones* del [capítulo 31](../capitulo-31-servicios-web-rest/index.md) y el del Buscaminas del
-[capítulo 32](../capitulo-32-ejecutables-y-distribucion/index.md) responden JSON, que un programa lee y una persona no.
-`library(http/html_write)` genera HTML a partir de términos: `h1('Materias')`
-es un título, `a(href(Url), Texto)` un enlace. La regla `html//1` traduce el
-término a fragmentos de HTML, con el texto escapado; `print_html/1` los
-escribe, y `reply_html_page/2` responde un pedido con una página entera.
-
-Las páginas del curso siguen el [Patrón 51](../patrones.md#51-modelo-de-pantalla) con otra salida: un
-predicado puro arma el término de la página a partir del estado, y el
-manejador solo lo envía. Hay dos maneras de ubicarlas. Las de
-*Inscripciones* se agregan **junto al servicio**, en el mismo servidor que
-`api.pl`, y llaman al núcleo como lo llaman las rutas de JSON. Las del
-Buscaminas son un **cliente HTML del servicio**: no cargan el núcleo, piden
-el tablero con `http_open/3`, envían cada jugada con `http_post/4` y
-responden al navegador con una redirección 303, `http_redirect/3`, para que
-recargar la página no repita la jugada. Su única dependencia es el formato
-JSON del servicio.
-
-El código de las dos, con sus pruebas, está en
-[la página de las páginas web](web.md) del capítulo.
-
-## 37.7 Cómo se prueba una interfaz
-
-Cada nivel se prueba con la herramienta que ya existe para él; lo nuevo es
-qué parte de la interfaz queda del lado que se prueba:
-
-| Nivel | Se prueba con plunit | Se verifica a mano |
-|---|---|---|
-| Pantalla completa | el modelo (líneas exactas), la transición (listas de teclas con `foldl/4`), el bucle con teclas en `open_string/2`, las secuencias capturadas con `with_output_to/2` | que la terminal las interpreta y que el dibujo se ve alineado |
-| Ventanas | el núcleo de la interfaz en todas partes; en `swipl-win`, la ventana sin abrir: `send(Boton, execute)`, etiquetas, posiciones y anchos con `get/3` | el aspecto de la ventana abierta y los clics con el ratón |
-| Web | el cuerpo como término y como texto; las rutas con pedidos HTTP a un puerto libre ([Patrón 41](../patrones.md#41-servidor-bajo-prueba)); con pytest y Playwright, las páginas en Chromium sin ventana: enlaces, formularios y jugadas | el aspecto, en las capturas de [la página web](web.md) |
-
-La prueba del bucle del menú recorre la interfaz entera con cuatro teclas y
-verifica la última pantalla dibujada, que es la última parte de la salida
-después del último `\e[2J`:
-
-```prolog
-test(recorrido, true(M == menu(2, salir))) :-
-    con_teclas("\e[B\rqq", menu(1, materias), M, Salida),
-    atomic_list_concat(Pantallas, '\e[2J', Salida),
-    last(Pantallas, Ultima),
-    once(sub_atom(Ultima, _, _, _, '> alg')).
-```
-
-Las pruebas de las ventanas corren en `swipl-win`, que no tiene una salida
-que un programa pueda leer: para ejecutarlas desde la línea de comandos, un
-programa pequeño abre un archivo, lo usa como `user_output` y `user_error`,
-carga el `.pl` y el `.plt`, ejecuta `run_tests/0` y termina; se lo llama como
-`swipl-win correr.pl -- ejemplo.pl ejemplo.plt salida.txt`, con rutas
-absolutas, porque `swipl-win` no conserva el directorio de trabajo. En la
-integración continua del curso, que usa `swipl` sin XPCE, esas pruebas se
-omiten, y las del núcleo corren.
-
-!!! success "Criterios de calidad"
-    | Criterio | En este capítulo |
-    |---|---|
-    | C4 | `pantalla/2`, `paso/3`, `pantalla_menu/2` y `vista/2` no dejan alternativas: la prueba de `pantalla_menu/2` las encontró cuando el primer argumento no distinguía las cláusulas |
-    | C6 | ninguna interfaz tiene reglas: `paso/3` y `clic/4` delegan en `jugar/4`, el botón *Inscribir* en `inscribir/3`, las páginas del tablero en el servicio; el núcleo de los capítulos [28](../capitulo-28-archivos-streams-y-formatos/index.md) a [32](../capitulo-32-ejecutables-y-distribucion/index.md) no cambió |
-    | C7 | 73 pruebas de plunit: 35 de la pantalla completa, 12 del núcleo de las ventanas en cualquier Prolog y 7 más de las ventanas en `swipl-win`, 19 de las páginas con pedidos HTTP; y 6 pruebas de las páginas en un navegador, con Playwright. Lo que no se prueba es el aspecto |
+El capítulo continúa en la página
+[Páginas web sobre los servicios y la prueba de una interfaz](web.md#376-paginas-web-sobre-los-servicios),
+con las páginas web de *Inscripciones* y del Buscaminas y con cómo se prueba
+cada nivel de una interfaz. Antes, los [ejercicios](#ejercicios) de esta
+página practican las secciones 37.1 a 37.5.
 
 ## Ejercicios
 
@@ -787,84 +731,26 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
    borrar; Enter llama a `inscribir/3`, y el resultado queda en una línea de
    estado debajo de la lista. El modelo y la transición siguen puros; la
    inscripción es el único efecto de la transición.
-7. **(1)** Clasificar como núcleo o interfaz, y como puro o impuro, estos
-   predicados del capítulo: `paso/3`, `pantalla/2`, `bucle/3`,
-   `leer_tecla/2`, `clic/4`, `pulsar/3`, `mostrar/2`, `cuerpo_materia/2`,
-   `pagina_materia/2`, `mensaje_de_inscripcion/3`. ¿Cuáles se prueban en la
-   integración continua?
-8. ★ **(2)** Agregar al menú *Juego* de la ventana del Buscaminas el ítem
+7. ★ **(2)** Agregar al menú *Juego* de la ventana del Buscaminas el ítem
    *Sugerencia*, que escribe en el rótulo la celda segura de
    `sugerencia/2`, o que no hay ninguna. Separar el texto del rótulo en un
    predicado puro y probar los dos lados.
-9. **(2)** En la ventana de *Inscripciones*, mostrar en una segunda lista
+8. **(2)** En la ventana de *Inscripciones*, mostrar en una segunda lista
    los inscriptos de la materia elegida, y actualizarla al cambiar la
    materia del menú y después de cada inscripción aceptada.
-10. **(2)** Escribir la prueba que inscribe desde la ventana al alumno 103
-    en `ssl` y verifica el rechazo en el rótulo, sin cambiar los datos.
-    ¿Qué pasa con esa prueba en `swipl`?
-11. ★ **(2)** Agregar a las [páginas de *Inscripciones*](web.md#junto-al-servicio-inscripciones) la ruta
-    `/pagina/alumnos/{legajo}`: el nombre, la carrera, las materias con su
-    estado y el promedio, o 404 si el alumno no existe. Probarla con pedidos
-    HTTP.
-12. **(2)** Hacer que el formulario de inscripción responda con una
-    redirección 303 a la página de la materia, con el resultado en un
-    parámetro `mensaje` que esa página muestra. Explicar qué cambia al
-    recargar la página en el navegador.
-13. **(3)** Agregar a la [página del tablero](web.md#como-cliente-del-servicio-el-buscaminas) un botón *Sugerencia*, que pide
-    `/partidas/{id}/sugerencia` al servicio y muestra la celda, o que no hay
-    ninguna segura cuando el servicio responde 404.
-14. **(1)** Las tres interfaces del Buscaminas de este capítulo y la de
-    línea de comandos del [capítulo 29](../capitulo-29-programas-de-linea-de-comandos/index.md) se prueban de maneras
-    distintas. Para cada una, decir qué entrada reciben sus pruebas y cómo
-    leen el resultado.
-
-## Resumen
-
-| | |
-|---|---|
-| secuencias de escape ANSI | `\e[2J` borra, `\e[F;CH` ubica el cursor, `\e[?25l` y `\e[?25h` lo ocultan y lo muestran, `\e[31m` y `\e[0m` cambian los atributos |
-| `get_single_char/1` | lee una tecla sin esperar Enter; una flecha llega como tres códigos, y el fin de la entrada como −1 |
-| `tty_size/2` | las filas y columnas de la terminal; un error si la salida no es una terminal |
-| `char_code/2` | el carácter de un código, como átomo de un carácter |
-| `atomics_to_string/2` | la cadena que une, en orden y sin separador, los átomos, cadenas y números de una lista (en las soluciones) |
-| `exists_source/1` | el archivo o la biblioteca existe; con `:- if/1`, carga algo solo donde está |
-| `new/2` | crea un objeto de XPCE y da su referencia, `@(N)` |
-| `send/2`, `send/3`, `send/4` | pide a un objeto de XPCE una acción: `append`, `open`, `execute`, `label`, `selection` |
-| `send_list/3` | la misma acción con cada elemento de una lista |
-| `get/3`, `get/4` | pide a un objeto de XPCE un valor: `label`, `selection`, `member` |
-| XPCE | `frame`, `dialog`, `button`, `menu`, `text_item`, `label`, `browser`, `menu_bar`, `popup`; `message(@(prolog), P, …)` llama a un predicado |
-| `html//1` | traduce un término a HTML, con el texto escapado |
-| `print_html/1` | escribe los fragmentos de `html//1` |
-| `reply_html_page/2` | responde un pedido con una página: título y cuerpo |
-| `http_redirect/3` | responde con una redirección; `see_other` es la 303 |
-| `http_404/2` | responde que la dirección no existe |
-| **[Patrón 51](../patrones.md#51-modelo-de-pantalla)** | modelo de pantalla: modelo puro, transición pura, un solo bucle que lee y escribe |
-| `get_code/2` | el código del carácter siguiente de un stream; en las pruebas, las teclas desde un texto |
-| `random_between/3` | un entero al azar entre dos límites: la semilla de una partida nueva |
-| `tmp_file_stream/3`, `uri_components/2` | un archivo temporal abierto para escribir; las partes de una dirección; en las pruebas |
-
-## Temas que se retoman
-
-| Tema | Se retoma en |
-|---|---|
-| Un servidor que atiende a varios clientes a la vez, con sus hilos | [capítulo 38](../capitulo-38-concurrencia-y-paralelismo/index.md) |
-| El Buscaminas como problema de búsqueda: jugadas seguras | [capítulo 41](../capitulo-41-busqueda-y-planificacion/index.md) |
-| Un tablero en la terminal, redibujado en cada jugada | [capítulo 42](../capitulo-42-juegos/index.md) |
-| La interfaz de pantalla completa de una aventura de texto | [capítulo 45](../capitulo-45-proyecto-aventura-de-texto/index.md) |
-| Preguntas en castellano sobre *Inscripciones*, desde una interfaz | [capítulo 88](../capitulo-88-proyecto-preguntas-en-castellano/index.md) |
+9. **(2)** Escribir la prueba que inscribe desde la ventana al alumno 103
+   en `ssl` y verifica el rechazo en el rótulo, sin cambiar los datos.
+   ¿Qué pasa con esa prueba en `swipl`?
 
 ## Referencias
 
 - El manual de SWI-Prolog: `tty_size/2`
   ([en línea](https://www.swi-prolog.org/pldoc/man?predicate=tty_size/2)),
   `get_single_char/1`
-  ([en línea](https://www.swi-prolog.org/pldoc/man?predicate=get_single_char/1)),
-  la guía de XPCE, *Programming in XPCE/Prolog*
-  ([en línea](https://www.swi-prolog.org/packages/xpce/UserGuide/)), y
-  `library(http/html_write)`
-  ([en línea](https://www.swi-prolog.org/pldoc/man?section=htmlwrite)). El
-  capítulo toma de ahí los predicados, los objetos de XPCE y la
-  representación de HTML como términos.
+  ([en línea](https://www.swi-prolog.org/pldoc/man?predicate=get_single_char/1))
+  y la guía de XPCE, *Programming in XPCE/Prolog*
+  ([en línea](https://www.swi-prolog.org/packages/xpce/UserGuide/)). El
+  capítulo toma de ahí los predicados y los objetos de XPCE.
 - Ecma International, *ECMA-48: Control Functions for Coded Character
   Sets*, 5.ª edición, 1991
   ([en línea](https://ecma-international.org/publications-and-standards/standards/ecma-48/)).
@@ -882,10 +768,3 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
   El capítulo toma la idea de ventanas, menús y formularios como objetos que
   responden a mensajes enviados por un único predicado, que en XPCE son
   `send/2` y `get/3`.
-- Playwright para Python
-  ([documentación](https://playwright.dev/python/)), con el que se prueban
-  las páginas en un navegador.
-
-El código del capítulo es propio, escrito para el curso sobre los módulos
-del [capítulo 32](../capitulo-32-ejecutables-y-distribucion/index.md): las fuentes aportan predicados, normas e ideas, no
-código copiado ni adaptado.

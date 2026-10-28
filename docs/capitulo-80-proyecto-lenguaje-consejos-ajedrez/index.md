@@ -61,8 +61,10 @@ que busca vienen del artículo de Bratko sobre AL1 en IJCAI 1979. La idea de
 verificar una estrategia construyendo hacia atrás el conjunto de las
 posiciones que gana, y las cifras de rey y torre contra rey con que se
 comparan los resultados, vienen del artículo de Max Bramer en el mismo
-congreso. La lista completa está en las [Referencias](#referencias). El
-código es propio, y también lo son la verificación exhaustiva de la tabla,
+congreso. Cada página cita al final las fuentes que usa, con lo que toma
+de cada una: esta, en [Referencias](#referencias); la verificación, en las
+de la página [Verificar la tabla de consejos](verificacion.md#referencias).
+El código es propio, y también lo son la verificación exhaustiva de la tabla,
 las posiciones en que ahoga al rey negro y su corrección.
 
 El capítulo usa los operadores propios y las reglas como datos del
@@ -95,7 +97,7 @@ Al terminar el capítulo, el lector puede:
 !!! info "Tiempo estimado"
     Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **2:35 h**.
     Resolver los 5 ejercicios marcados con ★: **1:20 h**.
-    Resolver los 12 ejercicios del final: **3:50 h**.
+    Resolver los 12 ejercicios del capítulo: **3:50 h**.
 
 ## 80.1 Versión 1: las reglas del final
 
@@ -106,7 +108,7 @@ casilla `X-Y`, con la columna y la fila entre 1 y 8: a1 es `1-1`, e5 es
 reemplaza por el átomo `capturada`. Una jugada es `rey(Desde, Hasta)` o
 `torre(Desde, Hasta)`. Es el tablero como un sistema de coordenadas, con
 cada pieza como un conjunto de desplazamientos, como el caballo de la
-[sección 77.7](../capitulo-77-proyecto-robots-laberintos-caballo/index.md#777-version-6-el-caballo-de-una-casilla-a-otra);
+[sección 77.7](../capitulo-77-proyecto-robots-laberintos-caballo/recorrido.md#777-version-6-el-caballo-de-una-casilla-a-otra);
 aquí con dos bandos y sus reglas de jaque. Las blancas son el bando que
 busca el mate; en el lenguaje de consejos serán «nosotros», y las negras,
 «ellos».
@@ -842,7 +844,7 @@ resistente:  R = r([ahogado-10, mate-27342], 27, 13.29)
 La tabla da mate en 27 342 partidas, en 12 a 13 jugadas de media y nunca
 más de 27, contra las dos defensas. En las otras diez, la partida termina
 en **ahogado**: tablas, en una posición que se gana. Las diez tienen el
-rey negro en a1 y la torre en b2; la [sección 80.7](#807-version-7-verificar-la-tabla)
+rey negro en a1 y la torre en b2; la [sección 80.7](verificacion.md#807-version-7-verificar-la-tabla)
 explica por qué. Las dos defensas son solo dos de las muchas posibles, y
 una partida por posición no prueba nada sobre las demás: para eso hace
 falta otra herramienta.
@@ -969,58 +971,11 @@ promete es dar mate siempre, bien por debajo de las 50 jugadas.
     transforma, y en qué. Comprobarlo, y comprobar con `mate_en/2` que
     la posición y su forma normal dan el mismo número.
 
-## 80.7 Versión 7: verificar la tabla
-
-Las partidas de la [sección 80.5](#805-version-5-jugar-con-la-tabla) prueban la tabla contra dos defensas,
-una partida por posición. La versión 7 aplica el método de Bramer: el
-conjunto de las posiciones desde las que el programa da mate contra
-**cualquier** defensa, construido hacia atrás desde los mates, con un
-árbol forzante entero como paso. Sobre las 175 168 posiciones con las
-blancas a mover, la tabla de Bratko asegura el mate en 175 120, en a lo
-sumo 34 jugadas; en las otras 48, un árbol termina en ahogado. La página
-[Verificar la tabla de consejos](verificacion.md#verificar-la-tabla)
-desarrolla la versión, con dos de esas posiciones jugada por jugada y los
-consejos que las producen.
-
-!!! example "Patrón 82 — Verificar la estrategia hacia atrás"
-    **Problema.** Hay que saber si una estrategia gana desde todas las
-    posiciones contra cualquier defensa, y las partidas de prueba solo
-    examinan las respuestas que alguna defensa elige.
-
-    **Versión ingenua.** Jugar una partida por posición con unas pocas
-    defensas: en las 27 352 posiciones normales, dos defensas encuentran
-    10 ahogados, y las otras 38 posiciones en que la tabla ahoga quedan
-    ocultas.
-
-    **Patrón.** Construir hacia atrás, desde las posiciones terminales
-    ganadas, el conjunto de las posiciones desde las que la estrategia
-    gana contra todas las respuestas: una posición entra cuando todas sus
-    salidas son victorias o posiciones que ya entraron. Si la estrategia
-    tiene memoria, el paso es todo lo que juega sin volver a decidir, como
-    un árbol forzante entero. Las posiciones que nunca entran son sus
-    errores, y las pasadas dan también la partida más larga. Sobre las
-    175 168 posiciones del final, `verificar/2` tarda dos minutos y medio
-    y encuentra las 48.
-
-    **Cuándo no usarlo.** Cuando el espacio de posiciones no cabe en
-    memoria o no se puede enumerar: entonces solo queda probar la
-    estrategia con partidas o demostrar su corrección.
-
-## 80.8 Versión 8: la tabla corregida
-
-La corrección agrega `no ahogado` a la meta a mantener de todos los
-consejos, en un módulo que carga la tabla original sin copiarla. Con ella,
-la verificación asegura el mate en las 175 168 posiciones, en a lo sumo 34
-jugadas: [La tabla corregida](verificacion.md#la-tabla-corregida).
-
-!!! success "Criterios de calidad"
-    | Criterio | En este capítulo |
-    |---|---|
-    | C1 | cada predicado declara modos y determinación; `forzar/5` es `nondet` porque da un árbol por cada estrategia, y `satisfacible/4` toma el primero con `once/1` |
-    | C2 | `jugada/3` con la jugada libre enumera las jugadas legales y con la jugada ligada la comprueba (pruebas `escape` y `captura`); los predicados que necesitan la posición ligada, como `estrategia/4`, lo declaran con `+` |
-    | C4 | `partida/5` es `det`: las jugadas elegidas se ejecutan con `once/1`, y las pruebas no encuentran alternativas pendientes |
-    | C6 | las reglas, el intérprete y la tabla no escriben ni modifican la base de datos; solo `mostrar/1` y `narrar/3` escriben, y solo `calcular/0`, `verificar/2` y `verificar_desde/3` guardan resultados con `assertz/1`; la posición, la jugada y el árbol forzante son términos con un functor por forma |
-    | C7 | 99 pruebas en ocho archivos; `finales.plt` reproduce las cifras de Bramer y `verificar.plt` comprueba la posición del ahogado y su corrección |
+El capítulo continúa en la página
+[Verificar la tabla de consejos](verificacion.md#807-version-7-verificar-la-tabla),
+con la tabla de consejos puesta a prueba contra todas las defensas en
+todas las posiciones, y su corrección. Antes, los [ejercicios](#ejercicios)
+de esta página practican las versiones 1 a 6.
 
 ## Ejercicios
 
@@ -1048,61 +1003,13 @@ que cargan los del capítulo, sin modificarlos.
    se aplica y, para cada consejo de su lista hasta el elegido, si es
    satisfacible, a la manera de la pregunta «¿cómo?» de la
    [sección 20.4](../capitulo-20-operadores-y-reglas-como-datos/index.md#204-el-interprete-y-la-pregunta-como).
-6. **(2)** Escribir una defensa `azar(Semilla, Posicion, Jugada)` que
-   elige una respuesta legal con un paso del generador congruencial del
-   [capítulo 78](../capitulo-78-proyecto-mundo-wumpus/index.md), aplicado
-   a la semilla más el código de la posición. Medir la tabla corregida con
-   `azar(7)` y con `primera` sobre las posiciones normales con el rey negro
-   en d4.
-7. ★ **(2)** Jugar la tabla corregida contra la defensa `optima/2` desde
-   la posición de la introducción y desde la de a1, d4 y c3. Comparar las
-   jugadas con el óptimo de la tabla de finales y con lo que asegura la
-   verificación.
-8. **(3)** Una política sin memoria pide un árbol nuevo en cada jugada y
-   juega solo su primera jugada. Escribir su verificación sobre las
-   posiciones normales y mostrar que deja posiciones sin asegurar que la
-   tabla con memoria asegura. Explicar por qué.
-9. ★ **(2)** Quitar `no torre_expuesta` de la meta mejor de `encierro`,
-   en una tabla propia que carga la de `krk.pl`, y predecir si la tabla
-   puede llegar a perder la torre. Comprobarlo con `salidas/3` sobre las
-   27 352 posiciones normales, y explicar el resultado con la meta a
-   mantener.
-10. **(2)** Contar, con la tabla de finales, cuántas posiciones de las
-    blancas dan mate en K jugadas para cada K de 1 a 16, y decir en qué K
-    hay más.
-11. **(3)** Corregir la tabla de otra manera: agregar `no ahogado` solo a
-    la meta mejor de los tres consejos que ahogan. Verificar la nueva
-    tabla desde las 48 posiciones y comparar con la corrección de la
-    [sección 80.8](#808-version-8-la-tabla-corregida).
-12. **(2)** Escribir `historia(Tabla, Defensa, Posicion, Hs)`: la lista de
-    los consejos que dieron un árbol nuevo durante la partida, sin las
-    jugadas que siguieron un árbol en curso. ¿Cuántos árboles pide la
-    partida de la introducción?
-
-## Resumen
-
-| | |
-|---|---|
-| **consejo** | meta mejor, meta a mantener y restricciones de las jugadas de los dos bandos |
-| **árbol forzante** | una jugada nuestra en cada posición en que movemos, todas las respuestas permitidas del rival, hojas que cumplen la meta mejor; la prueba de que un consejo es satisfacible |
-| **tabla de consejos** | reglas `si Condicion entonces Consejos`: la primera regla que se cumple y su primer consejo satisfacible |
-| **tabla de finales** | el número de jugadas hasta el mate con juego óptimo, calculado hacia atrás desde los mates |
-| **verificación de una estrategia** | el conjunto de las posiciones que gana contra cualquier defensa, construido hacia atrás; las que quedan fuera son sus errores |
-| `jugada/3`, `jaque/1`, `mate/1`, `ahogado/1`, `legal/1` | las reglas del final |
-| `mate_forzado/3`, `menor_mate/4` | el mate buscado sin conocimiento |
-| `estrategia/4`, `satisfacible/4`, `cumple/4`, `jugada_con/6` | el intérprete de consejos |
-| `meta/3`, `jugadas/4`, `espacio/2`, `casilla_critica/2` | la biblioteca del final |
-| `partida/5`, `narrar/3`, `medir/3` | jugar con la tabla |
-| `calcular/0`, `mate_en/2`, `normal/2`, `optima/2` | la tabla de finales |
-| `salidas/3`, `verificar/2`, `verificar_desde/3` | la verificación |
-| **[Patrón 81](../patrones.md#81-conocimiento-como-restricciones-de-la-busqueda)** | conocimiento como restricciones de la búsqueda |
-| **[Patrón 82](../patrones.md#82-verificar-la-estrategia-hacia-atras)** | verificar la estrategia hacia atrás |
-
-## Temas que se retoman
-
-| Tema | Se retoma en |
-|---|---|
-| La tabla de finales como un punto fijo calculado de abajo hacia arriba, como la evaluación de un programa Datalog | [capítulo 86](../capitulo-86-proyecto-motor-datalog/index.md) |
+6. **(2)** Contar, con la tabla de finales, cuántas posiciones de las
+   blancas dan mate en K jugadas para cada K de 1 a 16, y decir en qué K
+   hay más.
+7. **(2)** Escribir `historia(Tabla, Defensa, Posicion, Hs)`: la lista de
+   los consejos que dieron un árbol nuevo durante la partida, sin las
+   jugadas que siguieron un árbol en curso. ¿Cuántos árboles pide la
+   partida de la introducción?
 
 ## Referencias
 
@@ -1124,11 +1031,10 @@ que cargan los del capítulo, sin modificarlos.
   El capítulo toma la definición del árbol forzante como el árbol solución
   de un árbol Y/O y la medida de un consejo por la profundidad que busca.
 - Max A. Bramer, «Testing Correctness of Strategies in Game-Playing
-  Programs», en las mismas actas, pp. 91–94, en el mismo archivo. El
-  capítulo toma la verificación de una estrategia construyendo hacia
-  atrás el conjunto de las posiciones que gana, y las cifras de rey y
-  torre contra rey: 27 352 y 34 968 posiciones, 3 495 tablas y el mate
-  óptimo en a lo sumo 32 jugadas de un bando.
+  Programs», en las mismas actas, pp. 91–94, en el mismo archivo. Esta
+  página toma de allí las cifras de rey y torre contra rey con que se
+  compara la tabla de finales: 27 352 y 34 968 posiciones, 3 495 tablas y
+  el mate óptimo en a lo sumo 32 jugadas de un bando.
 - Las fuentes que esos textos citan para las mismas ideas, sin edición en
   línea de acceso libre: Donald Michie, «An advice-taking system for
   computer chess», *Computer Bulletin* 2(10), 1976 (los lenguajes de
@@ -1141,9 +1047,3 @@ que cargan los del capítulo, sin modificarlos.
   Maarten van Emden, «Chess end-game advice: a case study in computer
   utilisation of knowledge», *Machine Intelligence 10*, 1982 (la misma
   tabla en Prolog).
-
-El código del capítulo es propio, escrito para el curso: ninguno de los
-programas de las fuentes se copió. La verificación exhaustiva de la tabla
-con su programa de juego, las 48 posiciones en que la tabla de Bratko
-ahoga al rey negro y la corrección que las elimina son resultados de este
-capítulo.

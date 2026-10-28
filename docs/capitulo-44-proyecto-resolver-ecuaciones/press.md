@@ -1,8 +1,10 @@
 # Más métodos de PRESS
 
-Esta página contiene las secciones
-[44.7](index.md#447-la-homogeneizacion-trigonometrica) a
-[44.11](index.md#4411-desigualdades) del [capítulo 44](index.md): cinco
+Esta página continúa la página
+[El método de Newton y la comprobación](newton.md#446-version-5-el-metodo-de-newton-y-la-comprobacion)
+del [capítulo 44](index.md), con las secciones
+[44.7](#447-la-homogeneizacion-trigonometrica) a
+[44.11](#4411-desigualdades): cinco
 partes de PRESS que las versiones 1 a 5 no tienen. Cada una está en su
 propio módulo de `ejemplos/capitulo-44/`, con sus pruebas, y carga los
 módulos de las versiones anteriores; se ejecutan en una instalación local.
@@ -14,7 +16,7 @@ homogeneización, Borning y Bundy (1981) para el emparejamiento, y Bundy
 
 ## 44.7 La homogeneización trigonométrica
 
-El ejercicio 7 escribe la homogeneización de Bundy y Silver para las
+El ejercicio 5 escribe la homogeneización de Bundy y Silver para las
 potencias de una misma base. El tercer ejercicio del capítulo de Sterling y
 Shapiro pide el caso trigonométrico: `cos(2 * x) - sin(x) = 0` es una
 ecuación cuadrática en `sin(x)`, porque el coseno del ángulo doble vale
@@ -620,3 +622,111 @@ exponencial es creciente, y exige que el otro lado sea positivo: con
 `resolver_desigualdad/3` falla. Una solución que fuera «todo número
 real», o un intervalo con dos extremos, como la de `x * x < 4`, necesita
 otra representación de la respuesta.
+
+!!! success "Criterios de calidad"
+    | Criterio | En este capítulo |
+    |---|---|
+    | C1 | cada predicado declara modos y determinación; los axiomas y las reglas, que dan una respuesta por solución, son `nondet`, y los métodos que eligen una reescritura con `once/1` son `semidet` |
+    | C3 | `resolver/3` elige el método con `->` en la condición, no después de la solución: con la solución ligada, comprueba (las pruebas `comprueba` de `aislar.plt` y `colectar.plt`) |
+    | C5 | una ecuación o una incógnita sin instanciar producen un error de instanciación en cada versión; una operación que `derivar/3` no deriva produce un error de dominio que el respaldo numérico captura con nombre, y un valor no real, un error de evaluación que `valores/3` captura |
+    | C6 | todo el programa es puro salvo los ganchos de carga (`term_expansion/2`) y las cláusulas `multifile` que los ejercicios agregan |
+    | C7 | 208 pruebas en doce archivos; los resultados numéricos se comparan con una tolerancia, y lo que no termina se prueba con `call_with_inference_limit/3` |
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio, y los capítulos siguientes los dan por hechos. Los
+ejercicios que extienden el programa lo hacen desde un archivo propio, con
+las cláusulas `multifile` de `axioma/3` y `regla/3`, o con un predicado que
+prueba su método y usa `resolver/3` si no se aplica.
+
+13. **(2)** Agregar a `desigualdades.pl`, desde un archivo propio, el axioma
+    de la potencia de exponente natural impar, que es creciente y conserva el
+    sentido. Resolver `x ^ 3 + 1 > -7` y `2 * x ^ 5 =< 64`, y explicar por
+    qué la raíz de un número negativo necesita un caso aparte en `is/2`.
+14. **(2)** Escribir `valores_en(Ecuacion, X, I, Vs)`: Vs son los valores
+    de `valores/3` que están en el intervalo I, y si `sin_raices/3` prueba
+    que la ecuación no tiene raíces en I, Vs es `[]` sin resolverla.
+    Probarlo con `x ^ 2 - 2 = 0` en `i(0, 3)` y con `x ^ 2 + 1 = 0` en
+    `i(-10, 10)`.
+
+## Resumen
+
+| | |
+|---|---|
+| **ecuación** | un término `Izq = Der`; resolverla en X es reescribirla hasta `X = E` con `E` sin X |
+| **posición** | la lista de números de argumento que lleva de un término a un subtérmino |
+| **aislamiento** | con una sola aparición, un axioma por nivel de la posición pasa la operación al otro lado |
+| **colección** | una reescritura que reduce la cantidad de apariciones de la incógnita |
+| **atracción** | una reescritura que acerca las apariciones: reduce su distancia |
+| **distancia** | la suma de las profundidades de las apariciones bajo el menor subtérmino que las contiene |
+| **forma normal de un polinomio** | la lista de monomios `Grado-Coeficiente`, de mayor a menor grado, sin nulos |
+| **método de Newton** | $x_{n+1} = x_n - f(x_n)/f'(x_n)$ hasta que dos valores quedan cerca |
+| **solución espuria** | una solución de una ecuación transformada que no cumple la original |
+| `Izq ~> Der si Condicion` | una regla de reescritura como dato, cargada con `term_expansion/2` como una cláusula de `regla/3` |
+| `load_files/2` | `load_files(Modulo:Archivo, [])` carga en `Modulo` un archivo que no declara un módulo propio |
+| `sin/1`, `cos/1`, `tan/1`, `asin/1`, `acos/1`, `atan/1` | las funciones trigonométricas de `is/2`, en radianes, y sus inversas |
+| `posicion/3`, `axioma/3`, `aislar/3` | la posición de la incógnita y el aislamiento |
+| `expandir_regla/2`, `reescribir/4`, `con/2`, `libre/2` | las reglas como datos y su aplicación a un subtérmino |
+| `colectar/3`, `atraer/3`, `distancia/3` | la colección y la atracción, con sus medidas |
+| `forma_normal/3`, `polinomio_termino/3`, `normalizar/3` | la forma normal de un polinomio y su escritura como suma asociada a izquierda |
+| `resolver_polinomio/3`, `colectar_normal/3` | los dos métodos que da la forma normal |
+| `newton/4`, `raices/4`, `valores/3` | el respaldo numérico y la comprobación de las soluciones |
+| `resolver/3` | el despachador de cada versión |
+| **homogeneización** | escribir los términos que impiden que una ecuación sea algebraica como funciones de un término reducido, y cambiar la incógnita |
+| **intercambio de funciones** | reemplazar una función por otra que los métodos manejan mejor: una raíz por un cuadrado |
+| **aritmética de intervalos** | el intervalo de una expresión calculado con los extremos de los intervalos de sus argumentos |
+| `resolver_trigonometrica/3`, `intercambiar/3`, `colectar_ac/3` | la homogeneización trigonométrica, el intercambio de la raíz cuadrada y la colección con conmutatividad |
+| `intervalo/3`, `encerrar/5`, `resolver_desigualdad/3` | los intervalos y las desigualdades |
+| **[Patrón 56](../patrones.md#56-medida-que-decrece)** | medida que decrece |
+
+## Temas que se retoman
+
+| Tema | Se retoma en |
+|---|---|
+| Bisección, secante y Newton; convergencia y tolerancia; el respaldo numérico de este capítulo | [capítulo 47](../capitulo-47-proyecto-metodos-numericos/index.md) |
+| Coeficientes racionales exactos en lugar de números de punto flotante | [capítulo 48](../capitulo-48-proyecto-aritmetica-racional-matrices/index.md) |
+| Reglas de reescritura locales sobre una lista de instrucciones: el optimizador de mirilla | [capítulo 46](../capitulo-46-proyecto-compilador/index.md) |
+| Una forma normal obtenida por reescritura: la forma clausal | [capítulo 63](../capitulo-63-proyecto-demostrador-teoremas/index.md) |
+
+## Referencias
+
+- Leon Sterling, Alan Bundy, Lawrence Byrd, Richard O'Keefe y Bernard
+  Silver, «Solving symbolic equations with PRESS», en *Computer Algebra
+  (EUROCAM '82)*, Lecture Notes in Computer Science 144, Springer, 1982,
+  pp. 109–116. [Copia de acceso abierto](https://era.ed.ac.uk/handle/1842/4475).
+  Las secciones 44.8 a 44.11 toman de allí el intercambio de funciones con
+  su ejemplo de dos raíces cuadradas, el emparejador, el paquete de
+  intervalos y la resolución de desigualdades.
+- Leon Sterling y Ehud Shapiro, *The Art of Prolog: Advanced Programming
+  Techniques*, 2.ª edición, MIT Press, 1994 — «An Equation Solver».
+  1.ª edición (1986) en [préstamo en el Internet Archive](https://archive.org/details/artofprologadvan00ster).
+  De allí viene la ecuación trigonométrica de su tercer ejercicio, que
+  resuelve la [sección 44.7](#447-la-homogeneizacion-trigonometrica).
+- Alan Bundy y Bernard Silver, «Homogenization: Preparing Equations for
+  Change of Unknown», *Proceedings of the Seventh International Joint
+  Conference on Artificial Intelligence (IJCAI-81)*, 1981, pp. 551–553.
+  [Edición en línea](https://www.ijcai.org/Proceedings/81-1/Papers/099.pdf).
+  Describe la homogeneización —el conjunto de términos que impiden que la
+  ecuación sea algebraica, el término reducido y el cambio de incógnita—
+  que la [sección 44.7](#447-la-homogeneizacion-trigonometrica) escribe
+  para el caso trigonométrico.
+- Alan Borning y Alan Bundy, «Using Matching in Algebraic Equation
+  Solving», *Proceedings of the Seventh International Joint Conference on
+  Artificial Intelligence (IJCAI-81)*, 1981, pp. 466–471.
+  [Edición en línea](https://www.ijcai.org/Proceedings/81-1/Papers/086.pdf).
+  Describe el emparejador de PRESS, que conoce la conmutatividad y la
+  asociatividad de la suma y el producto; la
+  [sección 44.9](#449-el-emparejamiento-conmutativo) toma de allí la
+  conmutatividad, con las variantes de un subtérmino.
+- Alan Bundy, «A Generalized Interval Package and its Use for Semantic
+  Checking», *ACM Transactions on Mathematical Software* 10(4), 1984,
+  pp. 397–409. [Copia de acceso abierto](https://era.ed.ac.uk/handle/1842/4547).
+  El paquete de intervalos de PRESS, que comprueba las condiciones de las
+  reglas; la [sección 44.10](#4410-intervalos) toma de allí el cálculo del
+  intervalo de una expresión a partir del de la incógnita.
+
+Los programas del capítulo están escritos para el curso: las fuentes aportan
+ideas, métodos y ejemplos, no código copiado ni adaptado.

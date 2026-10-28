@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 42 - Solución del ejercicio 10: la tabla de transposición con las
+% Capítulo 42 - Solución del ejercicio 11: la tabla de transposición con las
 % posiciones simétricas juntas.
 %
 % Un giro o un reflejo del tablero no cambia el valor de una posición. Se

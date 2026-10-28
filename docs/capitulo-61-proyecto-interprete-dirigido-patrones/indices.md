@@ -1,12 +1,12 @@
 # Índices y metarreglas
 
-Esta página contiene la sección
-[61.8](index.md#618-version-6-indices-y-metarreglas) del
-[capítulo 61](index.md): la versión 6, `indices.pl`, que indexa la memoria y
-parte el programa en fases. El archivo está en `ejemplos/capitulo-61/`, con
-sus pruebas, y carga la versión 3, `conflictos.pl`.
+Esta página continúa la página [La terminación](terminacion.md#617-version-5-la-terminacion)
+del [capítulo 61](index.md), con la [sección 61.8](#618-version-6-indices-y-metarreglas): la
+versión 6, `indices.pl`, que indexa la memoria y parte el programa en fases.
+El archivo está en `ejemplos/capitulo-61/`, con sus pruebas, y carga la
+versión 3, `conflictos.pl`.
 
-## Índices y metarreglas
+## 61.8 Versión 6: índices y metarreglas
 
 Bratko cierra su capítulo con tres propuestas para que el emparejamiento no
 recorra toda la memoria en cada ciclo: **indexar** la información de la base,
@@ -125,6 +125,16 @@ responde el primer número. Con fases, la fase `calcular` solo tiene `resta`,
 y `resultado` no se considera hasta que `resta` no se puede aplicar. El orden
 de los módulos y la estrategia dejan de importar:
 
+```prolog
+?- ejecutar(mcd_invertido, primera, [numero(25), numero(10)], M, R).
+M = [numero(25), numero(10)],
+R = 25.
+
+?- ejecutar_fases_de(mcd_fases, primera, [numero(25), numero(10)], M, R).
+M = [numero(5), numero(5)],
+R = 5.
+```
+
 `ejecutar_fases_de/5` recibe el nombre del programa por fases:
 
 ```prolog
@@ -135,7 +145,7 @@ R = 5.
 
 ### Lo que cuesta
 
-Con los números 60, 120, …, 720 del ejercicio 11, con y sin los 100 hechos
+Con los números 60, 120, …, 720 del ejercicio 8, con y sin los 100 hechos
 `ruido(I)` que ningún módulo usa, las inferencias de cada ejecución, medidas
 con `statistics/2` después de una primera ejecución, son:
 
@@ -161,3 +171,70 @@ repetir esa comparación es la idea del algoritmo Rete, que desarrolla el
     `ciclos/4` de la versión 3. Comprobarlo con `ciclo_i/7`, que devuelve la
     cantidad de ciclos, sobre la memoria que da `indexar/2` para la lista de
     `posiciones/2`.
+
+!!! success "Criterios de calidad"
+    | Criterio | En este capítulo |
+    |---|---|
+    | C1 | cada predicado declara modos y determinación; los ciclos son `semidet`, porque fallan si falla una acción, `satisface/3` y `ejecucion/4` son `nondet`, y `bien_formado/1` es `semidet` |
+    | C2 | los programas son datos: `bien_formado/1` los examina antes de ejecutarlos, y los hechos de la memoria no pueden ser variables ni términos `{_}` o `no(_)`, que tienen otro significado |
+    | C4 | los ciclos eligen con un si-entonces, `acciones/4` distingue `parar/1` con otro, y las cláusulas de `fnn/2` y `fnc/2` empiezan por el átomo para que la indexación no deje alternativas; las pruebas, que fallan si queda una alternativa pendiente, lo confirman |
+    | C6 | desde la versión 2 la memoria viaja en argumentos; la versión 1 usa la base dinámica para mostrar lo que se pierde, y la traza es la única salida |
+    | C7 | 103 pruebas en siete archivos: cada programa en cada versión, una acción que falla, las tres estrategias con sus empates, la cantidad de ejecuciones, la traza como texto, los teoremas y los no teoremas, y los tres modos de no terminar; la versión 6 se compara con la 3 en todos los programas y estrategias, y una prueba mide que el índice no paga los hechos que ningún módulo usa |
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio. Los ejercicios extienden los programas: cada solución es un
+archivo que carga los del capítulo, sin modificarlos.
+
+13. **(2)** La metarregla de `ejecutar_fases/5` trata las fases como
+    etapas: una fase terminada no vuelve a activarse. Escribir
+    `ejecutar_prioridades/5`, con la metarregla que en cada ciclo activa la
+    primera fase que tiene algún módulo aplicable, y un programa por fases,
+    `contador_fases`, en el que las dos metarreglas dejan memorias
+    distintas. Comprobar que con `mcd_fases` dan el mismo resultado.
+
+## Resumen
+
+| | |
+|---|---|
+| **módulo dirigido por patrones** | `Nombre :: Condiciones ---> Acciones`; ningún módulo llama a otro, la memoria decide cuál se aplica |
+| **memoria de trabajo** | la colección de hechos sin variables que las condiciones examinan y las acciones cambian |
+| **condiciones** | un patrón (algún hecho unifica), `no(F)` (ninguno unifica) y `{Meta}` (una prueba de Prolog) |
+| **acciones** | `agregar/1`, `quitar/1`, `reemplazar/2`, `{Meta}` y `parar/1` |
+| **ciclo** | reconocimiento, resolución del conflicto y ejecución, hasta `parar/1` o hasta que ningún módulo se aplica; es `semidet`: falla si falla una acción |
+| **conjunto de conflicto** | todas las instancias aplicables: cada módulo con cada manera de cumplir sus condiciones |
+| **estrategia** | una clave de orden sobre el conjunto de conflicto: `primera`, `reciente`, `especifica` |
+| **memoria como argumento** | recupera el retroceso: `ejecucion/4` enumera todas las ejecuciones |
+| **resolución** | combinar dos cláusulas con literales opuestos; la cláusula vacía prueba que la negación es contradictoria |
+| **terminación** | una medida que decrece en cada ciclo; el límite y las memorias repetidas detectan los programas que no terminan |
+| **memoria indexada** | los hechos agrupados por nombre y aridad, con marcas de tiempo; cada patrón examina solo los de su clave |
+| **metarregla** | una regla sobre las reglas: decide qué fase del programa está activa |
+| `programas.pl` | el lenguaje de los módulos y los programas de ejemplo |
+| `dinamico.pl`, `ciclo.pl` | el ciclo con la base dinámica y con la memoria como argumento |
+| `conflictos.pl` | el conjunto de conflicto, las estrategias y la traza |
+| `resolucion.pl`, `terminacion.pl` | el demostrador y la vigilancia de la terminación |
+| `indices.pl` | la memoria indexada y los programas por fases |
+
+## Temas que se retoman
+
+| Tema | Se retoma en |
+|---|---|
+| La resolución general, con la lógica de predicados, la forma clausal completa y refutaciones que se verifican | [capítulo 63](../capitulo-63-proyecto-demostrador-teoremas/index.md) |
+| Un sistema de producción sobre una memoria de trabajo: encadenamiento hacia adelante, resolución de conflictos por recencia y especificidad, marcos | [capítulo 64](../capitulo-64-proyecto-sistema-produccion/index.md) |
+| La comparación incremental de los patrones con la memoria, sin repetirla en cada ciclo | [capítulo 65](../capitulo-65-proyecto-algoritmo-rete/index.md) |
+
+## Referencias
+
+- Ivan Bratko, *Prolog Programming for Artificial Intelligence*, Addison-Wesley,
+  1986 — capítulo «Pattern-directed Programming», apartado «Concluding remarks».
+  No tiene una edición en línea de acceso libre. El capítulo toma de allí el
+  índice de la base y los grupos de módulos activados por metarreglas, que son
+  la versión 6.
+
+El código del capítulo es propio, escrito para el curso: el lenguaje de los
+módulos, los intérpretes, las estrategias, el ordenamiento, la vigilancia de
+la terminación, el demostrador, la memoria indexada y las fases son nuevos,
+y del libro se toman las ideas y los ejemplos, no el código.

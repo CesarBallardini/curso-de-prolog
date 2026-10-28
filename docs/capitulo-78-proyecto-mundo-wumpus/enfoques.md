@@ -104,7 +104,7 @@ Una regla para dos hedores resuelve este caso; el ejercicio 5 la
 escribe. Otras combinaciones pedirían otras reglas.
 
 **Las mismas reglas como datos.** `modelo_estandar_de/2`, de la
-[sección 39.6](../capitulo-39-semantica-de-los-programas-logicos/index.md#396-evaluacion-de-abajo-hacia-arriba),
+[sección 39.6](../capitulo-39-semantica-de-los-programas-logicos/negacion.md#396-evaluacion-de-abajo-hacia-arriba),
 recibe un programa estratificado como una lista de cláusulas y calcula su
 modelo estrato por estrato. El programa son los hechos de la cueva y del
 conocimiento, y estas reglas; las celdas son números, 10X + Y, porque el
@@ -175,7 +175,7 @@ conocimiento es una sola fórmula, en la sintaxis del [capítulo 63](../capitulo
 celdas visitadas no tienen peligros, cada brisa equivale a la disyunción
 de los pozos vecinos, cada hedor a la del wumpus, y hay un wumpus y solo
 uno. `tautologia/2`, de la
-[página de comparación del capítulo 63](../capitulo-63-proyecto-demostrador-teoremas/comparacion.md#tres-maneras-de-decidir),
+[página de comparación del capítulo 63](../capitulo-63-proyecto-demostrador-teoremas/comparacion.md#638-tres-maneras-de-decidir),
 decide si la fórmula implica que la celda no tiene pozo ni wumpus:
 
 <!-- ejemplo: capitulo-78/enfoques.pl predicado: segura_por_clpb/2 -->
@@ -296,3 +296,18 @@ además, no usa la ubicación del wumpus para liberar las demás celdas.
     enfoques con el conocimiento `[1-1-[], 1-2-[hedor], 2-1-[hedor]]`, y
     comprobarlo. Explicar la respuesta de las reglas con la regla de la
     única candidata.
+
+## Referencias
+
+- Stuart Russell y Peter Norvig, *Artificial Intelligence: A Modern
+  Approach*, 4.ª edición, Pearson, 2020 — capítulo «Logical Agents»,
+  secciones «Knowledge-Based Agents» y «The Wumpus World».
+  [Sitio oficial del libro](https://aima.cs.berkeley.edu/). Esta página
+  toma de allí la situación de la figura 7.4 y la inferencia de celdas
+  seguras como consecuencia lógica.
+- aima-python, el código oficial del libro, con licencia MIT:
+  `aima/logic.py` (`WumpusKB`).
+  [Repositorio](https://github.com/aimacode/aima-python). Esta página toma
+  de allí la formulación proposicional del conocimiento que usa el enfoque
+  de `library(clpb)`: cada brisa equivale a la disyunción de los pozos
+  vecinos, y hay al menos un wumpus y a lo sumo uno.

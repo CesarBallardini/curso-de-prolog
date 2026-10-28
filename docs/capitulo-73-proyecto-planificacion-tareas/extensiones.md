@@ -1,16 +1,31 @@
 # Anomalías, consistencia y holguras
 
-Esta página completa el [capítulo 73](index.md) con tres partes de sus
-fuentes que las cinco versiones no desarrollan: las **anomalías** de la
-planificación por lista que estudió Ronald Graham, la **consistencia** de
-las heurísticas, que el artículo de A\* de Hart, Nilsson y Raphael
-distingue de la admisibilidad, y las **fechas tempranas, fechas tardías y
-holguras** del método del camino crítico. Los ejemplos son
-`anomalias.pl`, `consistencia.pl` y `holguras.pl`, en
+Esta página continúa el [capítulo 73](index.md) después de la
+[sección 73.7](camino.md#737-version-5-el-planificador), con la
+[sección 73.8](#738-anomalias-consistencia-y-holguras), que lo termina:
+tres partes de sus fuentes que las cinco versiones no desarrollan, las
+**anomalías** de la planificación por lista que estudió Ronald Graham, la
+**consistencia** de las heurísticas, que el artículo de A\* de Hart,
+Nilsson y Raphael distingue de la admisibilidad, y las **fechas
+tempranas, fechas tardías y holguras** del método del camino crítico. Los
+ejemplos son `anomalias.pl`, `consistencia.pl` y `holguras.pl`, en
 `ejemplos/capitulo-73/`, con sus pruebas; cargan otros archivos del
 capítulo y se ejecutan en una instalación local.
 
-## Las anomalías de la planificación por lista
+## 73.8 Anomalías, consistencia y holguras
+
+`anomalias.pl` reproduce el ejemplo de Graham (1969) en el que agregar un
+procesador, quitar precedencias o acortar todas las tareas alarga el
+calendario por lista de 12 hasta 16 unidades, mientras la duración óptima
+no crece. `consistencia.pl` recorre el espacio de estados completo de los
+proyectos chicos y verifica que las heurísticas del capítulo son
+**consistentes**: la estimación nunca baja de un estado al siguiente más
+de lo que cuesta el paso, y A\* no necesita expandir un estado dos veces.
+`holguras.pl` calcula con dos pasadas sobre el orden topológico las
+fechas tempranas y tardías de cada tarea y su **holgura**, cuánto puede
+demorarse sin demorar el proyecto.
+
+### Las anomalías de la planificación por lista
 
 La [sección 73.3](index.md#733-version-1-la-planificacion-por-lista)
 cita la cota de Graham para el cambio de la lista de prioridades. El
@@ -68,7 +83,7 @@ variante(cuatro_procesadores, proyecto(Tareas, Precedencias, 4), Lista) :-
 
 `anomalias/1` planifica cada variante por lista y, para comparar, busca
 su duración óptima con A\* y la heurística combinada de la
-[versión 4](camino.md#version-4-el-camino-critico):
+[versión 4](camino.md#736-version-4-el-camino-critico):
 
 <!-- ejemplo: capitulo-73/anomalias.pl predicado: anomalias/1 -->
 ```prolog
@@ -128,10 +143,10 @@ cambios; el artículo de 1969 repite la cota junto al ejemplo. Con
 n = n′ = 3 da 5/3, y el ejemplo llega a 16/12. Que las cuatro variantes
 de `anomalias.pl` queden dentro de la cota ilustra el teorema, no lo
 demuestra. Es otra razón por la que el planificador de la
-[versión 5](index.md#737-version-5-el-planificador) no confía en un
+[versión 5](camino.md#737-version-5-el-planificador) no confía en un
 calendario por lista sin una cota inferior que lo respalde.
 
-## Heurísticas consistentes
+### Heurísticas consistentes
 
 La [sección 73.5](index.md#735-version-3-repartir-el-trabajo) justifica
 las heurísticas con la **admisibilidad**: nunca estiman de más. El
@@ -307,10 +322,10 @@ la consistencia asegura además que ningún estado se expande dos veces.
     el argumento es la garantía, y el recorrido solo lo confirma en los
     casos chicos.
 
-## Fechas tempranas, fechas tardías y holguras
+### Fechas tempranas, fechas tardías y holguras
 
-La [versión 4](camino.md#version-4-el-camino-critico) usa el camino
-crítico como heurística, y el ejercicio 3 define la **cabeza** de una
+La [versión 4](camino.md#736-version-4-el-camino-critico) usa el camino
+crítico como heurística, y el ejercicio 7 define la **cabeza** de una
 tarea, el momento más temprano en que puede empezar. En la gestión de
 proyectos, el método del camino crítico completa esas dos medidas con una
 tercera, suponiendo procesadores de sobra:
@@ -325,7 +340,7 @@ tercera, suponiendo procesadores de sobra:
   demorarse la tarea sin demorar el proyecto. Las tareas de holgura 0
   forman el camino crítico.
 
-`cola/3` y la cabeza del ejercicio 3 se definen por recursión sobre las
+`cola/3` y la cabeza del ejercicio 7 se definen por recursión sobre las
 sucesoras o las predecesoras, y una tarea con muchos caminos hacia ella
 se recalcula una vez por camino. `fechas/3` hace en cambio dos pasadas
 sobre el orden topológico de `orden_topologico/2`: hacia adelante para
@@ -454,3 +469,103 @@ planificación por lista no puede aprovecharlo con ninguna prioridad: en
 el momento 2 las únicas tareas listas son `t6` y `t7`, y la lista nunca
 deja un procesador ocioso si hay una tarea lista. La holgura informa
 cuánto se puede esperar; decidir esperar requiere la búsqueda.
+
+!!! success "Criterios de calidad"
+    | Criterio | En este capítulo |
+    |---|---|
+    | C1 | cada predicado declara modos y determinación; `tarea/3` es `nondet` en general y, con la tarea instanciada, usa `memberchk/2` para no dejar alternativas en los recorridos de las heurísticas |
+    | C2 | representaciones limpias: el proyecto, el calendario, el estado y la garantía son términos con un functor cada uno; `valido/2` verifica cualquier calendario sin importar la versión que lo produjo |
+    | C4 | `armar/5` se compromete en cada paso con `->`, y las heurísticas reúnen sus cotas con `findall/3` y `max_list/2`, de modo que las pruebas no encuentran alternativas pendientes |
+    | C6 | el núcleo es puro: `lineas/3` devuelve el dibujo como cadenas y solo `mostrar/2` e `informe/2` escriben |
+    | C7 | 154 pruebas en doce archivos, incluidos calendarios inválidos de cada clase, un proyecto con un ciclo y el problema mínimo que prueba el puente con la búsqueda del [capítulo 41](../capitulo-41-busqueda-y-planificacion/index.md) |
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio. Los ejercicios que piden código se resuelven en archivos
+que cargan los del capítulo, sin modificarlos.
+
+12. **(2)** Escribir `por_colas(Proyecto, D)`: D es la duración del
+    calendario por lista de Proyecto con la prioridad de mayor cola
+    primero. Obtenerla para las cinco variantes de `anomalias.pl`,
+    compararla con `anomalias/1` y explicar por qué esa prioridad evita
+    las anomalías del ejemplo de Graham. Comprobar con `coffman` que no
+    las evita en general.
+
+## Resumen
+
+| | |
+|---|---|
+| **proyecto** | tareas con duración, precedencias `antes(A, B)` y una cantidad de procesadores idénticos; una tarea empezada no se interrumpe |
+| **calendario** | una lista de `asignada(Tarea, Procesador, Inicio, Fin)`; se verifica con `valido/2`, sin importar cómo se obtuvo |
+| **planificación por lista** | asignar las tareas en el orden de una prioridad, sin volver atrás; nunca deja un procesador ocioso a propósito, y por eso puede no alcanzar el óptimo |
+| **espacio de estados de la planificación** | tareas pendientes, momentos en que se liberan los procesadores y fines de las empezadas; el primer procesador libre empieza una tarea lista o espera hasta que se libera otro |
+| **costo como aumento de la duración** | la suma de los costos de un plan es la duración del calendario, y A\* devuelve el más corto |
+| **relajación** | quitar restricciones al problema; el óptimo del problema relajado es una heurística que nunca estima de más |
+| **reparto** | el trabajo pendiente y el asignado divididos entre los procesadores: relaja las precedencias y la indivisibilidad de las tareas |
+| **camino crítico** | la cadena de tareas de mayor cola: relaja la cantidad de procesadores |
+| **máximo de heurísticas** | el máximo de dos heurísticas admisibles es admisible y al menos tan informado como cada una |
+| **garantía** | la cota inferior y la duración del calendario obtenido: el óptimo está entre las dos |
+| **anomalía de la planificación por lista** | un cambio favorable (más procesadores, menos precedencias, tareas más cortas) que alarga el calendario por lista sin alargar el óptimo |
+| **heurística consistente** | la estimación no baja de un estado al siguiente más que el costo del paso; A\* no expande un estado dos veces |
+| **holgura** | la fecha tardía menos la temprana: cuánto puede demorarse una tarea sin demorar el proyecto, con procesadores de sobra |
+| **puente a otra búsqueda** | incluir un archivo que no es un módulo y agregarle una cláusula que delega en otro módulo |
+| `ejemplo/2`, `valido/2`, `duracion/2`, `repartir/3`, `orden_topologico/2` | la representación, en `tareas.pl` |
+| `por_lista/3` | la versión 1 |
+| `optimo/4`, `voraz/4`, `cero/3` | la versión 2 |
+| `reparto/3`, `camino/3`, `combinada/3` | las heurísticas de las versiones 3 y 4 |
+| `planificar/4`, `cota_inferior/2`, `informe/2` | el planificador |
+| `variante/3`, `anomalias/1` | las anomalías de Graham |
+| `alcanzables/2`, `consistente/2`, `salteada/3` | la consistencia |
+| `fechas/3`, `holguras/2`, `camino_critico/2` | las holguras |
+| **[Patrón 71](../patrones.md#71-resultado-con-garantia)** | resultado con garantía |
+| **[Patrón 72](../patrones.md#72-verificar-una-propiedad-en-todo-el-espacio-de-estados-de-un-caso-chico)** | verificar una propiedad en todo el espacio de estados de un caso chico |
+| `empty_nb_set/1`, `add_nb_set/2,3`, `nb_set_to_list/2`, `size_nb_set/2` | un conjunto de términos que no se deshace al retroceder: crearlo, agregar un elemento, la lista y la cantidad de elementos |
+
+## Temas que se retoman
+
+| Tema | Se retoma en |
+|---|---|
+| Horarios de exámenes y de clases de *Inscripciones* sobre la misma representación de tareas y recursos, con búsqueda y con restricciones | [capítulo 74](../capitulo-74-proyecto-horarios-inscripciones/index.md) |
+
+## Referencias
+
+- Peter E. Hart, Nils J. Nilsson y Bertram Raphael, «A formal basis for
+  the heuristic determination of minimum cost paths», *IEEE Transactions
+  on Systems Science and Cybernetics* SSC-4(2), 1968, pp. 100–107.
+  [Copia de Nilsson](https://ai.stanford.edu/~nilsson/OnlinePubs-Nils/PublishedPapers/astar.pdf).
+  El artículo de A\* y del teorema de admisibilidad, al que Bratko
+  remite: con una estimación que nunca supera el costo restante, la
+  búsqueda da el óptimo. De allí viene la condición de consistencia
+  que verifica `consistencia.pl`.
+- Ronald L. Graham, «Bounds for certain multiprocessing anomalies», *The
+  Bell System Technical Journal* 45(9), 1966, pp. 1563–1581.
+  [Edición en Internet Archive](https://archive.org/details/bstj45-9-1563).
+  Define la planificación por lista sobre procesadores idénticos con
+  precedencias (cada procesador que se libera toma la primera tarea lista
+  de una lista de prioridades), muestra sus anomalías y prueba que cambiar
+  la lista no alarga el calendario más que 2 − 1/n veces. La
+  cota 1 + (n − 1)/n′ para los cuatro cambios a la vez se cita en
+  [Las anomalías de la planificación por lista](#las-anomalias-de-la-planificacion-por-lista).
+- Ronald L. Graham, «Bounds on multiprocessing timing anomalies», *SIAM
+  Journal on Applied Mathematics* 17(2), 1969, pp. 416–429.
+  [Copia del autor](https://mathweb.ucsd.edu/~ronspubs/69_02_multiprocessing.pdf).
+  Presenta el proyecto de nueve tareas y tres procesadores con el que esta
+  página muestra que
+  otra lista, menos precedencias, tareas más cortas o un procesador más
+  alargan el calendario por lista; `anomalias.pl` reproduce sus cinco
+  calendarios y sus duraciones, 12, 14, 16, 13 y 15.
+- E. G. Coffman y P. J. Denning, *Operating Systems Theory*,
+  Prentice-Hall, 1973 — el ejemplo de siete tareas y tres procesadores,
+  tomado a través de Bratko, que lo cita. Sin edición en línea de acceso
+  libre.
+
+El código del capítulo es propio, escrito para el curso: la
+representación, la planificación por lista, el espacio de estados sobre
+la búsqueda del [capítulo 41](../capitulo-41-busqueda-y-planificacion/index.md),
+la heurística del camino crítico, el planificador con límite y garantía,
+la verificación de la consistencia, el cálculo de las holguras y las
+mediciones son nuevos, y del libro de Bratko se toman las ideas y el
+ejemplo, no el programa.

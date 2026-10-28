@@ -7,24 +7,6 @@ modificarlos. Es `% solo-local`, porque carga otros archivos.
 
 ## 1
 
-R R es media vuelta: repetida dos veces es la identidad. R y L giran
-capas disjuntas, así que conmutan: [r, l] repetido cuatro veces es R⁴ L⁴.
-Por la misma razón el conmutador R L R' L' se reduce a R R' L L', la
-identidad, y su efecto es la lista vacía:
-
-<!-- contexto: capitulo-75/soluciones.pl -->
-```prolog
-?- orden([r, r], A), orden([r, l], B), cambiadas([r, l, -r, -l], C).
-A = 2,
-B = 4,
-C = 0.
-
-?- efecto_de("R L R' L'", P).
-P = [].
-```
-
-## 2
-
 La capa del medio perpendicular a una cara es la de coordenada 0 en la
 dirección de esa cara. `destino_capa/4` generaliza `destino/3` a
 cualquier coordenada, y `capa_calculada/4` arma el par de términos para
@@ -98,7 +80,104 @@ true.
 Las pruebas verifican además que cuatro giros medios de cada eje son la
 identidad.
 
+## 2
+
+`leer_red/2` separa cada línea en palabras y, según el número de línea,
+sabe a qué cara o caras pertenece cada grupo de tres; cada letra liga
+una casilla del cubo:
+
+<!-- ejemplo: capitulo-75/soluciones.pl predicado: leer_red/2 leer_linea/4 -->
+```prolog
+%!  leer_red(+Lineas:list(string), -Cubo) is semidet.
+%
+%   Cubo es el cubo que red/2 escribe como Lineas. Falla si Lineas no
+%   tienen la forma de red/2.
+leer_red(Lineas, Cubo) :-
+    length(Lineas, 9),
+    functor(Cubo, c, 54),
+    foldl(leer_linea(Cubo), Lineas, 0, 9).
+
+%!  leer_linea(+Cubo, +Linea:string, +F0:integer, -F:integer) is semidet.
+%
+%   La línea F0 del cubo desplegado liga las casillas que muestra; F es
+%   F0 + 1. Las líneas 0 a 2 son la cara u, 3 a 5 las caras del medio y
+%   6 a 8 la cara d.
+leer_linea(Cubo, Linea, F0, F) :-
+    split_string(Linea, " ", " ", Palabras0),
+    exclude(==(""), Palabras0, Palabras),
+    Fila is F0 mod 3,
+    (   F0 < 3
+    ->  Caras = [u]
+    ;   F0 < 6
+    ->  Caras = [l, f, r, b]
+    ;   Caras = [d]
+    ),
+    length(Caras, NC),
+    NL is 3 * NC,
+    length(Palabras, NL),
+    ligar_filas(Caras, Palabras, Cubo, Fila),
+    F is F0 + 1.
+```
+
+La prueba `leer_red` recorre las mezclas de las semillas 1 a 20: cada cubo
+escrito con `red/2` y leído con `leer_red/2` es el mismo. Una línea con
+una letra que no es de ninguna cara, o con otra cantidad de palabras,
+hace fallar la lectura.
+
 ## 3
+
+La parte pura arma cada fila con una secuencia de escape de color de
+fondo por casilla y la secuencia `\e[0m` al final; `mostrar_color/1` solo
+escribe las líneas:
+
+<!-- ejemplo: capitulo-75/soluciones.pl predicado: fila_color/4 mostrar_color/1 -->
+```prolog
+%!  fila_color(+Cubo, +Cara, +F, -Fila:string) is det.
+%
+%   Fila son las tres casillas de la fila F de Cara, con sus colores, y
+%   la secuencia que vuelve al color normal.
+fila_color(Cubo, Cara, F, Fila) :-
+    cara(Cara, K, _),
+    findall(S,
+            ( between(0, 2, C),
+              I is 9 * K + 3 * F + C + 1,
+              arg(I, Cubo, Color),
+              fondo(Color, Codigo),
+              format(string(S), "\e[~dm  ", [Codigo]) ),
+            Casillas),
+    atomic_list_concat(Casillas, A),
+    string_concat(A, "\e[0m", Fila).
+
+%!  mostrar_color(+Cubo) is det.
+%
+%   Escribe Cubo desplegado, en colores.
+mostrar_color(Cubo) :-
+    red_color(Cubo, Lineas),
+    forall(member(L, Lineas), writeln(L)).
+```
+
+La prueba compara la primera línea del cubo resuelto con la cadena
+esperada: seis blancos y tres casillas blancas, `"\e[47m  "`.
+
+## 4
+
+R R es media vuelta: repetida dos veces es la identidad. R y L giran
+capas disjuntas, así que conmutan: [r, l] repetido cuatro veces es R⁴ L⁴.
+Por la misma razón el conmutador R L R' L' se reduce a R R' L L', la
+identidad, y su efecto es la lista vacía:
+
+<!-- contexto: capitulo-75/soluciones.pl -->
+```prolog
+?- orden([r, r], A), orden([r, l], B), cambiadas([r, l, -r, -l], C).
+A = 2,
+B = 4,
+C = 0.
+
+?- efecto_de("R L R' L'", P).
+P = [].
+```
+
+## 5
 
 Un grupo es una secuencia entre paréntesis seguida de un dígito, o un
 giro de la gramática de `vista.pl`. La secuencia se copia tantas veces
@@ -147,7 +226,7 @@ Ms = [-r, -d, r, d, -r, -d, r, d, u].
 Una prueba compara `"(R' D' R D)2"` con el texto de la macro
 `giro_esquina`.
 
-## 4
+## 6
 
 Las esquinas tienen nombres de tres letras y las aristas, de dos:
 
@@ -185,85 +264,6 @@ Las inserciones de la etapa 3 giran R o F, que tocan la capa de abajo,
 pero cada giro de R o F se deshace dentro de la misma secuencia con U de
 por medio: son conmutadores de un giro lateral con U, y U no toca la capa
 de abajo. Lo que mueven de esa capa vuelve a su lugar.
-
-## 5
-
-`leer_red/2` separa cada línea en palabras y, según el número de línea,
-sabe a qué cara o caras pertenece cada grupo de tres; cada letra liga
-una casilla del cubo:
-
-<!-- ejemplo: capitulo-75/soluciones.pl predicado: leer_red/2 leer_linea/4 -->
-```prolog
-%!  leer_red(+Lineas:list(string), -Cubo) is semidet.
-%
-%   Cubo es el cubo que red/2 escribe como Lineas. Falla si Lineas no
-%   tienen la forma de red/2.
-leer_red(Lineas, Cubo) :-
-    length(Lineas, 9),
-    functor(Cubo, c, 54),
-    foldl(leer_linea(Cubo), Lineas, 0, 9).
-
-%!  leer_linea(+Cubo, +Linea:string, +F0:integer, -F:integer) is semidet.
-%
-%   La línea F0 del cubo desplegado liga las casillas que muestra; F es
-%   F0 + 1. Las líneas 0 a 2 son la cara u, 3 a 5 las caras del medio y
-%   6 a 8 la cara d.
-leer_linea(Cubo, Linea, F0, F) :-
-    split_string(Linea, " ", " ", Palabras0),
-    exclude(==(""), Palabras0, Palabras),
-    Fila is F0 mod 3,
-    (   F0 < 3
-    ->  Caras = [u]
-    ;   F0 < 6
-    ->  Caras = [l, f, r, b]
-    ;   Caras = [d]
-    ),
-    length(Caras, NC),
-    NL is 3 * NC,
-    length(Palabras, NL),
-    ligar_filas(Caras, Palabras, Cubo, Fila),
-    F is F0 + 1.
-```
-
-La prueba `leer_red` recorre las mezclas de las semillas 1 a 20: cada cubo
-escrito con `red/2` y leído con `leer_red/2` es el mismo. Una línea con
-una letra que no es de ninguna cara, o con otra cantidad de palabras,
-hace fallar la lectura.
-
-## 6
-
-La parte pura arma cada fila con una secuencia de escape de color de
-fondo por casilla y la secuencia `\e[0m` al final; `mostrar_color/1` solo
-escribe las líneas:
-
-<!-- ejemplo: capitulo-75/soluciones.pl predicado: fila_color/4 mostrar_color/1 -->
-```prolog
-%!  fila_color(+Cubo, +Cara, +F, -Fila:string) is det.
-%
-%   Fila son las tres casillas de la fila F de Cara, con sus colores, y
-%   la secuencia que vuelve al color normal.
-fila_color(Cubo, Cara, F, Fila) :-
-    cara(Cara, K, _),
-    findall(S,
-            ( between(0, 2, C),
-              I is 9 * K + 3 * F + C + 1,
-              arg(I, Cubo, Color),
-              fondo(Color, Codigo),
-              format(string(S), "\e[~dm  ", [Codigo]) ),
-            Casillas),
-    atomic_list_concat(Casillas, A),
-    string_concat(A, "\e[0m", Fila).
-
-%!  mostrar_color(+Cubo) is det.
-%
-%   Escribe Cubo desplegado, en colores.
-mostrar_color(Cubo) :-
-    red_color(Cubo, Lineas),
-    forall(member(L, Lineas), writeln(L)).
-```
-
-La prueba compara la primera línea del cubo resuelto con la cadena
-esperada: seis blancos y tres casillas blancas, `"\e[47m  "`.
 
 ## 7
 
@@ -431,7 +431,7 @@ de arriba y lo que eso desplaza, y A, hecho con giros de caras, lleva a
 la capa de arriba esquinas junto con cada arista: un giro de una cara
 lateral mueve dos esquinas y una arista de la capa de arriba. Separar las
 aristas de las esquinas exige giros de las capas del medio, como los del
-ejercicio 2, o secuencias más largas.
+ejercicio 1, o secuencias más largas.
 
 ## 11
 

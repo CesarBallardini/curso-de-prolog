@@ -47,8 +47,9 @@ recorre las técnicas de la [parte III](../capitulo-41-busqueda-y-planificacion/
 generar y probar, buscar construyendo con pruebas en cada paso, podar los
 dominios a mano y, por último, el modelo de restricciones de
 `library(clpfd)` del [capítulo 24](../capitulo-24-programacion-con-restricciones/index.md),
-con el que se optimiza. Una segunda página arma el **llamado a examen**
-como un proyecto de la planificación de tareas del
+con el que se optimiza. Dos páginas más siguen a esta: la primera trata el mejor horario y su
+grilla web, y la segunda arma el **llamado a examen** como un proyecto de la
+planificación de tareas del
 [capítulo 73](../capitulo-73-proyecto-planificacion-tareas/index.md).
 
 El proyecto parte de tres fuentes. De *Prolog Programming in Depth*, de
@@ -62,7 +63,7 @@ probar a las restricciones que podan antes de buscar, con el coloreo de
 mapas como modelo. De *Prolog Programming for Artificial Intelligence*, de
 Ivan Bratko, a través del [capítulo 73](../capitulo-73-proyecto-planificacion-tareas/index.md),
 toma la planificación de tareas sobre procesadores que usa el llamado a
-examen. La lista completa, con lo que se toma de cada fuente, está en
+examen. Cada página termina con las fuentes que usa, y las de esta están en
 [Referencias](#referencias). El código es propio.
 
 El capítulo carga, sin copiarlos, los datos de *Inscripciones* del
@@ -93,7 +94,7 @@ Al terminar el capítulo, el lector puede:
 !!! info "Tiempo estimado"
     Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **3:00 h**.
     Resolver los 5 ejercicios marcados con ★: **1:20 h**.
-    Resolver los 11 ejercicios del final: **3:15 h**.
+    Resolver los 11 ejercicios del capítulo: **3:15 h**.
 
 ## 74.1 El problema y su representación
 
@@ -799,118 +800,13 @@ la que no lo tiene.
     `aggregate_all/3`, y predecir qué responde
     `medir_clpfd(facultad(18), [], R)`. Comprobarlo.
 
-## 74.7 Versión 5: el mejor horario
-
-Entre los horarios válidos, unos son mejores que otros para los alumnos.
-El costo de un horario suma, para cada año, los días con clase y los
-**huecos**, franjas libres entre dos clases del mismo día, y es una
-variable de clpfd sobre el modelo de la versión 4. La página
-[El mejor horario](optimo.md#el-costo) escribe el costo, una **cota
-inferior** que acota la búsqueda del óptimo desde abajo, la versión de
-`mejor_con_limite/4` que responde con una garantía cuando la búsqueda se
-corta, como el [Patrón 71](../patrones.md#71-resultado-con-garantia), y
-la carrera de estrategias con `first_solution/3`. En la oferta
-`cuatrimestre`, la cota es 8 y el horario de la grilla del comienzo la
-alcanza, con 2,9 millones de inferencias:
-
-<!-- contexto: capitulo-74/optimo.pl -->
-```prolog
-?- garantia(cuatrimestre, 5000000, G).
-G = optimo(8).
-
-?- garantia(facultad(6), 1000000, G).
-G = entre(9, 11).
-```
-
-En `facultad(6)` la cota no se alcanza, y con un millón de inferencias
-por búsqueda la respuesta es que el óptimo está entre 9 y 11.
-
-## 74.8 Versión 6: la grilla web
-
-Cada año del plan tiene una página con su grilla. La página es un término
-de `html//1`, como las del
-[capítulo 37](../capitulo-37-interfaces-de-usuario/index.md#376-paginas-web-sobre-los-servicios),
-armado por un predicado puro a partir de la oferta y del horario; el
-manejador solo calcula el horario de costo mínimo y responde con
-`reply_html_page/2`:
-
-<!-- ejemplo: capitulo-74/web.pl predicado: cuerpo_anio/4 celda_html/6 -->
-```prolog
-%!  cuerpo_anio(+Oferta, +Horario:list, +Anio:integer, -Cuerpo:list) is det.
-%
-%   Cuerpo es la página de la grilla del año Anio en Horario: un título y
-%   una tabla con una columna por día y una fila por franja.
-cuerpo_anio(Oferta, Horario, Anio,
-            [ h1(Titulo),
-              table(class(horario), [tr([th('Franja')|Encabezados])|Filas]),
-              p(a(href('/horario'), 'Todos los años'))
-            ]) :-
-    Oferta = oferta(semana(Dias, Franjas), _, _, _),
-    format(atom(Titulo), "Horario de ~wº año", [Anio]),
-    numlist(1, Dias, Ds),
-    maplist(encabezado, Ds, Encabezados),
-    numlist(1, Franjas, Fs),
-    maplist(fila_html(Oferta, Horario, Anio, Ds), Fs, Filas).
-
-%!  celda_html(+Oferta, +Horario:list, +Anio:integer, +Franja:integer,
-%!             +Dia:integer, -Td) is det.
-%
-%   Td es la casilla del día Dia y la franja Franja: el nombre de la
-%   materia de la clase del año Anio, con su aula, o una casilla vacía.
-%   El nombre sale del módulo datos de Inscripciones; una materia que no
-%   está allí, como las de las ofertas facultad(N), muestra su código.
-celda_html(Oferta, Horario, Anio, Franja, Dia, Td) :-
-    momento(Oferta, S, Dia, Franja),
-    (   member(asignada(C, A, S, _), Horario),
-        clase(Oferta, C, M, Anio, _, _)
-    ->  (   materia(M, Nombre, _)
-        ->  true
-        ;   Nombre = M
-        ),
-        aula(Oferta, A, Aula, _),
-        Td = td([b(Nombre), br([]), Aula])
-    ;   Td = td([])
-    ).
-```
-
-`iniciar_web/1` arranca el servidor en un puerto libre, y las dos rutas
-son `/horario`, con un enlace por año, y `/horario/{anio}`, con la grilla,
-que responde 404 para un año que no existe. Como en el [capítulo 37](../capitulo-37-interfaces-de-usuario/index.md), las
-pruebas de `web.plt` verifican el cuerpo como término, como texto HTML y
-con pedidos reales al servidor:
-
-```prolog
-test(celda_con_clase, [true(Td == td([b(bases_de_datos), br([]), lab]))]) :-
-    oferta(cuatrimestre, O),
-    horario_ejemplo(H),
-    celda_html(O, H, 3, 1, 4, Td).
-
-test(anio_inexistente, [true(Codigo == 404)]) :-
-    pedir('/horario/7', Codigo, _).
-```
-
-## 74.9 El llamado a examen
-
-El [capítulo 24](../capitulo-24-programacion-con-restricciones/index.md#2413-el-proyecto-el-calendario-de-examenes)
-armó el calendario de exámenes con restricciones. El
-[capítulo 73](../capitulo-73-proyecto-planificacion-tareas/index.md)
-dejó un planificador de tareas sobre procesadores, y el llamado a examen
-también es un proyecto de ese tipo: los exámenes son tareas de un día,
-las aulas son los procesadores y las correlativas son precedencias, porque
-un alumno que rinde las dos materias necesita rendir antes la correlativa.
-La página [El llamado a examen](examenes.md) lo resuelve con el
-planificador del [capítulo 73](../capitulo-73-proyecto-planificacion-tareas/index.md) y muestra lo que ese modelo no puede
-expresar: los conflictos de los alumnos que rinden dos materias.
-
-!!! success "Criterios de calidad"
-    | Criterio | En este capítulo |
-    |---|---|
-    | C1 | cada predicado declara modos y determinación; `clase/6` es `nondet` en general y, con el identificador instanciado del todo, usa `memberchk/2`; con un identificador parcial, como `M-K`, enumera |
-    | C2 | representaciones limpias: la oferta, la clase, el horario y la garantía son términos con un functor cada uno; el horario es un calendario del [capítulo 73](../capitulo-73-proyecto-planificacion-tareas/index.md), y `horario_valido/2` verifica el resultado de cualquier versión |
-    | C3 | las versiones 3 a 5 no modifican la base de datos; el único estado global es el contador de pasos de las mediciones, con `nb_setval/2` |
-    | C4 | `optimo/4`, `costo/3` y las mediciones no dejan alternativas pendientes; `hueco/3` separa la lista con `length/2` y `append/3` en un solo sentido |
-    | C6 | el núcleo es puro: `lineas_anio/4` y `cuerpo_anio/4` devuelven la grilla como cadenas o como término, y solo `mostrar_anio/3` y los manejadores escriben |
-    | C7 | 94 pruebas en ocho archivos, incluidos horarios con cada clase de choque, ofertas sin horario, los dominios después de propagar y pedidos HTTP reales |
+El capítulo continúa en la página
+[El mejor horario y la grilla web](optimo.md#747-version-5-el-mejor-horario), con el
+horario de costo mínimo sobre el modelo de restricciones y su grilla web,
+y la página siguiente,
+[El llamado a examen](examenes.md#749-el-llamado-a-examen), lo termina
+con el llamado a examen como proyecto de tareas. Antes, los
+[ejercicios](#ejercicios) de esta página practican las versiones 1 a 4.
 
 ## Ejercicios
 
@@ -947,51 +843,9 @@ que cargan los del capítulo, sin modificarlos.
    una opción de `labeling/2`, con un límite de veinte millones. Medir
    `ff`, `ffc` y `leftmost` en `facultad(13)` y `facultad(14)` y explicar
    las diferencias.
-7. ★ **(2)** Escribir `costo_docentes(Oferta, Horario, Costo)`, la
-   cantidad de días que viene cada docente, sumada; obtener el horario de
-   la oferta `cuatrimestre` que la minimiza y compararlo con el de
-   `optimo/4`.
-8. **(3)** Escribir una versión de `mejor_con_limite/4` cuyo primer
-   horario sea el de menor costo entre los de cuatro etiquetados
-   distintos, medir la garantía en `facultad(6)` con un millón de
-   inferencias y explicar por qué cambia o no cambia.
-9. **(2)** Agregar a `web.pl` la ruta `/aula/{nombre}`, con la grilla de
-   la ocupación de un aula: en cada casilla, la clase que la usa.
-10. ★ **(2)** Escribir `llamado_separado(Aulas, Calendario, Dias)`, que
-    además deja al menos un día libre entre dos exámenes en conflicto.
-    Obtener cuántos días hacen falta con dos aulas.
-11. **(1)** Predecir, sin ejecutarlo, qué responde
+7. **(1)** Predecir, sin ejecutarlo, qué responde
     `medir_clpfd(facultad(30), [modelo(simple)], R)` y por qué la
     respuesta es inmediata. Comprobarlo.
-
-## Resumen
-
-| | |
-|---|---|
-| **oferta** | la semana, las clases con su materia, año, docente y cupo, las aulas y la disponibilidad de los docentes |
-| **horario como calendario** | cada clase es una tarea de duración 1 y cada aula un procesador; `tareas:valido/2` verifica la parte común |
-| **clases incompatibles** | mismo docente o mismo año: armar el horario es colorear su grafo |
-| **generar y probar** | correcto, pero examina (momentos × aulas) elevado a la cantidad de clases |
-| **probar al construir** | cada paso verifica la clase nueva contra el horario parcial |
-| **lo más restringido primero** | el orden fijo de lo difícil primero, o el dominio más chico elegido en cada paso |
-| **poda hacia adelante** | quitar de los dominios pendientes lo que choca con cada asignación; un dominio vacío abandona la rama |
-| **restricción redundante** | no excluye soluciones nuevas pero propaga más; `global_cardinality/2` cuenta las clases por momento |
-| **qué etiquetar** | la variable que combina las decisiones (el par momento-aula) evita fijar una sin la otra |
-| **cota inferior y garantía** | acotar el costo desde la cota da el óptimo; con un límite, `entre(Cota, C)` |
-| **carrera de estrategias** | `first_solution/3` corre varios etiquetados y se queda con el primero que termina |
-| `horario_valido/2`, `choque/3`, `lineas_anio/4` | la representación, en `oferta.pl` |
-| `generar_y_probar/2`, `construir/3`, `resolver/2` | las versiones 1 a 3 |
-| `horario_clpfd/3`, `conteo/2` | el modelo de restricciones |
-| **[Patrón 73](../patrones.md#73-restriccion-redundante-que-cuenta)** | restricción redundante que cuenta |
-| `cota_inferior/2`, `mejor_con_limite/4`, `carrera/3` | la versión 5 |
-| `cuerpo_anio/4` | la grilla web |
-| `nb_delete/1` | borra una variable global |
-
-## Temas que se retoman
-
-| Tema | Se retoma en |
-|---|---|
-| Consultas en castellano sobre *Inscripciones*, entre ellas el horario de una materia | [capítulo 88](../capitulo-88-proyecto-preguntas-en-castellano/index.md) |
 
 ## Referencias
 
@@ -1028,12 +882,3 @@ que cargan los del capítulo, sin modificarlos.
   [capítulo 73](../capitulo-73-proyecto-planificacion-tareas/index.md),
   el capítulo toma el modelo de tareas sobre procesadores idénticos con
   precedencias que usa el llamado a examen.
-- E. G. Coffman y P. J. Denning, *Operating Systems Theory*,
-  Prentice-Hall, 1973, citado por Bratko como origen del problema de
-  planificación de tareas. Sin edición en línea de acceso libre.
-
-El código del capítulo es propio, escrito para el curso: la oferta, las
-seis versiones, las restricciones de conteo, el costo de días y huecos con
-su cota inferior, la garantía, la carrera de estrategias, la grilla web y
-el llamado a examen son nuevos; de las fuentes se toman las ideas, no los
-programas.

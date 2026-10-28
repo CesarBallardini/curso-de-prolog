@@ -1,14 +1,16 @@
 # Profundización progresiva con límite de tiempo
 
-Esta página contiene la sección
-[42.5](index.md#425-profundizacion-progresiva-con-limite-de-tiempo) del
-[capítulo 42](index.md): la búsqueda que profundiza mientras dura el tiempo
-de una jugada, y las jugadas buscadas en paralelo. Los ejemplos están en
+Esta página continúa la página
+[Funciones de evaluación y orden de las jugadas](evaluacion.md#424-funciones-de-evaluacion-y-orden-de-las-jugadas)
+del [capítulo 42](index.md), con la sección
+[42.5](#425-profundizacion-progresiva-con-limite-de-tiempo): la búsqueda
+que profundiza mientras dura el tiempo de una jugada, y las jugadas
+buscadas en paralelo. Los ejemplos están en
 `profundizacion.pl`, que corre en SWISH, y en `paralelo.pl`, que crea hilos
 y por eso no corre allí; los dos están en `ejemplos/capitulo-42/`, con sus
 pruebas.
 
-## Profundización progresiva con límite de tiempo
+## 42.5 Profundización progresiva con límite de tiempo
 
 Un programa que juega tiene un tiempo para cada jugada, no una
 profundidad, y cuánto tarda la poda a una profundidad dada depende de la
@@ -16,7 +18,7 @@ posición. La **profundización progresiva** que describe Bratko en «Game
 Playing» busca con profundidad 1, después con 2, después con 3, y así hasta
 que se acaba el tiempo; juega la mejor jugada de la última búsqueda que
 terminó. Es la profundización iterativa de la
-[sección 41.4](../capitulo-41-busqueda-y-planificacion/index.md#414-profundidad-limitada-y-profundizacion-iterativa),
+[sección 41.4](../capitulo-41-busqueda-y-planificacion/heuristicas.md#414-profundidad-limitada-y-profundizacion-iterativa),
 con otra condición de parada: el reloj.
 
 <!-- ejemplo: capitulo-42/profundizacion.pl predicado: profundizar/6 iterar/6 completa/4 primero/6 consulta: profundizar(tateti(3), pos([x,o,v, v,x,v, v,v,o], o), 10, J, V, D). -->
@@ -143,15 +145,15 @@ Cada profundidad más multiplica el costo por un factor de cuatro a cinco,
 y la suma de las anteriores es una fracción de la última.
 
 Los valores alternan con la profundidad: 3 con profundidad 1, 0 con 2, 3
-con 3, 0 con 4, 2 con 5 y 0 con 6. El [ejercicio 12](index.md#ejercicios)
+con 3, 0 con 4, 2 con 5 y 0 con 6. El [ejercicio 10](#ejercicios)
 pide explicar por qué.
 
-## Jugadas en paralelo
+### Jugadas en paralelo
 
 La poda es secuencial: cada jugada se busca con las cotas que dejaron las
 anteriores. Para repartir la búsqueda entre varios núcleos, `paralelo.pl`
 busca cada jugada de la raíz en un hilo con `concurrent_maplist/3`
-([sección 38.4](../capitulo-38-concurrencia-y-paralelismo/index.md#384-paralelismo-de-datos)),
+([sección 38.4](../capitulo-38-concurrencia-y-paralelismo/paralelismo.md#384-paralelismo-de-datos)),
 cada una con sus propias cotas, y elige al final:
 
 <!-- ejemplo: capitulo-42/paralelo.pl predicado: en_paralelo/5 valor_hijo/4 elegir/3 -->
@@ -262,3 +264,28 @@ segundos: el primer hilo que agota su tiempo lanza la excepción,
 `concurrent_maplist/3` la propaga y detiene a los demás, y `en_paralelo/6`
 la convierte en una falla. Con `en_paralelo/6` en lugar de `primero/6`,
 `profundizar/6` repartiría cada profundidad entre los núcleos.
+
+El capítulo continúa en la página
+[Tablas de transposición con tabulación](transposicion.md#426-tablas-de-transposicion-con-tabulacion),
+con las posiciones ya buscadas guardadas en tablas.
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio, y los capítulos siguientes los dan por hechos.
+
+10. **(1)** En el tablero de 4 × 4, `alfabeta/6` da los valores 3, 0, 3, 0,
+    2 y 0 con las profundidades 1 a 6. Explicar la alternancia.
+
+## Referencias
+
+- Ivan Bratko, *Prolog Programming for Artificial Intelligence*,
+  Addison-Wesley, 1986 — capítulo «Game Playing». Sin edición en línea de
+  acceso libre. Esta página toma de allí la profundización progresiva que empieza
+  por la mejor jugada de la búsqueda anterior.
+- *SWI-Prolog Reference Manual*, secciones de `library(time)`
+  (`call_with_time_limit/2`) y de `library(thread)`
+  (`concurrent_maplist/3`):
+  [manual en línea](https://www.swi-prolog.org/pldoc/doc_for?object=manual).

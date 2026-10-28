@@ -1,54 +1,16 @@
 # Soluciones del capítulo 56 — Proyecto: diálogos por plantillas
 
 El código de esta página está en `ejemplos/capitulo-56/`: `soluciones.pl`
-para los ejercicios 3, 4 y 5; `soluciones_agenda.pl` para el 6, el 7 y el 8;
-`soluciones_analogia.pl` para el 9; `soluciones_guiones.pl` para el 10 y el
-11; y `soluciones_aventura.pl` para el 12. Cada uno tiene sus pruebas y
+para los ejercicios 2, 3 y 4; `soluciones_agenda.pl` para el 6, el 7 y el 8;
+`soluciones_aventura.pl` para el 9; `soluciones_analogia.pl` para el 10; y
+`soluciones_guiones.pl` para el 11 y el 12. Cada uno tiene sus pruebas y
 ninguno modifica los archivos del capítulo: agregan cláusulas a los
 predicados que el capítulo declara `multifile`, o definen predicados nuevos
-que usan los del capítulo. Los ejercicios 1 y 2 se resuelven con los
+que usan los del capítulo. Los ejercicios 1 y 5 se resuelven con los
 archivos del capítulo. Todos son `% solo-local`, porque cargan otros
 archivos.
 
 ## 1
-
-Con `dialogo.pl` cargado, cada frase se responde en el estado que dejó la
-anterior:
-
-<!-- ejemplo: capitulo-56/dialogo.pl predicado: responder/4 -->
-```prolog
-%!  responder(+Frase:string, +Estado0, -Estado, -Respuesta:string) is det.
-%
-%   Respuesta es la respuesta de la agenda a Frase, si la agenda la
-%   reconoce, o la de ELIZA si no; Estado es el estado que queda.
-responder(Frase, dialogo(Eliza0, Agenda0), dialogo(Eliza, Agenda),
-          Respuesta) :-
-    (   atender(Frase, Agenda0, Agenda1, Respuesta0)
-    ->  Eliza = Eliza0,
-        Agenda = Agenda1,
-        Respuesta = Respuesta0
-    ;   Agenda = Agenda0,
-        responder_eliza(Frase, Eliza0, Eliza, Respuesta)
-    ).
-```
-
-Las respuestas, en orden, son:
-
-| Frase | Respuesta | Por qué |
-|---|---|---|
-| Tú no me entiendes | Continúa, por favor. | ninguna regla tiene «entiendes»; el patrón de «eres» no coincide, y queda la regla `ninguna` |
-| Necesito unas vacaciones | ¿Qué harías si consiguieras unas vacaciones? | regla `necesito`, primer turno |
-| Tengo una cena con Luis el viernes a las 9 de la noche | Anotado: el viernes a las 21:00, una cena con Luis. | la agenda la reconoce; «de la noche» suma 12 |
-| Mi hermana dice que exagero | Háblame más de tu familia. | regla `familia`; la frase empieza con «mi» y se recuerda |
-| Estoy harta | ¿Por qué estás harta? | regla `estoy` |
-| ¿Cuándo veo a Luis? | Ves a Luis el viernes a las 21:00. | pregunta de la agenda |
-| Sí | Antes dijiste que tu hermana dice que exagero. ¿Tiene algo que ver con esto? | solo coincide `ninguna`, y hay un recuerdo |
-
-La última respuesta muestra un límite del cambio de persona: «exagero» no
-está en `verbo/2`, y vuelve sin cambiar, en lugar de «exageras». El
-ejercicio 5 hace más fácil agregar verbos.
-
-## 2
 
 ```prolog
 %!  coincide(+Patron:list, +Palabras:list(atom)) is nondet.
@@ -93,7 +55,7 @@ R = inference_limit_exceeded.
 Por eso la regla por omisión tiene el patrón `[_]`: una lista de un
 elemento, un solo segmento que abarca la frase entera.
 
-## 3
+## 2
 
 Las dos reglas se agregan con el nombre del módulo delante, porque
 `regla/4` es `multifile` en `eliza`:
@@ -133,7 +95,7 @@ R = "¿Puedes pensar en un ejemplo concreto?".
 R = "¿Qué te impide dormir por tu trabajo?".
 ```
 
-## 4
+## 3
 
 `persona_prep//1` es `persona//1` con una cláusula más al principio. Las
 otras tres usan los predicados auxiliares del módulo `persona` con su
@@ -195,7 +157,7 @@ palabra siguiente no alcanza para decidir. La frase original, con su tilde,
 sí lo decidiría: `escritura/3` conserva «mí», y una variante del cambio de
 persona podría mirar la palabra escrita en lugar de la normalizada.
 
-## 5
+## 4
 
 <!-- ejemplo: capitulo-56/soluciones.pl fragmento: verbo_regular(caminar). .. terminacion(ir, es). -->
 ```prolog
@@ -236,6 +198,44 @@ da todas las maneras de partirlo; `terminacion/2` deja solo la que termina
 en `ar`, `er` o `ir`. Los verbos con cambio de vocal en la raíz («querer»,
 «poder») no se pueden declarar así: su raíz en el presente no es la del
 infinitivo, y siguen en `verbo/2`.
+
+## 5
+
+Con `dialogo.pl` cargado, cada frase se responde en el estado que dejó la
+anterior:
+
+<!-- ejemplo: capitulo-56/dialogo.pl predicado: responder/4 -->
+```prolog
+%!  responder(+Frase:string, +Estado0, -Estado, -Respuesta:string) is det.
+%
+%   Respuesta es la respuesta de la agenda a Frase, si la agenda la
+%   reconoce, o la de ELIZA si no; Estado es el estado que queda.
+responder(Frase, dialogo(Eliza0, Agenda0), dialogo(Eliza, Agenda),
+          Respuesta) :-
+    (   atender(Frase, Agenda0, Agenda1, Respuesta0)
+    ->  Eliza = Eliza0,
+        Agenda = Agenda1,
+        Respuesta = Respuesta0
+    ;   Agenda = Agenda0,
+        responder_eliza(Frase, Eliza0, Eliza, Respuesta)
+    ).
+```
+
+Las respuestas, en orden, son:
+
+| Frase | Respuesta | Por qué |
+|---|---|---|
+| Tú no me entiendes | Continúa, por favor. | ninguna regla tiene «entiendes»; el patrón de «eres» no coincide, y queda la regla `ninguna` |
+| Necesito unas vacaciones | ¿Qué harías si consiguieras unas vacaciones? | regla `necesito`, primer turno |
+| Tengo una cena con Luis el viernes a las 9 de la noche | Anotado: el viernes a las 21:00, una cena con Luis. | la agenda la reconoce; «de la noche» suma 12 |
+| Mi hermana dice que exagero | Háblame más de tu familia. | regla `familia`; la frase empieza con «mi» y se recuerda |
+| Estoy harta | ¿Por qué estás harta? | regla `estoy` |
+| ¿Cuándo veo a Luis? | Ves a Luis el viernes a las 21:00. | pregunta de la agenda |
+| Sí | Antes dijiste que tu hermana dice que exagero. ¿Tiene algo que ver con esto? | solo coincide `ninguna`, y hay un recuerdo |
+
+La última respuesta muestra un límite del cambio de persona: «exagero» no
+está en `verbo/2`, y vuelve sin cambiar, en lugar de «exageras». El
+ejercicio 4 hace más fácil agregar verbos.
 
 ## 6
 
@@ -375,6 +375,41 @@ de dominio.
 
 ## 9
 
+<!-- ejemplo: capitulo-56/soluciones_aventura.pl predicado: responder/4 aventura_con_eliza/1 -->
+```prolog
+%!  responder(+Frase:string, +Estado0, -Estado, -Respuesta:string) is det.
+%
+%   Si Frase es una orden de la aventura, la ejecuta y Respuesta es la del
+%   juego; si no, Respuesta es la de ELIZA, en el estado Estado0.
+responder(Frase, Estado0, Estado, Respuesta) :-
+    entender(Frase, Orden),
+    (   Orden == no_entendido
+    ->  responder_eliza(Frase, Estado0, Estado, Respuesta)
+    ;   Estado = Estado0,
+        responder_orden(Orden, Respuesta)
+    ).
+
+%!  aventura_con_eliza(+In) is det.
+%
+%   Empieza una partida y conversa con las frases de In.
+aventura_con_eliza(In) :-
+    iniciar,
+    estado_inicial(E0),
+    conversar(In, responder, E0).
+```
+
+`entender/2` de la aventura responde `no_entendido` cuando la frase no es
+una orden, y esa es la señal para pasarla a ELIZA; el módulo importa
+`responder/2` de la aventura y `responder/4` de ELIZA con otros nombres,
+porque define su propio `responder/4`. La prueba de
+`soluciones_aventura.plt` conversa con «tomar el perchero», «estoy
+aburrido», «biblioteca», «tomar la llave» y «adiós»: la primera y las dos
+últimas órdenes van al juego y la segunda frase a ELIZA, que responde
+«¿Por qué estás aburrido?». Los dos estados son distintos: el del juego en
+la base de datos del módulo `estado`, el de ELIZA en el argumento del bucle.
+
+## 10
+
 Una sola cláusula más de `transformacion/3`, recursiva: aplica cualquier
 operación, incluida otra `en_exterior/1`, a la segunda parte de una
 relación:
@@ -409,7 +444,7 @@ explicación es una sola operación; la sucesión `[exterior(…)]` no sirve,
 porque `exterior/1` pone una figura y aquí la parte exterior es una
 relación.
 
-## 10
+## 11
 
 El guion, sus palabras, una historia, los sustantivos nuevos y tres
 oraciones se agregan a los predicados `multifile` de `guiones.pl`; el suceso
@@ -458,7 +493,7 @@ La historia no dice quién recetó el jarabe ni a quién; la unificación con
 el guion liga el paciente a Luis por el primer suceso, y la médica toma su
 valor por omisión.
 
-## 11
+## 12
 
 La gramática lee oraciones unidas por comas, que `palabras/2` descarta, o
 por «y». La primera oración tiene sujeto; las siguientes pueden no tenerlo,
@@ -521,41 +556,6 @@ R = "Juan fue de su casa a Leones. Juan se sentó a una mesa. Juan le pidió una
 con el restaurante y con otro lugar. `sujeto//2` prueba primero leer un
 nombre, y por eso `no_es_sujeto/1` excluye las palabras con que empieza un
 predicado: sin esa lista, «se» se leería como el sujeto de «fue a …».
-
-## 12
-
-<!-- ejemplo: capitulo-56/soluciones_aventura.pl predicado: responder/4 aventura_con_eliza/1 -->
-```prolog
-%!  responder(+Frase:string, +Estado0, -Estado, -Respuesta:string) is det.
-%
-%   Si Frase es una orden de la aventura, la ejecuta y Respuesta es la del
-%   juego; si no, Respuesta es la de ELIZA, en el estado Estado0.
-responder(Frase, Estado0, Estado, Respuesta) :-
-    entender(Frase, Orden),
-    (   Orden == no_entendido
-    ->  responder_eliza(Frase, Estado0, Estado, Respuesta)
-    ;   Estado = Estado0,
-        responder_orden(Orden, Respuesta)
-    ).
-
-%!  aventura_con_eliza(+In) is det.
-%
-%   Empieza una partida y conversa con las frases de In.
-aventura_con_eliza(In) :-
-    iniciar,
-    estado_inicial(E0),
-    conversar(In, responder, E0).
-```
-
-`entender/2` de la aventura responde `no_entendido` cuando la frase no es
-una orden, y esa es la señal para pasarla a ELIZA; el módulo importa
-`responder/2` de la aventura y `responder/4` de ELIZA con otros nombres,
-porque define su propio `responder/4`. La prueba de
-`soluciones_aventura.plt` conversa con «tomar el perchero», «estoy
-aburrido», «biblioteca», «tomar la llave» y «adiós»: la primera y las dos
-últimas órdenes van al juego y la segunda frase a ELIZA, que responde
-«¿Por qué estás aburrido?». Los dos estados son distintos: el del juego en
-la base de datos del módulo `estado`, el de ELIZA en el argumento del bucle.
 
 ## 13
 

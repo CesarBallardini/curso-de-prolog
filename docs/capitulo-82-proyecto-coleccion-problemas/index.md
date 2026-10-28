@@ -39,8 +39,13 @@ Donald Nute y André Vellino; la colección de estampillas y las rimas, de
 *Prolog Techniques*, de Attila Csenki; las reglas de tránsito y los
 marcos, de *Artificial Intelligence through Prolog*, de Neil Rowe. Todos
 los programas se reescribieron para el curso y se ejecutaron los de los
-libros para comparar: tres de ellos no responden lo que dice su texto. La
-lista completa de las fuentes está en las [Referencias](#referencias).
+libros para comparar: tres de ellos no responden lo que dice su texto.
+Cada página cita al final las fuentes que usa, con lo que toma de cada
+una: las del triángulo, en [Referencias](#referencias); las de los otros
+problemas, en las de las páginas [Moléculas](moleculas.md#referencias),
+[Una colección de estampillas](estampillas.md#referencias),
+[Reglas de tránsito y marcos](transito-y-marcos.md#referencias) y
+[Rimas](rimas.md#referencias).
 
 El capítulo cumple dos anuncios: el del
 [capítulo 76](../capitulo-76-proyecto-rompecabezas-simetrias/index.md)
@@ -83,9 +88,9 @@ Al terminar el capítulo, el lector puede:
   se llamen mutuamente sin terminar.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **5:15 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **5:20 h**.
     Resolver los 5 ejercicios marcados con ★: **1:20 h**.
-    Resolver los 12 ejercicios del final: **3:30 h**.
+    Resolver los 12 ejercicios del capítulo: **3:30 h**.
 
 ## 82.1 La colección
 
@@ -100,13 +105,15 @@ Al terminar el capítulo, el lector puede:
 
 El triángulo ocupa las secciones
 [82.2](#822-el-triangulo-version-1-el-tablero-y-los-saltos) a
-[82.4](#824-version-3-las-simetrias-en-el-registro-de-visitados), en tres
-versiones, y las estampillas la
-[82.6](#826-una-coleccion-de-estampillas), en dos. Las moléculas, las
-reglas de tránsito, los marcos y las rimas están en páginas aparte,
-enlazadas desde las secciones [82.5](#825-moleculas),
-[82.7](#827-reglas-de-transito), [82.8](#828-marcos) y
-[82.9](#829-rimas). `triangulo.pl` es un módulo que carga el puente del
+[82.4](#824-version-3-las-simetrias-en-el-registro-de-visitados) de esta
+página, en tres versiones. Los demás problemas siguen en páginas propias,
+en el orden de la tabla: las moléculas en la sección
+[82.5](moleculas.md#825-moleculas), las estampillas en la
+[82.6](estampillas.md#826-una-coleccion-de-estampillas), en dos
+versiones, las reglas de tránsito y los marcos en las
+[82.7](transito-y-marcos.md#827-reglas-de-transito) y
+[82.8](transito-y-marcos.md#828-marcos), y las rimas en la
+[82.9](rimas.md#829-rimas). `triangulo.pl` es un módulo que carga el puente del
 [capítulo 77](../capitulo-77-proyecto-robots-laberintos-caballo/index.md),
 así que es `% solo-local`; los demás archivos corren en SWISH.
 
@@ -415,7 +422,7 @@ de esa posición.
 Para medirlo, el triángulo se describe como un problema para
 `buscar/5` del [capítulo 41](../capitulo-41-busqueda-y-planificacion/index.md),
 que recuerda las posiciones vistas
-([sección 41.3](../capitulo-41-busqueda-y-planificacion/index.md#413-ciclos-y-visitados)),
+([sección 41.3](../capitulo-41-busqueda-y-planificacion/visitados.md#413-ciclos-y-visitados)),
 y para el bucle de la
 [sección 41.2](../capitulo-41-busqueda-y-planificacion/index.md#412-una-sola-busqueda-varias-estrategias),
 que no recuerda nada. `triangulo.pl` carga el puente del
@@ -697,73 +704,10 @@ soluciones de los quince comienzos a la vez, con una tabla por forma.
     casos. Encontrar cuáles de las seis simetrías dejan igual la posición
     de partida con el agujero 5 vacío, y relacionarlo con la medición.
 
-## 82.5 Moléculas
-
-La página [Moléculas](moleculas.md) escribe la búsqueda de grupos de
-átomos de Covington sobre una molécula representada como grafo: el
-metilo, el hidroxilo, el grupo nitro y los anillos de carbonos. Las
-consultas del libro dan el metilo del 3-clorotolueno seis veces y su
-anillo doce; con los átomos intercambiables en orden y una escritura
-canónica de los ciclos, dan una respuesta por estructura. La versión 3
-deduce qué enlaces son dobles a partir de la valencia de cada elemento,
-con las restricciones del
-[capítulo 24](../capitulo-24-programacion-con-restricciones/index.md):
-encuentra las dos estructuras de Kekulé del anillo y ninguna para el
-TNT, cuyo grupo nitro necesita cargas que el modelo no tiene.
-
-## 82.6 Una colección de estampillas
-
-La página [Una colección de estampillas](estampillas.md) escribe el
-álbum de Csenki: un sello es `sello(Pais, Serie, Anio, Valor)`, cada
-hecho `album/1` guarda una serie en orden de valor, y un **patrón**, un
-sello con variables, elige los sellos con los que unifica sin quedar
-ligado. La versión 1 vende y compra cambiando la base de datos en medio
-del cálculo; el `sell/1` del libro, ejecutado, solo vende cuando el
-primer sello de la serie cumple el patrón. La versión 2 escribe vender y
-comprar como relaciones puras entre un álbum, una lista de series, y el
-siguiente, y deja la base de datos en una capa de un solo predicado,
-`operar/1`. Es el
-[Patrón 86](../patrones.md#86-el-estado-como-valor-la-base-de-datos-como-capa),
-el estado como valor y la base de datos como capa: las relaciones se
-prueban con álbumes escritos en la prueba, sin guardar ni restaurar la
-base de datos.
-
-## 82.7 Reglas de tránsito
-
-La página [Reglas de tránsito y marcos](transito-y-marcos.md) escribe
-las reglas de Rowe para los semáforos de California: qué puede hacer un
-auto o un peatón ante las luces que ve, con el orden de las reglas como
-prioridad y dos reglas por omisión. Ejecutadas, las reglas del libro dan
-para el ejemplo del peatón una respuesta distinta de la que el texto
-anuncia, y aplican la regla por omisión aunque haya un consejo
-específico; la versión 2 la limita a cuando no lo hay, y la tabla de
-todas las luces solas comprueba el resultado.
-
-## 82.8 Marcos
-
-La misma [página](transito-y-marcos.md#marcos) escribe los marcos de
-Rowe: ranuras llenas y vacías, herencia de valores por `es_un` y
-`parte_de`, herencia de ranuras y de unidades, intensión y extensión, y
-la edad calculada a partir del año de fabricación. Las reglas del libro
-tienen un corte que pierde valores y dos reglas que se llaman una a la
-otra sin terminar; las del capítulo no.
-
-## 82.9 Rimas
-
-La página [Rimas](rimas.md) sigue el desarrollo exploratorio de Csenki
-con dos canciones: «La casa que construyó Juan», cuyas estrofas son los
-sufijos de la última, y «Un elefante se balanceaba», que cuenta sin fin,
-con los números en letras y la concordancia del verbo.
-
-!!! success "Criterios de calidad"
-    | Criterio | En este capítulo |
-    |---|---|
-    | C1 | cada predicado declara modos y determinación; `accion_v1/3` y `tiene_valor/3` aclaran qué argumento debe llegar instanciado o libre, porque se usa dentro de `\+` o después de un si-entonces-sino |
-    | C2 | representaciones limpias: `t/15`, `s(De, Sobre, Hasta)`, `sello/4`, `luz/2` en una lista de observaciones, `valor/3` guardado en un solo sentido |
-    | C3 | `triangulo.pl` se resuelve con las búsquedas del [capítulo 41](../capitulo-41-busqueda-y-planificacion/index.md) sin cambiarlas; los saltos y las simetrías se generan de la geometría |
-    | C4 | `jugar/3`, `en_el_tablero/3`, `insertar/3` y `con_punto/2` llevan la lista como primer argumento para que la indexación no deje alternativas; `forma/2`, `coleccion/2` y `tiene_unidades/3` son deterministas |
-    | C6 | `filas/2` calcula el dibujo y `dibujar/1` lo escribe; `vender/3` y `comprar/3` son puros, y solo `operar/1`, `vender/1` y `comprar/1` tocan la base de datos |
-    | C7 | 128 pruebas en seis archivos, y 35 más para las soluciones; las cantidades de posiciones expandidas y de respuestas repetidas están en las pruebas |
+El capítulo continúa en la página [Moléculas](moleculas.md#825-moleculas),
+con la búsqueda de grupos de átomos en una molécula representada como un
+grafo. Antes, los [ejercicios](#ejercicios) de esta página practican las
+tres versiones del triángulo.
 
 ## Ejercicios
 
@@ -795,110 +739,20 @@ que cargan los del capítulo, sin modificarlos.
 5. **(3)** Resolver el triángulo de diez agujeros, en cuatro filas.
    Escribir los saltos con otra representación, conjuntos ordenados de
    los agujeros con clavija, y decidir desde qué agujeros tiene solución.
-6. ★ **(2)** Agregar a `molecula/3` el naftaleno, dos anillos de seis
-   carbonos que comparten un enlace, con ocho hidrógenos. Predecir, antes
-   de ejecutar, cuántas respuestas dan `anillo(naftaleno, 6, A)`,
-   `anillo(naftaleno, 10, A)` y `ordenes(naftaleno, O)`, y explicar la del
-   anillo de diez.
-7. **(2)** Escribir `valor_total(?Patron, -Total)`, la suma de los
-   valores de los sellos que unifican con un patrón, y `por_pais(-Pares)`,
-   el valor del álbum por país.
-8. **(1)** Predecir qué series quedan en el álbum después de
-   `vender(sello(_, _, 1885, _))`, y qué haría el `sell/1` del libro con
-   el mismo pedido.
-9. ★ **(2)** Escribir `conflictos(+Quien, -C)`: las situaciones con dos
-   luces para los autos, de tipos distintos, en las que `accion/3`
-   permite a la vez detenerse y una acción que avanza. Contarlas, y
-   contar en cuántas `decision/3` elige avanzar. ¿Qué dice eso del orden
-   de las reglas?
-10. **(2)** Rowe anuncia que el peatón que ve la silueta intermitente
-    puede cruzar cediendo el paso. Escribir `peaton_v3/2` y `accion_v3/3`,
-    sin modificar `transito.pl`, para que el ejemplo dé esa respuesta.
-11. **(2)** Rowe llama herencia de partes a que un auto tenga sistema de
-    propulsión porque lo tiene todo vehículo. Escribir `partes(+Objeto,
-    -Partes)`, con las partes propias y las de las clases más generales.
-12. **(2)** Traducir la canción de Csenki «One man went to mow»: escribir
-    `estrofa_segar(+N, -Lineas)`, cuyo tercer verso cuenta hacia atrás,
-    «Tres hombres, dos hombres, un hombre y su perro», con un esqueleto
-    `[N, …, 1]`.
-
-## Resumen
-
-| | |
-|---|---|
-| **salto como unificación** | un hecho cuyos dos términos fijan los agujeros que el salto toca y comparten las variables de los demás |
-| **transposición** | dos órdenes de los mismos movimientos que llegan al mismo estado; sin ciclos, sigue repitiendo trabajo |
-| **coordenadas del triángulo** | las distancias a los tres lados; las simetrías las permutan |
-| **forma de una posición** | la menor de sus seis imágenes; el registro de visitados guarda una por clase |
-| **acción como forma siguiente** | el problema sobre formas devuelve las clases, y los saltos reales se reconstruyen después |
-| **patrón** | un término con variables que elige los objetos con los que unifica, sin quedar ligado |
-| **núcleo y capa** | la relación entre un estado y el siguiente, y el código que lee y guarda el estado |
-| **[Patrón 85](../patrones.md#85-estado-canonico-en-el-sucesor)** | estado canónico en el sucesor |
-| **[Patrón 86](../patrones.md#86-el-estado-como-valor-la-base-de-datos-como-capa)** | el estado como valor, la base de datos como capa |
-| **[Patrón 87](../patrones.md#87-valor-propio-o-heredado-sin-corte-rojo)** | valor propio o heredado sin corte rojo |
-| `casilla/3`, `linea/3`, `salto/3`, `inicio/2`, `clavijas/2`, `resolver/2`, `jugar/3`, `filas/2` | el triángulo, versión 1 |
-| `jugar_todas/4` | el triángulo como problema del [capítulo 41](../capitulo-41-busqueda-y-planificacion/index.md) |
-| `coordenadas/2`, `permutacion/3`, `imagen/3`, `simetria/3`, `forma/2`, `jugar_formas/4`, `en_el_tablero/3` | las simetrías |
-| `coleccion/2`, `coleccion/3`, `quitar_todos/3`, `vender/1`, `insertar/3`, `comprar/1` | las estampillas, versión 1 |
-| `album_actual/1`, `vender/3`, `comprar/3`, `operar/1` | las estampillas, versión 2 |
-
-## Temas que se retoman
-
-| Tema | Se retoma en |
-|---|---|
-| La herencia de los marcos por `es_un` y `parte_de` como reglas recursivas evaluadas de abajo hacia arriba por un motor Datalog | [capítulo 86](../capitulo-86-proyecto-motor-datalog/index.md) |
 
 ## Referencias
 
 - Michael A. Covington, Donald Nute y André Vellino, *Prolog Programming
   in Depth*, Prentice Hall, 1997 — capítulo «Artificial Intelligence
-  Techniques», apartados «The triangle puzzle» (8.4, con el listado
-  TRIANGLE.PL) y «Examining molecules» (8.6, con CHEM.PL).
+  Techniques», apartado «The triangle puzzle» (8.4, con el listado
+  TRIANGLE.PL).
   [Edición en línea](https://www.covingtoninnovations.com/books/PPID.pdf).
   El capítulo toma el rompecabezas, la representación de las posiciones
   con un argumento por agujero y la de los saltos como hechos que
   comparten variables, que el libro atribuye a Richard O'Keefe en una
   discusión por correo electrónico; la observación de que no hay
-  posiciones repetidas por ciclos; las variantes de los
-  [ejercicios 2, 3 y 5](#ejercicios); la molécula como grafo con
-  rótulos, el 3-clorotolueno con su numeración, las consultas del
-  metilo, del anillo de seis, del anillo metilado y del hidroxilo, y el
-  difenilo, el grupo nitro, el TNT y la hidroxilamina de sus ejercicios.
-- Attila Csenki, *Prolog Techniques*, Ventus Publishing (Bookboon), 2009
-  — apartado «Miniproject: Modelling a Stamp Collection» (3.1.6) y
-  capítulo «Exploratory Code Development».
-  [Página de la editorial, copia de archivo](https://web.archive.org/web/20220123025207/https://bookboon.com/en/prolog-techniques-applications-of-prolog-ebook?mediaType=ebook).
-  El capítulo toma el álbum de estampillas, sus datos y sus cinco
-  operaciones; la rima acumulativa construida a partir de su última
-  estrofa, con un esqueleto de letras como primer experimento; la
-  canción que cuenta sin fin, los números en letras, y la canción del
-  [ejercicio 12](#ejercicios). Csenki toma la rima de J. Mulherin,
-  *Popular Nursery Rhymes* (Grosset & Dunlap, 1983), y el desarrollo
-  incremental de I. Sommerville, *Software Engineering*; ninguno de los
-  dos tiene edición en línea de acceso libre.
-- Neil C. Rowe, *Artificial Intelligence through Prolog*, Prentice-Hall,
-  1988 — capítulo «Definitions and inferences», apartados «A longer
-  example: some traffic laws» y «Running the traffic lights program»
-  ([edición en línea](https://faculty.nps.edu/ncrowe/book/chap4.html)),
-  y capítulo «Abstraction of facts»
-  ([edición en línea](https://faculty.nps.edu/ncrowe/book/chap12.html));
-  el libro completo está en el
-  [archivo de la Naval Postgraduate School](https://hdl.handle.net/10945/36984).
-  El capítulo toma las reglas de los semáforos, escritas por Rowe a
-  partir del *California Driver's Handbook* de 1985, sus dos ejemplos y
-  el orden de las reglas como prioridad; el ejemplo de los marcos de los
-  autos, la representación con valores, ranuras, unidades y valores
-  posibles, la lista de las ranuras que heredan por cada relación, la
-  intensión y la extensión, y la edad calculada con el año 1987.
-- *SWI-Prolog Reference Manual*, secciones de `term_expansion/2`, de la
-  tabulación y de `library(clpfd)`:
+  posiciones repetidas por ciclos, y las variantes de los
+  [ejercicios 2, 3 y 5](#ejercicios).
+- *SWI-Prolog Reference Manual*, secciones de `term_expansion/2` y de la
+  tabulación:
   [manual en línea](https://www.swi-prolog.org/pldoc/doc_for?object=manual).
-
-El código del capítulo es propio, escrito para el curso: los saltos y
-las simetrías se generan en lugar de escribirse, los programas de los
-libros se reescribieron con otra representación (los enlaces de una
-molécula guardados una vez, la situación del semáforo como argumento, el
-álbum como valor), y se corrigieron las diferencias encontradas al
-ejecutarlos; el registro de visitados con formas, las respuestas únicas,
-los órdenes de enlace, la versión 2 de las reglas de tránsito y las dos
-canciones en castellano no tienen equivalente en las fuentes.

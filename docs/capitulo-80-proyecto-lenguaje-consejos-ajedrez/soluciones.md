@@ -4,7 +4,7 @@ El código de esta página está en `ejemplos/capitulo-80/soluciones.pl`, con
 sus pruebas en `soluciones.plt`. El archivo es un módulo que carga los del
 capítulo sin modificarlos y exporta también el intérprete de
 `consejos.pl`, la verificación de `verificar.pl` y la búsqueda de
-`busqueda.pl`. Las tablas de consejos de los ejercicios 4, 9 y 11 son
+`busqueda.pl`. Las tablas de consejos de los ejercicios 4, 11 y 12 son
 módulos propios, `ciega`, `sin_cuidado` y `meta_mejor`: sus cláusulas se
 escriben en `soluciones.pl` con el nombre del módulo delante, y toman de
 `krk.pl` la biblioteca del final. Es `% solo-local`, porque carga otros
@@ -145,6 +145,92 @@ mismo intérprete que decide: `por_que/2` repite lo que hace
 
 ## 6
 
+<!-- ejemplo: capitulo-80/soluciones.pl predicado: cuantas/1 -->
+```prolog
+%!  cuantas(-Pares:list) is det.
+%
+%   Pares tiene un par K-N por cada K de 1 a 16: N posiciones normales de
+%   las blancas dan mate en K jugadas. Calcula la tabla si hace falta.
+cuantas(Pares) :-
+    (   nodo(_, _, _)
+    ->  true
+    ;   calcular
+    ),
+    findall(K-N,
+            ( between(1, 16, K),
+              aggregate_all(count,
+                            ( nodo(blancas, C, _),
+                              decodificar(blancas, C, P),
+                              mate_en(P, K) ),
+                            N) ),
+            Pares).
+```
+
+La consulta `cuantas(Pares)`, que calcula antes la tabla de finales,
+tarda unos once segundos:
+
+```text
+Pares = [1-273, 2-718, 3-555, 4-346, 5-842, 6-1391, 7-1771, 8-2614,
+         9-2851, 10-2950, 11-2996, 12-3135, 13-3004, 14-2714, 15-1005, 16-187]
+```
+
+Las 16 cantidades suman las 27 352 posiciones normales. Hay más
+posiciones de mate en 12 que de cualquier otra longitud, y solo 187 en
+16.
+
+## 7
+
+`partida/5` no marca dónde empieza cada árbol. `historia/4` repite la
+partida siguiendo el árbol en curso, como lo hace `partida/5`, y pide un
+árbol nuevo cuando el anterior se termina:
+
+<!-- ejemplo: capitulo-80/soluciones.pl predicado: historia/4 arboles/5 -->
+```prolog
+historia(Tabla, Defensa, Posicion, Consejos) :-
+    partida(Tabla, Defensa, Posicion, Jugadas, _),
+    arboles(Jugadas, Tabla, Posicion, ninguno, Consejos).
+
+%!  arboles(+Jugadas:list, +Tabla, +Posicion, +Arbol, -Consejos:list)
+%!      is det.
+%
+%   Recorre Jugadas desde Posicion con Arbol, el árbol en curso o ninguno,
+%   y reúne el consejo de cada árbol nuevo.
+arboles([], _, _, _, []).
+arboles([blancas(J, C)|Js], Tabla, P, Arbol, Consejos) :-
+    (   Arbol = juega(J, A1)
+    ->  Consejos = Cs
+    ;   estrategia(Tabla, P, C, juega(J, A1)),
+        Consejos = [C|Cs]
+    ),
+    once(jugada(P, J, P1)),
+    (   Js = [negras(R)|Js1]
+    ->  once(jugada(P1, R, P2)),
+        (   A1 = responde(Ramas),
+            memberchk(R-A2, Ramas)
+        ->  true
+        ;   A2 = ninguno
+        ),
+        arboles(Js1, Tabla, P2, A2, Cs)
+    ;   Cs = []
+    ).
+```
+
+<!-- contexto: capitulo-80/soluciones.pl -->
+```prolog
+?- historia(krk, resistente, pos(blancas, 5-5, 1-1, 4-7), H).
+H = [dividir_en_2, encierro, encierro, acercamiento, acercamiento, encierro, mate_en_2].
+
+?- historia(krk, primera, pos(blancas, 5-5, 1-1, 4-7), H), length(H, N).
+H = [dividir_en_2, encierro, encierro, encierro, acercamiento, encierro, acercamiento, mantener_espacio, acercamiento|...],
+N = 10.
+```
+
+La partida de la introducción pide siete árboles para nueve jugadas: los
+de `dividir_en_2` y `mate_en_2` duran dos jugadas cada uno, y los demás,
+una.
+
+## 8
+
 Una defensa recibe solo la posición, así que no puede llevar el estado
 del generador de una jugada a la siguiente. La semilla se combina con el
 código de la posición en un único paso del generador: la misma posición
@@ -195,7 +281,7 @@ medir_en(corregida, primera, 4-4, R):  R = r([mate-2658], 26)
 La tabla corregida da mate en todas, en a lo sumo 24 jugadas contra la
 defensa al azar y 26 contra `primera`.
 
-## 7
+## 9
 
 Con la tabla de finales calculada, `jugadas_hasta_mate(corregida, optima,
 P, N)` y `mate_en(P, K)` dan:
@@ -212,7 +298,7 @@ consejos. `optima/2` elige la respuesta que más demora el mate **óptimo**;
 la que más demora el mate de la tabla de consejos puede ser otra, y la
 verificación, que examina todas, la encuentra.
 
-## 8
+## 10
 
 Sin memoria, el paso es una jugada de las blancas, y la verificación es la
 de la tabla de finales con las blancas restringidas a la primera jugada
@@ -304,7 +390,7 @@ b1 y a2. Con memoria, el programa juega el árbol entero. El árbol forzante no 
 el consejo es satisfacible: es el plan, y descartarlo después de la
 primera jugada es descartar el plan.
 
-## 9
+## 11
 
 Sin `no torre_expuesta`, el encierro puede llevar la torre lejos de su
 rey. Pero la meta a mantener de todos los consejos es `no torre_perdida`,
@@ -343,42 +429,7 @@ La pérdida de la torre la impide la meta a mantener, no la meta mejor de
 reducen el espacio, las que no dejan la torre más cerca del rey negro que
 del blanco; el ejercicio no mide si eso acorta las partidas.
 
-## 10
-
-<!-- ejemplo: capitulo-80/soluciones.pl predicado: cuantas/1 -->
-```prolog
-%!  cuantas(-Pares:list) is det.
-%
-%   Pares tiene un par K-N por cada K de 1 a 16: N posiciones normales de
-%   las blancas dan mate en K jugadas. Calcula la tabla si hace falta.
-cuantas(Pares) :-
-    (   nodo(_, _, _)
-    ->  true
-    ;   calcular
-    ),
-    findall(K-N,
-            ( between(1, 16, K),
-              aggregate_all(count,
-                            ( nodo(blancas, C, _),
-                              decodificar(blancas, C, P),
-                              mate_en(P, K) ),
-                            N) ),
-            Pares).
-```
-
-La consulta `cuantas(Pares)`, que calcula antes la tabla de finales,
-tarda unos once segundos:
-
-```text
-Pares = [1-273, 2-718, 3-555, 4-346, 5-842, 6-1391, 7-1771, 8-2614,
-         9-2851, 10-2950, 11-2996, 12-3135, 13-3004, 14-2714, 15-1005, 16-187]
-```
-
-Las 16 cantidades suman las 27 352 posiciones normales. Hay más
-posiciones de mate en 12 que de cualquier otra longitud, y solo 187 en
-16.
-
-## 11
+## 12
 
 <!-- ejemplo: capitulo-80/soluciones.pl fragmento: meta_mejor:regla(N, R) :- .. krk:jugadas(N, P, J, S). -->
 ```prolog
@@ -409,59 +460,8 @@ R = r(25, 25, 14).
 ```
 
 Las dos correcciones dan aquí el mismo resultado, pero no son
-equivalentes: la de la [sección 80.8](index.md#808-version-8-la-tabla-corregida) excluye el ahogado de todos los
+equivalentes: la de la [sección 80.8](verificacion.md#808-version-8-la-tabla-corregida) excluye el ahogado de todos los
 consejos, también de los que hoy no lo producen, y es la que la
 verificación completa respalda; esta solo cubre los tres consejos en que
 se encontró, y habría que verificarla sobre las 175 168 posiciones para
 afirmar lo mismo.
-
-## 12
-
-`partida/5` no marca dónde empieza cada árbol. `historia/4` repite la
-partida siguiendo el árbol en curso, como lo hace `partida/5`, y pide un
-árbol nuevo cuando el anterior se termina:
-
-<!-- ejemplo: capitulo-80/soluciones.pl predicado: historia/4 arboles/5 -->
-```prolog
-historia(Tabla, Defensa, Posicion, Consejos) :-
-    partida(Tabla, Defensa, Posicion, Jugadas, _),
-    arboles(Jugadas, Tabla, Posicion, ninguno, Consejos).
-
-%!  arboles(+Jugadas:list, +Tabla, +Posicion, +Arbol, -Consejos:list)
-%!      is det.
-%
-%   Recorre Jugadas desde Posicion con Arbol, el árbol en curso o ninguno,
-%   y reúne el consejo de cada árbol nuevo.
-arboles([], _, _, _, []).
-arboles([blancas(J, C)|Js], Tabla, P, Arbol, Consejos) :-
-    (   Arbol = juega(J, A1)
-    ->  Consejos = Cs
-    ;   estrategia(Tabla, P, C, juega(J, A1)),
-        Consejos = [C|Cs]
-    ),
-    once(jugada(P, J, P1)),
-    (   Js = [negras(R)|Js1]
-    ->  once(jugada(P1, R, P2)),
-        (   A1 = responde(Ramas),
-            memberchk(R-A2, Ramas)
-        ->  true
-        ;   A2 = ninguno
-        ),
-        arboles(Js1, Tabla, P2, A2, Cs)
-    ;   Cs = []
-    ).
-```
-
-<!-- contexto: capitulo-80/soluciones.pl -->
-```prolog
-?- historia(krk, resistente, pos(blancas, 5-5, 1-1, 4-7), H).
-H = [dividir_en_2, encierro, encierro, acercamiento, acercamiento, encierro, mate_en_2].
-
-?- historia(krk, primera, pos(blancas, 5-5, 1-1, 4-7), H), length(H, N).
-H = [dividir_en_2, encierro, encierro, encierro, acercamiento, encierro, acercamiento, mantener_espacio, acercamiento|...],
-N = 10.
-```
-
-La partida de la introducción pide siete árboles para nueve jugadas: los
-de `dividir_en_2` y `mate_en_2` duran dos jugadas cada uno, y los demás,
-una.

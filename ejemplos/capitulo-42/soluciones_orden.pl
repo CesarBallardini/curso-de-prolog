@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 42 - Soluciones de los ejercicios 7 y 8.
+% Capítulo 42 - Soluciones de los ejercicios 8 y 9.
 %
 % evaluar_amenazas/3 suma a las líneas abiertas las amenazas: las líneas
 % con todas las marcas de un jugador menos una, y ninguna del otro. El
@@ -13,7 +13,7 @@
 % ordenar/5 tiene una cláusula aquí y las demás en la copia de orden.pl.
 :- discontiguous ordenar/5.
 
-% --- Ejercicio 7: amenazas ------------------------------------------------
+% --- Ejercicio 8: amenazas ------------------------------------------------
 
 %!  evaluar_amenazas(+Juego, +Posicion, -Valor:integer) is det.
 %
@@ -37,7 +37,7 @@ amenaza(Tablero, Rival, Linea) :-
     abierta(Tablero, Rival, Linea),
     include(marca(Tablero, v), Linea, [_]).
 
-% --- Ejercicio 8: el orden central ------------------------------------------
+% --- Ejercicio 9: el orden central ------------------------------------------
 
 %!  ordenar(+Orden, +Juego, +Lado, +Hijos0:list, -Hijos:list) is det.
 %

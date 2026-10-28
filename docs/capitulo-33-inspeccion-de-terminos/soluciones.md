@@ -488,4 +488,4 @@ sin regla produce el error de dominio: `derivar(sin(x), x, D)` lo produce,
 porque `sin/1`, la función seno de `is/2` (con el argumento en radianes), no
 tiene caso en `derivada/3`. El
 [capítulo 44](../capitulo-44-proyecto-resolver-ecuaciones/index.md) usa la misma combinación en el método de Newton
-([sección 44.6](../capitulo-44-proyecto-resolver-ecuaciones/index.md#446-version-5-el-metodo-de-newton-y-la-comprobacion)), cuando no se puede despejar la incógnita.
+([sección 44.6](../capitulo-44-proyecto-resolver-ecuaciones/newton.md#446-version-5-el-metodo-de-newton-y-la-comprobacion)), cuando no se puede despejar la incógnita.

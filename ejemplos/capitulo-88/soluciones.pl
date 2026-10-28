@@ -32,7 +32,41 @@
 :- use_module(nombres).
 :- use_module(palabras).
 
-% --- Ejercicio 4: desaprobar ---------------------------------------------
+% --- Ejercicio 3: la coordinación ------------------------------------------
+
+% Dos nombres propios unidos por «y», después del verbo. La propiedad X^P
+% ya está construida cuando se analiza el objeto o el sujeto pospuesto;
+% antes del verbo, P todavía es una variable, y la regla no se aplica.
+
+gramatica:sn(plural, Tipo, (X^P)^y(P1, P2)) -->
+    nombre_propio(Tipo, E1),
+    gramatica:palabra("y"),
+    nombre_propio(Tipo, E2),
+    { Tipo \== carrera,
+      nonvar(P),
+      aplicar(X^P, E1, P1),
+      aplicar(X^P, E2, P2) }.
+
+%!  aplicar_mal(+Propiedad, +E, -F) is det.
+%
+%   La aplicación con copy_term/2 sobre la propiedad entera: renombra
+%   también las variables de la pregunta. Es el error del ejercicio.
+aplicar_mal(X^P, E, F) :-
+    copy_term(X^P, E^F).
+
+%!  aplicar(+Propiedad, +E, -F) is det.
+%
+%   F es la Propiedad X^P aplicada a E: una copia de P con E en lugar de
+%   X. Solo X se renombra; las demás variables de P siguen compartidas,
+%   porque son las de la pregunta.
+aplicar(X^P, E, F) :-
+    term_variables(P, Vs0),
+    exclude(==(X), Vs0, Libres),
+    copy_term(t(Libres, X, P), t(Libres1, X1, F)),
+    Libres1 = Libres,
+    X1 = E.
+
+% --- Ejercicio 5: desaprobar ---------------------------------------------
 
 lexico:verbo("desaprobar", o_ue).
 
@@ -46,7 +80,7 @@ evaluar:definicion(desaprobar(L, M), [inscripcion(L, M, N), N < 6]) :-
 sql:sql_atomo(desaprobar(L, M), inscripciones, [legajo-L, materia-M],
               "nota < 6").
 
-% --- Ejercicio 5: simplificar ----------------------------------------------
+% --- Ejercicio 6: simplificar ----------------------------------------------
 
 %!  simplificar(+Forma, -Simple) is det.
 %
@@ -81,7 +115,7 @@ simplificar(no(A), no(SA)) :-
     simplificar(A, SA).
 simplificar(Atomo, Atomo).
 
-% --- Ejercicio 6: por qué no está ------------------------------------------
+% --- Ejercicio 7: por qué no está ------------------------------------------
 
 %!  por_que_no_esta(+Texto, +Nombre, -Motivo) is semidet.
 %
@@ -100,7 +134,7 @@ por_que_no_esta(Texto, Nombre, Motivo) :-
     \+ probar(F, _),
     por_que_no(F, Motivo).
 
-% --- Ejercicio 7: sin tabla ------------------------------------------------
+% --- Ejercicio 8: sin tabla ------------------------------------------------
 
 %!  pasos_sin_tabla(+Materia, ?Requisito, ?N:integer) is nondet.
 %
@@ -113,7 +147,7 @@ pasos_sin_tabla(M, R, N) :-
     correlativa(I, R),
     N is N0 + 1.
 
-% --- Ejercicio 8: todas las lecturas ---------------------------------------
+% --- Ejercicio 9: todas las lecturas ---------------------------------------
 
 %!  responder_lecturas(+Texto, -Respuestas:list) is det.
 %
@@ -122,7 +156,24 @@ responder_lecturas(Texto, Respuestas) :-
     lecturas(Texto, Formas),
     findall(F-R, ( member(F, Formas), evaluar(F, R) ), Respuestas).
 
-% --- Ejercicio 9: ¿por qué? ------------------------------------------------
+% --- Ejercicio 10: la presuposición en SQL --------------------------------
+
+%!  sql_presuposicion(+Forma, -SQL:string) is semidet.
+%
+%   SQL es como la sentencia de sql/2, salvo para una pregunta de sí o no
+%   con «todos»: da NULL si la restricción no tiene casos, y si los tiene,
+%   1 o 0.
+sql_presuposicion(si_no(todo(X, R, A)), SQL) :-
+    !,
+    sql(si_no(R), Hay),
+    sql(si_no(todo(X, R, A)), Todos),
+    format(string(SQL),
+           "SELECT CASE WHEN (~s) = 0 THEN NULL ELSE (~s) END",
+           [Hay, Todos]).
+sql_presuposicion(Forma, SQL) :-
+    sql(Forma, SQL).
+
+% --- Ejercicio 11: ¿por qué? -----------------------------------------------
 
 %!  conversar_por_que(+Entrada, +Salida) is det.
 %
@@ -151,54 +202,3 @@ conversar_por_que(Entrada, Salida, Ultima) :-
         with_output_to(Salida, preguntas:escribir_respuesta(Respuesta)),
         conversar_por_que(Entrada, Salida, Explicacion)
     ).
-
-% --- Ejercicio 10: la presuposición en SQL --------------------------------
-
-%!  sql_presuposicion(+Forma, -SQL:string) is semidet.
-%
-%   SQL es como la sentencia de sql/2, salvo para una pregunta de sí o no
-%   con «todos»: da NULL si la restricción no tiene casos, y si los tiene,
-%   1 o 0.
-sql_presuposicion(si_no(todo(X, R, A)), SQL) :-
-    !,
-    sql(si_no(R), Hay),
-    sql(si_no(todo(X, R, A)), Todos),
-    format(string(SQL),
-           "SELECT CASE WHEN (~s) = 0 THEN NULL ELSE (~s) END",
-           [Hay, Todos]).
-sql_presuposicion(Forma, SQL) :-
-    sql(Forma, SQL).
-
-% --- Ejercicio 11: la coordinación -----------------------------------------
-
-% Dos nombres propios unidos por «y», después del verbo. La propiedad X^P
-% ya está construida cuando se analiza el objeto o el sujeto pospuesto;
-% antes del verbo, P todavía es una variable, y la regla no se aplica.
-
-gramatica:sn(plural, Tipo, (X^P)^y(P1, P2)) -->
-    nombre_propio(Tipo, E1),
-    gramatica:palabra("y"),
-    nombre_propio(Tipo, E2),
-    { Tipo \== carrera,
-      nonvar(P),
-      aplicar(X^P, E1, P1),
-      aplicar(X^P, E2, P2) }.
-
-%!  aplicar_mal(+Propiedad, +E, -F) is det.
-%
-%   La aplicación con copy_term/2 sobre la propiedad entera: renombra
-%   también las variables de la pregunta. Es el error del ejercicio.
-aplicar_mal(X^P, E, F) :-
-    copy_term(X^P, E^F).
-
-%!  aplicar(+Propiedad, +E, -F) is det.
-%
-%   F es la Propiedad X^P aplicada a E: una copia de P con E en lugar de
-%   X. Solo X se renombra; las demás variables de P siguen compartidas,
-%   porque son las de la pregunta.
-aplicar(X^P, E, F) :-
-    term_variables(P, Vs0),
-    exclude(==(X), Vs0, Libres),
-    copy_term(t(Libres, X, P), t(Libres1, X1, F)),
-    Libres1 = Libres,
-    X1 = E.

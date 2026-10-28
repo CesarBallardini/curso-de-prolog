@@ -30,12 +30,13 @@ evalúa con el método semi-ingenuo; la tercera separa el programa en las
 componentes de su grafo de dependencias, para evaluar la negación por
 capas; la cuarta reescribe el programa para cada consulta con la
 **transformación mágica**; la quinta agrega hechos a un modelo ya
-calculado sin recalcularlo. Dos páginas aplican el motor a programas de
-otros capítulos: [Aplicaciones](aplicaciones.md) evalúa las reglas de
-seguridad del mundo del Wumpus, la herencia de los marcos y las anomalías
-de un día de registros, y
-[La tabla de un juego](finales.md) calcula hacia atrás quién gana cada
-posición de un juego, como la tabla de finales de ajedrez.
+calculado sin recalcularlo. Las dos últimas secciones aplican el motor a
+programas de otros capítulos: la
+[sección 86.8](aplicaciones.md#868-aplicaciones-el-wumpus-los-marcos-y-los-registros)
+evalúa las reglas de seguridad del mundo del Wumpus, la herencia de los
+marcos y las anomalías de un día de registros, y la
+[sección 86.9](finales.md#869-la-tabla-de-un-juego) calcula hacia atrás
+quién gana cada posición de un juego, como la tabla de finales de ajedrez.
 
 El proyecto parte del capítulo «Query-answering in Deductive Databases»
 de *Logic, Programming and Prolog* de Ulf Nilsson y Jan Małuszyński, que
@@ -96,9 +97,9 @@ Al terminar el capítulo, el lector puede:
   negación lo impide.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **3:35 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **3:30 h**.
     Resolver los 5 ejercicios marcados con ★: **1:05 h**.
-    Resolver los 11 ejercicios del final: **3:30 h**.
+    Resolver los 11 ejercicios del capítulo: **3:30 h**.
 
 ## 86.1 Consultas que siempre terminan
 
@@ -118,7 +119,7 @@ segunda cláusula se llama a sí misma sin consumir nada. El significado
 del programa, en cambio, es finito: el modelo mínimo tiene los dos arcos y
 los cuatro caminos, y se alcanza en tres pasos aplicando las reglas a lo
 que ya se sabe, como en la
-[sección 39.6](../capitulo-39-semantica-de-los-programas-logicos/index.md#396-evaluacion-de-abajo-hacia-arriba):
+[sección 39.6](../capitulo-39-semantica-de-los-programas-logicos/negacion.md#396-evaluacion-de-abajo-hacia-arriba):
 
 | Paso | Átomos nuevos | De dónde salen |
 |---|---|---|
@@ -204,7 +205,7 @@ C = costo(3, 6).
 
 El costo `costo(Pasos, Derivaciones)` cuenta los pasos de la evaluación y
 las cabezas que derivan las reglas, repetidas incluidas, como en la
-[sección 39.6](../capitulo-39-semantica-de-los-programas-logicos/index.md#396-evaluacion-de-abajo-hacia-arriba);
+[sección 39.6](../capitulo-39-semantica-de-los-programas-logicos/negacion.md#396-evaluacion-de-abajo-hacia-arriba);
 los hechos no se cuentan, porque entran en la base sin derivarse.
 
 ## 86.3 Versión 1: los programas que el motor acepta
@@ -338,7 +339,7 @@ conjuntos ordenados.
 ## 86.4 Versión 2: relaciones indexadas y la evaluación semi-ingenua
 
 El evaluador de la
-[sección 39.6](../capitulo-39-semantica-de-los-programas-logicos/index.md#396-evaluacion-de-abajo-hacia-arriba)
+[sección 39.6](../capitulo-39-semantica-de-los-programas-logicos/negacion.md#396-evaluacion-de-abajo-hacia-arriba)
 guarda el modelo en una sola lista ordenada, y busca cada literal del
 cuerpo con `member/2` en toda la lista: un `arco(Z, Y)` recorre también
 todos los caminos. `motor.pl` guarda los átomos en una **base**: un árbol
@@ -563,7 +564,7 @@ La idea de la versión 2 es el patrón 95:
 
     **Versión ingenua.** En cada paso, volver a combinar todo lo conocido:
     la evaluación ingenua de la
-    [sección 39.6](../capitulo-39-semantica-de-los-programas-logicos/index.md#396-evaluacion-de-abajo-hacia-arriba)
+    [sección 39.6](../capitulo-39-semantica-de-los-programas-logicos/negacion.md#396-evaluacion-de-abajo-hacia-arriba)
     o las rondas de la tabla de finales del
     [capítulo 80](../capitulo-80-proyecto-lenguaje-consejos-ajedrez/index.md),
     que vuelven a derivar en cada paso lo que derivaron los anteriores.
@@ -593,7 +594,7 @@ La idea de la versión 2 es el patrón 95:
 
 ## 86.5 Versión 3: las componentes y la negación
 
-El [capítulo 39](../capitulo-39-semantica-de-los-programas-logicos/negacion.md#estratificacion)
+El [capítulo 39](../capitulo-39-semantica-de-los-programas-logicos/negacion.md#394-estratificacion)
 asignó a cada predicado un estrato, subiéndolo en rondas, y evaluó juntos
 todos los predicados de cada estrato. El
 [capítulo 60](../capitulo-60-proyecto-analisis-programas/index.md#602-lo-que-el-grafo-dice-del-programa)
@@ -714,7 +715,7 @@ En el programa `circular` de la
 `p` y `q` forman una componente, y `r` otra, de un solo predicado que
 depende de sí mismo; `s` usa negado a `t`, que no tiene reglas, y está
 bien definido. Con el sistema experto de la
-[sección 39.7](../capitulo-39-semantica-de-los-programas-logicos/index.md#397-las-reglas-del-sistema-experto),
+[sección 39.7](../capitulo-39-semantica-de-los-programas-logicos/negacion.md#397-las-reglas-del-sistema-experto),
 la diferencia entre los dos métodos se ve en el tamaño de los grupos:
 
 ```prolog
@@ -738,7 +739,7 @@ Warren llega a las mismas componentes desde la tabulación: su
 `auto_table` construye el grafo de llamadas y tabula lo necesario para
 romper sus ciclos, y su ejemplo de negación estratificada, el de los
 términos que se reducen hasta una componente final, tiene tres estratos
-que el [ejercicio 7](#ejercicios) calcula con el motor.
+que el [ejercicio 3](#ejercicios) calcula con el motor.
 
 !!! question "Actividad"
     Predecir las componentes, su orden y el modelo de
@@ -746,172 +747,12 @@ que el [ejercicio 7](#ejercicios) calcula con el motor.
     `componentes/2` y `evaluar/3`, y explicar por qué el costo tiene tres
     pasos y dos derivaciones.
 
-## 86.6 Versión 4: las consultas y la transformación mágica
-
-La consulta `camino(0, Y)` sobre los 40 arcos en fila necesita los 40
-caminos que salen de 0, y la evaluación calcula los 820. La página
-[La transformación mágica](magia.md) escribe la transformación de
-Nilsson y Małuszyński en la forma de los **conjuntos mágicos**: cada
-predicado se adorna con los argumentos que llegan ligados, `b`, o libres,
-`f`; un predicado mágico, como `m_camino_bf`, guarda los valores con que
-se lo llamaría de arriba hacia abajo; cada regla exige el hecho mágico de
-su cabeza, y la consulta aporta la semilla, `m_camino_bf(0)`. Los
-predicados usados negados se evalúan completos, con sus reglas
-originales, y el programa transformado sigue siendo estratificado. La
-transformación no siempre reduce el trabajo; depende de la dirección de
-la recursión y de qué argumento está ligado:
-
-| Programa | Consulta | Modelo entero | Con magia |
-|---|---|---|---|
-| `cadena(40)`: `camino(X, Z), arco(Z, Y)` | `camino(0, Y)` | 820 | 41 |
-| `cadena(40)` | `camino(X, 40)` | 820 | 862 |
-| `fila(40)`: `arco(X, Z), camino(Z, Y)` | `camino(0, Y)` | 820 | 860 |
-| `fila(40)` | `camino(X, 40)` | 820 | 158 |
-
-Las cuatro filas las verifica la prueba `costos:tabla_magia`. La misma
-página compara los hechos mágicos con las tablas del
-[capítulo 40](../capitulo-40-tabulacion/index.md), sobre el ejemplo de
-Warren de las personas que se deben dinero en un ciclo de 100: cada tabla
-de SWI-Prolog corresponde a un hecho mágico, y cada respuesta guardada, a
-un átomo adornado, una tabla con cien respuestas con la recursión a la
-izquierda y cien tablas con diez mil con la recursión a la derecha. La
-tabulación avanza una llamada por vez; el motor, un conjunto de átomos
-por paso.
-
-## 86.7 Versión 5: los hechos que llegan después
-
-Un modelo calculado es un punto fijo: aplicar las reglas no agrega nada.
-Si llega un hecho nuevo, todo lo que hay que derivar usa ese hecho o algo
-derivado de él, y eso es exactamente lo que hace un paso semi-ingenuo
-tomando como nuevos los hechos que llegan. `incremental.pl` guarda en un
-**estado** las variantes de todas las reglas, una por cada literal
-positivo, y la base:
-
-<!-- ejemplo: capitulo-86/incremental.pl predicado: iniciar/3 agregar_hechos/4 -->
-```prolog
-%!  iniciar(+Clausulas:list, -Estado, -Costo) is det.
-%
-%   Estado tiene las reglas de Clausulas, un programa Datalog seguro sin
-%   negación, y su modelo mínimo, calculado agregando los hechos a la base
-%   vacía con agregar_hechos/4. Costo, el de ese cálculo. Error de dominio
-%   si el programa no es seguro o tiene una negación.
-iniciar(Clausulas, Estado, Costo) :-
-    exigir_definido(Clausulas),
-    separar(Clausulas, Hechos, Reglas),
-    findall(Ind,
-            ( member(r(_, Ls), Reglas),
-              member(L, Ls),
-              functor(L, Nombre, Aridad),
-              Ind = Nombre/Aridad ),
-            Is),
-    sort(Is, Predicados),
-    variantes(Reglas, Predicados, Variantes),
-    empty_assoc(Vacia),
-    agregar_hechos(Hechos, estado(Variantes, Vacia), Estado, Costo).
-
-%!  agregar_hechos(+Hechos:list, +Estado0, -Estado, -Costo) is det.
-%
-%   Estado tiene la base de Estado0 con los Hechos, sin variables, y todo
-%   lo que se deriva de ellos, hasta el punto fijo. Costo es costo(Pasos,
-%   Derivaciones) de los pasos semi-ingenuos que hicieron falta.
-agregar_hechos(Hechos, estado(Variantes, Base0),
-               estado(Variantes, Base), Costo) :-
-    agregar(Hechos, Base0, Base1, Nuevos),
-    iterar(Variantes, Base0, Base1, Nuevos, Base, costo(0, 0), Costo).
-```
-
-La evaluación inicial es el mismo caso: agregar todos los hechos a la base
-vacía; la consulta siguiente parte de los 40 arcos y agrega uno.
-
-<!-- contexto: capitulo-86/datalog.pl -->
-```prolog
-?- agregar_a(cadena(40), [arco(40, 41)], C, M), length(M, N).
-C = costo(2, 41),
-M = [arco(0, 1), arco(1, 2), arco(2, 3), arco(3, 4), arco(4, 5), arco(5, 6), arco(6, 7), arco(7, 8), arco(..., ...)|...],
-N = 902.
-```
-
-`agregar_a/4`, de `datalog.pl`, inicia el estado con el programa por su
-nombre y le agrega los hechos.
-
-El arco nuevo produce 41 caminos en dos pasos: `camino(40, 41)` y, con
-cada `camino(I, 40)` de la base vieja, `camino(I, 41)`; el segundo paso
-no encuentra arcos que salgan de 41, y termina. Recalcular el modelo de 41
-arcos desde cero costaría 861 derivaciones (prueba `costos:agregar`).
-
-**La red Rete del [capítulo 65](../capitulo-65-proyecto-algoritmo-rete/index.md#654-version-3-tokens-y-uniones)
-hace lo mismo con otra organización.** Un hecho que entra en la memoria
-de trabajo recorre la red y se une con lo que las memorias beta guardan
-de los hechos anteriores; solo produce las instanciaciones que lo usan.
-La red guarda las uniones parciales entre ciclos, y propaga un hecho por
-vez; el motor no guarda uniones parciales, las recalcula en cada paso con
-los índices de la base, y propaga un conjunto de hechos por paso. Las dos
-cosas son la misma idea: **propagar solo lo que cambió**. Es también la
-idea de la cola del filtrado de Waltz, en la
-[sección 81.6](../capitulo-81-proyecto-etiquetado-waltz/index.md#816-version-4-el-filtrado-de-waltz):
-una unión vuelve a la cola solo cuando su dominio cambió, y el filtrado
-termina cuando la cola se vacía, como el motor termina cuando no hay
-átomos nuevos. El filtrado quita combinaciones de dominios finitos, y el
-motor agrega átomos de una base finita; los dos terminan porque cada
-paso cambia algo en un solo sentido, y hay una cantidad finita de cosas
-que cambiar.
-
-La red Rete tiene algo que el motor no tiene: los hechos que **salen**. La
-negación del [capítulo 65](../capitulo-65-proyecto-algoritmo-rete/index.md#655-version-4-la-negacion)
-lleva una cuenta por token, y un hecho que sale quita lo que su entrada
-había agregado. El paso semi-ingenuo solo agrega, y con una negación un
-hecho nuevo puede invalidar algo ya derivado: en el mundo del Wumpus, una
-brisa nueva quita la conclusión `sin_pozo` de las celdas vecinas. Por
-eso `iniciar/3` rechaza los programas con negación:
-
-<!-- contexto: capitulo-86/datalog.pl -->
-```prolog
-?- catch(iniciar([(p(X) :- r(X), \+ q(X))], _, _), error(E, _), true).
-E = domain_error(programa_sin_negacion, \+q(_)).
-```
-
-Mantener un modelo con negación, o con hechos que se borran, pide otro
-algoritmo: el más conocido, DRed, de Ashish Gupta, Inderpal Singh Mumick
-y V. S. Subrahmanian, borra primero de más, todo lo que tenía una
-derivación que usaba lo borrado, y vuelve a derivar lo que tiene otra.
-El [ejercicio 8](#ejercicios) compara el costo de recalcular desde cero.
-
-## 86.8 Aplicaciones: el Wumpus, los marcos y los registros
-
-La página [Aplicaciones](aplicaciones.md) evalúa con el motor dos
-programas de otros capítulos. Las reglas de seguridad del agente del
-[capítulo 78](../capitulo-78-proyecto-mundo-wumpus/enfoques.md#el-mismo-conocimiento-seis-inferencias)
-dan las mismas celdas seguras que con el evaluador del
-[capítulo 39](../capitulo-39-semantica-de-los-programas-logicos/index.md),
-con un tercio menos de inferencias. La herencia de los marcos del
-[capítulo 82](../capitulo-82-proyecto-coleccion-problemas/transito-y-marcos.md#marcos),
-con las dos reglas de Rowe que se llaman una a la otra, termina de abajo
-hacia arriba y da los mismos valores que el intérprete de ese capítulo.
-Las métricas por hora de los registros del
-[capítulo 85](../capitulo-85-proyecto-analisis-registros/index.md),
-escritas como hechos, dan con reglas las mismas anomalías que sus
-informes, y además las rachas de horas anómalas seguidas.
-
-## 86.9 La tabla de un juego
-
-La página [La tabla de un juego](finales.md) calcula hacia atrás quién
-gana cada posición de un juego, como la tabla de finales de la
-[sección 80.6](../capitulo-80-proyecto-lenguaje-consejos-ajedrez/index.md#806-version-6-la-tabla-de-finales).
-El programa no es estratificado, y el motor no lo acepta; pero la tabla
-se puede calcular con la misma idea que la evaluación semi-ingenua,
-partiendo en cada ronda solo de las posiciones que recibieron valor en la
-anterior, y el costo pasa de 750 747 arcos examinados a 2 997 (prueba
-`costos:restar_1000`).
-
-!!! success "Criterios de calidad"
-    | Criterio | En este capítulo |
-    |---|---|
-    | C1 | cada predicado declara modos y determinación; `en_base/2` y `cumplir/2` son `nondet` y solo se usan dentro de `findall/3`; los evaluadores son `det` |
-    | C2 | representaciones limpias: cláusulas `Cabeza :- Cuerpo`, reglas `r(Cabeza, Literales)`, variantes `v/4`, costos `costo/2`, problemas `funcion/1`, `cabeza_libre/1` y otros |
-    | C3 | el motor recibe los programas de los capítulos [39](../capitulo-39-semantica-de-los-programas-logicos/index.md), [78](../capitulo-78-proyecto-mundo-wumpus/index.md) y [82](../capitulo-82-proyecto-coleccion-problemas/index.md), y los datos del [85](../capitulo-85-proyecto-analisis-registros/index.md), sin cambios; los programas nuevos se agregan a `generado/2` con el [patrón 79](../patrones.md#79-clausulas-para-un-modulo-cargado) |
-    | C5 | un programa que no es seguro o no es estratificado produce un error de dominio que nombra el problema, nunca un modelo incorrecto |
-    | C6 | todo el motor es puro: las bases son árboles que se pasan de un paso al otro, y la versión 5 devuelve un estado nuevo |
-    | C7 | 134 pruebas en trece archivos, y 25 más sobre las soluciones; `costos.plt` verifica cada cifra medida que el capítulo imprime, las inferencias dentro de un 10 %; el motor se compara con los evaluadores del [capítulo 39](../capitulo-39-semantica-de-los-programas-logicos/index.md), las respuestas mágicas con las del modelo entero, los hechos mágicos con las tablas, y las aplicaciones con los programas de sus capítulos |
+El capítulo continúa en la página
+[La transformación mágica y los hechos que llegan después](magia.md#866-version-4-las-consultas-y-la-transformacion-magica),
+con las dos últimas versiones del motor: la que responde una consulta
+derivando solo lo que la consulta necesita, y la que agrega hechos a un
+modelo ya calculado. Antes, los [ejercicios](#ejercicios) de esta
+página practican las versiones 1 a 3.
 
 ## Ejercicios
 
@@ -930,86 +771,16 @@ que cargan los del capítulo, sin modificarlos.
    negativos del programa `(a :- \+ b)`, `(b :- c)`, `(c :- \+ d)`,
    `(d :- e)`, `(e :- d)`, `(f :- a, \+ f)`. Comprobarlo con
    `componentes/2` y `ciclos_negativos/2`.
-3. **(2)** Nilsson y Małuszyński abren su capítulo con
-   `married(X, Y) :- married(Y, X)` y el hecho `married(adam, anne)`.
-   Escribir el programa como datos, predecir el costo de `evaluar/3` y
-   las respuestas de `married(anne, X)` con `respuestas_magicas/4`, y
-   explicar por qué Prolog no encuentra ninguna respuesta si la regla va
-   primero.
-4. **(3)** Escribir `suplementario(+Clausula, +K, -Clausulas)`, la
-   transformación con predicados suplementarios de Nilsson y Małuszyński:
-   la regla `A0 :- A1, …, An` se reemplaza por `S1 :- A1`,
-   `S2 :- S1, A2`, …, y `A0 :- Sn-1, An`, donde cada Si lleva las
-   variables de A1, …, Ai que todavía hacen falta, las de la cabeza y las
-   de los literales siguientes, y K distingue los nombres. Aplicarla a
-   dos programas y comparar las derivaciones y las inferencias con las
-   del original: `sd/2` del ejercicio 5, y la regla de Warren
-   `franja_del_anio(Anio, F) :- alumno(A, Anio), inscripto(A, M),
-   horario(M, F)`, con 1 000 alumnos repartidos en cuatro años, cada uno
-   inscripto en las cinco materias de su año, y 50 franjas por materia.
-   Explicar por qué la transformación pierde en un caso y gana en el
-   otro.
-5. ★ **(2)** El programa `sd/2` de Nilsson y Małuszyński dice que dos
-   nodos de un árbol están a la misma profundidad:
-   `sd(X, X)` para cada nodo, y `sd(X, Y) :- child(X, Z), child(Y, W),
-   sd(Z, W)`. Escribirlo con los diez hechos `child/2` de su ejercicio
-   15.2, calcular `sd(d, X)` con el modelo entero y con la transformación
-   mágica, y comparar los costos y el programa transformado.
-6. **(2)** Escribir el programa de las personas que se deben dinero con
-   `evita/2` recursivo a la izquierda sobre un **camino** de 100 personas,
-   sin el arco de la 100 a la 1, y medir las tablas y los hechos mágicos
-   de `evita(1, Y)` y de `evita(50, Y)`.
-7. ★ **(2)** Escribir como programa Datalog el ejemplo de negación
+3. ★ **(2)** Escribir como programa Datalog el ejemplo de negación
    estratificada de Warren: `reachable/2`, la clausura de `reduce/2`;
    `reducible(X)`, si X alcanza un nodo que no lo alcanza a él; y
    `fully_reduce(X, Y)`, si X alcanza a Y y Y no es reducible. Calcular
    las componentes y las respuestas de `fully_reduce(a, Y)` con los doce
    hechos `reduce/2` de su texto.
-8. **(2)** Escribir `quitar_hechos(+Clausulas, +Hechos, -Modelo, -Costo)`,
-   que quita hechos y recalcula el modelo desde cero. Quitar `arco(20,
-   21)` de `cadena(40)`, y comparar ese costo con el de volver a agregar
-   el arco con `agregar_hechos/4`.
-9. **(2)** Calcular con `respuestas_magicas/4` si la celda (2, 2) es
-   segura en la situación de la figura 7.4 de Russell y Norvig, y
-   comparar las derivaciones con las del modelo entero. Explicar por qué
-   la diferencia es pequeña.
-10. ★ **(2)** En el juego de restar con las jugadas 1, 3 y 4, predecir
-    las posiciones perdedoras entre 0 y 20, y comprobarlo con
-    `retrogrado/3`. Comparar los arcos examinados con los de `rondas/3`
-    para 1 000 fichas.
-11. **(3)** Escribir `evaluar_ingenuo/3`, la evaluación ingenua por
-    componentes sobre la base indexada, y comparar sus derivaciones con
-    las de `evaluar/3` en `cadena(40)` y en `grafo`, comprobando que los
-    modelos son iguales.
-
-## Resumen
-
-| | |
-|---|---|
-| **Datalog** | cláusulas de Horn sin términos compuestos, con negación estratificada; toda consulta termina |
-| **regla segura** | cada variable de la cabeza aparece en un literal positivo, y cada variable de un literal negado o de una comparación está ligada antes |
-| **base indexada** | los átomos agrupados por predicado y por primer argumento |
-| **evaluación semi-ingenua estricta** | cada derivación toma de los átomos nuevos su primer literal nuevo, los anteriores de la base vieja y los posteriores de la actual |
-| **componentes del grafo de dependencias** | grupos de predicados que dependen unos de otros; su condensación no tiene ciclos y da el orden de evaluación |
-| **adorno** | una letra por argumento, `b` ligado o `f` libre, según lo que ligan la cabeza y los literales anteriores |
-| **transformación mágica** | cada regla exige que su cabeza haya sido llamada; las reglas mágicas dicen con qué se llama cada literal; la consulta es la semilla |
-| **evaluación incremental** | un paso semi-ingenuo con los hechos que llegan como nuevos; solo sin negación |
-| `problemas/2`, `seguro/1` | los motivos por los que un programa no es Datalog seguro |
-| `base/2`, `agregar/4`, `contiene/2`, `en_base/2`, `atomos/2` | la base indexada |
-| `separar/3`, `cumplir/2`, `variantes/3`, `bloque/6`, `iterar/7`, `semi_ingenua/3` | la evaluación semi-ingenua |
-| `dependencias/2`, `componentes/2`, `ciclos_negativos/2`, `evaluar/3` | las componentes y la negación |
-| `adorno/3`, `magico/3`, `respuestas/4`, `respuestas_magicas/4` | las consultas y la transformación mágica |
-| `iniciar/3`, `agregar_hechos/4`, `modelo_estado/2` | los hechos que llegan después |
-| `modelo/3`, `consulta/4`, `consulta_magica/4`, `mostrar_magico/2` | las formas que reciben el nombre del programa |
-| `top_sort/2` | un orden topológico de un grafo sin ciclos de `library(ugraphs)` |
-| **[Patrón 95](../patrones.md#95-propagar-solo-lo-nuevo)** | propagar solo lo nuevo |
-| **[Patrón 96](../patrones.md#96-la-consulta-como-semilla)** | la consulta como semilla |
-
-## Temas que se retoman
-
-| Tema | Se retoma en |
-|---|---|
-| Consultas en un lenguaje como SQL, compiladas en metas de Prolog sobre un catálogo de tablas | [capítulo 87](../capitulo-87-proyecto-mini-sql-prolog/index.md) |
+4. **(3)** Escribir `evaluar_ingenuo/3`, la evaluación ingenua por
+   componentes sobre la base indexada, y comparar sus derivaciones con
+   las de `evaluar/3` en `cadena(40)` y en `grafo`, comprobando que los
+   modelos son iguales.
 
 ## Referencias
 
@@ -1019,55 +790,19 @@ que cargan los del capítulo, sin modificarlos.
   Evaluation», «Magic Transformation» y «Optimizations», con sus
   ejercicios, y las notas bibliográficas del capítulo.
   [Edición en línea de los autores](https://www.ida.liu.se/~ulfni53/lpp/).
-  El capítulo toma de allí el orden de la exposición, el ejemplo de los
-  caminos con su traza, el teorema de equivalencia de la evaluación
-  semi-ingenua con la ingenua, la definición de la transformación mágica
-  y su lectura («es llamado si»), los teoremas de corrección y
-  completitud, que cita sin demostrar, la observación sobre el orden del
-  paso de información, y los programas `married/2` y `sd/2` y los
-  predicados suplementarios de los ejercicios.
+  Esta página toma de allí el orden de la exposición, el ejemplo de los
+  caminos con su traza y el teorema de equivalencia de la evaluación
+  semi-ingenua con la ingenua.
 - David S. Warren, *Programming in Tabled Prolog*, borrador, Stony Brook
   University, 1999 — capítulo «Introduction to Prolog», sección
   «Deductive Databases»; capítulo «Tabling and Datalog Programming»; y
   sección «Stratified Negation» del capítulo «Negation in XSB».
   [Edición en línea del autor, en el archivo web](https://web.archive.org/web/20240628211257/https://www3.cs.stonybrook.edu/~warren/xsbbook/book.html).
-  El capítulo toma de allí el ejemplo de las personas que se deben dinero
-  sobre un ciclo, el análisis de la cantidad de tablas según la dirección
-  de la recursión, que `tablas.pl` reproduce, la distinción entre la base
-  extensional y la intensional, el grafo de llamadas de `auto_table`, y el
-  programa de los términos que se reducen del [ejercicio 7](#ejercicios).
-- François Bancilhon, David Maier, Yehoshua Sagiv y Jeffrey D. Ullman,
-  «Magic sets and other strange ways to implement logic programs»,
-  *Proceedings of the 5th ACM Symposium on Principles of Database
-  Systems*, 1986. [Edición en línea](https://doi.org/10.1145/6012.15399).
-  Es el origen de los conjuntos mágicos con adornos, la forma de la
-  transformación que el motor implementa; Nilsson y Małuszyński lo citan
-  junto con las plantillas mágicas de Raghu Ramakrishnan (1988) y la
-  formalización del paso de información de Catriel Beeri y Raghu
-  Ramakrishnan, «On the power of magic», 1987.
-- François Bry, «Query evaluation in recursive databases: bottom-up and
-  top-down reconciled», *Data & Knowledge Engineering* 5, 1990,
-  páginas 289–312. Citado por Nilsson y Małuszyński como la
-  demostración de la correspondencia entre la evaluación de los
-  programas mágicos y la tabulación, que la
-  [sección 86.6](#866-version-4-las-consultas-y-la-transformacion-magica)
-  observa contando tablas y hechos mágicos.
-- Ashish Gupta, Inderpal Singh Mumick y V. S. Subrahmanian, «Maintaining
-  views incrementally», *Proceedings of the 1993 ACM SIGMOD International
-  Conference on Management of Data*, 1993.
-  [Edición en línea](https://doi.org/10.1145/170035.170066). Es el
-  algoritmo DRed, nombrado en la
-  [sección 86.7](#867-version-5-los-hechos-que-llegan-despues) como la
-  manera de mantener un modelo con negación o con hechos borrados.
-- *SWI-Prolog Reference Manual*, secciones de `library(assoc)`,
-  `library(ugraphs)` y de la tabulación:
+  Esta página toma de allí el grafo de llamadas de `auto_table` y el
+  programa de los términos que se reducen del
+  [ejercicio 3](#ejercicios).
+- *SWI-Prolog Reference Manual*, secciones de `library(assoc)` y
+  `library(ugraphs)`:
   [manual en línea](https://www.swi-prolog.org/pldoc/doc_for?object=manual).
 - David Eppstein, imágenes «Transitive Closure.svg» y «Graph
   Condensation.svg», Wikimedia Commons, CC0 1.0.
-
-El código del capítulo es propio, escrito para el curso: las fuentes dan
-los algoritmos en pseudocódigo y en notación de conjuntos, sin programas;
-la base indexada, la evaluación estricta con el reordenamiento de los
-literales, las componentes con `library(ugraphs)`, los adornos con la
-negación evaluada completa, la versión incremental y las mediciones no
-tienen equivalente en ellas.

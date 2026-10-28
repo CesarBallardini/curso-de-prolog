@@ -21,12 +21,12 @@ test(ejercicio_5_inscripciones, [true(Avisos == [])]) :-
     maplist(encabezados_ajenos_de, PorArchivo, Avisos0),
     append(Avisos0, Avisos).
 
-test(ejercicio_10_raices, [true(Rs == [caso/2, como/2, identificar/2,
+test(ejercicio_8_raices, [true(Rs == [caso/2, como/2, identificar/2,
                                        por_que_no/2])]) :-
     raices_consultadas(ejemplos('capitulo-34/experto.pl'), Rs).
 
 % Desde sus tres consultas, experto.pl alcanza todo salvo consultar/1.
-test(ejercicio_10, [true(Ps == [consultar/1])]) :-
+test(ejercicio_8, [true(Ps == [consultar/1])]) :-
     no_usados_del_ejemplo(ejemplos('capitulo-34/experto.pl'), Ps).
 
 % El encabezado de la primera cláusula de q/1 declara p/1: aviso. El de r/0

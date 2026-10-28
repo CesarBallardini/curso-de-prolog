@@ -1,14 +1,15 @@
 # Abducción con negación y mínimos sin presupuesto
 
-Esta página contiene las secciones [50.7](index.md#507-abduccion-con-negacion) y
-[50.8](index.md#508-diagnosticos-minimos-a-partir-de-diagnosticos) del
-[capítulo 50](index.md): un intérprete abductivo que también supone que algo
+Esta página continúa el [capítulo 50](index.md) después de la
+[sección 50.6](index.md#506-version-5-la-proxima-medicion), con las secciones
+[50.7](#507-abduccion-con-negacion) y
+[50.8](#508-diagnosticos-minimos-a-partir-de-diagnosticos): un intérprete abductivo que también supone que algo
 es falso, y una manera de obtener los diagnósticos mínimos del modelo débil
 sin generar los demás ni fijar un presupuesto de fallas. Los ejemplos están en
 `negacion.pl` e `incremental.pl`, en `ejemplos/capitulo-50/`, con sus pruebas;
 son módulos, y se ejecutan localmente.
 
-## Abducción con negación
+## 50.7 Abducción con negación
 
 El intérprete `abducir/2` de la
 [sección 50.3](index.md#503-version-2-el-interprete-abductivo) prueba metas
@@ -148,7 +149,7 @@ regla que depende de su propia negación, como «es sabio quien no es
 maestro» junto con «Pedro es maestro si es sabio», hace que la refutación
 llame a la prueba y la prueba a la refutación sin fin.
 
-## Diagnósticos mínimos a partir de diagnósticos
+## 50.8 Diagnósticos mínimos a partir de diagnósticos
 
 La [sección 50.4](index.md#504-version-3-diagnosticos-minimos) obtiene los
 mínimos de dos maneras: generando todos los diagnósticos y filtrando, o
@@ -297,3 +298,92 @@ consulta hace 37 453 verificaciones y 182 millones de inferencias. La
 cantidad de combinaciones crece con el producto de los tamaños de los
 mínimos conocidos; el algoritmo de Mozetič acota ese trabajo, y esta
 versión simple no lo hace en el peor caso.
+
+!!! success "Criterios de calidad"
+    | Criterio | En este capítulo |
+    |---|---|
+    | C1 | cada predicado declara modos y determinación; el intérprete abductivo es `nondet` porque una observación tiene en general muchas explicaciones |
+    | C2 | la teoría es de datos: `regla/2`, y los circuitos, los del [capítulo 49](../capitulo-49-proyecto-circuitos-logicos/index.md), sin copiarlos; un modelo de fallas nuevo es una regla más |
+    | C6 | el intérprete de circuitos no cambia en ninguna versión: cada una es una conducta nueva para `simular/4` (`con_fallas/5`, `abductiva/6`, `acotada/7`) |
+    | C7 | 101 pruebas en ocho archivos; cada versión se compara con la anterior: los diagnósticos abductivos explican en la simulación de la versión 1, `mas_simples/4` coincide con `k_fallas/4`, y el filtro de Flach con el presupuesto |
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio.
+
+12. **(2)** Agregar a la teoría de `negacion.pl`, con cláusulas `multifile`
+    en otro archivo, que un ave herida también es anormal, con `herido/1`
+    abducible. Explicar con `suponer/2` que Piolín vuela, y que es un ave
+    que no vuela, y comparar las explicaciones con las de la
+    [sección 50.7](#507-abduccion-con-negacion).
+13. **(2)** Escribir `conjunto_fuerte(Circuito, Obs, Rutas)`: algún
+    diagnóstico del modelo fuerte tiene en falla exactamente las compuertas
+    de `Rutas`. Con las dos observaciones de la
+    [sección 50.5](index.md#505-version-4-modelos-de-falla-y-conducta-desconocida),
+    mostrar que `[[m1, x1]]` lo es y `[[m1, x1], [o1]]` no, y explicar por
+    qué `minimos_incrementales/3` de la
+    [sección 50.8](#508-diagnosticos-minimos-a-partir-de-diagnosticos) solo
+    vale para el modelo débil.
+
+## Resumen
+
+| | |
+|---|---|
+| **abducción** | buscar los hechos que, agregados a la teoría, permiten deducir la observación |
+| **abducible** | la forma de los hechos que se pueden suponer: aquí, `estado(Componente, Estado)` |
+| **observación** | un par `Entradas-Salidas`; un problema es una lista, con las mismas fallas en todas |
+| **modelo de fallas** | la conducta de una compuerta en cada estado: fuerte (`pegada(V)`, `invertida`) o débil (`desconocida`) |
+| **diagnóstico** | las compuertas que no están en `ok` en una explicación, con sus estados |
+| **diagnóstico mínimo** | ningún otro tiene sus fallas en un subconjunto propio de sus compuertas |
+| **presupuesto de fallas** | la poda que descarta una rama en cuanto supone más de K fallas |
+| **fallas equivalentes** | fallas distintas con las mismas salidas para toda entrada; solo una sonda interna las separa |
+| `modelo/4`, `con_fallas/5`, `una_falla/3`, `k_fallas/4` | el diagnóstico por simulación |
+| `abducir/2`, `regla/2`, `abductiva/6`, `diagnostico/4` | el intérprete abductivo y su teoría |
+| `por_filtro/4`, `acotada/7`, `mas_simples/4`, `minimos/5` | los diagnósticos mínimos |
+| `sospechosas/5` | los conjuntos de compuertas, para comparar modelos |
+| `predecir/4`, `proxima/4`, `localizar/5` | la elección de la próxima medición |
+| `suponer/2`, `refutar/2` | la abducción con negación: supuestos verdaderos y falsos |
+| `es_diagnostico/3`, `reducir/4`, `minimos_incrementales/3` | los mínimos del modelo débil a partir de diagnósticos |
+| `ord_intersect/2` | se cumple si dos conjuntos ordenados tienen un elemento en común (en las soluciones) |
+
+## Temas que se retoman
+
+| Tema | Se retoma en |
+|---|---|
+| El razonamiento por defecto, con reglas que admiten excepciones | [capítulo 66](../capitulo-66-proyecto-razonamiento-rebatible/index.md) |
+| La inducción, que supone reglas en lugar de hechos | [capítulo 68](../capitulo-68-proyecto-aprender-reglas-ejemplos/index.md) |
+
+## Referencias
+
+- Peter Flach, *Simply Logical: Intelligent Reasoning by Example*, John
+  Wiley & Sons, 1994 — apartado 8.3, «Abduction and diagnostic reasoning».
+  [Edición en línea](https://book.simply-logical.space/src/text/3_part_iii/8.3.html).
+  Esta página toma, para la [sección 50.7](#507-abduccion-con-negacion), la
+  abducción con negación de `abduce/3` y `abduce_not/3`, el ejemplo de las
+  aves y el límite de su ejercicio 8.4.
+- Igor Mozetič, «A polynomial-time algorithm for model-based diagnosis»,
+  *Proceedings of the Tenth European Conference on Artificial Intelligence
+  (ECAI'92)*, John Wiley, 1992, págs. 729–733. Es la obra a la que Flach
+  remite para calcular los diagnósticos mínimos sin generar todos; la
+  [sección 50.8](#508-diagnosticos-minimos-a-partir-de-diagnosticos) toma
+  su idea de calcular los mínimos a partir de diagnósticos. No tiene
+  edición en línea gratuita.
+- Igor Mozetič y Christian Holzbaur, «Controlling the complexity in
+  model-based diagnosis», *Annals of Mathematics and Artificial
+  Intelligence* 11, 1994. Desarrolla el algoritmo anterior con el nombre
+  IDA, que calcula cada diagnóstico mínimo nuevo a partir de diagnósticos
+  y no de conflictos, con una cantidad de verificaciones polinomial en la
+  cantidad de componentes. El capítulo lo conoce por su resumen: la
+  versión de la [sección 50.8](#508-diagnosticos-minimos-a-partir-de-diagnosticos) es propia y no reproduce el algoritmo. No
+  tiene edición en línea gratuita.
+
+El código del capítulo es propio, escrito para el curso sobre los circuitos
+del [capítulo 49](../capitulo-49-proyecto-circuitos-logicos/index.md): de
+las fuentes se toman ideas y los ejemplos de Flach, no código. El modelo de
+falla invertida, el presupuesto de fallas, el criterio de la próxima
+medición por el grupo más grande, los supuestos con valor de verdad en un
+diccionario incompleto y la versión incremental de los mínimos son del
+curso.

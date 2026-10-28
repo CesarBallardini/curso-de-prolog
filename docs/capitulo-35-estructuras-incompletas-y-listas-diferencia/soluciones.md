@@ -5,7 +5,7 @@ El código de esta página está en `ejemplos/capitulo-35/soluciones.pl` y
 `soluciones.pl` repite las definiciones de los ejemplos que usan los
 ejercicios 1 a 12 —`conocidos/2`, las listas diferencia, la cola con contador y
 los dos diccionarios—; `soluciones_simbolos.pl` contiene el ensamblador de
-`simbolos.pl` con los cambios de los ejercicios 13 y 14, para que cada archivo
+`simbolos.pl` con los cambios de los ejercicios 14 y 15, para que cada archivo
 se cargue solo.
 
 ## 1
@@ -381,144 +381,6 @@ llamada: duplicar n duplica el trabajo.
 
 ## 13
 
-<!-- ejemplo: capitulo-35/soluciones_simbolos.pl predicado: marcar/3 consulta: ensamblar([etiqueta(a), sumar, etiqueta(a)], C). -->
-```prolog
-%!  marcar(+E, ?Tabla, +Dir:integer) is det.
-%
-%   Registra en Tabla que la etiqueta E está en la dirección Dir. Produce
-%   un error de permiso si E ya estaba marcada.
-marcar(E, Tabla, Dir) :-
-    buscar(E, Tabla, D),
-    (   var(D)
-    ->  D = Dir
-    ;   permission_error(marcar, etiqueta, E)
-    ).
-```
-
-La cláusula de la marca en `instruccion//4` llama a `marcar/3` en lugar de a
-`buscar/3`:
-
-<!-- ejemplo: capitulo-35/soluciones_simbolos.pl fragmento: instruccion(etiqueta(E) .. marcar(E, Tabla, Dir) }. -->
-```prolog
-instruccion(etiqueta(E), Dir, Dir, Tabla) -->
-    { marcar(E, Tabla, Dir) }.
-```
-
-```prolog
-?- ensamblar([etiqueta(a), sumar, etiqueta(a)], C).
-ERROR: No permission to marcar etiqueta `a'
-```
-
-Que la etiqueta esté en la tabla no alcanza para decir que ya se marcó: un
-salto hacia adelante la agrega con la dirección libre. Lo que distingue una
-marca anterior es que la dirección está ligada. Por eso `marcar/3` busca la
-etiqueta, que la agrega si no estaba, y liga la dirección solo si está libre.
-Comparar la dirección con la actual no bastaría: dos marcas seguidas de la
-misma etiqueta tienen la misma dirección, y la segunda pasaría (prueba
-`repetida_seguida`).
-
-## 14
-
-<!-- ejemplo: capitulo-35/soluciones_simbolos.pl predicado: asignar/3 direccion/3 numerar/3 consulta: asignar([cargar(x), cargar(y), sumar, guardar(x)], C, N). -->
-```prolog
-%!  asignar(+Codigo:list, -Codigo1:list, -N:integer) is det.
-%
-%   Codigo1 es Codigo con el nombre de cada variable de cargar/1 y
-%   guardar/1 reemplazado por una dirección de memoria: 0 para la primera
-%   variable que aparece, 1 para la segunda, y así. N es la cantidad de
-%   variables.
-asignar(Codigo, Codigo1, N) :-
-    maplist(direccion(Tabla), Codigo, Codigo1),
-    numerar(Tabla, 0, N).
-
-%!  direccion(?Tabla, +I, -I1) is det.
-%
-%   I1 es la instrucción I con la variable, si la tiene, reemplazada por su
-%   valor en el diccionario incompleto Tabla. I1 debe llegar libre.
-direccion(Tabla, cargar(V), cargar(D)) :-
-    !,
-    buscar(V, Tabla, D).
-direccion(Tabla, guardar(V), guardar(D)) :-
-    !,
-    buscar(V, Tabla, D).
-direccion(_, I, I).
-
-%!  numerar(+Tabla:list, +N0:integer, -N:integer) is det.
-%
-%   Liga los valores de Tabla a N0, N0+1, …, en orden, hasta el final
-%   abierto; N es el siguiente número sin usar.
-numerar(Final, N, N) :-
-    var(Final),
-    !.
-numerar([_-N0|Resto], N0, N) :-
-    N1 is N0 + 1,
-    numerar(Resto, N1, N).
-```
-
-```prolog
-?- asignar([cargar(x), cargar(y), sumar, guardar(x)], C, N).
-C = [cargar(0), cargar(1), sumar, guardar(0)],
-N = 2.
-```
-
-Es el esquema de `codificar/2` de la [sección 35.4](index.md#354-diccionarios-incompletos): `maplist/3` reemplaza cada
-nombre por el valor, todavía libre, de su entrada en la tabla, y
-`numerar/3` liga los valores a 0, 1, … en el orden de las entradas, que es el
-de la primera aparición de cada variable. N sale del mismo recorrido: es el
-primer número que no se usó. Los cortes de `direccion/3` separan las
-instrucciones con una variable del caso general, y son correctos porque la
-instrucción de salida llega libre, como dice el encabezado.
-
-## 15
-
-<!-- ejemplo: capitulo-35/soluciones.pl predicado: nivelar/2 nivelar/5 consulta: nivelar(n(n(vacio, 4, vacio), 3, n(vacio, 9, vacio)), N). -->
-```prolog
-%!  nivelar(+Arbol, -Nivelado) is det.
-%
-%   Nivelado tiene la forma de Arbol, vacio o n(Izq, X, Der), con el máximo
-%   de los elementos de Arbol en cada nodo. Un solo recorrido: los nodos
-%   nuevos comparten la variable Max, que se liga al terminar.
-nivelar(vacio, vacio).
-nivelar(n(Izq, X, Der), Nivelado) :-
-    nivelar(n(Izq, X, Der), Max, Nivelado, X, Max).
-
-%!  nivelar(+Arbol, ?M, -Nivelado, +Max0:number, -Max:number) is det.
-%
-%   Nivelado tiene la forma de Arbol con M en cada nodo, y Max es el mayor
-%   entre Max0 y los elementos de Arbol. M puede estar libre: se liga
-%   después, cuando se conoce el máximo de todo el árbol.
-nivelar(vacio, _, vacio, Max, Max).
-nivelar(n(Izq, X, Der), M, n(Izq1, M, Der1), Max0, Max) :-
-    Max1 is max(Max0, X),
-    nivelar(Izq, M, Izq1, Max1, Max2),
-    nivelar(Der, M, Der1, Max2, Max).
-```
-
-```prolog
-?- nivelar(n(n(vacio, 4, vacio), 3, n(vacio, 9, vacio)), N).
-N = n(n(vacio, 9, vacio), 9, n(vacio, 9, vacio)).
-
-?- nivelar(vacio, N).
-N = vacio.
-```
-
-Cada nodo nuevo recibe la variable `M`, todavía libre: el máximo no se
-conoce hasta terminar el recorrido, pero el lugar donde va sí. `nivelar/5`
-lleva además un acumulador, el máximo hasta el momento, que empieza en la raíz
-y se compara con cada elemento. La cláusula de `nivelar/2` pasa **la misma
-variable** `Max` como `M` y como máximo final: cuando el recorrido termina y
-el acumulado se unifica con el último argumento, `M` queda ligada, y todos
-los nodos, que la comparten, muestran el máximo a la vez. No hay un segundo
-recorrido para escribir el valor.
-
-Es la tabla de símbolos de la [sección 35.7](index.md#357-la-tabla-de-simbolos-del-compilador): un salto hacia adelante escribe en
-la instrucción la variable de la dirección de su etiqueta, y la marca, más
-abajo, la liga. En los dos casos el valor se usa antes de conocerse, porque
-lo que se escribe es una variable compartida y no el valor. El árbol vacío es
-un caso aparte: no tiene elementos, y no hay máximo con el que empezar.
-
-## 16
-
 La primera versión reúne los sumandos en una lista diferencia, como
 `inorden_dif/2` en la [sección 35.2](index.md#352-de-append3-a-la-lista-diferencia), y la recorre de nuevo con `foldl/4`:
 
@@ -607,3 +469,141 @@ sumas son términos cerrados que escriben personas, con la sintaxis de la
 aritmética, y sobre un término cerrado la prueba es segura. Con una variable
 como sumando, la prueba la ligaría a `A + B` y la recursión no terminaría;
 por eso el encabezado exige un término cerrado.
+
+## 14
+
+<!-- ejemplo: capitulo-35/soluciones_simbolos.pl predicado: marcar/3 consulta: ensamblar([etiqueta(a), sumar, etiqueta(a)], C). -->
+```prolog
+%!  marcar(+E, ?Tabla, +Dir:integer) is det.
+%
+%   Registra en Tabla que la etiqueta E está en la dirección Dir. Produce
+%   un error de permiso si E ya estaba marcada.
+marcar(E, Tabla, Dir) :-
+    buscar(E, Tabla, D),
+    (   var(D)
+    ->  D = Dir
+    ;   permission_error(marcar, etiqueta, E)
+    ).
+```
+
+La cláusula de la marca en `instruccion//4` llama a `marcar/3` en lugar de a
+`buscar/3`:
+
+<!-- ejemplo: capitulo-35/soluciones_simbolos.pl fragmento: instruccion(etiqueta(E) .. marcar(E, Tabla, Dir) }. -->
+```prolog
+instruccion(etiqueta(E), Dir, Dir, Tabla) -->
+    { marcar(E, Tabla, Dir) }.
+```
+
+```prolog
+?- ensamblar([etiqueta(a), sumar, etiqueta(a)], C).
+ERROR: No permission to marcar etiqueta `a'
+```
+
+Que la etiqueta esté en la tabla no alcanza para decir que ya se marcó: un
+salto hacia adelante la agrega con la dirección libre. Lo que distingue una
+marca anterior es que la dirección está ligada. Por eso `marcar/3` busca la
+etiqueta, que la agrega si no estaba, y liga la dirección solo si está libre.
+Comparar la dirección con la actual no bastaría: dos marcas seguidas de la
+misma etiqueta tienen la misma dirección, y la segunda pasaría (prueba
+`repetida_seguida`).
+
+## 15
+
+<!-- ejemplo: capitulo-35/soluciones_simbolos.pl predicado: asignar/3 direccion/3 numerar/3 consulta: asignar([cargar(x), cargar(y), sumar, guardar(x)], C, N). -->
+```prolog
+%!  asignar(+Codigo:list, -Codigo1:list, -N:integer) is det.
+%
+%   Codigo1 es Codigo con el nombre de cada variable de cargar/1 y
+%   guardar/1 reemplazado por una dirección de memoria: 0 para la primera
+%   variable que aparece, 1 para la segunda, y así. N es la cantidad de
+%   variables.
+asignar(Codigo, Codigo1, N) :-
+    maplist(direccion(Tabla), Codigo, Codigo1),
+    numerar(Tabla, 0, N).
+
+%!  direccion(?Tabla, +I, -I1) is det.
+%
+%   I1 es la instrucción I con la variable, si la tiene, reemplazada por su
+%   valor en el diccionario incompleto Tabla. I1 debe llegar libre.
+direccion(Tabla, cargar(V), cargar(D)) :-
+    !,
+    buscar(V, Tabla, D).
+direccion(Tabla, guardar(V), guardar(D)) :-
+    !,
+    buscar(V, Tabla, D).
+direccion(_, I, I).
+
+%!  numerar(+Tabla:list, +N0:integer, -N:integer) is det.
+%
+%   Liga los valores de Tabla a N0, N0+1, …, en orden, hasta el final
+%   abierto; N es el siguiente número sin usar.
+numerar(Final, N, N) :-
+    var(Final),
+    !.
+numerar([_-N0|Resto], N0, N) :-
+    N1 is N0 + 1,
+    numerar(Resto, N1, N).
+```
+
+```prolog
+?- asignar([cargar(x), cargar(y), sumar, guardar(x)], C, N).
+C = [cargar(0), cargar(1), sumar, guardar(0)],
+N = 2.
+```
+
+Es el esquema de `codificar/2` de la [sección 35.4](index.md#354-diccionarios-incompletos): `maplist/3` reemplaza cada
+nombre por el valor, todavía libre, de su entrada en la tabla, y
+`numerar/3` liga los valores a 0, 1, … en el orden de las entradas, que es el
+de la primera aparición de cada variable. N sale del mismo recorrido: es el
+primer número que no se usó. Los cortes de `direccion/3` separan las
+instrucciones con una variable del caso general, y son correctos porque la
+instrucción de salida llega libre, como dice el encabezado.
+
+## 16
+
+<!-- ejemplo: capitulo-35/soluciones.pl predicado: nivelar/2 nivelar/5 consulta: nivelar(n(n(vacio, 4, vacio), 3, n(vacio, 9, vacio)), N). -->
+```prolog
+%!  nivelar(+Arbol, -Nivelado) is det.
+%
+%   Nivelado tiene la forma de Arbol, vacio o n(Izq, X, Der), con el máximo
+%   de los elementos de Arbol en cada nodo. Un solo recorrido: los nodos
+%   nuevos comparten la variable Max, que se liga al terminar.
+nivelar(vacio, vacio).
+nivelar(n(Izq, X, Der), Nivelado) :-
+    nivelar(n(Izq, X, Der), Max, Nivelado, X, Max).
+
+%!  nivelar(+Arbol, ?M, -Nivelado, +Max0:number, -Max:number) is det.
+%
+%   Nivelado tiene la forma de Arbol con M en cada nodo, y Max es el mayor
+%   entre Max0 y los elementos de Arbol. M puede estar libre: se liga
+%   después, cuando se conoce el máximo de todo el árbol.
+nivelar(vacio, _, vacio, Max, Max).
+nivelar(n(Izq, X, Der), M, n(Izq1, M, Der1), Max0, Max) :-
+    Max1 is max(Max0, X),
+    nivelar(Izq, M, Izq1, Max1, Max2),
+    nivelar(Der, M, Der1, Max2, Max).
+```
+
+```prolog
+?- nivelar(n(n(vacio, 4, vacio), 3, n(vacio, 9, vacio)), N).
+N = n(n(vacio, 9, vacio), 9, n(vacio, 9, vacio)).
+
+?- nivelar(vacio, N).
+N = vacio.
+```
+
+Cada nodo nuevo recibe la variable `M`, todavía libre: el máximo no se
+conoce hasta terminar el recorrido, pero el lugar donde va sí. `nivelar/5`
+lleva además un acumulador, el máximo hasta el momento, que empieza en la raíz
+y se compara con cada elemento. La cláusula de `nivelar/2` pasa **la misma
+variable** `Max` como `M` y como máximo final: cuando el recorrido termina y
+el acumulado se unifica con el último argumento, `M` queda ligada, y todos
+los nodos, que la comparten, muestran el máximo a la vez. No hay un segundo
+recorrido para escribir el valor.
+
+Es la tabla de símbolos de la [sección 35.7](ensamblador.md#357-la-tabla-de-simbolos-del-compilador): un salto hacia adelante escribe en
+la instrucción la variable de la dirección de su etiqueta, y la marca, más
+abajo, la liga. En los dos casos el valor se usa antes de conocerse, porque
+lo que se escribe es una variable compartida y no el valor. El árbol vacío es
+un caso aparte: no tiene elementos, y no hay máximo con el que empezar.

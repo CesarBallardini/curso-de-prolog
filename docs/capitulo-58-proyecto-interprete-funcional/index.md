@@ -734,7 +734,7 @@ de los pares de 1 a 100 cuesta 39 423 inferencias en Lam, con evaluación
 estricta, y 2 715 con `include/3`, `maplist/3` y `foldl/4`, las dos medidas en
 una segunda llamada ([ejercicio 8](#ejercicios)). Un intérprete paga en cada paso el trabajo de decidir qué
 clase de expresión tiene delante y de buscar cada nombre en una lista; la
-[sección 46.7](../capitulo-46-proyecto-compilador/index.md#467-el-interprete-especializado) redujo ese precio a la novena parte, en un lenguaje
+[sección 46.7](../capitulo-46-proyecto-compilador/especializacion.md#467-el-interprete-especializado) redujo ese precio a la novena parte, en un lenguaje
 imperativo, especializando el intérprete.
 
 ## 58.8 Composición y plegados sin valor inicial

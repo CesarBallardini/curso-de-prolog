@@ -1,14 +1,73 @@
 # Las preguntas como servicio
 
-Esta página contiene la segunda parte de la
-[sección 88.8](index.md#888-version-5-el-programa-el-bucle-y-el-servicio)
-del [capítulo 88](index.md): el programa de preguntas detrás de un
-servidor HTTP con hilos, con una ruta que responde en JSON y una página
-web con un formulario. El código está en `servicio.pl`, en
-`ejemplos/capitulo-88/`, con sus pruebas; abre un puerto y crea hilos, y
-no corre en SWISH.
+Esta página continúa el [capítulo 88](index.md) después de la [sección
+88.7](sql.md#887-version-4-la-forma-logica-en-sql), con la sección
+[88.8](#888-version-5-el-programa-el-bucle-y-el-servicio): la versión 5, que
+reúne las anteriores en un programa con un bucle de preguntas, y el mismo
+programa detrás de un servidor HTTP con hilos, con una ruta que responde en
+JSON y una página web con un formulario. El código está en `preguntas.pl` y
+`servicio.pl`, en `ejemplos/capitulo-88/`, con sus pruebas; `servicio.pl`
+abre un puerto y crea hilos, y no corre en SWISH.
 
-## Las preguntas como servicio
+## 88.8 Versión 5: el programa, el bucle y el servicio
+
+`preguntas.pl` reúne las versiones. `responder/3` analiza, evalúa y
+explica; `preguntar/1` escribe la respuesta en castellano y los hechos de
+cada prueba, sin los que solo dicen que algo es un alumno o una materia.
+Si la gramática no analiza la pregunta, la respuesta es la de `talk`
+cuando una oración es «too difficult»:
+
+<!-- contexto: capitulo-88/preguntas.pl -->
+```prolog
+?- preguntar("¿Quién enseña lógica?").
+La pregunta no se puede analizar
+true.
+```
+
+`conversar/0` es el bucle del apartado 5.3 de Pereira y Shieber, que lee
+una oración, la responde y vuelve a empezar. Lee una pregunta por línea,
+con `read_line_to_string/2`, hasta una línea vacía o el fin de la entrada.
+Recibe los dos flujos como argumentos, de modo que las pruebas le dan un
+texto con `open_string/2` en lugar del teclado:
+
+<!-- ejemplo: capitulo-88/preguntas.pl predicado: conversar/2 -->
+```prolog
+%!  conversar(+Entrada, +Salida) is det.
+%
+%   Lee preguntas de Entrada, una por línea, y escribe en Salida la
+%   respuesta de cada una, después de la indicación «> ».
+conversar(Entrada, Salida) :-
+    format(Salida, "> ", []),
+    flush_output(Salida),
+    read_line_to_string(Entrada, Linea),
+    (   ( Linea == end_of_file ; Linea == "" )
+    ->  true
+    ;   with_output_to(Salida, preguntar(Linea)),
+        conversar(Entrada, Salida)
+    ).
+```
+
+```text
+?- conversar.
+> ¿Ana aprobó lógica?
+Sí
+  inscripcion(101, log, 10), 10 >= 6
+> ¿Cuántos aprobaron álgebra?
+2
+  ana: inscripcion(101, alg, 9), 9 >= 6
+  diego: inscripcion(104, alg, 7), 7 >= 6
+>
+true.
+```
+
+El apartado [Las preguntas como servicio](#las-preguntas-como-servicio)
+pone el mismo programa detrás de un servidor HTTP con varios hilos, como
+el de la [sección 38.6](../capitulo-38-concurrencia-y-paralelismo/servidor.md#386-los-hilos-del-servidor-http),
+con una ruta que responde en JSON y una página con un formulario, armada
+con `html//1` como las de la
+[sección 37.6](../capitulo-37-interfaces-de-usuario/web.md#376-paginas-web-sobre-los-servicios).
+
+### Las preguntas como servicio
 
 El [capítulo 37](../capitulo-37-interfaces-de-usuario/index.md#371-el-nucleo-y-las-interfaces)
 separó el núcleo de un programa de sus interfaces: la pantalla, la
@@ -52,7 +111,7 @@ lineas(Texto, Lineas) :-
 
 `cuerpo_pagina/2` arma la página como un término de `html//1`, igual que
 las páginas de *Inscripciones* de la
-[sección 37.6](../capitulo-37-interfaces-de-usuario/index.md#376-paginas-web-sobre-los-servicios):
+[sección 37.6](../capitulo-37-interfaces-de-usuario/web.md#376-paginas-web-sobre-los-servicios):
 un formulario con un campo de texto que envía la pregunta a la misma
 ruta, y, si el pedido trae una pregunta, la respuesta y la sentencia SQL
 en dos bloques `pre`. Los dos predicados son puros, y los manejadores solo
@@ -99,13 +158,13 @@ cuerpo_pagina(Texto, [ h1('Preguntas sobre Inscripciones'),
 ```
 
 **Los hilos.** El servidor se inicia como el de la
-[sección 38.6](../capitulo-38-concurrencia-y-paralelismo/index.md#386-los-hilos-del-servidor-http),
+[sección 38.6](../capitulo-38-concurrencia-y-paralelismo/servidor.md#386-los-hilos-del-servidor-http),
 con `http_server/2` y la opción `workers(N)`: N hilos trabajadores
 atienden los pedidos, varios a la vez. El trabajo de cada pedido solo lee
 la base, de modo que no hace falta ningún mutex, a diferencia del
 contador de visitas de aquella sección. Lo que sí cambia con los hilos son
 las tablas. Como explica la página
-[Tablas incrementales, hilos y costo](../capitulo-40-tabulacion/incremental.md#tablas-y-hilos)
+[Tablas incrementales, hilos, costo y el intérprete con tablas](../capitulo-40-tabulacion/incremental.md#tablas-y-hilos)
 del [capítulo 40](../capitulo-40-tabulacion/index.md), una tabla de
 SWI-Prolog es privada del hilo que la llena, salvo que se declare
 `as shared`. Cada trabajador analiza entonces una palabra la primera vez
@@ -156,3 +215,32 @@ dieciséis preguntas de `ejemplo/2` a la vez, y comparan cada respuesta
 con la que `preguntar/1` escribe en el mismo proceso: el resultado no
 depende de qué trabajador atiende cada pedido ni del orden en que
 terminan.
+
+El capítulo continúa en la página [El horario de una
+materia](horario.md#889-una-pregunta-mas-el-horario-de-una-materia), con una
+clase de pregunta nueva, agregada sin modificar los módulos anteriores, y el
+cierre del curso.
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio. Los ejercicios que piden código se resuelven en archivos
+que cargan los del capítulo, sin modificarlos, agregando cláusulas a sus
+predicados `multifile` cuando hace falta.
+
+11. **(2)** Escribir `conversar_por_que(+Entrada, +Salida)`, un bucle que
+    escribe solo la respuesta de cada pregunta y, si la línea siguiente
+    es «¿por qué?», escribe la explicación de la última pregunta.
+
+## Referencias
+
+- Fernando C. N. Pereira y Stuart M. Shieber, *Prolog and Natural-Language
+  Analysis*, CSLI, 1987; reedición digital de Microtome Publishing, 2002 —
+  apartado 5.2, «A Simple Dialogue Program», y apartado 5.3, «User Interaction».
+  [Edición digital de
+  Microtome](http://www.mtome.com/Publications/PNLA/pnla-digital.html). Esta
+  página toma de allí la respuesta para una oración que no se analiza y el bucle
+  de lectura ([sección
+  88.8](#888-version-5-el-programa-el-bucle-y-el-servicio)).

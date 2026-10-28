@@ -1,14 +1,18 @@
-# Los productos como vectores de signos
+# Los productos como vectores de signos y los retardos en cascada
 
-Esta página contiene la sección
-[49.7](index.md#497-los-productos-como-vectores-de-signos) del
-[capítulo 49](index.md): la representación de los productos de una suma de
-productos como vectores de signos, la absorción y la combinación posición
-por posición, y los implicantes primos de una salida. El ejemplo está en
-`vectores.pl`, en `ejemplos/capitulo-49/`, con sus pruebas; carga los
-módulos `circuitos` y `formulas`, y se ejecuta localmente.
+Esta página continúa la página
+[Circuitos secuenciales](secuenciales.md#496-los-estados-alcanzables) del
+[capítulo 49](index.md), con las secciones
+[49.7](#497-los-productos-como-vectores-de-signos) y
+[49.8](#498-retardos-en-cascada): la representación de los productos de una
+suma de productos como vectores de signos, la absorción y la combinación
+posición por posición, y los implicantes primos de una salida; y, de vuelta
+en los circuitos secuenciales, los retardos en cascada. Los ejemplos están en
+`vectores.pl` y `retardos.pl`, en `ejemplos/capitulo-49/`, con sus pruebas;
+cargan los módulos `circuitos`, `formulas` y `secuenciales`, y se ejecutan
+localmente.
 
-## Los productos como vectores de signos
+## 49.7 Los productos como vectores de signos
 
 La suma de productos de la [sección 49.3](index.md#493-que-calcula-un-circuito)
 escribe cada producto como una lista de literales, y `simplificar/2` tiene
@@ -184,16 +188,177 @@ Ps = [[+, +, +], [+, -, -], [-, +, -], [-, -, +]].
 
 Los implicantes primos del acarreo son b · ci, a · ci y a · b: el acarreo es
 la mayoría de las tres entradas, la forma del circuito `sumador_mayoria` de
-la [sección 49.4](index.md#494-verificar-con-libraryclpb). La suma de productos de
+la [sección 49.4](verificacion.md#494-verificar-con-libraryclpb). La suma de productos de
 `suma_de_productos/2` para la misma salida, `[[a, b], [a, ci, ~b], [b, ci,
 ~a]]`, es correcta pero no mínima, porque la absorción no reduce un producto
 con la ley de la combinación. La salida s no se reduce: en la suma de tres
 bits, dos filas en 1 nunca difieren en una sola entrada. Elegir, entre los
 implicantes primos, los que hacen falta para cubrir todas las filas es el
-segundo paso del método, y lo pide el [ejercicio 12](index.md#ejercicios).
+segundo paso del método, y lo pide el [ejercicio 11](#ejercicios).
 
 !!! question "Actividad"
     Predecir los implicantes primos de la salida de `xor_nand` y de la
     salida `c` del semisumador, y comprobarlo con `unos/3` e
     `implicantes_primos/2`. Explicar por qué uno de los dos resultados tiene
     un solo vector.
+
+## 49.8 Retardos en cascada
+
+Un **retardo unitario** es el circuito secuencial más simple: su salida es
+la entrada del pulso anterior. Es un biestable D sin lógica alrededor, y una
+etapa del registro de desplazamiento. Clocksin, en el apartado 8.5 de
+*Clause and Effect*, «Specification of Cascaded Components», conecta N
+retardos en serie sin escribir N: la cascada es una recursión sobre la lista
+de los estados de sus etapas, y la cantidad de etapas es la longitud de esa
+lista. `retardo/4` es esa recursión, con el estado como primer argumento:
+
+<!-- ejemplo: capitulo-49/retardos.pl predicado: retardo/4 retardar/3 retardo_en_pulso/4 -->
+```prolog
+%!  retardo(?Estado0:list, ?A, ?Q, ?Estado:list) is det.
+%
+%   Una cascada de tantos retardos unitarios como elementos tiene Estado0:
+%   con la entrada A, la salida es Q, el estado de la última etapa, y
+%   Estado es el estado del pulso siguiente: la primera etapa toma A, y
+%   cada una de las demás, el estado de la anterior. Sin etapas, Q es A.
+%   Estado0 o Estado debe tener longitud conocida. El estado va primero,
+%   para que la indexación distinga la lista vacía de la que no lo es.
+retardo([], A, A, []).
+retardo([S|Ss], A, Q, [A|Zs]) :-
+    retardo(Ss, S, Q, Zs).
+
+%!  retardar(?Entradas:list, +Estado0:list, ?Salidas:list) is det.
+%
+%   Salidas son las salidas de la cascada de retardo/4 en cada pulso,
+%   desde el Estado0, cuando Entradas son sus entradas. Una de las dos
+%   listas debe tener longitud conocida.
+retardar(Entradas, Estado0, Salidas) :-
+    foldl(retardo_en_pulso, Entradas, Salidas, Estado0, _).
+
+%!  retardo_en_pulso(?A, ?Q, +Estado0:list, -Estado:list) is det.
+%
+%   retardo/4 con los argumentos en el orden de foldl/6.
+retardo_en_pulso(A, Q, Estado0, Estado) :-
+    retardo(Estado0, A, Q, Estado).
+```
+
+En cada pulso, la primera etapa toma la entrada, cada una de las demás toma
+el estado de la anterior, y la salida es el estado de la última. Sin etapas,
+la salida es la entrada. Con los mismos ocho pulsos que usa Clocksin, tres
+retardos dan la entrada desplazada tres pulsos; en sentido inverso, las
+salidas determinan las entradas de todos los pulsos menos los últimos, que
+todavía no salieron de la cascada:
+
+```prolog
+?- retardar([1, 1, 0, 0, 1, 1, 0, 0], [0, 0, 0], Qs).
+Qs = [0, 0, 0, 1, 1, 0, 0, 1].
+
+?- retardo([S1, S2], A, Q, E).
+S2 = Q,
+E = [A, S1].
+
+?- retardar(Es, [0, 0], [0, 0, 1, 0]).
+Es = [1, 0, _, _].
+```
+
+La segunda consulta muestra la cascada entera de una vez, con variables en
+lugar de valores: la salida es el estado de la última etapa, y el estado
+siguiente es la entrada seguida de los estados de las etapas anteriores a la
+última.
+
+El mismo circuito, descrito para el simulador del capítulo, es el registro
+de desplazamiento de la [sección 49.5](secuenciales.md#495-circuitos-secuenciales) con N etapas.
+La descripción no puede ser un hecho, porque la lista de cables depende de
+N, pero puede ser una regla: `circuitos:circuito/3` y
+`secuenciales:secuencial/3` admiten cláusulas con cuerpo, y la de
+`desplazamiento_c(N)` genera los nombres `q1`, …, `qN` con `etapas/2`:
+
+<!-- ejemplo: capitulo-49/retardos.pl fragmento: %!  etapas(+N .. append(Previas, [Ultima], Qs). -->
+```prolog
+%!  etapas(+N:integer, -Nombres:list(atom)) is det.
+%
+%   Nombres son los nombres de los cables de estado de un registro de N
+%   etapas: q1, q2, ..., qN.
+etapas(N, Nombres) :-
+    findall(Q,
+            ( between(1, N, I),
+              atom_concat(q, I, Q) ),
+            Nombres).
+
+% desplazamiento(N): un registro de desplazamiento de N etapas, para
+% cualquier N positivo. La parte combinacional son solo cables: la salida
+% es la última etapa, la entrada pasa a la primera y cada etapa a la
+% siguiente.
+secuenciales:secuencial(desplazamiento(N), desplazamiento_c(N), N) :-
+    integer(N),
+    N > 0.
+
+circuitos:circuito(desplazamiento_c(N), [x|Qs], [Ultima, x|Previas]) :-
+    integer(N),
+    N > 0,
+    etapas(N, Qs),
+    N1 is N - 1,
+    length(Previas, N1),
+    append(Previas, [Ultima], Qs).
+```
+
+`integer(N)` hace que la regla no se aplique a un nombre con N libre, y así
+una consulta que recorre todos los circuitos no genera infinitos registros.
+`ejecutar/4` acepta `desplazamiento(3)` como cualquier otro circuito
+secuencial, y da las salidas de la cascada:
+
+```prolog
+?- ejecutar(desplazamiento(3), [0, 0, 0], [[1], [1], [0], [0], [1], [1], [0], [0]], Ss).
+Ss = [[0], [0], [0], [1], [1], [0], [0], [1]].
+```
+
+Las pruebas de `retardos.plt` comparan las dos versiones para N de 1 a 5,
+comparan `desplazamiento(4)` con `registro4`, y cuentan con `alcanzable/3`
+los 8 estados de `desplazamiento(3)`. La recursión de Clocksin da un circuito
+de cualquier tamaño en pocas líneas; la descripción como datos lo hace
+visible para las demás preguntas del capítulo, desde la simulación en
+sentido inverso hasta el grafo de estados.
+
+!!! question "Actividad"
+    Escribir con `retardo/4` un detector de flancos: su salida es 1 en el
+    pulso en que la entrada pasa de 0 a 1, y para eso necesita una sola
+    etapa. Comprobarlo con la entrada `[0, 1, 1, 0, 1]`.
+
+El capítulo continúa en la página
+[Compuertas hechas con transistores](transistores.md#499-compuertas-hechas-con-transistores),
+con las compuertas construidas a partir de los transistores que las forman.
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio, y el [capítulo 50](../capitulo-50-proyecto-diagnostico-abduccion/index.md) los da por hechos.
+
+11. ★ **(3)** Escribir `cobertura(Unos, Primos, Elegidos)`: Elegidos es la
+    menor cantidad de vectores de Primos que cubre todos los vectores de
+    Unos, el segundo paso del método de Quine y McCluskey. Aplicarlo al
+    acarreo del sumador, y a la salida que vale 1 en las filas a · ¬b · ¬c,
+    a · ¬b · c, a · b · c y ¬a · b · c, cuyos implicantes primos son tres y
+    de los que basta con dos.
+12. **(1)** Predecir, sin ejecutarlas, las respuestas de
+    `retardar([1, 0, 1, 1], [0, 0], Qs)` y de
+    `retardar(Es, [0, 0], [0, 0, 1, 0])`, y comprobarlo. ¿Cuántos estados
+    alcanza `desplazamiento(N)` desde N ceros, y por qué?
+
+## Referencias
+
+- William F. Clocksin, *Clause and Effect: Prolog Programming for the
+  Working Programmer*, Springer, 1997. Del apartado 7.5, «Alternative
+  Representation», esta página toma los productos como vectores de signos
+  de la [sección 49.7](#497-los-productos-como-vectores-de-signos), y del
+  apartado 8.5, «Specification of Cascaded Components», los retardos en
+  cascada de la [sección 49.8](#498-retardos-en-cascada).
+- W. V. Quine, «The problem of simplifying truth functions», *The American
+  Mathematical Monthly* 59 (8), 1952, págs. 521–531, y E. J. McCluskey,
+  «Minimization of Boolean functions», *The Bell System Technical Journal*
+  35 (6), 1956, págs. 1417–1444. Son el origen del método que combina
+  productos que difieren en una variable para obtener los implicantes
+  primos, cuyo primer paso escribe la
+  [sección 49.7](#497-los-productos-como-vectores-de-signos) y cuyo segundo
+  paso pide el [ejercicio 11](#ejercicios). No tienen edición en línea
+  gratuita.

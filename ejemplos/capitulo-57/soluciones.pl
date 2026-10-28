@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 57 - Soluciones de los ejercicios 4, 5, 6 y 8 a 12.
+% Capítulo 57 - Soluciones de los ejercicios 4 a 8 y 10 a 12.
 %
 % Cada solución agrega cláusulas a los predicados que los archivos del
 % capítulo declaran multifile, o define predicados nuevos que usan los del
@@ -92,7 +92,7 @@ ejemplos_de_ordenes(Textos) :-
               atom_string(A, T) ),
             Textos).
 
-% Ejercicio 8: la cantidad total de archivos.
+% Ejercicio 10: la cantidad total de archivos.
 
 reservada("total").
 
@@ -110,7 +110,7 @@ oracion(total(N), T) :-
     cantidad(N, archivo, m, Q),
     format(string(T), "Hay ~s en total.", [Q]).
 
-% Ejercicio 9: el archivo más grande de una carpeta.
+% Ejercicio 11: el archivo más grande de una carpeta.
 
 pedido(mayor(C)) -->
     ["cual", "es"],
@@ -130,7 +130,7 @@ oracion(mayor(R, B), T) :-
     cantidad(B, byte, m, Q),
     format(string(T), "El archivo más grande es ~s, con ~s.", [R, Q]).
 
-% Ejercicio 10: varias órdenes unidas por «y».
+% Ejercicio 7: varias órdenes unidas por «y».
 
 reservada("y").
 
@@ -196,7 +196,7 @@ aplicar_accion(Accion, M0, M) :-
     ;   M = M0
     ).
 
-% Ejercicio 11: nombres con mayúsculas.
+% Ejercicio 8: nombres con mayúsculas.
 
 %!  palabras_con_mayusculas(+Texto:string, -Palabras:list(string)) is det.
 %

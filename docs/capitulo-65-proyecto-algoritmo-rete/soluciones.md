@@ -6,7 +6,7 @@ las demás versiones, y no modifica ningún archivo del capítulo: los
 programas nuevos son cláusulas de `programa/2`, que el
 [capítulo 61](../capitulo-61-proyecto-interprete-dirigido-patrones/index.md)
 declara `multifile`, y las variantes de la red se construyen con los
-predicados del capítulo. Los ejercicios 5 y 8 se resuelven con los archivos
+predicados del capítulo. Los ejercicios 5 y 9 se resuelven con los archivos
 del capítulo: `cuentas/4` está en `negacion.pl`, y `mostrar_red/1`, que usa
 también el ejercicio 2, en `red.pl`. Es `% solo-local`, porque carga otros archivos.
 
@@ -262,65 +262,6 @@ tendría otro sello.
 
 ## 7
 
-<!-- ejemplo: capitulo-65/soluciones.pl predicado: carga_siempre/2 siempre_derecha/5 -->
-```prolog
-%!  carga_siempre(+K:integer, -Inferencias:integer) is det.
-%
-%   Inferencias son las de cargar pedido_ampliado(K, _) en la red del
-%   configurador activando por la derecha cada sucesor, aunque su padre no
-%   tenga tokens.
-carga_siempre(K, Inferencias) :-
-    red_de(configurador, Red),
-    pedido_ampliado(K, Hechos),
-    inferencias(cargar_con(@>=, siempre_derecha, Red, Hechos, _),
-                Inferencias).
-
-%!  siempre_derecha(+Sello:integer, +Red, +Activacion, +Rete0, -Rete)
-%!      is det.
-%
-%   Como activar_derecha/6 con el signo mas, sin mirar la memoria del
-%   padre.
-siempre_derecha(Sello, Red, Nodo-Paso, Rete0, Rete) :-
-    Red = red(_, _, Nodos, _),
-    get_assoc(Nodo, Nodos, beta(Tipo, Padre, Prefijo, _, _)),
-    derecha(Tipo, mas, Sello-Paso, Padre-Nodo, Prefijo, Red, Rete0, Rete).
-```
-
-```prolog
-?- carga_normal(0, A), carga_siempre(0, B).
-A = 7851,
-B = 13343.
-
-?- carga_normal(400, A), carga_siempre(400, B).
-A = 169978,
-B = 315870.
-```
-
-Sin el control, la carga cuesta casi el doble. Mientras se carga el
-catálogo, la fase todavía no está en la memoria —es el último hecho de la
-memoria inicial—, así que ningún nodo beta que lee `objeto/3` tiene tokens
-en su padre. Cada objeto activa igual los doce nodos que leen su memoria
-alfa, y cada activación copia el prefijo y recorre una memoria vacía: unas
-365 inferencias por objeto que no producen nada.
-
-## 8
-
-La tabla de `red_de/2` guarda la red de cada programa, y la red guarda las
-condiciones copiadas, no los predicados que llaman. Si cambia un marco
-—por ejemplo, una clase nueva de `marco/3` con `procesador` como padre—, la
-red de la versión 5 sigue siendo correcta, porque las pruebas de clase se
-ejecutan cada vez que un token llega a su nodo. En la versión 7 la prueba
-`es_de_clase(C, procesador)` se ejecuta en el nodo alfa, **cuando el hecho
-entra**: los objetos que ya están en la memoria alfa se aceptaron o
-rechazaron con los marcos anteriores. La red compilada sigue siendo la
-misma; lo que queda desactualizado es el estado de las memorias alfa, que
-hay que volver a cargar. Cambiar las reglas de un programa, en cambio,
-desactualiza la tabla: `abolish_all_tables/0`, del
-[capítulo 40](../capitulo-40-tabulacion/index.md), la vacía, y la consulta
-siguiente vuelve a compilar.
-
-## 9
-
 <!-- ejemplo: capitulo-65/soluciones.pl predicado: con_cambios/6 -->
 ```prolog
 %!  con_cambios(+Red, +Estrategia, +N:integer, +Disparadas:list, +Estado,
@@ -369,6 +310,65 @@ nada está sobre `c`. En el ciclo 2, `bajar` reemplaza `sobre(c, a)` por
 del token de la meta `apilar([a, b])` en el nodo de `no(sobre(_, a))` bajó
 a cero cuando salió `sobre(c, a)`. Una salida de la memoria provocó una
 entrada en el conjunto.
+
+## 8
+
+<!-- ejemplo: capitulo-65/soluciones.pl predicado: carga_siempre/2 siempre_derecha/5 -->
+```prolog
+%!  carga_siempre(+K:integer, -Inferencias:integer) is det.
+%
+%   Inferencias son las de cargar pedido_ampliado(K, _) en la red del
+%   configurador activando por la derecha cada sucesor, aunque su padre no
+%   tenga tokens.
+carga_siempre(K, Inferencias) :-
+    red_de(configurador, Red),
+    pedido_ampliado(K, Hechos),
+    inferencias(cargar_con(@>=, siempre_derecha, Red, Hechos, _),
+                Inferencias).
+
+%!  siempre_derecha(+Sello:integer, +Red, +Activacion, +Rete0, -Rete)
+%!      is det.
+%
+%   Como activar_derecha/6 con el signo mas, sin mirar la memoria del
+%   padre.
+siempre_derecha(Sello, Red, Nodo-Paso, Rete0, Rete) :-
+    Red = red(_, _, Nodos, _),
+    get_assoc(Nodo, Nodos, beta(Tipo, Padre, Prefijo, _, _)),
+    derecha(Tipo, mas, Sello-Paso, Padre-Nodo, Prefijo, Red, Rete0, Rete).
+```
+
+```prolog
+?- carga_normal(0, A), carga_siempre(0, B).
+A = 7851,
+B = 13343.
+
+?- carga_normal(400, A), carga_siempre(400, B).
+A = 169978,
+B = 315870.
+```
+
+Sin el control, la carga cuesta casi el doble. Mientras se carga el
+catálogo, la fase todavía no está en la memoria —es el último hecho de la
+memoria inicial—, así que ningún nodo beta que lee `objeto/3` tiene tokens
+en su padre. Cada objeto activa igual los doce nodos que leen su memoria
+alfa, y cada activación copia el prefijo y recorre una memoria vacía: unas
+365 inferencias por objeto que no producen nada.
+
+## 9
+
+La tabla de `red_de/2` guarda la red de cada programa, y la red guarda las
+condiciones copiadas, no los predicados que llaman. Si cambia un marco
+—por ejemplo, una clase nueva de `marco/3` con `procesador` como padre—, la
+red de la versión 5 sigue siendo correcta, porque las pruebas de clase se
+ejecutan cada vez que un token llega a su nodo. En la versión 7 la prueba
+`es_de_clase(C, procesador)` se ejecuta en el nodo alfa, **cuando el hecho
+entra**: los objetos que ya están en la memoria alfa se aceptaron o
+rechazaron con los marcos anteriores. La red compilada sigue siendo la
+misma; lo que queda desactualizado es el estado de las memorias alfa, que
+hay que volver a cargar. Cambiar las reglas de un programa, en cambio,
+desactualiza la tabla: `abolish_all_tables/0`, del
+[capítulo 40](../capitulo-40-tabulacion/index.md), la vacía, y la consulta
+siguiente vuelve a compilar.
 
 ## 10
 

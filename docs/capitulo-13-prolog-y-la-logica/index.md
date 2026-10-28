@@ -30,8 +30,8 @@ cita en [Referencias](#referencias). Las secciones
 [13.11](evaluacion.md#1311-el-interprete-no-determinista-y-las-estrategias-de-evaluacion)
 y [13.12](evaluacion.md#1312-la-negacion) a
 [13.13](evaluacion.md#1313-lo-que-excede-la-logica) siguen en tres páginas,
-una después de otra, hasta el cierre de la parte I; los ejercicios están en
-esta página.
+una después de otra, hasta el cierre de la parte I. Cada página termina con
+los ejercicios de sus secciones, y la última, con el resumen del capítulo.
 
 ## Objetivos del capítulo
 
@@ -60,7 +60,7 @@ Al terminar el capítulo, el lector puede:
 !!! info "Tiempo estimado"
     Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **2:47 h**.
     Resolver los 7 ejercicios marcados con ★: **2:25 h**.
-    Resolver los 25 ejercicios del final: **7:40 h**.
+    Resolver los 25 ejercicios del capítulo: **7:40 h**.
 
 ## 13.1 Las dos lecturas
 
@@ -498,8 +498,8 @@ El capítulo continúa en la página
 qué afirma un programa y con qué regla de inferencia lo prueba Prolog. Las
 dos páginas siguientes la continúan hasta la
 [sección 13.13](evaluacion.md#1313-lo-que-excede-la-logica) y el
-[cierre de la parte I](evaluacion.md#cierre-de-la-parte-i), y el capítulo
-vuelve a esta página para los [ejercicios](#ejercicios).
+[cierre de la parte I](evaluacion.md#cierre-de-la-parte-i). Antes, los
+[ejercicios](#ejercicios) de esta página practican las secciones 13.1 a 13.5.
 
 ## Ejercicios
 
@@ -563,22 +563,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 
     c. "Toda persona es varón o mujer."
 
-10. **(2)** La [sección 13.5](#135-clausulas-de-horn) afirma que un hecho es
-    una cláusula de Horn sin condiciones y una consulta es una cláusula de Horn
-    sin conclusión.
-
-    a. Escribir la fórmula que corresponde a la consulta
-       `?- padre(juan, Quien).` y explicar en qué sentido Prolog la **refuta**
-       en lugar de demostrarla.
-
-    b. Decir cuáles de estas afirmaciones son verdaderas, y corregir las
-       falsas: un programa es un conjunto de hechos y reglas; la consulta forma
-       parte del programa; `odia(X, Y), odia(Y, X) :- enemigo(X, Y).` puede
-       ser una cláusula de un programa; un hecho es una cláusula sin
-       condiciones; una consulta sin variables pregunta si el programa contiene
-       esa afirmación como hecho.
-
-11. **(2)** Explicar por qué ninguna de estas dos cláusulas es una cláusula de
+10. **(2)** Explicar por qué ninguna de estas dos cláusulas es una cláusula de
     Horn. Para la segunda, conviene escribir en forma clausal lo que afirma su
     cuerpo.
 
@@ -591,273 +576,14 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     `enemigo(juan, pedro).` y `r(ana).`, consultar `p(ana).`, y explicar qué
     informa SWI-Prolog en cada caso.
 
-12. **(1)** Calcular el valor de verdad de
-    $(p \rightarrow q) \leftrightarrow (\lnot q \rightarrow \lnot p)$ en las
-    cuatro interpretaciones de la
-    [sección 13.6](inferencia.md#136-interpretaciones-modelos-y-consecuencia-logica) para
-    dos átomos —los átomos verdaderos son $\{p, q\}$, $\{p\}$, $\{q\}$ y
-    ninguno—, en una tabla de cuatro filas. Decir si la fórmula es verdadera
-    en todas ellas, y en qué filas uno de los dos lados del $\leftrightarrow$
-    es falso.
-13. ★ **(2)** Sobre `torta.pl`, el programa de cinco cláusulas de la
-    [sección 13.6](inferencia.md#136-interpretaciones-modelos-y-consecuencia-logica):
-
-    a. Decir cuáles de estas interpretaciones son modelos del programa, y por
-       qué: la que hace verdaderos a `hay_harina`, `hay_leche` y `masa` y
-       falsos a los demás; la que hace verdaderos a `hay_huevos`, `masa` y
-       `torta`; la que hace verdaderos a los cinco átomos menos `torta`; la que
-       hace verdaderos a los cinco átomos y además a `hay_azucar`.
-
-    b. ¿Es $\mathit{torta}$ consecuencia lógica del programa? ¿Lo es
-       $\mathit{hay\_azucar}$? ¿Lo es $\lnot \mathit{hay\_azucar}$?
-
-    c. Verdadero o falso, con la razón: «si $P \models f$, entonces todo modelo
-       de $P$ es modelo de $P \cup \{f\}$».
-
-14. **(2)** La resolución no exige que una de las dos cláusulas sea una consulta.
-    Resolver la regla `madre/2` de `logica.pl` con el hecho `mujer(marta).`,
-    escribir el resolvente como una cláusula de Prolog, y explicar por qué es
-    una consecuencia del programa aunque ninguna consulta la produzca durante la
-    ejecución.
-15. ★ **(2)** Reescribir en forma clausal el árbol del
-    [ejercicio 1 del capítulo 5](../capitulo-05-como-responde-prolog/index.md#ejercicios),
-    el de `?- abuelo(Quien, luis).` sobre `busqueda.pl`, como en
-    [La refutación en forma clausal](inferencia.md#la-refutacion-en-forma-clausal): la
-    consulta negada, cada paso de resolución con su sustitución y su
-    resolvente, y los resolventes en los que termina cada una de las tres
-    ramas.
-16. **(3)** El programa siguiente no tiene variables, de modo que cada átomo es
-    una afirmación completa:
-
-    ```prolog
-    templado.
-    llueve.
-    picnic :- templado, \+ llueve.
-    remar :- picnic.
-    ```
-
-    A esas cláusulas se agrega la afirmación «no se rema cuando llueve», que en
-    forma clausal es $\lnot \mathit{remar} \lor \lnot \mathit{llueve}$.
-
-    a. Escribir en forma clausal las dos primeras cláusulas y la cuarta, y
-       demostrar en papel, por refutación, que no se rema: agregar la negación
-       de esa conclusión y derivar la cláusula vacía, indicando cada
-       resolvente.
-
-    b. Explicar por qué $\lnot \mathit{remar} \lor \lnot \mathit{llueve}$ no es un hecho ni una
-       regla de Prolog, y a cuál de los tres casos de la
-       [sección 13.5](#135-clausulas-de-horn) corresponde su forma.
-
-    c. Sin ejecutarla, explicar por qué `?- \+ remar.` tiene éxito sobre las
-       cuatro cláusulas del programa, y por qué la razón de ese éxito es otra
-       que la de la demostración del punto a. Comprobarlo después. El
-       [capítulo 10](../capitulo-10-negacion-como-falla/index.md) describe
-       `\+`, y el [capítulo 39](../capitulo-39-semantica-de-los-programas-logicos/index.md)
-       trata la forma clausal de fórmulas cualesquiera.
-
-17. ★ **(2)** Composición de sustituciones
-    ([sección 13.8](sustituciones.md#138-sustituciones)):
-
-    a. Con θ = { X/f(W), Y/X } y σ = { Y/Z, X/a, W/g(a) }, calcular θσ y σθ, y
-       decir cuáles de estos pares pertenecen a θσ: `Y/Z`, `X/f(g(a))`,
-       `W/g(a)`, `Y/X`.
-
-    b. Calcular { X/a, Y/c, U/c }{ Z/W, X/b },
-       { W/a, Y/f(Z) }{ W/b, Y/a, Z/c } y
-       { X/g(Y, a), Z/f(W), U/W }{ Y/f(b), W/U, T/g(a, f(b)) }. En la última,
-       un par se vuelve trivial.
-
-    c. Componer de a dos, en ese orden, { P/d, Q/f(X, Y), R/Z },
-       { X/a, Y/T } y { Z/R, X/b, T/c }.
-
-    d. ¿Existe, para toda θ, una γ con θγ = θ? ¿Y una con γθ = θ?
-
-18. **(1)** Sobre las definiciones de la página
-    [Sustituciones y unificadores](sustituciones.md):
-
-    a. Verdadero o falso, con la razón: una sustitución es un par
-       `Variable/término`; en una sustitución, el término de cada par solo
-       puede ser una constante; un unificador no puede contener variables en
-       sus términos; todo unificador es una sustitución; toda sustitución es un
-       unificador de algún par de términos.
-
-    b. Decir si `padre(juan, ana)` es instancia de `padre(X, Y)`, de
-       `padre(juan, Y)`, de `padre(X, X)` y de `padre(Y, X)`, y dar la θ cuando
-       existe.
-
-    c. Verdadero o falso: «si Q es instancia de P, entonces Pθ = Q para
-       cualquier θ».
-
-19. ★ **(2)** Para cada par, dar un unificador más general o explicar por qué no
-    existe, y comprobar con `=` qué imprime SWI-Prolog:
-
-    a. `padre(Z, diego)` y `padre(jorge, diego)`.
-
-    b. `tio(X, diego)` y `tio(W, diego)`. Mostrar además que
-       { X/guillermo, W/guillermo } también es un unificador, y escribir la γ
-       que lo obtiene a partir de { X/W }.
-
-    c. `p(q(X, Y), X, h(4))` y `p(q(3, Z), W, h(Z))`.
-
-    d. `r([X|Y])` y `r([[a, b], c, d])`.
-
-    e. `r([X|Y])` y `r([])`.
-
-    f. `[[X, 2], [Y]]` y `[A|[B|C]]`.
-
-20. **(2)** Evaluar `?- concatenar(X, Y, [a, b]).` con los cuatro pasos de la
-    [sección 13.10](evaluacion.md#1310-los-cuatro-pasos): para cada paso, la
-    cláusula elegida, el unificador más general y la consulta que queda.
-    Componer las sustituciones de cada rama de éxito hasta obtener las tres
-    respuestas, dibujar el árbol, y compararlo con lo que pide el
-    [ejercicio 14 del capítulo 7](../capitulo-07-listas/index.md#ejercicios)
-    para la misma consulta.
-21. ★ **(3)** El programa siguiente tiene una lectura declarativa correcta y no
-    produce ninguna respuesta:
-
-    ```prolog
-    %!  ascendiente(?A, ?D) is nondet.
-    %
-    %   A es ascendiente de D.
-    ascendiente(A, D) :-
-        ascendiente(A, X),
-        progenitor(X, D).
-    ascendiente(A, D) :-
-        progenitor(A, D).
-    ```
-
-    a. Escribir su lectura declarativa y explicar por qué es verdadera.
-
-    b. Dibujar el árbol de `?- ascendiente(juan, Quien).` hasta profundidad 3,
-       con las ramas de la segunda cláusula.
-
-    c. Decir qué respuestas obtiene el recorrido en profundidad, y cuáles, y en
-       qué orden, obtendría el recorrido en anchura de la
-       [sección 13.11](evaluacion.md#1311-el-interprete-no-determinista-y-las-estrategias-de-evaluacion).
-
-    d. Intercambiar las dos cláusulas: qué cambia para el recorrido en
-       profundidad, y si termina después de dar las respuestas.
-
-    e. Verdadero o falso: «las respuestas corresponden a nodos intermedios del
-       árbol, y las fallas a sus hojas».
-
-22. **(2)** Con los hechos `p(a, b)`, `p(a, e)`, `p(b, c)`, `p(b, d)` y
-    `p(e, f)` y las reglas
-
-    ```prolog
-    q(X, Y) :- p(X, Z), p(Z, Y).
-    r(X, Y) :- p(Z, X), p(Z, Y).
-    s(X, Y) :- p(Z, Y), r(Z, X).
-    ```
-
-    a. Mostrar que `?- q(e, b).` falla con cualquier estrategia: ninguna rama
-       de su árbol llega a la consulta vacía.
-
-    b. Mostrar una respuesta de `?- r(X, X), s(X, Y).` que el intérprete no
-       determinista puede obtener eligiendo primero el **segundo** objetivo,
-       con cada elección anotada.
-
-    c. Decir qué respuesta da Prolog primero, y por qué. Comprobarlo con el
-       programa.
-
-23. **(3)** El siguiente programa y la siguiente fórmula no tienen el mismo
-    significado. Identificar la diferencia:
-
-    ```prolog
-    %!  sin_mascota(?P) is nondet.
-    %
-    %   P es una persona sin mascota.
-    sin_mascota(P) :-
-        persona(P),
-        \+ tiene(P, _).
-    ```
-
-    $$\forall P \; \bigl( \mathit{persona}(P) \land \lnot \, \exists M \; \mathit{tiene}(P, M)
-  \rightarrow \mathit{sin\_mascota}(P) \bigr)$$
-
-24. **(2)** De las diferencias que enumera la
-    [sección 13.13](evaluacion.md#1313-lo-que-excede-la-logica), indicar cuál explica cada
-    uno de estos comportamientos:
-
-    a. `?- categoria(sofia, adulto).` responde `true.`
-
-    b. `?- tiene_hijos(P).` informa dos veces a `juan`.
-
-    c. `?- X is 3 + Y.` no responde `true.` ni `false.`
-
-    d. Un programa correcto no produce una respuesta que sus cláusulas afirman.
-
-    e. Sobre la versión de `ascendiente/2` del ejercicio 21,
-       `?- \+ ascendiente(eva, luis).` no responde nunca, aunque eva no es
-       ascendiente de nadie.
-
-25. **(3)** Elegir un predicado de cualquier capítulo anterior, escribir su
-    lectura declarativa, e indicar si el programa cumple exactamente lo que la
-    fórmula afirma.
-
-## Resumen
-
-| | |
-|---|---|
-| **lectura procedimental** | qué hace Prolog para responder una consulta |
-| **lectura declarativa** | qué afirma el programa |
-| **término**, **fórmula atómica** | un objeto; una afirmación: un nombre de predicado aplicado a tantos términos como su aridad |
-| **cláusula**, **programa** | una fórmula de la forma de Horn; un conjunto de hechos y reglas, del que la consulta no forma parte |
-| `,` | $\land$ |
-| varias cláusulas | $\lor$ |
-| `:-` | $\rightarrow$, con los operandos en orden inverso |
-| variable en la cabeza | $\forall$, con alcance sobre toda la cláusula |
-| variable solo en el cuerpo | $\exists$, con alcance sobre el antecedente |
-| **cláusula de Horn** | una implicación con una única conclusión |
-| hecho, regla, consulta | los tres casos de la misma forma |
-| **interpretación** | un dominio y un significado para cada constante, functor y nombre de predicado |
-| **modelo** | una interpretación que satisface todas las cláusulas del programa |
-| **consecuencia lógica**, $P \models f$ | $f$ es verdadera en todos los modelos de $P$; es lo que pregunta una consulta |
-| **regla de inferencia**, **modus ponens** | produce fórmulas nuevas mirando solo la forma; de $A$ y $A \rightarrow B$ se infiere $B$ |
-| **deducción**, $P \vdash f$ | una sucesión de pasos de inferencia que termina en $f$ |
-| **corrección**, **completitud** | todo lo deducido es consecuencia; toda consecuencia se puede deducir |
-| **resolución** | reemplazar un objetivo por el cuerpo de una cláusula cuya cabeza unifica con él |
-| **refutación** | probar una afirmación suponiendo su negación y derivando una contradicción |
-| **resolvente** | la disyunción que queda al resolver dos cláusulas; la cláusula vacía, $\square$, es la contradicción |
-| **árbol de refutación** | el árbol de derivación leído como resoluciones: cada nodo es un resolvente, cada arco un paso, y la consulta vacía de la hoja de éxito es la cláusula vacía $\square$ |
-| **sustitución**, $P\theta$ | un conjunto de pares `Variable/término`; su aplicación reemplaza cada variable ligada por su término |
-| **instancia** | $Q$ es instancia de $P$ si $P\theta = Q$ para alguna θ |
-| **composición** θσ, **sustitución vacía** ε | aplicar σ a los términos de θ y agregar los pares de σ que θ no liga; θε = εθ = θ |
-| **unificador**, **unificador más general** | θ con $E_1\theta = E_2\theta$; el que tiene a todos los demás como instancias, y el que Prolog calcula |
-| **los cuatro pasos** | elegir objetivo y cláusula, unificar, reemplazar, aplicar la sustitución a toda la consulta |
-| **intérprete no determinista** | el procedimiento que elige objetivo y cláusula sin fijar cómo: describe todas las ramas a la vez |
-| **recorrido en profundidad**, **recorrido en anchura** | el de Prolog; el que alcanza toda hoja de éxito aun con ramas infinitas |
-| **negación como falla** | `\+ p` tiene éxito cuando `p` no se puede probar; coincide con $\lnot$ solo bajo el supuesto de mundo cerrado |
-
-## Temas que se retoman
-
-| Tema | Se retoma en |
-|---|---|
-| Reunir todas las respuestas de una consulta | [capítulo 18](../capitulo-18-todas-las-soluciones/index.md) |
-| Predicados que reciben predicados como argumento | [capítulo 19](../capitulo-19-orden-superior/index.md) |
-| Programas que se modifican durante la ejecución | [capítulo 21](../capitulo-21-base-de-datos-dinamica/index.md) |
-| Gramáticas, que son cláusulas con otra notación | [capítulo 22](../capitulo-22-gramaticas-dcg/index.md) |
-| Restricciones, donde la lectura declarativa vuelve a ser exacta | [capítulo 24](../capitulo-24-programacion-con-restricciones/index.md) |
-| Metaintérpretes: un intérprete de Prolog escrito en Prolog | [capítulo 34](../capitulo-34-introspeccion-y-metainterpretes/index.md) |
-| Un metaintérprete que recorre el árbol en anchura | [capítulo 34](../capitulo-34-introspeccion-y-metainterpretes/index.md#ejercicios), ejercicio 6 |
-| Modelos de Herbrand, resolución SLD y SLDNF enunciados con precisión, estratificación | [capítulo 39](../capitulo-39-semantica-de-los-programas-logicos/index.md) |
-| Unificación con verificación de ocurrencia | [capítulo 39](../capitulo-39-semantica-de-los-programas-logicos/resolucion.md), página «Resolución SLD y SLDNF» |
-| Recorrido en anchura, profundidad limitada y profundización iterativa sobre espacios de estados | [capítulo 41](../capitulo-41-busqueda-y-planificacion/index.md) |
-| Resolución sobre fórmulas que no son cláusulas de Horn | [capítulo 63](../capitulo-63-proyecto-demostrador-teoremas/index.md) |
-| Tablas de verdad calculadas con un programa | [capítulo 63](../capitulo-63-proyecto-demostrador-teoremas/index.md) |
-
 ## Referencias
 
 - Álvaro Tasistro y Jorge Vidart, *Programación lógica y funcional*, 1988 —
   parte I, «Programación en lógica», caps. 2 «Introducción a la
   programación en lógica», 3 «Interpretación lógica» y 4 «Interpretación
-  algorítmica». El capítulo adapta de allí, con la notación de SWI-Prolog y los
-  nombres de este curso, la definición de término y de cláusula, las de
-  interpretación, satisfacción y consecuencia lógica, las reglas de inferencia,
-  la resolución y la prueba por refutación con los dos teoremas que el capítulo
-  enuncia sin demostrar, las de sustitución, unificador y unificador más general
-  con sus ejemplos, los cuatro pasos de la evaluación, el intérprete no
-  determinista, las estrategias de evaluación y el tratamiento de la negación.
+  algorítmica». Esta página adapta de allí, con la notación de SWI-Prolog y
+  los nombres de este curso, la definición de término, de fórmula y de
+  cláusula, y la lectura lógica de los conectivos y los cuantificadores.
 - Para el significado de «functor» en la [sección 13.2](#132-terminos-formulas-y-programas): Leon Sterling y Ehud
   Shapiro, *The Art of Prolog*, 2.ª edición, 1994, §1.1; William F.
   Clocksin y Christopher S. Mellish, *Programming in Prolog*, 5.ª edición,
@@ -866,29 +592,3 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
   Kristina Striegnitz, [*Learn Prolog Now!*](https://lpn.swi-prolog.org/),
   2006, §1.1; el
   [glosario del manual de SWI-Prolog](https://www.swi-prolog.org/pldoc/man?section=glossary).
-- John Alan Robinson, «A Machine-Oriented Logic Based on the Resolution
-  Principle», *Journal of the ACM* 12(1), 1965, pp. 23–41, DOI
-  [10.1145/321250.321253](https://doi.org/10.1145/321250.321253): el origen de
-  la regla general de la subsección «La resolución de Robinson» de la
-  [sección 13.7](inferencia.md#la-resolucion-de-robinson); el resolvente con
-  varios literales, que incluye la factorización, está en las definiciones 5.10
-  y 5.11, página 33.
-- Para la regla de resolución de esa subsección: Zbigniew Kluzniak y Stanislaw
-  Szpakowicz, *Prolog for Programmers*, Academic Press, 1985, §2.4, el
-  enunciado y sus casos particulares; Peter Flach, *Simply Logical*, Wiley,
-  1994, cap. 2, «Proof theory», las derivaciones, la prueba por refutación
-  y la incompletitud para las consecuencias; Michael Spivey, *An Introduction
-  to Logic Programming through Prolog*, Prentice Hall, 1996, §6.2, la regla con
-  variables y su corrección, y la factorización como ejercicio; Leon Sterling y
-  Ehud Shapiro, *The Art of Prolog*, 2.ª edición, 1994, §4.3, el origen de la
-  unificación en el artículo de Robinson.
-- Robert Kowalski, «Algorithm = Logic + Control», 1979 — citado a través de la
-  obra anterior: la ecuación que resume la [sección 13.11](evaluacion.md#1311-el-interprete-no-determinista-y-las-estrategias-de-evaluacion).
-- Christopher J. Hogger, *Introduction to Logic Programming*, 1984 — el
-  ejemplo de los elementos consecutivos de la [sección 13.11](evaluacion.md#1311-el-interprete-no-determinista-y-las-estrategias-de-evaluacion) proviene de allí, a
-  través de la obra anterior.
-
-Los programas del capítulo son propios, escritos para el curso; la obra citada
-aporta las definiciones, los teoremas que el capítulo enuncia sin demostrar y
-los ejemplos de unificación y de evaluación, reescritos con la notación de
-SWI-Prolog.

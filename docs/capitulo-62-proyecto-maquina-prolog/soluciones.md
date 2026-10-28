@@ -1,7 +1,7 @@
 # Soluciones del capítulo 62 — Proyecto: una máquina de Prolog
 
 El código de esta página está en `ejemplos/capitulo-62/soluciones.pl`, con
-sus pruebas en `soluciones.plt`; las versiones de los ejercicios 6 y 9 están
+sus pruebas en `soluciones.plt`; las versiones de los ejercicios 5 y 8 están
 en `soluciones_traza.pl` y `soluciones_sin_rastro.pl`, cada una con sus
 pruebas. `soluciones.pl` carga la máquina terminada, `maquina.pl`, y con
 ella las cinco versiones. Los programas objeto de los ejercicios son listas
@@ -50,7 +50,7 @@ M = 4.
 Con `maximo(3, 4, M)`, la primera cláusula falla en `3 >= 4`, antes de
 llegar al corte, y la segunda es la última: ninguna versión deja
 alternativas. La versión 3 no produce el error de existencia de la
-[sección 62.4](index.md#624-celdas-almacen-y-rastro), porque el `!` nunca llega a ser la primera meta de la
+[sección 62.4](alternativas.md#624-celdas-almacen-y-rastro), porque el `!` nunca llega a ser la primera meta de la
 resolvente; y la versión 1 tampoco da una respuesta incorrecta, porque el
 corte que ejecuta como `true` no se alcanza. Las dos versiones fallan solo
 cuando el corte se ejecuta, como con `maximo(4, 3, M)`.
@@ -77,35 +77,6 @@ celdas; las cláusulas que se usan son las mismas en las dos versiones, así
 que las celdas también.
 
 ## 3
-
-```prolog
-?- ejecutar_archivo(ejemplos('capitulo-07/recorrer'), ultimo([a, b], X)).
-X = b ;
-false.
-
-?- ejecutar_archivo(ejemplos('capitulo-07/recorrer'), concatenar(X, Y, [a])).
-X = [],
-Y = [a] ;
-X = [a],
-Y = [] ;
-false.
-
-?- ejecutar_archivo(ejemplos('capitulo-07/recorrer'), longitud([a, b], N)).
-N = 2.
-```
-
-SWI-Prolog, con `recorrer.pl` cargado, da las mismas respuestas en el mismo
-orden, y también termina las dos primeras en `;` y `false.` y la tercera en
-punto. Las claves lo explican. Las dos cláusulas de `ultimo/2` empiezan con
-una lista no vacía, `'[|]'/2`, así que al llegar a `ultimo([b], X)` la
-segunda sigue siendo compatible y queda pendiente, aunque después falle.
-En `concatenar(X, Y, [a])` el primer argumento es libre y ninguna cláusula se
-descarta. En `longitud/2` las claves `[]` y `'[|]'/2` separan las dos cláusulas
-en cada llamada. SWI-Prolog puede construir tablas para otros argumentos
-([sección 17.3](../capitulo-17-rendimiento/index.md#173-indexacion)), pero en estas consultas no le sirven: el argumento
-que las distinguiría es una variable en alguna de las cabezas.
-
-## 4
 
 <!-- ejemplo: capitulo-62/soluciones.pl fragmento: tipos([ (tipo(1, entero) :- true), .. medir_clausulas(indice, Cs2, tipo(entero, _), Primero). -->
 ```prolog
@@ -149,7 +120,7 @@ no deja punto de elección y la última termina en punto. La indexación de la
 máquina solo mira el primer argumento: el orden de los argumentos decide
 cuánto sirve.
 
-## 5
+## 4
 
 <!-- ejemplo: capitulo-62/soluciones.pl predicado: unificar_con_prueba/5 ocurre/3 -->
 ```prolog
@@ -199,7 +170,7 @@ infinito, como `X = f(X)` en Prolog; `unify_with_occurs_check(X, f(X))`
 falla igual que la versión con prueba. El costo es el que señala Spivey:
 cada ligadura recorre el término entero.
 
-## 6
+## 5
 
 <!-- ejemplo: capitulo-62/soluciones_traza.pl predicado: paso/5 volver/3 -->
 ```prolog
@@ -244,7 +215,7 @@ máquina vuelve al punto de elección de `padre(juan, A)`, que sigue arriba
 con altura 1 porque la versión 3 no indexa y quedan los hechos de `ana` y
 de `luis`.
 
-## 7
+## 6
 
 <!-- ejemplo: capitulo-62/soluciones.pl predicado: transformar/2 transformar_cuerpo/6 auxiliar/5 -->
 ```prolog
@@ -322,7 +293,7 @@ X = 3.
 Prolog responde solo `X = 1`: el corte de `p(X) :- (X = 1, ! ; X = 2)`
 descarta también la cláusula `p(3)`.
 
-## 8
+## 7
 
 `invertir/2` concatena al final en cada llamada, y la concatenación recorre
 lo invertido hasta ese momento: los pasos crecen con el cuadrado de `N`.
@@ -366,7 +337,7 @@ medir_con_acumuladores(Meta, Medidas) :-
     medir_clausulas(indice, Clausulas, Meta, Medidas).
 ```
 
-## 9
+## 8
 
 <!-- ejemplo: capitulo-62/soluciones_sin_rastro.pl predicado: llamar/5 volver/3 -->
 ```prolog
@@ -412,7 +383,7 @@ momento, y las ligaduras posteriores crean nodos nuevos sin modificar los
 viejos. Una máquina con una memoria que se modifica en su lugar no puede
 hacer esto.
 
-## 10
+## 9
 
 <!-- ejemplo: capitulo-62/soluciones_aritmetica.pl predicado: compilar_llamada/2 codigo//1 paso/5 evaluar/4 -->
 ```prolog
@@ -501,11 +472,11 @@ instrucción, interpretada por Prolog. A eso se suma que el paso de
 `aritmetica` examina cada meta antes de delegarla en el de la versión 6.
 Compilar gana cuando el trabajo que se deja de hacer en cada ejecución es
 grande comparado con el de interpretar las instrucciones, como en las
-cabezas de la [sección 62.7](index.md#627-el-programa-compilado); con expresiones de dos
+cabezas de la [sección 62.7](alternativas.md#627-el-programa-compilado); con expresiones de dos
 operandos, la reconstrucción ya era barata. La conclusión se mide, no se
 supone.
 
-## 11
+## 10
 
 | Elementos | `longitud_hasta` | `longitud_acc_hasta` |
 |---|---|---|
@@ -516,6 +487,35 @@ La resolvente de `longitud/2` guarda un `N is N0 + 1` por cada elemento,
 como la pila de SWI-Prolog de la [sección 17.2](../capitulo-17-rendimiento/index.md#172-la-pila-y-la-recursion); con acumulador, la
 suma se hace antes de la llamada recursiva, que es la última meta, y la
 resolvente no crece.
+
+## 11
+
+```prolog
+?- ejecutar_archivo(ejemplos('capitulo-07/recorrer'), ultimo([a, b], X)).
+X = b ;
+false.
+
+?- ejecutar_archivo(ejemplos('capitulo-07/recorrer'), concatenar(X, Y, [a])).
+X = [],
+Y = [a] ;
+X = [a],
+Y = [] ;
+false.
+
+?- ejecutar_archivo(ejemplos('capitulo-07/recorrer'), longitud([a, b], N)).
+N = 2.
+```
+
+SWI-Prolog, con `recorrer.pl` cargado, da las mismas respuestas en el mismo
+orden, y también termina las dos primeras en `;` y `false.` y la tercera en
+punto. Las claves lo explican. Las dos cláusulas de `ultimo/2` empiezan con
+una lista no vacía, `'[|]'/2`, así que al llegar a `ultimo([b], X)` la
+segunda sigue siendo compatible y queda pendiente, aunque después falle.
+En `concatenar(X, Y, [a])` el primer argumento es libre y ninguna cláusula se
+descarta. En `longitud/2` las claves `[]` y `'[|]'/2` separan las dos cláusulas
+en cada llamada. SWI-Prolog puede construir tablas para otros argumentos
+([sección 17.3](../capitulo-17-rendimiento/index.md#173-indexacion)), pero en estas consultas no le sirven: el argumento
+que las distinguiría es una variable en alguna de las cabezas.
 
 ## 12
 

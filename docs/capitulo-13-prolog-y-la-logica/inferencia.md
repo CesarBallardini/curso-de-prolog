@@ -217,7 +217,7 @@ atómica, y ninguna interpretación la hace verdadera. Resolución es correcta, 
 para la refutación es completa: si $P \cup \{\lnot f\}$ es inconsistente, la
 resolución deduce $\square$ a partir de ese conjunto. El capítulo enuncia los
 dos resultados sin demostrarlos; el
-[capítulo 39](../capitulo-39-semantica-de-los-programas-logicos/resolucion.md#resolucion-sld)
+[capítulo 39](../capitulo-39-semantica-de-los-programas-logicos/resolucion.md#392-resolucion-sld)
 los enuncia con precisión para los programas Prolog.
 
 Con `torta.pl` y la consulta `?- torta.` el mecanismo se ve solo, sin
@@ -452,7 +452,7 @@ es verdadera en toda interpretación, y la resolución no la deriva de un
 programa donde $a$ ni aparece. Por eso se la usa para decidir si una fórmula
 dada es consecuencia, no para generar consecuencias. Prolog emplea una parte
 pequeña de la regla, la que el
-[capítulo 39](../capitulo-39-semantica-de-los-programas-logicos/resolucion.md#resolucion-sld)
+[capítulo 39](../capitulo-39-semantica-de-los-programas-logicos/resolucion.md#392-resolucion-sld)
 llama **resolución SLD**:
 
 - una de las dos cláusulas es siempre la consulta pendiente, con todos sus
@@ -472,3 +472,116 @@ demostrador que resuelve cláusulas cualesquiera, con factorización.
 El capítulo continúa en la página
 [Sustituciones y unificadores](sustituciones.md#138-sustituciones), con las
 sustituciones que etiquetan los arcos de esos árboles.
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio, y los capítulos siguientes los dan por hechos.
+
+11. **(2)** La [sección 13.5](index.md#135-clausulas-de-horn) afirma que un hecho es
+    una cláusula de Horn sin condiciones y una consulta es una cláusula de Horn
+    sin conclusión.
+
+    a. Escribir la fórmula que corresponde a la consulta
+       `?- padre(juan, Quien).` y explicar en qué sentido Prolog la **refuta**
+       en lugar de demostrarla.
+
+    b. Decir cuáles de estas afirmaciones son verdaderas, y corregir las
+       falsas: un programa es un conjunto de hechos y reglas; la consulta forma
+       parte del programa; `odia(X, Y), odia(Y, X) :- enemigo(X, Y).` puede
+       ser una cláusula de un programa; un hecho es una cláusula sin
+       condiciones; una consulta sin variables pregunta si el programa contiene
+       esa afirmación como hecho.
+
+12. **(1)** Calcular el valor de verdad de
+    $(p \rightarrow q) \leftrightarrow (\lnot q \rightarrow \lnot p)$ en las
+    cuatro interpretaciones de la
+    [sección 13.6](#136-interpretaciones-modelos-y-consecuencia-logica) para
+    dos átomos —los átomos verdaderos son $\{p, q\}$, $\{p\}$, $\{q\}$ y
+    ninguno—, en una tabla de cuatro filas. Decir si la fórmula es verdadera
+    en todas ellas, y en qué filas uno de los dos lados del $\leftrightarrow$
+    es falso.
+13. ★ **(2)** Sobre `torta.pl`, el programa de cinco cláusulas de la
+    [sección 13.6](#136-interpretaciones-modelos-y-consecuencia-logica):
+
+    a. Decir cuáles de estas interpretaciones son modelos del programa, y por
+       qué: la que hace verdaderos a `hay_harina`, `hay_leche` y `masa` y
+       falsos a los demás; la que hace verdaderos a `hay_huevos`, `masa` y
+       `torta`; la que hace verdaderos a los cinco átomos menos `torta`; la que
+       hace verdaderos a los cinco átomos y además a `hay_azucar`.
+
+    b. ¿Es $\mathit{torta}$ consecuencia lógica del programa? ¿Lo es
+       $\mathit{hay\_azucar}$? ¿Lo es $\lnot \mathit{hay\_azucar}$?
+
+    c. Verdadero o falso, con la razón: «si $P \models f$, entonces todo modelo
+       de $P$ es modelo de $P \cup \{f\}$».
+
+14. **(2)** La resolución no exige que una de las dos cláusulas sea una consulta.
+    Resolver la regla `madre/2` de `logica.pl` con el hecho `mujer(marta).`,
+    escribir el resolvente como una cláusula de Prolog, y explicar por qué es
+    una consecuencia del programa aunque ninguna consulta la produzca durante la
+    ejecución.
+15. ★ **(2)** Reescribir en forma clausal el árbol del
+    [ejercicio 1 del capítulo 5](../capitulo-05-como-responde-prolog/index.md#ejercicios),
+    el de `?- abuelo(Quien, luis).` sobre `busqueda.pl`, como en
+    [La refutación en forma clausal](#la-refutacion-en-forma-clausal): la
+    consulta negada, cada paso de resolución con su sustitución y su
+    resolvente, y los resolventes en los que termina cada una de las tres
+    ramas.
+16. **(3)** El programa siguiente no tiene variables, de modo que cada átomo es
+    una afirmación completa:
+
+    ```prolog
+    templado.
+    llueve.
+    picnic :- templado, \+ llueve.
+    remar :- picnic.
+    ```
+
+    A esas cláusulas se agrega la afirmación «no se rema cuando llueve», que en
+    forma clausal es $\lnot \mathit{remar} \lor \lnot \mathit{llueve}$.
+
+    a. Escribir en forma clausal las dos primeras cláusulas y la cuarta, y
+       demostrar en papel, por refutación, que no se rema: agregar la negación
+       de esa conclusión y derivar la cláusula vacía, indicando cada
+       resolvente.
+
+    b. Explicar por qué $\lnot \mathit{remar} \lor \lnot \mathit{llueve}$ no es un hecho ni una
+       regla de Prolog, y a cuál de los tres casos de la
+       [sección 13.5](index.md#135-clausulas-de-horn) corresponde su forma.
+
+    c. Sin ejecutarla, explicar por qué `?- \+ remar.` tiene éxito sobre las
+       cuatro cláusulas del programa, y por qué la razón de ese éxito es otra
+       que la de la demostración del punto a. Comprobarlo después. El
+       [capítulo 10](../capitulo-10-negacion-como-falla/index.md) describe
+       `\+`, y el [capítulo 39](../capitulo-39-semantica-de-los-programas-logicos/index.md)
+       trata la forma clausal de fórmulas cualesquiera.
+
+## Referencias
+
+- Álvaro Tasistro y Jorge Vidart, *Programación lógica y funcional*, 1988 —
+  parte I, «Programación en lógica», caps. 2 «Introducción a la
+  programación en lógica», 3 «Interpretación lógica» y 4 «Interpretación
+  algorítmica». Esta página adapta de allí, con la notación de SWI-Prolog y
+  los nombres de este curso, las definiciones de interpretación,
+  satisfacción y consecuencia lógica, las reglas de inferencia, la
+  resolución y la prueba por refutación con los dos teoremas que la página
+  enuncia sin demostrar.
+- John Alan Robinson, «A Machine-Oriented Logic Based on the Resolution
+  Principle», *Journal of the ACM* 12(1), 1965, pp. 23–41, DOI
+  [10.1145/321250.321253](https://doi.org/10.1145/321250.321253): el origen de
+  la regla general de la subsección «La resolución de Robinson» de la
+  [sección 13.7](#la-resolucion-de-robinson); el resolvente con
+  varios literales, que incluye la factorización, está en las definiciones 5.10
+  y 5.11, página 33.
+- Para la regla de resolución de esa subsección: Zbigniew Kluzniak y Stanislaw
+  Szpakowicz, *Prolog for Programmers*, Academic Press, 1985, §2.4, el
+  enunciado y sus casos particulares; Peter Flach, *Simply Logical*, Wiley,
+  1994, cap. 2, «Proof theory», las derivaciones, la prueba por refutación
+  y la incompletitud para las consecuencias; Michael Spivey, *An Introduction
+  to Logic Programming through Prolog*, Prentice Hall, 1996, §6.2, la regla con
+  variables y su corrección, y la factorización como ejercicio; Leon Sterling y
+  Ehud Shapiro, *The Art of Prolog*, 2.ª edición, 1994, §4.3, el origen de la
+  unificación en el artículo de Robinson.

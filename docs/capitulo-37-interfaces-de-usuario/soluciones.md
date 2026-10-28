@@ -422,25 +422,6 @@ test(bucle, true(A == "Inscripción aceptada: 104 en ssl")) :-
 
 ## 7
 
-| Predicado | Capa | Puro | Se prueba en la integración continua |
-|---|---|---|---|
-| `paso/3` | interfaz (transición) | sí; llama a `jugar/4`, que es puro | sí |
-| `pantalla/2` | interfaz (modelo) | sí | sí |
-| `bucle/3` | interfaz (borde) | no: lee y escribe | sí, con teclas en una cadena y la salida capturada |
-| `leer_tecla/2` | interfaz (borde) | no: lee de la fuente que recibe | sí, con `open_string/2` |
-| `clic/4` | interfaz, sobre el núcleo | sí | sí |
-| `pulsar/3` | interfaz (callback) | no: lee y cambia la ventana y `partida_de/2` | no: solo en `swipl-win` |
-| `mostrar/2` | interfaz (borde) | no: cambia la ventana | no: solo en `swipl-win` |
-| `cuerpo_materia/2` | interfaz (modelo de la página) | sí; consulta los datos | sí |
-| `pagina_materia/2` | interfaz (borde) | no: responde el pedido | sí, con pedidos HTTP |
-| `mensaje_de_inscripcion/3` | interfaz, sobre el núcleo | no: inscribe | sí, restaurando los datos |
-
-Ninguno es del núcleo: el núcleo son los módulos del
-[capítulo 32](../capitulo-32-ejecutables-y-distribucion/index.md), que no cambiaron. Lo que la integración continua no
-prueba es lo que depende de XPCE.
-
-## 8
-
 <!-- ejemplo: capitulo-37/ventanas/soluciones_xpce.pl predicado: texto_de_sugerencia/2 ventana_con_sugerencia/2 sugerir/1 -->
 ```prolog
 %!  texto_de_sugerencia(+Partida, -Texto:string) is det.
@@ -491,7 +472,7 @@ de la ventana ejecuta el mensaje del ítem, como lo haría un clic en el menú:
 Con minas en 1-1 y 3-3 y la celda 1-4 descubierta, el rótulo dice
 `Celda segura: fila 3, columna 2`.
 
-## 9
+## 8
 
 <!-- ejemplo: capitulo-37/ventanas/soluciones_xpce.pl predicado: lineas_de_inscriptos/2 ventana_con_inscriptos/1 mostrar_inscriptos/1 inscribir_y_mostrar/1 -->
 ```prolog
@@ -561,7 +542,7 @@ no lo ejecuta; por eso la prueba reenvía el mensaje con
 tiene 5 inscriptos en `am1`, la primera materia, 4 en `log`, ninguno en
 `ssl`, y 1 después de inscribir al 104.
 
-## 10
+## 9
 
 <!-- ejemplo: capitulo-37/ventanas/soluciones_xpce.plt fragmento: test(rechazo_en_la_ventana, .. get(Rotulo, selection, R). -->
 ```prolog
@@ -584,6 +565,25 @@ test(rechazo_en_la_ventana,
 `inscribir/3` cuenta la operación en los dos casos. En `swipl`, la
 condición `hay_xpce` falla y plunit omite la prueba en silencio: el archivo
 corre las tres pruebas de los predicados puros, y `swipl-win` las seis.
+
+## 10
+
+| Predicado | Capa | Puro | Se prueba en la integración continua |
+|---|---|---|---|
+| `paso/3` | interfaz (transición) | sí; llama a `jugar/4`, que es puro | sí |
+| `pantalla/2` | interfaz (modelo) | sí | sí |
+| `bucle/3` | interfaz (borde) | no: lee y escribe | sí, con teclas en una cadena y la salida capturada |
+| `leer_tecla/2` | interfaz (borde) | no: lee de la fuente que recibe | sí, con `open_string/2` |
+| `clic/4` | interfaz, sobre el núcleo | sí | sí |
+| `pulsar/3` | interfaz (callback) | no: lee y cambia la ventana y `partida_de/2` | no: solo en `swipl-win` |
+| `mostrar/2` | interfaz (borde) | no: cambia la ventana | no: solo en `swipl-win` |
+| `cuerpo_materia/2` | interfaz (modelo de la página) | sí; consulta los datos | sí |
+| `pagina_materia/2` | interfaz (borde) | no: responde el pedido | sí, con pedidos HTTP |
+| `mensaje_de_inscripcion/3` | interfaz, sobre el núcleo | no: inscribe | sí, restaurando los datos |
+
+Ninguno es del núcleo: el núcleo son los módulos del
+[capítulo 32](../capitulo-32-ejecutables-y-distribucion/index.md), que no cambiaron. Lo que la integración continua no
+prueba es lo que depende de XPCE.
 
 ## 11
 

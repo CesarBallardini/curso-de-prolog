@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 56 - Solución del ejercicio 9: ANALOGY con diagramas anidados.
+% Capítulo 56 - Solución del ejercicio 10: ANALOGY con diagramas anidados.
 %
 % en_exterior(Op) aplica la operación Op a la segunda parte de una
 % relación, que puede ser a su vez una relación. La cláusula se agrega a

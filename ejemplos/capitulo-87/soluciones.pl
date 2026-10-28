@@ -58,47 +58,6 @@ tabla_de_columna(Desde, Marcos, Ref, Tabla-C) :-
 
 % Ejercicio 5
 
-%!  actualizar_tupla(+Texto, -N:integer) is det.
-%
-%   Ejecuta el UPDATE Texto como Toy-Sequel: para cada fila que cumple la
-%   condición, retira la tupla y agrega la nueva, dentro del recorrido.
-%   N es la cantidad de filas cambiadas. La condición ve la tabla a medio
-%   cambiar.
-actualizar_tupla(Texto, N) :-
-    analizar(Texto, actualizar(T, Asignaciones, Condicion)),
-    marcos([desde(T, T)], [Generador], Marcos),
-    Marcos = [marco(_, Columnas)],
-    Pila = [Marcos],
-    condicion(Condicion, fila, Pila, verdadera, Filtro),
-    maplist([col(_, _, _, V), V]>>true, Columnas, Viejos),
-    nuevos(Columnas, Asignaciones, Pila, Nuevos, Calculos),
-    Generador = M:Cabeza,
-    Cabeza =.. [P|Viejos],
-    Nueva =.. [P|Nuevos],
-    aggregate_all(count,
-                  ( Generador,
-                    once(Filtro),
-                    Calculos,
-                    retract(M:Cabeza),
-                    assertz(M:Nueva) ),
-                  N).
-
-%!  nuevos(+Columnas:list, +Asignaciones:list, +Pila:list, -Nuevos:list,
-%!         -Calculos) is det.
-%
-%   Nuevos son los valores nuevos de las columnas: el de su asignación, o
-%   el viejo; Calculos es la meta que calcula los asignados.
-nuevos([], _, _, [], true).
-nuevos([col(C, _, _, V)|Cs], Asignaciones, Pila, [N|Ns], (M, Ms)) :-
-    (   memberchk(C-E, Asignaciones)
-    ->  expresion(E, fila, Pila, N, _, _, M)
-    ;   N = V,
-        M = true
-    ),
-    nuevos(Cs, Asignaciones, Pila, Ns, Ms).
-
-% Ejercicio 6
-
 %!  traducir_ordenado(+Texto, -Traduccion) is det.
 %
 %   Traduccion es Fila-Meta, la traducción de la consulta Texto con sus
@@ -144,7 +103,48 @@ ligados(_:G, K) :-
     include(nonvar, Args, Ligados),
     length(Ligados, K).
 
-% Ejercicio 7
+% Ejercicio 8
+
+%!  actualizar_tupla(+Texto, -N:integer) is det.
+%
+%   Ejecuta el UPDATE Texto como Toy-Sequel: para cada fila que cumple la
+%   condición, retira la tupla y agrega la nueva, dentro del recorrido.
+%   N es la cantidad de filas cambiadas. La condición ve la tabla a medio
+%   cambiar.
+actualizar_tupla(Texto, N) :-
+    analizar(Texto, actualizar(T, Asignaciones, Condicion)),
+    marcos([desde(T, T)], [Generador], Marcos),
+    Marcos = [marco(_, Columnas)],
+    Pila = [Marcos],
+    condicion(Condicion, fila, Pila, verdadera, Filtro),
+    maplist([col(_, _, _, V), V]>>true, Columnas, Viejos),
+    nuevos(Columnas, Asignaciones, Pila, Nuevos, Calculos),
+    Generador = M:Cabeza,
+    Cabeza =.. [P|Viejos],
+    Nueva =.. [P|Nuevos],
+    aggregate_all(count,
+                  ( Generador,
+                    once(Filtro),
+                    Calculos,
+                    retract(M:Cabeza),
+                    assertz(M:Nueva) ),
+                  N).
+
+%!  nuevos(+Columnas:list, +Asignaciones:list, +Pila:list, -Nuevos:list,
+%!         -Calculos) is det.
+%
+%   Nuevos son los valores nuevos de las columnas: el de su asignación, o
+%   el viejo; Calculos es la meta que calcula los asignados.
+nuevos([], _, _, [], true).
+nuevos([col(C, _, _, V)|Cs], Asignaciones, Pila, [N|Ns], (M, Ms)) :-
+    (   memberchk(C-E, Asignaciones)
+    ->  expresion(E, fila, Pila, N, _, _, M)
+    ;   N = V,
+        M = true
+    ),
+    nuevos(Cs, Asignaciones, Pila, Ns, Ms).
+
+% Ejercicio 9
 
 %!  insertar_verificado(+Texto, -Resultado) is det.
 %
@@ -160,7 +160,7 @@ insertar_verificado(Texto, Resultado) :-
     ;   true
     ).
 
-% Ejercicio 8
+% Ejercicio 10
 
 %!  recursiva(+Tabla, +Crear, +Base, +Paso, -Rondas:integer) is det.
 %

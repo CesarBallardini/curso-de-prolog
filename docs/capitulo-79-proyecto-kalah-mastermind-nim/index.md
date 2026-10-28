@@ -37,9 +37,11 @@ suma de Nim y Kalah con la poda alfa-beta. La teoría de Nim es la del
 artículo de Charles Bouton de 1901, que la formuló y la demostró. El
 capítulo reescribe los programas con los predicados actuales de
 SWI-Prolog, sin `assert`, y les agrega lo que el libro no tiene: la
-comparación con la búsqueda, las mediciones y las pruebas. La lista
-completa de las fuentes, con lo que se toma de cada una, está en las
-[Referencias](#referencias).
+comparación con la búsqueda, las mediciones y las pruebas. Cada página
+cita al final las fuentes que usa, con lo que toma de cada una: las de
+Nim, en [Referencias](#referencias); las de Mastermind y las de Kalah, en
+las de las páginas [Mastermind](mastermind.md#referencias) y
+[Kalah](kalah.md#referencias).
 
 El capítulo cumple tres anuncios: el del
 [capítulo 42](../capitulo-42-juegos/index.md) (Kalah con la poda
@@ -73,9 +75,9 @@ Al terminar el capítulo, el lector puede:
   persona, con el núcleo de cada juego separado de la terminal.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **4:00 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **3:55 h**.
     Resolver los 5 ejercicios marcados con ★: **1:05 h**.
-    Resolver los 11 ejercicios del final: **3:15 h**.
+    Resolver los 11 ejercicios del capítulo: **3:15 h**.
 
 ## 79.1 Tres maneras de elegir una jugada
 
@@ -589,7 +591,7 @@ La partida es el patrón 80:
     **Versión ingenua.** Una partida por combinación, o una partida con un
     `(   Max == suma -> … ;   Max == tabulada -> … )` que enumera las
     estrategias: cada estrategia nueva cambia la partida, y el torneo de
-    la [sección 79.10](#7910-kalah-version-2-el-jugador-con-alfa-beta),
+    la [sección 79.10](kalah.md#7910-kalah-version-2-el-jugador-con-alfa-beta),
     con cinco profundidades, necesitaría veinte combinaciones.
 
     **Patrón.** Una estrategia es un predicado que recibe el juego y la
@@ -857,56 +859,11 @@ grafo Y/O del juego.
     `[6, 10, 15]`, y dar una jugada segura en la que no sea 0. Comprobarlo
     con `suma_nim/2` y `jugada_segura/2`.
 
-## 79.6 Mastermind, versión 1: la jugada consistente
-
-El código secreto son cuatro dígitos distintos, y cada intento recibe los
-toros y las vacas. La página
-[Mastermind](mastermind.md#mastermind-version-1-la-jugada-consistente)
-escribe la regla de Sterling y Shapiro: proponer siempre el primer código
-que explica todas las respuestas recibidas. Sobre los 5040 secretos, la
-media es de 5,56 intentos y el máximo, de 9.
-
-## 79.7 Mastermind, versión 2: los códigos que todavía son posibles
-
-La [versión 2](mastermind.md#mastermind-version-2-los-codigos-que-todavia-son-posibles)
-guarda la lista de los códigos que todavía explican las respuestas, como
-los mundos consistentes del
-[capítulo 78](../capitulo-78-proyecto-mundo-wumpus/index.md), y juega
-contra una persona: reconoce cuándo sus respuestas se contradicen.
-
-## 79.8 Mastermind, versión 3: restricciones
-
-La [versión 3](mastermind.md#mastermind-version-3-restricciones) escribe
-la consistencia con las restricciones del
-[capítulo 24](../capitulo-24-programacion-con-restricciones/index.md) y
-la reificación. Las tres versiones hacen los mismos intentos, y medidas
-sobre los 5040 secretos cuestan lo mismo dentro de un factor de 1,5.
-
-## 79.9 Kalah, versión 1: el tablero y la siembra
-
-La página [Kalah](kalah.md#kalah-version-1-el-tablero-y-la-siembra)
-escribe las reglas de Kalah como relaciones sobre un tablero visto desde
-el que mueve: la siembra en un anillo de trece casillas, las vueltas
-completas, los turnos extra, las capturas y el barrido final, con tres
-diferencias respecto del programa del libro.
-
-## 79.10 Kalah, versión 2: el jugador con alfa-beta
-
-La [versión 2](kalah.md#kalah-version-2-el-jugador-con-alfa-beta)
-describe Kalah para la búsqueda del [capítulo 42](../capitulo-42-juegos/index.md) y juega partidas entre
-profundidades: la profundidad 5 gana siete de sus ocho partidas, pero la 4
-pierde como sur contra la 1, un efecto del horizonte de una evaluación que
-solo cuenta los kalahs.
-
-!!! success "Criterios de calidad"
-    | Criterio | En este capítulo |
-    |---|---|
-    | C1 | cada predicado declara modos y determinación; `siguiente/2` y `siguiente_clp/2` aclaran que el intento debe llegar libre, y `turno_completo/3` que enumera los turnos |
-    | C2 | representaciones limpias: `sacar(K, M)`, `r(Intento, Toros, Vacas)`, `tablero/4` y `k/2`; el texto de la terminal se arma aparte del núcleo |
-    | C3 | la búsqueda del [capítulo 42](../capitulo-42-juegos/index.md) juega Nim y Kalah sin cambios, a través del puente; las estrategias son argumentos de `partida/5` |
-    | C4 | `sembrar/4`, `capturar/3` y `barrer/2` deciden con si-entonces-sino y no dejan alternativas; `jugada_ganadora/2` y `una_ficha/2` usan `once/1` |
-    | C6 | `partida/5` es pura; solo `jugar/4` y `jugar/1` leen y escriben, y sus pruebas leen de cadenas |
-    | C7 | 109 pruebas en siete archivos, y 21 más sobre las soluciones; las tres versiones de Mastermind se comparan entre sí, la búsqueda de Nim con la suma, y la suma con los teoremas de Bouton |
+El capítulo continúa en la página
+[Mastermind](mastermind.md#796-mastermind-version-1-la-jugada-consistente),
+con el juego que no tiene adversario: las tres versiones del programa que
+adivina un código secreto. Antes, los [ejercicios](#ejercicios) de esta
+página practican las tres versiones de Nim.
 
 ## Ejercicios
 
@@ -935,90 +892,22 @@ que cargan los del capítulo, sin modificarlos.
 4. **(1)** Medir `ganadora_tabulada/1` y contar las formas con
    `posiciones/1` desde `[1, 3, 5, 7, 9]` y desde `[1, 3, 5, 7, 9, 11]`.
    Explicar por qué la cantidad de formas crece mucho menos que el árbol.
-5. ★ **(2)** Escribir `particion(+Intento, +Codigos, -Clases)`: Clases
-   son pares `Toros-Vacas-K`, con K la cantidad de códigos de Codigos que
-   darían esa respuesta a Intento. Calcular las clases del primer intento
-   sobre los 5040 códigos, y decir cuál es la mayor y qué significa para
-   el segundo intento.
-6. **(3)** Escribir `adivinar_minimax/2`, que elige el intento entre los
-   códigos posibles: el que deja la menor clase mayor, con
-   `particion/3`. Medir la media y el máximo de intentos sobre once
-   secretos, uno de cada 500 en el orden de `codigo/1`, contra los de
-   `adivinar/2`.
-7. ★ **(2)** En el Mastermind comercial, el código son cuatro colores
-   entre seis, que pueden repetirse, y las vacas cuentan los colores
-   comunes, cada uno tantas veces como el menor de sus apariciones, menos
-   los toros. Escribir `respuesta_colores/4` y `adivinar_colores/2` con la
-   regla de la jugada consistente, y medir la media y el máximo sobre los
-   1296 códigos.
-8. **(2)** Escribir `primera_contradiccion(+Respuestas, -K)`: K es la
-   posición de la primera respuesta de la lista después de la cual ningún
-   código las explica a todas. Probarlo con las respuestas de la actividad
-   de la [sección 79.7](mastermind.md#mastermind-version-2-los-codigos-que-todavia-son-posibles).
-9. ★ **(1)** Predecir el resultado de `sembrar/4` desde el hoyo 3 con 13
-   piedras en `tablero([0, 0, 13, 0, 0, 0], 0, [0, 0, 0, 0, 2, 0], 0)` y
-   el de `capturar/3` a continuación. Comprobarlo, y decir qué haría el
-   programa del libro en el mismo caso.
-10. **(3)** Escribir un juego `kalah_piedras(N)` que delegue en `kalah(N)`
-    y evalúe con la diferencia de kalahs más la mitad de la diferencia de
-    las piedras que cada uno tiene en sus hoyos. Jugar las profundidades
-    2, 3 y 4 de cada evaluación contra las de la otra, como sur y como
-    norte, y comparar los puntos.
-11. **(2)** Escribir `jugada_nim_texto(+Jugada, -Texto)`, que traduzca
-    `sacar(K, M)` a «La computadora saca M fichas de la pila K.», y un
-    juego `nim_texto(Pilas)` que use ese texto en la terminal. ¿Qué
-    predicados de `partida.pl` hay que cambiar, y cuáles no?
-
-## Resumen
-
-| | |
-|---|---|
-| **suma de Nim** | el o exclusivo de los tamaños de las pilas; el que mueve pierde si es 0 |
-| **posición segura** | la de suma de Nim 0: toda jugada desde ella deja una insegura, y desde una insegura hay una jugada que deja una segura |
-| **forma de una posición** | la posición sin lo que no cambia el resultado, para que la tabla junte las posiciones equivalentes |
-| **jugada consistente** | un intento que, de ser el secreto, habría recibido todas las respuestas ya recibidas |
-| **toros y vacas** | dígitos comunes en la misma posición y en otra posición |
-| **siembra** | repartir las piedras de un hoyo de a una en sentido antihorario, salteando el kalah del rival |
-| **estrategia como argumento** | un predicado que elige la jugada, que la partida recibe y llama con `call/4` |
-| **cláusulas en un módulo cargado** | predicados declarados `multifile` antes de cargar el archivo, a los que otros archivos agregan cláusulas con el módulo delante |
-| `sacar/3`, `ganadora/1`, `ganadora_tabulada/1`, `forma/2`, `posiciones/1` | las reglas de Nim y su búsqueda |
-| `jugada_ganadora/2`, `una_ficha/2`, `tabulada/3` | el jugador de Nim |
-| `suma_nim/2`, `segura/1`, `jugada_segura/2`, `elegir/2` | la suma de Nim |
-| `codigo/1`, `respuesta/4`, `consistente/2`, `siguiente/2`, `adivinar/2`, `medir/4` | Mastermind, versión 1 |
-| `candidatos/1`, `filtrar/5`, `quedan/2`, `adivinar_candidatos/2` | Mastermind, versión 2 |
-| `siguiente_clp/2`, `adivinar_clp/2` | Mastermind, versión 3 |
-| `sembrar/4`, `capturar/3`, `barrer/2`, `turno_completo/3`, `girar/2`, `kalahs/4` | Kalah |
-| `partida/5`, `partida/6`, `profundidad/4`, `tiempo/4`, `primera/3`, `jugar/4` | partidas entre estrategias y contra una persona |
-| `xor` | el o exclusivo bit a bit de dos enteros, en `is/2` |
-| **[Patrón 79](../patrones.md#79-clausulas-para-un-modulo-cargado)** | cláusulas para un módulo cargado |
-| **[Patrón 80](../patrones.md#80-estrategia-como-argumento)** | estrategia como argumento |
-| `strip_module/3` | separa un objetivo calificado en su módulo y el objetivo |
-
-## Temas que se retoman
-
-| Tema | Se retoma en |
-|---|---|
-| Un lenguaje de consejos para el ajedrez: metas y restricciones sobre las jugadas en lugar de una evaluación numérica | [capítulo 80](../capitulo-80-proyecto-lenguaje-consejos-ajedrez/index.md) |
+5. **(2)** Escribir `jugada_nim_texto(+Jugada, -Texto)`, que traduzca
+   `sacar(K, M)` a «La computadora saca M fichas de la pila K.», y un
+   juego `nim_texto(Pilas)` que use ese texto en la terminal. ¿Qué
+   predicados de `partida.pl` hay que cambiar, y cuáles no?
 
 ## Referencias
 
 - Leon Sterling y Ehud Shapiro, *The Art of Prolog: Advanced Programming
   Techniques*, 2.ª edición, MIT Press, 1994 — capítulo «Game-Playing
-  Programs», secciones «Mastermind», «Nim» y «Kalah» (programas 21.1,
-  21.2 y 21.3), y del capítulo «Search Techniques», el marco para jugar
-  (programa 20.8) y la poda alfa-beta (programa 20.11).
+  Programs», sección «Nim» (programa 21.2), y del capítulo «Search
+  Techniques», el marco para jugar (programa 20.8) y la poda alfa-beta
+  (programa 20.11).
   [Edición en línea](https://archive.org/details/artofprologadvan00ster).
-  El capítulo toma de allí la variante de Mastermind con dígitos
-  distintos, la regla de la jugada consistente y su cuenta de toros y
-  vacas; las reglas de Nim, la representación de una jugada como la pila
-  y la cantidad, la suma de Nim y la jugada que deja una posición segura;
-  las reglas de Kalah, el tablero visto desde el que mueve y girado al
-  terminar el turno, la jugada como lista de hoyos, la evaluación por la
-  diferencia de kalahs y la profundidad 2. Al contrastar el programa de
-  Kalah con el libro aparecen tres diferencias con sus reglas: el empate
-  no se reconoce, porque su `game_over/3` usa números donde van las
-  listas de hoyos; el turno extra después de una vuelta completa no se
-  da; y la captura no se examina cuando la siembra da la vuelta.
+  Esta página toma de allí las reglas de Nim, la representación de una
+  jugada como la pila y la cantidad, la suma de Nim y la jugada que deja
+  una posición segura.
 - Charles L. Bouton, «Nim, a game with a complete mathematical theory»,
   *Annals of Mathematics*, segunda serie, volumen 3, 1901–1902, páginas
   35–39. [Edición en línea, de dominio público](https://archive.org/details/jstor-1967631).
@@ -1030,29 +919,6 @@ que cargan los del capítulo, sin modificarlos.
   [ejercicio 2](#ejercicios). Sterling y Shapiro remiten, para la prueba
   de la estrategia, a Claude Berge, *The Theory of Graphs and its
   Applications*, Methuen, 1962, sin edición en línea de acceso libre.
-- Ehud Shapiro, «Playing Mastermind logically», *SIGART Newsletter*,
-  número 85, 1983, páginas 28–29.
-  [Edición en línea](https://doi.org/10.1145/1056635.1056637).
-  Es el artículo en el que apareció el programa de Mastermind del libro,
-  y la fuente de la regla de la jugada consistente. Sterling y Shapiro
-  citan también la respuesta de David Powers, «Playing Mastermind more
-  logically, or writing Prolog more efficiently», *SIGART Newsletter*,
-  número 89, 1984, que aceleró el programa cincuenta veces; sin edición
-  en línea de acceso libre.
-- James R. Slagle y John K. Dixon, «Experiments with some programs that
-  search game trees», *Journal of the ACM*, volumen 16, número 2, 1969,
-  páginas 189–207. [Edición en línea](https://doi.org/10.1145/321510.321511).
-  Sterling y Shapiro lo citan como uno de los primeros trabajos que
-  tomaron Kalah como banco de prueba de la búsqueda en árboles de juego,
-  y de él viene la elección de Kalah para la poda alfa-beta.
-- *SWI-Prolog Reference Manual*, secciones de la aritmética (`xor`), de
-  la tabulación y de `library(clpfd)`:
+- *SWI-Prolog Reference Manual*, secciones de la aritmética (`xor`) y de
+  la tabulación:
   [manual en línea](https://www.swi-prolog.org/pldoc/doc_for?object=manual).
-
-El código del capítulo es propio, escrito para el curso: los programas
-del libro se reescribieron con otra representación (respuestas en una
-lista en lugar de `assert`, `xor` en lugar de listas de dígitos binarios,
-la siembra como un anillo de trece casillas) y se corrigieron las
-diferencias con las reglas; la búsqueda tabulada de Nim, las versiones 2
-y 3 de Mastermind, el puente al [capítulo 42](../capitulo-42-juegos/index.md), las partidas entre
-estrategias y las mediciones no tienen equivalente en las fuentes.

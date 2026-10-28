@@ -3,7 +3,7 @@
 El código de esta página está en `ejemplos/capitulo-79/soluciones.pl`, con
 sus pruebas en `soluciones.plt`. El archivo carga `nim.pl`,
 `candidatos.pl` (que carga `mastermind.pl`) y `kalah.pl`, sin
-modificarlos; los juegos nuevos de los ejercicios 3 y 10 agregan sus
+modificarlos; los juegos nuevos de los ejercicios 3 y 11 agregan sus
 cláusulas al módulo `capitulo42`, como lo hacen `nim.pl` y `kalah.pl`. Es
 `% solo-local`, porque carga otros archivos.
 
@@ -184,6 +184,36 @@ primera posición y 25 millones de nodos en la búsqueda.
 
 ## 5
 
+<!-- ejemplo: capitulo-79/soluciones.pl predicado: jugada_nim_texto/2 -->
+```prolog
+%!  jugada_nim_texto(+Jugada, -Texto:string) is det.
+%
+%   Texto describe la jugada sacar(K, M) de la computadora.
+jugada_nim_texto(sacar(K, M), Texto) :-
+    (   M =:= 1
+    ->  format(string(Texto), "La computadora saca 1 ficha de la pila ~d.",
+               [K])
+    ;   format(string(Texto),
+               "La computadora saca ~d fichas de la pila ~d.", [M, K])
+    ).
+```
+
+```prolog
+?- jugada_nim_texto(sacar(2, 3), T).
+T = "La computadora saca 3 fichas de la pila 2.".
+```
+
+`partida/5` no escribe nada, y `pantalla/3` y `leer_jugada/4` ya son de
+cada juego: `nim_texto(Pilas)` los define delegando en `nim(Pilas)`, como
+los juegos de los ejercicios 3 y 11. El único predicado de `partida.pl`
+que hay que cambiar es `bucle/5`, que escribe la jugada de la computadora
+con un texto fijo, `La computadora juega ~W.` La solución que no toca el
+resto es un tercer predicado `multifile`, `texto_jugada/3`, que `bucle/5`
+consulte antes de escribir y que tenga una cláusula por omisión con el
+texto actual; los juegos que no lo definen siguen igual.
+
+## 6
+
 <!-- ejemplo: capitulo-79/soluciones.pl predicado: particion/3 particion/2 -->
 ```prolog
 %!  particion(+Intento:list, +Codigos:list, -Clases:list) is det.
@@ -218,7 +248,7 @@ de ella el segundo intento tiene que elegir entre 1440 códigos. Una
 respuesta de cuatro toros deja uno solo, y cero toros y cuatro vacas,
 nueve: las permutaciones de 0123 que no dejan ningún dígito en su lugar.
 
-## 6
+## 7
 
 `mejor_intento/2` calcula, para cada código posible, el tamaño de su
 mayor clase sobre los códigos posibles, y se queda con el menor; ante un
@@ -286,7 +316,7 @@ segundo. Elegir el intento ahorra unos dos décimos de intento por partida
 y cuesta doscientas veces más. Con 83 códigos posibles, por ejemplo, el
 primero, 1547, deja en el peor caso 27, y el elegido, 1574, deja 25.
 
-## 7
+## 8
 
 <!-- ejemplo: capitulo-79/soluciones.pl predicado: codigo_colores/1 color/1 respuesta_colores/4 veces/3 adivinar_colores/2 colores_entre/3 explica_colores/4 medir_colores/2 -->
 ```prolog
@@ -380,7 +410,7 @@ de la jugada consistente adivina los 1296 códigos con 5,76 intentos de
 media y 9 como máximo; con menos códigos que la variante de dígitos, la
 media es mayor, y el primer intento, 1111, solo informa sobre un color.
 
-## 8
+## 9
 
 <!-- ejemplo: capitulo-79/soluciones.pl predicado: primera_contradiccion/2 contradiccion/4 -->
 ```prolog
@@ -415,7 +445,7 @@ Después de la primera respuesta quedan los 360 códigos hechos con los
 dígitos 4 a 9; la segunda descarta también 4, 5, 6 y 7, y con dos dígitos
 no se forma un código de cuatro dígitos distintos.
 
-## 9
+## 10
 
 Las 13 piedras dan una vuelta entera: cada casilla del anillo recibe una,
 incluido el hoyo de partida, que había quedado vacío, y la última cae en
@@ -433,7 +463,7 @@ El programa del libro reparte las piedras igual, pero solo examina la
 captura cuando las piedras no pasan del kalah (`Stones =< 7-N`), y 13 es
 mayor que 4: deja la piedra en el hoyo 3, sin captura, con el kalah en 1.
 
-## 10
+## 11
 
 <!-- ejemplo: capitulo-79/soluciones.pl fragmento: % kalah_piedras(N) es kalah(N) con otra evaluación .. sum_list(Ps, Total). -->
 ```prolog
@@ -550,33 +580,3 @@ no es del jugador, porque al sembrar pasa al lado del rival y porque el
 rival la puede capturar, y la evaluación premia acumular piedras justo
 donde están expuestas. Una evaluación mejor tendría que distinguir las
 piedras que se pueden perder de las que no, y medirse igual que esta.
-
-## 11
-
-<!-- ejemplo: capitulo-79/soluciones.pl predicado: jugada_nim_texto/2 -->
-```prolog
-%!  jugada_nim_texto(+Jugada, -Texto:string) is det.
-%
-%   Texto describe la jugada sacar(K, M) de la computadora.
-jugada_nim_texto(sacar(K, M), Texto) :-
-    (   M =:= 1
-    ->  format(string(Texto), "La computadora saca 1 ficha de la pila ~d.",
-               [K])
-    ;   format(string(Texto),
-               "La computadora saca ~d fichas de la pila ~d.", [M, K])
-    ).
-```
-
-```prolog
-?- jugada_nim_texto(sacar(2, 3), T).
-T = "La computadora saca 3 fichas de la pila 2.".
-```
-
-`partida/5` no escribe nada, y `pantalla/3` y `leer_jugada/4` ya son de
-cada juego: `nim_texto(Pilas)` los define delegando en `nim(Pilas)`, como
-los juegos de los ejercicios 3 y 10. El único predicado de `partida.pl`
-que hay que cambiar es `bucle/5`, que escribe la jugada de la computadora
-con un texto fijo, `La computadora juega ~W.` La solución que no toca el
-resto es un tercer predicado `multifile`, `texto_jugada/3`, que `bucle/5`
-consulte antes de escribir y que tenga una cláusula por omisión con el
-texto actual; los juegos que no lo definen siguen igual.

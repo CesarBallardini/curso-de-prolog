@@ -1,9 +1,17 @@
 # Rimas
 
-Esta página contiene la [sección 82.9](index.md#829-rimas) del
-[capítulo 82](index.md): dos canciones cuya letra tiene una estructura
-que un programa puede producir. El ejemplo está en `rimas.pl`, en
+Esta página continúa el [capítulo 82](index.md) después de la
+[sección 82.8](transito-y-marcos.md#828-marcos), con la sección
+[82.9](#829-rimas): dos canciones cuya letra tiene una estructura que un
+programa puede producir. El ejemplo está en `rimas.pl`, en
 `ejemplos/capitulo-82/`, con sus pruebas, y corre en SWISH.
+
+## 82.9 Rimas
+
+Esta sección sigue el desarrollo exploratorio de Csenki con dos canciones: «La
+casa que construyó Juan», cuyas estrofas son los sufijos de la última, y «Un
+elefante se balanceaba», que cuenta sin fin, con los números en letras y la
+concordancia del verbo.
 
 Csenki usa estas canciones para mostrar una manera de desarrollar un
 predicado recursivo: identificar la estructura a mano, experimentar en el
@@ -11,7 +19,7 @@ intérprete con datos de juguete, escribir una versión preliminar y
 refinarla. Lo que importa del método es el orden: primero el esqueleto
 de la recursión, con letras en lugar de versos, y después los detalles.
 
-## Rimas, versión 1: la casa que construyó Juan
+### Rimas, versión 1: la casa que construyó Juan
 
 «This is the house that Jack built» es una rima tradicional inglesa
 acumulativa: cada estrofa presenta un personaje nuevo y repite todos los
@@ -167,7 +175,7 @@ U = al.
     Escribir a mano los versos de la estrofa 5 antes de pedirla con
     `estrofa_n(5, Ls)`, y verificar cuántas contracciones *al* tiene.
 
-## Rimas, versión 2: un elefante se balanceaba
+### Rimas, versión 2: un elefante se balanceaba
 
 La segunda canción de Csenki, «One man went to mow», no tiene una última
 estrofa: cuenta sin fin. Su equivalente en castellano es «Un elefante se
@@ -320,3 +328,74 @@ Ls = ["Dos elefantes se balanceaban", "sobre la tela de una araña;", "como veí
 el `song/0` de Csenki las escribe hasta que se interrumpe el programa;
 aquí termina en la estrofa 99, donde terminan los números que
 `en_letras/2` sabe escribir.
+
+!!! success "Criterios de calidad"
+    | Criterio | En este capítulo |
+    |---|---|
+    | C1 | cada predicado declara modos y determinación; `accion_v1/3` y `tiene_valor/3` aclaran qué argumento debe llegar instanciado o libre, porque se usa dentro de `\+` o después de un si-entonces-sino |
+    | C2 | representaciones limpias: `t/15`, `s(De, Sobre, Hasta)`, `sello/4`, `luz/2` en una lista de observaciones, `valor/3` guardado en un solo sentido |
+    | C3 | `triangulo.pl` se resuelve con las búsquedas del [capítulo 41](../capitulo-41-busqueda-y-planificacion/index.md) sin cambiarlas; los saltos y las simetrías se generan de la geometría |
+    | C4 | `jugar/3`, `en_el_tablero/3`, `insertar/3` y `con_punto/2` llevan la lista como primer argumento para que la indexación no deje alternativas; `forma/2`, `coleccion/2` y `tiene_unidades/3` son deterministas |
+    | C6 | `filas/2` calcula el dibujo y `dibujar/1` lo escribe; `vender/3` y `comprar/3` son puros, y solo `operar/1`, `vender/1` y `comprar/1` tocan la base de datos |
+    | C7 | 128 pruebas en seis archivos, y 35 más para las soluciones; las cantidades de posiciones expandidas y de respuestas repetidas están en las pruebas |
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio. Los ejercicios que piden código se resuelven en archivos
+que cargan los del capítulo, sin modificarlos.
+
+12. **(2)** Traducir la canción de Csenki «One man went to mow»: escribir
+    `estrofa_segar(+N, -Lineas)`, cuyo tercer verso cuenta hacia atrás,
+    «Tres hombres, dos hombres, un hombre y su perro», con un esqueleto
+    `[N, …, 1]`.
+
+## Resumen
+
+| | |
+|---|---|
+| **salto como unificación** | un hecho cuyos dos términos fijan los agujeros que el salto toca y comparten las variables de los demás |
+| **transposición** | dos órdenes de los mismos movimientos que llegan al mismo estado; sin ciclos, sigue repitiendo trabajo |
+| **coordenadas del triángulo** | las distancias a los tres lados; las simetrías las permutan |
+| **forma de una posición** | la menor de sus seis imágenes; el registro de visitados guarda una por clase |
+| **acción como forma siguiente** | el problema sobre formas devuelve las clases, y los saltos reales se reconstruyen después |
+| **patrón** | un término con variables que elige los objetos con los que unifica, sin quedar ligado |
+| **núcleo y capa** | la relación entre un estado y el siguiente, y el código que lee y guarda el estado |
+| **[Patrón 85](../patrones.md#85-estado-canonico-en-el-sucesor)** | estado canónico en el sucesor |
+| **[Patrón 86](../patrones.md#86-el-estado-como-valor-la-base-de-datos-como-capa)** | el estado como valor, la base de datos como capa |
+| **[Patrón 87](../patrones.md#87-valor-propio-o-heredado-sin-corte-rojo)** | valor propio o heredado sin corte rojo |
+| `casilla/3`, `linea/3`, `salto/3`, `inicio/2`, `clavijas/2`, `resolver/2`, `jugar/3`, `filas/2` | el triángulo, versión 1 |
+| `jugar_todas/4` | el triángulo como problema del [capítulo 41](../capitulo-41-busqueda-y-planificacion/index.md) |
+| `coordenadas/2`, `permutacion/3`, `imagen/3`, `simetria/3`, `forma/2`, `jugar_formas/4`, `en_el_tablero/3` | las simetrías |
+| `coleccion/2`, `coleccion/3`, `quitar_todos/3`, `vender/1`, `insertar/3`, `comprar/1` | las estampillas, versión 1 |
+| `album_actual/1`, `vender/3`, `comprar/3`, `operar/1` | las estampillas, versión 2 |
+
+## Temas que se retoman
+
+| Tema | Se retoma en |
+|---|---|
+| La herencia de los marcos por `es_un` y `parte_de` como reglas recursivas evaluadas de abajo hacia arriba por un motor Datalog | [capítulo 86](../capitulo-86-proyecto-motor-datalog/index.md) |
+
+## Referencias
+
+- Attila Csenki, *Prolog Techniques*, Ventus Publishing (Bookboon), 2009
+  — capítulo «Exploratory Code Development».
+  [Página de la editorial, copia de archivo](https://web.archive.org/web/20220123025207/https://bookboon.com/en/prolog-techniques-applications-of-prolog-ebook?mediaType=ebook).
+  El capítulo toma la rima acumulativa construida a partir de su última
+  estrofa, con un esqueleto de letras como primer experimento; la
+  canción que cuenta sin fin, los números en letras, y la canción del
+  [ejercicio 12](#ejercicios). Csenki toma la rima de J. Mulherin,
+  *Popular Nursery Rhymes* (Grosset & Dunlap, 1983), y el desarrollo
+  incremental de I. Sommerville, *Software Engineering*; ninguno de los
+  dos tiene edición en línea de acceso libre.
+
+El código del capítulo es propio, escrito para el curso: los saltos y
+las simetrías se generan en lugar de escribirse, los programas de los
+libros se reescribieron con otra representación (los enlaces de una
+molécula guardados una vez, la situación del semáforo como argumento, el
+álbum como valor), y se corrigieron las diferencias encontradas al
+ejecutarlos; el registro de visitados con formas, las respuestas únicas,
+los órdenes de enlace, la versión 2 de las reglas de tránsito y las dos
+canciones en castellano no tienen equivalente en las fuentes.

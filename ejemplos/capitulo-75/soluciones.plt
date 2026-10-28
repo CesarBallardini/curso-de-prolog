@@ -2,7 +2,7 @@
 
 :- begin_tests(soluciones).
 
-test(ejercicio_1, [true(Ns == [2, 4, 0])]) :-
+test(ejercicio_4, [true(Ns == [2, 4, 0])]) :-
     orden([r, r], A),
     orden([r, l], B),
     cambiadas([r, l, -r, -l], C),

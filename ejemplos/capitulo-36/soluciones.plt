@@ -80,7 +80,7 @@ test(menos_inferencias, true(I1 < I2)) :-
     inferencias(suma_longitud(L, _, _), I1),
     inferencias(suma_longitud_dos(L, _, _), I2).
 
-% Ejercicio 15: el despliegue da el hecho de rotar_dif/2.
+% Ejercicio 13: el despliegue da el hecho de rotar_dif/2.
 test(derivar_rotar, true(Cs =@= [(rotar_dif([A|B]-[A|C], B-C) :- [])])) :-
     derivar_rotar(Cs).
 

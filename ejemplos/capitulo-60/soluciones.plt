@@ -27,7 +27,7 @@ test(ejercicio_3_ciclo, [true(Ps-Us == []-[a/0, b/0])]) :-
     sin_llamadas_de(Cs, [p/0], Ps),
     no_usados_de(Cs, [p/0], Us).
 
-test(ejercicio_11, [true(Capas == [ [informe/0], [varianza/2], [alumnos/1],
+test(ejercicio_9, [true(Capas == [ [informe/0], [varianza/2], [alumnos/1],
                                     [mejor/1], [mostrar/1], [desvio2/3],
                                     [promedo/2], [mediana/2], [notas/2],
                                     [promedio/2],
@@ -36,7 +36,7 @@ test(ejercicio_11, [true(Capas == [ [informe/0], [varianza/2], [alumnos/1],
     capas(notas, Capas).
 
 % El grafo sin condensar tiene ciclos: top_sort/2 falla.
-test(ejercicio_11_ciclos, [fail]) :-
+test(ejercicio_9_ciclos, [fail]) :-
     clausulas(notas, Cs),
     grafo(Cs, G),
     top_sort(G, _).

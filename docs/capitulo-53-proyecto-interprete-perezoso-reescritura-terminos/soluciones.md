@@ -57,27 +57,6 @@ alternativas pendientes.
 
 ## Ejercicio 2
 
-<!-- ejemplo: capitulo-53/soluciones.pl fragmento: plana:fila(tres, b, blanco, [p(0), r, r], c). .. plana:fila(tres, d, blanco, [p(1), r, r], b). -->
-```prolog
-plana:fila(tres, b, blanco, [p(0), r, r], c).
-plana:fila(tres, c, blanco, [p(0), r, r], d).
-plana:fila(tres, d, blanco, [p(1), r, r], b).
-```
-
-```prolog
-?- tabla_estandar(tres, b, [0, 1], tabla(Es, _)).
-Es = [b, resto([r], c), c, resto([r], d), d, resto([r], b)].
-```
-
-Cada fila imprime y mueve dos casillas; la forma estándar admite un solo
-movimiento por instrucción, y la segunda R va en una configuración
-auxiliar. La tabla estándar tiene seis configuraciones, y el número de
-descripción, 178 dígitos. Si cada fila imprimiera y moviera una sola vez,
-con una configuración más que avanzara sin imprimir, la tabla ya estaría
-en forma estándar: es lo que hace la máquina I de Turing.
-
-## Ejercicio 3
-
 <!-- ejemplo: capitulo-53/soluciones.pl fragmento: plana:fila(ceros_unos, inicio, siempre, [p(schwa), r, p(schwa)], .. perezosa:alias(ceros_unos, unos(s(K), C), pe(unos(K, C), 1)). -->
 ```prolog
 plana:fila(ceros_unos, inicio, siempre, [p(schwa), r, p(schwa)],
@@ -101,7 +80,7 @@ N = mas_de(500).
 `bloque(s(K))`. Como en `contador`, la cuenta está en la configuración, y
 las configuraciones alcanzables son infinitas.
 
-## Ejercicio 4
+## Ejercicio 3
 
 <!-- ejemplo: capitulo-53/soluciones.pl fragmento: perezosa:alias(_, cr(C, B, Al), c(re(C, B, Al, a), B, Al)). .. perezosa:alias(_, cr(B, Al), cr(cr(B, Al), re(B, a, Al), Al)). -->
 ```prolog
@@ -125,7 +104,7 @@ la condición que Turing expresa al decir que cr se toma cuando no hay
 letras a en la cinta. El átomo `a` de la regla es esa letra, no un
 parámetro.
 
-## Ejercicio 5
+## Ejercicio 4
 
 <!-- ejemplo: capitulo-53/soluciones.pl predicado: resolver_seguro/4 resolver_seguro/6 -->
 ```prolog
@@ -170,7 +149,7 @@ mayor, como `alias(m, p(X), p(s(X)))`, nunca repite una configuración, y
 `resolver_seguro/4` tampoco lo detecta. Para ese caso hace falta un límite
 de reescrituras.
 
-## Ejercicio 6
+## Ejercicio 5
 
 <!-- ejemplo: capitulo-53/soluciones.pl fragmento: :- table alcanzable/4. .. transicion(M, Q1, S, _, Q). -->
 ```prolog
@@ -202,7 +181,7 @@ no hay un límite que la corte. `completa/5` sí termina, con
 `incompleta(Estados)`, y da además lo que la tabla no da: el orden de
 aparición, que el número de descripción necesita, y las instrucciones.
 
-## Ejercicio 7
+## Ejercicio 6
 
 ```prolog
 ?- cinta_de([schwa, schwa, 1, blanco, 0, blanco, 0], 0, C0), ejecutar(biblioteca, re(fin, 0, 1), C0, 1000, detenida(Q, C)), contenido(C, Ss).
@@ -219,7 +198,84 @@ cuando no quedan, `f` pasa a B. La reescritura no termina por sí sola; lo
 que termina es el cómputo, porque la cinta tiene finitos 0. La
 reescritura perezosa construye `re/4` una vez por cada 0.
 
+## Ejercicio 7
+
+```prolog
+?- cinta_de([schwa, schwa, 1, a, 0, a, 1], 0, C0), ejecutar(biblioteca, e(fin), C0, 1000, detenida(Q, C)), contenido(C, Ss).
+C0 = c([], schwa, [schwa, 1, a, 0, a, 1]),
+Q = fin,
+C = c([blanco, a, blanco, a, blanco, schwa, schwa], blanco, []),
+Ss = [schwa, schwa, blanco, a, blanco, a].
+
+?- cinta_de([schwa, schwa, 1, a, 0, a, 1], 0, C0), ejecutar(biblioteca, q(e(fin)), C0, 1000, detenida(Q, C)), contenido(C, Ss).
+C0 = c([], schwa, [schwa, 1, a, 0, a, 1]),
+Q = fin,
+C = c([blanco, 1, blanco, 0, blanco, 1, schwa, schwa], blanco, []),
+Ss = [schwa, schwa, 1, blanco, 0, blanco, 1].
+```
+
+`e(C)` retrocede hasta encontrar ə y avanza una casilla: supone que el
+cabezal está a la derecha de ə ə, y que la primera ə que encuentra es la
+segunda. Desde la casilla 0 encuentra la primera, avanza a la casilla 1, y
+desde allí borra las casillas pares: las figuras. `q(C)` lleva primero el
+cabezal al final de la cinta, y desde allí `e(fin)` hace lo que Turing
+describe.
+
 ## Ejercicio 8
+
+<!-- ejemplo: capitulo-53/soluciones.pl fragmento: plana:fila(rapido, inicio, siempre, [p(schwa), r, p(schwa), r], bloque(cero)). .. perezosa:alias(rapido, unos(cero, C), C). -->
+```prolog
+plana:fila(rapido, inicio, siempre, [p(schwa), r, p(schwa), r], bloque(cero)).
+plana:fila(rapido, bloque(K), siempre, [p(0), r, r], unos(K, bloque(s(K)))).
+plana:fila(rapido, unos(s(K), C), siempre, [p(1), r, r], unos(K, C)).
+perezosa:alias(rapido, unos(cero, C), C).
+```
+
+```prolog
+?- sucesion(rapido, inicio, 15, S).
+S = '001011011101111'.
+
+?- medir(rapido, inicio, 120, M).
+M = medida(121, 14, 33).
+```
+
+| Figuras | II | `contador` | `rapido` |
+|---:|---:|---:|---:|
+| 15 | 116 | 362 | 16 |
+| 30 | 398 | 1 397 | 31 |
+| 60 | 1 121 | 5 492 | 61 |
+| 120 | 3 281 | 21 782 | 121 |
+
+`rapido` hace un paso por figura, más el inicial: el cabezal queda siempre
+al final, y `unos(K, C)` imprime los K unos sin buscar nada. Lo consigue
+porque la cuenta de los unos está en la configuración, que tiene infinitos
+valores posibles: `cuantas(rapido, inicio, [0, 1, schwa], 500, N)` da
+`mas_de(500)`. Una máquina de Turing tiene finitas configuraciones m, y
+todo lo que no cabe en ellas tiene que ir en la cinta; la máquina II lo
+paga con los pasos que da para recorrerla.
+
+## Ejercicio 9
+
+<!-- ejemplo: capitulo-53/soluciones.pl fragmento: plana:fila(tres, b, blanco, [p(0), r, r], c). .. plana:fila(tres, d, blanco, [p(1), r, r], b). -->
+```prolog
+plana:fila(tres, b, blanco, [p(0), r, r], c).
+plana:fila(tres, c, blanco, [p(0), r, r], d).
+plana:fila(tres, d, blanco, [p(1), r, r], b).
+```
+
+```prolog
+?- tabla_estandar(tres, b, [0, 1], tabla(Es, _)).
+Es = [b, resto([r], c), c, resto([r], d), d, resto([r], b)].
+```
+
+Cada fila imprime y mueve dos casillas; la forma estándar admite un solo
+movimiento por instrucción, y la segunda R va en una configuración
+auxiliar. La tabla estándar tiene seis configuraciones, y el número de
+descripción, 178 dígitos. Si cada fila imprimiera y moviera una sola vez,
+con una configuración más que avanzara sin imprimir, la tabla ya estaría
+en forma estándar: es lo que hace la máquina I de Turing.
+
+## Ejercicio 10
 
 <!-- ejemplo: capitulo-53/soluciones.pl predicado: sd_numero/2 instrucciones_sd//1 instruccion_sd//1 cuenta//2 -->
 ```prolog
@@ -285,7 +341,7 @@ toma la primera lectura con `once/1`. La prueba de ida y vuelta convierte
 el número de la máquina II en su descripción y la descripción de nuevo en
 el número.
 
-## Ejercicio 9
+## Ejercicio 11
 
 <!-- ejemplo: capitulo-53/soluciones.pl predicado: instrucciones_de/2 figuras_dn/3 instruccion_estandar/2 simbolo_numero/2 -->
 ```prolog
@@ -343,62 +399,6 @@ máquina se comporta igual. La prueba verifica las primeras 20 figuras de
 la máquina II contra `figuras/4`. Es, dentro de Prolog, lo que hace la
 máquina universal de la sección 6 del artículo: ejecutar una máquina a
 partir de su descripción.
-
-## Ejercicio 10
-
-```prolog
-?- cinta_de([schwa, schwa, 1, a, 0, a, 1], 0, C0), ejecutar(biblioteca, e(fin), C0, 1000, detenida(Q, C)), contenido(C, Ss).
-C0 = c([], schwa, [schwa, 1, a, 0, a, 1]),
-Q = fin,
-C = c([blanco, a, blanco, a, blanco, schwa, schwa], blanco, []),
-Ss = [schwa, schwa, blanco, a, blanco, a].
-
-?- cinta_de([schwa, schwa, 1, a, 0, a, 1], 0, C0), ejecutar(biblioteca, q(e(fin)), C0, 1000, detenida(Q, C)), contenido(C, Ss).
-C0 = c([], schwa, [schwa, 1, a, 0, a, 1]),
-Q = fin,
-C = c([blanco, 1, blanco, 0, blanco, 1, schwa, schwa], blanco, []),
-Ss = [schwa, schwa, 1, blanco, 0, blanco, 1].
-```
-
-`e(C)` retrocede hasta encontrar ə y avanza una casilla: supone que el
-cabezal está a la derecha de ə ə, y que la primera ə que encuentra es la
-segunda. Desde la casilla 0 encuentra la primera, avanza a la casilla 1, y
-desde allí borra las casillas pares: las figuras. `q(C)` lleva primero el
-cabezal al final de la cinta, y desde allí `e(fin)` hace lo que Turing
-describe.
-
-## Ejercicio 11
-
-<!-- ejemplo: capitulo-53/soluciones.pl fragmento: plana:fila(rapido, inicio, siempre, [p(schwa), r, p(schwa), r], bloque(cero)). .. perezosa:alias(rapido, unos(cero, C), C). -->
-```prolog
-plana:fila(rapido, inicio, siempre, [p(schwa), r, p(schwa), r], bloque(cero)).
-plana:fila(rapido, bloque(K), siempre, [p(0), r, r], unos(K, bloque(s(K)))).
-plana:fila(rapido, unos(s(K), C), siempre, [p(1), r, r], unos(K, C)).
-perezosa:alias(rapido, unos(cero, C), C).
-```
-
-```prolog
-?- sucesion(rapido, inicio, 15, S).
-S = '001011011101111'.
-
-?- medir(rapido, inicio, 120, M).
-M = medida(121, 14, 33).
-```
-
-| Figuras | II | `contador` | `rapido` |
-|---:|---:|---:|---:|
-| 15 | 116 | 362 | 16 |
-| 30 | 398 | 1 397 | 31 |
-| 60 | 1 121 | 5 492 | 61 |
-| 120 | 3 281 | 21 782 | 121 |
-
-`rapido` hace un paso por figura, más el inicial: el cabezal queda siempre
-al final, y `unos(K, C)` imprime los K unos sin buscar nada. Lo consigue
-porque la cuenta de los unos está en la configuración, que tiene infinitos
-valores posibles: `cuantas(rapido, inicio, [0, 1, schwa], 500, N)` da
-`mas_de(500)`. Una máquina de Turing tiene finitas configuraciones m, y
-todo lo que no cabe en ellas tiene que ir en la cinta; la máquina II lo
-paga con los pasos que da para recorrerla.
 
 ## Ejercicio 12
 

@@ -51,38 +51,38 @@ test(ej3_un_solo_agregado, [fail]) :-
     phrase(linea_combinada(_),
            `1.2.3.4 - - [01/Oct/2026:08:00:00 -0300] "GET /a HTTP/1.1" 200 9 "-"`).
 
-test(ej4_presentes, [true(Hs == [8, 9, 10, 11, 12, 13, 14, 15, 16, 19])]) :-
+test(ej5_presentes, [true(Hs == [8, 9, 10, 11, 12, 13, 14, 15, 16, 19])]) :-
     leer_registro(registros('2026-10-01.log'), Ps),
     metricas_presentes(Ps, Horas),
     findall(H, member(hora(H, _), Horas), Hs).
 
-test(ej4_sin_caida, [true(N == 6)]) :-
+test(ej5_sin_caida, [true(N == 6)]) :-
     umbrales_de_referencia(mediana_mad(3.5), U),
     anomalias_presentes(registros('2026-10-01.log'), U, As),
     length(As, N),
     assertion(\+ member(anomalia(_, pedidos, 0, _), As)).
 
-test(ej5_mad_cero, [true(I == entre(0.0, 0.0))]) :-
+test(ej6_mad_cero, [true(I == entre(0.0, 0.0))]) :-
     valores_de_referencia(no_encontradas, Vs),
     ajustar(mediana_mad(3.5), Vs, I).
 
-test(ej5_minimo) :-
+test(ej6_minimo) :-
     valores_de_referencia(no_encontradas, Vs),
     ajustar_con_minimo(3.5, 1, Vs, entre(_, S)),
     assertion(cerca(S, 3.5 / 0.6745)),
     assertion(S < 10).
 
-test(ej6_cuantil, [true(L == 5)]) :-
+test(ej7_cuantil, [true(L == 5)]) :-
     ajustar_cuantil(0.5, [9, 1, 5, 3, 7], L).
 
-test(ej6_umbrales, [true(P-F == 20-10)]) :-
+test(ej7_umbrales, [true(P-F == 20-10)]) :-
     umbrales_cuantil(0.95, [pedidos-menor(P), fallos-mayor(F), cpu-mayor(_)]).
 
-test(ej7, [true(Cs == [-1, 1, 1, -1])]) :-
+test(ej8, [true(Cs == [-1, 1, 1, -1])]) :-
     maplist([X, C]>>salida([-18, -56, 70], X, C),
             [[1, 1], [4, 4], [12, 10], [40, 31]], Cs).
 
-test(ej8_perfiles_diarios, [true(Ps == [perfil(a, dia, 3, 1),
+test(ej9_perfiles_diarios, [true(Ps == [perfil(a, dia, 3, 1),
                                         perfil(b, dia, 1, 1)])]) :-
     date_time_stamp(date(2026, 10, 1, 9, 30, 0, 10800, -, -), T9),
     date_time_stamp(date(2026, 10, 1, 10, 5, 0, 10800, -, -), T10),
@@ -91,23 +91,23 @@ test(ej8_perfiles_diarios, [true(Ps == [perfil(a, dia, 3, 1),
                        pedido(T9, a, post, '/sesion', 200, 0.1),
                        pedido(T10, a, get, '/materias', 200, 0.1) ], Ps).
 
-test(ej8_entrenar, [true(N-P-C == 108-[-6, -50, 78]-[6, 2, 1, 0])]) :-
+test(ej9_entrenar, [true(N-P-C == 108-[-6, -50, 78]-[6, 2, 1, 0])]) :-
     ejemplos_diarios(Es),
     length(Es, N),
     entrenar(1, Es, [0, 0, 0], P, C).
 
-test(ej8_sospechosos,
+test(ej9_sospechosos,
      [true(S3-S4 == [perfil(ip(198, 51, 100, 40), dia, 8, 8)]-
                     [perfil(ip(198, 51, 100, 61), dia, 17, 17),
                      perfil(ip(203, 0, 113, 7), dia, 60, 60)])]) :-
     sospechosos_diarios([-6, -50, 78], registros('2026-09-30.log'), S3),
     sospechosos_diarios([-6, -50, 78], registros('2026-10-01.log'), S4).
 
-test(ej9_repetidos, [true(N == 40)]) :-
+test(ej11_repetidos, [true(N == 40)]) :-
     repetidos(10, As),
     length(As, N).
 
-test(ej9_resumen, [true(N == 480)]) :-
+test(ej11_resumen, [true(N == 480)]) :-
     repetidos(10, As),
     resumir_en_paralelo(fallos, As, r(N, _, _, _)).
 
@@ -134,11 +134,11 @@ test(ej10_constantes, [true(I == entre(4.0, 4.0))]) :-
     I0 = entre(A, B),
     I = entre(A, B).
 
-test(ej4_metricas_anomalas,
+test(ej5_metricas_anomalas,
      [true(P == [10-pedidos, 10-fallos, 10-cpu, 12-cpu, 14-fallos, 14-cpu])]) :-
     metricas_anomalas(mediana_mad(3.5), registros('2026-10-01.log'), P).
 
-test(ej8_entrenamiento_diario, [true(N-P-C == 108-[-6, -50, 78]-[6, 2, 1, 0])]) :-
+test(ej9_entrenamiento_diario, [true(N-P-C == 108-[-6, -50, 78]-[6, 2, 1, 0])]) :-
     entrenamiento_diario(N, P, C).
 
 :- end_tests(soluciones).

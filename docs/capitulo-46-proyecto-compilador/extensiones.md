@@ -1,9 +1,10 @@
 # Otras máquinas y extensiones de Mini
 
-Esta página contiene las secciones
-[46.8](index.md#468-la-reduccion-de-fuerza) a
-[46.12](index.md#4612-funciones-y-marcos-de-pila) del
-[capítulo 46](index.md): cinco partes de las fuentes que las versiones 1 a
+Esta página continúa la página
+[El intérprete especializado](especializacion.md#467-el-interprete-especializado)
+del [capítulo 46](index.md), con las secciones
+[46.8](#468-la-reduccion-de-fuerza) a
+[46.12](#4612-funciones-y-marcos-de-pila): cinco partes de las fuentes que las versiones 1 a
 6 no tienen. De *Clause and Effect* de Clocksin vienen la reducción de
 fuerza y las otras dos máquinas del capítulo «A Compiler for Three Model
 Computers», la de acumulador y la de registros; la asignación de registros
@@ -86,7 +87,7 @@ E = incrementar(desplazar(id(x), 3)).
 
 Clocksin supone que el preprocesamiento ya llevó las constantes al lado
 derecho de las operaciones conmutativas; el reordenamiento de la
-[sección 46.6](index.md#466-optimizacion) no lo hace, porque ordena por la
+[sección 46.6](optimizacion.md#466-optimizacion) no lo hace, porque ordena por la
 pila que necesita cada operando, y por eso la tabla tiene cada regla de `+`
 y de `*` en los dos sentidos. Dos reducciones quedan fuera a propósito.
 Clocksin también reduce `x * 0` a `0`, pero la reducción cambia el
@@ -400,7 +401,7 @@ C = [cargar(1, id(b)), cargar(0, id(c)), operar(*, 1, 0), cargar(0, id(a)), oper
 
 El generador ingenuo usa tres registros; el de Sethi y Ullman, dos, porque
 calcula `b * c` antes de cargar `a`. El reordenamiento de la
-[sección 46.6](index.md#466-optimizacion) no puede hacer lo mismo en la
+[sección 46.6](optimizacion.md#466-optimizacion) no puede hacer lo mismo en la
 máquina de pila, porque la resta no es conmutativa y la pila exige los
 operandos en orden; los registros tienen nombre, y el orden de cálculo se
 separa del orden de los operandos. La cantidad de registros del generador
@@ -686,3 +687,106 @@ no existe, o con otra cantidad de argumentos, hace fallar la compilación, y
 los programas sin funciones escriben lo mismo que con el intérprete. Una
 función no ve las variables del programa principal: la única forma de
 pasarle un valor es un argumento.
+
+!!! success "Criterios de calidad"
+    | Criterio | En este capítulo |
+    |---|---|
+    | C1 | cada predicado declara modos y determinación; el paso entre la sintaxis abstracta y las expresiones de Prolog son dos predicados, `a_termino/2` y `de_termino/2`, uno por dirección, porque la conversión de vuelta necesita probar tipos y así cada uno es determinista |
+    | C2 | la sintaxis abstracta es una representación limpia: el intérprete, el generador, las optimizaciones y el especializador eligen la cláusula por el functor del nodo |
+    | C4 | el análisis, la generación, el ensamblado, la máquina y las optimizaciones no dejan alternativas pendientes; donde la forma del intérprete las deja, `interpretar/2` las descarta con `once/1`, y el texto dice por qué |
+    | C6 | ninguna etapa escribe ni guarda estado: la salida de un programa es una lista, y el único estado global es el módulo temporal de `correr_especializado/2`, que se borra al terminar |
+    | C7 | 227 pruebas en doce archivos; las cuatro formas de ejecutar se comparan con el intérprete en todos los ejemplos, y el error de las etiquetas unificadas está probado: `mirilla_ingenua/2` une las etiquetas y el ensamblado falla; en las secciones 46.8 a 46.12, la reducción de fuerza y las máquinas de acumulador y de registros se comparan con el intérprete, la asignación de registros con la cuenta de Sethi y Ullman, y la lectura y las funciones con los programas de ejemplo |
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio, y los capítulos siguientes los dan por hechos.
+
+13. **(2)** El generador de la máquina de acumulador usa una temporal para
+    `a + b * c`, aunque la suma es conmutativa y `a` es una hoja. Escribir
+    `generar_acumulador_conmutativo/2`, que en ese caso calcula primero el
+    operando derecho y opera después con la hoja, sin temporal, como
+    propone Sterling y Shapiro para las operaciones conmutativas.
+    Comprobar que `a + (b + (c + d))` no usa ninguna temporal.
+14. **(1)** Predecir cuántos registros necesitan, según Sethi y Ullman, y
+    cuántos usa el generador ingenuo, `a + b`, `(a + b) * (c + d)`,
+    `a - (b - (c - d))` y `((a + b) + (c + d)) * ((a - b) - (c - d))`, y
+    comprobarlo con `registros_necesarios/2` y `registros_usados/2`.
+15. **(2)** Escribir `correr_con_profundidad(+Texto, -Salida, -Max)`, como
+    `correr_funciones/2`, donde `Max` es la mayor cantidad de marcos que
+    tuvo la pila de marcos durante la ejecución. Predecir el valor para el
+    factorial recursivo, el iterativo y la sucesión de Fibonacci de
+    `fuente_funciones/2`.
+
+## Resumen
+
+| | |
+|---|---|
+| **Mini** | el lenguaje del capítulo: asignaciones, `si`, `mientras` y `escribir`, sobre enteros |
+| **componente léxico** | la unidad del texto: un número, un identificador, una palabra reservada o un símbolo |
+| **sintaxis abstracta** | el árbol del programa, con un functor por clase de nodo: `asignar(X, E)`, `si(C, Si, No)`, `mientras(C, Cuerpo)`, `escribir(E)`, `rel(Op, A, B)`, `num(N)`, `id(X)`, `bin(Op, A, B)` |
+| **entorno** | la lista de pares `Nombre-Valor` que el intérprete relaciona antes y después de cada sentencia |
+| **máquina de pila** | toma los operandos del tope de la pila y deja allí el resultado |
+| **código simbólico** | instrucciones con nombres de variables y etiquetas; una etiqueta es una variable de Prolog |
+| **ensamblador** | liga cada etiqueta a su dirección por unificación, en una pasada, y da a cada variable su celda |
+| **plegado de constantes** | calcular al compilar las operaciones entre constantes |
+| **optimizador de mirilla** | reemplaza secuencias cortas de instrucciones por otras equivalentes, hasta que ninguna se aplica |
+| **intérprete especializado** | el residuo de evaluar parcialmente el intérprete respecto de un programa: un compilador de Mini a Prolog |
+| `lexico/2`, `analizar/2`, `programa//1` | el análisis léxico y sintáctico |
+| `interpretar/2`, `ejecutar/2` | el intérprete |
+| `generar/2`, `ensamblar/3`, `compilar/2`, `listar_objeto/1` | la generación de código y el ensamblado |
+| `maquina/2`, `paso//3`, `correr/2` | la máquina de pila |
+| `optimizar/2`, `plegar_expresion/2`, `reordenar_expresion/2`, `mirilla/2` | las optimizaciones |
+| `especializar_programa/2`, `control_mini/3`, `correr_especializado/2` | el intérprete especializado |
+| `in_temporary_module/3` | ejecuta una meta en un módulo nuevo, que se borra al terminar |
+| **reducción de fuerza** | reemplazar una operación por otra más barata con el mismo resultado; la división entera no se reduce a un desplazamiento |
+| **máquina de acumulador** | un solo registro; las operaciones lo combinan con un valor de la memoria, y los resultados intermedios van a temporales |
+| **asignación de registros** | el algoritmo de Sethi y Ullman: cada nodo necesita uno más que sus operandos si necesitan lo mismo, o el mayor; se calcula primero el que más necesita |
+| **marco de pila** | las variables locales de una llamada y su dirección de retorno; una pila aparte de la de los valores |
+| `fuerza.pl`, `acumulador.pl`, `registros.pl`, `leer.pl`, `funciones.pl` | la reducción de fuerza, las otras dos máquinas, la lectura y las funciones |
+| **[Patrón 59](../patrones.md#59-etiquetas-como-variables-logicas)** | etiquetas como variables lógicas |
+
+## Temas que se retoman
+
+| Tema | Se retoma en |
+|---|---|
+| Subexpresiones comunes con un diccionario incompleto: un grafo en lugar de un árbol | [capítulo 51](../capitulo-51-proyecto-fft-simbolica/index.md) |
+| Un intérprete de un lenguaje funcional | [capítulo 58](../capitulo-58-proyecto-interprete-funcional/index.md) |
+| El análisis estático de los programas Mini, con tablas | [capítulo 59](../capitulo-59-proyecto-interpretacion-abstracta/index.md) |
+| La compilación de Prolog a una máquina abstracta | [capítulo 62](../capitulo-62-proyecto-maquina-prolog/index.md) |
+
+## Referencias
+
+- Leon Sterling y Ehud Shapiro, *The Art of Prolog: Advanced Programming
+  Techniques*, 2.ª edición, MIT Press, 1994 — «A Compiler».
+  1.ª edición (1986) en [préstamo en el Internet Archive](https://archive.org/details/artofprologadvan00ster).
+  Esta página toma la sentencia de lectura de la
+  [sección 46.11](#4611-la-lectura-de-datos) y, en la
+  [sección 46.9](#469-una-maquina-de-acumulador), su máquina de acumulador.
+- William F. Clocksin, *Clause and Effect: Prolog Programming for the
+  Working Programmer*, Springer, 1997 — «Case Study: A Compiler for Three
+  Model Computers». Esta página toma, en las secciones
+  [46.8](#468-la-reduccion-de-fuerza) a
+  [46.10](#4610-una-maquina-de-registros-y-la-asignacion-de-registros), la
+  reducción de fuerza y las máquinas de acumulador y de registros.
+- Markus Triska, *The Power of Prolog* — «Thinking in States».
+  [Edición en línea](https://www.metalevel.at/tist/). Esta página toma, en
+  la [sección 46.12](#4612-funciones-y-marcos-de-pila), las funciones
+  recursivas con instrucciones de llamada y retorno.
+- Alfred V. Aho y Jeffrey D. Ullman, *Principles of Compiler Design*,
+  Addison-Wesley, 1977. Clocksin lo remite para las técnicas clásicas de
+  compilación; de esa tradición viene la asignación de registros de la
+  [sección 46.10](#4610-una-maquina-de-registros-y-la-asignacion-de-registros).
+- Ravi Sethi y Jeffrey D. Ullman, «The generation of optimal code for
+  arithmetic expressions», *Journal of the ACM* 17(4), 1970, pp. 715–728.
+  [Página de la editorial](https://doi.org/10.1145/321607.321620). Esta
+  página toma el algoritmo de la
+  [sección 46.10](#4610-una-maquina-de-registros-y-la-asignacion-de-registros):
+  la cantidad de registros que necesita cada nodo y el orden de cálculo de
+  sus operandos.
+
+El lenguaje Mini, sus programas y el código del capítulo son propios,
+escritos para el curso: las fuentes aportan ideas y técnicas, no código
+copiado ni adaptado.

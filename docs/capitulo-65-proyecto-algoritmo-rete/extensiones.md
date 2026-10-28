@@ -1,6 +1,10 @@
 # Cinco extensiones de la red
 
-Esta página continúa el [capítulo 65](index.md) con cinco temas que las
+Esta página continúa la página
+[La medición y las pruebas alfa](medicion.md#658-version-7-las-pruebas-de-un-solo-hecho-en-la-red-alfa) del
+[capítulo 65](index.md), con las secciones
+[65.9](#659-la-herencia-en-los-patrones) a
+[65.13](#6513-una-regla-nueva-con-la-red-en-marcha): cinco temas que las
 fuentes del capítulo tratan y las siete versiones dejan afuera: la herencia
 de los marcos en los patrones, que Merritt señala como el límite de su
 *Rete-Foops*; los tokens que guardan referencias en lugar de copias, su
@@ -68,7 +72,7 @@ cada objeto pasa por la prueba de clase de cada nodo de `objeto/3`. Y la
 herencia se evalúa cuando el objeto entra en la red: si cambiara la
 jerarquía de los marcos con la red cargada, las memorias alfa quedarían
 desactualizadas. En el capítulo los marcos son fijos y la pregunta no se
-plantea; el [ejercicio 8](index.md#ejercicios) la discute.
+plantea; el [ejercicio 9](medicion.md#ejercicios) la discute.
 
 ## 65.10 Tokens con referencias
 
@@ -336,3 +340,96 @@ instanciaciones que compilarla con las demás; el orden cambia solo porque
 la regla agregada recibe el último número. Quitar una regla es el camino
 inverso, más simple en este diseño: se borran sus instanciaciones y los
 nodos que ninguna otra regla usa, con sus memorias.
+
+!!! success "Criterios de calidad"
+    | Criterio | En este capítulo |
+    |---|---|
+    | C1 | cada predicado declara modos y determinación; la propagación, la compilación y el ciclo son `det`, y `retirar_rete/4`, `un_ciclo/9` y `acciones_rete/5` son `semidet`, como sus originales del [capítulo 64](../capitulo-64-proyecto-sistema-produccion/index.md) |
+    | C2 | la red es un término, `red/4`, con tablas de `library(assoc)`; el estado, `rete/3`, viaja en argumentos junto a la memoria `mt/2`; los nodos se comparan con `=@=` y no con unificación |
+    | C4 | las cláusulas de los tres tipos de nodo se distinguen por su primer argumento, y la negación despacha por el signo en `llega_a_negacion/8`; las pruebas fallan si queda una alternativa pendiente |
+    | C6 | la red se escribe sin copiar el [capítulo 64](../capitulo-64-proyecto-sistema-produccion/index.md): carga sus archivos, reutiliza su memoria, su refracción, sus estrategias y su traza, y la negación y las pruebas alfa se agregan con cláusulas `multifile` y con otro agrupador para el mismo compilador |
+    | C7 | 51 pruebas en siete archivos; la central compara con el [capítulo 64](../capitulo-64-proyecto-sistema-produccion/index.md) el conjunto de conflicto después de cambios sueltos y la memoria final de ejecuciones enteras, sello por sello, en todos sus programas y estrategias |
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio. Los ejercicios extienden los programas: cada solución es un
+archivo que carga los del capítulo, sin modificarlos.
+
+13. **(2)** Escribir el programa `bloques_aux`, que declara libres de rojo
+    los mismos bloques que `bloques` de la
+    [sección 65.11](extensiones.md#6511-la-negacion-de-una-conjuncion) con
+    una regla auxiliar que agrega `rojo_encima(X)` y una negación simple.
+    Comparar los ciclos de las dos versiones, y lo que cada una concluye
+    cuando, después de ejecutarlas, se quita el hecho `color(c, rojo)`.
+14. **(3)** Escribir `quitar_regla/5`, el camino inverso de la
+    [sección 65.13](extensiones.md#6513-una-regla-nueva-con-la-red-en-marcha):
+    quita de una red cargada una regla, sus instanciaciones, los nodos beta
+    que ninguna otra regla usa y los nodos alfa que quedan sin sucesores.
+    Verificar que el resultado coincide con compilar el programa sin esa
+    regla, para cada regla de `familia` y del configurador.
+
+## Resumen
+
+| | |
+|---|---|
+| **Rete** | las reglas compiladas en una red que guarda entre ciclos las comparaciones hechas; solo los hechos que cambian la recorren |
+| **nodo alfa** | un patrón suelto y su memoria: los hechos que unifican con él, indexados por el primer argumento |
+| **nodo beta** | un prefijo de las condiciones de una regla y su memoria de tokens; dos reglas con prefijos variantes lo comparten |
+| **token** | una manera de cumplir un prefijo: los sellos de los hechos usados y el prefijo con las variables ligadas |
+| **activación por la derecha** | un hecho que entra en la memoria alfa se une con cada token del padre |
+| **activación por la izquierda** | un token nuevo del padre se une con cada hecho de la memoria alfa, o pasa la prueba |
+| **negación con cuentas** | cada token recuerda cuántos hechos lo bloquean, y pasa mientras la cuenta es cero |
+| **prueba en la red alfa** | una prueba que solo mira el hecho de su patrón se ejecuta antes de las uniones |
+| `red.pl`, `alfa.pl` | la compilación con nodos compartidos y las memorias alfa |
+| `tokens.pl`, `negacion.pl` | la propagación con signo, el conjunto de conflicto y la negación |
+| `rete.pl`, `medida.pl`, `pruebas.pl` | el ciclo, su comparación con el [capítulo 64](../capitulo-64-proyecto-sistema-produccion/index.md), la medición y las pruebas alfa |
+| **negación conjuntiva** | `no_todos([F1, ..., Fn])`: no hay una combinación de hechos que cumpla los patrones a la vez; el nodo cuenta las combinaciones por token |
+| **activación nula** | una activación que no puede producir nada: por la derecha con el padre vacío, por la izquierda con la memoria alfa vacía |
+| `herencia.pl`, `referencias.pl` | la herencia de los marcos evaluada en los nodos alfa, y los tokens reconstruidos a partir de sus sellos |
+| `conjuntiva.pl`, `desconexion.pl`, `en_marcha.pl` | la negación de una conjunción, la cuenta de las activaciones nulas y una regla agregada con la red cargada |
+| `max_assoc/3`, `gen_assoc/3` | la clave mayor de un assoc; sus pares por retroceso, en orden de clave |
+
+## Temas que se retoman
+
+| Tema | Se retoma en |
+|---|---|
+| La evaluación de reglas de abajo hacia arriba sobre una base que crece, con la técnica semi-ingenua, que como la red solo procesa lo que cambió en cada paso | [capítulo 86](../capitulo-86-proyecto-motor-datalog/index.md) |
+
+## Referencias
+
+- Dennis Merritt, *Building Expert Systems in Prolog*, Springer-Verlag,
+  1989 — capítulo «Performance», apartado «Design Tradeoffs».
+  [Edición en línea](https://www.amzi.com/ExpertSystemsInProlog/08performance.php),
+  de Amzi!. Esta página toma de allí el intercambio entre memoria y
+  velocidad con que cierra el capítulo, el límite de la herencia de los
+  marcos y sus ejercicios 8.2 y 8.4. La licencia de esa edición no permite
+  obras derivadas: se toman las ideas, no el código.
+- Dennis Merritt, *Building Expert Systems in Prolog*, apéndice «Rete-Foops»
+  (`retepred.pro` y `retefoop.pro`), en la misma
+  [edición en línea](https://www.amzi.com/ExpertSystemsInProlog/appendix.php). Es el
+  código completo del capítulo «Performance»: allí la negación no es un nodo con
+  cuentas sino una prueba `not(X)` que consulta la memoria de trabajo en un
+  nodo sin memoria, y el comentario del archivo deja pendiente guardar
+  referencias a los hechos en lugar de tokens completos, el ejercicio 8.2 del
+  libro, que la [sección 65.10](#6510-tokens-con-referencias)
+  mide; el ejercicio 8.4, la herencia en los patrones, es la
+  [sección 65.9](#659-la-herencia-en-los-patrones). Se
+  consulta para comparar, no se copia.
+- Robert B. Doorenbos, *Production Matching for Large Learning Systems*,
+  tesis doctoral, Carnegie Mellon University, 1995 (informe
+  CMU-CS-95-113).
+  [Edición en línea](http://reports-archive.adm.cs.cmu.edu/anon/1995/CMU-CS-95-113.pdf),
+  del archivo de informes técnicos de la universidad. Esta página toma el
+  apartado «Conjunctive Negations» para la negación de una conjunción, el
+  apartado «Adding and Removing Productions» para agregar una regla con la
+  red cargada, y la medición de las activaciones nulas por la izquierda y
+  por la derecha de los capítulos «Adding Right Unlinking to Rete» y
+  «Adding Left Unlinking to Rete», con la red Rete/UL y la observación de
+  que un nodo no puede quedar desconectado de los dos lados.
+
+El código del capítulo es propio, escrito para el curso: la compilación, las
+memorias, la propagación, la negación, el ciclo, la medición y las pruebas
+alfa son nuevos, y de las fuentes se toman las ideas, no el código.

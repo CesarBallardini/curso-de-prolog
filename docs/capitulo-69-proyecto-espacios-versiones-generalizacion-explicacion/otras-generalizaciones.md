@@ -1,22 +1,34 @@
 # Otras generalizaciones e incorporar las reglas
 
-Esta página contiene la sección
-[69.7](index.md#697-version-7-otras-generalizaciones-e-incorporar-las-reglas)
-del [capítulo 69](index.md): las partes del capítulo «Machine Learning
-Algorithms in Prolog» de Luger y Stubblefield que las versiones 1 a 6 no
-cubren. Luger y Stubblefield enumeran cuatro operaciones de
+Esta página continúa la página
+[Explicar un ejemplo y generalizar la explicación](explicacion.md#696-version-6-generalizar-la-explicacion)
+del [capítulo 69](index.md), con la sección
+[69.7](#697-version-7-otras-generalizaciones-e-incorporar-las-reglas): las
+partes del capítulo «Machine Learning Algorithms in Prolog» de Luger y
+Stubblefield que las versiones 1 a 6 no cubren. Los ejemplos están en
+`generalizaciones.pl` e `incorporar.pl`, en `ejemplos/capitulo-69/`, con
+sus pruebas; cargan archivos de otros capítulos y se ejecutan localmente.
+
+## 69.7 Versión 7: otras generalizaciones e incorporar las reglas
+
+Luger y Stubblefield enumeran cuatro operaciones de
 generalización: reemplazar una constante por una variable, quitar
 condiciones de una conjunción, agregar un disyunto y subir en una
 jerarquía de clases. Las versiones 1 a 4 usan solo la primera; esta
-página escribe las otras tres sobre las mismas piezas. Al final de la
+página escribe las otras tres sobre las mismas piezas. Quitar
+condiciones de una conjunción resulta ser la misma operación vista de
+otra manera; subir en una jerarquía de clases agrega conceptos
+intermedios, como `redondeada`, y permite aprender un concepto con el que
+el espacio de la
+[sección 69.3](index.md#693-version-3-eliminacion-de-candidatos) colapsa;
+agregar un disyunto hace que todo conjunto de ejemplos tenga un concepto
+consistente, a costa de no generalizar. Al final de la
 sección sobre la generalización basada en la explicación, los autores
 proponen además que el programa agregue a la base cada regla que
-aprende; la última parte de la página lo hace y mide el resultado. Los
-ejemplos están en `generalizaciones.pl` e `incorporar.pl`, en
-`ejemplos/capitulo-69/`, con sus pruebas; cargan archivos de otros
-capítulos y se ejecutan localmente.
+aprende; la última parte de la página lo hace y cuenta cuántos objetos
+se reconocen con las reglas guardadas y cuántos necesitan la teoría.
 
-## Quitar condiciones
+### Quitar condiciones
 
 Un concepto se puede leer como una conjunción de condiciones
 `Atributo = Valor`, una por cada atributo que no está libre.
@@ -80,7 +92,7 @@ lenguajes más ricos, como las cláusulas del
 donde quitar un literal del cuerpo no equivale a reemplazar una
 constante.
 
-## Subir en una jerarquía de clases
+### Subir en una jerarquía de clases
 
 Entre un valor y la variable que admite cualquier valor puede haber
 clases intermedias. La jerarquía de este ejemplo agrupa las formas en
@@ -248,7 +260,7 @@ clase agregada es una decisión de quien escribe el lenguaje, y es el
 **sesgo** del aprendiz: lo que puede aprender está fijado de antemano
 por los conceptos que puede representar.
 
-## Agregar un disyunto
+### Agregar un disyunto
 
 La operación más fuerte es la disyunción: un concepto pasa a ser una
 lista de conceptos, y cubre una instancia si alguno de ellos la cubre.
@@ -314,7 +326,7 @@ la disyunción de los positivos es siempre consistente y no clasifica
 ninguna instancia nueva. Con `esferas_y_cubos_verdes` la esfera roja y
 la esfera azul se generalizan en `pieza(esfera, _, _, _)`, y el cubo
 verde queda aparte. El resultado depende del orden de los positivos,
-como muestra el [ejercicio 12](index.md#ejercicios). Cuando el concepto
+como muestra el [ejercicio 13](#ejercicios). Cuando el concepto
 es conjuntivo, la disyunción tiene un solo disyunto, y coincide con el
 borde específico de la versión 2; una de las pruebas lo verifica con
 `esfera_roja`.
@@ -352,7 +364,7 @@ secuencia7(esferas_y_cubos_verdes,
            ]).
 ```
 
-## Incorporar las reglas aprendidas
+### Incorporar las reglas aprendidas
 
 La versión 6 aprende una regla de cada ejemplo, pero no la guarda: cada
 taza nueva se explica otra vez con la teoría. Luger y Stubblefield
@@ -433,5 +445,87 @@ de `taza1` y `taza2`.
 La teoría solo se usa con las tazas que lo son por una razón nueva, pero
 los 44 objetos que no son tazas se prueban primero contra las reglas y
 después contra la teoría, porque el programa no puede saber que no son
-tazas sin agotar las dos. El [ejercicio 13](index.md#ejercicios) mide lo
+tazas sin agotar las dos. El [ejercicio 14](#ejercicios) mide lo
 que eso cuesta.
+
+!!! success "Criterios de calidad"
+    | Criterio | En este capítulo |
+    |---|---|
+    | C1 | cada predicado declara modos y determinación; los que calculan bordes y reglas son `det` o `semidet`, y `explicar/4` y `ebg/5` son `nondet`, una respuesta por prueba |
+    | C2 | los conceptos, los ejemplos, las teorías y las descripciones son datos; la teoría y la descripción de cada ejemplo están separadas, y las reglas de la familia se leen del [capítulo 3](../capitulo-03-reglas-y-conjunciones/index.md), sin copiarlas |
+    | C4 | `cubre/2` y `generaliza/2` no ligan los conceptos: comparan con `subsumes_term/2`; `con_extra/2` quita los atributos agregados aunque la medición falle |
+    | C7 | 143 pruebas en los diez archivos del programa y 46 en las soluciones; los bordes de las versiones 2 y 3 se comparan con los de la enumeración en cada prefijo, el aprendiz activo con los 144 conceptos, y las reglas aprendidas con la teoría en la población |
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio.
+
+13. **(2)** Escribir `disyunciones(Nombre, Ds)`, las disyunciones
+    distintas que da `disyuncion_de/2` de la
+    [sección 69.7](#agregar-un-disyunto) con cada
+    orden de los positivos de la secuencia Nombre, seguidos de los
+    negativos. Aplicarlo a `esferas_y_cubos_verdes` y a `rojo_o_esfera`,
+    y explicar de qué depende que el orden cambie el resultado.
+14. **(2)** Medir con `inferencias/2` el costo de `recorrer(taza, _)`,
+    el de `clasificar_con_teoria(taza, _)` y el de una segunda pasada de
+    `reconocer/3` por la población, con las reglas que dejó la primera.
+    Explicar por qué guardar las reglas no abarata el reconocimiento en
+    esta población, y en qué población lo abarataría.
+
+## Resumen
+
+| | |
+|---|---|
+| **instancia, concepto** | una pieza sin variables; un término con valores y variables, o `vacio` |
+| **orden de generalidad** | G es al menos tan general como E si cubre todo lo que E cubre: la θ-subsunción |
+| **espacio de versiones** | los conceptos consistentes con los ejemplos vistos |
+| **bordes S y G** | los conceptos mínimos y máximos del espacio de versiones |
+| **generalización mínima** | la lgg de un concepto y una instancia |
+| **especialización mínima** | fijar un atributo libre en un valor distinto del del negativo |
+| **eliminación de candidatos** | mantener S y G juntos, cada uno podado por el otro |
+| **convergencia, colapso** | S y G iguales y únicos; un borde vacío |
+| **aprendiz activo** | elige la instancia que divide el espacio en partes parecidas y pide su clase |
+| **teoría del dominio** | reglas que definen el concepto a partir de predicados operacionales |
+| **criterio de operacionalidad** | los predicados en los que se detiene la generalización de la prueba |
+| **generalización basada en la explicación** | la prueba del ejemplo y la de su copia general, con las mismas reglas |
+| `varnumbers/2` | el inverso de `numbervars/3`: cada `'$VAR'(N)` pasa a ser una variable nueva |
+| `atributo/2`, `concepto/1`, `cubre/2`, `generaliza/2`, `version/2`, `minimos/2`, `maximos/2` | la versión 1 |
+| `generalizacion/3`, `especializacion/3`, `especifico/2`, `general/2` | la versión 2 |
+| `actualizar/3`, `eliminar/2`, `entre_bordes/2` | la versión 3 |
+| **[Patrón 67](../patrones.md#67-bordes-en-lugar-del-conjunto)** | bordes en lugar del conjunto |
+| `clasificar/3`, `votos/4`, `mejor_pregunta/2`, `activo/3`, `pasivo/3` | la versión 4 |
+| `regla/2`, `operacionales/2`, `explicar/4`, `como/3` | la versión 5 |
+| `ebg/5`, `aprender/4`, `aprender_con/5`, `aplicar/4`, `reconocidas/3` | la versión 6 |
+| **sesgo del lenguaje** | lo que un aprendiz puede aprender queda fijado por los conceptos que puede representar |
+| `condiciones_de/2`, `comunes/3`, `clase/2`, `generalizacion_jerarquia/3`, `cubre_jerarquia/2`, `especifico_jerarquia/2`, `disyuncion/2`, `disyuncion_de/2` | la versión 7: otras generalizaciones |
+| `reconocer/3`, `recorrer/2`, `aprendidas/2`, `olvidar/1` | la versión 7: incorporar las reglas |
+
+## Temas que se retoman
+
+| Tema | Se retoma en |
+|---|---|
+| Aprender un concepto ajustando números en lugar de buscar en un espacio de términos | [capítulo 70](../capitulo-70-proyecto-perceptron/index.md) |
+
+## Referencias
+
+- George F. Luger y William A. Stubblefield, *AI Algorithms, Data
+  Structures, and Idioms in Prolog, Lisp, and Java*, Pearson
+  Addison-Wesley, 2009 — capítulo «Machine Learning Algorithms in Prolog»,
+  secciones «Machine Learning: Version Space Search» y «Explanation Based
+  Learning in Prolog».
+  [Edición en línea del autor](https://www.cs.unm.edu/~luger/ai-final2/CH7_Machine%20Learning%20Algorithms%20in%20Prolog.pdf).
+  Esta página toma de allí las otras tres operaciones de generalización
+  (quitar condiciones, subir en una jerarquía de clases, agregar un
+  disyunto) y el ejercicio de agregar a la base las reglas aprendidas.
+
+El código del capítulo es propio, escrito para el curso: de Luger y
+Stubblefield se toman las ideas y la estructura de los algoritmos, no el
+código. Son del curso las piezas y sus atributos, el concepto `vacio`, la
+comparación de los bordes con la enumeración, la medición con atributos
+extra, el aprendiz activo, la teoría separada de la descripción del
+ejemplo, el árbol de prueba del [capítulo 34](../capitulo-34-introspeccion-y-metainterpretes/index.md), la teoría de la familia leída
+del [capítulo 3](../capitulo-03-reglas-y-conjunciones/index.md), la medición del costo de las reglas aprendidas, y la jerarquía
+de clases, las secuencias y la disyunción voraz de la versión 7.

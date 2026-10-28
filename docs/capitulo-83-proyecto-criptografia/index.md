@@ -32,8 +32,8 @@ Prolog. El capítulo usa la biblioteca del mismo nombre de SWI-Prolog, que
 comparte buena parte de esa interfaz, y escribe con enteros lo que en la
 biblioteca queda oculto: RSA y el intercambio de Diffie y Hellman, con la
 aritmética de precisión arbitraria que Triska señala como una de las
-ventajas de Prolog para este tema. La lista completa de las fuentes, con
-lo que se toma de cada una, está en las [Referencias](#referencias).
+ventajas de Prolog para este tema. Las fuentes, con lo que se toma de
+cada una, están en las [Referencias](#referencias) de cada página.
 
 El código del capítulo es didáctico. Los algoritmos de la biblioteca
 (SHA-256, HMAC, PBKDF2, RSA con relleno, HKDF) son los que se usan en la
@@ -60,9 +60,9 @@ Al terminar el capítulo, el lector puede:
   detectar con un código de autenticación un mensaje cifrado alterado.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **4:30 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **4:25 h**.
     Resolver los 5 ejercicios marcados con ★: **1:20 h**.
-    Resolver los 11 ejercicios del final: **3:30 h**.
+    Resolver los 11 ejercicios del capítulo: **3:30 h**.
 
 ## 83.1 Tres propiedades de los datos
 
@@ -883,51 +883,11 @@ los que comprueban son todos los que lo instalan, y repartirles el secreto
 equivale a publicarlo. Hace falta un esquema con dos claves distintas, una
 para firmar y otra para verificar.
 
-## 83.6 Versión 4: RSA con enteros
-
-La página [Firmas](firmas.md#firmas-version-4-rsa-con-enteros)
-escribe el esquema de clave pública de Rivest, Shamir y Adleman con la
-aritmética de enteros de precisión arbitraria: la prueba de primalidad
-de Miller y Rabin, el algoritmo de Euclides extendido para el inverso
-modular, las claves, el cifrado y la firma, y dos debilidades de RSA
-usado así, sin relleno: el cifrado es determinista, y el producto de dos
-firmas es la firma del producto de los mensajes.
-
-## 83.7 Versión 5: la entrega firmada
-
-La [versión 5](firmas.md#firmas-version-5-la-entrega-firmada) firma con
-`rsa_sign/4` de `library(crypto)`, que no firma el mensaje sino un bloque
-con el formato de PKCS #1 v1.5 construido a partir de su resumen; la
-página lo muestra elevando una firma de la biblioteca al exponente
-público, como `verificar/3` de la versión 4. Las claves se guardan en un
-llavero con un nombre, y quien verifica guarda solo la pública y compara
-su huella con la que publica el autor. El autor publica el manifiesto del
-pack del [capítulo 32](../capitulo-32-ejecutables-y-distribucion/index.md)
-con su firma, y `comprobar_entrega/4` responde `intacta`,
-`alterada(Cambios)` o `firma_invalida`: un tercero con su propio par de
-claves ya no puede hacer pasar un pack modificado por el del autor.
-
-## 83.8 Versión 6: un secreto acordado y un canal cifrado
-
-La página [El canal cifrado](canal.md#canal-version-6-un-secreto-acordado-y-un-canal-cifrado)
-completa la tercera propiedad, la confidencialidad. Dos partes acuerdan
-un secreto por un canal que cualquiera escucha, con el intercambio de
-Diffie y Hellman sobre el grupo de 2048 bits del RFC 3526; derivan de él
-dos claves con HKDF; y se envían mensajes cifrados con un flujo de bytes
-y autenticados con HMAC. Un mensaje cifrado y no autenticado se puede
-alterar sin conocer la clave: «Pagar 100 pesos a Ana» se convierte en
-«Pagar 900 pesos a Ana»; con el código de autenticación, la alteración se
-detecta antes de descifrar.
-
-!!! success "Criterios de calidad"
-    | Criterio | En este capítulo |
-    |---|---|
-    | C1 | cada predicado declara modos y determinación; `resumen/2` y `resumen_archivo/2` declaran también el modo con el resumen ligado, y `privada/2` y `firmar_texto/3` que fallan sin clave privada |
-    | C2 | `validar/4` falla con cualquier ficha mal formada, en lugar de dar un error; `compartido/4` rechaza los valores públicos que fijarían el secreto |
-    | C3 | `resumen/2`, `mac/3` y `euclides/5` calculan en una variable nueva y unifican después ([Patrón 88](../patrones.md#88-calcular-y-despues-comparar)): `crypto_data_hash/3` da un error con la salida ligada, y la primera versión de `euclides/5` dividía por cero |
-    | C4 | `iguales/2`, `verificar/3` y `comprobar_entrega/4` deciden con si-entonces-sino; `fuerza_bruta/3` usa `once/1` |
-    | C6 | el núcleo de las sesiones, `iniciar_sesion/4` y `ficha_del_pedido/3`, recibe el instante como argumento; solo los manejadores leen el reloj y el pedido HTTP |
-    | C7 | 116 pruebas en siete archivos, y 15 más sobre las soluciones: los resúmenes y el HMAC contra valores de referencia (FIPS 180-2, RFC 4231 y el módulo `hmac` de Python), la primalidad contra la división por tentativa y los números de Carmichael, el primo del grupo 14 como primo seguro, y cada alteración detectada |
+El capítulo continúa en la página
+[RSA y la entrega firmada](firmas.md#836-version-4-rsa-con-enteros), con ese esquema:
+RSA escrito con enteros y, después, las firmas de `library(crypto)`
+aplicadas a la entrega del pack. Antes, los [ejercicios](#ejercicios) de
+esta página practican las versiones 1 a 3.
 
 ## Ejercicios
 
@@ -957,93 +917,16 @@ que cargan los del capítulo, sin modificarlos.
    `Legajo.Alcance.Vence.Mac`, donde Alcance es `lectura` o `inscripcion`.
    Escribir `emitir_con_alcance/5` y `validar_con_alcance/5`, y probar que
    cambiar el alcance de una ficha la invalida.
-6. **(2)** Escribir `inverso_lineal(+A, +M, -X)`, el inverso modular por
-   búsqueda (`between/3` hasta encontrar `A*X mod M =:= 1`), y comparar
-   con `time/1` su costo y el de `inverso/3` para `inverso(65537, Fi, D)`
-   con Fi de 16, 20 y 24 bits. Estimar cuánto tardaría con un Fi de 2048
-   bits.
-7. ★ **(2)** El **teorema chino del resto** permite descifrar con dos
-   potencias de la mitad de tamaño. Escribir `privada_crt(+P, +Q, +D,
-   -Clave)`, que calcule una vez `DP`, `DQ` y el inverso de Q módulo P,
-   como `clave_desde_primos/4`, y `descifrar_crt(+C, +Clave, -M)`, y
-   comprobar que da lo mismo que `descifrar/3`. Medir los dos con 1000
-   descifrados y claves de 1024 bits.
-8. **(3)** El ataque de Wiener: si el exponente privado D es pequeño,
-   las fracciones continuas de E/N lo revelan. Escribir `wiener(+Publica,
-   -D)` y probarlo con una clave construida con un D de 60 bits y primos
-   de 256 bits. ¿Por qué `claves_aleatorias/3` no corre ese riesgo?
-9. ★ **(2)** Escribir `firmar_archivo(+Nombre, +Archivo, -Firma)` y
-   `verificar_archivo(+Nombre, +Archivo, +Firma)`, que firmen el resumen
-   del archivo (no su texto), y comprobar que la firma de un archivo y la
-   de su contenido leído como texto coinciden.
-10. **(2)** Repetir el acuerdo de la versión 6 sobre la curva elíptica
-    `prime256v1`, con `crypto_name_curve/2`, `crypto_curve_generator/2`
-    y `crypto_curve_scalar_mult/4` en lugar de `powm`, y derivar las
-    claves de sesión de la coordenada x del punto común.
-11. **(3)** Un atacante en medio del canal intercepta los valores públicos
-    de A y de B y los reemplaza por los suyos. Escribir
-    `acordar_con_intermediario/4`, que devuelva las claves de A, de B y
-    las dos del intermediario, y mostrar que el intermediario lee y
-    reenvía un mensaje sellado sin que `abrir/3` lo detecte. Proponer cómo
-    impedirlo con las firmas de la versión 5.
-
-## Resumen
-
-| | |
-|---|---|
-| **resumen criptográfico** | una cadena de longitud fija calculada de los datos, de la que es inviable volver a los datos o encontrar otros con el mismo resumen |
-| **manifiesto** | la lista de los archivos de un directorio con el resumen de cada uno |
-| **sal** | bytes aleatorios combinados con la contraseña, distintos en cada registro |
-| **costo** | la cantidad de iteraciones del resumen de una contraseña, que encarece cada intento |
-| **código de autenticación (HMAC)** | un resumen que depende de los datos y de un secreto |
-| **ficha de sesión** | un texto que el servicio entrega al comprobar la contraseña y comprueba en cada pedido |
-| **comparación en tiempo constante** | la que examina todos los caracteres, para no revelar con la demora dónde está la primera diferencia |
-| **firma digital** | un valor que solo produce el dueño de la clave privada y que cualquiera comprueba con la pública |
-| **relleno** | el formato fijo que recibe el resumen antes de firmarlo o el mensaje antes de cifrarlo |
-| **huella de una clave** | unos pocos dígitos del resumen de la clave pública, para compararla por otro canal |
-| **acuerdo de claves** | el intercambio con el que dos partes llegan al mismo secreto por un canal público |
-| **cifrar y después autenticar** | el código de autenticación se calcula sobre el texto cifrado y se comprueba antes de descifrar |
-| **[Patrón 88](../patrones.md#88-calcular-y-despues-comparar)** | calcular y después comparar |
-| **[Patrón 89](../patrones.md#89-comprobar-antes-de-usar)** | comprobar antes de usar |
-| `crypto_data_hash/3`, `crypto_file_hash/3` | el resumen de un texto y el de un archivo; con `hmac(Clave)`, el HMAC |
-| `crypto_password_hash/2,3` | el registro de una contraseña con PBKDF2 o bcrypt, y su comprobación |
-| `crypto_n_random_bytes/2`, `hex_bytes/2` | bytes aleatorios criptográficos; la conversión entre bytes y hexadecimal |
-| `crypto_generate_prime/3`, `rsa_sign/4`, `rsa_verify/4` | los primos de una clave RSA, la firma y su verificación |
-| `crypto_data_hkdf/4` | la derivación de claves a partir de un secreto |
-| `utf8_codes//1` | con `phrase/2`, los bytes UTF-8 de los códigos de un texto, y al revés |
-| `crypto_name_curve/2`, `crypto_curve_generator/2`, `crypto_curve_order/2`, `crypto_curve_scalar_mult/4` | una curva elíptica por su nombre, su generador, su orden y el producto de un punto por un escalar (solución 10) |
-| `copy_directory/2` | copia un directorio con su contenido; en las pruebas |
-| `powm`, `popcount`, `lsb`, `msb` | la potencia modular y tres funciones de bits, en `is/2` |
-| `resumen/2`, `bits_distintos/3`, `manifiesto/2`, `verificar/3`, `intacto/2` | la versión 1 |
-| `tabla_simple/1`, `atacar_diccionario/2`, `fuerza_bruta/3`, `registrar/3`, `comprobar/2` | la versión 2 |
-| `mac/3`, `emitir/4`, `validar/4`, `iguales/2`, `iniciar_sesion/4`, `ficha_del_pedido/3` | la versión 3 |
-| `generar/2`, `importar/2`, `huella/2`, `firmar_texto/3`, `verificar_texto/3`, `bloque_firmado/3`, `publicar/3`, `comprobar_entrega/4` | la versión 5 |
-
-## Temas que se retoman
-
-| Tema | Se retoma en |
-|---|---|
-| Los registros de un servicio, donde los inicios de sesión rechazados con 401 aparecen como anomalías | [capítulo 85](../capitulo-85-proyecto-analisis-registros/index.md) |
 
 ## Referencias
 
 - Markus Triska, *The Power of Prolog*, capítulo «Cryptography with
   Prolog». [Edición en línea](https://www.metalevel.at/prolog/cryptography).
-  El capítulo toma de allí el orden de los temas por la propiedad que
+  Esta página toma de allí el orden de los temas por la propiedad que
   garantizan (integridad, autenticidad, confidencialidad); el uso de
   `crypto_data_hash/3` con el algoritmo nombrado; el almacenamiento de
   contraseñas con sal y un resumen lento, y la observación de que la
-  búsqueda de Prolog sirve para experimentar con ataques de fuerza bruta;
-  la idea de firmar para establecer la autenticidad de un resumen de
-  referencia; el ejemplo del mensaje cifrado y alterado sin autenticación;
-  la derivación de claves con HKDF y la etiqueta `info/1`, y el acuerdo de
-  claves de Diffie y Hellman seguido de HKDF. Triska trabaja con Scryer
-  Prolog: la `library(crypto)` de SWI-Prolog 9.2.9 no tiene Ed25519 ni
-  X25519, y el capítulo los reemplaza por RSA y por el grupo de 2048 bits
-  del RFC 3526; ChaCha20-Poly1305 está disponible a través de
-  `crypto_data_encrypt/6`, y la
-  [página del canal cifrado](canal.md#el-cifrado-de-la-biblioteca) explica
-  por qué el capítulo no lo ejecuta.
+  búsqueda de Prolog sirve para experimentar con ataques de fuerza bruta.
   Triska remite a Jonathan Katz y Yehuda Lindell, *Introduction to Modern
   Cryptography*, 2.ª edición, CRC Press, 2014, sin edición en línea de
   acceso libre, y a Bruno Blanchet, «An Efficient Cryptographic Protocol
@@ -1051,42 +934,14 @@ que cargan los del capítulo, sin modificarlos.
   Foundations Workshop*, 2001,
   [edición en línea](https://doi.org/10.1109/CSFW.2001.930138), para la
   verificación de protocolos en Prolog.
-- Ronald L. Rivest, Adi Shamir y Leonard Adleman, «A method for obtaining
-  digital signatures and public-key cryptosystems», *Communications of
-  the ACM*, volumen 21, número 2, 1978, páginas 120–126.
-  [Edición en línea](https://doi.org/10.1145/359340.359342). El capítulo
-  toma las claves, el cifrado y la firma de la versión 4.
-- Whitfield Diffie y Martin E. Hellman, «New directions in cryptography»,
-  *IEEE Transactions on Information Theory*, volumen 22, número 6, 1976,
-  páginas 644–654. [Edición en línea](https://doi.org/10.1109/TIT.1976.1055638).
-  El capítulo toma el acuerdo de claves de la versión 6.
-- Michael O. Rabin, «Probabilistic algorithm for testing primality»,
-  *Journal of Number Theory*, volumen 12, número 1, 1980, páginas
-  128–138. [Edición en línea](https://doi.org/10.1016/0022-314X(80)90084-0).
-  La prueba de primalidad de `primo/1`, sobre la de Gary L. Miller de
-  1976.
 - RFC 2104, «HMAC: Keyed-Hashing for Message Authentication», 1997
   ([en línea](https://www.rfc-editor.org/rfc/rfc2104)); RFC 4231, los
   valores de prueba de HMAC-SHA256, 2005
-  ([en línea](https://www.rfc-editor.org/rfc/rfc4231)); RFC 3526, los
-  grupos de Diffie y Hellman de 1536 a 8192 bits, 2003
-  ([en línea](https://www.rfc-editor.org/rfc/rfc3526)); RFC 5869, HKDF,
-  2010 ([en línea](https://www.rfc-editor.org/rfc/rfc5869)); RFC 8017,
-  PKCS #1 versión 2.2, el formato de las firmas RSA, 2016
-  ([en línea](https://www.rfc-editor.org/rfc/rfc8017)); RFC 8018, PKCS #5
+  ([en línea](https://www.rfc-editor.org/rfc/rfc4231)); RFC 8018, PKCS #5
   versión 2.1, PBKDF2, 2017
-  ([en línea](https://www.rfc-editor.org/rfc/rfc8018)). El capítulo toma
-  de ellos los algoritmos que implementa la biblioteca, el primo del
-  grupo 14, el formato del bloque firmado que lee `relleno_pkcs1/2` y los
-  valores de referencia de las pruebas.
+  ([en línea](https://www.rfc-editor.org/rfc/rfc8018)). Esta página toma
+  de ellos los algoritmos que implementa la biblioteca y los valores de
+  referencia de las pruebas.
 - *SWI-Prolog Reference Manual*, la documentación de `library(crypto)`,
-  `library(http/http_server)` y las funciones aritméticas `powm`,
-  `popcount`, `lsb` y `msb`:
+  `library(http/http_server)` y la función aritmética `popcount`:
   [manual en línea](https://www.swi-prolog.org/pldoc/doc/_SWI_/library/ext/ssl/crypto.pl).
-
-El código del capítulo es propio, escrito para el curso. De Triska se
-toman las ideas y la interfaz de la biblioteca, pero ningún programa: los
-ejemplos de su capítulo usan predicados de Scryer Prolog que SWI-Prolog
-no tiene, y los de este capítulo (el manifiesto, los ataques, las fichas,
-RSA con enteros, el llavero, la entrega firmada y el canal) no tienen
-equivalente en la fuente.

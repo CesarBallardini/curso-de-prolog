@@ -1,6 +1,6 @@
 # Soluciones del capítulo 67 — Proyecto: evidencia y árboles de decisión
 
-Las soluciones de los ejercicios 2 a 12 están en
+Las soluciones de los ejercicios 1 a 6 y 8 a 12 están en
 `ejemplos/capitulo-67/soluciones.pl`, que carga las versiones del proyecto
 (`cotas.pl` y `compilado.pl`, que cargan las demás) y agrega dos métodos de
 combinación con cláusulas `multifile` de `evidencia`. Sus pruebas están en
@@ -9,54 +9,6 @@ carga `certeza.pl`, y la del 14, en `soluciones_id3.pl`, que carga
 `id3.pl`; cada una tiene sus pruebas en el `.plt` del mismo nombre.
 
 ## Ejercicio 1
-
-Con `proyecto.pl` cargado; `grado/4` está en `evidencia.pl`, `colapsada/2`
-en `colapsar.pl` y `consulta/4` en `arbol.pl`:
-
-<!-- ejemplo: capitulo-67/proyecto.pl archivo -->
-```prolog
-:- use_module(cotas).
-:- use_module(compilado).
-```
-
-```prolog
-?- member(M, [independiente, conservador, liberal]), grado(ave, [tiene_plumas-0.5, vuela-0.8, pone_huevos-0.8], M, P).
-M = independiente,
-P = 0.724 ;
-M = conservador,
-P = 0.5 ;
-M = liberal,
-P = 1.0.
-```
-
-Ave tiene dos reglas. Con la independencia, r3 aporta
-$1{,}0 \cdot 0{,}5 = 0{,}5$ y r4 aporta $0{,}7 \cdot 0{,}8 \cdot 0{,}8 =
-0{,}448$; la disyunción da $1 - 0{,}5 \cdot 0{,}552 = 0{,}724$. Con el
-método conservador, r3 aporta $\max(0, 1 + 0{,}5 - 1) = 0{,}5$ y r4
-$\max(0, 0{,}7 + 0{,}8 + 0{,}8 - 2) = 0{,}3$; la disyunción se queda con el
-mayor, 0,5. Con el liberal, r3 aporta 0,5 y r4 el mínimo, 0,7; la suma
-pasa de 1 y queda en 1,0.
-
-```prolog
-?- colapsada(pinguino, Ps).
-Ps = [tiene_plumas, no_vuela, nada] ;
-Ps = [vuela, pone_huevos, no_vuela, nada] ;
-false.
-
-?- consulta(frecuente, [tiene_plumas, no_vuela, nada], H, Ps).
-H = pinguino,
-Ps = [tiene_pelo, da_leche, no_vuela, tiene_plumas, nada].
-```
-
-La segunda regla colapsada del pingüino pide `vuela` y `no_vuela` a la
-vez: la base de reglas no declara que se excluyen, y el colapso lo deja a la
-vista (el ejercicio 7 lo aprovecha). El árbol `frecuente` pregunta primero
-`tiene_pelo` y `da_leche`: están en cuatro reglas cada una, empatadas con
-otras preguntas, y aparecen primero. Con dos respuestas negativas quedan
-las cuatro reglas de aves, y `no_vuela`, que está en las cuatro, va antes
-que `tiene_plumas`, que está en dos.
-
-## Ejercicio 2
 
 <!-- ejemplo: capitulo-67/soluciones.pl predicado: atenuacion/2 con_grado/3 -->
 ```prolog
@@ -108,7 +60,7 @@ quita $1 - f$; con $G = 0{,}7$ la suma de lo que se quita pasa de 1 en la
 tercera regla. La liberal es el mínimo de todos los números de la cadena:
 no depende de su longitud, y con $G = 1$ es la menor fuerza, 0,8 de r5.
 
-## Ejercicio 3
+## Ejercicio 2
 
 <!-- ejemplo: capitulo-67/soluciones.pl fragmento: evidencia:metodo(mycin). .. evidencia:o(conservador, P1, P2, P). -->
 ```prolog
@@ -144,7 +96,7 @@ uno combina una conjunción y una disyunción que están entre las
 conservadoras y las liberales, y la composición conserva el orden. La
 prueba `shells_entre_cotas` lo verifica para guepardo con tres grados.
 
-## Ejercicio 4
+## Ejercicio 3
 
 <!-- ejemplo: capitulo-67/soluciones.pl predicado: y_no/4 -->
 ```prolog
@@ -175,7 +127,7 @@ resta poco. Rowe agrega una advertencia: un hecho con grado 0,0 en la
 lista no es lo mismo que un hecho ausente para `\+`, que solo mira si
 unifica.
 
-## Ejercicio 5
+## Ejercicio 4
 
 <!-- ejemplo: capitulo-67/soluciones.pl predicado: dos_reglas/2 -->
 ```prolog
@@ -203,7 +155,7 @@ La primera regla aporta 0,6 con los tres métodos (su condición es
 segura); la segunda, 0,8. La independencia da $0{,}6 + 0{,}8 - 0{,}48 =
 0{,}92$; la conservadora, el máximo, 0,8; la liberal, la suma limitada a 1.
 
-## Ejercicio 6
+## Ejercicio 5
 
 <!-- ejemplo: capitulo-67/soluciones.pl predicado: mas_probable/3 -->
 ```prolog
@@ -239,7 +191,93 @@ tiene grado mayor que 0, como en la segunda consulta, donde el método
 conservador lleva todas a 0. Fallar es más claro que inventar una
 hipótesis `ninguna`, que el llamador podría tomar por un animal.
 
+## Ejercicio 6
+
+<!-- ejemplo: capitulo-67/soluciones.pl predicado: fuerza_estimada/4 -->
+```prolog
+%!  fuerza_estimada(+Exitos:integer, +Total:integer, -F:float,
+%!                  -Error:float) is det.
+%
+%   F es la fracción Exitos / Total, que estima la fuerza de una regla, y
+%   Error su error estándar, la raíz de F (1 - F) / Total; los dos con
+%   tres decimales.
+fuerza_estimada(Exitos, Total, F, Error) :-
+    F0 is Exitos / Total,
+    E0 is sqrt(F0 * (1 - F0) / Total),
+    F is round(1000 * F0) / 1000.0,
+    Error is round(1000 * E0) / 1000.0.
+```
+
+```prolog
+?- member(X-N, [200-500, 7-20, 2-2000]), fuerza_estimada(X, N, F, E).
+X = 200,
+N = 500,
+F = 0.4,
+E = 0.022 ;
+X = 7,
+N = 20,
+F = 0.35,
+E = 0.107 ;
+X = 2,
+N = 2000,
+F = E, E = 0.001.
+```
+
+Con 500 casos el error es 0,022, pequeño frente a 0,4: la estimación es
+confiable. Con 20 casos, 0,107 frente a 0,35: el mismo ejemplo de Rowe,
+que la acepta con reservas. Con 2 casos en 2000 el error es igual a la
+estimación, 0,001: el suceso es tan raro que la muestra no alcanza, y la
+fuerza no se debe tomar de estos datos.
+
 ## Ejercicio 7
+
+Con `proyecto.pl` cargado; `grado/4` está en `evidencia.pl`, `colapsada/2`
+en `colapsar.pl` y `consulta/4` en `arbol.pl`:
+
+<!-- ejemplo: capitulo-67/proyecto.pl archivo -->
+```prolog
+:- use_module(cotas).
+:- use_module(compilado).
+```
+
+```prolog
+?- member(M, [independiente, conservador, liberal]), grado(ave, [tiene_plumas-0.5, vuela-0.8, pone_huevos-0.8], M, P).
+M = independiente,
+P = 0.724 ;
+M = conservador,
+P = 0.5 ;
+M = liberal,
+P = 1.0.
+```
+
+Ave tiene dos reglas. Con la independencia, r3 aporta
+$1{,}0 \cdot 0{,}5 = 0{,}5$ y r4 aporta $0{,}7 \cdot 0{,}8 \cdot 0{,}8 =
+0{,}448$; la disyunción da $1 - 0{,}5 \cdot 0{,}552 = 0{,}724$. Con el
+método conservador, r3 aporta $\max(0, 1 + 0{,}5 - 1) = 0{,}5$ y r4
+$\max(0, 0{,}7 + 0{,}8 + 0{,}8 - 2) = 0{,}3$; la disyunción se queda con el
+mayor, 0,5. Con el liberal, r3 aporta 0,5 y r4 el mínimo, 0,7; la suma
+pasa de 1 y queda en 1,0.
+
+```prolog
+?- colapsada(pinguino, Ps).
+Ps = [tiene_plumas, no_vuela, nada] ;
+Ps = [vuela, pone_huevos, no_vuela, nada] ;
+false.
+
+?- consulta(frecuente, [tiene_plumas, no_vuela, nada], H, Ps).
+H = pinguino,
+Ps = [tiene_pelo, da_leche, no_vuela, tiene_plumas, nada].
+```
+
+La segunda regla colapsada del pingüino pide `vuela` y `no_vuela` a la
+vez: la base de reglas no declara que se excluyen, y el colapso lo deja a la
+vista (el ejercicio 8 lo aprovecha). El árbol `frecuente` pregunta primero
+`tiene_pelo` y `da_leche`: están en cuatro reglas cada una, empatadas con
+otras preguntas, y aparecen primero. Con dos respuestas negativas quedan
+las cuatro reglas de aves, y `no_vuela`, que está en las cuatro, va antes
+que `tiene_plumas`, que está en dos.
+
+## Ejercicio 8
 
 <!-- ejemplo: capitulo-67/soluciones.pl predicado: excluyentes/2 arbol_excluyentes/2 construir_excl/4 con_alguna/2 -->
 ```prolog
@@ -300,7 +338,7 @@ ahora terminan en `ninguna` sin preguntar lo que falta. La prueba
 sobre los animales que no tienen las dos observaciones; para los que las
 tienen, el árbol responde según la exclusión y el sistema original no.
 
-## Ejercicio 8
+## Ejercicio 9
 
 <!-- ejemplo: capitulo-67/soluciones.pl predicado: costo_minimo/1 costo/3 -->
 ```prolog
@@ -352,7 +390,7 @@ búsqueda tarda unos segundos, y crece en forma exponencial con la cantidad
 de preguntas. Es un punto de referencia para medir las estrategias, no
 una manera de construir árboles grandes.
 
-## Ejercicio 9
+## Ejercicio 10
 
 <!-- ejemplo: capitulo-67/soluciones.pl predicado: frecuencia/2 promedio_ponderado/2 sumar_pesado/3 -->
 ```prolog
@@ -397,7 +435,7 @@ las frecuencias: `orden` y `informacion` empatan. Una estrategia que
 pesara cada prototipo por su frecuencia en la ganancia de información la
 tendría en cuenta.
 
-## Ejercicio 10
+## Ejercicio 11
 
 <!-- ejemplo: capitulo-67/soluciones.pl predicado: escribir_arbol/1 escribir_clausulas/0 -->
 ```prolog
@@ -435,7 +473,7 @@ el operador `y`, porque la pregunta del peso lo usa, y define un
 compilado ya no necesita ni las reglas, ni el intérprete, ni el
 constructor del árbol.
 
-## Ejercicio 11
+## Ejercicio 12
 
 <!-- ejemplo: capitulo-67/soluciones.pl predicado: consultar_con_grado/5 supera/2 -->
 ```prolog
@@ -469,44 +507,6 @@ ausentes, y ninguna regla se cumple. El umbral convierte los grados en
 respuestas antes de consultar, y el árbol pierde la información que la
 evidencia combinada conserva: el grado de la hoja, 0,1851, dice cuánto se
 puede confiar en la respuesta del árbol con el umbral 0,5.
-
-## Ejercicio 12
-
-<!-- ejemplo: capitulo-67/soluciones.pl predicado: fuerza_estimada/4 -->
-```prolog
-%!  fuerza_estimada(+Exitos:integer, +Total:integer, -F:float,
-%!                  -Error:float) is det.
-%
-%   F es la fracción Exitos / Total, que estima la fuerza de una regla, y
-%   Error su error estándar, la raíz de F (1 - F) / Total; los dos con
-%   tres decimales.
-fuerza_estimada(Exitos, Total, F, Error) :-
-    F0 is Exitos / Total,
-    E0 is sqrt(F0 * (1 - F0) / Total),
-    F is round(1000 * F0) / 1000.0,
-    Error is round(1000 * E0) / 1000.0.
-```
-
-```prolog
-?- member(X-N, [200-500, 7-20, 2-2000]), fuerza_estimada(X, N, F, E).
-X = 200,
-N = 500,
-F = 0.4,
-E = 0.022 ;
-X = 7,
-N = 20,
-F = 0.35,
-E = 0.107 ;
-X = 2,
-N = 2000,
-F = E, E = 0.001.
-```
-
-Con 500 casos el error es 0,022, pequeño frente a 0,4: la estimación es
-confiable. Con 20 casos, 0,107 frente a 0,35: el mismo ejemplo de Rowe,
-que la acepta con reservas. Con 2 casos en 2000 el error es igual a la
-estimación, 0,001: el suceso es tan raro que la muestra no alcanza, y la
-fuerza no se debe tomar de estos datos.
 
 ## Ejercicio 13
 

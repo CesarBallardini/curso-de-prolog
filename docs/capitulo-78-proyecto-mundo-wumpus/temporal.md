@@ -1,15 +1,25 @@
 # El agente con historia
 
-Esta página completa el [capítulo 78](index.md) con la parte del
-capítulo «Logical Agents» de Russell y Norvig que las cinco versiones no
-programan: el agente del apartado «Agents Based on Propositional Logic»,
-que no recibe su ubicación como dato, sino que la deduce de lo que hizo y
-de lo que percibió, con un **axioma de estado sucesor** por cada
-propiedad que cambia con el tiempo. El ejemplo es `temporal.pl`, en
-`ejemplos/capitulo-78/`, con sus pruebas; carga la versión 3 y se ejecuta
-en una instalación local.
+Esta página continúa el [capítulo 78](index.md) después de la
+[sección 78.7](index.md#787-version-5-un-agente-para-la-cueva-de-yob), con
+la [sección 78.8](#788-el-agente-con-historia): la parte del capítulo
+«Logical Agents» de Russell y Norvig que las cinco versiones no programan.
+El ejemplo es `temporal.pl`, en `ejemplos/capitulo-78/`, con sus pruebas;
+carga la versión 3 y se ejecuta en una instalación local.
 
-## Fluentes y axiomas de estado sucesor
+## 78.8 El agente con historia
+
+Las cinco versiones dan al agente su celda como dato. El agente del
+apartado «Agents Based on Propositional Logic» de Russell y Norvig no la
+recibe: avanza, gira y dispara, y deduce dónde está de lo que hizo y de lo
+que percibió, con un **axioma de estado sucesor** por cada propiedad que
+cambia con el tiempo. Esta sección escribe esos axiomas como cláusulas de
+`temporal.pl`, arma con ellos el conocimiento de la versión 3 en cada
+momento de una historia, traduce los planes de la versión 3 a las acciones
+del libro y explica por qué el conocimiento `c/7`, que se actualiza con
+cada acción, evita releer la historia en cada decisión.
+
+### Fluentes y axiomas de estado sucesor
 
 En la versión 2 la acción `ir(C)` lleva al agente a la celda vecina C, y
 el agente sabe siempre en qué celda está. Las acciones del libro son
@@ -100,7 +110,7 @@ cambia solo si el agente avanzó y no percibió un golpe. Las cláusulas
 escriben una sola mitad de cada bicondicional, la que va de las acciones
 al fluente. La otra mitad la da la lectura de un programa como su
 **compleción**, la de la
-[sección 39.3](../capitulo-39-semantica-de-los-programas-logicos/index.md#393-negacion-como-falla-la-complecion-de-clark-y-sldnf):
+[sección 39.3](../capitulo-39-semantica-de-los-programas-logicos/resolucion.md#393-negacion-como-falla-la-complecion-de-clark-y-sldnf):
 el fluente vale solo en los casos que las cláusulas enumeran. Esa lectura
 es correcta aquí porque la historia está completa: una acción que no
 figura en ella no se hizo, y `\+ hizo(H, disparar, T0)` puede afirmarlo.
@@ -135,7 +145,7 @@ H = h(4, [[], [], [golpe]], [girar(derecha), avanzar]),
 Cs = [1-1, 1-1, 1-1].
 ```
 
-## Lo que se sabe en cada momento
+### Lo que se sabe en cada momento
 
 Con la celda de cada momento, la historia se convierte en el conocimiento
 de la [versión 3](index.md#785-version-3-el-agente-basado-en-conocimiento):
@@ -212,7 +222,7 @@ En el momento 6 la celda (1, 3) tiene el wumpus; en el 7, el grito hace
 falso `wumpus_vivo`, y la celda queda OK: la falta de brisa en (1, 2)
 prueba que no tiene pozo.
 
-## De los planes a las acciones del libro
+### De los planes a las acciones del libro
 
 El agente de la versión 3 planea con `ir(C)`, y los caminos del A\* del
 [capítulo 41](../capitulo-41-busqueda-y-planificacion/index.md) son
@@ -286,7 +296,7 @@ acción, la misma partida da 982 puntos en lugar de 990. La prueba
 `historia/3` y verifica que la trayectoria que el agente deduce de su
 historia pasa por cada celda del plan y termina en (1, 1).
 
-## El costo de deducir desde el principio
+### El costo de deducir desde el principio
 
 `vale/3` recalcula cada fluente desde el momento 0: la celda del momento
 T pide la del T − 1 y la dirección del T − 1, que a su vez piden las
@@ -307,3 +317,90 @@ el estado no se deduce de una sola manera, por ejemplo si una percepción
 puede faltar: entonces la ubicación es una disyunción de celdas, y la
 decisión necesita un procedimiento completo para fórmulas, como el de
 `library(clpb)` en [Los enfoques comparados](enfoques.md).
+
+Dos partes de ese apartado del libro solo se describen aquí, sin
+programarlas. La primera es el agente que escribe los axiomas como
+fórmulas proposicionales, un símbolo por fluente y por momento, y decide
+si una celda es segura preguntando a un procedimiento de satisfacibilidad
+(SAT) si la base de conocimiento es compatible con un peligro en ella. La
+segunda es SATPlan, que planifica por la misma vía: afirma la meta en el
+momento T, para T = 1, 2, …, y lee el plan en los símbolos de acción del
+primer modelo que el procedimiento encuentra. Tampoco se programan
+«Wumpus 2» y «Wumpus 3», las versiones posteriores del juego de Yob, con
+otras cuevas y peligros nuevos: no hay una edición de acceso libre de
+sus reglas que el capítulo pueda seguir.
+
+!!! success "Criterios de calidad"
+    | Criterio | En este capítulo |
+    |---|---|
+    | C1 | cada predicado declara modos y determinación; `subconjunto/2` es `multi` y `mundos_pozos/2`, que reúne sus respuestas, `det` |
+    | C2 | representaciones limpias: el estado del juego, el mundo y el conocimiento son términos con un functor cada uno; las jugadas devuelven términos y el texto se redacta aparte |
+    | C4 | `actuar/6` resuelve el disparo en una sola cláusula y `pares_con/4` recorre la lista en su primer argumento, de modo que las pruebas no encuentran alternativas pendientes |
+    | C6 | el núcleo es puro: `jugada/5` y `simular/5` no escriben nada, y el bucle de la terminal y `narrar/1` solo escriben lo que ellos devuelven |
+    | C7 | 156 pruebas en once archivos; el azar sale de una semilla, así que cada partida de las pruebas es reproducible en cualquier instalación |
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio. Los ejercicios que piden código se resuelven en archivos
+que cargan los del capítulo, sin modificarlos.
+
+12. **(2)** Escribir el axioma de estado sucesor del fluente «lleva el
+    oro» como un predicado `tiene_oro(H, T)` sobre las historias de
+    `temporal.pl`: el agente lleva el oro si en un momento anterior lo
+    tomó mientras percibía el brillo. Comprobarlo con la partida de la
+    cueva de la figura 7.2 traducida a las acciones del libro, y explicar
+    qué parte del predicado resuelve el problema del marco.
+
+## Resumen
+
+| | |
+|---|---|
+| **agente basado en conocimiento** | registra lo que percibe, infiere qué es seguro y elige una acción; el simulador no le muestra el mundo |
+| **mundo consistente** | una ubicación de los peligros que explica cada percepción registrada; una celda es segura si ningún mundo consistente pone un peligro en ella |
+| **frontera** | las celdas sin visitar vecinas de una visitada; un pozo fuera de ella no cambia ninguna percepción |
+| **probabilidad por mundos** | la suma de las probabilidades de los mundos consistentes con el peligro en la celda, dividida por la de todos |
+| **azar como estado** | el generador congruencial lineal pasa su estado de un predicado a otro: una partida queda determinada por su semilla |
+| **coordenadas trasladadas** | una búsqueda escrita para una meta fija sirve para cualquier otra si el problema se traslada |
+| **forall/2 y las restricciones** | lo que `forall/2` prueba se deshace al terminar, incluidas las restricciones; se imponen con `maplist/2` |
+| **fluente** | una propiedad que cambia con el tiempo, como la celda del agente o la flecha |
+| **axioma de estado sucesor** | un fluente vale en t + 1 si una acción de t lo produjo, o si valía en t y ninguna lo deshizo; resuelve el problema del marco con un axioma por fluente |
+| **lambdas de `library(yall)` compilados** | si la biblioteca ya está cargada, un lambda se traduce al compilar y sus variables libres no declaradas con `/` quedan como variables nuevas; un predicado con nombre evita el problema |
+| `nueva_partida/2`, `jugada/5`, `observacion/2` | el juego de Yob |
+| `mundo/2`, `mundo_sembrado/2`, `percepciones/3`, `actuar/6`, `simular/5` | el simulador de la grilla |
+| `mundos_pozos/2`, `posiciones_wumpus/2`, `clasificar/3`, `seguras/2`, `ruta/4`, `jugar/2` | el agente |
+| `probabilidad_pozo/3`, `riesgo/3`, `disparo/3`, `medir/3` | la flecha y el riesgo |
+| `cazar/3`, `narrar/1`, `medir_caza/2` | el agente en la cueva de Yob |
+| `seguras_con/3`, `comparar_en/3` | la comparación de los enfoques |
+| `vale/3`, `conocimiento_en/3`, `ok/3`, `traducir/4`, `historia/3` | el agente con historia |
+
+## Temas que se retoman
+
+| Tema | Se retoma en |
+|---|---|
+| Descartar las hipótesis que no explican las respuestas: Mastermind | [capítulo 79](../capitulo-79-proyecto-kalah-mastermind-nim/index.md) |
+| Reglas como las de seguridad evaluadas por un motor Datalog | [capítulo 86](../capitulo-86-proyecto-motor-datalog/index.md) |
+
+## Referencias
+
+- Stuart Russell y Peter Norvig, *Artificial Intelligence: A Modern
+  Approach*, 4.ª edición, Pearson, 2020 — capítulo «Logical Agents»,
+  sección «Agents Based on Propositional Logic».
+  [Sitio oficial del libro](https://aima.cs.berkeley.edu/). Esta página
+  toma de allí las acciones de avanzar y girar, los fluentes con el tiempo
+  como superíndice, los axiomas de estado sucesor de la flecha y de la
+  ubicación, el fluente OK, el problema del marco y la estimación del
+  estado como remedio del costo creciente de la inferencia.
+- aima-python, el código oficial del libro, con licencia MIT:
+  `aima/logic.py` (`WumpusKB`).
+  [Repositorio](https://github.com/aimacode/aima-python). De `WumpusKB`
+  esta página toma el axioma de estado sucesor del wumpus vivo, que usa
+  junto con los del libro, y la negación explícita de las acciones no
+  hechas, que en Prolog da la compleción del programa.
+
+El código del capítulo es propio, escrito para el curso: ninguno de los
+programas de esas fuentes se copió, y la enumeración de mundos
+consistentes como método principal, la cueva de Yob jugada por un agente
+y las mediciones no tienen equivalente en ellas.

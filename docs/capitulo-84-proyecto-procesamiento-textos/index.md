@@ -27,8 +27,8 @@ figuras de su libro. El capítulo los reescribe con los predicados actuales
 de SWI-Prolog, y corrige tres cosas del original: el estado del filtro deja
 la base de datos y pasa a un argumento, una marca mal puesta deja de
 perder texto sin aviso, y el archivo que describe las curvas se lee como
-datos en lugar de ejecutarse. La lista completa de las fuentes, con lo que
-se toma de cada una, está en las [Referencias](#referencias).
+datos en lugar de ejecutarse. Las fuentes, con lo que se toma de cada una,
+están en las [Referencias](#referencias) de cada página.
 
 El capítulo cumple el anuncio del
 [capítulo 57](../capitulo-57-proyecto-ordenes-castellano/index.md):
@@ -59,9 +59,9 @@ Al terminar el capítulo, el lector puede:
   un archivo de especificaciones como datos verificados, sin ejecutarlo.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **2:20 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **2:15 h**.
     Resolver los 5 ejercicios marcados con ★: **1:05 h**.
-    Resolver los 10 ejercicios del final: **2:40 h**.
+    Resolver los 10 ejercicios del capítulo: **2:40 h**.
 
 ## 84.1 Dos herramientas de texto
 
@@ -134,10 +134,10 @@ El programa recibe $r$, $a$, las vueltas del disco y la cantidad de
 segmentos, y escribe un comando de LaTeX que traza la curva:
 `\newcommand{\curva}{\drawline(0.0000,0.0000)(2.8540,5.0000)…}`. Los
 números tienen que estar escritos como LaTeX los lee, y Prolog no siempre
-los escribe así. La [página de las curvas](curvas.md) desarrolla el
-generador; las secciones [84.6](#846-las-curvas-version-1-la-cicloide-y-sus-numeros)
-a [84.8](#848-las-curvas-version-3-un-archivo-de-especificaciones) lo
-resumen.
+los escribe así. Las secciones
+[84.6](curvas.md#846-las-curvas-version-1-la-cicloide-y-sus-numeros) a
+[84.8](curvas.md#848-las-curvas-version-3-un-archivo-de-especificaciones),
+en la página [Las curvas](curvas.md), desarrollan el generador.
 
 ## 84.2 El programa terminado
 
@@ -152,7 +152,7 @@ resumen.
 
 `cribar_programa.pl` carga `cribar_seguro.pl`, y `curvas.pl` carga
 `cicloide.pl`: cada versión usa la anterior sin copiarla. La figura de las
-cicloides de la [sección 84.8](curvas.md#las-curvas-version-3-un-archivo-de-especificaciones)
+cicloides de la [sección 84.8](curvas.md#848-las-curvas-version-3-un-archivo-de-especificaciones)
 es la salida de `curvas_programa.pl`, y una prueba verifica que el
 archivo de la figura es lo que el programa escribe.
 
@@ -532,42 +532,12 @@ y que después de un error el archivo de salida no existe.
     `printf '1\n2\n3\n' |` delante. Predecir antes qué escribe en la
     salida estándar, qué en la de errores y con qué código termina.
 
-## 84.6 Las curvas, versión 1: la cicloide y sus números
-
-La [versión 1](curvas.md#las-curvas-version-1-la-cicloide-y-sus-numeros)
-calcula los puntos de la cicloide en una malla de valores del ángulo, y
-escribe el comando `\drawline` del paquete epic de LaTeX con una
-gramática del [capítulo 22](../capitulo-22-gramaticas-dcg/index.md) usada
-para generar. Los números se escriben con cuatro decimales fijos: Prolog
-escribe en notación exponencial los números muy chicos, como el
-`6.1e-16` que da `10 * cos(pi/2)`, y LaTeX no lee esa notación.
-
-## 84.7 Las curvas, versión 2: cualquier curva, varios formatos
-
-La [versión 2](curvas.md#las-curvas-version-2-cualquier-curva-varios-formatos)
-representa cada curva como un término, `cicloide(R, A)`,
-`circulo(Cx, Cy, R)` o `espiral(K)`, con una cláusula de `punto/3` por
-clase. Los puntos se escriben en tres formatos, epic, TikZ y SVG, cada
-uno una gramática; los puntos no saben nada del formato, y el formato no
-sabe nada de la curva.
-
-## 84.8 Las curvas, versión 3: un archivo de especificaciones
-
-La [versión 3](curvas.md#las-curvas-version-3-un-archivo-de-especificaciones)
-lee varias curvas de un archivo, con sus comentarios, y escribe el
-archivo de LaTeX o el dibujo SVG completo. Csenki ejecuta cada línea del
-archivo como una meta; aquí cada término se lee como dato, se verifica y
-se rechaza con su número de línea si no es una especificación válida.
-
-!!! success "Criterios de calidad"
-    | Criterio | En este capítulo |
-    |---|---|
-    | C1 | cada predicado declara modos y determinación; `final/1` y `paso/7` documentan los errores que lanzan |
-    | C2 | representaciones limpias: el estado `copiando` o `salteando(N0)`, la curva como término, la parte `comentario(Texto)` o `curva(Nombre, Puntos)`; ningún hecho dinámico |
-    | C3 | el mismo `paso/7` sirve a la lista y al stream; `punto/3` es `multifile`, y una clase de curva nueva es una cláusula en otro archivo |
-    | C4 | `paso/6`, `paso/7` y `formato/3` deciden con si-entonces-sino; las gramáticas de generación no dejan alternativas |
-    | C6 | `cribar/4`, `muestra/5` y `documento/3` no usan archivos; solo `main/1`, `cribar_archivos/3` y `curvas_archivos/2` abren streams |
-    | C7 | 88 pruebas en seis archivos; las de los programas los ejecutan en otro proceso, y una verifica que la figura del capítulo es la salida del programa |
+El capítulo continúa en la página
+[Las curvas](curvas.md#846-las-curvas-version-1-la-cicloide-y-sus-numeros),
+con la segunda herramienta: el generador
+de texto que dibuja curvas paramétricas. Antes, los
+[ejercicios](#ejercicios) de esta página practican las tres versiones del
+filtro.
 
 ## Ejercicios
 
@@ -601,62 +571,6 @@ que cargan los del capítulo, sin modificarlos.
    para quien corrige. Una sección de un par no puede abrirse dentro de
    una sección de otro, y los errores dicen la línea, como en la
    versión 2.
-6. ★ **(1)** Predecir lo que escribe `decimal//1` con `2.00005`,
-   `-0.00004`, `1.0e10` y `12`. Comprobarlo con `phrase/2`, y explicar el
-   resultado del primero.
-7. **(2)** La curva de Lissajous es $x = \sin(at + \delta)$,
-   $y = \sin(bt)$. Agregarla como clase `lissajous(A, B, Delta)` con una
-   cláusula de `punto/3` en un archivo propio, gracias a que `punto/3` es
-   `multifile`, y comprobar que `curva/1` la acepta y que `definir/7` la
-   escribe.
-8. ★ **(2)** La hipocicloide es la curva de un punto de un disco de radio
-   $r$ que rueda por dentro de una circunferencia de radio $R$, a
-   distancia $d$ del centro del disco:
-   $x = (R - r)\cos t + d\cos\frac{(R - r)t}{r}$,
-   $y = (R - r)\sin t - d\sin\frac{(R - r)t}{r}$. Agregarla como clase
-   `hipocicloide(R, Rd, D)`, escribir un archivo de especificaciones con
-   las de $R = 5$, $r = 3$ y $d = 3$, $d = 1$ y $d = 5$ entre 0 y $6\pi$, y
-   dibujarlas en SVG.
-9. **(1)** Predecir el mensaje de `curvas_programa.pl` con cada una de
-   estas líneas en un archivo de especificaciones:
-   `curva(c1, circulo(0, 0, 1), 0, 1, 8).`,
-   `curva(c, circulo(0, 0, R), 0, 1, 8).`,
-   `curva(c, circulo(0, 0, 1), 0, 1, 8.0).` y `curva(c, recta, 0, 1, 8).`
-   Comprobarlo.
-10. **(2)** Escribir `datos(+Partes, -Texto)`, otro formato: una línea
-    `X Y` por punto, con cuatro decimales, y una línea vacía entre dos
-    curvas, como lo leen programas de gráficos como gnuplot. Los
-    comentarios se escriben con `#` delante.
-
-## Resumen
-
-| | |
-|---|---|
-| **filtro** | un programa que lee un texto, lo transforma y escribe el resultado, de un archivo o de la entrada estándar a un archivo o a la salida estándar |
-| **autómata del filtro** | los estados `copiando` y `salteando`, y una relación que da, para cada estado y cada línea, el estado siguiente y lo que se escribe |
-| **estado en un argumento** | el recorrido lleva el estado de una línea a la siguiente como argumento, sin hechos dinámicos, y cada paso se prueba aislado |
-| **error con número de línea** | un dato mal formado que el filtro detiene y nombra, en lugar de procesarlo sin aviso |
-| **cicloide** | la curva de un punto fijo a un disco que rueda sobre una recta: común, acortada o alargada |
-| **malla** | los extremos de los intervalos iguales en que se divide el intervalo del parámetro |
-| **especificación como dato** | un término leído de un archivo que se verifica y se usa, y nunca se ejecuta |
-| **[Patrón 90](../patrones.md#90-el-automata-como-relacion-de-paso)** | el autómata como relación de paso |
-| **[Patrón 91](../patrones.md#91-especificacion-como-dato)** | especificación como dato |
-| `cribar/4`, `paso/6`, `empieza/2` | el filtro, versión 1 |
-| `paso/7`, `final/1` | el filtro, versión 2: el paso con el número de línea y el final del texto |
-| `cribar_stream/4`, `cribar_cadena/4`, `cribar_archivos/3`, `cribar_hacia/4` | el filtro, versión 3 |
-| `cicloide/4`, `malla/4`, `puntos_cicloide/5`, `definir_cicloide/6`, `comando/3`, `decimal//1` | las curvas, versión 1 |
-| `punto/3`, `curva/1`, `muestra/5`, `definir/7`, `definicion/4`, `documento/3` | las curvas, versión 2 |
-| `leer_especificaciones/2`, `especificacion/3`, `comentarios/3` | las curvas, versión 3 |
-| `same_file/2` | si dos nombres designan el mismo archivo |
-| `open_string/2` | un stream de lectura sobre una cadena |
-| `format(codes(Codigos), …)` | escribe con formato en una lista de códigos |
-| `print_message_lines/3` | escribe en un stream las líneas de un mensaje; en las pruebas |
-
-## Temas que se retoman
-
-| Tema | Se retoma en |
-|---|---|
-| Analizar los registros de un sistema: leer líneas, extraer campos y separar lo normal de lo anómalo | [capítulo 85](../capitulo-85-proyecto-analisis-registros/index.md) |
 
 ## Referencias
 
@@ -670,18 +584,11 @@ que cargan los del capítulo, sin modificarlos.
   La editorial ya no ofrece el libro;
   [Google Libros](https://books.google.com/books?id=copBGLD4LKwC) muestra
   páginas seleccionadas.
-  El
-  capítulo toma de allí los dos problemas y su contexto: quitar las
-  soluciones de un examen escrito en LaTeX, y dibujar curvas
-  paramétricas en LaTeX con `\drawline` del paquete epic; la regla de
-  que una marca cuenta solo al principio de la línea y de que las
-  líneas de marca se quitan; la cicloide, sus tres clases y sus
-  ecuaciones; la malla de intervalos iguales; el problema de la
-  notación exponencial y su solución con un formato de decimales fijos;
-  la generalización al círculo y a la espiral logarítmica con
-  $k = \cot\alpha$; el archivo de especificaciones con comentarios que
-  pasan a la salida; el uso de los dos programas desde la terminal; y el
-  filtro inverso del [ejercicio 2](#ejercicios).
+  Esta página toma de allí el primer problema y su contexto: quitar las
+  soluciones de un examen escrito en LaTeX; la regla de que una marca
+  cuenta solo al principio de la línea y de que las líneas de marca se
+  quitan; el uso del filtro desde la terminal; y el filtro inverso del
+  [ejercicio 2](#ejercicios).
 - Mark Weiser, «Program slicing», *IEEE Transactions on Software
   Engineering*, volumen 10, número 4, 1984, páginas 352–357.
   [Página de la editorial](https://doi.org/10.1109/TSE.1984.5010248)
@@ -689,31 +596,7 @@ que cargan los del capítulo, sin modificarlos.
   describir su filtro como un rebanador estático primitivo: un programa
   que extrae de un texto la parte que interesa según un criterio fijo.
   El capítulo no toma de él ningún algoritmo.
-- El paquete epic de LaTeX, [en CTAN](https://ctan.org/pkg/epic), que
-  Csenki usa por su comando `\drawline`, y el paquete PGF/TikZ,
-  [en CTAN](https://ctan.org/pkg/pgf), cuyo `\draw` es el segundo
-  formato de la [versión 2](curvas.md#las-curvas-version-2-cualquier-curva-varios-formatos).
-  Csenki remite para epic a *The LaTeX Companion* de Goossens,
-  Mittelbach y Samarin (Addison-Wesley, 1994).
-- W3C, *Scalable Vector Graphics (SVG) 2*, elemento
-  [`polyline`](https://www.w3.org/TR/SVG2/shapes.html#PolylineElement):
-  el tercer formato, con el eje Y hacia abajo y el atributo `viewBox`.
-- Las definiciones de la [cicloide](https://es.wikipedia.org/wiki/Cicloide)
-  y de la [espiral logarítmica](https://es.wikipedia.org/wiki/Espiral_logar%C3%ADtmica),
-  en Wikipedia en español. Csenki remite para la cicloide al cálculo de
-  variaciones de Gelfand y Fomin (Prentice-Hall, 1963) y a manuales de
-  fórmulas, y para la espiral, al de Bartsch (Academic Press, 1974).
 - *SWI-Prolog Reference Manual*, en línea:
-  [`read_term/2`](https://www.swi-prolog.org/pldoc/man?predicate=read_term/2)
-  con las opciones `comments` y `term_position`,
   [`format/2`](https://www.swi-prolog.org/pldoc/man?predicate=format/2)
   y [`library(main)`](https://www.swi-prolog.org/pldoc/man?section=optparse)
   con `argv_options/3`.
-
-El código del capítulo es propio, escrito para el curso: los programas de
-Csenki se reescribieron con otra representación (líneas como cadenas, el
-estado como argumento, las curvas como términos, la especificación como
-dato) y con predicados actuales en lugar de `see/1`, `tell/1`,
-`concat_atom/2`, `sformat/3` y `apply/2`; los errores de las marcas, el
-recorrido sobre un stream, los formatos TikZ y SVG y la verificación de
-las especificaciones no tienen equivalente en la fuente.

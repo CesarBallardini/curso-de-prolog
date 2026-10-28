@@ -38,7 +38,7 @@ flowchart LR
     F --> y["clase<br/>1 o −1"]
 ```
 
-El programa crece en cuatro versiones. La primera escribe la regla de
+El programa crece en cinco versiones. La primera escribe la regla de
 aprendizaje y entrena con un ejemplo por vez, rotando la lista de
 ejemplos, hasta que todos quedan bien clasificados. La segunda organiza el
 entrenamiento en **épocas**, recorridos completos de los ejemplos hechos
@@ -49,7 +49,9 @@ detecta cuándo el entrenamiento no puede terminar, porque los pesos se
 repiten, y con eso mide cuáles de las dieciséis funciones lógicas de dos
 entradas aprende un perceptrón: todas salvo dos, la o exclusiva y su
 negación. La cuarta agrega una entrada calculada, el producto de las otras
-dos, y con ella la o exclusiva se vuelve aprendible.
+dos, y con ella la o exclusiva se vuelve aprendible. La quinta, en la página que
+sigue, escribe las operaciones con vectores de dos maneras y el entrenamiento
+con el esquema general del acumulador, y mide las inferencias de cada forma.
 
 El proyecto parte de *Prolog Techniques* de Attila Csenki, distribuido de
 manera gratuita por Bookboon
@@ -95,7 +97,7 @@ Al terminar el capítulo, el lector puede:
 !!! info "Tiempo estimado"
     Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **2:15 h**.
     Resolver los 6 ejercicios marcados con ★: **1:55 h**.
-    Resolver los 14 ejercicios del final: **4:20 h**.
+    Resolver los 14 ejercicios del capítulo: **4:20 h**.
 
 ## 70.1 El programa terminado
 
@@ -135,7 +137,7 @@ N = 14.
 N = 16.
 ```
 
-El programa se reparte en cuatro archivos, uno por versión:
+El programa se reparte en cinco archivos, uno por versión:
 
 | Archivo | Contenido | Sección |
 |---|---|---|
@@ -143,6 +145,7 @@ El programa se reparte en cuatro archivos, uno por versión:
 | `epocas.pl` | versión 2: las épocas, el ciclo del [capítulo 47](../capitulo-47-proyecto-metodos-numericos/index.md) y la curva | [70.3](#703-version-2-epocas-y-curva-de-aprendizaje) |
 | `ciclos.pl` | versión 3: separables o en ciclo | [70.4](#704-version-3-separables-o-en-ciclo) |
 | `rasgos.pl` | versión 4: un rasgo nuevo | [70.5](#705-version-4-un-rasgo-nuevo) |
+| `vectores.pl` | versión 5: los vectores por recursión simple y con acumulador, y el esquema del acumulador | [70.6](vectores.md#706-version-5-vectores-y-el-esquema-del-acumulador) |
 
 ## 70.2 Versión 1: la regla del perceptrón
 
@@ -785,31 +788,12 @@ recibe las salidas de otros dos la calcula. El
     producto que sin él, y comprobarlo con `aprender/3`. Explicar el peso
     0 que recibe x₂ en los pesos finales.
 
-## 70.6 Versión 5: vectores y el esquema del acumulador
-
-Csenki escribe la regla del perceptrón con dos operaciones sobre
-vectores, el producto por un número y la suma, y propone definirlas por
-recursión simple y con acumulador y comparar las dos. La quinta versión
-lo hace y mide las inferencias: la recursión simple es la más barata, y
-en Prolog no necesita acumulador porque construye la lista resultado
-hacia adelante. Muestra también que el orden de los argumentos que usa
-Csenki, con el número primero, deja una alternativa pendiente que la
-indexación evita con la lista primero. Por último, escribe el
-entrenamiento de a un ejemplo con el esquema general del acumulador de
-Csenki, un argumento que se transforma hasta una condición de parada y
-del que se extrae el resultado, y lo compara con `iterar/5` del
-[capítulo 47](../capitulo-47-proyecto-metodos-numericos/index.md). Está
-en la página
-[Vectores y el esquema del acumulador](vectores.md#vectores-y-el-esquema-del-acumulador).
-
-!!! success "Criterios de calidad"
-    | Criterio | En este capítulo |
-    |---|---|
-    | C1 | cada predicado declara modos y determinación; los entrenamientos que pueden no terminar lo dicen: `entrenar_uno/5` es `det` solo para conjuntos separables, y `entrenar/5` y `entrenar_o_ciclo/4` son `semidet` porque tienen un límite de épocas |
-    | C3 | `salida/3` compara la suma antes de unificar la clase, así que `salida(P, Xs, 1)` responde como `salida(P, Xs, C), C = 1`; `aprender/4` y `corregir/4` deciden con la comparación antes de ligar sus salidas |
-    | C4 | ningún entrenamiento deja alternativas pendientes; `once/1` elige la posición del peso repetido, que es única |
-    | C6 | todo el programa es puro: los pesos y la historia viajan en los argumentos, el ciclo es el del [capítulo 47](../capitulo-47-proyecto-metodos-numericos/index.md) y la tasa es un parámetro |
-    | C7 | 80 pruebas en los cinco archivos del programa y 51 en las soluciones; cada afirmación del texto que depende de una ejecución —los 801 pasos, las 102 épocas, los pesos repetidos de la o exclusiva, las catorce y dieciséis funciones— tiene su prueba |
+El capítulo continúa en la página
+[Vectores y el esquema del acumulador](vectores.md#706-version-5-vectores-y-el-esquema-del-acumulador),
+con la quinta versión: las operaciones sobre vectores de la regla del
+perceptrón escritas de dos maneras, y el esquema general de los
+predicados con acumulador. Antes, los [ejercicios](#ejercicios) de esta
+página practican las versiones 1 a 4.
 
 ## Ejercicios
 
@@ -874,48 +858,6 @@ tiene de propio.
     con `entrenar_o_ciclo/4` que no son separables, y que lo son si cada
     punto se reemplaza por los cuadrados de sus coordenadas. Explicar por
     qué ese rasgo sirve para este conjunto y no para la o exclusiva.
-13. ★ **(2)** Escribir `suma_rec/2` y `suma_acc/2`, la suma de los
-    elementos de un vector por recursión simple y con acumulador, medir
-    sus inferencias con mil elementos, y sumar los números de 1 a 200 000
-    con cada una con las pilas limitadas a 12 000 000 de bytes con el
-    indicador `stack_limit`. Explicar por qué aquí el acumulador conviene
-    y en `escalar_rec/3` de la
-    [sección 70.6](vectores.md#el-costo-de-cada-forma) no.
-14. **(2)** Escribir `esquema_general/5`, el esquema del acumulador de la
-    [sección 70.6](vectores.md#el-esquema-general-del-acumulador) con la
-    condición de parada, la extracción y la transformación como
-    parámetros, y usarlo para entrenar el perceptrón con las partes de
-    `vectores.pl` y para calcular el menor elemento de una lista no
-    vacía.
-
-## Resumen
-
-| | |
-|---|---|
-| **perceptrón** | clasifica por el signo de una suma pesada de las entradas más un sesgo |
-| **sesgo** | el peso de una entrada fija igual a 1; desplaza la frontera |
-| **frontera** | los puntos con suma nula: una recta en el plano, un hiperplano en general |
-| **linealmente separable** | un conjunto cuyas clases deja un hiperplano cada una de un lado |
-| **regla del perceptrón** | con un ejemplo mal clasificado, cada peso suma Tasa·(D − Y)·Xi |
-| **tasa de aprendizaje** | el factor fijo de la corrección |
-| **época** | un recorrido completo de los ejemplos; una época sin errores termina el entrenamiento |
-| **curva de aprendizaje** | los errores de cada época; no tiene por qué decrecer |
-| **ciclo** | los pesos del final de una época repiten los de otra; con pesos enteros, prueba que el conjunto no es separable |
-| **rasgo** | una entrada calculada a partir de las originales, que puede volver separable un conjunto |
-| `datos/2`, `corregir/4`, `bien_clasificado/2` | los ejemplos, la respuesta y la regla |
-| `entrenar_uno/5`, `pasos/5`, `inferencias/2` | la versión 1 y su medición |
-| `epoca/5`, `entrenar/5`, `curva/5`, `costos/5` | la versión 2, sobre `iterar/5` del [capítulo 47](../capitulo-47-proyecto-metodos-numericos/index.md) |
-| `entrenar_o_ciclo/4`, `probar/2`, `tabla/1`, `no_separables/1` | la versión 3 |
-| **[Patrón 68](../patrones.md#68-historia-en-el-estado-del-ciclo)** | historia en el estado del ciclo |
-| `rasgos/3`, `ampliar/3`, `aprender/3`, `separables_con/2` | la versión 4 |
-| **esquema del acumulador** | un argumento que se transforma hasta cumplir una condición de parada, y del que se extrae el resultado |
-| `escalar_rec/3`, `sumar_rec/3`, `escalar_acc/3`, `sumar_acc/3`, `corregir_vectores/4`, `costos_vectores/2`, `entrenar_esquema/5` | la versión 5 |
-
-## Temas que se retoman
-
-| Tema | Se retoma en |
-|---|---|
-| Umbrales ajustados a partir de datos para separar lo normal de lo anómalo | [capítulo 85](../capitulo-85-proyecto-analisis-registros/index.md) |
 
 ## Referencias
 
@@ -923,15 +865,12 @@ tiene de propio.
   apartado 1.6, «Case Study: The Perceptron Training Algorithm», y
   apartado 2.5.2, «The Perceptron Training Algorithm Revisited».
   [Página de la editorial, copia de archivo](https://web.archive.org/web/20220123025207/https://bookboon.com/en/prolog-techniques-applications-of-prolog-ebook?mediaType=ebook).
-  El capítulo toma del primero la regla de decisión con un sesgo, la regla
+  Esta página toma del primero la regla de decisión con un sesgo, la regla
   de corrección con la diferencia entre la clase deseada y la obtenida, el
   entrenamiento de a un ejemplo por vez con el ejemplo usado pasado al
   final, la tabla de ocho puntos con sus pesos iniciales y su tasa, que
   la versión 1 reproduce con los mismos 801 pasos, y el ejercicio de
-  entrenar un número fijo de iteraciones, el ejercicio de escribir el
-  producto de un vector por un número y la suma de vectores por recursión
-  simple y con acumulador, y el esquema general de los predicados con
-  acumulador de su apartado 1.5; del segundo, la cola con una
+  entrenar un número fijo de iteraciones; del segundo, la cola con una
   lista diferencia en lugar de la rotación con `append/3`, y la medición
   de su costo en inferencias. Para el algoritmo y su convergencia, Csenki
   remite a tres textos generales: Achim Hoffmann, *Paradigms of
@@ -960,11 +899,3 @@ tiene de propio.
   representar, con la o exclusiva como el caso más simple, y muestra que
   sin separabilidad los pesos quedan acotados y el entrenamiento se
   repite: la base de las versiones 3 y 4.
-
-El código del capítulo es propio, escrito para el curso: de la fuente se
-toman la regla, los datos y la idea de la rotación, no el código; las
-épocas como plegado, el uso del ciclo del
-[capítulo 47](../capitulo-47-proyecto-metodos-numericos/index.md), la
-curva de aprendizaje, la detección de ciclos, la medición de las
-dieciséis funciones, el rasgo producto y la medición de las dos formas
-de las operaciones con vectores son del curso.

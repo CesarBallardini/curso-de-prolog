@@ -40,6 +40,9 @@ jobs:
       - name: Cross-references are links
         run: make links
 
+      - name: Chapter pages read as a stream
+        run: make pages
+
       - name: Pattern catalogue
         run: make patterns
 

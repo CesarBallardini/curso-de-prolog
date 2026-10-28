@@ -1,15 +1,17 @@
 # Muchos días en paralelo
 
-Esta página es parte del [capítulo 85](index.md): su versión 6, que
-resume cada día por separado, en paralelo, y combina los resúmenes. La
-[sección 85.8](index.md#858-version-6-muchos-dias-en-paralelo) la resume.
+Esta página continúa la página
+[Umbrales ajustados a los datos y un umbral aprendido](aprendido.md#857-version-5-un-umbral-aprendido) del
+[capítulo 85](index.md), con la sección
+[85.8](#858-version-6-muchos-dias-en-paralelo), la última: la versión 6, que resume cada día por separado, en paralelo, y combina los
+resúmenes.
 
-## Versión 6: muchos días en paralelo
+## 85.8 Versión 6: muchos días en paralelo
 
 Ajustar los umbrales con más días obliga a leer más archivos. Los días
 son independientes: cada uno se puede leer y resumir en un hilo, como en
 el paralelismo de datos del
-[capítulo 38](../capitulo-38-concurrencia-y-paralelismo/paralelismo.md#paralelismo-de-datos),
+[capítulo 38](../capitulo-38-concurrencia-y-paralelismo/paralelismo.md#384-paralelismo-de-datos),
 siempre que los resúmenes de los días se puedan **combinar** después. La
 media y el desvío se combinan: la cantidad, la suma y la suma de los
 cuadrados de dos conjuntos son las sumas de las de cada uno, y Denning
@@ -201,4 +203,74 @@ núcleos, y con uno solo el paralelismo no tiene nada que repartir.
     hay nada que repartir. Y cuando las partes pueden superponerse: el
     resumen no sabe de dónde vino cada valor, y un día combinado dos veces
     pesa el doble, como mide el
-    [ejercicio 9](index.md#ejercicios).
+    [ejercicio 11](#ejercicios).
+
+!!! success "Criterios de calidad"
+    | Criterio | En este capítulo |
+    |---|---|
+    | C1 | cada predicado declara modos y determinación; `cargar_hechos/2` explica el aviso que desactiva, y `hora_del_dia/3` falla fuera de las horas de servicio |
+    | C2 | representaciones limpias: `pedido/6` con `sin_medir` cuando falta el dato, `m/4`, `perfil/4`, `r/4`, los límites `mayor(L)` y `menor(L)`, las causas `cliente/2`, `ruta/2` y `sin_trafico` |
+    | C3 | los límites son un argumento: los fijos, los ajustados y los del mismo día pasan por el mismo `anomalias/3`; cada versión carga la anterior con `reexport/1`, y la 5 carga el perceptrón del [capítulo 70](../capitulo-70-proyecto-perceptron/index.md) sin copiarlo |
+    | C4 | `paso/4`, `paso_comun/3`, `causa/5` y `mezclar/6` deciden por el primer argumento o con si-entonces-sino; el mes se busca en una tabla indexada |
+    | C6 | el núcleo trabaja con listas de pedidos; solo los lectores abren archivos, y solo `escribir_metricas/1` y `escribir_anomalias/1` escriben |
+    | C7 | 93 pruebas en siete archivos, y 26 sobre las soluciones; una verifica que los archivos de datos son lo que el generador escribe, otra que los dos lectores coinciden, y otras que el resumen combinado da los umbrales de la versión 4 |
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio. Los ejercicios que piden código se resuelven en archivos
+que cargan los del capítulo, sin modificarlos.
+
+11. **(2)** Medir `resumir_en_serie/3` y `resumir_en_paralelo/3` con la
+    lista de los cuatro días repetida diez veces. Explicar el resultado, y
+    por qué el resumen da 480 horas aunque haya solo 48 distintas.
+
+## Resumen
+
+| | |
+|---|---|
+| **registro** | la serie de eventos que un sistema anota, uno por pedido o por acción, en el orden en que ocurren |
+| **corrida** | lo que el servidor anota entre un arranque y el siguiente; los números de pedido valen dentro de ella |
+| **formato común** | una línea de texto por pedido respondido: cliente, identidades, fecha, pedido, código y bytes |
+| **métrica** | una cantidad acumulada en un período: un contador de eventos o una medida de recursos |
+| **modelo operacional** | un valor es anómalo si pasa un límite fijo |
+| **modelo de media y desvío** | un valor es anómalo si se aleja de la media más de D desvíos |
+| **MAD** | la mediana de las distancias a la mediana; con el puntaje z modificado, un modelo que los atípicos no desplazan |
+| **enmascaramiento** | un atípico grande infla el desvío y esconde a los atípicos menores |
+| **perfil** | las métricas de un sujeto, aquí un cliente, en un período |
+| **resumen combinable** | un término que resume un conjunto y se combina con el de otro sin volver a los valores |
+| **[Patrón 92](../patrones.md#92-limites-como-argumento)** | límites como argumento |
+| **[Patrón 93](../patrones.md#93-ajuste-robusto)** | ajuste robusto |
+| **[Patrón 94](../patrones.md#94-resumen-que-se-combina)** | resumen que se combina |
+| `cargar_hechos/2`, `par_hechos/3`, `sin_respuesta_hechos/2` | el registro cargado como programa |
+| `leer_registro/3`, `leer_registro/2`, `paso/4`, `cerrar/2`, `contar_registro/3` | el registro leído como datos, versión 1 |
+| `linea//1`, `paso_comun/3`, `leer_comun/3`, `comparar/4`, `diferencias/4` | el formato común, versión 2 |
+| `metricas/2`, `medir/2`, `anomalias/3`, `causa/3`, `informe/1`, `informe_anomalias/2` | métricas, anomalías e informes, versión 3 |
+| `media_desvio/3`, `mad/3`, `ajustar/3`, `umbrales/3` | los umbrales ajustados, versión 4 |
+| `perfiles/2`, `ejemplos_de_referencia/1`, `aprendizaje/2`, `sospechosos/3` | el umbral aprendido, versión 5 |
+| `resumir/3`, `combinar/3`, `resumir_en_paralelo/3`, `ajustar_resumen/3` | los resúmenes combinables, versión 6 |
+| `style_check/1` | activa o desactiva un aviso del compilador, como el de las cláusulas discontinuas |
+| `date_time_stamp/2` | convierte una fecha con su zona horaria en un instante Unix |
+
+## Temas que se retoman
+
+| Tema | Se retoma en |
+|---|---|
+| Reglas sobre hechos evaluadas de abajo hacia arriba, como los informes sobre datos que no cambian | [capítulo 86](../capitulo-86-proyecto-motor-datalog/index.md) |
+
+## Referencias
+
+- Dorothy E. Denning, «An Intrusion-Detection Model», *IEEE Transactions
+  on Software Engineering*, volumen SE-13, número 2, 1987, páginas
+  222–232. [Copia de la autora](https://faculty.nps.edu/dedennin/publications/IDS%20model.pdf).
+  Esta página toma de allí la cantidad, la suma y la suma de cuadrados
+  como los parámetros de un perfil, que la versión 6 combina.
+
+El código del capítulo es propio, escrito para el curso, y los datos son
+simulados por `generar.pl`: ninguna dirección pertenece a un cliente
+real, y las de los atacantes son de los bloques reservados para
+documentación. Las fuentes dan las ideas y los modelos; los lectores, la
+gramática, las métricas, las reglas de causa, el ajuste de los umbrales,
+los perfiles y los resúmenes combinables no tienen equivalente en ellas.

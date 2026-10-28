@@ -1,14 +1,15 @@
 # La forma normal de un polinomio
 
-Esta página contiene la sección
-[44.5](index.md#445-version-4-la-forma-normal-de-un-polinomio) del
-[capítulo 44](index.md): la versión 4 del programa que resuelve ecuaciones,
+Esta página continúa el [capítulo 44](index.md) después de la
+[sección 44.4](index.md#444-version-3-la-atraccion), con la sección
+[44.5](#445-version-4-la-forma-normal-de-un-polinomio): la versión 4 del
+programa que resuelve ecuaciones,
 que lleva un polinomio a una forma normal y obtiene de ella dos métodos
 nuevos. El código está en `polinomio.pl`, en `ejemplos/capitulo-44/`, con
 sus pruebas; carga los módulos de las versiones anteriores y se ejecuta en
 una instalación local.
 
-## La forma normal de un polinomio
+## 44.5 Versión 4: la forma normal de un polinomio
 
 Un polinomio en `x` con coeficientes numéricos tiene una **forma normal**:
 la lista de sus monomios `Grado-Coeficiente`, de mayor a menor grado, uno
@@ -100,7 +101,7 @@ sumar_grupo(G-Cs, Ms0, Ms) :-
 `polinomio_termino/3` escribe la forma normal como una suma asociada a
 izquierda, con `foldl/4` y la suma construida hasta el momento como
 acumulador, la misma construcción de `asociar_izquierda_2/2` en la
-[solución 16 del capítulo 35](../capitulo-35-estructuras-incompletas-y-listas-diferencia/soluciones.md#16):
+[solución 13 del capítulo 35](../capitulo-35-estructuras-incompletas-y-listas-diferencia/soluciones.md#13):
 
 ```prolog
 ?- forma_normal((x + 1) * (x - 1) - 2 * (x - 3), x, Ms).
@@ -206,3 +207,40 @@ false.
     Predecir la forma normal de `(x - 1) ^ 3 - x ^ 3` y la respuesta de
     `resolver((x - 1) ^ 3 = x ^ 3, x, S)`: ¿de qué grado es la ecuación, y
     cuántas soluciones reales tiene? Comprobarlo.
+
+El capítulo continúa en la página
+[El método de Newton y la comprobación](newton.md#446-version-5-el-metodo-de-newton-y-la-comprobacion),
+con la versión 5, que busca raíces numéricas de lo que el método del
+polinomio no alcanza.
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio, y los capítulos siguientes los dan por hechos. Los
+ejercicios que extienden el programa lo hacen desde un archivo propio, con
+las cláusulas `multifile` de `axioma/3` y `regla/3`, o con un predicado que
+prueba su método y usa `resolver/3` si no se aplica.
+
+5. ★ **(3)** Escribir `resolver_homogeneo/3`, la homogeneización: si todas
+   las potencias con la incógnita en el exponente tienen la misma base `B` y
+   un exponente `C * x + D` con `C` entero positivo, reemplazar cada una por
+   `B ^ D * u ^ C`, resolver el polinomio en `u` y después `B ^ x = u`.
+   Resolver `2 ^ (2 * x) - 5 * 2 ^ (x + 1) + 16 = 0`. Usar
+   `forma_normal/3` para leer el exponente.
+6. **(2)** Escribir `resolver_bicuadrada/3`: un polinomio de grado mayor que
+   2 con todos los grados pares se resuelve como un polinomio en `u = x ^ 2`.
+   Resolver `x ^ 4 - 5 * x ^ 2 + 4 = 0` y comparar con las respuestas de
+   Newton en la [sección 44.1](index.md#441-el-programa-terminado).
+
+## Referencias
+
+- Leon Sterling y Ehud Shapiro, *The Art of Prolog: Advanced Programming
+  Techniques*, 2.ª edición, MIT Press, 1994 — «An Equation Solver».
+  1.ª edición (1986) en [préstamo en el Internet Archive](https://archive.org/details/artofprologadvan00ster).
+  Esta página toma de allí la forma normal de un polinomio.
+- William F. Clocksin, *Clause and Effect: Prolog Programming for the
+  Working Programmer*, Springer, 1997 — «Case Study: Term Rewriting». Esta
+  página toma la etapa de forma normal previa a la reescritura y la
+  separación entre normalizar y simplificar.

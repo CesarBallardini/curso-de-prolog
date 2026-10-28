@@ -10,7 +10,7 @@
 :- begin_tests(soluciones_xpce).
 
 % Las pruebas de los predicados puros corren en cualquier Prolog; las de
-% las ventanas, solo donde hay XPCE (ejercicios 8, 9 y 10).
+% las ventanas, solo donde hay XPCE (ejercicios 7, 8 y 9).
 
 %!  hay_xpce is semidet.
 %
@@ -55,7 +55,7 @@ test(inscriptos, true(L-V == ["101  ana", "102  bruno", "104  diego",
     lineas_de_inscriptos(log, L),
     lineas_de_inscriptos(bd, V).
 
-% Ejercicio 8: el clic en 1-4 descubre una región; el ítem del menú
+% Ejercicio 7: el clic en 1-4 descubre una región; el ítem del menú
 % escribe la celda segura en el rótulo.
 test(item_sugerencia, [ condition(hay_xpce),
                         cleanup(send(V, destroy)),
@@ -74,7 +74,7 @@ test(item_sugerencia, [ condition(hay_xpce),
     get(Controles, member, estado, Rotulo),
     get(Rotulo, selection, R).
 
-% Ejercicio 9: al elegir una materia, el menú reenvía su mensaje con la
+% Ejercicio 8: al elegir una materia, el menú reenvía su mensaje con la
 % selección, como lo hace XPCE con un clic.
 test(lista_de_inscriptos, [ condition(hay_xpce),
                             cleanup(send(V, destroy)),
@@ -96,7 +96,7 @@ test(lista_de_inscriptos, [ condition(hay_xpce),
                   filas(V, inscriptos, N4) )),
     N = [N1, N2, N3, N4].
 
-% Ejercicio 10: el rechazo, sin cambiar los datos.
+% Ejercicio 9: el rechazo, sin cambiar los datos.
 test(rechazo_en_la_ventana,
      [ condition(hay_xpce),
        cleanup(send(V, destroy)),

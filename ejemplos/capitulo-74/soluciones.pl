@@ -201,7 +201,7 @@ medir_etiquetado(Nombre, Opcion, Resultado) :-
         Resultado = r(si, I)
     ).
 
-% --- Ejercicio 7 --------------------------------------------------------------
+% --- Ejercicio 8 --------------------------------------------------------------
 
 %!  costo_docentes(+Oferta, +Horario:list, -Costo) is det.
 %
@@ -258,7 +258,7 @@ cota_docentes(Oferta, Cota) :-
             Ns),
     sum_list(Ns, Cota).
 
-% --- Ejercicio 8 --------------------------------------------------------------
+% --- Ejercicio 9 --------------------------------------------------------------
 
 %!  primero_de_varios(+Oferta, -Horario:list, -Costo:integer) is semidet.
 %
@@ -284,7 +284,7 @@ mejor_de_varios(Oferta, Limite, Horario, Garantia) :-
     primero_de_varios(Oferta, Primero, C0),
     mejorar(Oferta, Limite, Cota, Primero, C0, Horario, Garantia).
 
-% --- Ejercicio 9 --------------------------------------------------------------
+% --- Ejercicio 10 -------------------------------------------------------------
 
 %!  pagina_aula(+Nombre:atom, +Pedido) is det.
 %
@@ -340,7 +340,7 @@ celda_aula(Oferta, Horario, Numero, Franja, Dia, Td) :-
     ;   Td = td([])
     ).
 
-% --- Ejercicio 10 -------------------------------------------------------------
+% --- Ejercicio 11 -------------------------------------------------------------
 
 %!  llamado_separado(+Aulas:integer, -Calendario:list, -Dias:integer)
 %!      is semidet.

@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 49 - Soluciones de los ejercicios 2 a 9 y 11.
+% Capítulo 49 - Soluciones de los ejercicios 2 a 10.
 %
 % Los circuitos se agregan a los del módulo circuitos, y los secuenciales a
 % los del módulo secuenciales, con cláusulas multifile.
@@ -69,7 +69,7 @@ bits3(N, [B0, B1, B2]) :-
     B1 is (N >> 1) /\ 1,
     B2 is (N >> 2) /\ 1.
 
-% Ejercicio 3
+% Ejercicio 6
 
 circuitos:circuito(mux, [s, a, b], [z]).
 circuitos:componente(mux, i1, inv, [s], [ns]).
@@ -83,7 +83,7 @@ circuitos:componente(mux_nand, n2, nand, [ns, a], [u]).
 circuitos:componente(mux_nand, n3, nand, [s, b], [v]).
 circuitos:componente(mux_nand, n4, nand, [u, v], [z]).
 
-% Ejercicio 4
+% Ejercicio 7
 
 circuitos:circuito(inv_nand, [a], [z]).
 circuitos:componente(inv_nand, n1, nand, [a, a], [z]).
@@ -106,7 +106,7 @@ circuitos:componente(and1, g1, and, [a, b], [z]).
 circuitos:circuito(or1, [a, b], [z]).
 circuitos:componente(or1, g1, or, [a, b], [z]).
 
-% Ejercicio 5
+% Ejercicio 3
 
 %!  pegada(+Falla:list, +Valor, +Ruta:list, ?Tipo, ?Entradas:list, ?Salida)
 %!      is nondet.
@@ -131,7 +131,7 @@ detecta(Circuito, Falla, Valor, Entradas) :-
     once(simular(pegada(Falla, Valor), Circuito, Entradas, ConFalla)),
     Salidas \== ConFalla.
 
-% Ejercicio 6
+% Ejercicio 4
 
 %!  minterminos(+Circuito, +Salida, -Productos:list(list)) is det.
 %
@@ -156,7 +156,7 @@ minterminos(Circuito, Salida, Productos) :-
 literal(Nombre, 1, Nombre).
 literal(Nombre, 0, ~Nombre).
 
-% Ejercicio 7
+% Ejercicio 5
 
 %!  simplificar_consenso(+Productos:list(list), -Simples:list(list)) is det.
 %
@@ -195,7 +195,7 @@ consenso(P, Q, C) :-
     ord_union(P1, Q1, C),
     \+ ( member(Y, C), atom(Y), memberchk(~Y, C) ).
 
-% Ejercicio 8
+% Ejercicio 9
 
 secuenciales:secuencial(contador2, contador2_c, 2).
 
@@ -205,7 +205,7 @@ circuitos:componente(contador2_c, x1, xor, [b0, e], [n0]).
 circuitos:componente(contador2_c, y1, and, [b0, e], [c]).
 circuitos:componente(contador2_c, x2, xor, [b1, c], [n1]).
 
-% Ejercicio 9
+% Ejercicio 10
 
 secuenciales:secuencial(detector, detector_c, 2).
 
@@ -223,7 +223,7 @@ circuitos:componente(detector_c, y2, and, [t, q2], [z]).
 detector_correcto :-
     siempre(detector, [0, 0], [_, [X], [Z], _]>>(Z =< X)).
 
-% Ejercicio 11
+% Ejercicio 8
 
 % gi = ai * bi, pi = ai # bi; c1 = g0, c2 = g1 + p1 * g0,
 % c = g2 + p2 * g1 + p2 * p1 * g0.

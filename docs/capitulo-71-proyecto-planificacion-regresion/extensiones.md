@@ -1,14 +1,28 @@
 # Más allá de WARPLAN
 
-Esta página completa el [capítulo 71](index.md) con tres partes de sus
-fuentes que las cuatro versiones no cubren: los planes condicionales que
-Warren agregó a WARPLAN en 1976, una de las mejoras que su memo de 1974
-propone en «Deficiencies of the system», y el mundo de las llaves y las
-cajas del apéndice del mismo memo. Los ejemplos están en
+Esta página continúa el [capítulo 71](index.md) después de la
+[sección 71.6](comparacion.md#716-version-4-el-mundo-del-capitulo-41), con
+la [sección 71.7](#717-mas-alla-de-warplan), que lo termina: tres partes
+de sus fuentes que las cuatro versiones no cubren, los planes
+condicionales que Warren agregó a WARPLAN en 1976, una de las mejoras que
+su memo de 1974 propone en «Deficiencies of the system», y el mundo de las
+llaves y las cajas del apéndice del mismo memo. Los ejemplos están en
 `ejemplos/capitulo-71/`, con sus pruebas, y se ejecutan en una instalación
 local: cargan `warplan.pl`.
 
-## Planes condicionales
+## 71.7 Más allá de WARPLAN
+
+Los **planes condicionales** de Warren (1976) examinan un hecho del mundo
+y siguen por una rama u otra; `condicional.pl` construye una versión
+simple, para un estado inicial que puede ser uno de varios. El **control
+de ciclos** que el memo de 1974 propone entre sus mejoras vuelve finita
+la búsqueda sin cota, pero en el segundo orden de la anomalía no la hace
+practicable: `ciclos.pl` lo mide. Y el **mundo de las llaves y las
+cajas** del apéndice del memo, `llaves.pl`, reproduce el plan de ocho
+acciones que Warren publica, con dos versiones de la acción de llevar,
+una por cada clase de destino.
+
+### Planes condicionales
 
 WARPLAN supone que el estado inicial se conoce entero. Cuando no se
 conoce, un plan fijo puede servir en un estado y no en otro. Warren (1976)
@@ -102,7 +116,7 @@ y la de Warren sí, es examinar un hecho **en medio** del plan, después de
 acciones cuyo resultado no se conoce de antemano; para eso la acción de
 examinar tiene que ser una acción más del mundo, con su propia regresión.
 
-## Control de ciclos
+### Control de ciclos
 
 Entre las deficiencias que Warren enumera en su memo están dos que el
 [capítulo 71](index.md#714-version-2-warplan-insertar-la-accion-antes)
@@ -161,7 +175,7 @@ espacio que, aun finito, crece de manera exponencial con la cantidad de
 metas pendientes, y la cota con profundización sigue siendo lo que da un
 plan en los dos órdenes.
 
-## Las llaves y las cajas
+### Las llaves y las cajas
 
 El apéndice del memo de Warren prueba WARPLAN en una versión simplificada
 de un problema de Donald Michie. Adentro hay cuatro lugares, la mesa, dos
@@ -225,3 +239,78 @@ P = [ir(puerta), llevar(rojo, puerta, mesa), ir(caja1), llevar(llave1, caja1, pu
 ?- saca_el_rojo([ir(puerta), llevar(rojo, puerta, mesa), sacar(rojo, mesa)]).
 false.
 ```
+
+!!! success "Criterios de calidad"
+    | Criterio | En este capítulo |
+    |---|---|
+    | C1 | cada predicado declara modos y determinación; `planificar/5` es `nondet` y da los planes de menor a mayor longitud, y `preservada/3` e `inconsistente/3` aclaran cómo tratan las variables libres |
+    | C3 | el planificador no conoce el mundo: recibe su módulo y solo llama a los siete predicados de la descripción; el mismo código planifica en los cubos, en el robot y en los dos mundos del [capítulo 41](../capitulo-41-busqueda-y-planificacion/index.md) |
+    | C4 | `preservada/3`, `inconsistente/3` y `es_prueba/2` trabajan sobre una copia dentro de `\+ \+`: no ligan nada ni dejan alternativas |
+    | C7 | 92 pruebas en siete archivos, y 33 más sobre las soluciones; cada plan que se prueba pasa además por `logra/4`, que lo ejecuta por regresión desde el estado inicial |
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio.
+
+12. **(2)** Con `condicional.pl` y el mundo `dudoso.pl`, predecir el plan
+    condicional para `[sobre(c, a)]` y para `[sobre(b, c)]` desde los
+    estados `c_sobre_a` y `c_sobre_b`. Comprobarlo con
+    `planificar_casos/5`, obtener con `ejecutar_casos/4` las acciones de
+    cada rama y explicar por qué una de las ramas de la primera meta está
+    vacía.
+
+## Resumen
+
+| | |
+|---|---|
+| **descripción del mundo** | siete predicados: lo que cada acción agrega, borra y exige, las combinaciones imposibles, los hechos que no cambian, las pruebas y el estado inicial |
+| **regresión de un hecho** | vale después de un plan si la última acción lo agrega, o si vale antes y la acción no lo borra |
+| **hecho protegido** | una meta lograda, que ninguna acción nueva puede borrar |
+| **objeto desconocido** | una variable libre de un plan parcial, que se compara sobre una copia hecha con `numbervars/3` |
+| **extensión, inserción** | la acción nueva va al final del plan, o antes de una acción que no borra la meta |
+| **regresar los protegidos** | a través de una acción: se quitan los que la acción agrega y se agregan sus precondiciones |
+| **intercalar** | poner una acción de una meta entre las acciones de otra; resuelve la anomalía de Sussman |
+| `vale/4`, `preservada/3`, `logra/4` | lo que vale después de un plan, y la comprobación de un plan |
+| `planificar/5` de `extension.pl` | la versión 1: extensión, metas protegidas y cota |
+| `planificar/5` de `warplan.pl`, `regresar/4`, `planificar_sin_cota/4` | la versión 2, WARPLAN |
+| `robot.pl` | la versión 3: el mundo del robot, con hechos deducidos |
+| `pinza.pl`, `sin_pinza.pl`, `medios_fines/3` | la versión 4: los mundos del [capítulo 41](../capitulo-41-busqueda-y-planificacion/index.md), traducidos |
+| `planificar_casos/5`, `planificar_sin_ciclos/4`, `llaves.pl` | más allá de WARPLAN: planes condicionales, control de ciclos y el mundo de las llaves y las cajas |
+| **[Patrón 69](../patrones.md#69-descripcion-del-mundo-como-parametro)** | descripción del mundo como parámetro |
+
+## Temas que se retoman
+
+| Tema | Se retoma en |
+|---|---|
+| La planificación de tareas con duraciones y procesadores, como búsqueda de costo mínimo | [capítulo 73](../capitulo-73-proyecto-planificacion-tareas/index.md) |
+
+## Referencias
+
+- Feliks Kluźniak y Stanisław Szpakowicz, *Prolog for Programmers*,
+  Academic Press, 1985 — capítulo «Two case studies», apartado «Planning».
+  [Edición en línea](https://www.site.uottawa.ca/~szpak/pub/P4P/Prolog_for_Programmers_neat.pdf).
+  Sus notas bibliográficas remiten a Warren (1976), *Generating
+  Conditional Plans and Programs* (AISB, Edimburgo, 1976), la extensión a
+  planes condicionales; sin edición en línea de acceso libre, el capítulo
+  la conoce por esa nota, y la versión por casos de
+  [Planes condicionales](#planes-condicionales) es propia.
+- David H. D. Warren, *WARPLAN: a system for generating plans*, Memo 76
+  del Department of Computational Logic, Universidad de Edimburgo, 1974 —
+  apartados «The 3 blocks problem», «Specifying a problem»,
+  «Implementation of the system», «Deficiencies of the system» y
+  «Completeness and irredundancy».
+  [Copia del Software Preservation Group](https://www.softwarepreservation.org/projects/prolog/edinburgh/doc/Warren-WARPLAN_A_System_for_Generating_Plans-1974_06.pdf/view).
+  Esta página toma de su apartado «Deficiencies of the system» el control
+  de ciclos y de su apéndice el problema de las llaves y las cajas, una
+  simplificación que Warren hace de una prueba de Donald Michie (*On
+  Machine Intelligence*, Edinburgh University Press, 1974), con su plan de
+  ocho acciones.
+
+El código del capítulo es propio, escrito para el curso: del libro se
+toman las ideas y la estructura del algoritmo, no el código. La cota de
+acciones con profundización, las listas de hechos en lugar de
+conjunciones, las pruebas declaradas con `prueba/1`, la traducción de los
+operadores del [capítulo 41](../capitulo-41-busqueda-y-planificacion/index.md) y las mediciones son del curso.

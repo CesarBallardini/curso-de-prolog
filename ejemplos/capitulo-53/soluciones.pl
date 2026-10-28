@@ -14,12 +14,12 @@
 :- use_module(universal).
 :- use_module(plana, [fila/5]).
 
-% Ejercicio 2: la sucesión 001001001...
+% Ejercicio 9: la sucesión 001001001...
 plana:fila(tres, b, blanco, [p(0), r, r], c).
 plana:fila(tres, c, blanco, [p(0), r, r], d).
 plana:fila(tres, d, blanco, [p(1), r, r], b).
 
-% Ejercicio 3: 01 0011 000111 ..., un bloque de K ceros y K unos.
+% Ejercicio 2: 01 0011 000111 ..., un bloque de K ceros y K unos.
 plana:fila(ceros_unos, inicio, siempre, [p(schwa), r, p(schwa)],
            bloque(s(cero))).
 perezosa:alias(ceros_unos, bloque(K), ceros(K, unos(K, bloque(s(K))))).
@@ -28,12 +28,12 @@ perezosa:alias(ceros_unos, ceros(s(K), C), pe(ceros(K, C), 0)).
 perezosa:alias(ceros_unos, unos(cero, C), C).
 perezosa:alias(ceros_unos, unos(s(K), C), pe(unos(K, C), 1)).
 
-% Ejercicio 4: cr(C, B, Al) y cr(B, Al) de Turing, con la letra a como
+% Ejercicio 3: cr(C, B, Al) y cr(B, Al) de Turing, con la letra a como
 % marca provisoria.
 perezosa:alias(_, cr(C, B, Al), c(re(C, B, Al, a), B, Al)).
 perezosa:alias(_, cr(B, Al), cr(cr(B, Al), re(B, a, Al), Al)).
 
-% Ejercicio 11: el contador que no vuelve al comienzo de la cinta.
+% Ejercicio 8: el contador que no vuelve al comienzo de la cinta.
 plana:fila(rapido, inicio, siempre, [p(schwa), r, p(schwa), r], bloque(cero)).
 plana:fila(rapido, bloque(K), siempre, [p(0), r, r], unos(K, bloque(s(K)))).
 plana:fila(rapido, unos(s(K), C), siempre, [p(1), r, r], unos(K, C)).
@@ -61,7 +61,7 @@ resolver_seguro(M, Q0, Vistas, Q, N0, N) :-
         N = N0
     ).
 
-% Ejercicio 5: dos alias que se reescriben el uno en el otro.
+% Ejercicio 4: dos alias que se reescriben el uno en el otro.
 perezosa:alias(circular, uno, dos(x)).
 perezosa:alias(circular, dos(x), uno).
 

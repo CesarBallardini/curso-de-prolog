@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 71 - Soluciones de los ejercicios 6, 8 y 10.
+% Capítulo 71 - Soluciones de los ejercicios 6, 7 y 9.
 %
 % planificar_techo/5 hace una sola búsqueda en profundidad con la cota
 % como techo, sin profundización. estado_final/4 calcula por regresión

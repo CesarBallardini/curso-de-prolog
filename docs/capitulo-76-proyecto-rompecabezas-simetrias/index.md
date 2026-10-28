@@ -39,9 +39,10 @@ El proyecto parte de *Applications of Prolog*, de Attila Csenki: del
 capítulo «Enigma 1225: Rows are Columns», el método de las matrices de
 variables libres y la reducción por tipos de permutación; del apartado
 «Application: A Loop Puzzle», el rompecabezas del lazo, sus dos tableros
-y la observación de que la búsqueda encuentra cada lazo dos veces. La
-lista completa, con lo que se toma de cada fuente, está en
-[Referencias](#referencias). El código es propio.
+y la observación de que la búsqueda encuentra cada lazo dos veces. Cada
+página cita al final las fuentes que usa, con lo que toma de cada una:
+las del lazo, en [Referencias](#referencias); las de Enigma 1225, en las
+de la página [Enigma 1225](enigma.md#referencias). El código es propio.
 
 El programa carga, sin copiarla, la búsqueda limitada del
 [capítulo 41](../capitulo-41-busqueda-y-planificacion/index.md), dibuja
@@ -76,7 +77,7 @@ Al terminar el capítulo, el lector puede:
 !!! info "Tiempo estimado"
     Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **3:10 h**.
     Resolver los 5 ejercicios marcados con ★: **1:35 h**.
-    Resolver los 11 ejercicios del final: **3:15 h**.
+    Resolver los 11 ejercicios del capítulo: **3:15 h**.
 
 ## 76.1 El programa terminado
 
@@ -299,7 +300,7 @@ tramos que salen de ella forma parte de cada solución.
 Un lazo de M marcas tiene exactamente M tramos, así que la profundidad de
 la búsqueda se conoce de antemano. La búsqueda en profundidad limitada
 de la
-[sección 41.4](../capitulo-41-busqueda-y-planificacion/index.md#414-profundidad-limitada-y-profundizacion-iterativa),
+[sección 41.4](../capitulo-41-busqueda-y-planificacion/heuristicas.md#414-profundidad-limitada-y-profundizacion-iterativa),
 `con_limite/3`, termina siempre y da todas las soluciones al volver
 atrás; la profundización iterativa, en cambio, no termina cuando la
 semilla no lleva a ninguna. El archivo `profundizacion.pl` de aquel
@@ -931,41 +932,11 @@ Ss = [identidad, giro180, espejo_filas, espejo_columnas].
     Comprobarlo, y explicar por qué la respuesta es una sola aunque
     cuatro simetrías lleven `cruz` a su forma canónica.
 
-## 76.7 Versiones 6 a 8: Enigma 1225
-
-*Enigma 1225* pide llenar un tablero de N × N con enteros positivos de
-modo que las filas sean distintas, que cada fila sea igual a alguna
-columna de otro número y que, si el mayor número escrito es K, aparezcan
-todos los de 1 a K; se busca la mayor suma. La correspondencia de filas
-a columnas es una permutación sin puntos fijos, un **desarreglo**, y para
-cada uno se construye por unificación la matriz de variables libres más
-general que cumple la condición, como en la
-[sección 33.5](../capitulo-33-inspeccion-de-terminos/index.md#335-variables-como-datos),
-que trata las variables libres como datos.
-
-La página [Enigma 1225](enigma.md) desarrolla las tres versiones, que
-recorren la misma escalera que las del lazo, la del [Patrón 76](../patrones.md#76-forma-canonica-de-la-clase):
-
-| Versión | Archivo | Qué hace con las simetrías | N = 8 | Inferencias |
-|---|---|---|---|---|
-| 6 | `enigma.pl` | nada: evalúa los 14 833 desarreglos | 544 | 22 092 942 |
-| 7 | `tipos.pl` | registra las formas canónicas (los tipos de permutación) ya vistas y evalúa una por clase | 544 | 2 001 196 |
-| 8 | `representantes.pl` | genera solo un representante por clase, a partir de las particiones de N | 544 | 12 278 |
-
-Dos desarreglos conjugados, es decir, con la misma estructura de ciclos,
-dan el mismo tablero con las filas y las columnas en otro orden: los
-14 833 desarreglos de 8 elementos son solo 7 casos. La versión 8
-resuelve el tablero de 14 × 14 (máximo 4 900) en tres centésimas de
-segundo y el de 20 × 20 (máximo 20 200) en menos de medio segundo.
-
-!!! success "Criterios de calidad"
-    | Criterio | En este capítulo |
-    |---|---|
-    | C1 | cada regla declara modos y determinación; `tramo/4` y `lazos/3` son `nondet` y los que reúnen sus respuestas, como `lazos_desde/3` y `distintos/2`, `det` |
-    | C2 | representaciones limpias: una marca es `circulo(Pos)` o `numeral(Pos)`, un estado de la búsqueda es `e/3` o `cerrado/1`, una simetría es un átomo y un tablero derivado es `sim/2` o `forma/1` |
-    | C4 | `linea/3` decide la dirección con una condición, `pares/3` y `sin_ultima/3` recorren la lista por su primer argumento y `trazo/2` se consulta por un entero, de modo que las pruebas no encuentran alternativas pendientes |
-    | C6 | `lineas/3` es puro; solo `mostrar/2` y `dibujar/1` escriben |
-    | C7 | 119 pruebas en ocho archivos; las de `tablero.plt` comparan, para las ocho simetrías, la búsqueda directa con la búsqueda sobre la forma canónica |
+El capítulo continúa en la página
+[Enigma 1225](enigma.md#767-versiones-6-a-8-enigma-1225), con el segundo
+rompecabezas y las versiones 6 a 8, que recorren con él la misma escalera
+de las simetrías. Antes, los [ejercicios](#ejercicios) de esta página
+practican las versiones 1 a 5, las del lazo.
 
 ## Ejercicios
 
@@ -996,104 +967,22 @@ que cargan los del capítulo, sin modificarlos.
    cada marca en línea recta, sin girar en ella. Escribir un resolvedor
    que avance casilla por casilla y resolver el tablero de 6 × 6 con
    marcas en `2-2`, `2-4`, `3-1`, `3-4`, `4-3`, `5-3`, `5-5` y `6-4`.
-6. **(1)** Explicar con `matriz_patron/2` por qué no hay ningún tablero
-   para N = 2.
-7. **(1)** Escribir `cantidad_desarreglos(N, D)` con la recurrencia
-   D(N) = (N − 1)(D(N − 1) + D(N − 2)), D(1) = 0, D(2) = 1, y verificarla
-   contra `desarreglos/2` hasta N = 8.
-8. **(2)** Contar las particiones de 8 en partes cualesquiera, incluidas
-   las de 1, y explicar por qué los tipos con un 1 no pueden dar un
-   tablero.
-9. ★ **(2)** Verificar el argumento de la conjugación para N = 6: para
-   cada desarreglo P cuyo patrón tiene filas distintas, el total de P es
-   el total del representante de su tipo.
-10. ★ **(3)** Calcular con `maximo_representantes/3` los máximos para N
-    par de 4 a 20, conjeturar un polinomio en N que los da y verificarlo.
-    ¿Qué tipo alcanza el máximo en esos casos?
-11. **(2)** Escribir `mostrar_matriz(M)`, que escribe una matriz de
-    enteros con las columnas alineadas a la derecha, como pide Csenki en
-    su primer capítulo. Separar la parte pura, que arma las líneas, de la
-    que escribe.
-
-## Resumen
-
-| | |
-|---|---|
-| **tramo** | la parte del lazo entre dos marcas consecutivas: recta entre marcas de la misma clase, con un giro entre marcas de clases distintas |
-| **semilla** | la marca donde empieza la búsqueda del lazo; fijarla divide el trabajo por la cantidad de marcas |
-| **máscara** | un entero con un bit por casilla; la intersección y la unión de conjuntos de casillas son operaciones de bits |
-| **forma canónica** | un representante único de cada clase de objetos equivalentes: la menor escritura de un lazo, la menor imagen de un tablero, el tipo de una permutación |
-| **[Patrón 76](../patrones.md#76-forma-canonica-de-la-clase)** | forma canónica de la clase |
-| **filtrar, registrar, generar** | las tres maneras de quitar una simetría: descartar los duplicados al final, recordar las formas ya vistas, o producir solo los representantes |
-| **matriz más general** | la matriz de variables libres que cumple un patrón; cualquier otra se obtiene ligando sus variables |
-| **conjugación** | renombrar los números de una permutación; las conjugadas tienen el mismo tipo y dan el mismo total |
-| `problema/4`, `marca/3`, `tramo/4`, `linea/3`, `con_giro/3` | el tablero y los tramos |
-| `red/3`, `avanzar/4`, `planes/3`, `lazos/3`, `lazos_desde/3` | el lazo como búsqueda |
-| `canonica/2`, `en_un_sentido/1`, `escrituras/3`, `conteo/4`, `distintos/2` | cada lazo una sola vez |
-| `lineas/3`, `cubre/2`, `cobertura/3` | el dibujo y la cobertura |
-| `simetria_de/5`, `imagen/3`, `forma/3`, `resolver/2` | las simetrías del tablero |
-| `desarreglo/2`, `matriz_patron/2`, `filas_distintas/1`, `evaluar/2`, `maximo/3` | Enigma 1225 por generación y prueba |
-| `conjugada/3`, `maximo_por_tipo/3` | una evaluación por tipo |
-| `particion/2`, `representante/2`, `maximo_representantes/3` | los representantes generados |
-| `ord_selectchk/3` | quita un elemento de un conjunto ordenado; falla si no está |
-
-## Temas que se retoman
-
-| Tema | Se retoma en |
-|---|---|
-| Las simetrías del tablero en el registro de visitados de una búsqueda: el rompecabezas del triángulo de clavijas | [capítulo 82](../capitulo-82-proyecto-coleccion-problemas/index.md) |
 
 ## Referencias
 
 - Attila Csenki, *Applications of Prolog*, Ventus Publishing (Bookboon),
-  2009 — capítulo «Enigma 1225: Rows are Columns» (apartados «A Puzzle»,
-  «Symbolic Solutions», «Implementation Details» y «Enhanced
-  Implementation») y apartado «Application: A Loop Puzzle» del capítulo
-  «Blind Search».
+  2009 — apartado «Application: A Loop Puzzle» del capítulo «Blind
+  Search».
   [Página de la editorial, copia de archivo](https://web.archive.org/web/20260216182045/https://bookboon.com/en/applications-of-prolog-ebook).
   La editorial ya no ofrece el libro;
   [Google Libros](https://books.google.com/books?id=copBGLD4LKwC) muestra
   páginas seleccionadas.
-  El
-  capítulo toma del primero el enunciado, el método de la matriz de
-  variables libres más general construida por unificación, la prueba de
-  filas distintas con `==/2`, la evaluación por frecuencias, la
-  reducción por tipos de permutación con un representante por tipo, y
-  las cifras que sirven de control (14 833 desarreglos, 13 713 tableros,
-  los seis totales, 544 y 4 900). Del segundo, las reglas del
+  Esta página toma de allí las reglas del
   rompecabezas, los tramos entre marcas como pasos de la búsqueda, la
   semilla fija, la observación de que cada lazo aparece dos veces, el
   dibujo del tablero en texto, la exigencia de cobertura y los datos de
   sus tableros; la variante del lazo recto del ejercicio 5 también es
   suya.
-- Keith Austin, «Enigma 1225: Rows are columns», *New Scientist*, 8 de
-  febrero de 2003, p. 55. Sin edición en línea de acceso libre
-  verificada. Es el enunciado original, que el capítulo conoce a través
-  de Csenki y reformula.
-- Attila Csenki, «Enigma 1225: Prolog-assisted solution of a puzzle
-  using discrete mathematics», *Computers and Mathematics with
-  Applications* 52 (2006) 383–400,
-  [doi:10.1016/j.camwa.2006.03.020](https://doi.org/10.1016/j.camwa.2006.03.020)
-  (archivo abierto de la revista). Es el artículo del que Csenki adapta
-  su capítulo.
-- Hadrien Cambazard, Barry O'Sullivan y Barbara M. Smith, «A
-  constraint-based approach to Enigma 1225», *Computers and Mathematics
-  with Applications* 58 (2009) 1487–1497,
-  [doi:10.1016/j.camwa.2008.11.019](https://doi.org/10.1016/j.camwa.2008.11.019)
-  (página de la editorial; el texto completo no es de acceso libre).
-  Csenki lo cita como desarrollo posterior: resuelve el mismo problema
-  con programación con restricciones y elimina las simetrías agregando
-  restricciones al modelo, una cuarta manera de quitarlas que este
-  capítulo no desarrolla.
-- Norman L. Biggs, *Discrete Mathematics*, Clarendon Press, 1989. Sin
-  edición en línea de acceso libre verificada. Csenki toma de allí los
-  desarreglos, los tipos de permutación y el orden de las particiones.
 - EPS Trade Kft., «Fekete–Fehér» y «Egyenes karika», *Logikoktél*,
   número 2001/3. Sin edición en línea. Son los rompecabezas de los que
   Csenki toma el lazo y la variante del lazo recto.
-
-El código del capítulo es propio, escrito para el curso: la búsqueda
-sobre los tramos con máscaras de bits, las formas canónicas del lazo y
-del tablero, las ocho simetrías con la tabla sobre la forma canónica, el
-registro de tipos vistos, el generador de particiones y las mediciones no
-provienen de esas fuentes.

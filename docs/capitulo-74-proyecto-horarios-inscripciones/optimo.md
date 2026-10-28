@@ -1,12 +1,27 @@
-# El mejor horario
+# El mejor horario y la grilla web
 
-Esta página es la versión 5 del
-[capítulo 74](index.md#747-version-5-el-mejor-horario): el costo de un
-horario para los alumnos, el horario de costo mínimo, la garantía cuando la
-búsqueda se corta y la carrera de estrategias de etiquetado. Todo está en
-`optimo.pl`, que reexporta el modelo de restricciones de la versión 4.
+Esta página continúa el [capítulo 74](index.md) después de la
+[sección 74.6](index.md#746-version-4-el-modelo-de-restricciones), con las
+secciones [74.7](#747-version-5-el-mejor-horario) y
+[74.8](#748-version-6-la-grilla-web): el costo de un horario para los
+alumnos, el horario de costo mínimo, la garantía cuando la búsqueda se
+corta y la carrera de estrategias de etiquetado, que están en
+`optimo.pl`, que reexporta el modelo de restricciones de la versión 4; y
+la grilla web de cada año, en `web.pl`.
 
-## El costo
+## 74.7 Versión 5: el mejor horario
+
+Entre los horarios válidos, unos son mejores que otros para los alumnos.
+El costo de un horario suma, para cada año, los días con clase y los
+**huecos**, franjas libres entre dos clases del mismo día, y es una
+variable de clpfd sobre el modelo de la versión 4. La versión escribe el
+costo, una **cota inferior** que acota la búsqueda del óptimo desde
+abajo, la versión de `mejor_con_limite/4` que responde con una garantía
+cuando la búsqueda se corta, como el
+[Patrón 71](../patrones.md#71-resultado-con-garantia), y la carrera de
+estrategias con `first_solution/3`.
+
+### El costo
 
 Para un alumno que sigue el plan, un horario es mejor si
 tiene clase en pocos días y sin **huecos**, franjas libres entre dos
@@ -68,7 +83,7 @@ alguna([X|Xs], B) :-
     B #<==> (Suma #>= 1).
 ```
 
-## La cota inferior
+### La cota inferior
 
 La opción `min(Costo)` de `labeling/2` busca el
 horario de menor costo, pero para devolverlo tiene que probar que ninguno
@@ -140,13 +155,13 @@ costo: 8
 true.
 ```
 
-## Con un límite, una garantía
+### Con un límite, una garantía
 
 En las ofertas `facultad(N)` la cota no
 se alcanza, y probar que cada costo menor es imposible cuesta tanto como
 en la versión 4 probar que no hay horario. `mejor_con_limite/4` aplica el
 [Patrón 71](../patrones.md#71-resultado-con-garantia) del
-[capítulo 73](../capitulo-73-proyecto-planificacion-tareas/index.md#737-version-5-el-planificador):
+[capítulo 73](../capitulo-73-proyecto-planificacion-tareas/camino.md#737-version-5-el-planificador):
 empieza por un horario cualquiera y pide cada vez uno de costo menor, con
 un límite de inferencias por búsqueda; si la cota se alcanza o una
 búsqueda falla, el horario es óptimo, y si una búsqueda pasa del límite,
@@ -214,17 +229,17 @@ G = entre(12, 19).
 ```
 
 En `facultad(6)`, con cincuenta millones de inferencias por búsqueda, la
-garantía mejora a `entre(9, 10)` en diez segundos. El [ejercicio 8](index.md#ejercicios)
+garantía mejora a `entre(9, 10)` en diez segundos. El [ejercicio 9](#ejercicios)
 prueba si empezar por un primer horario más barato acerca la mejora al
 óptimo.
 
-## La carrera de estrategias
+### La carrera de estrategias
 
 La [tabla de la versión 4](index.md#746-version-4-el-modelo-de-restricciones) muestra que una
 estrategia de etiquetado puede no terminar en una oferta en la que otra
 termina enseguida, y que no hay una que gane siempre. `carrera/3` corre
 tres a la vez en hilos con `first_solution/3`
-([capítulo 38](../capitulo-38-concurrencia-y-paralelismo/index.md#384-paralelismo-de-datos))
+([capítulo 38](../capitulo-38-concurrencia-y-paralelismo/paralelismo.md#384-paralelismo-de-datos))
 y se queda con la primera que termina; las demás se cancelan. Cada hilo
 arma su propio modelo, porque las restricciones son atributos de
 variables que no se comparten entre hilos:
@@ -267,3 +282,91 @@ carrera responde en medio segundo; en esta máquina ganó el modelo simple
 con el etiquetado de pares, el que menos propaga. Cuál gana depende de la
 máquina y de la carga, pero la respuesta llega tan pronto como termina la
 mejor de las tres.
+
+## 74.8 Versión 6: la grilla web
+
+Cada año del plan tiene una página con su grilla. La página es un término
+de `html//1`, como las del
+[capítulo 37](../capitulo-37-interfaces-de-usuario/web.md#376-paginas-web-sobre-los-servicios),
+armado por un predicado puro a partir de la oferta y del horario; el
+manejador solo calcula el horario de costo mínimo y responde con
+`reply_html_page/2`:
+
+<!-- ejemplo: capitulo-74/web.pl predicado: cuerpo_anio/4 celda_html/6 -->
+```prolog
+%!  cuerpo_anio(+Oferta, +Horario:list, +Anio:integer, -Cuerpo:list) is det.
+%
+%   Cuerpo es la página de la grilla del año Anio en Horario: un título y
+%   una tabla con una columna por día y una fila por franja.
+cuerpo_anio(Oferta, Horario, Anio,
+            [ h1(Titulo),
+              table(class(horario), [tr([th('Franja')|Encabezados])|Filas]),
+              p(a(href('/horario'), 'Todos los años'))
+            ]) :-
+    Oferta = oferta(semana(Dias, Franjas), _, _, _),
+    format(atom(Titulo), "Horario de ~wº año", [Anio]),
+    numlist(1, Dias, Ds),
+    maplist(encabezado, Ds, Encabezados),
+    numlist(1, Franjas, Fs),
+    maplist(fila_html(Oferta, Horario, Anio, Ds), Fs, Filas).
+
+%!  celda_html(+Oferta, +Horario:list, +Anio:integer, +Franja:integer,
+%!             +Dia:integer, -Td) is det.
+%
+%   Td es la casilla del día Dia y la franja Franja: el nombre de la
+%   materia de la clase del año Anio, con su aula, o una casilla vacía.
+%   El nombre sale del módulo datos de Inscripciones; una materia que no
+%   está allí, como las de las ofertas facultad(N), muestra su código.
+celda_html(Oferta, Horario, Anio, Franja, Dia, Td) :-
+    momento(Oferta, S, Dia, Franja),
+    (   member(asignada(C, A, S, _), Horario),
+        clase(Oferta, C, M, Anio, _, _)
+    ->  (   materia(M, Nombre, _)
+        ->  true
+        ;   Nombre = M
+        ),
+        aula(Oferta, A, Aula, _),
+        Td = td([b(Nombre), br([]), Aula])
+    ;   Td = td([])
+    ).
+```
+
+`iniciar_web/1` arranca el servidor en un puerto libre, y las dos rutas
+son `/horario`, con un enlace por año, y `/horario/{anio}`, con la grilla,
+que responde 404 para un año que no existe. Como en el [capítulo 37](../capitulo-37-interfaces-de-usuario/index.md), las
+pruebas de `web.plt` verifican el cuerpo como término, como texto HTML y
+con pedidos reales al servidor:
+
+```prolog
+test(celda_con_clase, [true(Td == td([b(bases_de_datos), br([]), lab]))]) :-
+    oferta(cuatrimestre, O),
+    horario_ejemplo(H),
+    celda_html(O, H, 3, 1, 4, Td).
+
+test(anio_inexistente, [true(Codigo == 404)]) :-
+    pedir('/horario/7', Codigo, _).
+```
+
+El capítulo continúa en la página
+[El llamado a examen](examenes.md#749-el-llamado-a-examen), que arma el
+llamado a examen de *Inscripciones* como un proyecto de la planificación
+de tareas y después con restricciones.
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio. Los ejercicios que piden código se resuelven en archivos
+que cargan los del capítulo, sin modificarlos.
+
+8. ★ **(2)** Escribir `costo_docentes(Oferta, Horario, Costo)`, la
+   cantidad de días que viene cada docente, sumada; obtener el horario de
+   la oferta `cuatrimestre` que la minimiza y compararlo con el de
+   `optimo/4`.
+9. **(3)** Escribir una versión de `mejor_con_limite/4` cuyo primer
+   horario sea el de menor costo entre los de cuatro etiquetados
+   distintos, medir la garantía en `facultad(6)` con un millón de
+   inferencias y explicar por qué cambia o no cambia.
+10. **(2)** Agregar a `web.pl` la ruta `/aula/{nombre}`, con la grilla de
+    la ocupación de un aula: en cada casilla, la clase que la usa.

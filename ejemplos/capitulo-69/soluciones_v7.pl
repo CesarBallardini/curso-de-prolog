@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 69 - Soluciones de los ejercicios 12 y 13: el orden de los
+% Capítulo 69 - Soluciones de los ejercicios 13 y 14: el orden de los
 % positivos en la disyunción y el costo de incorporar las reglas.
 %
 % solo-local: carga generalizaciones.pl e incorporar.pl, que cargan

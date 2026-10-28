@@ -1,13 +1,13 @@
 # Un demostrador por resolución
 
-Esta página contiene la sección
-[61.6](index.md#616-version-4-un-demostrador-por-resolucion) del
-[capítulo 61](index.md): la versión 4, `resolucion.pl`, un programa
+Esta página continúa el [capítulo 61](index.md) después de la
+[sección 61.5](index.md#615-version-3-el-conjunto-de-conflicto), con la
+[sección 61.6](#616-version-4-un-demostrador-por-resolucion): la versión 4, `resolucion.pl`, un programa
 dirigido por patrones que demuestra fórmulas de la lógica proposicional. El
 archivo está en `ejemplos/capitulo-61/`, con sus pruebas, y carga la
 versión 3, `conflictos.pl`.
 
-## Un demostrador por resolución
+## 61.6 Versión 4: un demostrador por resolución
 
 Una fórmula es un **teorema** si es verdadera cualquiera que sea el valor de
 sus átomos. El método de resolución lo prueba por el absurdo: niega la
@@ -141,3 +141,25 @@ clausal de la lógica de predicados y refutaciones que se pueden verificar.
 **Lo que falta.** Los tres programas de ejemplo terminan, pero nada en el
 intérprete lo garantiza: un módulo mal escrito puede hacer que el ciclo no
 termine nunca.
+
+El capítulo continúa en la página [La terminación](terminacion.md#617-version-5-la-terminacion),
+con la vigilancia de las ejecuciones que no terminan.
+
+## Referencias
+
+- Ivan Bratko, *Prolog Programming for Artificial Intelligence*, Addison-Wesley,
+  1986 — capítulo «Pattern-directed Programming», apartado «A simple theorem
+  prover». No tiene una edición en línea de acceso libre. El capítulo toma de
+  allí el demostrador proposicional por resolución con su registro de lo ya
+  hecho. Para la demostración por resolución, Bratko remite al libro de Nilsson
+  *Principles of Artificial Intelligence* (Tioga, 1980).
+- John Alan Robinson, «A machine-oriented logic based on the resolution
+  principle», *Journal of the ACM* 12(1), 1965, págs. 23–41. DOI
+  [10.1145/321250.321253](https://doi.org/10.1145/321250.321253). Es el origen
+  del principio de resolución que la versión 4 aplica a la lógica proposicional,
+  en la [sección 61.6](#616-version-4-un-demostrador-por-resolucion).
+- William F. Clocksin y Christopher S. Mellish, *Programming in Prolog*,
+  Springer, 5.ª edición, 2003 — capítulo «The Relation of Prolog to Logic» y
+  apéndice «Clausal Form Program Listings», que Bratko cita para el paso a forma
+  clausal; `clausulas/2` hace la misma transformación, restringida a la lógica
+  proposicional, con código propio.

@@ -46,7 +46,7 @@ Cada uno conserva su propia licencia: se los enlaza, no se los copia (ver
 - **[Los tutoriales de SWISH](https://swish.swi-prolog.org/example/prolog_tutorials.swinb)**:
   cuadernos con ejemplos que se ejecutan en el navegador.
 
-El [cierre del curso](capitulo-88-proyecto-preguntas-en-castellano/index.md#cierre-del-curso)
+El [cierre del curso](capitulo-88-proyecto-preguntas-en-castellano/horario.md#cierre-del-curso)
 propone tres caminos para seguir. Los textos siguientes, en inglés, son las
 fuentes de los capítulos correspondientes:
 

@@ -10,7 +10,7 @@ como ejemplo de un **agente basado en conocimiento**: un programa que
 registra lo que percibe, deduce de ello qué es seguro y actúa en
 consecuencia. El [capítulo 21](../capitulo-21-base-de-datos-dinamica/index.md#217-el-agente-del-mundo-del-wumpus)
 escribió las primeras reglas de ese agente y el
-[capítulo 41](../capitulo-41-busqueda-y-planificacion/aplicaciones.md#la-vuelta-a-casa-del-wumpus)
+[capítulo 41](../capitulo-41-busqueda-y-planificacion/aplicaciones.md#417-la-vuelta-a-casa-del-wumpus)
 su camino de vuelta con A\*. Este capítulo construye el juego completo y un
 agente que lo juega:
 
@@ -55,9 +55,12 @@ toma el mundo de 4 × 4 celdas con sus percepciones, el agente que infiere
 qué celdas son seguras y el orden de decisiones de su agente híbrido; del
 capítulo «Quantifying Uncertainty», el cálculo de la probabilidad de un
 pozo contando mundos. El código oficial del libro, `aima-python`, sirve de
-referencia para el puntaje y la generación de mundos. La lista completa,
-con lo que se toma de cada una, está en [Referencias](#referencias). El
-código es propio.
+referencia para el puntaje y la generación de mundos. Cada página cita al
+final las fuentes que usa, con lo que toma de cada una: esta, en
+[Referencias](#referencias); las del agente con historia y las de la
+comparación de los enfoques, en las de las páginas
+[El agente con historia](temporal.md#referencias) y
+[Los enfoques comparados](enfoques.md#referencias). El código es propio.
 
 El capítulo carga, sin copiarlos, la cueva y el agente del
 [capítulo 21](../capitulo-21-base-de-datos-dinamica/index.md), el A\* del
@@ -91,7 +94,7 @@ Al terminar el capítulo, el lector puede:
 !!! info "Tiempo estimado"
     Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **2:40 h**.
     Resolver los 5 ejercicios marcados con ★: **1:20 h**.
-    Resolver los 12 ejercicios del final: **4:15 h**.
+    Resolver los 12 ejercicios del capítulo: **4:15 h**.
 
 ## 78.1 Seis maneras de programar el agente
 
@@ -113,7 +116,7 @@ los enfoques completos prueban seguras 192 celdas:
 | Reglas resueltas por Prolog ([capítulo 21](../capitulo-21-base-de-datos-dinamica/index.md)) | reglas de Horn sobre las percepciones | una regla prueba «sin pozo» y «sin wumpus» | 188, 62 060 | gratis: es la resolución de Prolog; pero cada caso nuevo, como dos hedores, pide otra regla |
 | Datalog ([capítulo 39](../capitulo-39-semantica-de-los-programas-logicos/index.md)) | las mismas reglas como datos | el átomo está en el modelo estándar | 188, 3 070 526 | un evaluador de pocas decenas de líneas; calcula el modelo entero; incremental con un sistema de producción o Rete |
 | Resolución de primer orden ([capítulo 63](../capitulo-63-proyecto-demostrador-teoremas/index.md)) | cláusulas universales | refutar `pozo(C)` y `wumpus(C)` | 186, 350 199 373 | un demostrador escrito a mano; completo solo con axiomas existenciales y de nombres distintos, que la búsqueda no alcanza |
-| Proposicional con `library(clpb)` (capítulos [24](../capitulo-24-programacion-con-restricciones/index.md#2412-libraryclpb) y [63](../capitulo-63-proyecto-demostrador-teoremas/comparacion.md#tres-maneras-de-decidir)) | un átomo por celda y peligro | la implicación es una tautología | 192, 180 756 834 | una biblioteca; completo; la fórmula se traduce entera en cada pregunta |
+| Proposicional con `library(clpb)` (capítulos [24](../capitulo-24-programacion-con-restricciones/index.md#2412-libraryclpb) y [63](../capitulo-63-proyecto-demostrador-teoremas/comparacion.md#638-tres-maneras-de-decidir)) | un átomo por celda y peligro | la implicación es una tautología | 192, 180 756 834 | una biblioteca; completo; la fórmula se traduce entera en cada pregunta |
 | Restricciones con `library(clpfd)` ([capítulo 24](../capitulo-24-programacion-con-restricciones/index.md)) | variables 0/1 y sumas | ningún mundo pone un peligro en la celda | 192, 14 907 623 | una biblioteca; completo; la búsqueda la hace el etiquetado |
 | Mundos consistentes (versión 3) | conjuntos de pozos de la frontera y posiciones del wumpus | ningún mundo que explica las percepciones pone un peligro en la celda | 192, 283 674 | generar y probar con vuelta atrás, sin bibliotecas; los mismos mundos dan las probabilidades |
 
@@ -674,39 +677,11 @@ los murciélagos lo llevaron a una sala al azar, donde ningún razonamiento
 lo protege. Disparar también con dos salas posibles gana 75 partidas, y
 con tres, 74: fallar despierta al wumpus y borra lo que se sabía de él.
 
-!!! success "Criterios de calidad"
-    | Criterio | En este capítulo |
-    |---|---|
-    | C1 | cada predicado declara modos y determinación; `subconjunto/2` es `multi` y `mundos_pozos/2`, que reúne sus respuestas, `det` |
-    | C2 | representaciones limpias: el estado del juego, el mundo y el conocimiento son términos con un functor cada uno; las jugadas devuelven términos y el texto se redacta aparte |
-    | C4 | `actuar/6` resuelve el disparo en una sola cláusula y `pares_con/4` recorre la lista en su primer argumento, de modo que las pruebas no encuentran alternativas pendientes |
-    | C6 | el núcleo es puro: `jugada/5` y `simular/5` no escriben nada, y el bucle de la terminal y `narrar/1` solo escriben lo que ellos devuelven |
-    | C7 | 156 pruebas en once archivos; el azar sale de una semilla, así que cada partida de las pruebas es reproducible en cualquier instalación |
-
-## 78.8 El agente con historia
-
-Las cinco versiones dan al agente su celda como dato. El agente del
-apartado «Agents Based on Propositional Logic» de Russell y Norvig no la
-recibe: avanza, gira y dispara, y deduce dónde está de lo que hizo y de lo
-que percibió, con un **axioma de estado sucesor** por cada propiedad que
-cambia con el tiempo. La página [El agente con historia](temporal.md)
-escribe esos axiomas como cláusulas de `temporal.pl`, arma con ellos el
-conocimiento de la versión 3 en cada momento de una historia, traduce los
-planes de la versión 3 a las acciones del libro y explica por qué el
-conocimiento `c/7`, que se actualiza con cada acción, evita releer la
-historia en cada decisión.
-
-Dos partes de ese apartado del libro solo se describen aquí, sin
-programarlas. La primera es el agente que escribe los axiomas como
-fórmulas proposicionales, un símbolo por fluente y por momento, y decide
-si una celda es segura preguntando a un procedimiento de satisfacibilidad
-(SAT) si la base de conocimiento es compatible con un peligro en ella. La
-segunda es SATPlan, que planifica por la misma vía: afirma la meta en el
-momento T, para T = 1, 2, …, y lee el plan en los símbolos de acción del
-primer modelo que el procedimiento encuentra. Tampoco se programan
-«Wumpus 2» y «Wumpus 3», las versiones posteriores del juego de Yob, con
-otras cuevas y peligros nuevos: no hay una edición de acceso libre de
-sus reglas que el capítulo pueda seguir.
+El capítulo continúa en la página
+[El agente con historia](temporal.md#788-el-agente-con-historia), con un
+agente que no recibe su celda como dato y la deduce de lo que hizo y de lo
+que percibió. Antes, los [ejercicios](#ejercicios) de esta página
+practican las versiones 1 a 5 y la comparación de los enfoques.
 
 ## Ejercicios
 
@@ -763,41 +738,6 @@ que cargan los del capítulo, sin modificarlos.
     en la terminal: muestra las percepciones con mensajes de tú y lee
     acciones como `ir 2 1`, `tomar`, `disparar norte` y `salir` de un
     stream. Probarlo con una cadena que gana la cueva de la figura 7.2.
-12. **(2)** Escribir el axioma de estado sucesor del fluente «lleva el
-    oro» como un predicado `tiene_oro(H, T)` sobre las historias de
-    `temporal.pl`: el agente lleva el oro si en un momento anterior lo
-    tomó mientras percibía el brillo. Comprobarlo con la partida de la
-    cueva de la figura 7.2 traducida a las acciones del libro, y explicar
-    qué parte del predicado resuelve el problema del marco.
-
-## Resumen
-
-| | |
-|---|---|
-| **agente basado en conocimiento** | registra lo que percibe, infiere qué es seguro y elige una acción; el simulador no le muestra el mundo |
-| **mundo consistente** | una ubicación de los peligros que explica cada percepción registrada; una celda es segura si ningún mundo consistente pone un peligro en ella |
-| **frontera** | las celdas sin visitar vecinas de una visitada; un pozo fuera de ella no cambia ninguna percepción |
-| **probabilidad por mundos** | la suma de las probabilidades de los mundos consistentes con el peligro en la celda, dividida por la de todos |
-| **azar como estado** | el generador congruencial lineal pasa su estado de un predicado a otro: una partida queda determinada por su semilla |
-| **coordenadas trasladadas** | una búsqueda escrita para una meta fija sirve para cualquier otra si el problema se traslada |
-| **forall/2 y las restricciones** | lo que `forall/2` prueba se deshace al terminar, incluidas las restricciones; se imponen con `maplist/2` |
-| **fluente** | una propiedad que cambia con el tiempo, como la celda del agente o la flecha |
-| **axioma de estado sucesor** | un fluente vale en t + 1 si una acción de t lo produjo, o si valía en t y ninguna lo deshizo; resuelve el problema del marco con un axioma por fluente |
-| **lambdas de `library(yall)` compilados** | si la biblioteca ya está cargada, un lambda se traduce al compilar y sus variables libres no declaradas con `/` quedan como variables nuevas; un predicado con nombre evita el problema |
-| `nueva_partida/2`, `jugada/5`, `observacion/2` | el juego de Yob |
-| `mundo/2`, `mundo_sembrado/2`, `percepciones/3`, `actuar/6`, `simular/5` | el simulador de la grilla |
-| `mundos_pozos/2`, `posiciones_wumpus/2`, `clasificar/3`, `seguras/2`, `ruta/4`, `jugar/2` | el agente |
-| `probabilidad_pozo/3`, `riesgo/3`, `disparo/3`, `medir/3` | la flecha y el riesgo |
-| `cazar/3`, `narrar/1`, `medir_caza/2` | el agente en la cueva de Yob |
-| `seguras_con/3`, `comparar_en/3` | la comparación de los enfoques |
-| `vale/3`, `conocimiento_en/3`, `ok/3`, `traducir/4`, `historia/3` | el agente con historia |
-
-## Temas que se retoman
-
-| Tema | Se retoma en |
-|---|---|
-| Descartar las hipótesis que no explican las respuestas: Mastermind | [capítulo 79](../capitulo-79-proyecto-kalah-mastermind-nim/index.md) |
-| Reglas como las de seguridad evaluadas por un motor Datalog | [capítulo 86](../capitulo-86-proyecto-motor-datalog/index.md) |
 
 ## Referencias
 
@@ -820,35 +760,22 @@ que cargan los del capítulo, sin modificarlos.
   despertar, y el capítulo fija tres casos de cada cuatro.
 - Stuart Russell y Peter Norvig, *Artificial Intelligence: A Modern
   Approach*, 4.ª edición, Pearson, 2020 — capítulo «Logical Agents»,
-  secciones «Knowledge-Based Agents», «The Wumpus World» y «Agents Based
-  on Propositional Logic»; capítulo «Quantifying Uncertainty», sección
-  «The Wumpus World Revisited». [Sitio oficial del libro](https://aima.cs.berkeley.edu/).
-  El capítulo toma el mundo de 4 × 4 con sus cinco percepciones y su
+  secciones «Knowledge-Based Agents» y «The Wumpus World»; capítulo
+  «Quantifying Uncertainty», sección «The Wumpus World Revisited».
+  [Sitio oficial del libro](https://aima.cs.berkeley.edu/).
+  Esta página toma de allí el mundo de 4 × 4 con sus cinco percepciones y su
   puntaje, la cueva de la figura 7.2 (a través del [capítulo 21](../capitulo-21-base-de-datos-dinamica/index.md)) y la
   situación de la figura 7.4, la inferencia de celdas seguras como
   consecuencia lógica, el orden de decisiones del agente híbrido y el
   cálculo de la probabilidad de un pozo sumando mundos consistentes, con
-  sus valores 0,31 y 0,86. Del apartado «Agents Based on Propositional
-  Logic», la página [El agente con historia](temporal.md) toma las
-  acciones de avanzar y girar, los fluentes con el tiempo como
-  superíndice, los axiomas de estado sucesor de la flecha y de la
-  ubicación, el fluente OK, el problema del marco y la estimación del
-  estado como remedio del costo creciente de la inferencia. El mundo del wumpus como banco de pruebas de
+  sus valores 0,31 y 0,86. El mundo del wumpus como banco de pruebas de
   agentes se atribuye a Michael Genesereth, que lo adaptó del juego de Yob
   (artículo [«Wumpus world» de Wikipedia](https://en.wikipedia.org/wiki/Wumpus_world)).
 - aima-python, el código oficial del libro, con licencia MIT:
   `aima/agents.py` (`WumpusEnvironment`) y `aima/logic.py` (`WumpusKB`,
   `HybridWumpusAgent`). [Repositorio](https://github.com/aimacode/aima-python).
-  El capítulo toma la probabilidad 0,2 de pozo por celda, la exclusión
-  de la entrada para el wumpus y el oro, y la formulación proposicional
-  del conocimiento que usa el enfoque de `library(clpb)`: cada brisa
-  equivale a la disyunción de los pozos vecinos, y hay al menos un wumpus
-  y a lo sumo uno. De `WumpusKB` toma también el axioma de estado
-  sucesor del wumpus vivo, que la página del agente con historia usa
-  junto con los del libro, y la negación explícita de las acciones no
-  hechas, que en Prolog da la compleción del programa.
-
-El código del capítulo es propio, escrito para el curso: ninguno de los
-programas de esas fuentes se copió, y la enumeración de mundos
-consistentes como método principal, la cueva de Yob jugada por un agente
-y las mediciones no tienen equivalente en ellas.
+  Esta página toma de allí la probabilidad 0,2 de pozo por celda, la
+  exclusión de la entrada para el wumpus y el oro, y la formulación
+  proposicional del conocimiento que usa el enfoque de `library(clpb)`:
+  cada brisa equivale a la disyunción de los pozos vecinos, y hay al menos
+  un wumpus y a lo sumo uno.

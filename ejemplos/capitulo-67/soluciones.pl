@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 67 - Soluciones de los ejercicios 2 a 12.
+% Capítulo 67 - Soluciones de los ejercicios 1 a 6 y 8 a 12.
 %
 % Carga las versiones 2 y 5, que cargan las demás, y agrega métodos de
 % combinación con cláusulas multifile de evidencia.
@@ -33,7 +33,7 @@
 :- reexport(cotas).
 :- reexport(compilado).
 
-% Ejercicio 2 ---------------------------------------------------------------
+% Ejercicio 1 ---------------------------------------------------------------
 
 %!  atenuacion(+G:float, -Filas:list) is det.
 %
@@ -56,7 +56,7 @@ atenuacion(G, Filas) :-
 %   Par es Hecho con grado G.
 con_grado(G, Hecho, Hecho-G).
 
-% Ejercicio 3 ---------------------------------------------------------------
+% Ejercicio 2 ---------------------------------------------------------------
 
 evidencia:metodo(mycin).
 evidencia:metodo(conman).
@@ -72,7 +72,7 @@ evidencia:o(mycin, P1, P2, P) :-
 evidencia:o(conman, P1, P2, P) :-
     evidencia:o(conservador, P1, P2, P).
 
-% Ejercicio 4 ---------------------------------------------------------------
+% Ejercicio 3 ---------------------------------------------------------------
 
 %!  y_no(+Metodo, +PA:float, +PB:float, -P:float) is det.
 %
@@ -83,7 +83,7 @@ y_no(Metodo, PA, PB, P) :-
     y(Metodo, PA, PNoB, P0),
     P is round(P0 * 10000) / 10000.0.
 
-% Ejercicio 5 ---------------------------------------------------------------
+% Ejercicio 4 ---------------------------------------------------------------
 
 %!  dos_reglas(+Metodo, -P:float) is det.
 %
@@ -94,7 +94,7 @@ dos_reglas(Metodo, P) :-
     combinar(o, Metodo, [PB, 0.8], P0),
     P is round(P0 * 10000) / 10000.0.
 
-% Ejercicio 6 ---------------------------------------------------------------
+% Ejercicio 5 ---------------------------------------------------------------
 
 %!  mas_probable(+Observaciones:list, +Metodo, -Hipotesis) is semidet.
 %
@@ -111,7 +111,21 @@ mas_probable(Observaciones, Metodo, Hipotesis) :-
     max_list(Ps, Maximo),
     once(member(Maximo-Hipotesis, Pares)).
 
-% Ejercicio 7 ---------------------------------------------------------------
+% Ejercicio 6 ---------------------------------------------------------------
+
+%!  fuerza_estimada(+Exitos:integer, +Total:integer, -F:float,
+%!                  -Error:float) is det.
+%
+%   F es la fracción Exitos / Total, que estima la fuerza de una regla, y
+%   Error su error estándar, la raíz de F (1 - F) / Total; los dos con
+%   tres decimales.
+fuerza_estimada(Exitos, Total, F, Error) :-
+    F0 is Exitos / Total,
+    E0 is sqrt(F0 * (1 - F0) / Total),
+    F is round(1000 * F0) / 1000.0,
+    Error is round(1000 * E0) / 1000.0.
+
+% Ejercicio 8 ---------------------------------------------------------------
 
 % excluyentes(A, B): las preguntas A y B no pueden tener las dos un sí.
 excluyentes(vuela, no_vuela).
@@ -154,7 +168,7 @@ con_alguna(Preguntas, Regla) :-
     once(( member(Q, Preguntas),
            arbol:con_pregunta(Q, Regla) )).
 
-% Ejercicio 8 ---------------------------------------------------------------
+% Ejercicio 9 ---------------------------------------------------------------
 
 %!  costo_minimo(-C:integer) is det.
 %
@@ -192,7 +206,7 @@ costo(Reglas, Prototipos, C) :-
         min_list(Cs, C)
     ).
 
-% Ejercicio 9 ---------------------------------------------------------------
+% Ejercicio 10 --------------------------------------------------------------
 
 % frecuencia(H, F): de cada 100 animales que se consultan, F son H.
 frecuencia(guepardo, 10).
@@ -226,7 +240,7 @@ sumar_pesado(W-N, W0-S0, W1-S1) :-
     W1 is W0 + W,
     S1 is S0 + W * N.
 
-% Ejercicio 10 --------------------------------------------------------------
+% Ejercicio 11 --------------------------------------------------------------
 
 %!  escribir_arbol(+Archivo) is det.
 %
@@ -253,7 +267,7 @@ escribir_clausulas :-
                         ;   memberchk(P, Os)
                         ))).
 
-% Ejercicio 11 --------------------------------------------------------------
+% Ejercicio 12 --------------------------------------------------------------
 
 %!  consultar_con_grado(+Arbol, +Observaciones:list, +Umbral:float,
 %!                      -Hipotesis, -P:float) is det.
@@ -275,17 +289,3 @@ consultar_con_grado(Arbol, Observaciones, Umbral, Hipotesis, P) :-
 %   El grado del Par Hecho-Grado es al menos Umbral.
 supera(Umbral, _-G) :-
     G >= Umbral.
-
-% Ejercicio 12 --------------------------------------------------------------
-
-%!  fuerza_estimada(+Exitos:integer, +Total:integer, -F:float,
-%!                  -Error:float) is det.
-%
-%   F es la fracción Exitos / Total, que estima la fuerza de una regla, y
-%   Error su error estándar, la raíz de F (1 - F) / Total; los dos con
-%   tres decimales.
-fuerza_estimada(Exitos, Total, F, Error) :-
-    F0 is Exitos / Total,
-    E0 is sqrt(F0 * (1 - F0) / Total),
-    F is round(1000 * F0) / 1000.0,
-    Error is round(1000 * E0) / 1000.0.

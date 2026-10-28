@@ -1,9 +1,9 @@
 :- encoding(utf8).
 
-% Capítulo 69 - Soluciones de los ejercicios 2 a 8, 10 y 11.
+% Capítulo 69 - Soluciones de los ejercicios 2 a 6, 8, 9, 11 y 12.
 %
 % Carga las versiones 4 y 6 del capítulo, como proyecto.pl, y la versión
-% 3 del capítulo 68 para comparar con la inducción. El ejercicio 9 está en
+% 3 del capítulo 68 para comparar con la inducción. El ejercicio 10 está en
 % soluciones_ebg.pl.
 %
 % solo-local: carga archivos de otros capítulos.
@@ -179,7 +179,7 @@ eliminar_con_descarte_de(K, EV, Descartados) :-
     append(Antes, [neg(pieza(esfera, rojo, grande, madera))|Despues], Ejs),
     eliminar_con_descarte(Ejs, EV, Descartados).
 
-% Ejercicio 8
+% Ejercicio 9
 
 %!  reglas_abuelo(-Rs:list) is det.
 %
@@ -228,7 +228,7 @@ cubierto(Rs, Hs, E) :-
     aplicar(familia, R, Hs, E),
     !.
 
-% Ejercicio 10
+% Ejercicio 11
 
 %!  reglas_de_tazas(-Rs:list) is det.
 %
@@ -255,7 +255,7 @@ costo_con(K, N) :-
                  nth0(I, Rs, R) ), Reglas),
     ebg:inferencias(reconocidas(taza, Reglas, _), N).
 
-% Ejercicio 11
+% Ejercicio 12
 
 %!  relevantes(+T, +E, +Meta, -Usados:list) is semidet.
 %

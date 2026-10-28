@@ -1,13 +1,16 @@
 # Expresiones regulares y un analizador léxico
 
-Esta página contiene las secciones [52.5](index.md#525-expresiones-regulares) y
-[52.6](index.md#526-un-analizador-lexico) del [capítulo 52](index.md): la traducción
-de una expresión regular a un autómata, con una gramática y la construcción de
-Thompson, y un analizador léxico hecho con una tabla de expresiones. Los ejemplos
-están en `expresiones.pl` y `lexico.pl`, en `ejemplos/capitulo-52/`, con sus
-pruebas; son módulos, y se ejecutan localmente.
+Esta página continúa el [capítulo 52](index.md) después de la
+[sección 52.4](index.md#524-el-automata-minimo), con las secciones
+[52.5](#525-expresiones-regulares) y [52.6](#526-un-analizador-lexico): la
+traducción de una expresión regular a un autómata, con una gramática y la
+construcción de Thompson; el camino inverso, de un autómata a una expresión,
+con la construcción de Kleene en la forma de McNaughton y Yamada; y un
+analizador léxico hecho con una tabla de expresiones. Los ejemplos están en
+`expresiones.pl`, `kleene.pl` y `lexico.pl`, en `ejemplos/capitulo-52/`, con
+sus pruebas; son módulos, y se ejecutan localmente.
 
-## Expresiones regulares
+## 52.5 Expresiones regulares
 
 Una expresión regular describe un lenguaje con tres operaciones: la
 concatenación, la unión (|) y la clausura de Kleene (\*), las de los
@@ -200,7 +203,98 @@ termina de leerse. La segunda consulta compara una expresión con el
 autómata escrito a mano en la [sección 52.1](index.md#521-automatas-finitos-como-hechos), y la tercera, dos expresiones
 que describen el mismo lenguaje sin parecerse.
 
-## Un analizador léxico
+### De un autómata a una expresión regular
+
+La construcción de Thompson va de una expresión a un autómata. El camino
+inverso también existe: Kleene probó en 1951 que los lenguajes de los
+autómatas finitos son exactamente los de las expresiones regulares, y
+McNaughton y Yamada dieron en 1960 la construcción que se programa aquí.
+Warren la deja esbozada al final de su capítulo, como una relación
+tabulada. Con los estados numerados de 0 a N − 1, R(I, J, K) es la
+expresión de las palabras que llevan del estado I al J sin pasar por un
+estado intermedio de número K o mayor. Con K = 0 no hay estados
+intermedios: son los símbolos de las transiciones de I a J, y la palabra
+vacía si I = J. Permitir además el estado K agrega los caminos que pasan
+por él, una o más veces:
+
+```text
+R(I, J, K+1) = R(I, J, K) | R(I, K, K) R(K, K, K)* R(K, J, K)
+```
+
+La expresión del autómata es la unión de R(0, F, N) para cada estado
+final F. `kleene.pl` la calcula sobre el autómata mínimo, numerado por
+`tabla/2`, con `r/5` tabulada: cada R(I, J, K) se calcula una vez, y la
+recursión sobre K termina en K = 0:
+
+<!-- ejemplo: capitulo-52/kleene.pl predicado: expresion_de/2 r/5 -->
+```prolog
+%!  expresion_de(+M, -E) is det.
+%
+%   E es una expresión regular, un término de expresiones.pl o nada, del
+%   lenguaje del autómata M. Se construye sobre el autómata mínimo de M,
+%   con sus estados numerados por tabla/2.
+expresion_de(M, E) :-
+    tabla(min(M), A),
+    A = automata(N, Finales, _),
+    foldl(union_final(A, N), Finales, nada, E).
+
+%!  r(+A, +I:integer, +J:integer, +K:integer, -E) is det.
+%
+%   E es R(I, J, K) en el autómata numerado A: las palabras que llevan de
+%   I a J sin pasar por un estado intermedio de número K o mayor.
+r(automata(_, _, Delta), I, J, 0, E) :-
+    !,
+    findall(sim(S), member(I-S-J, Delta), Simbolos),
+    foldl(alt_acumulado, Simbolos, nada, E0),
+    (   I =:= J
+    ->  alt(E0, vacia, E)
+    ;   E = E0
+    ).
+r(A, I, J, K1, E) :-
+    K is K1 - 1,
+    r(A, I, J, K, Directo),
+    r(A, I, K, K, Entrada),
+    r(A, K, K, K, Ciclo),
+    r(A, K, J, K, Salida),
+    estrella(Ciclo, Ciclos),
+    cat(Entrada, Ciclos, E1),
+    cat(E1, Salida, Pasando),
+    alt(Directo, Pasando, E).
+```
+
+`alt/3`, `cat/3` y `estrella/3` construyen la expresión y la simplifican
+al mismo tiempo: `nada`, el lenguaje vacío, desaparece de una unión y anula
+una concatenación; la palabra vacía desaparece de una concatenación; y una
+estrella absorbe lo que ya contiene. Sin esas reglas la expresión puede
+crecer como 4ᴺ, porque cada R usa cuatro del nivel anterior.
+`expresion_texto/2` la escribe con `texto/2`, en la notación de la
+[sección 52.5](#525-expresiones-regulares) y con los paréntesis que hacen
+falta, y así la expresión obtenida se puede volver a convertir en autómata
+y comparar con el original:
+
+```prolog
+?- expresion_de(ciclo, E).
+E = alt(sim(b), cat(estrella(sim(a)), sim(b))).
+
+?- expresion_texto(er("(ab)*"), T).
+T = "()|a(ba)*b".
+
+?- expresion_texto(termina_ab, T), equivalentes(er(T), termina_ab).
+T = "(a|b*a)a*b|(a|b*a)a*b((a|bb*a)a*b)*(()|(a|bb*a)a*b)".
+```
+
+La primera recupera la expresión de `ciclo`: una b, o algunas a seguidas
+de una b. La segunda da a(ba)\*b en lugar de (ab)\*, otra escritura del
+mismo lenguaje, porque la palabra vacía queda aparte. La tercera muestra
+el límite de la construcción: el lenguaje de `termina_ab` es el de
+(a|b)\*ab, y la expresión obtenida es correcta, como verifica
+`equivalentes/2`, pero mucho más larga. Las simplificaciones son locales y
+no la reducen más; encontrar la expresión más corta de un lenguaje es un
+problema mucho más difícil que construir una, y el resultado depende
+además del orden de los estados. `texto/2` falla con `nada`, que la
+notación no puede escribir: el lenguaje vacío no tiene expresión en ella.
+
+## 52.6 Un analizador léxico
 
 Un analizador léxico divide un texto en componentes: números,
 identificadores, palabras reservadas, símbolos. Cada clase de componente es
@@ -281,93 +375,77 @@ análisis léxico es una gramática escrita a mano, con un corte después de
 cada componente para quedarse con el más largo; aquí es una tabla de
 expresiones, y agregar una clase de componente es agregar una fila.
 
-## De un autómata a una expresión regular
+El capítulo continúa en la página
+[Transductores](transductores.md#527-transductores), con los autómatas que
+escriben mientras leen.
 
-La construcción de Thompson va de una expresión a un autómata. El camino
-inverso también existe: Kleene probó en 1951 que los lenguajes de los
-autómatas finitos son exactamente los de las expresiones regulares, y
-McNaughton y Yamada dieron en 1960 la construcción que se programa aquí.
-Warren la deja esbozada al final de su capítulo, como una relación
-tabulada. Con los estados numerados de 0 a N − 1, R(I, J, K) es la
-expresión de las palabras que llevan del estado I al J sin pasar por un
-estado intermedio de número K o mayor. Con K = 0 no hay estados
-intermedios: son los símbolos de las transiciones de I a J, y la palabra
-vacía si I = J. Permitir además el estado K agrega los caminos que pasan
-por él, una o más veces:
+## Ejercicios
 
-```text
-R(I, J, K+1) = R(I, J, K) | R(I, K, K) R(K, K, K)* R(K, J, K)
-```
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio, y el [capítulo 54](../capitulo-54-proyecto-morfologia-castellano/index.md)
+los da por hechos.
 
-La expresión del autómata es la unión de R(0, F, N) para cada estado
-final F. `kleene.pl` la calcula sobre el autómata mínimo, numerado por
-`tabla/2`, con `r/5` tabulada: cada R(I, J, K) se calcula una vez, y la
-recursión sobre K termina en K = 0:
+4. ★ **(2)** Warren elimina las transiciones ε con otra construcción:
+   `sin_epsilon(M)` tiene los mismos estados, una transición con S de Q a
+   Q1 si desde Q se llega a Q1 con ε, S y ε, y son finales los estados
+   cuya clausura contiene un final. Definir `sin_epsilon/1` con reglas
+   para las cinco relaciones, y verificar que `sin_epsilon(ciclo)` y
+   `sin_epsilon(er("(a|b)*abb"))` no tienen transiciones ε y son
+   equivalentes a sus originales.
+5. ★ **(2)** Definir la construcción `diferencia(M1, M2)`, que acepta las
+   palabras de M1 que M2 no acepta, sin usar `interseccion/2` ni
+   `complemento/1`: con el producto de los deterministas. Obtener las
+   palabras de longitud hasta 4 de `diferencia(er("a*b*"), er("(ab)*"))` y
+   verificar que `diferencia(M, M)` es vacío para tres autómatas.
+6. ★ **(2)** Agregar a la gramática de las expresiones la repetición
+   contada: `E{n}` es E concatenada n veces, con n un número de un
+   dígito. Verificar que `er("a{3}")` es equivalente a `er("aaa")` y que
+   `er("(ab){2}c")` acepta ababc. Sin modificar `arco/8`: la gramática
+   produce los términos que ya existen.
+7. **(2)** Agregar al analizador léxico comentarios, desde `#` hasta el
+   fin de la línea, que se descartan como los blancos, y cadenas entre
+   comillas dobles sin comillas adentro, que dan el componente
+   `cadena(Atomo)`. Escribir las dos reglas en la tabla y los casos en
+   `componente/4`, y probarlo con un programa de tres líneas.
+8. ★ **(2)** Obtener con `expresion_texto/2` la expresión de `multiplo3`,
+    con `kleene.pl` cargado, y verificar con `equivalentes/2` que describe
+    su lenguaje. Verificar después que (0|1(01\*0)\*1)\* también lo
+    describe, explicar por qué siguiendo los restos de la
+    [sección 52.1](index.md#521-automatas-finitos-como-hechos), y explicar por qué
+    la construcción no llega a una expresión tan corta.
 
-<!-- ejemplo: capitulo-52/kleene.pl predicado: expresion_de/2 r/5 -->
-```prolog
-%!  expresion_de(+M, -E) is det.
-%
-%   E es una expresión regular, un término de expresiones.pl o nada, del
-%   lenguaje del autómata M. Se construye sobre el autómata mínimo de M,
-%   con sus estados numerados por tabla/2.
-expresion_de(M, E) :-
-    tabla(min(M), A),
-    A = automata(N, Finales, _),
-    foldl(union_final(A, N), Finales, nada, E).
+## Referencias
 
-%!  r(+A, +I:integer, +J:integer, +K:integer, -E) is det.
-%
-%   E es R(I, J, K) en el autómata numerado A: las palabras que llevan de
-%   I a J sin pasar por un estado intermedio de número K o mayor.
-r(automata(_, _, Delta), I, J, 0, E) :-
-    !,
-    findall(sim(S), member(I-S-J, Delta), Simbolos),
-    foldl(alt_acumulado, Simbolos, nada, E0),
-    (   I =:= J
-    ->  alt(E0, vacia, E)
-    ;   E = E0
-    ).
-r(A, I, J, K1, E) :-
-    K is K1 - 1,
-    r(A, I, J, K, Directo),
-    r(A, I, K, K, Entrada),
-    r(A, K, K, K, Ciclo),
-    r(A, K, J, K, Salida),
-    estrella(Ciclo, Ciclos),
-    cat(Entrada, Ciclos, E1),
-    cat(E1, Salida, Pasando),
-    alt(Directo, Pasando, E).
-```
-
-`alt/3`, `cat/3` y `estrella/3` construyen la expresión y la simplifican
-al mismo tiempo: `nada`, el lenguaje vacío, desaparece de una unión y anula
-una concatenación; la palabra vacía desaparece de una concatenación; y una
-estrella absorbe lo que ya contiene. Sin esas reglas la expresión puede
-crecer como 4ᴺ, porque cada R usa cuatro del nivel anterior.
-`expresion_texto/2` la escribe con `texto/2`, en la notación de la
-[sección anterior](#expresiones-regulares) y con los paréntesis que hacen
-falta, y así la expresión obtenida se puede volver a convertir en autómata
-y comparar con el original:
-
-```prolog
-?- expresion_de(ciclo, E).
-E = alt(sim(b), cat(estrella(sim(a)), sim(b))).
-
-?- expresion_texto(er("(ab)*"), T).
-T = "()|a(ba)*b".
-
-?- expresion_texto(termina_ab, T), equivalentes(er(T), termina_ab).
-T = "(a|b*a)a*b|(a|b*a)a*b((a|bb*a)a*b)*(()|(a|bb*a)a*b)".
-```
-
-La primera recupera la expresión de `ciclo`: una b, o algunas a seguidas
-de una b. La segunda da a(ba)\*b en lugar de (ab)\*, otra escritura del
-mismo lenguaje, porque la palabra vacía queda aparte. La tercera muestra
-el límite de la construcción: el lenguaje de `termina_ab` es el de
-(a|b)\*ab, y la expresión obtenida es correcta, como verifica
-`equivalentes/2`, pero mucho más larga. Las simplificaciones son locales y
-no la reducen más; encontrar la expresión más corta de un lenguaje es un
-problema mucho más difícil que construir una, y el resultado depende
-además del orden de los estados. `texto/2` falla con `nada`, que la
-notación no puede escribir: el lenguaje vacío no tiene expresión en ella.
+- David S. Warren, *Programming in Tabled Prolog*, borrador distribuido
+  con el sistema XSB, 1999 — «Automata Theory in XSB». [Copia de archivo de la página del autor](https://web.archive.org/web/20240628211257/https://www3.cs.stonybrook.edu/~warren/xsbbook/book.html). Esta página toma
+  de allí el autómata de una expresión como construcción sobre un nombre
+  compuesto, y el esbozo, inconcluso, de la conversión de un autómata en
+  una expresión regular como relación tabulada, que
+  [De un autómata a una expresión regular](#de-un-automata-a-una-expresion-regular)
+  completa; los estados de Thompson se nombran de otra manera.
+- Ken Thompson, «Regular expression search algorithm», *Communications
+  of the ACM* 11 (6), 1968, pp. 419–422. Esta página toma de allí la idea
+  de la construcción de un autómata con transiciones ε a partir de una
+  expresión regular, un fragmento por subexpresión.
+- James L. Hein, *Discrete Structures, Logic, and Computability*, Jones
+  and Bartlett, 3.ª edición, 2010 — los capítulos de lenguajes regulares y
+  de autómatas. Es el libro de texto al que acompaña el de experimentos de
+  Hein: allí está la construcción de Thompson que los experimentos
+  programan. No tiene edición en línea gratuita.
+- Stephen C. Kleene, «Representation of events in nerve nets and finite
+  automata», RAND, memorándum RM-704, 1951, publicado en C. E. Shannon y
+  J. McCarthy (eds.), *Automata Studies*, Princeton University Press, 1956.
+  [Edición de RAND](https://www.rand.org/pubs/research_memoranda/RM704.html).
+  Define los eventos regulares y prueba que son los que un autómata finito
+  reconoce: el origen de las expresiones regulares y de la clausura que
+  lleva su nombre, y la equivalencia entre expresiones y autómatas sobre la
+  que se apoyan la [sección 52.5](#525-expresiones-regulares),
+  `contraejemplo/3` y `expresion_de/2`.
+- Robert McNaughton y Hisao Yamada, «Regular expressions and state graphs
+  for automata», *IRE Transactions on Electronic Computers* EC-9 (1),
+  1960, págs. 39–47. Da la construcción de la expresión de un autómata por
+  las expresiones R(I, J, K), con los estados intermedios acotados por K,
+  que `kleene.pl` programa como relación tabulada. No tiene edición en
+  línea gratuita.

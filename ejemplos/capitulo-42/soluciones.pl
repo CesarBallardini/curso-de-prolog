@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 42 - Soluciones de los ejercicios 3, 4, 5, 6, 9 y 11.
+% Capítulo 42 - Soluciones de los ejercicios 3, 4, 5, 6, 7 y 12.
 %
 % Cada solución es un juego nuevo que delega en los del capítulo, o una
 % búsqueda nueva sobre los mismos predicados. minimax/6, alfabeta/6, el
@@ -176,7 +176,7 @@ antidiagonal(N, I, Casilla) :-
     Columna is N + 1 - I,
     casilla(N, I, Columna, Casilla).
 
-% --- Ejercicio 9: el juego de restar ----------------------------------------
+% --- Ejercicio 7: el juego de restar ----------------------------------------
 
 inicial(restar(K), r(K, x)).
 
@@ -205,7 +205,7 @@ perdedoras(Maximo, Pilas) :-
                  alfabeta(restar(K), r(K, x), K, _, V, _),
                  V < 0 ), Pilas).
 
-% --- Ejercicio 11: la poda tabulada ------------------------------------------
+% --- Ejercicio 12: la poda tabulada ------------------------------------------
 
 :- table acotado_tabulado/5.
 

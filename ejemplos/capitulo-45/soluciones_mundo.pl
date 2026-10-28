@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 45 - Soluciones de los ejercicios 2 y 3: un jardín y tres
+% Capítulo 45 - Soluciones de los ejercicios 5 y 6: un jardín y tres
 % sinónimos, agregados sin modificar los archivos del capítulo.
 %
 % Los predicados de datos de mundo.pl y forma/2 de lenguaje.pl son
@@ -13,7 +13,7 @@
 
 :- use_module(lenguaje).
 
-% Ejercicio 2
+% Ejercicio 5
 
 mundo:nombre(jardin, m, "jardín").
 mundo:nombre(puerta_vidrio, f, "puerta de vidrio").
@@ -26,7 +26,7 @@ mundo:puerta(puerta_vidrio, vestibulo, jardin).
 mundo:inicio(cerrada(puerta_vidrio)).
 mundo:inicio(esta_en(regadera, jardin)).
 
-% Ejercicio 3
+% Ejercicio 6
 
 lenguaje:forma(tomar, [recoger]).
 lenguaje:forma(tomar, [levantar]).

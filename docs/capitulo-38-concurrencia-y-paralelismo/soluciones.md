@@ -1,7 +1,7 @@
 # Soluciones del capítulo 38 — Concurrencia y paralelismo
 
 El código de esta página está en `ejemplos/capitulo-38/`: `soluciones.pl`
-para los ejercicios 2, 4, 6, 7, 10, 11 y 12, `soluciones_servidor.pl` para
+para los ejercicios 2, 4, 6, 9, 10, 11 y 12, `soluciones_servidor.pl` para
 el 13 y `soluciones_inscripciones.pl` para el 14 y el 15, cada uno con sus
 pruebas. Como las del capítulo, las pruebas que usan hilos comparan
 cantidades o conjuntos, nunca el orden en que los hilos terminan. Ningún
@@ -213,35 +213,6 @@ llamada al empezar: la que agrega otro hilo después no está entre ellas.
 
 ## 6
 
-<!-- ejemplo: capitulo-38/soluciones.pl predicado: sumar_cas/1 -->
-```prolog
-%!  sumar_cas(-N:integer) is det.
-%
-%   Suma uno a contador/1 con transaction/3: lee el valor fuera del mutex y
-%   lo reemplaza solo si sigue siendo el que leyó; si no, repite. N es el
-%   valor nuevo.
-sumar_cas(N) :-
-    repeat,
-    transaction(( contador(N0),
-                  N is N0 + 1 ),
-                ( retract(contador(N0)),
-                  assertz(contador(N)) ),
-                contador),
-    !.
-```
-
-```prolog
-?- sumar_en_hilos(8, 1000, F).
-F = 8000.
-```
-
-La meta lee el contador y calcula el siguiente fuera del mutex; la
-restricción, con el mutex `contador`, quita el valor leído y agrega el
-nuevo. Si otro hilo confirmó antes, el valor leído ya no está, `retract/1`
-falla, la transacción se descarta y `repeat/0` vuelve a empezar.
-
-## 7
-
 <!-- ejemplo: capitulo-38/soluciones.pl predicado: mover/3 transferir_ingenuo/3 transferir/3 -->
 ```prolog
 %!  mover(+Desde:atom, +Hacia:atom, +Monto:integer) is det.
@@ -302,7 +273,7 @@ hecho por cuenta. La prueba `opuestas` de `soluciones.plt` usa la versión
 corregida; la ingenua no se prueba, porque su resultado depende del orden de
 los hilos y, cuando falla, deja dos hilos detenidos.
 
-## 8
+## 7
 
 <!-- ejemplo: capitulo-38/memo.pl fragmento: :- thread_local guardado_local/2. .. :- thread_local guardado_local/2. -->
 ```prolog
@@ -321,7 +292,7 @@ cuando el hilo termina, y sus variables globales también: no queda nada que
 consultar, desde ningún hilo. Mientras el hilo vive, solo él las ve; por eso
 el hilo principal cuenta 0 aunque el otro haya agregado un hecho.
 
-## 9
+## 8
 
 `concurrent_forall/3` con la misma condición y la misma acción que
 `goldbach_paralelo/1`, hasta 100 000, con `paralelo.pl` cargado:
@@ -364,7 +335,7 @@ tiempo de procesador total crece con los hilos, de 3,0 a 4,4 segundos: cada
 hilo avanza más despacio cuando comparte el núcleo, y repartir los trabajos
 también cuesta.
 
-## 10
+## 9
 
 <!-- ejemplo: capitulo-38/soluciones.pl predicado: posicion_extremos/3 desde_el_principio/3 desde_el_final/3 -->
 ```prolog
@@ -410,7 +381,7 @@ primero. Con un solo elemento que la cumple, las dos dan la misma posición.
 La prueba `extremos_dos` acepta cualquiera de las dos respuestas posibles,
 con `memberchk/2`, y `extremos_unico` exige la única.
 
-## 11
+## 10
 
 <!-- ejemplo: capitulo-38/soluciones.pl predicado: emparejar/4 pares/4 -->
 ```prolog
@@ -450,7 +421,7 @@ respuesta a cada uno en cada llamada. Si uno de los dos se termina antes, la
 lista se corta allí: `emparejar(5, multiplo(2), [X]>>member(X, [a, b]), P)`
 da `[2-a, 4-b]`.
 
-## 12
+## 11
 
 <!-- ejemplo: capitulo-38/soluciones.pl predicado: nuevo_generador/1 identificador/2 siguiente_id/2 -->
 ```prolog
@@ -482,6 +453,35 @@ piden 100 identificadores cada uno al mismo motor reciben los números del
 1 al 400, sin repetidos, repartidos de cualquier manera entre los hilos; la
 prueba `identificadores_hilos` reúne las cuatro listas, las ordena y las
 compara con `numlist(1, 400, L)`.
+
+## 12
+
+<!-- ejemplo: capitulo-38/soluciones.pl predicado: sumar_cas/1 -->
+```prolog
+%!  sumar_cas(-N:integer) is det.
+%
+%   Suma uno a contador/1 con transaction/3: lee el valor fuera del mutex y
+%   lo reemplaza solo si sigue siendo el que leyó; si no, repite. N es el
+%   valor nuevo.
+sumar_cas(N) :-
+    repeat,
+    transaction(( contador(N0),
+                  N is N0 + 1 ),
+                ( retract(contador(N0)),
+                  assertz(contador(N)) ),
+                contador),
+    !.
+```
+
+```prolog
+?- sumar_en_hilos(8, 1000, F).
+F = 8000.
+```
+
+La meta lee el contador y calcula el siguiente fuera del mutex; la
+restricción, con el mutex `contador`, quita el valor leído y agrega el
+nuevo. Si otro hilo confirmó antes, el valor leído ya no está, `retract/1`
+falla, la transacción se descarta y `repeat/0` vuelve a empezar.
 
 ## 13
 

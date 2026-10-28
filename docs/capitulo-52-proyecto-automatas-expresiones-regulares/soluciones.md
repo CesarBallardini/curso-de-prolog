@@ -1,12 +1,12 @@
 # Soluciones del capítulo 52 — Proyecto: autómatas y expresiones regulares
 
-Las soluciones de los ejercicios 2 a 9, 12 y 13 están en
+Las soluciones de los ejercicios 2 a 11 están en
 `ejemplos/capitulo-52/soluciones.pl`, que carga los módulos del proyecto
 (`lexico.pl` y `secuencial.pl`, que reexportan los demás, entre ellos
 `transductores.pl`) y agrega
 autómatas, construcciones, un operador de las expresiones y dos clases de
-componentes léxicos con cláusulas `multifile`; las de los ejercicios 10 y
-11, en `soluciones_maquinas.pl`, que carga `maquinas.pl`; las de los
+componentes léxicos con cláusulas `multifile`; las de los ejercicios 12 y
+13, en `soluciones_maquinas.pl`, que carga `maquinas.pl`; las de los
 ejercicios 14 a 16, en `soluciones_cintas.pl`. Cada archivo tiene
 sus pruebas en el `.plt` del mismo nombre.
 
@@ -89,6 +89,51 @@ Las ocho palabras son las que tienen cuatro a, cuatro b, o dos de cada una:
 
 ## Ejercicio 3
 
+<!-- ejemplo: capitulo-52/soluciones.pl fragmento: automatas:alfabeto(enesima(_), [a, b]). .. I1 is I + 1. -->
+```prolog
+automatas:alfabeto(enesima(_), [a, b]).
+automatas:inicial(enesima(_), 0).
+automatas:final(enesima(N), N).
+automatas:delta(enesima(_), 0, S, 0) :-
+    member(S, [a, b]).
+automatas:delta(enesima(_), 0, a, 1).
+automatas:delta(enesima(N), I, S, I1) :-
+    between(1, N, I),
+    I < N,
+    member(S, [a, b]),
+    I1 is I + 1.
+```
+
+<!-- ejemplo: capitulo-52/soluciones.pl predicado: explosion/2 -->
+```prolog
+%!  explosion(+N:integer, -Filas:list) is det.
+%
+%   Filas tiene un término K-Det-Min por cada K de 1 a N: la cantidad de
+%   estados de det(enesima(K)) y de min(enesima(K)).
+explosion(N, Filas) :-
+    findall(K-D-M,
+            ( between(1, N, K),
+              numero_estados(det(enesima(K)), D),
+              numero_estados(min(enesima(K)), M) ),
+            Filas).
+```
+
+```prolog
+?- explosion(6, Filas).
+Filas = [1-2-2, 2-4-4, 3-8-8, 4-16-16, 5-32-32, 6-64-64].
+```
+
+El no determinista tiene n + 1 estados, y el determinista, 2ⁿ: cada
+estado del determinista recuerda cuáles de las últimas n letras fueron a,
+porque cualquiera de ellas puede ser la n-ésima desde el final cuando la
+palabra termine. El mínimo tiene los mismos 2ⁿ, así que el crecimiento no
+es un defecto de la construcción: dos sucesiones distintas de n letras se
+distinguen agregando letras hasta que la posición en que difieren quede
+n-ésima desde el final. La construcción de subconjuntos solo construye los
+estados alcanzables, pero en este lenguaje lo son todos.
+
+## Ejercicio 4
+
 <!-- ejemplo: capitulo-52/soluciones.pl fragmento: automatas:alfabeto(sin_epsilon(M), Sigma) :- .. clausura(M, Q3, Q1). -->
 ```prolog
 automatas:alfabeto(sin_epsilon(M), Sigma) :-
@@ -147,7 +192,7 @@ Con x entre los finales, el autómata sin transiciones ε aceptaría también
 a. En el ejemplo de Warren, m0s1s2s, los estados a los que se llega con ε
 desde el final no existen, y la diferencia no aparece.
 
-## Ejercicio 4
+## Ejercicio 5
 
 <!-- ejemplo: capitulo-52/soluciones.pl fragmento: automatas:alfabeto(diferencia(M1, M2), Sigma) :- .. mover(M2, S, D2, E2). -->
 ```prolog
@@ -186,51 +231,6 @@ true.
 Las palabras de longitud 3 de a\*b\* son cuatro, y ninguna es de (ab)\*,
 que solo tiene palabras de longitud par. Las pruebas verifican
 `diferencia(M, M)` vacía para `termina_ab`, `multiplo3` y `er("a?b+")`.
-
-## Ejercicio 5
-
-<!-- ejemplo: capitulo-52/soluciones.pl fragmento: automatas:alfabeto(enesima(_), [a, b]). .. I1 is I + 1. -->
-```prolog
-automatas:alfabeto(enesima(_), [a, b]).
-automatas:inicial(enesima(_), 0).
-automatas:final(enesima(N), N).
-automatas:delta(enesima(_), 0, S, 0) :-
-    member(S, [a, b]).
-automatas:delta(enesima(_), 0, a, 1).
-automatas:delta(enesima(N), I, S, I1) :-
-    between(1, N, I),
-    I < N,
-    member(S, [a, b]),
-    I1 is I + 1.
-```
-
-<!-- ejemplo: capitulo-52/soluciones.pl predicado: explosion/2 -->
-```prolog
-%!  explosion(+N:integer, -Filas:list) is det.
-%
-%   Filas tiene un término K-Det-Min por cada K de 1 a N: la cantidad de
-%   estados de det(enesima(K)) y de min(enesima(K)).
-explosion(N, Filas) :-
-    findall(K-D-M,
-            ( between(1, N, K),
-              numero_estados(det(enesima(K)), D),
-              numero_estados(min(enesima(K)), M) ),
-            Filas).
-```
-
-```prolog
-?- explosion(6, Filas).
-Filas = [1-2-2, 2-4-4, 3-8-8, 4-16-16, 5-32-32, 6-64-64].
-```
-
-El no determinista tiene n + 1 estados, y el determinista, 2ⁿ: cada
-estado del determinista recuerda cuáles de las últimas n letras fueron a,
-porque cualquiera de ellas puede ser la n-ésima desde el final cuando la
-palabra termine. El mínimo tiene los mismos 2ⁿ, así que el crecimiento no
-es un defecto de la construcción: dos sucesiones distintas de n letras se
-distinguen agregando letras hasta que la posición en que difieren quede
-n-ésima desde el final. La construcción de subconjuntos solo construye los
-estados alcanzables, pero en este lenguaje lo son todos.
 
 ## Ejercicio 6
 
@@ -306,6 +306,45 @@ alternativa que `append/3` deja al separar las comillas.
 
 ## Ejercicio 8
 
+`soluciones.pl` carga `kleene.pl`, que reexporta las expresiones, y guarda
+la expresión escrita a mano:
+
+<!-- ejemplo: capitulo-52/soluciones.pl predicado: expresion_corta/1 -->
+```prolog
+%!  expresion_corta(-T:string) is det.
+%
+%   T es una expresión regular del lenguaje de multiplo3 escrita a mano.
+%   Desde el resto 0, un 0 no lo cambia, y 1(01*0)*1 vuelve a él: el
+%   primer 1 lleva al resto 1, cada 01*0 va al resto 2 y vuelve al 1, y
+%   el último 1 vuelve al 0.
+expresion_corta("(0|1(01*0)*1)*").
+```
+
+```prolog
+?- expresion_texto(multiplo3, T), equivalentes(er(T), multiplo3).
+T = "0*|(1|0*1)(10*1)*(1|10*(0|()))|(1|0*1)(10*1)*0(1|()|0(10*1)*0)*0(10*1)*(1|10*(0|()))".
+
+?- expresion_corta(T), equivalentes(er(T), multiplo3).
+T = "(0|1(01*0)*1)*".
+```
+
+Las dos expresiones describen el lenguaje de `multiplo3`. La corta sigue
+los restos: desde el resto 0, un 0 lo deja igual, y 1(01\*0)\*1 sale y
+vuelve a él; el primer 1 lleva al resto 1, cada 01\*0 va al resto 2 —donde
+los unos no cambian el resto— y vuelve al 1, y el último 1 vuelve al 0. La
+estrella exterior repite esas dos maneras de volver al resto 0.
+
+La construcción obtiene una expresión del mismo lenguaje, pero no esa. Sus
+simplificaciones son locales: quitan `nada` y la palabra vacía y absorben
+estrellas, pero no reconocen que (1|0\*1) es lo mismo que 0\*1, ni sacan
+un factor común de dos alternativas. Y la expresión depende del orden en
+que se eliminan los estados: la corta es la que se obtiene pensando en el
+resto 0 como el único estado al que se vuelve, mientras que la construcción
+sigue la numeración de `tabla/2`. Encontrar la expresión más corta de un
+lenguaje es un problema mucho más difícil que encontrar una.
+
+## Ejercicio 9
+
 <!-- ejemplo: capitulo-52/soluciones.pl fragmento: automatas:inicial(complemento2, copia). .. automatas:delta(complemento2, invierte, [1]:[0], invierte). -->
 ```prolog
 automatas:inicial(complemento2, copia).
@@ -329,7 +368,7 @@ también la máquina: la relación que define es simétrica. Se ve en las
 transiciones: al intercambiar entrada y salida, cada una es otra transición
 de la máquina, o ella misma.
 
-## Ejercicio 9
+## Ejercicio 10
 
 <!-- ejemplo: capitulo-52/soluciones.pl fragmento: secuenciales:secuencial(par2, par2_c, 2). .. circuitos:componente(par2_c, x1, xor, [b1, b0], [n1]). -->
 ```prolog
@@ -358,7 +397,47 @@ futura, y la minimización lo elimina: un circuito con un solo bit de
 estado, que se invierte en cada pulso, tiene la misma salida. Es el
 divisor por dos del [capítulo 49](../capitulo-49-proyecto-circuitos-logicos/secuenciales.md#circuitos-secuenciales) con la salida negada.
 
-## Ejercicio 10
+## Ejercicio 11
+
+`soluciones.pl` carga también `moore.pl`, que define `moore/3` y declara
+`salida_estado/3` como `multifile`:
+
+<!-- ejemplo: capitulo-52/soluciones.pl fragmento: automatas:inicial(moore_de(M, S0), Q0-S0) :- .. moore:salida_estado(moore_de(_, _), _-S, S). -->
+```prolog
+automatas:inicial(moore_de(M, S0), Q0-S0) :-
+    inicial(M, Q0).
+automatas:final(moore_de(_, _), _).
+automatas:delta(moore_de(M, _), Q-_, E, Q1-S) :-
+    delta(M, Q, [E]:[S], Q1).
+
+moore:salida_estado(moore_de(_, _), _-S, S).
+```
+
+Un estado `Q-S` recuerda la salida S con la que M llegó a Q, y la escribe:
+esa es su salida de Moore. Las transiciones son las de M, con la salida de
+la transición pasada al estado de llegada. El estado inicial no tiene
+transición de llegada, y por eso su salida, S0, es un argumento de la
+construcción. Todos los estados son finales, como en una máquina de Mealy
+que se ejecuta con `transducir/3`.
+
+```prolog
+?- moore(moore_de(gray, 0), [1, 0, 1, 1], S), transducir(gray, [1, 0, 1, 1], G).
+S = [0, 1, 1, 1, 0],
+G = [1, 1, 1, 0] ;
+false.
+
+?- findall(Q, alcanzable(moore_de(gray, 0), Q), Qs).
+Qs = [b1-1, b1-0, b0-1, b0-0].
+```
+
+Los dos estados de `gray` se desdoblan en cuatro, porque a cada uno se
+llega escribiendo 0 y escribiendo 1: es el desdoblamiento que anuncia el
+final de [Máquinas de Moore](transductores.md#maquinas-de-moore). Con
+`complemento2` se alcanzan tres estados y no cuatro: al estado `copia` solo
+se llega copiando un 0. Las pruebas comparan las dos máquinas para las 63
+entradas de hasta 5 bits.
+
+## Ejercicio 12
 
 <!-- ejemplo: capitulo-52/soluciones_maquinas.pl fragmento: inicial(iguales, q). .. pila(iguales, q, [], z, [z], fin). -->
 ```prolog
@@ -390,7 +469,7 @@ false.
 reemplazarían las del archivo cargado. Las pruebas comparan la aceptación
 con la cuenta de letras para las 511 palabras de longitud hasta 8.
 
-## Ejercicio 11
+## Ejercicio 13
 
 <!-- ejemplo: capitulo-52/soluciones_maquinas.pl fragmento: inicial(palindromo_mt, q0). .. turing(palindromo_mt, volver, blanco, blanco, der, q0). -->
 ```prolog
@@ -447,85 +526,6 @@ palabra que queda, dos letras más corta que la anterior, dos veces. El
 autómata de pila reconoce los palíndromos de longitud par en una sola
 pasada; la máquina de Turing determinista necesita un tiempo cuadrático en
 la longitud de la palabra.
-
-## Ejercicio 12
-
-`soluciones.pl` carga `kleene.pl`, que reexporta las expresiones, y guarda
-la expresión escrita a mano:
-
-<!-- ejemplo: capitulo-52/soluciones.pl predicado: expresion_corta/1 -->
-```prolog
-%!  expresion_corta(-T:string) is det.
-%
-%   T es una expresión regular del lenguaje de multiplo3 escrita a mano.
-%   Desde el resto 0, un 0 no lo cambia, y 1(01*0)*1 vuelve a él: el
-%   primer 1 lleva al resto 1, cada 01*0 va al resto 2 y vuelve al 1, y
-%   el último 1 vuelve al 0.
-expresion_corta("(0|1(01*0)*1)*").
-```
-
-```prolog
-?- expresion_texto(multiplo3, T), equivalentes(er(T), multiplo3).
-T = "0*|(1|0*1)(10*1)*(1|10*(0|()))|(1|0*1)(10*1)*0(1|()|0(10*1)*0)*0(10*1)*(1|10*(0|()))".
-
-?- expresion_corta(T), equivalentes(er(T), multiplo3).
-T = "(0|1(01*0)*1)*".
-```
-
-Las dos expresiones describen el lenguaje de `multiplo3`. La corta sigue
-los restos: desde el resto 0, un 0 lo deja igual, y 1(01\*0)\*1 sale y
-vuelve a él; el primer 1 lleva al resto 1, cada 01\*0 va al resto 2 —donde
-los unos no cambian el resto— y vuelve al 1, y el último 1 vuelve al 0. La
-estrella exterior repite esas dos maneras de volver al resto 0.
-
-La construcción obtiene una expresión del mismo lenguaje, pero no esa. Sus
-simplificaciones son locales: quitan `nada` y la palabra vacía y absorben
-estrellas, pero no reconocen que (1|0\*1) es lo mismo que 0\*1, ni sacan
-un factor común de dos alternativas. Y la expresión depende del orden en
-que se eliminan los estados: la corta es la que se obtiene pensando en el
-resto 0 como el único estado al que se vuelve, mientras que la construcción
-sigue la numeración de `tabla/2`. Encontrar la expresión más corta de un
-lenguaje es un problema mucho más difícil que encontrar una.
-
-## Ejercicio 13
-
-`soluciones.pl` carga también `moore.pl`, que define `moore/3` y declara
-`salida_estado/3` como `multifile`:
-
-<!-- ejemplo: capitulo-52/soluciones.pl fragmento: automatas:inicial(moore_de(M, S0), Q0-S0) :- .. moore:salida_estado(moore_de(_, _), _-S, S). -->
-```prolog
-automatas:inicial(moore_de(M, S0), Q0-S0) :-
-    inicial(M, Q0).
-automatas:final(moore_de(_, _), _).
-automatas:delta(moore_de(M, _), Q-_, E, Q1-S) :-
-    delta(M, Q, [E]:[S], Q1).
-
-moore:salida_estado(moore_de(_, _), _-S, S).
-```
-
-Un estado `Q-S` recuerda la salida S con la que M llegó a Q, y la escribe:
-esa es su salida de Moore. Las transiciones son las de M, con la salida de
-la transición pasada al estado de llegada. El estado inicial no tiene
-transición de llegada, y por eso su salida, S0, es un argumento de la
-construcción. Todos los estados son finales, como en una máquina de Mealy
-que se ejecuta con `transducir/3`.
-
-```prolog
-?- moore(moore_de(gray, 0), [1, 0, 1, 1], S), transducir(gray, [1, 0, 1, 1], G).
-S = [0, 1, 1, 1, 0],
-G = [1, 1, 1, 0] ;
-false.
-
-?- findall(Q, alcanzable(moore_de(gray, 0), Q), Qs).
-Qs = [b1-1, b1-0, b0-1, b0-0].
-```
-
-Los dos estados de `gray` se desdoblan en cuatro, porque a cada uno se
-llega escribiendo 0 y escribiendo 1: es el desdoblamiento que anuncia el
-final de [Máquinas de Moore](transductores.md#maquinas-de-moore). Con
-`complemento2` se alcanzan tres estados y no cuatro: al estado `copia` solo
-se llega copiando un 0. Las pruebas comparan las dos máquinas para las 63
-entradas de hasta 5 bits.
 
 ## Ejercicio 14
 
@@ -598,7 +598,7 @@ Ps = [2-6-9, 4-15-15, 8-45-27, 16-153-51].
 | 16 | 153 | 51 |
 
 La máquina de una cinta da (n + 1)(n + 2)/2 pasos, como se vio en el
-ejercicio 11: cada vuelta borra los dos extremos y recorre ida y vuelta la
+ejercicio 13: cada vuelta borra los dos extremos y recorre ida y vuelta la
 palabra que queda, y las vueltas son n/2. Crece con el cuadrado de n: al
 duplicar n, los pasos se multiplican por 2,5, 3 y 3,4, y la razón tiende a
 4. La

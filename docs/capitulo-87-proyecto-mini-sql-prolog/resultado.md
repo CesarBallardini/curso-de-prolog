@@ -1,13 +1,35 @@
 # El resultado entero
 
-Esta página contiene la
-[sección 87.8](index.md#878-version-6-el-resultado-entero) del
-[capítulo 87](index.md): lo que el mini-SQL necesita calcular sobre todas
-las filas de una consulta y no sobre una por vez. Los grupos y los
-agregados, el orden, el límite, `DISTINCT` y las operaciones de conjuntos
-están en `consultas.pl`, en `ejemplos/capitulo-87/`, con sus pruebas.
+Esta página continúa el [capítulo 87](index.md) después de la
+[sección 87.7](index.md#877-version-5-condiciones-de-tres-valores), con la
+sección [87.8](#878-version-6-el-resultado-entero): lo que el mini-SQL
+necesita calcular sobre todas las filas de una consulta y no
+sobre una por vez. Los grupos y los agregados, el orden, el límite,
+`DISTINCT` y las operaciones de conjuntos están en `consultas.pl`, en
+`ejemplos/capitulo-87/`, con sus pruebas.
 
-## Grupos y agregados
+## 87.8 Versión 6: el resultado entero
+
+Hasta aquí, cada fila del resultado sale de una solución de la meta, una
+por vez, sin construir el resultado: es el bucle de falla con que
+Toy-Sequel muestra las tuplas. Kluźniak y Szpakowicz observan que un
+agregado no puede funcionar así: necesita la columna entera, y la
+obtienen con `bagof/3`. Lo mismo vale para `DISTINCT`, `ORDER BY`,
+`LIMIT` y las operaciones de conjuntos. La versión 6 junta las filas con
+`findall/3`, las procesa y las entrega de nuevo de a una con `member/2`,
+de modo que toda consulta compilada conserva la misma forma: una meta que
+da una fila por solución. Los apartados siguientes presentan los grupos,
+los agregados con `NULL`, el orden estable con `NULL` primero, el límite
+y las operaciones de conjuntos:
+
+<!-- contexto: capitulo-87/consultas.pl -->
+```prolog
+?- filas("SELECT carrera, COUNT(*) AS n FROM alumnos GROUP BY carrera HAVING COUNT(*) >= 2 ORDER BY n DESC, carrera", Ns, Fs).
+Ns = [carrera, n],
+Fs = [[sistemas, 3], [civil, 2], [industrial, 2]].
+```
+
+### Grupos y agregados
 
 Kluźniak y Szpakowicz observan que las consultas hechas solo de
 selecciones, proyecciones y reuniones se pueden responder sin construir
@@ -152,7 +174,7 @@ La segunda consulta es la diferencia de los agregados que señaló la
 `bagof/3` falla cuando no hay soluciones, y SQL da una fila con cero y
 dos `NULL`.
 
-## Orden, límite y filas distintas
+### Orden, límite y filas distintas
 
 `ORDER BY` nombra columnas del resultado, por su nombre o por su
 posición; `pasos_orden/3` traduce cada una a su posición al compilar.
@@ -221,7 +243,7 @@ consulta([A]) :-
 Fs = [[null], [null], [null], [2], [3]].
 ```
 
-## Operaciones de conjuntos
+### Operaciones de conjuntos
 
 `UNION`, `INTERSECT` y `EXCEPT` se aplican a dos selecciones con la misma
 cantidad de columnas y tipos compatibles. Las dos se juntan enteras, y
@@ -275,3 +297,34 @@ evita ese costo cuando puede, y lo paga cuando el orden lo exige.
     `SELECT carrera, MIN(ingreso), MAX(ingreso) FROM alumnos GROUP BY
     carrera ORDER BY 2 DESC, carrera`. Comprobarlo, y explicar el orden
     de las dos carreras que empatan.
+
+El capítulo continúa en la página
+[Las sentencias que cambian las tablas](modificaciones.md#879-version-7-las-sentencias-que-cambian-las-tablas),
+con `CREATE TABLE`, `DROP TABLE`, `INSERT`, `DELETE` y `UPDATE` sobre la
+instantánea del estado anterior.
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio. Los ejercicios que piden código se resuelven en archivos
+que cargan los del capítulo, sin modificarlos.
+
+7. **(1)** Explicar por qué `SELECT COUNT(*) FROM inscripciones WHERE
+   nota = nota` da 14 y no 17, y predecir la meta de su traducción.
+
+## Referencias
+
+- Feliks Kluźniak y Stanisław Szpakowicz, *Prolog for Programmers*,
+  Academic Press, 1985 — «Two Case Studies», apartado 8.2,
+  «Prolog and Relational Data Bases», con el listado 8.4, «Toy-Sequel
+  Interpreter». Sin edición en línea de acceso libre verificada.
+  Esta página toma de allí la observación de que un agregado necesita la
+  columna entera.
+- *SQLite Documentation*, «NULL Handling in SQLite Versus Other Database
+  Engines» y «SELECT».
+  [NULL](https://www.sqlite.org/nulls.html) y
+  [SELECT](https://www.sqlite.org/lang_select.html).
+  De allí vienen el lugar de `NULL` en `ORDER BY` y los agregados de
+  ninguna fila que el mini-SQL imita.

@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 62 - Solución del ejercicio 10: la aritmética compilada.
+% Capítulo 62 - Solución del ejercicio 9: la aritmética compilada.
 %
 % El módulo aritmetica es una versión de la máquina para ejecutar/5 de
 % almacen.pl. Compila el programa con compilar/2 de compilado.pl y

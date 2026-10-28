@@ -44,7 +44,7 @@ Al terminar el capítulo, el lector puede:
 !!! info "Tiempo estimado"
     Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **1:35 h**.
     Resolver los 6 ejercicios marcados con ★: **1:36 h**.
-    Resolver los 16 ejercicios del final: **5:03 h**.
+    Resolver los 16 ejercicios del capítulo: **5:03 h**.
 
 ## 35.1 Listas abiertas
 
@@ -693,25 +693,11 @@ se recorre igual de rápido en una lista que en un árbol. Como pide el
 real; con una salvedad: escribir la construcción como gramática no cuesta
 nada, y es la forma natural de hacerlo aunque los datos sean pequeños.
 
-## 35.7 La tabla de símbolos del compilador
-
-Un compilador traduce un programa a instrucciones numeradas, y un salto hacia
-adelante nombra una etiqueta cuyo número todavía no se conoce. Con la tabla de
-símbolos como diccionario incompleto y el código como gramática alcanza una
-sola pasada: el salto escribe en su instrucción la dirección libre de la
-etiqueta, y la marca, al aparecer, la liga.
-[La página de la tabla de símbolos](ensamblador.md) presenta `ensamblar/2`, de
-`simbolos.pl`, con un programa de ejemplo para una máquina de pila, el error
-de una etiqueta que no se marca y el caso de una etiqueta marcada dos veces.
-
-!!! success "Criterios de calidad"
-    | Criterio | En este capítulo |
-    |---|---|
-    | C1 | cada predicado declara sus modos; las estructuras incompletas se indican en el texto del encabezado: «Abierta es una lista abierta», «Dif, un par L-F» |
-    | C4 | `inorden/2`, `invertir/2`, `por_niveles/2`, `codificar/2` y `ensamblar/2` no dejan alternativas: sus pruebas no declaran `nondet` |
-    | C5 | una etiqueta sin marca produce un error de existencia en lugar de una dirección libre (prueba `sin_marca`); la etiqueta repetida falla, y el [ejercicio 13](#ejercicios) la convierte en error |
-    | C7 | 85 pruebas en los seis archivos del capítulo; cada versión incompleta se compara con la cerrada sobre los mismos datos (pruebas `degenerado_iguales`, `iguales`, `arbol_como_lista`), y dos pruebas acotan las inferencias (`costo_lineal`, `arbol_menos_inferencias`) |
-    | lo que se pierde | la relación en sentido inverso: `agregar_al_final/2`, `conocidos/2` y `buscar_arbol/3` preguntan con `var/1` si llegaron al final, y no tienen modo con la estructura libre; y la verificación de ocurrencias, que la cola con contador hace innecesaria |
+El capítulo continúa en la página
+[La tabla de símbolos del compilador](ensamblador.md#357-la-tabla-de-simbolos-del-compilador),
+que combina el diccionario incompleto y la gramática como lista diferencia en
+la tabla de símbolos de un ensamblador de una sola pasada. Antes, los
+[ejercicios](#ejercicios) de esta página practican las secciones 35.1 a 35.6.
 
 ## Ejercicios
 
@@ -760,24 +746,7 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
 12. **(2)** Medir `invertir_app/2` e `invertir/2` con listas de 1000, 2000 y
     4000 elementos. Calcular la razón entre las inferencias de un tamaño y
     las del anterior, y explicar las dos razones.
-13. **(2)** Cambiar `ensamblar/2`, de
-    [la página de la tabla de símbolos](ensamblador.md), para que una
-    etiqueta marcada dos veces produzca un error de permiso,
-    `permission_error(marcar, etiqueta, E)`. Considerar que un salto hacia
-    adelante ya puede haber agregado la etiqueta a la tabla.
-14. **(3)** Escribir `asignar(Codigo, Codigo1, N)`, que reemplaza el nombre
-    de la variable de cada `cargar/1` y `guardar/1` por una dirección de
-    memoria —0 para la primera variable que aparece, 1 para la segunda— con
-    un diccionario incompleto; N es la cantidad de variables.
-15. **(3)** Escribir `nivelar(Arbol, Nivelado)`: Nivelado tiene la misma
-    forma que Arbol, un árbol `vacio` o `n(Izq, X, Der)` como el de la
-    [sección 35.2](#352-de-append3-a-la-lista-diferencia), y cada uno de sus nodos tiene el máximo de los
-    elementos de Arbol. Arbol se recorre una sola vez.
-    `nivelar(n(n(vacio, 4, vacio), 3, n(vacio, 9, vacio)), N)` da un árbol con
-    9 en los tres nodos, y `nivelar(vacio, N)` da `vacio`. El valor de los
-    nodos nuevos no se conoce cuando se construyen: ¿qué estructura de la
-    [sección 35.7](#357-la-tabla-de-simbolos-del-compilador) resuelve el mismo problema?
-16. **(3)** Escribir `asociar_izquierda(Suma, Normal)`: Normal tiene los
+13. **(3)** Escribir `asociar_izquierda(Suma, Normal)`: Normal tiene los
     sumandos de Suma, un término cerrado con `+`, en el mismo orden y
     asociados a izquierda. `(a + b) + (c + d)` y `a + (b + (c + d))` dan
     `a + b + c + d`, que `write_canonical/1` escribe `+(+(+(a,b),c),d)`.
@@ -787,32 +756,6 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     qué un átomo como `ninguno` no sirve? Relacionar la forma de distinguir un
     sumando de una suma con el [Patrón 44](../patrones.md#44-representacion-limpia). La forma normal se retoma
     en el [capítulo 44](../capitulo-44-proyecto-resolver-ecuaciones/index.md).
-
-## Resumen
-
-| | |
-|---|---|
-| lista abierta | una lista que termina en una variable libre: se amplía ligándola, y se cierra con `[]` |
-| lista diferencia | un par `L-F`, con F al final de L, que representa los elementos anteriores a F; se concatena en una unificación y se usa una sola vez |
-| verificación de ocurrencias | una variable no se liga a un término que la contiene; SWI-Prolog la omite, y sin ella se crean términos cíclicos |
-| `unify_with_occurs_check/2` | unificar con la verificación de ocurrencias |
-| `cyclic_term/1` | el término es cíclico, infinito |
-| opción `occurs_check` | `true` o `error` activan la verificación en todas las unificaciones |
-| cola con contador | `cola(N, Frente, Fondo)`: encolar y desencolar en un paso; la cantidad reconoce la cola vacía |
-| diccionario incompleto | una lista o un árbol con el final abierto; buscar consulta y agrega, y el valor se liga cuando se conoce |
-| gramática y lista diferencia | los dos argumentos de la traducción de una regla son una lista diferencia; una gramática construye listas |
-| tabla de símbolos en una pasada | las direcciones de las etiquetas, ligadas cuando aparece la marca |
-| **Patrones 47, 48** | lista diferencia para agregar al final; diccionario incompleto |
-
-## Temas que se retoman
-
-| Tema | Se retoma en |
-|---|---|
-| La traducción de las gramáticas, escrita en Prolog | [capítulo 36](../capitulo-36-transformacion-de-programas-y-compilacion/index.md) |
-| La cola diferencia en la búsqueda en anchura | [capítulo 41](../capitulo-41-busqueda-y-planificacion/index.md) |
-| Las sumas en forma normal, asociadas a izquierda | [capítulo 44](../capitulo-44-proyecto-resolver-ecuaciones/index.md) |
-| Las respuestas de una aventura de texto construidas con gramáticas | [capítulo 45](../capitulo-45-proyecto-aventura-de-texto/index.md) |
-| La tabla de símbolos de un compilador completo | [capítulo 46](../capitulo-46-proyecto-compilador/index.md) |
 
 ## Referencias
 
@@ -833,15 +776,14 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
   ([edición en línea](https://archive.org/details/artofprologadvan00ster)).
   El capítulo toma el diccionario incompleto en lista y en árbol, la cola
   diferencia con su prueba de vacía que falla sin verificación de
-  ocurrencias, y la normalización de sumas, que el [ejercicio 16](#ejercicios) hace
+  ocurrencias, y la normalización de sumas, que el [ejercicio 13](#ejercicios) hace
   asociando a izquierda.
 - Feliks Kluźniak y Stanisław Szpakowicz, *Prolog for Programmers*,
   Academic Press, 1985 — apartados «Open Lists and Trees» y «Difference
   Lists».
   [Edición en línea](https://www.site.uottawa.ca/~szpak/pub/P4P/Prolog_for_Programmers_neat.pdf).
   El capítulo toma la lista abierta que se extiende buscando su variable
-  final, el árbol abierto, y la tabla de símbolos de un traductor con las
-  direcciones como variables que se ligan al ensamblar ([sección 35.7](#357-la-tabla-de-simbolos-del-compilador)).
+  final y el árbol abierto.
 - Ulf Nilsson y Jan Małuszyński, *Logic, Programming and Prolog*, 2.ª
   edición, Wiley, 1995 — apartado «Difference Lists»
   ([edición en línea de los autores](https://www.ida.liu.se/~ulfni53/lpp/)).
@@ -863,6 +805,3 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
   apartado «Open Lists and Difference Lists». Sin edición en línea
   verificada. El capítulo toma la presentación de la lista abierta antes que
   la lista diferencia.
-
-El código del capítulo es propio, escrito para el curso: las fuentes aportan
-ideas y problemas, no código.

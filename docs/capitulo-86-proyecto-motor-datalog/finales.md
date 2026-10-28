@@ -1,17 +1,22 @@
 # La tabla de un juego
 
-Esta página contiene la [sección 86.9](index.md#869-la-tabla-de-un-juego)
-del [capítulo 86](index.md): la tabla de un juego calculada hacia atrás,
-primero examinando todas las posiciones en cada ronda, como la tabla de
-finales del [capítulo 80](../capitulo-80-proyecto-lenguaje-consejos-ajedrez/index.md),
+Esta página continúa la página
+[Aplicaciones: el Wumpus, los marcos y los registros](aplicaciones.md#868-aplicaciones-el-wumpus-los-marcos-y-los-registros)
+del [capítulo 86](index.md), con la sección
+[86.9](#869-la-tabla-de-un-juego), la última: la tabla de un juego
+calculada hacia atrás, primero examinando todas las posiciones en cada
+ronda, como la tabla de finales del
+[capítulo 80](../capitulo-80-proyecto-lenguaje-consejos-ajedrez/index.md),
 y después partiendo solo de lo que cambió, como la evaluación
 semi-ingenua. El código está en `retrogrado.pl`, en
 `ejemplos/capitulo-86/`, con sus pruebas; no carga otros archivos y corre
 en SWISH.
 
-## Un programa que no es estratificado
+## 86.9 La tabla de un juego
 
-La [sección 39.5](../capitulo-39-semantica-de-los-programas-logicos/index.md#395-la-semantica-bien-fundada)
+### Un programa que no es estratificado
+
+La [sección 39.5](../capitulo-39-semantica-de-los-programas-logicos/negacion.md#395-la-semantica-bien-fundada)
 escribió quién gana un juego con una sola regla: el que mueve en X gana
 si puede pasar a una posición desde la que el rival no gana.
 
@@ -56,7 +61,7 @@ restar(N, Jugadas) :-
             Jugadas).
 ```
 
-## Las rondas del capítulo 80
+### Las rondas del capítulo 80
 
 `rondas/3` hace lo que `retroceder/1` del [capítulo 80](../capitulo-80-proyecto-lenguaje-consejos-ajedrez/index.md): en cada ronda
 examina todas las posiciones que todavía no tienen valor, y cuenta los
@@ -127,11 +132,11 @@ pasar a `c` y gana en una jugada; `a` solo puede pasar a `b`, y pierde en
 dos. Cada ronda vuelve a examinar todas las posiciones sin valor, aunque
 la anterior no haya cambiado nada cerca de ellas: es la evaluación
 ingenua de la
-[sección 39.6](../capitulo-39-semantica-de-los-programas-logicos/index.md#396-evaluacion-de-abajo-hacia-arriba).
+[sección 39.6](../capitulo-39-semantica-de-los-programas-logicos/negacion.md#396-evaluacion-de-abajo-hacia-arriba).
 En la tabla de finales del [capítulo 80](../capitulo-80-proyecto-lenguaje-consejos-ajedrez/index.md), las 62 320 posiciones se recorren
 en cada ronda, hasta la del mate más lejano, a 16 jugadas.
 
-## Partir de lo que cambió
+### Partir de lo que cambió
 
 Una posición solo puede recibir valor en la ronda K si una de sus
 sucesoras lo recibió en la ronda K − 1. `retrogrado/3` parte en cada
@@ -250,7 +255,7 @@ que no tiene jugadas; `a` y `b` no reciben valor: la cuenta de `b` baja
 de 2 a 1 cuando `c` gana, y nunca llega a 0, porque su otra jugada lleva a
 `a`, que tampoco se decide. Son las dos posiciones que el modelo bien
 fundado de la
-[sección 39.5](../capitulo-39-semantica-de-los-programas-logicos/index.md#395-la-semantica-bien-fundada)
+[sección 39.5](../capitulo-39-semantica-de-los-programas-logicos/negacion.md#395-la-semantica-bien-fundada)
 deja indefinidas: las tablas.
 
 ```prolog
@@ -280,3 +285,67 @@ cuenta, para que cada ronda partiera solo de las posiciones nuevas.
     Predecir la tabla del juego `[a-b, b-c, c-a, c-d, d-e]`, con el
     valor de cada posición o su ausencia, y cuántos arcos examina cada
     uno de los dos métodos. Comprobarlo.
+
+!!! success "Criterios de calidad"
+    | Criterio | En este capítulo |
+    |---|---|
+    | C1 | cada predicado declara modos y determinación; `en_base/2` y `cumplir/2` son `nondet` y solo se usan dentro de `findall/3`; los evaluadores son `det` |
+    | C2 | representaciones limpias: cláusulas `Cabeza :- Cuerpo`, reglas `r(Cabeza, Literales)`, variantes `v/4`, costos `costo/2`, problemas `funcion/1`, `cabeza_libre/1` y otros |
+    | C3 | el motor recibe los programas de los capítulos [39](../capitulo-39-semantica-de-los-programas-logicos/index.md), [78](../capitulo-78-proyecto-mundo-wumpus/index.md) y [82](../capitulo-82-proyecto-coleccion-problemas/index.md), y los datos del [85](../capitulo-85-proyecto-analisis-registros/index.md), sin cambios; los programas nuevos se agregan a `generado/2` con el [patrón 79](../patrones.md#79-clausulas-para-un-modulo-cargado) |
+    | C5 | un programa que no es seguro o no es estratificado produce un error de dominio que nombra el problema, nunca un modelo incorrecto |
+    | C6 | todo el motor es puro: las bases son árboles que se pasan de un paso al otro, y la versión 5 devuelve un estado nuevo |
+    | C7 | 134 pruebas en trece archivos, y 25 más sobre las soluciones; `costos.plt` verifica cada cifra medida que el capítulo imprime, las inferencias dentro de un 10 %; el motor se compara con los evaluadores del [capítulo 39](../capitulo-39-semantica-de-los-programas-logicos/index.md), las respuestas mágicas con las del modelo entero, los hechos mágicos con las tablas, y las aplicaciones con los programas de sus capítulos |
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio. Los ejercicios que piden código se resuelven en archivos
+que cargan los del capítulo, sin modificarlos.
+
+11. ★ **(2)** En el juego de restar con las jugadas 1, 3 y 4, predecir
+    las posiciones perdedoras entre 0 y 20, y comprobarlo con
+    `retrogrado/3`. Comparar los arcos examinados con los de `rondas/3`
+    para 1 000 fichas.
+
+## Resumen
+
+| | |
+|---|---|
+| **Datalog** | cláusulas de Horn sin términos compuestos, con negación estratificada; toda consulta termina |
+| **regla segura** | cada variable de la cabeza aparece en un literal positivo, y cada variable de un literal negado o de una comparación está ligada antes |
+| **base indexada** | los átomos agrupados por predicado y por primer argumento |
+| **evaluación semi-ingenua estricta** | cada derivación toma de los átomos nuevos su primer literal nuevo, los anteriores de la base vieja y los posteriores de la actual |
+| **componentes del grafo de dependencias** | grupos de predicados que dependen unos de otros; su condensación no tiene ciclos y da el orden de evaluación |
+| **adorno** | una letra por argumento, `b` ligado o `f` libre, según lo que ligan la cabeza y los literales anteriores |
+| **transformación mágica** | cada regla exige que su cabeza haya sido llamada; las reglas mágicas dicen con qué se llama cada literal; la consulta es la semilla |
+| **evaluación incremental** | un paso semi-ingenuo con los hechos que llegan como nuevos; solo sin negación |
+| `problemas/2`, `seguro/1` | los motivos por los que un programa no es Datalog seguro |
+| `base/2`, `agregar/4`, `contiene/2`, `en_base/2`, `atomos/2` | la base indexada |
+| `separar/3`, `cumplir/2`, `variantes/3`, `bloque/6`, `iterar/7`, `semi_ingenua/3` | la evaluación semi-ingenua |
+| `dependencias/2`, `componentes/2`, `ciclos_negativos/2`, `evaluar/3` | las componentes y la negación |
+| `adorno/3`, `magico/3`, `respuestas/4`, `respuestas_magicas/4` | las consultas y la transformación mágica |
+| `iniciar/3`, `agregar_hechos/4`, `modelo_estado/2` | los hechos que llegan después |
+| `modelo/3`, `consulta/4`, `consulta_magica/4`, `mostrar_magico/2` | las formas que reciben el nombre del programa |
+| `top_sort/2` | un orden topológico de un grafo sin ciclos de `library(ugraphs)` |
+| **[Patrón 95](../patrones.md#95-propagar-solo-lo-nuevo)** | propagar solo lo nuevo |
+| **[Patrón 96](../patrones.md#96-la-consulta-como-semilla)** | la consulta como semilla |
+
+## Temas que se retoman
+
+| Tema | Se retoma en |
+|---|---|
+| Consultas en un lenguaje como SQL, compiladas en metas de Prolog sobre un catálogo de tablas | [capítulo 87](../capitulo-87-proyecto-mini-sql-prolog/index.md) |
+
+## Referencias
+
+- *SWI-Prolog Reference Manual*, sección de `library(assoc)`:
+  [manual en línea](https://www.swi-prolog.org/pldoc/doc_for?object=manual).
+
+El código del capítulo es propio, escrito para el curso: las fuentes dan
+los algoritmos en pseudocódigo y en notación de conjuntos, sin programas;
+la base indexada, la evaluación estricta con el reordenamiento de los
+literales, las componentes con `library(ugraphs)`, los adornos con la
+negación evaluada completa, la versión incremental y las mediciones no
+tienen equivalente en ellas.

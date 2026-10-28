@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 49 - Solución del ejercicio 12: la cobertura mínima.
+% Capítulo 49 - Solución del ejercicio 11: la cobertura mínima.
 %
 % Los implicantes primos de una salida cubren todas sus filas en 1, pero
 % algunos pueden sobrar. cobertura/3 elige la menor cantidad de ellos que

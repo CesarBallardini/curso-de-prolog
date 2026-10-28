@@ -1,7 +1,7 @@
 # Las correlativas, con una tabla
 
 Esta página contiene una parte de la
-[sección 88.6](index.md#886-version-3-evaluar-y-explicar) del
+[sección 88.6](sql.md#886-version-3-evaluar-y-explicar) del
 [capítulo 88](index.md): `pasos/3`, la relación tabulada de las
 correlativas, y `cadena/3`, que explica cada requisito con la cadena más
 corta. El código está en `evaluar.pl`, en `ejemplos/capitulo-88/`, con
@@ -16,10 +16,10 @@ las correlativas de esas, y así hasta el final de la cadena. `necesitar/2` se d
 guarda para cada par de materias la menor cantidad de correlativas que
 las une. Está escrita con la recursión a la izquierda, que Prolog no
 termina sin tabla, y con la subsunción de respuestas `min` de la
-[sección 40.3](../capitulo-40-tabulacion/index.md#403-subsuncion-de-respuestas):
+[sección 40.3](../capitulo-40-tabulacion/subsuncion.md#403-subsuncion-de-respuestas):
 la tabla guarda una respuesta por par, la menor, y termina aunque el plan
 de estudios tuviera un ciclo, como `requisito/2` de la
-[sección 40.7](../capitulo-40-tabulacion/index.md#407-el-interprete-con-tablas-las-correlativas).
+[sección 40.7](../capitulo-40-tabulacion/incremental.md#407-el-interprete-con-tablas-las-correlativas).
 
 <!-- ejemplo: capitulo-88/evaluar.pl predicado: pasos/3 cadena/3 -->
 ```prolog
@@ -82,4 +82,4 @@ true.
 Las tablas no siguen los cambios de la base. Si se agrega una correlativa
 con `assertz/1`, `pasos/3` sigue dando las respuestas viejas hasta que se
 vacían las tablas, o hasta que se declaran incrementales, como en la
-[sección 40.5](../capitulo-40-tabulacion/index.md#405-tabulacion-incremental).
+[sección 40.5](../capitulo-40-tabulacion/incremental.md#405-tabulacion-incremental).

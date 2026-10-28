@@ -1,8 +1,8 @@
 # Soluciones del capítulo 54 — Proyecto: morfología del castellano
 
 El código de esta página está en `ejemplos/capitulo-54/`, en cinco archivos
-con sus pruebas: `soluciones.pl` (ejercicios 2, 3, 5, 6, 8 y 9),
-`soluciones_imperfecto.pl` (4), `soluciones_voseo.pl` (7),
+con sus pruebas: `soluciones.pl` (ejercicios 2, 4, 5, 7, 8 y 9),
+`soluciones_imperfecto.pl` (3), `soluciones_voseo.pl` (6),
 `soluciones_reglas.pl` (10 y 11) y `soluciones_adivinar.pl` (12). Cada uno
 carga la versión 4, `paralelo.pl`, y con ella las versiones 2 y 3; la
 versión 2 se consulta con el nombre de su módulo, `reglas:forma/2`. Las
@@ -59,38 +59,6 @@ probar.
 
 ## 2
 
-Las palabras nuevas son hechos, y las reglas son las mismas. «Nariz» sigue
-a «luz»; «razón», a «camión»; «origen», a «examen»; y «cortés», a
-«inglés», aunque es invariable en género:
-
-<!-- ejemplo: capitulo-54/soluciones.pl fragmento: lexico:nombre("nariz", femenino). .. lexico:adjetivo("cortés", invariable). -->
-```prolog
-lexico:nombre("nariz", femenino).
-lexico:nombre("razón", femenino).
-lexico:nombre("origen", masculino).
-lexico:adjetivo("cortés", invariable).
-```
-
-```prolog
-?- reglas:forma(P, nombre("razón", femenino, plural)).
-P = "razones" ;
-false.
-
-?- findall(P, forma(P, nombre("razón", femenino, plural)), Ps).
-Ps = ["razones"].
-
-?- reglas:lexica(nombre("origen", masculino, plural), S).
-S = [o, r, i, 'J', e, n, +, s] ;
-false.
-```
-
-La g de «origen» está ante e, así que su forma subyacente es `'J'`: en
-«orígenes» sigue ante e y se escribe g. Las pruebas comparan los plurales
-de las cuatro palabras en las dos versiones: «narices», «razones»,
-«orígenes», «corteses».
-
-## 3
-
 «Empezar» junta un cambio de la raíz y uno ortográfico: la e acentuada de
 «empez» diptonga en el presente, y la z se escribe c ante la é del
 pretérito. «Colgar» diptonga la o, y su g se escribe gu ante é. Las dos
@@ -119,7 +87,7 @@ Fs = ["colgué", "colgaste", "colgó", "colgamos", "colgasteis", "colgaron"].
 
 `conjugacion/3` es la del [ejercicio 9](#9).
 
-## 4
+## 3
 
 Un tiempo nuevo es una tabla de terminaciones más, agregada como una
 cláusula de `terminacion/5`; ser e ir se listan con otra de
@@ -165,7 +133,7 @@ As = [verbo("hacer", imperfecto, 3, singular), verbo("hacer", imperfecto, 1, sin
 Ps = ["éramos"].
 ```
 
-## 5
+## 4
 
 Con la condición antes de la llamada recursiva, la variante genera igual
 que `escribir/2`, pero en sentido inverso no encuentra nada:
@@ -174,7 +142,7 @@ que `escribir/2`, pero en sentido inverso no encuentra nada:
 ```prolog
 %!  escribir_antes(?Subyacente:list, ?Escrita:list) is nondet.
 %
-%   Ejercicio 5: escribir/2 reducida a la letra k, con cada condición
+%   Ejercicio 4: escribir/2 reducida a la letra k, con cada condición
 %   antes de la llamada recursiva. Genera bien; en sentido inverso no
 %   encuentra la forma subyacente de «tocar».
 escribir_antes([], []).
@@ -211,7 +179,7 @@ subyacente de entrada:
 %!  escribir_antes(+Subyacente:list, -Escrita:list) is det.
 ```
 
-## 6
+## 5
 
 La clase nueva es una cláusula de `diptongo/3`, y el verbo, un hecho del
 léxico:
@@ -233,7 +201,7 @@ Fs = ["jugué", "jugaste", "jugó", "jugamos", "jugasteis", "jugaron"].
 La u de «jugué» no es la de la raíz: es la de la ortografía, que escribe
 gu la g subyacente ante é, como en «llegué».
 
-## 7
+## 6
 
 La persona `vos` es otro valor del argumento Persona: siete cláusulas de
 `terminacion/5` y cuatro de `irregular/5`.
@@ -274,6 +242,38 @@ As = [verbo("ser", preterito, 2, singular), verbo("ser", preterito, vos, singula
 «Fuiste» tiene cuatro análisis: dos verbos por dos personas. La condición
 de `raiz_verbal/7` se formuló sobre la terminación, y no sobre la persona;
 por eso vale para una persona que no existía cuando se escribió.
+
+## 7
+
+Las palabras nuevas son hechos, y las reglas son las mismas. «Nariz» sigue
+a «luz»; «razón», a «camión»; «origen», a «examen»; y «cortés», a
+«inglés», aunque es invariable en género:
+
+<!-- ejemplo: capitulo-54/soluciones.pl fragmento: lexico:nombre("nariz", femenino). .. lexico:adjetivo("cortés", invariable). -->
+```prolog
+lexico:nombre("nariz", femenino).
+lexico:nombre("razón", femenino).
+lexico:nombre("origen", masculino).
+lexico:adjetivo("cortés", invariable).
+```
+
+```prolog
+?- reglas:forma(P, nombre("razón", femenino, plural)).
+P = "razones" ;
+false.
+
+?- findall(P, forma(P, nombre("razón", femenino, plural)), Ps).
+Ps = ["razones"].
+
+?- reglas:lexica(nombre("origen", masculino, plural), S).
+S = [o, r, i, 'J', e, n, +, s] ;
+false.
+```
+
+La g de «origen» está ante e, así que su forma subyacente es `'J'`: en
+«orígenes» sigue ante e y se escribe g. Las pruebas comparan los plurales
+de las cuatro palabras en las dos versiones: «narices», «razones»,
+«orígenes», «corteses».
 
 ## 8
 

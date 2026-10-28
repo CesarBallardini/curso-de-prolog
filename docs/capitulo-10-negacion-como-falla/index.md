@@ -33,7 +33,7 @@ Al terminar el capítulo, el lector puede:
 !!! info "Tiempo estimado"
     Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **2:30 h**.
     Resolver los 9 ejercicios marcados con ★: **2:40 h**.
-    Resolver los 18 ejercicios del final: **6:00 h**.
+    Resolver los 18 ejercicios del capítulo: **6:00 h**.
 
 ## 10.1 El supuesto de mundo cerrado
 
@@ -910,19 +910,13 @@ repite nada, y suele ser la más directa.
     `mayor_edad_con_corte(Quien).` y `mayor_edad_sin_negacion(Quien).`
     Comprobar la predicción, y corregir la versión que no responde marta.
 
-## 10.9 Estrategia para recolectar soluciones
-
-La página
-[Recolectar soluciones](recolectar.md#estrategia-para-recolectar-soluciones)
-arma la lista de todas las respuestas de una consulta, sin `findall/3`: un
-acumulador `YaIncluidas`, `\+ pertenece(X, YaIncluidas)`, un corte y una
-cláusula de cierre.
-
-## 10.10 Todas las materias de un ciclo
-
-La [misma página](recolectar.md#todas-las-materias-de-un-ciclo) expresa
-«aprobó todas las materias del ciclo» como «no le queda ninguna sin aprobar»,
-y recolecta los alumnos que cumplen esa condición.
+El capítulo continúa en la página
+[Recolectar soluciones](recolectar.md#109-estrategia-para-recolectar-soluciones),
+con una estrategia para armar la lista de todas las respuestas de una
+consulta sin `findall/3` —un acumulador `YaIncluidas`,
+`\+ pertenece(X, YaIncluidas)`, un corte y una cláusula de cierre— y su
+aplicación a una condición que se expresa con negación. Antes, los
+[ejercicios](#ejercicios) de esta página practican las secciones 10.1 a 10.8.
 
 ## Ejercicios
 
@@ -1023,40 +1017,3 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     es el último en llegar porque nadie llegó después que él. No usar
     `append/3`. Escribir también los encabezados de los dos predicados, y
     explicar por qué el enunciado exige que la lista no tenga repetidos.
-18. **(2)** Escribir `palindromos(L, Ps)`: `Ps` es la lista de todos los
-    palíndromos distintos que se forman con los elementos de `L`. Usar
-    `permuta/2` del
-    [ejercicio 21 del capítulo 7](../capitulo-07-listas/index.md#ejercicios) y la
-    estrategia de la [sección 10.9](#109-estrategia-para-recolectar-soluciones).
-    `palindromos([1, 2, 0, 0, 2], Ps)` da `Ps = [[2, 0, 1, 0, 2], [0, 2, 1, 2, 0]]`,
-    y `palindromos([0, 1, 1, 1, 2, 2], [])` se cumple.
-
-## Resumen
-
-| | |
-|---|---|
-| `\+ Objetivo` | se cumple cuando Objetivo **no** se puede probar |
-| **árbol subordinado** | el árbol de Objetivo que `\+` abre, en un recuadro: sin hoja de éxito, `\+` se cumple y desaparece; con alguna, falla; sus sustituciones no salen del recuadro |
-| **negación como falla** | no demuestra que una afirmación sea falsa: no logra demostrar que sea cierta |
-| **mundo cerrado** | lo que el programa no puede deducir se considera no cierto |
-| ubicación de `\+` | después de los objetivos que instancian sus variables |
-| corte y falla | `p(X) :- q(X), !, fail.` y `p(_).`: la definición de `\+` escrita a mano |
-| sin negación | recorrer una lista en lugar de negar; requiere los datos en una lista |
-| respuesta por negación | `edad(P, E), \+ ( edad(_, Otra), Otra > E )`: el candidato se genera antes; el `\+` niega que exista uno mejor |
-| `\+ \+ Objetivo` | se cumple cuando Objetivo se cumple, sin dejar ninguna ligadura |
-| `=` `\=` | pueden unificar, o no pueden unificar |
-| `==` `\==` | son el mismo término, o no lo son |
-| `=:=` `=\=` | tienen el mismo valor numérico, o distinto |
-| recolectar soluciones | acumulador `YaIncluidas`, `\+ pertenece(X, YaIncluidas)`, corte y cláusula de cierre: la lista de todas las respuestas |
-
-## Temas que se retoman
-
-| Tema | Se retoma en |
-|---|---|
-| Todo el capítulo, desde el punto de vista de la lógica | [capítulo 13](../capitulo-13-prolog-y-la-logica/index.md) |
-| `->` y `;`, construcciones relacionadas con `\+` | [capítulo 16](../capitulo-16-control/index.md) |
-| `forall/2`, que expresa "para todos" sin los problemas de `\+` | [capítulo 18](../capitulo-18-todas-las-soluciones/index.md) |
-| `findall/3`, que recolecta todas las respuestas en una llamada | [capítulo 18](../capitulo-18-todas-las-soluciones/index.md) |
-| Verificación del tipo de un término antes de compararlo | [capítulo 33](../capitulo-33-inspeccion-de-terminos/index.md) |
-| Otras formas de obtener el máximo: `aggregate_all(max, …)` y ordenar con `sort/4` | [capítulo 18](../capitulo-18-todas-las-soluciones/index.md) y [capítulo 23](../capitulo-23-estructuras-de-datos-de-la-biblioteca/index.md) |
-| `dif/2`, la desigualdad `\=` que se posterga hasta que las variables tengan valor | [capítulo 24](../capitulo-24-programacion-con-restricciones/index.md) |

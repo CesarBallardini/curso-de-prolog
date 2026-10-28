@@ -41,8 +41,9 @@ Prolog; el [capítulo 87](../capitulo-87-proyecto-mini-sql-prolog/index.md)
 construye un intérprete así. La correspondencia entre las dos notaciones
 sigue el plan de *An introduction to Prolog for SQL programmers*, el
 cuaderno SWISH de Robert Laing. La biblioteca `library(odbc)` se usa
-según su manual, *SWI-Prolog ODBC Interface*. La lista completa de las
-fuentes está en las [Referencias](#referencias).
+según su manual, *SWI-Prolog ODBC Interface*. Cada página termina con las
+referencias que usa; las de esta página están en sus
+[Referencias](#referencias).
 
 El capítulo cumple los anuncios de los capítulos [14](../capitulo-14-el-entorno-de-trabajo/index.md) (los datos de
 *Inscripciones* como tablas de una base de datos), [15](../capitulo-15-estilo-y-documentacion/index.md) (el átomo `null`
@@ -52,7 +53,7 @@ agregación), [30](../capitulo-30-prolog-desde-python/index.md) (una base de dat
 frente a la tabulación). Todo corre sin ninguna base de datos instalada:
 los programas son Prolog, y cada sentencia SQL del texto se ejecutó en
 SQLite 3.50 sobre `references/ejercicios/sql-prolog/schema.sql`, que tiene
-los mismos datos que los hechos. Solo la [sección 43.7](odbc.md#la-base-en-sqlite) necesita el
+los mismos datos que los hechos. Solo la [sección 43.7](odbc.md#437-libraryodbc-la-base-en-sqlite) necesita el
 controlador ODBC de SQLite.
 
 ## Objetivos del capítulo
@@ -77,7 +78,7 @@ Al terminar el capítulo, el lector puede:
 !!! info "Tiempo estimado"
     Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **2:30 h**.
     Resolver los 6 ejercicios marcados con ★: **1:55 h**.
-    Resolver los 14 ejercicios del final: **4:20 h**.
+    Resolver los 14 ejercicios del capítulo: **4:20 h**.
 
 ## 43.1 Tablas, filas y hechos
 
@@ -600,7 +601,7 @@ aritmética, y `>=/2` lanza un error. Por eso `aprobada/3` pregunta
 `NULL = NULL` es desconocido, y en Prolog `null = null` es verdadero, así
 que una reunión por una columna con nulos da en Prolog filas que SQL no da;
 y `jefe <> 1` no es verdadero para la directora, cuyo jefe es `NULL`,
-mientras que `J \== 1` sí lo es ([ejercicio 10](#ejercicios)).
+mientras que `J \== 1` sí lo es ([ejercicio 9](recursion.md#ejercicios)).
 
 La otra forma de representar un dato ausente es no escribir el hecho:
 guardar las notas en una relación aparte, `nota(Legajo, Materia, Nota)`,
@@ -625,43 +626,9 @@ admite «no se sabe»; en Prolog, esa distinción la hace el programa, con un
     `inscripcion(L, M, N), \+ (M == am1, N == 8)`. Comprobarlo, y explicar
     la diferencia fila por fila.
 
-## 43.5 Consultas recursivas: `WITH RECURSIVE` y tablas
-
-Los superiores de un empleado y los aeropuertos que se alcanzan desde otro
-son relaciones recursivas, y SQL las escribe con `WITH RECURSIVE`. La página
-[Consultas recursivas](recursion.md#consultas-recursivas) muestra que SQLite
-las evalúa de forma semi-ingenua, como la
-[sección 39.6](../capitulo-39-semantica-de-los-programas-logicos/index.md#396-evaluacion-de-abajo-hacia-arriba), y lo reproduce en Prolog; compara `UNION` y
-`UNION ALL` en un grafo con ciclos con la regla sin tabla y con la tabla del
-[capítulo 40](../capitulo-40-tabulacion/index.md); y calcula el precio mínimo, que SQLite no admite como
-agregado recursivo, con una tabla con subsunción de respuestas.
-
-## 43.6 Claves, restricciones y actualizaciones
-
-`INSERT`, `DELETE` y `UPDATE` son `assertz/1` y `retract/1`, pero Prolog no
-verifica las claves ni las referencias que SQLite verifica solo. La página
-[Claves, restricciones y actualizaciones](restricciones.md#claves-restricciones-y-actualizaciones)
-escribe el esquema como hechos, obtiene las restricciones violadas con una
-consulta, `violacion/1`, y escribe `insertar/1`, `borrar/1` y
-`poner_nota/3`, que verifican antes de cambiar la base.
-
-## 43.7 `library(odbc)`: la base en SQLite
-
-La página [La base en SQLite](odbc.md#la-base-en-sqlite) copia la base
-académica en SQLite desde Prolog, con las sentencias `CREATE TABLE` escritas
-a partir del esquema y un `INSERT` preparado con parámetros, y la consulta
-con `odbc_query/3`. Necesita el controlador ODBC de SQLite; sin él, sus
-pruebas se bloquean y avisan por qué. Es la única parte del capítulo que no
-corre sin una base de datos instalada.
-
-!!! success "Criterios de calidad"
-    | Criterio | En este capítulo |
-    |---|---|
-    | C1 | cada regla declara modos y determinación; las vistas admiten sus argumentos en cualquier modo, como una tabla, y las que tienen un modo que no terminaría (`destino_sin_tabla/2`) lo declaran |
-    | C3 | las vistas son las cláusulas del álgebra relacional sin argumentos de control: `acta/3` o `de_carrera/3` se consultan también en sentido inverso |
-    | C5 | una fila que viola el esquema produce un error, `error(restriccion(V), _)`, como en SQLite, y no un `false.` que se confunda con «no hay filas»; la nota `null` no llega a una comparación aritmética, que lanzaría un error de tipo |
-    | C6 | el esquema es un conjunto de hechos, y `violacion/1` es una consulta pura sobre ellos; las actualizaciones, `insertar/1`, `borrar/1` y `poner_nota/3`, verifican antes de cambiar la base y dejan todo el efecto al final |
-    | C7 | 80 pruebas, y 8 más con el controlador ODBC; cada consulta del texto se compara con el resultado de SQLite, y las pruebas que actualizan la base corren dentro de `snapshot/1`; las pruebas de ODBC se bloquean con un aviso si falta el controlador |
+El capítulo continúa en la página
+[Consultas recursivas](recursion.md#435-consultas-recursivas-with-recursive-y-tablas),
+con las relaciones recursivas escritas con `WITH RECURSIVE` y con tablas.
 
 ## Ejercicios
 
@@ -700,64 +667,6 @@ o con `recursion.pl` cargado.
 8. **(2)** `SELECT legajo, AVG(nota) FROM inscripciones GROUP BY legajo;`
    da una fila con `NULL`. Escribir `promedio_alumno/2` y explicar qué pasa
    con esa fila en Prolog.
-9. **(2)** Una restricción que ningún `CHECK` expresa: un alumno no puede
-   estar inscripto en una materia sin haber aprobado sus correlativas.
-   Escribir en SQL la consulta que da las inscripciones que la violan, y en
-   Prolog `correlativa_pendiente(Legajo, Materia, Requisito)`. ¿Cumplen los
-   datos la restricción?
-10. ★ **(2)** Predecir las filas de
-    `SELECT nombre FROM empleados WHERE jefe <> 1;` y las respuestas de
-    `empleado(_, N, _, _, J), J \== 1`, con `recursion.pl`. Explicar la
-    diferencia y escribir `no_depende_de(Nombre, Jefe)` para que Prolog dé
-    lo mismo que SQL.
-11. **(2)** Predecir el resultado de cada consulta, en SQL y en Prolog:
-    `SELECT COUNT(*) FROM alumnos WHERE carrera = 'quimica';` ·
-    la misma con `GROUP BY carrera` · `SELECT SUM(salario), MAX(salario)
-    FROM empleados WHERE depto = 'legal';`, con `aggregate_all/3` y
-    `bagof/3`.
-12. **(2)** El nivel de cada empleado es la cantidad de jefes que tiene
-    por encima; la directora tiene nivel 0. Escribirlo en SQL con
-    `WITH RECURSIVE` y en Prolog con `nivel(Id, Nivel)`.
-13. ★ **(3)** Escribir en SQL una consulta con `WITH RECURSIVE` que dé el
-    menor precio para llegar desde ros a cada destino y que termine, con un
-    contador de vuelos acotado. Justificar la cota elegida, escribir la
-    misma idea en Prolog sin tabla, `tarifa_con_tope/3`, y comparar el
-    resultado con `tarifa/3`.
-14. **(2)** Escribir `aumentar(Depto, Porcentaje)`, el
-    `UPDATE empleados SET salario = salario * 110 / 100 WHERE depto = 'it';`
-    de Prolog, con `retract/1` y `assertz/1`. ¿Por qué los empleados que
-    agrega no se vuelven a aumentar?
-
-## Resumen
-
-| | |
-|---|---|
-| **base extensional** | los hechos sin variables: las filas de las tablas |
-| **base intensional** | las reglas: las vistas que se calculan a partir de los hechos |
-| **vista** | una relación calculada; en Prolog, una regla |
-| **bolsa** | una colección con repeticiones: las filas de SQL y las respuestas de Prolog |
-| **lógica de tres valores** | en SQL, una comparación con `NULL` es desconocida, y `WHERE` descarta la fila |
-| **supuesto de dominio cerrado** | los únicos individuos que existen son los que la base nombra |
-| **tabla de trabajo** | las filas nuevas de un paso de `WITH RECURSIVE`; lo único que se reúne en el paso siguiente |
-| **sentencia preparada** | una sentencia SQL con parámetros `?`, compilada una vez y ejecutada con valores |
-| `odbc_driver_connect/3` | abre una conexión con una cadena de controlador; la opción `null(T)` elige cómo llega `NULL` |
-| `odbc_query/2`, `odbc_query/3`, `odbc_query/4` | ejecuta una sentencia; las filas llegan como `row(…)` al reintentar, o en una lista con `findall/2` |
-| `odbc_prepare/4`, `odbc_execute/2`, `odbc_execute/3` | prepara una sentencia con parámetros y la ejecuta con una lista de valores |
-| `odbc_free_statement/1`, `odbc_disconnect/1` | libera una sentencia preparada; cierra una conexión |
-| `universidad.pl` | las tablas académicas, las vistas (`acta/3`, `companeros/3`, …, y la `aprobada` de *Inscripciones*, del [capítulo 15](../capitulo-15-estilo-y-documentacion/index.md)) y los agregados |
-| `tabla/3`, `clave/2`, `referencia/4`, `violacion/1` | el esquema como hechos, y sus restricciones como consulta |
-| `insertar/1`, `borrar/1`, `poner_nota/3` | `INSERT`, `DELETE` y `UPDATE` que respetan el esquema |
-| `superior/2`, `destino/2`, `tarifa/3`, `iteraciones/2` | la recursión con regla, con tabla, con tabla y mínimo, y paso a paso como SQL |
-| `base.pl`, `sqlite.pl` | la base como módulo, y su copia en SQLite con ODBC |
-| `nb_current/2` | el valor de una variable global, si existe; en las pruebas |
-
-## Temas que se retoman
-
-| Tema | Se retoma en |
-|---|---|
-| Un motor Datalog, de abajo hacia arriba, con evaluación semi-ingenua | [capítulo 86](../capitulo-86-proyecto-motor-datalog/index.md) |
-| Un intérprete de un subconjunto de SQL escrito en Prolog | [capítulo 87](../capitulo-87-proyecto-mini-sql-prolog/index.md) |
-| Preguntas en castellano traducidas a SQL y ejecutadas contra `base.pl` | [capítulo 88](../capitulo-88-proyecto-preguntas-en-castellano/index.md) |
 
 ## Referencias
 
@@ -765,12 +674,10 @@ o con `recursion.pl` cargado.
   edición, John Wiley & Sons, 1995 — capítulos «Logic and Databases» y
   «Query-answering in Deductive Databases».
   [Edición en línea de los autores](https://www.ida.liu.se/~ulfni53/lpp/).
-  El capítulo toma de allí el álgebra relacional como cláusulas
+  Esta página toma de allí el álgebra relacional como cláusulas
   ([sección 43.2](#432-el-algebra-relacional-en-clausulas)), la base
-  extensional y la intensional, los supuestos de mundo cerrado y de
-  dominio cerrado ([sección 43.4](#434-donde-difieren-bolsas-conjuntos-y-null))
-  y la evaluación de abajo hacia arriba de las consultas recursivas
-  ([sección 43.5](recursion.md#consultas-recursivas)).
+  extensional y la intensional, y los supuestos de mundo cerrado y de
+  dominio cerrado ([sección 43.4](#434-donde-difieren-bolsas-conjuntos-y-null)).
 - J. M. Spivey, *An Introduction to Logic Programming through Prolog*,
   Prentice Hall, 1996 — capítulo «Programming with relations».
   [Edición del autor](https://spivey.oriel.ox.ac.uk/wiki/files/logprog/logic.pdf).
@@ -779,49 +686,12 @@ o con `recursion.pl` cargado.
   ([sección 43.2](#432-el-algebra-relacional-en-clausulas)).
 - Feliks Kluźniak y Stanisław Szpakowicz, *Prolog for Programmers*,
   Academic Press, 1985 — apartado 8.2, «Prolog and Relational Data
-  Bases». Sin edición en línea de acceso libre verificada. El capítulo
+  Bases». Sin edición en línea de acceso libre verificada. Esta página
   toma la observación de que un agregado necesita la columna entera
-  ([sección 43.3](#433-agregacion-agrupacion-y-orden)) y de que la
-  integridad queda a cargo del programa
-  ([sección 43.6](restricciones.md#claves-restricciones-y-actualizaciones));
-  su Toy-Sequel es el antecedente del
+  ([sección 43.3](#433-agregacion-agrupacion-y-orden)); su Toy-Sequel es el
+  antecedente del
   [capítulo 87](../capitulo-87-proyecto-mini-sql-prolog/index.md).
 - Robert Laing, *An introduction to Prolog for SQL programmers*, cuaderno
   de SWISH. [Cuaderno en SWISH](https://swish.swi-prolog.org/p/sql2prolog.swinb).
   Sirvió de modelo para la correspondencia entre las consultas de SQL y
   las de Prolog ([sección 43.1](#431-tablas-filas-y-hechos)).
-- Jan Wielemaker, *SWI-Prolog ODBC Interface*, el manual de
-  `library(odbc)`.
-  [Manual en línea](https://www.swi-prolog.org/pldoc/doc_for?object=section(%27packages/odbc.html%27)).
-  Describe `odbc_driver_connect/3`, `odbc_query/2..4`, las sentencias
-  preparadas y la opción `null(T)` que usa la
-  [sección 43.7](odbc.md#la-base-en-sqlite).
-- Christian Werner, *SQLite ODBC Driver*.
-  [Página del controlador](http://www.ch-werner.de/sqliteodbc/). Es el
-  controlador que la [sección 43.7](odbc.md#la-base-en-sqlite) instala en
-  Windows.
-
-Los programas y los datos del capítulo son propios del curso: ninguno se
-copia de las fuentes, que aportan las ideas y la correspondencia entre los
-dos lenguajes.
-
-## Cierre de la parte III
-
-La parte III recorrió lo que Prolog permite una vez que las prácticas
-profesionales de la parte II están en su lugar. Los capítulos
-[33](../capitulo-33-inspeccion-de-terminos/index.md) a [36](../capitulo-36-transformacion-de-programas-y-compilacion/index.md) trataron los términos y los programas como datos:
-inspeccionarlos, interpretarlos con un metaintérprete, completarlos por
-unificación con estructuras incompletas, y transformarlos al cargarlos.
-Los capítulos [37](../capitulo-37-interfaces-de-usuario/index.md) y [38](../capitulo-38-concurrencia-y-paralelismo/index.md) llevaron los programas a una pantalla, a una
-ventana, a la web y a varios hilos. El [capítulo 39](../capitulo-39-semantica-de-los-programas-logicos/index.md) definió qué significa
-un programa, y el [40](../capitulo-40-tabulacion/index.md) mostró cómo SWI-Prolog calcula ese significado
-con tablas. Los capítulos [41](../capitulo-41-busqueda-y-planificacion/index.md) y [42](../capitulo-42-juegos/index.md) resolvieron problemas como
-búsquedas en un espacio de estados, y este capítulo relacionó los programas
-lógicos con las bases de datos relacionales.
-
-La parte IV, «Proyectos», va del [capítulo 44](../capitulo-44-proyecto-resolver-ecuaciones/index.md) al
-[88](../capitulo-88-proyecto-preguntas-en-castellano/index.md). Cada capítulo construye un programa completo, en versiones, con las
-técnicas de las tres partes: un programa que resuelve ecuaciones, una aventura de
-texto, un compilador, y así hasta un motor Datalog, un intérprete de SQL y
-un programa que responde preguntas en castellano sobre la base de este
-capítulo.
