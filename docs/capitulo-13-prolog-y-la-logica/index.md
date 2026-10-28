@@ -378,10 +378,10 @@ flowchart TD
     A["tiene_hijos(P)"] -- "R15. θ₁ = {&nbsp;P₁/P&nbsp;}" --> B["progenitor(P, _)"]
     B -- "R7. θ₂ = {&nbsp;P/juan, _/ana&nbsp;}" --> C1(["consulta vacía<br/>P = juan"])
     B -- "R8. θ₃ = {&nbsp;P/marta, _/ana&nbsp;}" --> C2(["consulta vacía<br/>P = marta"])
-    B -- "R9. θ₄ = {&nbsp;P/juan, _/pedro&nbsp;}" --> C3(["consulta vacía<br/>P = juan"])
-    B -- "R10. θ₅ = {&nbsp;P/marta, _/pedro&nbsp;}" --> C4(["consulta vacía<br/>P = marta"])
-    B -- "R11. θ₆ = {&nbsp;P/pedro, _/luis&nbsp;}" --> C5(["consulta vacía<br/>P = pedro"])
-    B -- "R12. θ₇ = {&nbsp;P/pedro, _/eva&nbsp;}" --> C6(["consulta vacía<br/>P = pedro"])
+    B -- "R9. θ₄ = {&nbsp;P/juan,<br/>_/pedro&nbsp;}" --> C3(["consulta vacía<br/>P = juan"])
+    B -- "R10. θ₅ = {&nbsp;P/marta,<br/>_/pedro&nbsp;}" --> C4(["consulta vacía<br/>P = marta"])
+    B -- "R11. θ₆ = {&nbsp;P/pedro,<br/>_/luis&nbsp;}" --> C5(["consulta vacía<br/>P = pedro"])
+    B -- "R12. θ₇ = {&nbsp;P/pedro,<br/>_/eva&nbsp;}" --> C6(["consulta vacía<br/>P = pedro"])
 ```
 
 Seis hojas de éxito, seis respuestas: cada hoja es una demostración distinta, y

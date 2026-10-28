@@ -9,10 +9,10 @@ Con las cláusulas numeradas como en 5.2:
 
 ```mermaid
 flowchart TD
-    A["abuelo(Quien, luis)"] -- "R4. θ₁ = {&nbsp;A/Quien, N/luis&nbsp;}" --> B["padre(Quien, P),<br/>padre(P, luis)"]
-    B -- "R1. θ₂ = {&nbsp;Quien/juan, P/ana&nbsp;}" --> C["padre(ana, luis)"]
-    B -- "R2. θ₃ = {&nbsp;Quien/juan, P/pedro&nbsp;}" --> D["padre(pedro, luis)"]
-    B -- "R3. θ₅ = {&nbsp;Quien/pedro, P/luis&nbsp;}" --> E["padre(luis, luis)"]
+    A["abuelo(Quien, luis)"] -- "R4. θ₁ = {&nbsp;A/Quien,<br/>N/luis&nbsp;}" --> B["padre(Quien, P),<br/>padre(P, luis)"]
+    B -- "R1. θ₂ = {&nbsp;Quien/juan,<br/>P/ana&nbsp;}" --> C["padre(ana, luis)"]
+    B -- "R2. θ₃ = {&nbsp;Quien/juan,<br/>P/pedro&nbsp;}" --> D["padre(pedro, luis)"]
+    B -- "R3. θ₅ = {&nbsp;Quien/pedro,<br/>P/luis&nbsp;}" --> E["padre(luis, luis)"]
     C --> F(["falla"])
     D -- "R3. θ₄ = {&nbsp;}" --> G(["consulta vacía<br/>Quien = juan"])
     E --> H(["falla"])
@@ -34,12 +34,12 @@ R4 para el caso base de `antepasado/2` y R5 para el recursivo—:
 
 ```mermaid
 flowchart TD
-    A["antepasado(pedro, Quien)"] -- "R4. θ₁ = {&nbsp;A/pedro, D/Quien&nbsp;}" --> B["padre(pedro, Quien)"]
-    A -- "R5. θ₃ = {&nbsp;A/pedro, D/Quien&nbsp;}" --> C["padre(pedro, Hijo),<br/>antepasado(Hijo, Quien)"]
+    A["antepasado(pedro, Quien)"] -- "R4. θ₁ = {&nbsp;A/pedro,<br/>D/Quien&nbsp;}" --> B["padre(pedro, Quien)"]
+    A -- "R5. θ₃ = {&nbsp;A/pedro,<br/>D/Quien&nbsp;}" --> C["padre(pedro, Hijo),<br/>antepasado(Hijo, Quien)"]
     B -- "R3. θ₂ = {&nbsp;Quien/luis&nbsp;}" --> D(["consulta vacía<br/>Quien = luis"])
     C -- "R3. θ₄ = {&nbsp;Hijo/luis&nbsp;}" --> E["antepasado(luis, Quien)"]
-    E -- "R4. θ₅ = {&nbsp;A₂/luis, D₂/Quien&nbsp;}" --> E1["padre(luis, Quien)"]
-    E -- "R5. θ₆ = {&nbsp;A₂/luis, D₂/Quien&nbsp;}" --> E2["padre(luis, Hijo₂),<br/>antepasado(Hijo₂, Quien)"]
+    E -- "R4. θ₅ = {&nbsp;A₂/luis,<br/>D₂/Quien&nbsp;}" --> E1["padre(luis, Quien)"]
+    E -- "R5. θ₆ = {&nbsp;A₂/luis,<br/>D₂/Quien&nbsp;}" --> E2["padre(luis, Hijo₂),<br/>antepasado(Hijo₂, Quien)"]
     E1 --> F1(["falla"])
     E2 --> F2(["falla"])
 ```
@@ -77,7 +77,7 @@ Con los hechos invertidos, R1 pasa a ser `padre(juan, pedro).` y R2
 
 ```mermaid
 flowchart TD
-    A["abuelo(juan, Quien)"] -- "R4. θ₁ = {&nbsp;A/juan, N/Quien&nbsp;}" --> B["padre(juan, P),<br/>padre(P, Quien)"]
+    A["abuelo(juan, Quien)"] -- "R4. θ₁ = {&nbsp;A/juan,<br/>N/Quien&nbsp;}" --> B["padre(juan, P),<br/>padre(P, Quien)"]
     B -- "R1. θ₂ = {&nbsp;P/pedro&nbsp;}" --> C["padre(pedro, Quien)"]
     B -- "R2. θ₄ = {&nbsp;P/ana&nbsp;}" --> D["padre(ana, Quien)"]
     C -- "R3. θ₃ = {&nbsp;Quien/luis&nbsp;}" --> E(["consulta vacía<br/>Quien = luis"])
@@ -152,9 +152,9 @@ segunda, el árbol de `?- hermano(luis, Quien).` es:
 
 ```mermaid
 flowchart TD
-    A["hermano(luis, Quien)"] -- "R4. θ₁ = {&nbsp;A/luis, B/Quien&nbsp;}" --> B["hermano(Quien, luis)"]
-    B -- "R4. θ₂ = {&nbsp;A₂/Quien, B₂/luis&nbsp;}" --> C["hermano(luis, Quien)"]
-    C -- "R4. θ₃ = {&nbsp;A₃/luis, B₃/Quien&nbsp;}" --> D["⋮<br/>la rama no termina"]
+    A["hermano(luis, Quien)"] -- "R4. θ₁ = {&nbsp;A/luis,<br/>B/Quien&nbsp;}" --> B["hermano(Quien, luis)"]
+    B -- "R4. θ₂ = {&nbsp;A₂/Quien,<br/>B₂/luis&nbsp;}" --> C["hermano(luis, Quien)"]
+    C -- "R4. θ₃ = {&nbsp;A₃/luis,<br/>B₃/Quien&nbsp;}" --> D["⋮<br/>la rama no termina"]
     A -- "R5" --- pA@{ shape: sm-circ } -.- nA["nunca llega<br/>a pasar por aquí"]
     B -- "R5" --- pB@{ shape: sm-circ } -.- nB["nunca llega<br/>a pasar por aquí"]
     C -- "R5" --- pC@{ shape: sm-circ } -.- nC["nunca llega<br/>a pasar por aquí"]
@@ -233,16 +233,16 @@ flowchart TD
     B --> F0(["falla"])
     C -- "R1. θ₃ = {&nbsp;Hijo/ana&nbsp;}" --> E["antepasado(ana, luis)"]
     C -- "R2. θ₆ = {&nbsp;Hijo/pedro&nbsp;}" --> F["antepasado(pedro, luis)"]
-    E -- "R4. θ₄ = {&nbsp;A₂/ana, D₂/luis&nbsp;}" --> E1["padre(ana, luis)"]
-    E -- "R5. θ₅ = {&nbsp;A₂/ana, D₂/luis&nbsp;}" --> E2["padre(ana, Hijo₂),<br/>antepasado(Hijo₂, luis)"]
+    E -- "R4. θ₄ = {&nbsp;A₂/ana,<br/>D₂/luis&nbsp;}" --> E1["padre(ana, luis)"]
+    E -- "R5. θ₅ = {&nbsp;A₂/ana,<br/>D₂/luis&nbsp;}" --> E2["padre(ana, Hijo₂),<br/>antepasado(Hijo₂, luis)"]
     E1 --> F1(["falla"])
     E2 --> F2(["falla"])
-    F -- "R4. θ₇ = {&nbsp;A₃/pedro, D₃/luis&nbsp;}" --> G1["padre(pedro, luis)"]
-    F -- "R5. θ₉ = {&nbsp;A₃/pedro, D₃/luis&nbsp;}" --> G2["padre(pedro, Hijo₃),<br/>antepasado(Hijo₃, luis)"]
+    F -- "R4. θ₇ = {&nbsp;A₃/pedro,<br/>D₃/luis&nbsp;}" --> G1["padre(pedro, luis)"]
+    F -- "R5. θ₉ = {&nbsp;A₃/pedro,<br/>D₃/luis&nbsp;}" --> G2["padre(pedro, Hijo₃),<br/>antepasado(Hijo₃, luis)"]
     G1 -- "R3. θ₈ = {&nbsp;}" --> S(["consulta vacía"])
     G2 -- "R3. θ₁₀ = {&nbsp;Hijo₃/luis&nbsp;}" --> H["antepasado(luis, luis)"]
-    H -- "R4. θ₁₁ = {&nbsp;A₄/luis, D₄/luis&nbsp;}" --> H1["padre(luis, luis)"]
-    H -- "R5. θ₁₂ = {&nbsp;A₄/luis, D₄/luis&nbsp;}" --> H2["padre(luis, Hijo₄),<br/>antepasado(Hijo₄, luis)"]
+    H -- "R4. θ₁₁ = {&nbsp;A₄/luis,<br/>D₄/luis&nbsp;}" --> H1["padre(luis, luis)"]
+    H -- "R5. θ₁₂ = {&nbsp;A₄/luis,<br/>D₄/luis&nbsp;}" --> H2["padre(luis, Hijo₄),<br/>antepasado(Hijo₄, luis)"]
     H1 --> F3(["falla"])
     H2 --> F4(["falla"])
 ```
@@ -333,16 +333,16 @@ flowchart TD
     B --> F0(["falla"])
     C -- "R1. θ₃ = {&nbsp;X/ana&nbsp;}" --> E["descendiente(luis, ana)"]
     C -- "R2. θ₆ = {&nbsp;X/pedro&nbsp;}" --> F["descendiente(luis, pedro)"]
-    E -- "R4. θ₄ = {&nbsp;D₂/luis, A₂/ana&nbsp;}" --> E1["padre(ana, luis)"]
-    E -- "R5. θ₅ = {&nbsp;D₂/luis, A₂/ana&nbsp;}" --> E2["padre(ana, X₂),<br/>descendiente(luis, X₂)"]
+    E -- "R4. θ₄ = {&nbsp;D₂/luis,<br/>A₂/ana&nbsp;}" --> E1["padre(ana, luis)"]
+    E -- "R5. θ₅ = {&nbsp;D₂/luis,<br/>A₂/ana&nbsp;}" --> E2["padre(ana, X₂),<br/>descendiente(luis, X₂)"]
     E1 --> F1(["falla"])
     E2 --> F2(["falla"])
-    F -- "R4. θ₇ = {&nbsp;D₃/luis, A₃/pedro&nbsp;}" --> G1["padre(pedro, luis)"]
-    F -- "R5. θ₉ = {&nbsp;D₃/luis, A₃/pedro&nbsp;}" --> G2["padre(pedro, X₃),<br/>descendiente(luis, X₃)"]
+    F -- "R4. θ₇ = {&nbsp;D₃/luis,<br/>A₃/pedro&nbsp;}" --> G1["padre(pedro, luis)"]
+    F -- "R5. θ₉ = {&nbsp;D₃/luis,<br/>A₃/pedro&nbsp;}" --> G2["padre(pedro, X₃),<br/>descendiente(luis, X₃)"]
     G1 -- "R3. θ₈ = {&nbsp;}" --> S(["consulta vacía"])
     G2 -- "R3. θ₁₀ = {&nbsp;X₃/luis&nbsp;}" --> H["descendiente(luis, luis)"]
-    H -- "R4. θ₁₁ = {&nbsp;D₄/luis, A₄/luis&nbsp;}" --> H1["padre(luis, luis)"]
-    H -- "R5. θ₁₂ = {&nbsp;D₄/luis, A₄/luis&nbsp;}" --> H2["padre(luis, X₄),<br/>descendiente(luis, X₄)"]
+    H -- "R4. θ₁₁ = {&nbsp;D₄/luis,<br/>A₄/luis&nbsp;}" --> H1["padre(luis, luis)"]
+    H -- "R5. θ₁₂ = {&nbsp;D₄/luis,<br/>A₄/luis&nbsp;}" --> H2["padre(luis, X₄),<br/>descendiente(luis, X₄)"]
     H1 --> F3(["falla"])
     H2 --> F4(["falla"])
 ```
@@ -448,8 +448,8 @@ consulta.
 ```mermaid
 flowchart TD
     A["hermana_politica(C, X)"] -- "R5. θ₁ = {&nbsp;X₁/C, Y₁/X&nbsp;}" --> B["mujer(C, Z₁),<br/>hermano(Z₁, X)"]
-    B -- "R3. θ₂ = {&nbsp;C/belen, Z₁/enrique&nbsp;}" --> D["hermano(enrique, X)"]
-    D -- "R6. θ₃ = {&nbsp;X₂/enrique, Y₂/X&nbsp;}" --> E["hijo(enrique, Z₂),<br/>hijo(X, Z₂),<br/>distinto(enrique, X)"]
+    B -- "R3. θ₂ = {&nbsp;C/belen,<br/>Z₁/enrique&nbsp;}" --> D["hermano(enrique, X)"]
+    D -- "R6. θ₃ = {&nbsp;X₂/enrique,<br/>Y₂/X&nbsp;}" --> E["hijo(enrique, Z₂),<br/>hijo(X, Z₂),<br/>distinto(enrique, X)"]
     E -- "R2. θ₄ = {&nbsp;Z₂/juan&nbsp;}" --> F["hijo(X, juan),<br/>distinto(enrique, X)"]
     F -- "R1. θ₅ = {&nbsp;X/antonio&nbsp;}" --> G["distinto(enrique, antonio)"]
     F -- "R2. θ₇ = {&nbsp;X/enrique&nbsp;}" --> H["distinto(enrique, enrique)"]

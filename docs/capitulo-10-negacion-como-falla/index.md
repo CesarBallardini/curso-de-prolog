@@ -240,7 +240,7 @@ flowchart TD
     B === s
     subgraph s ["árbol subordinado de padre(Quien, _)"]
         direction TB
-        C["padre(Quien, _)"] -- "R6. θ₂ = {&nbsp;Quien/juan, _/ana&nbsp;}" --> S(["consulta vacía"])
+        C["padre(Quien, _)"] -- "R6. θ₂ = {&nbsp;Quien/juan,<br/>_/ana&nbsp;}" --> S(["consulta vacía"])
         C -- "R7 … R9" --- p@{ shape: sm-circ } -.- n["podadas por el \+"]
     end
     s --> F(["falla"])
@@ -537,13 +537,13 @@ flowchart TD
     subgraph s ["árbol subordinado de edad(_, Otra), Otra > 68"]
         direction TB
         D["edad(_, Otra),<br/>Otra > 68"]
-        D -- "R10. θ₃ = {&nbsp;_/juan, Otra/68&nbsp;}" --> D1["68 > 68"]
+        D -- "R10. θ₃ = {&nbsp;_/juan,<br/>Otra/68&nbsp;}" --> D1["68 > 68"]
         D1 --> F1(["falla"])
-        D -- "R11. θ₄ = {&nbsp;_/ana, Otra/41&nbsp;}" --> D2["41 > 68"]
+        D -- "R11. θ₄ = {&nbsp;_/ana,<br/>Otra/41&nbsp;}" --> D2["41 > 68"]
         D2 --> F2(["falla"])
-        D -- "R12. θ₅ = {&nbsp;_/pedro, Otra/39&nbsp;}" --> D3["39 > 68"]
+        D -- "R12. θ₅ = {&nbsp;_/pedro,<br/>Otra/39&nbsp;}" --> D3["39 > 68"]
         D3 --> F3(["falla"])
-        D -- "R13. θ₆ = {&nbsp;_/luis, Otra/12&nbsp;}" --> D4["12 > 68"]
+        D -- "R13. θ₆ = {&nbsp;_/luis,<br/>Otra/12&nbsp;}" --> D4["12 > 68"]
         D4 --> F4(["falla"])
         D -- "R14. θ₇ = {&nbsp;_/eva, Otra/8&nbsp;}" --> D5["8 > 68"]
         D5 --> F5(["falla"])
@@ -564,7 +564,7 @@ flowchart TD
     C === s
     subgraph s ["árbol subordinado de edad(_, Otra), Otra > 41"]
         direction TB
-        D["edad(_, Otra),<br/>Otra > 41"] -- "R10. θ₃ = {&nbsp;_/juan, Otra/68&nbsp;}" --> D1["68 > 41"]
+        D["edad(_, Otra),<br/>Otra > 41"] -- "R10. θ₃ = {&nbsp;_/juan,<br/>Otra/68&nbsp;}" --> D1["68 > 41"]
         D1 --> S1(["consulta vacía"])
         D -- "R11 … R14" --- p@{ shape: sm-circ } -.- n["podadas por el \+"]
     end
@@ -774,7 +774,7 @@ y R20:
 ```mermaid
 flowchart TD
     A["ninguna_mayor(41)"] -- "R19. θ₁ = {&nbsp;E/41&nbsp;}" --> B["edad(_, Otra),<br/>Otra > 41,<br/>!,<br/>fail"]
-    B -- "R10. θ₂ = {&nbsp;_/juan, Otra/68&nbsp;}" --> C["68 > 41,<br/>!,<br/>fail"]
+    B -- "R10. θ₂ = {&nbsp;_/juan,<br/>Otra/68&nbsp;}" --> C["68 > 41,<br/>!,<br/>fail"]
     C --> D["!,<br/>fail"]
     D --> E["fail"]
     E --> F(["falla"])
@@ -793,13 +793,13 @@ predicado falla.
 ```mermaid
 flowchart TD
     A["ninguna_mayor(68)"] -- "R19. θ₁ = {&nbsp;E/68&nbsp;}" --> B["edad(_, Otra),<br/>Otra > 68,<br/>!,<br/>fail"]
-    B -- "R10. θ₂ = {&nbsp;_/juan, Otra/68&nbsp;}" --> C1["68 > 68,<br/>!,<br/>fail"]
+    B -- "R10. θ₂ = {&nbsp;_/juan,<br/>Otra/68&nbsp;}" --> C1["68 > 68,<br/>!,<br/>fail"]
     C1 --> F1(["falla"])
-    B -- "R11. θ₃ = {&nbsp;_/ana, Otra/41&nbsp;}" --> C2["41 > 68,<br/>!,<br/>fail"]
+    B -- "R11. θ₃ = {&nbsp;_/ana,<br/>Otra/41&nbsp;}" --> C2["41 > 68,<br/>!,<br/>fail"]
     C2 --> F2(["falla"])
-    B -- "R12. θ₄ = {&nbsp;_/pedro, Otra/39&nbsp;}" --> C3["39 > 68,<br/>!,<br/>fail"]
+    B -- "R12. θ₄ = {&nbsp;_/pedro,<br/>Otra/39&nbsp;}" --> C3["39 > 68,<br/>!,<br/>fail"]
     C3 --> F3(["falla"])
-    B -- "R13. θ₅ = {&nbsp;_/luis, Otra/12&nbsp;}" --> C4["12 > 68,<br/>!,<br/>fail"]
+    B -- "R13. θ₅ = {&nbsp;_/luis,<br/>Otra/12&nbsp;}" --> C4["12 > 68,<br/>!,<br/>fail"]
     C4 --> F4(["falla"])
     B -- "R14. θ₆ = {&nbsp;_/eva, Otra/8&nbsp;}" --> C5["8 > 68,<br/>!,<br/>fail"]
     C5 --> F5(["falla"])

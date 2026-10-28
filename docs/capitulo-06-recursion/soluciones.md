@@ -125,10 +125,10 @@ tiene `1` en el tercer argumento, y la consulta tiene `2`.
 
 ```mermaid
 flowchart TD
-    A["generaciones(A, eva, 2)"] -- "R5. θ₁ = {&nbsp;A₁/A, D/eva, N/2&nbsp;}" --> B["padre(A, Hijo),<br/>generaciones(Hijo, eva, Faltan),<br/>2 is Faltan + 1"]
-    B -- "R1. θ₂ = {&nbsp;A/juan, Hijo/ana&nbsp;}" --> C["generaciones(ana, eva, Faltan),<br/>2 is Faltan + 1"]
-    B -- "R2. θ₁₃ = {&nbsp;A/ana, Hijo/luis&nbsp;}" --> D["generaciones(luis, eva, Faltan),<br/>2 is Faltan + 1"]
-    B -- "R3. θ₂₀ = {&nbsp;A/luis, Hijo/eva&nbsp;}" --> E["generaciones(eva, eva, Faltan),<br/>2 is Faltan + 1"]
+    A["generaciones(A, eva, 2)"] -- "R5. θ₁ = {&nbsp;A₁/A,<br/>D/eva,<br/>N/2&nbsp;}" --> B["padre(A, Hijo),<br/>generaciones(Hijo, eva, Faltan),<br/>2 is Faltan + 1"]
+    B -- "R1. θ₂ = {&nbsp;A/juan,<br/>Hijo/ana&nbsp;}" --> C["generaciones(ana, eva, Faltan),<br/>2 is Faltan + 1"]
+    B -- "R2. θ₁₃ = {&nbsp;A/ana,<br/>Hijo/luis&nbsp;}" --> D["generaciones(luis, eva, Faltan),<br/>2 is Faltan + 1"]
+    B -- "R3. θ₂₀ = {&nbsp;A/luis,<br/>Hijo/eva&nbsp;}" --> E["generaciones(eva, eva, Faltan),<br/>2 is Faltan + 1"]
     C --> R1(["⋯ todas sus ramas fallan<br/>θ₃ a θ₁₂"])
     D --> V["⋮<br/>sigue en el árbol siguiente"]
     E --> R3(["⋯ todas sus ramas fallan<br/>θ₂₁ y θ₂₂"])
@@ -149,14 +149,14 @@ hijos. La de `ana` continúa en el segundo árbol:
 %%{init: {"flowchart": {"rankSpacing": 30}}}%%
 flowchart TD
     D["generaciones(luis, eva, Faltan),<br/>2 is Faltan + 1"]
-    D -- "R4. θ₁₄ = {&nbsp;A₂/luis, D₂/eva, Faltan/1&nbsp;}" --> F["padre(luis, eva),<br/>2 is 1 + 1"]
+    D -- "R4. θ₁₄ = {&nbsp;A₂/luis,<br/>D₂/eva,<br/>Faltan/1&nbsp;}" --> F["padre(luis, eva),<br/>2 is 1 + 1"]
     F -- "R3. θ₁₅ = {&nbsp;}" --> G["2 is 1 + 1"]
     G --> S(["consulta vacía<br/>A = ana"])
-    D -- "R5. θ₁₆ = {&nbsp;A₂/luis, D₂/eva, N₂/Faltan&nbsp;}" --> H["padre(luis, Hijo₂),<br/>generaciones(Hijo₂, eva, Faltan₂),<br/>Faltan is Faltan₂ + 1,<br/>2 is Faltan + 1"]
+    D -- "R5. θ₁₆ = {&nbsp;A₂/luis,<br/>D₂/eva,<br/>N₂/Faltan&nbsp;}" --> H["padre(luis, Hijo₂),<br/>generaciones(Hijo₂, eva, Faltan₂),<br/>Faltan is Faltan₂ + 1,<br/>2 is Faltan + 1"]
     H -- "R3. θ₁₇ = {&nbsp;Hijo₂/eva&nbsp;}" --> I["generaciones(eva, eva, Faltan₂),<br/>Faltan is Faltan₂ + 1,<br/>2 is Faltan + 1"]
-    I -- "R4. θ₁₈ = {&nbsp;A₃/eva, D₃/eva, Faltan₂/1&nbsp;}" --> J["padre(eva, eva),<br/>Faltan is 1 + 1,<br/>2 is Faltan + 1"]
+    I -- "R4. θ₁₈ = {&nbsp;A₃/eva,<br/>D₃/eva,<br/>Faltan₂/1&nbsp;}" --> J["padre(eva, eva),<br/>Faltan is 1 + 1,<br/>2 is Faltan + 1"]
     J --> F1(["falla"])
-    I -- "R5. θ₁₉ = {&nbsp;A₃/eva, D₃/eva, N₃/Faltan₂&nbsp;}" --> K["padre(eva, Hijo₃),<br/>generaciones(Hijo₃, eva, Faltan₃),<br/>Faltan₂ is Faltan₃ + 1,<br/>Faltan is Faltan₂ + 1,<br/>2 is Faltan + 1"]
+    I -- "R5. θ₁₉ = {&nbsp;A₃/eva,<br/>D₃/eva,<br/>N₃/Faltan₂&nbsp;}" --> K["padre(eva, Hijo₃),<br/>generaciones(Hijo₃, eva, Faltan₃),<br/>Faltan₂ is Faltan₃ + 1,<br/>Faltan is Faltan₂ + 1,<br/>2 is Faltan + 1"]
     K --> F2(["falla"])
 ```
 
@@ -278,9 +278,9 @@ subíndice:
 
 ```mermaid
 flowchart TD
-    A["baja(N, Cero)"] -- "R1. θ₁ = {&nbsp;N₁/N, Cero₁/Cero&nbsp;}" --> B["baja(s(N), Cero)"]
-    B -- "R1. θ₂ = {&nbsp;N₂/s(N), Cero₂/Cero&nbsp;}" --> C["baja(s(s(N)), Cero)"]
-    C -- "R1. θ₃ = {&nbsp;N₃/s(s(N)), Cero₃/Cero&nbsp;}" --> D["⋮<br/>la rama no termina"]
+    A["baja(N, Cero)"] -- "R1. θ₁ = {&nbsp;N₁/N,<br/>Cero₁/Cero&nbsp;}" --> B["baja(s(N), Cero)"]
+    B -- "R1. θ₂ = {&nbsp;N₂/s(N),<br/>Cero₂/Cero&nbsp;}" --> C["baja(s(s(N)), Cero)"]
+    C -- "R1. θ₃ = {&nbsp;N₃/s(s(N)),<br/>Cero₃/Cero&nbsp;}" --> D["⋮<br/>la rama no termina"]
     A -- "R2" --- pA@{ shape: sm-circ } -.- nA["nunca llega<br/>a pasar por aquí"]
     B -- "R2" --- pB@{ shape: sm-circ } -.- nB["nunca llega<br/>a pasar por aquí"]
     C -- "R2" --- pC@{ shape: sm-circ } -.- nC["nunca llega<br/>a pasar por aquí"]
@@ -332,8 +332,8 @@ variable `B`, igual que las cláusulas, y las copias se escriben `B₁` y `B₂`
 
 ```mermaid
 flowchart TD
-    A["suma(s(cero), B, s(s(s(cero))))"] -- "R2. θ₁ = {&nbsp;A/cero, B₁/B, C/s(s(cero))&nbsp;}" --> B["suma(cero, B, s(s(cero)))"]
-    B -- "R1. θ₂ = {&nbsp;B₂/B, B/s(s(cero))&nbsp;}" --> S(["consulta vacía<br/>B = s(s(cero))"])
+    A["suma(s(cero), B, s(s(s(cero))))"] -- "R2. θ₁ = {&nbsp;A/cero,<br/>B₁/B,<br/>C/s(s(cero))&nbsp;}" --> B["suma(cero, B, s(s(cero)))"]
+    B -- "R1. θ₂ = {&nbsp;B₂/B,<br/>B/s(s(cero))&nbsp;}" --> S(["consulta vacía<br/>B = s(s(cero))"])
 ```
 
 R1 no abre arco en la raíz, porque `cero` no unifica con `s(cero)`, y R2 no lo
@@ -365,11 +365,11 @@ argumento. Las copias de las cláusulas llevan subíndice porque la consulta usa
 
 ```mermaid
 flowchart TD
-    A["suma(A, B, s(s(cero)))"] -- "R1. θ₁ = {&nbsp;A/cero, B₁/B, B/s(s(cero))&nbsp;}" --> S1(["1.ª respuesta<br/>A = cero, B = s(s(cero))"])
-    A -- "R2. θ₂ = {&nbsp;A/s(A₁), B₁/B, C₁/s(cero)&nbsp;}" --> B["suma(A₁, B, s(cero))"]
-    B -- "R1. θ₃ = {&nbsp;A₁/cero, B₂/B, B/s(cero)&nbsp;}" --> S2(["2.ª respuesta<br/>A = s(cero), B = s(cero)"])
-    B -- "R2. θ₄ = {&nbsp;A₁/s(A₂), B₂/B, C₂/cero&nbsp;}" --> C["suma(A₂, B, cero)"]
-    C -- "R1. θ₅ = {&nbsp;A₂/cero, B₃/B, B/cero&nbsp;}" --> S3(["3.ª respuesta<br/>A = s(s(cero)), B = cero"])
+    A["suma(A, B, s(s(cero)))"] -- "R1. θ₁ = {&nbsp;A/cero,<br/>B₁/B,<br/>B/s(s(cero))&nbsp;}" --> S1(["1.ª respuesta<br/>A = cero, B = s(s(cero))"])
+    A -- "R2. θ₂ = {&nbsp;A/s(A₁),<br/>B₁/B,<br/>C₁/s(cero)&nbsp;}" --> B["suma(A₁, B, s(cero))"]
+    B -- "R1. θ₃ = {&nbsp;A₁/cero,<br/>B₂/B,<br/>B/s(cero)&nbsp;}" --> S2(["2.ª respuesta<br/>A = s(cero), B = s(cero)"])
+    B -- "R2. θ₄ = {&nbsp;A₁/s(A₂),<br/>B₂/B,<br/>C₂/cero&nbsp;}" --> C["suma(A₂, B, cero)"]
+    C -- "R1. θ₅ = {&nbsp;A₂/cero,<br/>B₃/B,<br/>B/cero&nbsp;}" --> S3(["3.ª respuesta<br/>A = s(s(cero)), B = cero"])
 ```
 
 En el último nodo, `suma(A₂, B, cero)`, R2 no abre arco: su cabeza tiene
@@ -403,18 +403,18 @@ y así siguiendo. R1 no abre arco en la raíz, porque `0` no unifica con `2`.
 %%{init: {"flowchart": {"rankSpacing": 30}}}%%
 flowchart TD
     A["valor(N, 2)"] -- "R2. θ₁ = {&nbsp;N/s(N₁), V₁/2&nbsp;}" --> B["valor(N₁, Anterior₁),<br/>2 is Anterior₁ + 1"]
-    B -- "R1. θ₂ = {&nbsp;N₁/cero, Anterior₁/0&nbsp;}" --> B1["2 is 0 + 1"]
+    B -- "R1. θ₂ = {&nbsp;N₁/cero,<br/>Anterior₁/0&nbsp;}" --> B1["2 is 0 + 1"]
     B1 --> F1(["falla"])
-    B -- "R2. θ₃ = {&nbsp;N₁/s(N₂), V₂/Anterior₁&nbsp;}" --> C["valor(N₂, Anterior₂),<br/>Anterior₁ is Anterior₂ + 1,<br/>2 is Anterior₁ + 1"]
-    C -- "R1. θ₄ = {&nbsp;N₂/cero, Anterior₂/0&nbsp;}" --> C1["Anterior₁ is 0 + 1,<br/>2 is Anterior₁ + 1"]
+    B -- "R2. θ₃ = {&nbsp;N₁/s(N₂),<br/>V₂/Anterior₁&nbsp;}" --> C["valor(N₂, Anterior₂),<br/>Anterior₁ is Anterior₂ + 1,<br/>2 is Anterior₁ + 1"]
+    C -- "R1. θ₄ = {&nbsp;N₂/cero,<br/>Anterior₂/0&nbsp;}" --> C1["Anterior₁ is 0 + 1,<br/>2 is Anterior₁ + 1"]
     C1 -- "is. θ₅ = {&nbsp;Anterior₁/1&nbsp;}" --> C2["2 is 1 + 1"]
     C2 --> S(["consulta vacía<br/>N = s(N₁) = s(s(N₂)) = s(s(cero))"])
-    C -- "R2. θ₆ = {&nbsp;N₂/s(N₃), V₃/Anterior₂&nbsp;}" --> D["valor(N₃, Anterior₃),<br/>Anterior₂ is Anterior₃ + 1,<br/>Anterior₁ is Anterior₂ + 1,<br/>2 is Anterior₁ + 1"]
-    D -- "R1. θ₇ = {&nbsp;N₃/cero, Anterior₃/0&nbsp;}" --> D1["Anterior₂ is 0 + 1,<br/>Anterior₁ is Anterior₂ + 1,<br/>2 is Anterior₁ + 1"]
+    C -- "R2. θ₆ = {&nbsp;N₂/s(N₃),<br/>V₃/Anterior₂&nbsp;}" --> D["valor(N₃, Anterior₃),<br/>Anterior₂ is Anterior₃ + 1,<br/>Anterior₁ is Anterior₂ + 1,<br/>2 is Anterior₁ + 1"]
+    D -- "R1. θ₇ = {&nbsp;N₃/cero,<br/>Anterior₃/0&nbsp;}" --> D1["Anterior₂ is 0 + 1,<br/>Anterior₁ is Anterior₂ + 1,<br/>2 is Anterior₁ + 1"]
     D1 -- "is. θ₈ = {&nbsp;Anterior₂/1&nbsp;}" --> D2["Anterior₁ is 1 + 1,<br/>2 is Anterior₁ + 1"]
     D2 -- "is. θ₉ = {&nbsp;Anterior₁/2&nbsp;}" --> D3["2 is 2 + 1"]
     D3 --> F2(["falla"])
-    D -- "R2. θ₁₀ = {&nbsp;N₃/s(N₄), V₄/Anterior₃&nbsp;}" --> E["⋮<br/>la rama no termina"]
+    D -- "R2. θ₁₀ = {&nbsp;N₃/s(N₄),<br/>V₄/Anterior₃&nbsp;}" --> E["⋮<br/>la rama no termina"]
     classDef abierto fill:none,stroke:none;
     class E abierto;
 ```
@@ -467,7 +467,7 @@ que queda sin valor hasta el final.
 
 ```mermaid
 flowchart TD
-    A["menor_o_igual(s(cero), B)"] -- "R2. θ₁ = {&nbsp;A₁/cero, B/s(B₁)&nbsp;}" --> B["menor_o_igual(cero, B₁)"]
+    A["menor_o_igual(s(cero), B)"] -- "R2. θ₁ = {&nbsp;A₁/cero,<br/>B/s(B₁)&nbsp;}" --> B["menor_o_igual(cero, B₁)"]
     B -- "R1. θ₂ = {&nbsp;_/B₁&nbsp;}" --> S(["consulta vacía<br/>B = s(B₁) = s(_)"])
 ```
 

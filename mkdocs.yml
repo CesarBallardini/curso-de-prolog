@@ -88,6 +88,7 @@ hooks:
 extra_css:
   - estilos/swish.css
   - estilos/assistant.css
+  - estilos/sidebars.css
   # KaTeX typesets the logic formulas. Vendored in docs/vendor/katex-0.16.11/
   # (the npm package's minified files and its woff2 fonts, MIT licence), so the
   # formulas do not depend on a CDN; tools/katex_pdf.py reads the same files.
@@ -95,6 +96,7 @@ extra_css:
 
 extra_javascript:
   - javascripts/katex.js
+  - javascripts/sidebars.js
   - vendor/katex-0.16.11/katex.min.js
   - vendor/katex-0.16.11/contrib/auto-render.min.js
   # Mermaid draws the diagrams. Vendored in docs/vendor/mermaid-11.17.2/ (MIT licence): Material

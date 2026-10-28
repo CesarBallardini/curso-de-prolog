@@ -90,13 +90,13 @@ por qué falla.
 
 ```mermaid
 flowchart TD
-    A["antepasado(tare, isaac)"] -- "R11. θ₁ = {&nbsp;A/tare, D/isaac&nbsp;}" --> B["progenitor(tare, isaac)"]
-    A -- "R12. θ₄ = {&nbsp;A/tare, D/isaac&nbsp;}" --> C["progenitor(tare, Hijo),<br/>antepasado(Hijo, isaac)"]
-    B -- "R9. θ₂ = {&nbsp;P/tare, H/isaac&nbsp;}" --> B1["padre(tare, isaac)"]
-    B -- "R10. θ₃ = {&nbsp;P/tare, H/isaac&nbsp;}" --> B2["madre(tare, isaac)"]
+    A["antepasado(tare, isaac)"] -- "R11. θ₁ = {&nbsp;A/tare,<br/>D/isaac&nbsp;}" --> B["progenitor(tare, isaac)"]
+    A -- "R12. θ₄ = {&nbsp;A/tare,<br/>D/isaac&nbsp;}" --> C["progenitor(tare, Hijo),<br/>antepasado(Hijo, isaac)"]
+    B -- "R9. θ₂ = {&nbsp;P/tare,<br/>H/isaac&nbsp;}" --> B1["padre(tare, isaac)"]
+    B -- "R10. θ₃ = {&nbsp;P/tare,<br/>H/isaac&nbsp;}" --> B2["madre(tare, isaac)"]
     B1 --> F1(["falla"])
     B2 --> F2(["falla"])
-    C -- "R9. θ₅ = {&nbsp;P₂/tare, H₂/Hijo&nbsp;}" --> C1["padre(tare, Hijo),<br/>antepasado(Hijo, isaac)"]
+    C -- "R9. θ₅ = {&nbsp;P₂/tare,<br/>H₂/Hijo&nbsp;}" --> C1["padre(tare, Hijo),<br/>antepasado(Hijo, isaac)"]
     C -- "R10. θ₅₆ =<br/>{&nbsp;P₂/tare, H₂/Hijo&nbsp;}" --> C2["madre(tare, Hijo),<br/>antepasado(Hijo, isaac)"]
     C2 --> F3(["falla"])
     C1 --> V["⋮<br/>sigue en el árbol siguiente"]
@@ -127,10 +127,10 @@ hoja de éxito:
 ```mermaid
 flowchart TD
     D["antepasado(abraham, isaac)"]
-    D -- "R11. θ₇ = {&nbsp;A₂/abraham, D₂/isaac&nbsp;}" --> E["progenitor(abraham, isaac)"]
-    D -- "R12. θ₁₁ = {&nbsp;A₂/abraham, D₂/isaac&nbsp;}" --> D2["progenitor(abraham, Hijo₂),<br/>antepasado(Hijo₂, isaac)"]
-    E -- "R9. θ₈ = {&nbsp;P₃/abraham, H₃/isaac&nbsp;}" --> F["padre(abraham, isaac)"]
-    E -- "R10. θ₁₀ = {&nbsp;P₃/abraham, H₃/isaac&nbsp;}" --> E2["madre(abraham, isaac)"]
+    D -- "R11. θ₇ = {&nbsp;A₂/abraham,<br/>D₂/isaac&nbsp;}" --> E["progenitor(abraham, isaac)"]
+    D -- "R12. θ₁₁ = {&nbsp;A₂/abraham,<br/>D₂/isaac&nbsp;}" --> D2["progenitor(abraham, Hijo₂),<br/>antepasado(Hijo₂, isaac)"]
+    E -- "R9. θ₈ = {&nbsp;P₃/abraham,<br/>H₃/isaac&nbsp;}" --> F["padre(abraham, isaac)"]
+    E -- "R10. θ₁₀ = {&nbsp;P₃/abraham,<br/>H₃/isaac&nbsp;}" --> E2["madre(abraham, isaac)"]
     F -- "R4. θ₉ = {&nbsp;}" --> S(["consulta vacía"])
     E2 --> F4(["falla"])
     D2 --> R1(["⋯ todas sus ramas fallan<br/>θ₁₂ a θ₂₀"])
@@ -232,9 +232,9 @@ maciza, de modo que en cada nodo hay una única cláusula aplicable.
 
 ```mermaid
 flowchart TD
-    A["desarma(babushka_hueca(babushka_hueca(babushka_hueca(babushka_maciza))))"] -- "R2. θ₁ = {&nbsp;Interior/babushka_hueca(babushka_hueca(babushka_maciza))&nbsp;}" --> B["desarma(babushka_hueca(babushka_hueca(babushka_maciza)))"]
-    B -- "R2. θ₂ = {&nbsp;Interior₂/babushka_hueca(babushka_maciza)&nbsp;}" --> C["desarma(babushka_hueca(babushka_maciza))"]
-    C -- "R2. θ₃ = {&nbsp;Interior₃/babushka_maciza&nbsp;}" --> D["desarma(babushka_maciza)"]
+    A["desarma(babushka_hueca(<br/>babushka_hueca(<br/>babushka_hueca(<br/>babushka_maciza))))"] -- "R2. θ₁ = {&nbsp;Interior/<br/>babushka_hueca(<br/>babushka_hueca(<br/>babushka_maciza))&nbsp;}" --> B["desarma(babushka_hueca(<br/>babushka_hueca(<br/>babushka_maciza)))"]
+    B -- "R2. θ₂ = {&nbsp;Interior₂/<br/>babushka_hueca(<br/>babushka_maciza)&nbsp;}" --> C["desarma(babushka_hueca(<br/>babushka_maciza))"]
+    C -- "R2. θ₃ = {&nbsp;Interior₃/<br/>babushka_maciza&nbsp;}" --> D["desarma(babushka_maciza)"]
     D -- "R1. θ₄ = {&nbsp;}" --> S(["consulta vacía"])
 ```
 
@@ -442,8 +442,8 @@ armada a partir de las sustituciones de la rama, que es lo que la
 
 ```mermaid
 flowchart TD
-    A["suma(s(cero), s(s(cero)), Cuanto)"] -- "R2. θ₁ = {&nbsp;A/cero, B/s(s(cero)), Cuanto/s(C)&nbsp;}" --> B["suma(cero, s(s(cero)), C)"]
-    B -- "R1. θ₂ = {&nbsp;B₂/s(s(cero)), C/s(s(cero))&nbsp;}" --> S(["consulta vacía<br/>Cuanto = s(C) = s(s(s(cero)))"])
+    A["suma(s(cero), s(s(cero)), Cuanto)"] -- "R2. θ₁ = {&nbsp;A/cero,<br/>B/s(s(cero)),<br/>Cuanto/s(C)&nbsp;}" --> B["suma(cero, s(s(cero)), C)"]
+    B -- "R1. θ₂ = {&nbsp;B₂/s(s(cero)),<br/>C/s(s(cero))&nbsp;}" --> S(["consulta vacía<br/>Cuanto = s(C) = s(s(s(cero)))"])
 ```
 
 La consulta siguiente muestra la propiedad más importante del capítulo:
@@ -467,10 +467,10 @@ el **tercero** llega a `cero`, donde ninguna de las dos cabezas unifica.
 
 ```mermaid
 flowchart TD
-    A["suma(A, s(s(cero)), s(s(s(cero))))"] -- "R2. θ₁ = {&nbsp;A/s(A₁),<br/>B₁/s(s(cero)),<br/>C₁/s(s(cero))&nbsp;}" --> B["suma(A₁, s(s(cero)), s(s(cero)))"]
-    B -- "R1. θ₂ = {&nbsp;A₁/cero, B₂/s(s(cero))&nbsp;}" --> S(["consulta vacía<br/>A = s(A₁) = s(cero)"])
-    B -- "R2. θ₃ = {&nbsp;A₁/s(A₂), B₂/s(s(cero)), C₂/s(cero)&nbsp;}" --> C["suma(A₂, s(s(cero)), s(cero))"]
-    C -- "R2. θ₄ = {&nbsp;A₂/s(A₃), B₃/s(s(cero)), C₃/cero&nbsp;}" --> D["suma(A₃, s(s(cero)), cero)"]
+    A["suma(A, s(s(cero)),<br/>s(s(s(cero))))"] -- "R2. θ₁ = {&nbsp;A/s(A₁),<br/>B₁/s(s(cero)),<br/>C₁/s(s(cero))&nbsp;}" --> B["suma(A₁, s(s(cero)), s(s(cero)))"]
+    B -- "R1. θ₂ = {&nbsp;A₁/cero,<br/>B₂/s(s(cero))&nbsp;}" --> S(["consulta vacía<br/>A = s(A₁) = s(cero)"])
+    B -- "R2. θ₃ = {&nbsp;A₁/s(A₂),<br/>B₂/s(s(cero)),<br/>C₂/s(cero)&nbsp;}" --> C["suma(A₂, s(s(cero)), s(cero))"]
+    C -- "R2. θ₄ = {&nbsp;A₂/s(A₃),<br/>B₃/s(s(cero)),<br/>C₃/cero&nbsp;}" --> D["suma(A₃, s(s(cero)), cero)"]
     D --> F(["falla"])
 ```
 
@@ -570,13 +570,13 @@ baja hasta la llamada sobre `luis`, y el segundo continúa desde ese nodo.
 ```mermaid
 %%{init: {"flowchart": {"rankSpacing": 30}}}%%
 flowchart TD
-    A["generaciones(juan, eva, Cuantas)"] -- "R4. θ₁ = {&nbsp;A/juan, D/eva, Cuantas/1&nbsp;}" --> B["padre(juan, eva)"]
+    A["generaciones(juan, eva, Cuantas)"] -- "R4. θ₁ = {&nbsp;A/juan,<br/>D/eva,<br/>Cuantas/1&nbsp;}" --> B["padre(juan, eva)"]
     B --> F1(["falla"])
-    A -- "R5. θ₂ = {&nbsp;A/juan, D/eva, N/Cuantas&nbsp;}" --> C["padre(juan, Hijo),<br/>generaciones(Hijo, eva, Faltan),<br/>Cuantas is Faltan + 1"]
+    A -- "R5. θ₂ = {&nbsp;A/juan,<br/>D/eva,<br/>N/Cuantas&nbsp;}" --> C["padre(juan, Hijo),<br/>generaciones(Hijo, eva, Faltan),<br/>Cuantas is Faltan + 1"]
     C -- "R1. θ₃ = {&nbsp;Hijo/ana&nbsp;}" --> D["generaciones(ana, eva, Faltan),<br/>Cuantas is Faltan + 1"]
-    D -- "R4. θ₄ = {&nbsp;A₂/ana, D₂/eva, Faltan/1&nbsp;}" --> E["padre(ana, eva),<br/>Cuantas is 1 + 1"]
+    D -- "R4. θ₄ = {&nbsp;A₂/ana,<br/>D₂/eva,<br/>Faltan/1&nbsp;}" --> E["padre(ana, eva),<br/>Cuantas is 1 + 1"]
     E --> F2(["falla"])
-    D -- "R5. θ₅ = {&nbsp;A₂/ana, D₂/eva, N₂/Faltan&nbsp;}" --> F["padre(ana, Hijo₂),<br/>generaciones(Hijo₂, eva, Faltan₂),<br/>Faltan is Faltan₂ + 1,<br/>Cuantas is Faltan + 1"]
+    D -- "R5. θ₅ = {&nbsp;A₂/ana,<br/>D₂/eva,<br/>N₂/Faltan&nbsp;}" --> F["padre(ana, Hijo₂),<br/>generaciones(Hijo₂, eva, Faltan₂),<br/>Faltan is Faltan₂ + 1,<br/>Cuantas is Faltan + 1"]
     F -- "R2. θ₆ = {&nbsp;Hijo₂/luis&nbsp;}" --> G["generaciones(luis, eva, Faltan₂),<br/>Faltan is Faltan₂ + 1,<br/>Cuantas is Faltan + 1"]
     G --> V["⋮<br/>sigue en el árbol siguiente"]
     classDef abierto fill:none,stroke:none;
@@ -594,15 +594,15 @@ actúa como una prueba, y si la igualdad no se cumple la rama falla.
 %%{init: {"flowchart": {"rankSpacing": 30}}}%%
 flowchart TD
     G["generaciones(luis, eva, Faltan₂),<br/>Faltan is Faltan₂ + 1,<br/>Cuantas is Faltan + 1"]
-    G -- "R4. θ₇ = {&nbsp;A₃/luis, D₃/eva, Faltan₂/1&nbsp;}" --> H["padre(luis, eva),<br/>Faltan is 1 + 1,<br/>Cuantas is Faltan + 1"]
+    G -- "R4. θ₇ = {&nbsp;A₃/luis,<br/>D₃/eva,<br/>Faltan₂/1&nbsp;}" --> H["padre(luis, eva),<br/>Faltan is 1 + 1,<br/>Cuantas is Faltan + 1"]
     H -- "R3. θ₈ = {&nbsp;}" --> I["Faltan is 1 + 1,<br/>Cuantas is Faltan + 1"]
     I -- "is. θ₉ = {&nbsp;Faltan/2&nbsp;}" --> J["Cuantas is 2 + 1"]
     J -- "is. θ₁₀ = {&nbsp;Cuantas/3&nbsp;}" --> S(["consulta vacía<br/>Cuantas = 3"])
-    G -- "R5. θ₁₁ = {&nbsp;A₃/luis, D₃/eva, N₃/Faltan₂&nbsp;}" --> K["padre(luis, Hijo₃),<br/>generaciones(Hijo₃, eva, Faltan₃),<br/>Faltan₂ is Faltan₃ + 1,<br/>Faltan is Faltan₂ + 1,<br/>Cuantas is Faltan + 1"]
+    G -- "R5. θ₁₁ = {&nbsp;A₃/luis,<br/>D₃/eva,<br/>N₃/Faltan₂&nbsp;}" --> K["padre(luis, Hijo₃),<br/>generaciones(Hijo₃, eva, Faltan₃),<br/>Faltan₂ is Faltan₃ + 1,<br/>Faltan is Faltan₂ + 1,<br/>Cuantas is Faltan + 1"]
     K -- "R3. θ₁₂ = {&nbsp;Hijo₃/eva&nbsp;}" --> L["generaciones(eva, eva, Faltan₃),<br/>Faltan₂ is Faltan₃ + 1,<br/>Faltan is Faltan₂ + 1,<br/>Cuantas is Faltan + 1"]
-    L -- "R4. θ₁₃ = {&nbsp;A₄/eva, D₄/eva, Faltan₃/1&nbsp;}" --> M["padre(eva, eva),<br/>Faltan₂ is 1 + 1,<br/>Faltan is Faltan₂ + 1,<br/>Cuantas is Faltan + 1"]
+    L -- "R4. θ₁₃ = {&nbsp;A₄/eva,<br/>D₄/eva,<br/>Faltan₃/1&nbsp;}" --> M["padre(eva, eva),<br/>Faltan₂ is 1 + 1,<br/>Faltan is Faltan₂ + 1,<br/>Cuantas is Faltan + 1"]
     M --> F3(["falla"])
-    L -- "R5. θ₁₄ = {&nbsp;A₄/eva, D₄/eva, N₄/Faltan₃&nbsp;}" --> N["padre(eva, Hijo₄),<br/>generaciones(Hijo₄, eva, Faltan₄),<br/>Faltan₃ is Faltan₄ + 1,<br/>Faltan₂ is Faltan₃ + 1,<br/>Faltan is Faltan₂ + 1,<br/>Cuantas is Faltan + 1"]
+    L -- "R5. θ₁₄ = {&nbsp;A₄/eva,<br/>D₄/eva,<br/>N₄/Faltan₃&nbsp;}" --> N["padre(eva, Hijo₄),<br/>generaciones(Hijo₄, eva, Faltan₄),<br/>Faltan₃ is Faltan₄ + 1,<br/>Faltan₂ is Faltan₃ + 1,<br/>Faltan is Faltan₂ + 1,<br/>Cuantas is Faltan + 1"]
     N --> F4(["falla"])
 ```
 

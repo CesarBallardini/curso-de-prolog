@@ -427,7 +427,7 @@ Con la cláusula de `empieza_con/2` numerada R1:
 
 ```mermaid
 flowchart TD
-    A["empieza_con(ana, P)"] -- "R1. θ₁ = {&nbsp;Palabra/ana, Prefijo/P&nbsp;}" --> B["sub_atom(ana, 0, _, _, P)"]
+    A["empieza_con(ana, P)"] -- "R1. θ₁ = {&nbsp;Palabra/ana,<br/>Prefijo/P&nbsp;}" --> B["sub_atom(ana, 0, _, _, P)"]
     B -- "sub_atom. θ₂ = {&nbsp;P/''&nbsp;}" --> S1(["1.ª respuesta<br/>P = ''"])
     B -- "sub_atom. θ₃ = {&nbsp;P/a&nbsp;}" --> S2(["2.ª respuesta<br/>P = a"])
     B -- "sub_atom. θ₄ = {&nbsp;P/an&nbsp;}" --> S3(["3.ª respuesta<br/>P = an"])
@@ -504,13 +504,13 @@ como `N0₂`. El árbol va en dos partes por su altura:
 ```mermaid
 %%{init: {"flowchart": {"rankSpacing": 30, "nodeSpacing": 25}}}%%
 flowchart TD
-    A["contar_letra(a, ana, N)"] -- "R3. θ₁ = {&nbsp;Letra/a, Palabra/ana, N₁/N&nbsp;}" --> B["atom_chars(ana, Letras),<br/>contar(a, Letras, N)"]
+    A["contar_letra(a, ana, N)"] -- "R3. θ₁ = {&nbsp;Letra/a,<br/>Palabra/ana,<br/>N₁/N&nbsp;}" --> B["atom_chars(ana, Letras),<br/>contar(a, Letras, N)"]
     B -- "atom_chars. θ₂ = {&nbsp;Letras/[a, n, a]&nbsp;}" --> C["contar(a, [a, n, a], N)"]
-    C -- "R5. θ₃ = {&nbsp;X/a, Resto/[n, a], N₂/N&nbsp;}" --> D["contar(a, [n, a], N0),<br/>N is N0 + 1"]
-    D -- "R6. θ₄ = {&nbsp;X/a, Y/n, Resto/[a], N₃/N0&nbsp;}" --> E["a \== n,<br/>contar(a, [a], N0),<br/>N is N0 + 1"]
+    C -- "R5. θ₃ = {&nbsp;X/a,<br/>Resto/[n, a],<br/>N₂/N&nbsp;}" --> D["contar(a, [n, a], N0),<br/>N is N0 + 1"]
+    D -- "R6. θ₄ = {&nbsp;X/a,<br/>Y/n,<br/>Resto/[a],<br/>N₃/N0&nbsp;}" --> E["a \== n,<br/>contar(a, [a], N0),<br/>N is N0 + 1"]
     E --> F["contar(a, [a], N0),<br/>N is N0 + 1"]
     F --> V["⋮<br/>sigue en el árbol siguiente"]
-    C -- "R6. θ₁₀ = {&nbsp;X/a, Y/a, Resto/[n, a], N₆/N&nbsp;}" --> L["a \== a,<br/>contar(a, [n, a], N)"]
+    C -- "R6. θ₁₀ = {&nbsp;X/a,<br/>Y/a,<br/>Resto/[n, a],<br/>N₆/N&nbsp;}" --> L["a \== a,<br/>contar(a, [n, a], N)"]
     L --> LF(["falla"])
     classDef abierto fill:none,stroke:none;
     class V abierto;
@@ -523,11 +523,11 @@ primero:
 %%{init: {"flowchart": {"rankSpacing": 30, "nodeSpacing": 25}}}%%
 flowchart TD
     F["contar(a, [a], N0),<br/>N is N0 + 1"]
-    F -- "R5. θ₅ = {&nbsp;X/a, Resto/[], N₄/N0&nbsp;}" --> G["contar(a, [], N0₂),<br/>N0 is N0₂ + 1,<br/>N is N0 + 1"]
+    F -- "R5. θ₅ = {&nbsp;X/a,<br/>Resto/[],<br/>N₄/N0&nbsp;}" --> G["contar(a, [], N0₂),<br/>N0 is N0₂ + 1,<br/>N is N0 + 1"]
     G -- "R4. θ₆ = {&nbsp;_/a, N0₂/0&nbsp;}" --> H["N0 is 0 + 1,<br/>N is N0 + 1"]
     H -- "is. θ₇ = {&nbsp;N0/1&nbsp;}" --> I["N is 1 + 1"]
     I -- "is. θ₈ = {&nbsp;N/2&nbsp;}" --> S(["consulta vacía<br/>N = 2"])
-    F -- "R6. θ₉ = {&nbsp;X/a, Y/a, Resto/[], N₅/N0&nbsp;}" --> K["a \== a,<br/>contar(a, [], N0),<br/>N is N0 + 1"]
+    F -- "R6. θ₉ = {&nbsp;X/a,<br/>Y/a,<br/>Resto/[],<br/>N₅/N0&nbsp;}" --> K["a \== a,<br/>contar(a, [], N0),<br/>N is N0 + 1"]
     K --> KF(["falla"])
 ```
 
@@ -751,8 +751,8 @@ pendiente ya tiene una `Normal`, y la segunda escribe `Texto₂`, `Normal₂` y
 ```mermaid
 %%{init: {"flowchart": {"rankSpacing": 30, "nodeSpacing": 25}}}%%
 flowchart TD
-    A["mismo_nombre('&nbsp;&nbsp;Ana&nbsp;&nbsp;&nbsp;Paz&nbsp;', 'ana paz')"] -- "R1. θ₁ = {&nbsp;A/'&nbsp;&nbsp;Ana&nbsp;&nbsp;&nbsp;Paz&nbsp;', B/'ana paz'&nbsp;}" --> B["normalizado('&nbsp;&nbsp;Ana&nbsp;&nbsp;&nbsp;Paz&nbsp;', Normal),<br/>normalizado('ana paz', Normal)"]
-    B -- "R2. θ₂ = {&nbsp;Texto/'&nbsp;&nbsp;Ana&nbsp;&nbsp;&nbsp;Paz&nbsp;', Normal₁/Normal&nbsp;}" --> C["normalize_space(atom(Espaciado), '&nbsp;&nbsp;Ana&nbsp;&nbsp;&nbsp;Paz&nbsp;'),<br/>downcase_atom(Espaciado, Normal),<br/>normalizado('ana paz', Normal)"]
+    A["mismo_nombre('&nbsp;&nbsp;Ana&nbsp;&nbsp;&nbsp;Paz&nbsp;', 'ana paz')"] -- "R1. θ₁ = {&nbsp;A/'&nbsp;&nbsp;Ana&nbsp;&nbsp;&nbsp;Paz&nbsp;',<br/>B/'ana paz'&nbsp;}" --> B["normalizado('&nbsp;&nbsp;Ana&nbsp;&nbsp;&nbsp;Paz&nbsp;', Normal),<br/>normalizado('ana paz', Normal)"]
+    B -- "R2. θ₂ = {&nbsp;Texto/'&nbsp;&nbsp;Ana&nbsp;&nbsp;&nbsp;Paz&nbsp;',<br/>Normal₁/Normal&nbsp;}" --> C["normalize_space(atom(Espaciado), '&nbsp;&nbsp;Ana&nbsp;&nbsp;&nbsp;Paz&nbsp;'),<br/>downcase_atom(Espaciado, Normal),<br/>normalizado('ana paz', Normal)"]
     C -- "normalize_space. θ₃ = {&nbsp;Espaciado/'Ana Paz'&nbsp;}" --> D["downcase_atom('Ana Paz', Normal),<br/>normalizado('ana paz', Normal)"]
     D -- "downcase_atom. θ₄ = {&nbsp;Normal/'ana paz'&nbsp;}" --> E["normalizado('ana paz', 'ana paz')"]
     E --> V["⋮<br/>sigue en el árbol siguiente"]
@@ -767,7 +767,7 @@ primero:
 %%{init: {"flowchart": {"rankSpacing": 30, "nodeSpacing": 25}}}%%
 flowchart TD
     E["normalizado('ana paz', 'ana paz')"]
-    E -- "R2. θ₅ = {&nbsp;Texto₂/'ana paz', Normal₂/'ana paz'&nbsp;}" --> F["normalize_space(atom(Espaciado₂), 'ana paz'),<br/>downcase_atom(Espaciado₂, 'ana paz')"]
+    E -- "R2. θ₅ = {&nbsp;Texto₂/'ana paz',<br/>Normal₂/'ana paz'&nbsp;}" --> F["normalize_space(atom(Espaciado₂), 'ana paz'),<br/>downcase_atom(Espaciado₂, 'ana paz')"]
     F -- "normalize_space. θ₆ = {&nbsp;Espaciado₂/'ana paz'&nbsp;}" --> G["downcase_atom('ana paz', 'ana paz')"]
     G -- "downcase_atom. θ₇ = {&nbsp;}" --> S(["consulta vacía<br/>true"])
 ```

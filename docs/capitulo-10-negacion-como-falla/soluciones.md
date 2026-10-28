@@ -683,7 +683,7 @@ liga `X` a `ana` con R2 y llega a la consulta vacía; esa hoja hace fallar al
 
 ```mermaid
 flowchart TD
-    A["ninguno_es(X, [ana, luis])"] -- "R1. θ₁ = {&nbsp;X₁/X, L/[ana, luis]&nbsp;}" --> B["\+ esta_en_lista(X, [ana, luis])"]
+    A["ninguno_es(X, [ana, luis])"] -- "R1. θ₁ = {&nbsp;X₁/X,<br/>L/[ana, luis]&nbsp;}" --> B["\+ esta_en_lista(X, [ana, luis])"]
     B === s
     subgraph s ["árbol subordinado de esta_en_lista(X, [ana, luis])"]
         direction TB
@@ -702,9 +702,9 @@ y la rama llega a la consulta vacía sin haber ligado `X` en ningún arco:
 ```mermaid
 %%{init: {"flowchart": {"rankSpacing": 30}}}%%
 flowchart TD
-    A["ninguno_es_recorriendo(X, [ana, luis])"] -- "R5. θ₁ = {&nbsp;X₁/X, Otro₁/ana, Resto₁/[luis]&nbsp;}" --> B["X \== ana,<br/>ninguno_es_recorriendo(X, [luis])"]
+    A["ninguno_es_recorriendo(X, [ana, luis])"] -- "R5. θ₁ = {&nbsp;X₁/X,<br/>Otro₁/ana,<br/>Resto₁/[luis]&nbsp;}" --> B["X \== ana,<br/>ninguno_es_recorriendo(X, [luis])"]
     B --> C["ninguno_es_recorriendo(X, [luis])"]
-    C -- "R5. θ₂ = {&nbsp;X₂/X, Otro₂/luis, Resto₂/[]&nbsp;}" --> D["X \== luis,<br/>ninguno_es_recorriendo(X, [])"]
+    C -- "R5. θ₂ = {&nbsp;X₂/X,<br/>Otro₂/luis,<br/>Resto₂/[]&nbsp;}" --> D["X \== luis,<br/>ninguno_es_recorriendo(X, [])"]
     D --> E["ninguno_es_recorriendo(X, [])"]
     E -- "R4. θ₃ = {&nbsp;_/X&nbsp;}" --> S(["consulta vacía<br/>true"])
 ```
@@ -834,14 +834,14 @@ también tiene una `R`:
 
 ```mermaid
 flowchart TD
-    A["solo_en_la_primera([a, b], [Y], R)"] -- "R2. θ₁ = {&nbsp;X₁/a, Resto₁/[b], L2₁/[Y], R/[a|RestoR₁]&nbsp;}" --> B["\+ member(a, [Y]),<br/>solo_en_la_primera([b], [Y], RestoR₁)"]
+    A["solo_en_la_primera([a, b], [Y], R)"] -- "R2. θ₁ = {&nbsp;X₁/a,<br/>Resto₁/[b],<br/>L2₁/[Y],<br/>R/[a|RestoR₁]&nbsp;}" --> B["\+ member(a, [Y]),<br/>solo_en_la_primera([b], [Y], RestoR₁)"]
     B === s1
     subgraph s1 ["árbol subordinado de member(a, [Y])"]
         direction TB
         C["member(a, [Y])"] -- "θ₂ = {&nbsp;Y/a&nbsp;}" --> S1(["consulta vacía"])
     end
     s1 --> F1(["falla"])
-    A -- "R3. θ₃ = {&nbsp;X₁/a, Resto₁/[b], L2₁/[Y], R₁/R&nbsp;}" --> D["member(a, [Y]),<br/>!,<br/>solo_en_la_primera([b], [Y], R)"]
+    A -- "R3. θ₃ = {&nbsp;X₁/a,<br/>Resto₁/[b],<br/>L2₁/[Y],<br/>R₁/R&nbsp;}" --> D["member(a, [Y]),<br/>!,<br/>solo_en_la_primera([b], [Y], R)"]
     D --> V["⋮<br/>sigue en el árbol siguiente"]
     classDef abierto fill:none,stroke:none;
     class V abierto;
@@ -857,7 +857,7 @@ flowchart TD
     D["member(a, [Y]),<br/>!,<br/>solo_en_la_primera([b], [Y], R)"]
     D -- "θ₄ = {&nbsp;Y/a&nbsp;}" --> E["!,<br/>solo_en_la_primera([b], [a], R)"]
     E --> G["solo_en_la_primera([b], [a], R)"]
-    G -- "R2. θ₅ = {&nbsp;X₂/b, Resto₂/[], L2₂/[a], R/[b|RestoR₂]&nbsp;}" --> H["\+ member(b, [a]),<br/>solo_en_la_primera([], [a], RestoR₂)"]
+    G -- "R2. θ₅ = {&nbsp;X₂/b,<br/>Resto₂/[],<br/>L2₂/[a],<br/>R/[b|RestoR₂]&nbsp;}" --> H["\+ member(b, [a]),<br/>solo_en_la_primera([], [a], RestoR₂)"]
     H === s2
     subgraph s2 ["árbol subordinado de member(b, [a])"]
         direction TB
@@ -865,7 +865,7 @@ flowchart TD
     end
     s2 --> J["solo_en_la_primera([], [a], RestoR₂)"]
     J -- "R1. θ₆ = {&nbsp;RestoR₂/[]&nbsp;}" --> S(["consulta vacía<br/>Y = a, R = [b]"])
-    G -- "R3. θ₇ = {&nbsp;X₂/b, Resto₂/[], L2₂/[a], R₂/R&nbsp;}" --> K["member(b, [a]),<br/>!,<br/>solo_en_la_primera([], [a], R)"]
+    G -- "R3. θ₇ = {&nbsp;X₂/b,<br/>Resto₂/[],<br/>L2₂/[a],<br/>R₂/R&nbsp;}" --> K["member(b, [a]),<br/>!,<br/>solo_en_la_primera([], [a], R)"]
     K --> F3(["falla"])
 ```
 

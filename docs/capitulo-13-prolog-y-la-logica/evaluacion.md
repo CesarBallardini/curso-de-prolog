@@ -69,8 +69,8 @@ un solo camino, y la respuesta de Prolog:
 
 ```mermaid
 flowchart TD
-    A["concatenar([a], [b], W)"] -- "R2. θ₁ = {&nbsp;X₁/a, RestoA₁/[], B₁/[b], W/[a|RestoC₁]&nbsp;}" --> B["concatenar([], [b], RestoC₁)"]
-    B -- "R1. θ₂ = {&nbsp;B₂/[b], RestoC₁/[b]&nbsp;}" --> C(["consulta vacía<br/>W = [a|RestoC₁] = [a, b]"])
+    A["concatenar([a], [b], W)"] -- "R2. θ₁ = {&nbsp;X₁/a,<br/>RestoA₁/[],<br/>B₁/[b],<br/>W/[a|RestoC₁]&nbsp;}" --> B["concatenar([], [b], RestoC₁)"]
+    B -- "R1. θ₂ = {&nbsp;B₂/[b],<br/>RestoC₁/[b]&nbsp;}" --> C(["consulta vacía<br/>W = [a|RestoC₁] = [a, b]"])
 ```
 
 ```prolog
@@ -236,12 +236,12 @@ cláusula con el subíndice de ese uso, el árbol es:
 ```mermaid
 %%{init: {"flowchart": {"wrappingWidth": 300}}}%%
 flowchart TD
-    A["consecutivos(2, Z, [2, 3, 2, 4])"] -- "R1. θ₁ = {&nbsp;X₁/2, Y₁/3, Z/3, _/[2, 4]&nbsp;}" --> B(["consulta vacía<br/>Z = 3"])
-    A -- "R2. θ₂ = {&nbsp;X₂/2, Y₂/Z, _/2, Z₂/[3, 2, 4]&nbsp;}" --> C["consecutivos(2, Z, [3, 2, 4])"]
-    C -- "R2. θ₃ = {&nbsp;X₃/2, Y₃/Z, _/3, Z₃/[2, 4]&nbsp;}" --> D["consecutivos(2, Z, [2, 4])"]
-    D -- "R1. θ₄ = {&nbsp;X₄/2, Y₄/4, Z/4, _/[]&nbsp;}" --> E(["consulta vacía<br/>Z = 4"])
-    D -- "R2. θ₅ = {&nbsp;X₅/2, Y₅/Z, _/2, Z₅/[4]&nbsp;}" --> F["consecutivos(2, Z, [4])"]
-    F -- "R2. θ₆ = {&nbsp;X₆/2, Y₆/Z, _/4, Z₆/[]&nbsp;}" --> G["consecutivos(2, Z, [])"]
+    A["consecutivos(2, Z, [2, 3, 2, 4])"] -- "R1. θ₁ = {&nbsp;X₁/2,<br/>Y₁/3,<br/>Z/3,<br/>_/[2, 4]&nbsp;}" --> B(["consulta vacía<br/>Z = 3"])
+    A -- "R2. θ₂ = {&nbsp;X₂/2,<br/>Y₂/Z,<br/>_/2,<br/>Z₂/[3, 2, 4]&nbsp;}" --> C["consecutivos(2, Z, [3, 2, 4])"]
+    C -- "R2. θ₃ = {&nbsp;X₃/2,<br/>Y₃/Z,<br/>_/3,<br/>Z₃/[2, 4]&nbsp;}" --> D["consecutivos(2, Z, [2, 4])"]
+    D -- "R1. θ₄ = {&nbsp;X₄/2,<br/>Y₄/4,<br/>Z/4,<br/>_/[]&nbsp;}" --> E(["consulta vacía<br/>Z = 4"])
+    D -- "R2. θ₅ = {&nbsp;X₅/2,<br/>Y₅/Z,<br/>_/2,<br/>Z₅/[4]&nbsp;}" --> F["consecutivos(2, Z, [4])"]
+    F -- "R2. θ₆ = {&nbsp;X₆/2,<br/>Y₆/Z,<br/>_/4,<br/>Z₆/[]&nbsp;}" --> G["consecutivos(2, Z, [])"]
     G --> H(["falla"])
 ```
 
@@ -288,13 +288,13 @@ consecutivos_invertido(X, Y, [X, Y|_]).
 ```mermaid
 %%{init: {"flowchart": {"wrappingWidth": 300}}}%%
 flowchart TD
-    A["consecutivos_invertido(2, Z, [2, 3, 2, 4])"] -- "R1. θ₁ = {&nbsp;X₁/2, Y₁/Z, _/2, Z₁/[3, 2, 4]&nbsp;}" --> C["consecutivos_invertido(2, Z, [3, 2, 4])"]
-    C -- "R1. θ₂ = {&nbsp;X₂/2, Y₂/Z, _/3, Z₂/[2, 4]&nbsp;}" --> D["consecutivos_invertido(2, Z, [2, 4])"]
-    D -- "R1. θ₃ = {&nbsp;X₃/2, Y₃/Z, _/2, Z₃/[4]&nbsp;}" --> F["consecutivos_invertido(2, Z, [4])"]
-    F -- "R1. θ₄ = {&nbsp;X₄/2, Y₄/Z, _/4, Z₄/[]&nbsp;}" --> G["consecutivos_invertido(2, Z, [])"]
+    A["consecutivos_invertido(2, Z, [2, 3, 2, 4])"] -- "R1. θ₁ = {&nbsp;X₁/2,<br/>Y₁/Z,<br/>_/2,<br/>Z₁/[3, 2, 4]&nbsp;}" --> C["consecutivos_invertido(2, Z, [3, 2, 4])"]
+    C -- "R1. θ₂ = {&nbsp;X₂/2,<br/>Y₂/Z,<br/>_/3,<br/>Z₂/[2, 4]&nbsp;}" --> D["consecutivos_invertido(2, Z, [2, 4])"]
+    D -- "R1. θ₃ = {&nbsp;X₃/2,<br/>Y₃/Z,<br/>_/2,<br/>Z₃/[4]&nbsp;}" --> F["consecutivos_invertido(2, Z, [4])"]
+    F -- "R1. θ₄ = {&nbsp;X₄/2,<br/>Y₄/Z,<br/>_/4,<br/>Z₄/[]&nbsp;}" --> G["consecutivos_invertido(2, Z, [])"]
     G --> H(["falla"])
-    D -- "R2. θ₅ = {&nbsp;X₅/2, Y₅/4, Z/4, _/[]&nbsp;}" --> E(["consulta vacía<br/>Z = 4"])
-    A -- "R2. θ₆ = {&nbsp;X₆/2, Y₆/3, Z/3, _/[2, 4]&nbsp;}" --> B(["consulta vacía<br/>Z = 3"])
+    D -- "R2. θ₅ = {&nbsp;X₅/2,<br/>Y₅/4,<br/>Z/4,<br/>_/[]&nbsp;}" --> E(["consulta vacía<br/>Z = 4"])
+    A -- "R2. θ₆ = {&nbsp;X₆/2,<br/>Y₆/3,<br/>Z/3,<br/>_/[2, 4]&nbsp;}" --> B(["consulta vacía<br/>Z = 3"])
 ```
 
 ```prolog
