@@ -221,9 +221,11 @@ dos resultados sin demostrarlos; el
 los enuncia con precisión para los programas Prolog.
 
 Con `torta.pl` y la consulta `?- torta.` el mecanismo se ve solo, sin
-sustituciones: la última parte de esta sección,
-[Una refutación sin variables](#una-refutacion-sin-variables), sigue esa
-refutación paso a paso, hasta la cláusula vacía.
+sustituciones: la subsección
+[Una refutación sin variables](#una-refutacion-sin-variables) sigue esa
+refutación paso a paso, hasta la cláusula vacía. La regla de Robinson, de la
+que esta es un caso, se enuncia en general en la subsección
+[La resolución de Robinson](#la-resolucion-de-robinson).
 
 En síntesis: **Prolog es resolución sobre cláusulas de Horn, con un recorrido
 del árbol de izquierda a derecha y de arriba hacia abajo.** Esa definición resume
@@ -325,6 +327,19 @@ $\lnot \mathit{masa} \lor \lnot \mathit{hay\_huevos} \lor \mathit{torta}$:
 | 4 | el resolvente 3 con `hay_harina.` | $\lnot \mathit{hay\_huevos}$ |
 | 5 | el resolvente 4 con `hay_huevos.` | $\square$ |
 
+El árbol de derivación de `?- torta.` es una sola rama, y cada arco lleva la
+cláusula con la que se resuelve:
+
+```mermaid
+%%{init: {"flowchart": {"wrappingWidth": 320, "rankSpacing": 30}}}%%
+flowchart TD
+    A["torta<br/>¬torta"] -- "regla de torta" --> B["masa, hay_huevos<br/>¬masa ∨ ¬hay_huevos"]
+    B -- "regla de masa" --> C["hay_leche, hay_harina, hay_huevos<br/>¬hay_leche ∨ ¬hay_harina ∨ ¬hay_huevos"]
+    C -- "hay_leche." --> D["hay_harina, hay_huevos<br/>¬hay_harina ∨ ¬hay_huevos"]
+    D -- "hay_harina." --> E["hay_huevos<br/>¬hay_huevos"]
+    E -- "hay_huevos." --> F(["consulta vacía: □<br/>torta es consecuencia"])
+```
+
 La suposición «no hay torta» lleva a la contradicción, y por lo tanto
 $\mathit{torta}$ es consecuencia del programa, como la
 [sección 13.6](#136-interpretaciones-modelos-y-consecuencia-logica) había
@@ -333,6 +348,126 @@ un nodo del árbol de derivación, y los cinco pasos son sus cinco arcos; la
 página [La evaluación de un programa y los límites de la lógica](evaluacion.md#1310-los-cuatro-pasos)
 muestra cómo se construye cada uno de ellos, y evalúa de la misma manera
 otro programa sin variables.
+
+### La resolución de Robinson
+
+La regla de esta sección es el caso de Horn de una regla más general, que John
+Alan Robinson publicó en 1965 y de la que parte la demostración automática de
+teoremas. Vale para **cláusulas** cualesquiera: una cláusula es una
+disyunción de **literales**, fórmulas atómicas o negadas, con sus variables
+cuantificadas universalmente. En una cláusula de Horn a lo sumo un literal es
+positivo; aquí puede haber cualquier cantidad.
+
+**La regla.** Se toman dos cláusulas $C_1 = A \lor R_1$ y
+$C_2 = \lnot B \lor R_2$, donde $A$ y $B$ son fórmulas atómicas y $R_1$ y $R_2$
+son la disyunción de los demás literales de cada una. Las dos cláusulas no
+comparten variables; si las compartieran, se renombran las de una. Si $A$ y
+$B$ unifican, con unificador más general $\theta$, el **resolvente** es
+
+$$(R_1 \lor R_2)\,\theta$$
+
+Se elige el unificador más general porque así el resolvente resulta lo más
+general posible: cualquier otro que se obtenga con otro unificador es un caso
+particular de él. Un literal que queda repetido se escribe una sola vez.
+
+Es el paso de la regla anterior sin la restricción de que la consulta tenga
+solo literales negados: cuando $C_1$ es un hecho o una regla y $C_2$ la
+consulta, es exactamente el reemplazo de un objetivo por el cuerpo de una
+cláusula. Y vale en los dos sentidos: lo que importa es que uno de los literales
+que unifican esté negado y el otro no.
+
+**Por qué es correcta.** Sin variables, el argumento es por casos. En un
+modelo cualquiera de $C_1$ y $C_2$, $A$ es falso o es verdadero. Si $A$ es
+falso, $C_1$ obliga a que $R_1$ sea verdadero; si $A$ es verdadero, $\lnot A$
+es falso y $C_2$ obliga a que $R_2$ lo sea. En los dos casos el modelo
+satisface $R_1 \lor R_2$. Con variables, el mismo razonamiento vale para cada
+instancia sin variables de las dos cláusulas, y $\theta$ las hace coincidir.
+Los dos casos particulares de la tabla anterior son $\lnot A \lor R_2$ con $A$,
+de donde se deriva $R_2$, y $\lnot A$ con $A$, de donde se deriva $\square$.
+
+**Un ejemplo con una disyunción.** Lo que una cláusula de Horn no puede decir,
+como «llueve o está nublado» de la [sección 13.5](index.md#135-clausulas-de-horn),
+la regla general lo maneja sin cambios. Con estas tres cláusulas se prueba
+$\mathit{mojado}$, y la consulta negada es $\lnot \mathit{mojado}$:
+
+1. $\mathit{llueve} \lor \mathit{nublado}$
+2. $\lnot \mathit{llueve} \lor \mathit{mojado}$
+3. $\lnot \mathit{nublado} \lor \mathit{mojado}$
+
+| Paso | Se resuelve | Resolvente |
+|---|---|---|
+| 1 | la cláusula 1 con la 2 | $\mathit{nublado} \lor \mathit{mojado}$ |
+| 2 | el resolvente 1 con la cláusula 3 | $\mathit{mojado} \lor \mathit{mojado}$, que es $\mathit{mojado}$ |
+| 3 | el resolvente 2 con $\lnot \mathit{mojado}$ | $\square$ |
+
+El razonamiento es por casos: si llueve, hay mojado por la 2; si está nublado,
+por la 3; y una de las dos cosas ocurre. Un programa de Prolog no puede
+contener la cláusula 1, porque tiene dos literales positivos, y por eso no
+puede hacer esta prueba.
+
+Como la resolución combina aquí dos cláusulas del programa entre sí, la
+refutación ya no es un camino sino un árbol que se junta hacia abajo: cada
+resolvente tiene dos padres.
+
+```mermaid
+%%{init: {"flowchart": {"wrappingWidth": 320, "rankSpacing": 30}}}%%
+flowchart TD
+    C1["1. llueve ∨ nublado"] --> R1["nublado ∨ mojado"]
+    C2["2. ¬llueve ∨ mojado"] --> R1
+    R1 --> R2["mojado ∨ mojado<br/>es mojado"]
+    C3["3. ¬nublado ∨ mojado"] --> R2
+    R2 --> R3(["□"])
+    Q["¬mojado"] --> R3
+```
+
+**La factorización.** Con variables, un paso de resolución no basta para toda
+refutación. Las cláusulas $p(X) \lor p(Y)$ y $\lnot p(U) \lor \lnot p(V)$ son
+contradictorias: la primera afirma $p$ para todo valor, y la segunda lo niega
+para todo valor. Pero cada resolvente conserva dos literales, y la cláusula
+vacía no aparece nunca. La salida es la **factorización**: si dos literales de
+una misma cláusula unifican con $\theta$, la cláusula con $\theta$ aplicada, que
+los reúne en uno, es consecuencia de ella. Aquí $p(X) \lor p(Y)$ se factoriza
+en $p(X)$, con $\theta = \{ Y/X \}$; $\lnot p(U) \lor \lnot p(V)$ en $\lnot p(U)$, y
+resolver las dos cláusulas resultantes da $\square$ en un paso:
+
+```mermaid
+%%{init: {"flowchart": {"wrappingWidth": 320, "rankSpacing": 30}}}%%
+flowchart TD
+    A["p(X) ∨ p(Y)"] -- "factorización<br/>θ = {&nbsp;Y/X&nbsp;}" --> A2["p(X)"]
+    B["¬p(U) ∨ ¬p(V)"] -- "factorización<br/>θ = {&nbsp;V/U&nbsp;}" --> B2["¬p(U)"]
+    A2 -- "resolución<br/>θ = {&nbsp;U/X&nbsp;}" --> E(["□"])
+    B2 --> E
+```
+En el artículo de Robinson la factorización está dentro de la definición del
+resolvente: se eligen dos conjuntos no vacíos de literales, uno de cada
+cláusula, que unifican todos con un mismo unificador más general (definiciones
+5.10 y 5.11, página 33). Aquí se la presenta como una regla aparte, como hace
+Spivey, que la enuncia entre los ejercicios de su libro.
+
+**Qué conserva Prolog.** Robinson demostró que la resolución, con la
+factorización, es correcta y completa para la refutación en la lógica de primer
+orden: si $P \cup \{\lnot f\}$ es inconsistente, se deriva $\square$. No es
+completa en otro sentido, el de producir toda consecuencia: $a \lor \lnot a$
+es verdadera en toda interpretación, y la resolución no la deriva de un
+programa donde $a$ ni aparece. Por eso se la usa para decidir si una fórmula
+dada es consecuencia, no para generar consecuencias. Prolog emplea una parte
+pequeña de la regla, la que el
+[capítulo 39](../capitulo-39-semantica-de-los-programas-logicos/resolucion.md#resolucion-sld)
+llama **resolución SLD**:
+
+- una de las dos cláusulas es siempre la consulta pendiente, con todos sus
+  literales negados, y la otra una cláusula del programa, con un solo literal
+  positivo;
+- el literal que se resuelve es siempre el primero de la consulta, y las
+  cláusulas se prueban en el orden del archivo;
+- con un solo literal positivo, el resolvente es otra consulta y la
+  factorización no se necesita, y por eso la regla de la tabla anterior alcanza.
+
+Lo que Prolog no hace es lo que la
+[sección 39.1](../capitulo-39-semantica-de-los-programas-logicos/index.md#formulas-que-no-son-clausulas-de-horn)
+muestra de las fórmulas que no son cláusulas de Horn, y el
+[capítulo 63](../capitulo-63-proyecto-demostrador-teoremas/index.md) construye un
+demostrador que resuelve cláusulas cualesquiera, con factorización.
 
 El capítulo continúa en la página
 [Sustituciones y unificadores](sustituciones.md#138-sustituciones), con las

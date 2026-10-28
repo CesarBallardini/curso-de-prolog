@@ -1,0 +1,406 @@
+# Repairs of the Marker conversion of Robinson (1965), applied by tools/marker2md.py.
+# Every repair was checked against the page images of the scan.
+#
+# How the conversion was made (2026-10-28), from the repository root, in Git Bash:
+#
+# 1. A text layer that keeps the page boundaries (Tesseract in C:/Program Files/Tesseract-OCR on
+#    PATH; pypdfium because Ghostscript is not installed):
+#
+#      uvx ocrmypdf -f -l eng --rasterizer pypdfium --output-type pdf --oversample 400 \
+#          --sidecar robinson.txt books/robinson-machine-oriented-logic-resolution-principle.pdf robinson-ocr.pdf
+#
+# 2. Marker, in a short directory (Windows limits paths to 260 characters), on the CPU, with small
+#    batches and a 12 GB cap on the memory of the whole job (procgov; its --maxws needs an elevated
+#    shell). It ran in the author's own terminal: about 1 h 20 min, 8.5 GB at its peak.
+#
+#      cp books/robinson-machine-oriented-logic-resolution-principle.pdf "$DIR/r.pdf"; cd "$DIR"
+#      PYTHONIOENCODING=utf-8 TORCH_DEVICE=cpu RECOGNITION_BATCH_SIZE=4 DETECTOR_BATCH_SIZE=2 \
+#          LAYOUT_BATCH_SIZE=2 TEXIFY_BATCH_SIZE=2 TABLE_REC_BATCH_SIZE=2 OCR_ERROR_BATCH_SIZE=2 \
+#          procgov --maxjobmem 12G -- 'C:\Users\cesar\.local\bin\uvx.exe' --python 3.12 \
+#          --from 'marker-pdf<2' marker_single r.pdf --output_format markdown --output_dir . \
+#          --force_ocr --disable_image_extraction
+#
+#    Marker 1.10.2 with surya-ocr 0.17.1 wrote r/r.md.
+#
+# 3. This file and the two outputs:
+#
+#      uv run tools/marker2md.py "$DIR/r/r.md" robinson.txt \
+#          books/robinson-machine-oriented-logic-resolution-principle/00-robinson-machine-oriented-logic-resolution-principle.md \
+#          --repairs books/robinson-machine-oriented-logic-resolution-principle/marker-repairs.toml
+
+page_offset = 22
+running_head = '^\s*(?:\d+\s+)?(?:J\.\s*A\.\s*ROBINSON|THE RESOLUTION PRINCIPLE)'
+bold_labels = true
+
+[header]
+intro = '''
+**Contents by line** (2026-10-28: each number is the line of this file, header included, where the
+section begins). J. A. Robinson, «A Machine-Oriented Logic Based on the Resolution Principle»,
+*Journal of the ACM* 12(1), January 1965, pp. 23–41, DOI 10.1145/321250.321253. The text comes from
+a math-aware OCR of the scan, with the formulas in LaTeX (`$…$`, `$$…$$`), and was checked against the
+page images where the OCR failed (the symbol lists of 2.2, the displays of Examples 1 and 2 and of
+the example of Section 7, the proof of the Subsumption Theorem). `<!-- page N, journal p. M -->`
+marks where each page of the PDF begins; the journal page is the PDF page plus 22. The scan cuts off
+the right margin of journal p. 34 (the proofs of the Unification Theorem and the Lemma): the letters
+restored there are in square brackets. Misprints of the original are kept («Is was noted», «Herbrand
+aniverse»). Key triples and resolvents, 5.10–5.11, are on p. 33.
+'''
+
+[header.sections]
+"1" = "Introduction"
+"2" = "Formal preliminaries (2.19 ground resolvents)"
+"3" = "Saturation procedures"
+"4" = "The resolution theorems and the basic lemma"
+"5" = "Substitution, unification and resolution (5.8 unification algorithm, 5.10 key triples, 5.11 resolvents)"
+"6" = "The resolution principle: refutations"
+"7" = "Refutation procedures, search principles"
+
+# --- One symbol for the resolution operator (a Fraktur R in the original) ---
+
+[[repair]]
+old = '\\Re(?![a-zA-Z])'
+new = '\mathfrak{R}'
+regex = true
+all = true
+
+[[repair]]
+old = '\mathbb{R}'
+new = '\mathfrak{R}'
+all = true
+
+[[repair]]
+old = '\mathfrak{A}'
+new = '\mathfrak{R}'
+all = true
+
+[[repair]]
+old = '\mathfrak{R}^{r}'
+new = '\mathfrak{R}^n'
+count = 2
+
+[[repair]]
+old = '\\xi_\{?c\}?(?![a-zA-Z])'
+new = '\xi_C'
+regex = true
+all = true
+
+# --- Title and footnotes ---
+
+[[repair]]
+old = '### J. A. Robinson'
+new = 'J. A. ROBINSON'
+
+[[repair]]
+old = "Argonne National Laboratory\\* and Rice University's"
+new = 'Argonne National Laboratory\* and Rice University†'
+
+[[repair]]
+old = 'Abstract. Theorem-proving'
+new = '*Abstract.* Theorem-proving'
+
+[[repair]]
+old = '- † Present address: Rice University, Houston, Texas.'
+new = """- † Present address: Rice University, Houston, Texas.
+
+*Journal of the Association for Computing Machinery, Vol. 12, No. 1 (January, 1965), pp. 23–41*"""
+
+# --- Section 2 ---
+
+[[repair]]
+old = 'each non-empty clause'
+new = 'each nonempty clause'
+
+[[repair]]  # 2.2: the recognizer looped on the list of function symbols
+old = '\$\$a\^\{n\}\$\$\n,[^\n]*\n'
+new = '''
+$$a^n, b^n, c^n, d^n, e^n, f^n, g^n, h^n, k^n, a_1^n, b_1^n, \cdots, \text{etc.}$$
+'''
+regex = true
+
+[[repair]]
+old = '- $2.17\ Models$.'
+new = '2.17 Models.'
+
+[[repair]]
+old = '- 1 2.9 Complements.'
+new = '2.9 Complements.'
+
+[[repair]]
+old = '\mathfrak{R}^{n+1} = \mathfrak{R}(\mathfrak{R}^n(S))$.'
+new = '\mathfrak{R}^{n+1}(S) = \mathfrak{R}(\mathfrak{R}^n(S))$.'
+
+# --- Section 4 ---
+
+[[repair]]
+old = '$$4.1 S \subseteq \mathfrak{R}(S) \subseteq \mathfrak{R}^2(S) \subseteq \cdots \subseteq \mathfrak{R}^n(S) \subseteq \cdots,$$'
+new = '$$S \subseteq \mathfrak{R}(S) \subseteq \mathfrak{R}^2(S) \subseteq \cdots \subseteq \mathfrak{R}^n(S) \subseteq \cdots, \tag{4.1}$$'
+
+[[repair]]
+old = '$M_i$ is the set $M_{i-1} \cup \{L_i\}$'
+new = '$M_j$ is the set $M_{j-1} \cup \{L_j\}$'
+
+[[repair]]
+old = 'Dcontains $\sim L_i$'
+new = 'D contains $\sim L_j$'
+
+[[repair]]
+old = '$B = (C - \{L_i\}) \cup (D - \{\sim L_i\})$'
+new = '$B = (C - \{L_j\}) \cup (D - \{\sim L_j\})$'
+
+[[repair]]  # the proof of the Corollary came out as a code block
+old = '```\n\\mathfrak\{R\}\^\{n\+1\}\(P\(S\)\).*?```\n'
+new = '''
+$$\begin{aligned}
+\mathfrak{R}^{n+1}(P(S)) &= \mathfrak{R}(\mathfrak{R}^n(P(S))) && \text{by definition of } \mathfrak{R}^{n+1},\\
+&\subseteq \mathfrak{R}(P(\mathfrak{R}^n(S))) && \text{by the induction hypothesis, as } \mathfrak{R} \text{ preserves inclusion,}\\
+&\subseteq P(\mathfrak{R}(\mathfrak{R}^n(S))) && \text{by the Lemma,}\\
+&= P(\mathfrak{R}^{n+1}(S)) && \text{by definition of } \mathfrak{R}^{n+1},
+\end{aligned}$$
+'''
+regex = true
+flags = "s"
+
+# --- Section 5 ---
+
+[[repair]]
+old = 'Then by definition \$E\\sigma = C_0V_\{i_1\}E_1 \\dots V_\{i_n\}E_n\$\n\n ?\$E_0T'
+new = 'Then by definition $E\sigma = E_0T'
+regex = true
+
+[[repair]]
+old = '\bar{T}_i,\bar{E}_1'
+new = '\bar{T}_{i_1}\bar{E}_1'
+
+[[repair]]
+old = 'symbol, E:cample:'
+new = 'symbol. *Example:*'
+
+[[repair]]
+old = 'P(x, a, b)\},\$$'
+new = 'P(x, a, b)\},$$'
+
+[[repair]]
+old = '\{h(x, y), h(y), a\}'
+new = '\{h(x, y), k(y), a\}'
+
+[[repair]]
+old = '$\theta$ unifies $\hat{A}$'
+new = '$\theta$ unifies $A$'
+
+[[repair]]
+old = 'then $\Lambda$ is most'
+new = 'then $A$ is most'
+
+[[repair]]
+old = '$L\xi_{\mathcal{C}} \cup M_{\eta_{\mathcal{D}}}$'
+new = '$L\xi_C \cup M\eta_D$'
+
+[[repair]]
+old = '$L\xi_C\sigma_{N}$'
+new = '$L\xi_C\sigma_N$'
+
+[[repair]]
+old = "5.14.\n$$\\theta = \\sigma_k \\lambda_k$$"
+new = '$$\theta = \sigma_k\lambda_k \tag{5.14}$$'
+
+[[repair]]
+old = '$$5.15. V_k \lambda_k = U_k \lambda_k .$$'
+new = '$$V_k\lambda_k = U_k\lambda_k \tag{5.15}$$'
+
+[[repair]]
+old = '$$B = (C - L) \varepsilon_{C\sigma_N} \cup (D - M) \eta_{C\sigma_N}$$'
+new = '$$B = (C - L)\xi_C\sigma_N \cup (D - M)\eta_D\sigma_N$$'
+
+# --- Journal p. 34: the scan cuts off the right margin; restored letters in brackets ---
+
+[[repair]]
+old = 'holds with $\lambda_0=\sin \sigma_0=\epsilon$.'
+new = 'holds with $\lambda_0 =$ [$\theta$,] since $\sigma_0 = \epsilon$.'
+
+[[repair]]
+old = 'for some s stitution'
+new = 'for some s[ub]stitution'
+
+[[repair]]
+old = 'the Unification gorithm terminates'
+new = 'the Unification [Al]gorithm terminates'
+
+[[repair]]
+old = 'unifier of $A\in\lambda=\lambda_k$ the required'
+new = 'unifier of $A$ a[nd] $\lambda = \lambda_k$ the required'
+
+[[repair]]
+old = 'transfers to s 3.'
+new = 'transfers to s[tep] 3.'
+
+[[repair]]
+old = '$\lambda_k$ m also unify'
+new = '$\lambda_k$ m[ust] also unify'
+
+[[repair]]
+old = 'Hence the $V_k$ and $V_k$ defined in s 3'
+new = 'Hence the $V_k$ and $U_k$ defined in s[tep] 3'
+
+[[repair]]
+old = 'symbols which not variables'
+new = 'symbols which [are] not variables'
+
+[[repair]]
+old = 'well-formed express in'
+new = 'well-formed express[ion] in'
+
+[[repair]]
+old = 'since it is well-form Since'
+new = 'since it is well-form[ed]. Since'
+
+[[repair]]
+old = 'lexical order, $\varepsilon$ since'
+new = 'lexical order, [and] since'
+
+[[repair]]
+old = 'it follows that $V_k$ is variable.'
+new = 'it follows that $V_k$ i[s a] variable.'
+
+[[repair]]
+old = 'since $V_k$ and $U_k$ distinct'
+new = 'since $V_k$ and $U_k$ [are] distinct'
+
+[[repair]]
+old = 'Theref $V_k$'
+new = 'Theref[ore] $V_k$'
+
+[[repair]]
+old = 'will not terminate step 3'
+new = 'will not terminate [in] step 3'
+
+[[repair]]
+old = 'Now let $\lambda_{k+1} = \lambda_k \{V_k\lambda_k/V_k\}$'
+new = 'Now let $\lambda_{k+1} = \lambda_k$ [$-$] $\{V_k\lambda_k/V_k\}$'
+
+[[repair]]
+old = 'until the U fication Algorithm'
+new = 'until the U[ni]fication Algorithm'
+
+[[repair]]
+old = 'state here agree for convenience'
+new = 'state here ag[ain] for convenience'
+
+[[repair]]
+old = 'Herbrand unive of S'
+new = 'Herbrand unive[rse] of S'
+
+[[repair]]
+old = 'in which of $A \in P'
+new = 'in which c[ase] $A \in P'
+
+[[repair]]
+old = 'two ground claus $C'
+new = 'two ground clau[ses] $C'
+
+[[repair]]
+old = '$V_1, \dots, V_k$; all the distinct'
+new = '$V_1, \dots, V_k$ [are] all the distinct'
+
+[[repair]]
+old = '$T_1, \dots, T_k$ are in and $\beta'
+new = '$T_1, \dots, T_k$ are in [$P$,] and $\beta'
+
+[[repair]]
+old = 'In that case, P and P are singletons whose members are complements.'
+new = 'In that case, $A$ [=] $(C - L)\alpha \cup (D - M)\beta$, where $L \subseteq C$, $M \subseteq D$, $L$ and $M$ are nonempty, a[nd] $L\alpha$, $M\beta$ are singletons whose members are complements.'
+
+[[repair]]
+old = '= L\alpha$ a $M\eta_D'
+new = '= L\alpha$ a[nd] $M\eta_D'
+
+[[repair]]
+old = "which are me\n\nbers,"
+new = 'which are me[m]bers,'
+
+# --- Section 6 ---
+
+[[repair]]  # Example 1: the set N split into two displays
+old = "k(x_1, x_2, x_3)),$$\n\n$$Q(y_1, y_2, e(y_2), y_3, f(y_2, y_3), y_4)$$\n."
+new = 'k(x_1, x_2, x_3)),\; Q(y_1, y_2, e(y_2), y_3, f(y_2, y_3), y_4)\}.$$'
+
+[[repair]]  # Example 1: the components of sigma_N, in the page's two columns
+old = '\$\$y_1/x_1\$\$\n.*?/y_4\$\n'
+new = '''
+$$\begin{array}{ll}
+y_1/x_1, & h(y_1, e(g(y_1)))/y_3,\\
+g(y_1)/y_2, & f(g(y_1), h(y_1, e(g(y_1))))/x_3,\\
+e(g(y_1))/x_2, & k(y_1, e(g(y_1)), f(g(y_1), h(y_1, e(g(y_1)))))/y_4
+\end{array}$$
+'''
+regex = true
+flags = "s"
+
+[[repair]]  # Example 2: the clause table came out as one broken array
+old = '\$\$\\begin\{array\}\{lll\} C_1:.*?No \\text\{ right identity\.\} \\end\{array\}\$\$'
+new = '''
+$$\begin{array}{lll}
+C_1: & \{\sim Q(x, y, u), \sim Q(y, z, v), \sim Q(x, v, w), Q(u, z, w)\} & \text{Associativity}\\
+C_2: & \{\sim Q(x, y, u), \sim Q(y, z, v), \sim Q(u, z, w), Q(x, v, w)\} & \text{Associativity}\\
+C_3: & \{Q(g(x, y), x, y)\} & \text{Existence of left and right solutions}\\
+C_4: & \{Q(x, h(x, y), y)\} & \text{Existence of left and right solutions}\\
+C_5: & \{Q(x, y, f(x, y))\} & \text{Closure under } \cdot\\
+C_6: & \{\sim Q(k(x), x, k(x))\} & \text{No right identity.}
+\end{array}$$'''
+regex = true
+flags = "s"
+
+# --- Section 7 ---
+
+[[repair]]
+old = '\{Q(f(a))\}, \{Q(f(f(a)))\}, \{Q(f(f(a)))\}'
+new = '\{Q(f(a))\}, \{Q(f(f(a)))\}, \{Q(f(f(f(a))))\}'
+
+[[repair]]
+old = '$$C_1:=\{Q(a)\},$$'
+new = '$$C_1: \{Q(a)\}$$'
+
+[[repair]]
+old = '$(\{L\}, M, N)$ of the pair (C, D)'
+new = '$\langle \{L\}, M, N \rangle$ of the pair $\langle C, D \rangle$'
+
+[[repair]]  # the proof of the Subsumption Theorem: the recognizer looped
+old = 'Hence every ground instance of \$C\\sigma\$ over \$C\\sigma\$[^\n]*'
+new = 'Hence every ground instance of $C\sigma$ over $H$ is a ground instance of $C$ over $H$, and hence contains a member of $M$. But every ground instance $D\lambda$ of $D$ includes the ground instance $C\sigma\lambda$ of $C$, and hence contains a member of $M$. So $M$ is a model of $S$ and the theorem is proved.'
+regex = true
+
+[[repair]]  # Gilmore's example: underlined literals numbered in the order of deletion
+old = '\$\$C_1: \\frac\{\\\{P\(x_1, x_2\)\\\}\}\{\(6\)\}\$\$.*?\(5\)\}\$\$'
+new = '''
+$$\begin{array}{ll}
+C_1: & \underbrace{\{P(x_1, x_2)\}}_{(6)}\\[1ex]
+C_2: & \{\underbrace{\sim P(y_2, f(y_1, y_2))}_{(1)},\ \underbrace{\sim P(f(y_1, y_2), f(y_1, y_2))}_{(2)},\ Q(y_1, y_2)\}\\[1ex]
+C_3: & \{\underbrace{\sim P(y_2, f(y_1, y_2))}_{(3)},\ \underbrace{\sim P(f(y_1, y_2), f(y_1, y_2))}_{(4)},\ \underbrace{\sim Q(y_1, f(y_1, y_2))}_{(5)},\ \sim Q(f(y_1, y_2), f(y_1, y_2))\}
+\end{array}$$'''
+regex = true
+flags = "s"
+
+[[repair]]  # References: names restored and item 5, which the recognizer dropped
+old = '## References\n\n.*\Z'
+new = '''
+## References
+
+1. CHURCH, A. A note on the Entscheidungsproblem. *J. Symb. Logic 1* (1936), 40–41. Correction, ibid., 101–102.
+2. DAVIS, M., AND PUTNAM, H. A computing procedure for quantification theory. *J. ACM 7* (Mar. 1960), 201–215.
+3. FRIEDMAN, J. A semi-decision procedure for the functional calculus. *J. ACM 10* (Jan. 1963), 1–24.
+4. GILMORE, P. C. A proof method for quantification theory. *IBM J. Res. Develop. 4* (1960), 28–35.
+5. ROBINSON, J. A. Theorem-proving on the computer. *J. ACM 10* (Apr. 1963), 163–174.
+'''
+regex = true
+flags = "s"
+
+# --- After the page markers: two pages begin with a display, whose words the alignment cannot see ---
+
+[[repair]]
+old = "$$\\theta = \\sigma_k\\lambda_k \\tag{5.14}$$\n\n<!-- page 12, journal p. 34 -->\n"
+new = "<!-- page 12, journal p. 34 -->\n\n$$\\theta = \\sigma_k\\lambda_k \\tag{5.14}$$\n\n"
+stage = "after"
+
+[[repair]]
+old = "\n\nand the Corollary is proved.\n\n<!-- page 8, journal p. 30 -->\n"
+new = "\n\n<!-- page 8, journal p. 30 -->\nand the Corollary is proved.\n\n"
+stage = "after"
