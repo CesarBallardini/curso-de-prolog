@@ -18,13 +18,13 @@ valor numérico y corta la búsqueda a una profundidad fija; la **poda
 alfa-beta** llega a los mismos valores sin visitar las posiciones que no
 pueden cambiar la decisión; una **función de evaluación** estima las
 posiciones del límite, y el **orden de las jugadas** decide cuánto poda la
-poda. Tres páginas más completan la escalera: la
-[profundización progresiva](profundizacion.md#profundizacion-progresiva-con-limite-de-tiempo)
+poda. Las últimas secciones completan la escalera: la
+[profundización progresiva](profundizacion.md#425-profundizacion-progresiva-con-limite-de-tiempo)
 con un límite de tiempo, y las jugadas buscadas en paralelo; las
-[tablas de transposición](transposicion.md#tablas-de-transposicion-con-tabulacion)
+[tablas de transposición](transposicion.md#426-tablas-de-transposicion-con-tabulacion)
 escritas con la tabulación del
 [capítulo 40](../capitulo-40-tabulacion/index.md); y
-[el ta-te-ti completo en la terminal](terminal.md#el-ta-te-ti-completo-en-la-terminal),
+[el ta-te-ti completo en la terminal](terminal.md#427-el-ta-te-ti-completo-en-la-terminal),
 con la interfaz del [capítulo 37](../capitulo-37-interfaces-de-usuario/index.md).
 
 La fuente principal es el capítulo «Game Playing» de *Prolog Programming
@@ -38,8 +38,8 @@ solo caso para los dos jugadores, y «Game-Playing Programs», con programas
 para Mastermind, Nim y Kalah. Esos tres juegos son el proyecto del
 [capítulo 79](../capitulo-79-proyecto-kalah-mastermind-nim/index.md), y aquí
 solo se los menciona. Los programas del capítulo están escritos para el
-curso. La lista completa de las fuentes está en las
-[Referencias](#referencias), al final del capítulo.
+curso. Cada página termina con las referencias que usa; las de esta página
+están en sus [Referencias](#referencias).
 
 El capítulo cumple los anuncios de los capítulos
 [9](../capitulo-09-backtracking-y-corte/index.md) y
@@ -82,7 +82,7 @@ Al terminar el capítulo, el lector puede:
 !!! info "Tiempo estimado"
     Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **3:10 h**.
     Resolver los 6 ejercicios marcados con ★: **1:40 h**.
-    Resolver los 14 ejercicios del final: **4:00 h**.
+    Resolver los 14 ejercicios del capítulo: **4:00 h**.
 
 ## 42.1 Posiciones, jugadas y fin de partida
 
@@ -282,7 +282,7 @@ posición mueve o, no gana, y desde el tablero vacío tampoco gana x: con
 buen juego de los dos, el ta-te-ti termina empatado. `ganada/2` es la
 negación como falla del [capítulo 10](../capitulo-10-negacion-como-falla/index.md)
 aplicada dos veces, `\+` y `forall/2`, y es el mismo juego que la
-[sección 40.4](../capitulo-40-tabulacion/index.md#404-negacion-tabulada)
+[sección 40.4](../capitulo-40-tabulacion/subsuncion.md#404-negacion-tabulada)
 resolvió con `tnot/1` sobre un grafo con ciclos; aquí no hay ciclos, porque
 cada jugada llena una casilla, y la negación de Prolog termina.
 
@@ -498,7 +498,7 @@ V = 0,
 N = 82.
 ```
 
-La [sección 42.4](#424-funciones-de-evaluacion-y-orden-de-las-jugadas)
+La [sección 42.4](evaluacion.md#424-funciones-de-evaluacion-y-orden-de-las-jugadas)
 escribe una evaluación que distingue las posiciones. Sterling y Shapiro
 escriben minimax con un solo caso, midiendo el valor siempre desde el punto
 de vista del que mueve y cambiándole el signo en cada nivel; el
@@ -687,62 +687,13 @@ el valor son los de minimax, con límite de profundidad y sin él.
     todas las jugadas y no solo de la mejor, para mostrarlas o para
     ordenarlas: la poda da cotas. Y cuando las posiciones se repiten mucho
     y el juego se busca hasta el final: una tabla de transposición
-    ([sección 42.6](#426-tablas-de-transposicion-con-tabulacion)) ahorra
+    ([sección 42.6](transposicion.md#426-tablas-de-transposicion-con-tabulacion)) ahorra
     más, y las cotas dificultan reutilizar lo guardado.
 
-## 42.4 Funciones de evaluación y orden de las jugadas
-
-Una búsqueda con límite depende de la evaluación de las posiciones del
-límite, y la poda corta más cuanto antes aparece la mejor jugada. La página
-[Funciones de evaluación y orden](evaluacion.md#funciones-de-evaluacion-y-orden-de-las-jugadas)
-evalúa el ta-te-ti por las líneas que cada jugador todavía puede completar,
-presenta el efecto horizonte, y ordena las jugadas con esa evaluación: los
-nodos bajan a la cuarta o la quinta parte, pero ordenar cuesta, y en el
-tablero de 4 × 4 la búsqueda ordenada solo es más rápida desde la
-profundidad 7.
-
-## 42.5 Profundización progresiva con límite de tiempo
-
-Un programa que juega tiene un tiempo para cada jugada, no una profundidad.
-La página
-[Profundización progresiva](profundizacion.md#profundizacion-progresiva-con-limite-de-tiempo)
-repite la poda con profundidad 1, 2, 3… hasta que se acaba el tiempo, con
-`call_with_time_limit/2`, y juega la mejor jugada de la última búsqueda que
-terminó; cada búsqueda empieza por la mejor jugada de la anterior. En el
-tablero de 4 × 4, un segundo alcanza para la profundidad 5, y diez para la
-6. La misma página reparte las jugadas entre los núcleos con
-`concurrent_maplist/3`, con el límite de tiempo dentro de cada hilo: a
-profundidad 7, la búsqueda baja de 18,2 a 7,3 segundos con 16 núcleos.
-
-## 42.6 Tablas de transposición con tabulación
-
-Una misma posición aparece en muchas ramas del árbol: x en 1 y después en
-5 lleva al mismo tablero que x en 5 y después en 1. La página
-[Tablas de transposición](transposicion.md#tablas-de-transposicion-con-tabulacion)
-escribe minimax con `:- table`, y cada posición distinta se busca una sola
-vez: el ta-te-ti de 3 × 3 tiene 5 478, y la búsqueda completa tarda 0,2
-segundos, menos que la poda. Con un límite de profundidad, en el tablero
-de 4 × 4, la tabla sin la poda queda por detrás de la poda sin la tabla.
-
-## 42.7 El ta-te-ti completo, en la terminal
-
-La página [El ta-te-ti en la terminal](terminal.md#el-ta-te-ti-completo-en-la-terminal)
-junta la búsqueda con la interfaz de pantalla completa del
-[capítulo 37](../capitulo-37-interfaces-de-usuario/index.md#372-pantalla-completa-en-la-terminal):
-el tablero en una caja, redibujado después de cada jugada, un cursor que se
-mueve con las flechas, y la computadora que responde con la poda o con la
-profundización progresiva. El modelo de pantalla y la respuesta a cada tecla
-son puros, y las pruebas juegan partidas enteras con las teclas escritas en
-una cadena.
-
-!!! success "Criterios de calidad"
-    | Criterio | En este capítulo |
-    |---|---|
-    | C1 | cada predicado declara modos y determinación; `jugada/4` aclara que no comprueba el fin de la partida, y `acotado/9` qué significa su valor fuera del intervalo |
-    | C3 | la búsqueda no conoce el juego: recibe el juego como término y solo llama a `inicial/2`, `jugada/4`, `turno/3`, `fin/3`, `valor_final/3` y `evaluar/3`; la misma poda juega el árbol de ejemplo, el ta-te-ti de 3 × 3 y el de 4 × 4 |
-    | C4 | las búsquedas son `det` y sus pruebas no declaran `nondet`: `turno/3` pasa por `lado/2`, `clave/4` y `responder/4` llevan primero el argumento que decide la cláusula |
-    | C6 | la terminal está separada del núcleo: `pantalla/2` y `paso/3` son puros, salvo el reloj de la profundización, y solo `bucle/3` lee y escribe |
-    | C7 | 96 pruebas en nueve archivos, y 31 más sobre las soluciones; la poda se compara con minimax sobre una muestra de posiciones, y lo que depende de la máquina, como la profundidad alcanzada en un tiempo, se prueba con cotas y no con un valor |
+El capítulo continúa en la página
+[Funciones de evaluación y orden de las jugadas](evaluacion.md#424-funciones-de-evaluacion-y-orden-de-las-jugadas),
+con la evaluación de las posiciones del límite y el orden en que la poda
+recorre las jugadas.
 
 ## Ejercicios
 
@@ -778,75 +729,10 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
    las columnas y las dos diagonales de un tablero de N × N, con su
    encabezado de modos y determinación. Comprobar que para 3 y 4 da las
    mismas líneas que `lineas/2`, y contar las de 5 × 5.
-7. **(2)** Escribir una evaluación `evaluar_amenazas/3` que, además de las
-   líneas abiertas, sume 10 por cada línea con dos marcas de x y ninguna de
-   o, y reste 10 por cada una al revés. Comparar las dos evaluaciones en
-   `pos([x,v,v, v,o,v, v,v,x], o)` y en `pos([x,x,v, v,o,v, v,v,v], o)`.
-8. ★ **(2)** Ordenar las jugadas con una clave barata: la cantidad de
-   líneas que pasan por la casilla, que no depende de la posición.
-   Agregarla como el orden `central` y medir nodos, inferencias y tiempo en
-   el tablero de 4 × 4 a profundidad 6, contra `natural` y `mejores`.
-9. **(2)** En el juego de restar hay una pila de fichas; cada jugador saca
+7. **(2)** En el juego de restar hay una pila de fichas; cada jugador saca
    una, dos o tres, y gana quien saca la última. Describirlo como el juego
    `restar` con los cinco predicados, y usar `alfabeta/6` para encontrar
    las pilas de 1 a 12 en las que pierde el que mueve.
-10. ★ **(3)** Una posición del ta-te-ti y sus giros y reflejos tienen el
-    mismo valor. Escribir `valor_simetrico/3`, tabulado sobre una forma
-    canónica de la posición —la menor, en el orden estándar, de sus ocho
-    simetrías—, y contar cuántas posiciones distintas quedan.
-11. **(2)** Tabular la poda: escribir `acotado_tabulado/5`, con las cotas
-    como argumentos de la tabla, y contar las tablas que deja la búsqueda
-    completa del tablero vacío, contra las 5 478 de `valor/3`. Explicar la
-    diferencia.
-12. **(1)** En el tablero de 4 × 4, `alfabeta/6` da los valores 3, 0, 3, 0,
-    2 y 0 con las profundidades 1 a 6. Explicar la alternancia.
-13. **(2)** Escribir `jugar_con_o(N, Rival)`: la partida en la que la
-    computadora juega con x y mueve primero, y la persona juega con o.
-    ¿Qué predicados de `tateti_terminal.pl` sirven sin cambios, y cuáles
-    hay que cambiar?
-14. **(3)** Escribir `autojuego(+Juego, +RivalX, +RivalO, -Jugadas,
-    -Resultado)`: una partida entera entre dos rivales de la computadora,
-    como los de la terminal. Jugar el tablero de 3 × 3 con `profundidad(9)`
-    contra `profundidad(9)` y contra `profundidad(1)`, y el de 4 × 4 con
-    `profundidad(4)` contra `profundidad(1)`; predecir los resultados antes
-    de ejecutarlos, y explicarlos.
-
-## Resumen
-
-| | |
-|---|---|
-| **árbol de la partida** | las posiciones como nodos y las jugadas como ramas; las hojas son las posiciones finales |
-| **posición ganada** | un árbol Y/O: basta una jugada propia, y tienen que ser buenas todas las del rival |
-| **minimax** | el valor de una posición es el máximo de los de sus jugadas si mueve max, el mínimo si mueve min |
-| **evaluación estática** | la estimación del valor de una posición del límite, sin buscar jugadas hacia adelante |
-| **variante principal** | la secuencia de jugadas en la que cada jugador elige su mejor jugada |
-| **poda alfa-beta** | minimax con dos cotas: lo que max y lo que min ya tienen asegurado; lo que queda fuera no se busca |
-| **orden de las jugadas** | con la mejor primero, la poda corta más; con la peor, no corta |
-| **efecto horizonte** | una pérdida postergada hasta más allá del límite no se ve |
-| `inicial/2`, `jugada/4`, `turno/3`, `fin/3`, `valor_final/3` | la descripción de un juego, con el juego como primer argumento |
-| `ganada/2`, `perdida/2`, `partidas/3` | la posición ganada y el tamaño del árbol |
-| `filas/3` | el tablero como una lista de cadenas, una por fila |
-| `minimax/6`, `valor/7`, `mejor/10` | minimax con profundidad y contador de nodos |
-| `alfabeta/6`, `acotado/9`, `cotas/11`, `poda/4`, `estrecha/6` | la poda alfa-beta |
-| `evaluar/3`, `abierta/3` | la evaluación por líneas abiertas |
-| `alfabeta/7`, `ordenar/5`, `por_evaluacion/4` | la poda con las jugadas ordenadas |
-| `nth1/4` | `nth1(I, L, X, R)`: X en la posición I de L, contando desde 1, y R el resto; en sentido inverso, inserta |
-| `call_with_time_limit/2` | `call_with_time_limit(S, G)`: G como `once/1`, interrumpida con la excepción `time_limit_exceeded` si no termina en S segundos ([Profundización progresiva](profundizacion.md#profundizacion-progresiva-con-limite-de-tiempo)) |
-| `profundizar/6`, `primero/6` | la profundización progresiva con límite de tiempo ([Profundización progresiva](profundizacion.md#profundizacion-progresiva-con-limite-de-tiempo)) |
-| `en_paralelo/5`, `en_paralelo/6` | las jugadas buscadas en paralelo ([Profundización progresiva](profundizacion.md#jugadas-en-paralelo)) |
-| `valor/3`, `jugada_optima/4`, `valor_limitado/4` | minimax tabulado ([Tablas de transposición](transposicion.md#tablas-de-transposicion-con-tabulacion)) |
-| `min_list/2` | el menor elemento de una lista de números ([Tablas de transposición](transposicion.md#tablas-de-transposicion-con-tabulacion)) |
-| `jugar/2`, `paso/3`, `pantalla/2`, `bucle/3` | el ta-te-ti en la terminal ([El ta-te-ti en la terminal](terminal.md#el-ta-te-ti-completo-en-la-terminal)) |
-| **[Patrón 55](../patrones.md#55-poda-alfa-beta)** | poda alfa-beta |
-| `expand_file_name/2` | los archivos que cumplen un patrón con comodines, como `*.pl` |
-
-## Temas que se retoman
-
-| Tema | Se retoma en |
-|---|---|
-| Kalah con la poda alfa-beta; Mastermind y Nim | [capítulo 79](../capitulo-79-proyecto-kalah-mastermind-nim/index.md) |
-| Un lenguaje de consejos para el ajedrez: metas y restricciones sobre las jugadas en lugar de una evaluación numérica | [capítulo 80](../capitulo-80-proyecto-lenguaje-consejos-ajedrez/index.md) |
-| La búsqueda mejor primero en grafos Y/O, de los que la posición ganada es un caso | [capítulo 72](../capitulo-72-proyecto-grafos-o/index.md) |
 
 ## Referencias
 
@@ -855,15 +741,10 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
   perfect-information games», «The minimax principle», «The alpha-beta
   algorithm: an efficient implementation of minimax» y «Minimax-based
   programs: refinements and limitations». Sin edición en línea de acceso
-  libre. El capítulo toma de allí la posición ganada como un árbol Y/O
+  libre. Esta página toma de allí la posición ganada como un árbol Y/O
   ([sección 42.1](#421-posiciones-jugadas-y-fin-de-partida)), el principio
-  minimax ([sección 42.2](#422-minimax)), el valor «suficientemente bueno»
-  de la poda alfa-beta ([sección 42.3](#423-la-poda-alfa-beta)), la
-  importancia del orden de las jugadas, las posiciones tranquilas y el
-  efecto horizonte ([sección 42.4](evaluacion.md#funciones-de-evaluacion-y-orden-de-las-jugadas)),
-  y la profundización progresiva que empieza por la mejor jugada de la
-  búsqueda anterior
-  ([sección 42.5](profundizacion.md#profundizacion-progresiva-con-limite-de-tiempo)).
+  minimax ([sección 42.2](#422-minimax)) y el valor «suficientemente bueno»
+  de la poda alfa-beta ([sección 42.3](#423-la-poda-alfa-beta)).
 - Leon Sterling y Ehud Shapiro, *The Art of Prolog: Advanced Programming
   Techniques*, 2.ª edición, MIT Press, 1994 — capítulos «Search
   Techniques» (minimax y alfa-beta con un solo caso para los dos
@@ -873,10 +754,3 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
   [capítulo 79](../capitulo-79-proyecto-kalah-mastermind-nim/index.md)).
   La 1.ª edición (1986) se consigue en
   [préstamo en el Internet Archive](https://archive.org/details/artofprologadvan00ster).
-- *SWI-Prolog Reference Manual*, secciones de `library(time)`
-  (`call_with_time_limit/2`), de la tabulación y de `library(thread)`
-  (`concurrent_maplist/3`):
-  [manual en línea](https://www.swi-prolog.org/pldoc/doc_for?object=manual).
-
-Los programas del capítulo son propios del curso: ninguno se copia de las
-fuentes, que aportan las ideas y los algoritmos.

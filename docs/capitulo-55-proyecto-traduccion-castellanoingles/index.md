@@ -61,7 +61,7 @@ lógicas como interlingua; este capítulo usa transferencia entre árboles, y
 el [ejercicio 11](#ejercicios) construye la variante con interlingua. Las
 gramáticas, el vocabulario y el código son propios. La forma de las
 respuestas del [capítulo 45](../capitulo-45-proyecto-aventura-de-texto/index.md) —el artículo que concuerda en género con el
-nombre, en su página [Órdenes y respuestas en castellano](../capitulo-45-proyecto-aventura-de-texto/lenguaje.md#ordenes-y-respuestas-en-castellano)— reaparece aquí
+nombre, en su página [Órdenes en castellano, el bucle del juego y la pantalla completa](../capitulo-45-proyecto-aventura-de-texto/lenguaje.md#ordenes-en-castellano-el-bucle-del-juego-y-la-pantalla-completa)— reaparece aquí
 en una gramática que además analiza.
 
 ## Objetivos del capítulo
@@ -87,9 +87,9 @@ Al terminar el capítulo, el lector puede:
   trato de tú y de usted, con un dato del contexto.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **2:10 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **2:05 h**.
     Resolver los 6 ejercicios marcados con ★: **1:30 h**.
-    Resolver los 14 ejercicios del final: **4:05 h**.
+    Resolver los 14 ejercicios del capítulo: **4:05 h**.
 
 ## 55.1 El traductor terminado
 
@@ -752,35 +752,10 @@ texto(Palabras, Texto) :-
     atom_string(Oracion, Texto).
 ```
 
-## 55.8 Versión 6: una interlingua con cuantificadores
-
-Covington traduce por una interlingua: sus gramáticas relacionan cada
-oración con una fórmula lógica, y traducir es analizar con una gramática y
-generar con la otra. La página
-[Interlingua lógica y trato](interlingua.md#una-interlingua-con-cuantificadores)
-desarrolla la versión 6, `cuantificadores.pl`: las fórmulas con
-`todo/3` y `alguno/3`, compuestas por unificación a partir de lo que
-aporta cada palabra; la **ambigüedad de alcance** de «todo alumno lee un
-libro», que tiene dos lecturas con distinto valor de verdad en un mismo
-modelo; y la traducción, que la conserva porque la oración inglesa tiene
-la misma ambigüedad.
-
-## 55.9 Versión 7: tú y usted
-
-El inglés tiene una sola forma, *you*, donde el castellano distingue el
-trato de confianza del de respeto. La versión 7, `tratamiento.pl`, en la
-misma [página](interlingua.md#tu-y-usted), agrega las dos formas al
-traductor de transferencia: del castellano al inglés las dos dan *you*, y
-del inglés al castellano `traducir_con_trato/3` recibe el trato como un
-dato del contexto, porque la oración no lo dice.
-
-!!! success "Criterios de calidad"
-    | Criterio | En este capítulo |
-    |---|---|
-    | C1 | cada predicado declara sus modos; los que se usan en los dos sentidos (`oracion_es//1`, `oracion_en//1`, `transferir/2`) declaran `?` y dicen qué argumento debe llegar instanciado, y `traducir/2` declara sus dos modos por separado |
-    | C2 | los árboles son representaciones limpias, un functor por clase de nodo; la transferencia elige la cláusula por la cabeza, sin examinar tipos |
-    | C3 | los no terminales y la transferencia no tienen cortes ni efectos: por eso funcionan en los dos sentidos; los cortes de `antes_de/2` y `empieza_con_vocal/1`, y el si-entonces-sino de `numero_es/3`, actúan sobre argumentos que llegan instanciados en los dos sentidos |
-    | C7 | 180 pruebas en diez archivos; cada gramática y la transferencia se prueban en los dos sentidos, y los dos defectos del capítulo están probados: el error de `sn_ingenuo//2` al generar y la búsqueda sin fin de `adjetivos_ingenuo/2` y `traducir_ingenuo/2`, detenida con un límite de inferencias |
+El capítulo continúa en la página
+[Interlingua lógica y trato](interlingua.md#558-version-6-una-interlingua-con-cuantificadores), con la otra
+manera de traducir, por una interlingua de fórmulas lógicas con
+cuantificadores, y con el trato de tú y de usted.
 
 ## Ejercicios
 
@@ -841,81 +816,32 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
     mujeres» es «the women's book». En castellano, «de el» se contrae en
     «del»; en inglés, el poseedor ocupa el lugar del artículo, y un plural
     terminado en *s* recibe solo el apóstrofo: «the dogs' house».
-13. ★ **(1)** Con `cuantificadores.pl` cargado, predecir las dos lecturas
-    de «un alumno lee todo libro» y su valor en el modelo, y comprobarlo
-    con `lecturas/2`. ¿Cuál de las dos es la que se lee primero en
-    castellano, y por qué la gramática la da primero?
-14. **(3)** Agregar la lectura de usted del sujeto omitido en tercera
-    persona: «Come manzanas.» también puede ser «You eat apples.». Contar
-    las traducciones de «Come manzanas.», y mostrar qué da
-    `traducir_con_trato(tu, Es, "You eat apples.")`. Corregirlo con un
-    predicado que examine también el sujeto inglés.
-
-## Resumen
-
-| | |
-|---|---|
-| **traducción por transferencia** | análisis de la oración de origen en un árbol, transferencia a un árbol de la otra lengua, generación de la oración de destino |
-| **interlingua** | una representación común a todas las lenguas; la traducción es análisis a ella y generación desde ella |
-| **gramática reversible** | una gramática que sirve para analizar y para generar: sin cortes ni efectos, y con cada condición después de lo que examina |
-| **sujeto tácito** | el sujeto que el castellano omite; se traduce por un pronombre inglés, con tantas traducciones como pronombres posibles |
-| **plural genérico** | «los gatos» en general; en inglés, el plural sin artículo |
-| **restricción de selección** | la condición que un verbo impone a su sujeto o a su objeto, como ser animado |
-| **[Patrón 62](../patrones.md#62-informacion-de-contexto-como-parametro)** | información de contexto como parámetro |
-| `palabra_por_palabra/2` | la traducción de cada forma por su equivalente |
-| `oracion_es//1`, `oracion_en//1` | las gramáticas: oración y árbol |
-| `transferir/2`, `sujeto/2`, `sn/2`, `adjetivos/2` | la transferencia entre los árboles |
-| `sn_ingenuo//2` | el artículo elegido antes de conocer la palabra siguiente: analiza pero no genera |
-| `es_en/2`, `en_es/2`, `traducir/2`, `traducciones/2` | el traductor en cada sentido y sobre textos |
-| `call_with_inference_limit/3` | ejecuta una meta con un límite de inferencias; `R` dice si lo alcanzó |
-| `split_string/4`, `atomic_list_concat/3` | de un texto a sus palabras, y de las palabras a un texto |
-| **ambigüedad de alcance** | una oración con dos cuantificadores admite los dos órdenes: «todo alumno lee un libro» |
-| `oracion_logica_es//1`, `alcance/2`, `traducciones_logicas/2`, `lecturas/2` | la interlingua con cuantificadores |
-| `traducir_con_trato/3` | la traducción al castellano con el trato como dato del contexto |
-
-## Temas que se retoman
-
-| Tema | Se retoma en |
-|---|---|
-| Plantillas de diálogo sobre oraciones en castellano | [capítulo 56](../capitulo-56-proyecto-dialogos-plantillas/index.md) |
-| Oraciones en castellano traducidas a operaciones del sistema | [capítulo 57](../capitulo-57-proyecto-ordenes-castellano/index.md) |
-| Una gramática del castellano que produce formas lógicas, una interlingua para consultar una base de datos | [capítulo 88](../capitulo-88-proyecto-preguntas-en-castellano/index.md) |
 
 ## Referencias
 
-- Michael A. Covington, *Natural Language Processing for Prolog
-  Programmers*, Prentice-Hall, 1994; edición digital del autor, 2013,
+- Michael A. Covington, *Natural Language Processing for Prolog Programmers*,
+  Prentice-Hall, 1994; edición digital del autor, 2013,
   <https://www.covingtoninnovations.com/books/NLPPP.pdf>. Apartado 8.2,
   «Language Translation»: las tres etapas de análisis, transferencia y
   generación, la distinción entre transferencia e interlingua, la gramática
-  reversible como traductor en los dos sentidos, la pregunta sobre qué hace
-  que un programa deje de ser reversible, y las dificultades de la
-  traducción, entre ellas el sujeto omitido del castellano; el
-  [ejercicio 11](#ejercicios) toma la idea de su traductor por interlingua.
-  Apartado 8.3, «Word-Sense Disambiguation»: la idea de las restricciones
-  de selección del [ejercicio 5](#ejercicios). De «A Simple Technique» y
-  «A Working Translator», la interlingua de fórmulas con cuantificadores y
-  su composición por unificación de términos con `^` (figuras 8.1 y 8.3),
-  que sigue la [sección 55.8](#558-version-6-una-interlingua-con-cuantificadores);
-  de «Why Translation Is Hard», el trato de confianza y de respeto que el
-  inglés no distingue, de la [sección 55.9](#559-version-7-tu-y-usted).
-- W. John Hutchins, *Machine Translation: Past, Present, Future*, Ellis
-  Horwood, 1986. Covington lo recomienda para la historia de la
-  traducción automática; el capítulo toma de allí, a través de él, el
-  esquema de análisis, transferencia y generación y su contraste con la
-  traducción por interlingua.
-- Dominique Estival, «Generating French with a Reversible Unification
-  Grammar», *COLING 1990*, vol. 2, pp. 106–112
-  ([ACL Anthology C90-2019](https://aclanthology.org/C90-2019/)). Covington
-  lo cita como ejemplo de traducción con gramáticas reversibles basadas en
+  reversible como traductor en los dos sentidos, la pregunta sobre qué hace que
+  un programa deje de ser reversible, y las dificultades de la traducción, entre
+  ellas el sujeto omitido del castellano; el [ejercicio 11](#ejercicios) toma la
+  idea de su traductor por interlingua. Apartado 8.3, «Word-Sense
+  Disambiguation»: la idea de las restricciones de selección del
+  [ejercicio 5](#ejercicios).
+- W. John Hutchins, *Machine Translation: Past, Present, Future*, Ellis Horwood,
+  1986. Covington lo recomienda para la historia de la traducción automática; el
+  capítulo toma de allí, a través de él, el esquema de análisis, transferencia y
+  generación y su contraste con la traducción por interlingua.
+- Dominique Estival, «Generating French with a Reversible Unification Grammar»,
+  *COLING 1990*, vol. 2, pp. 106–112
+  ([ACL Anthology C90-2019](https://aclanthology.org/C90-2019/)). Covington lo
+  cita como ejemplo de traducción con gramáticas reversibles basadas en
   unificación; el capítulo toma de allí la idea de que la misma gramática
   analiza la oración de origen y genera la de destino.
 - Yorick Wilks, «An Intelligent Analyzer and Understander of English»,
-  *Communications of the ACM* 18(5), 1975, pp. 264–274. Covington lo
-  recomienda para la desambiguación por restricciones de selección; el
-  [ejercicio 5](#ejercicios) toma de allí la idea de que un verbo exige
-  ciertas propiedades de sus argumentos.
-
-El código del capítulo es propio del curso: las gramáticas, el vocabulario,
-la transferencia y el traductor se escribieron para él; de la fuente se
-toman las ideas, no los programas.
+  *Communications of the ACM* 18(5), 1975, pp. 264–274. Covington lo recomienda
+  para la desambiguación por restricciones de selección; el
+  [ejercicio 5](#ejercicios) toma de allí la idea de que un verbo exige ciertas
+  propiedades de sus argumentos.

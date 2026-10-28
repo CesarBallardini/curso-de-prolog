@@ -115,7 +115,7 @@ test(modelos_de_lista, [true(Ms == [[p]])]) :-
 test(alternancia_de_lista, [true(Ps == [[]-[p], [p]-[p]])]) :-
     alternancia_de([(p :- \+ q)], Ps).
 
-% Los auxiliares de las soluciones 2, 3, 11 y 13.
+% Los auxiliares de las soluciones 2, 7, 11 y 13.
 test(atomos_de_clausula, [all(A == [p(a), q(b), r])]) :-
     atomo_de((p(a) :- q(b), \+ r, 1 < 2), A).
 

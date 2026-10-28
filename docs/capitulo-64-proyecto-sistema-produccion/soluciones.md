@@ -254,6 +254,71 @@ la clase.
 
 ## 8
 
+`con_origen/2` es una transformación de las reglas como datos, como las del
+[capítulo 20](../capitulo-20-operadores-y-reglas-como-datos/index.md): no
+cambia el intérprete:
+
+<!-- ejemplo: capitulo-64/soluciones.pl predicado: con_origen/2 regla_con_origen/2 con_su_origen/4 -->
+```prolog
+%!  con_origen(+Reglas0:list, -Reglas:list) is det.
+%
+%   Reglas son las Reglas0 con una acción agregar(origen(F, Regla, Hechos))
+%   después de cada agregar(F): Hechos son los hechos que cumplen los
+%   patrones de la Regla.
+con_origen(Reglas0, Reglas) :-
+    maplist(regla_con_origen, Reglas0, Reglas).
+
+%!  regla_con_origen(+Regla0, -Regla) is det.
+%
+%   Regla es Regla0 con los origen/3 agregados.
+regla_con_origen(Nombre :: Condiciones ---> Acciones0,
+                 Nombre :: Condiciones ---> Acciones) :-
+    include(patron_de_hecho, Condiciones, Patrones),
+    maplist(con_su_origen(Nombre, Patrones), Acciones0, Partes),
+    append(Partes, Acciones).
+
+%!  con_su_origen(+Nombre, +Patrones:list, +Accion, -Acciones:list) is det.
+%
+%   Acciones es [Accion] seguida de su origen si Accion es agregar/1.
+con_su_origen(Nombre, Patrones, Accion, Acciones) :-
+    (   Accion = agregar(F)
+    ->  Acciones = [Accion, agregar(origen(F, Nombre, Patrones))]
+    ;   Acciones = [Accion]
+    ).
+```
+
+Los patrones de la regla, ya instanciados cuando se ejecuta la acción, son
+los hechos que la cumplieron. `explicar/2` reconstruye el árbol de la
+derivación desde los hechos `origen/3` de la memoria final:
+
+<!-- ejemplo: capitulo-64/soluciones.pl predicado: explicar/3 -->
+```prolog
+%!  explicar(+Memoria:list, +Hecho, -Arbol) is nondet.
+%
+%   Como explicar/2, en la Memoria dada.
+explicar(Memoria, Hecho, Arbol) :-
+    (   memberchk(origen(Hecho, _, _), Memoria)
+    ->  member(origen(Hecho, Regla, Usados), Memoria),
+        maplist(explicar(Memoria), Usados, Arboles),
+        Arbol = por(Hecho, Regla, Arboles)
+    ;   Arbol = inicial(Hecho)
+    ).
+```
+
+```prolog
+?- explicar(antepasado(juan, sofia), A).
+A = por(antepasado(juan, sofia), antepasado_2, [por(progenitor(juan, ana), progenitor_p, [inicial(padre(juan, ana))]), por(antepasado(ana, sofia), antepasado_1, [por(progenitor(ana, sofia), progenitor_m, [inicial(madre(ana, sofia))])])]) ;
+false.
+```
+
+Un hecho agregado dos veces tiene dos orígenes, y `explicar/2` da una
+explicación por cada uno. Merritt señala la dificultad de fondo: una regla
+puede quitar los hechos que la justificaron, y la explicación se refiere
+entonces a hechos que ya no están en la memoria. Aquí los `origen/3`
+guardan copias de esos hechos, y la explicación sigue siendo posible.
+
+## 9
+
 El programa nuevo reemplaza `elegir` por una versión que no suma, y agrega
 `sumar`:
 
@@ -316,7 +381,7 @@ consumo nuevo es otra instanciación. La refracción compara sellos, y el
 sello cambió. En el capítulo, `elegir` suma en la misma acción que elige,
 y la suma ocurre una vez por componente.
 
-## 9
+## 10
 
 El gabinete necesita una clase, una ranura nueva en las placas, una regla
 de candidatos y dos fases en la memoria:
@@ -376,7 +441,7 @@ C = [procesador-cpu_c, placa-placa_c, memoria-mem_c, disipador-dis_a, fuente-fue
 C = [procesador-cpu_b, placa-placa_a, memoria-mem_b, disipador-dis_a, placa_de_video-gpu_a, fuente-fuente_b, gabinete-gab_b].
 ```
 
-## 10
+## 11
 
 `compatible/4` genera las configuraciones con las mismas condiciones que las
 reglas, y `aggregate_all/3` se queda con la de menor precio:
@@ -447,7 +512,7 @@ combinaciones y retrocede. Para un catálogo grande, la búsqueda completa
 crece con el producto de las cantidades de componentes, y la configuración
 por fases, con su suma.
 
-## 11
+## 12
 
 `familias/2` construye `K` copias de la familia con nombres `N-I`:
 
@@ -487,71 +552,6 @@ se duplican: hay el doble de ciclos, y en cada uno el conjunto de conflicto
 tiene las instanciaciones de todas las copias, el doble. Crecen con el
 cuadrado de la cantidad de copias, y casi todas, más del 99 % con ocho
 copias, estaban en el ciclo anterior.
-
-## 12
-
-`con_origen/2` es una transformación de las reglas como datos, como las del
-[capítulo 20](../capitulo-20-operadores-y-reglas-como-datos/index.md): no
-cambia el intérprete:
-
-<!-- ejemplo: capitulo-64/soluciones.pl predicado: con_origen/2 regla_con_origen/2 con_su_origen/4 -->
-```prolog
-%!  con_origen(+Reglas0:list, -Reglas:list) is det.
-%
-%   Reglas son las Reglas0 con una acción agregar(origen(F, Regla, Hechos))
-%   después de cada agregar(F): Hechos son los hechos que cumplen los
-%   patrones de la Regla.
-con_origen(Reglas0, Reglas) :-
-    maplist(regla_con_origen, Reglas0, Reglas).
-
-%!  regla_con_origen(+Regla0, -Regla) is det.
-%
-%   Regla es Regla0 con los origen/3 agregados.
-regla_con_origen(Nombre :: Condiciones ---> Acciones0,
-                 Nombre :: Condiciones ---> Acciones) :-
-    include(patron_de_hecho, Condiciones, Patrones),
-    maplist(con_su_origen(Nombre, Patrones), Acciones0, Partes),
-    append(Partes, Acciones).
-
-%!  con_su_origen(+Nombre, +Patrones:list, +Accion, -Acciones:list) is det.
-%
-%   Acciones es [Accion] seguida de su origen si Accion es agregar/1.
-con_su_origen(Nombre, Patrones, Accion, Acciones) :-
-    (   Accion = agregar(F)
-    ->  Acciones = [Accion, agregar(origen(F, Nombre, Patrones))]
-    ;   Acciones = [Accion]
-    ).
-```
-
-Los patrones de la regla, ya instanciados cuando se ejecuta la acción, son
-los hechos que la cumplieron. `explicar/2` reconstruye el árbol de la
-derivación desde los hechos `origen/3` de la memoria final:
-
-<!-- ejemplo: capitulo-64/soluciones.pl predicado: explicar/3 -->
-```prolog
-%!  explicar(+Memoria:list, +Hecho, -Arbol) is nondet.
-%
-%   Como explicar/2, en la Memoria dada.
-explicar(Memoria, Hecho, Arbol) :-
-    (   memberchk(origen(Hecho, _, _), Memoria)
-    ->  member(origen(Hecho, Regla, Usados), Memoria),
-        maplist(explicar(Memoria), Usados, Arboles),
-        Arbol = por(Hecho, Regla, Arboles)
-    ;   Arbol = inicial(Hecho)
-    ).
-```
-
-```prolog
-?- explicar(antepasado(juan, sofia), A).
-A = por(antepasado(juan, sofia), antepasado_2, [por(progenitor(juan, ana), progenitor_p, [inicial(padre(juan, ana))]), por(antepasado(ana, sofia), antepasado_1, [por(progenitor(ana, sofia), progenitor_m, [inicial(madre(ana, sofia))])])]) ;
-false.
-```
-
-Un hecho agregado dos veces tiene dos orígenes, y `explicar/2` da una
-explicación por cada uno. Merritt señala la dificultad de fondo: una regla
-puede quitar los hechos que la justificaron, y la explicación se refiere
-entonces a hechos que ya no están en la memoria. Aquí los `origen/3`
-guardan copias de esos hechos, y la explicación sigue siendo posible.
 
 ## 13
 

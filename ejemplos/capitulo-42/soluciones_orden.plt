@@ -2,7 +2,7 @@
 
 :- begin_tests(soluciones_orden).
 
-% Ejercicio 7: sin amenazas, las dos evaluaciones coinciden.
+% Ejercicio 8: sin amenazas, las dos evaluaciones coinciden.
 test(sin_amenazas, [true(A-B == 1-1)]) :-
     P = pos([x, v, v, v, o, v, v, v, x], o),
     evaluar(tateti(3), P, A),
@@ -19,7 +19,7 @@ test(amenazas_compensadas, [true(A == B)]) :-
     evaluar(tateti(3), P, A),
     evaluar_amenazas(tateti(3), P, B).
 
-% Ejercicio 8: el orden central, con el mismo valor y menos nodos que el
+% Ejercicio 9: el orden central, con el mismo valor y menos nodos que el
 % natural.
 test(central_3, [true(J-V-N == 5-0-7865)]) :-
     inicial(tateti(3), P),

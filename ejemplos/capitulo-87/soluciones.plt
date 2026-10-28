@@ -29,8 +29,8 @@ test(ejercicio_4, [true(Cs == [alumnos-legajo, alumnos-nombre,
 test(ejercicio_4_ambigua, [throws(error(sql(columna_ambigua(legajo)), _))]) :-
     columnas_usadas("SELECT legajo FROM alumnos a, inscripciones i", _).
 
-% Ejercicio 5
-test(ejercicio_5, [ setup(estado(E)), cleanup(restaurar(E)),
+% Ejercicio 8
+test(ejercicio_8, [ setup(estado(E)), cleanup(restaurar(E)),
                     true(R1-R2 == [[a, 1000], [b, 1300], [c, 1200]]-
                                   [[a, 1000], [b, 1300], [c, 1400]]) ]) :-
     U = "UPDATE s SET x = x + 200 WHERE x = (SELECT MAX(x) FROM s) - 100",
@@ -43,15 +43,15 @@ test(ejercicio_5, [ setup(estado(E)), cleanup(restaurar(E)),
     actualizar_tupla(U, 2),
     sql("SELECT * FROM s", filas(_, R2)).
 
-% Ejercicio 6
+% Ejercicio 5
 consulta_ana("SELECT i.materia, i.nota FROM inscripciones i, alumnos a WHERE a.nombre = 'ana' AND a.legajo = i.legajo").
 
-test(ejercicio_6_orden, [true(M =@= (base:alumno(L, ana, _, _),
+test(ejercicio_5_orden, [true(M =@= (base:alumno(L, ana, _, _),
                                      base:inscripcion(L, Ma, N)))]) :-
     consulta_ana(T),
     traducir_ordenado(T, [Ma, N]-M).
 
-test(ejercicio_6_costos) :-
+test(ejercicio_5_costos) :-
     consulta_ana(T),
     traducir(T, _, F1-M1),
     traducir_ordenado(T, F2-M2),
@@ -71,23 +71,23 @@ inferencias_meta(F, M, N, Fs) :-
 test(generadores, [true(Gs-R == [base:p(1), base:q(2)]-(X > 1))]) :-
     generadores((base:p(1), base:q(2), X > 1), Gs, R).
 
-% Ejercicio 7
-test(ejercicio_7_rechaza, [ setup(estado(E)), cleanup(restaurar(E)),
+% Ejercicio 9
+test(ejercicio_9_rechaza, [ setup(estado(E)), cleanup(restaurar(E)),
                             throws(error(sql(referencia(inscripciones, legajo, 999)), _)) ]) :-
     insertar_verificado("INSERT INTO inscripciones (legajo, materia) VALUES (999, 'am1')", _).
 
-test(ejercicio_7_repone, [ setup(estado(E)), cleanup(restaurar(E)),
+test(ejercicio_9_repone, [ setup(estado(E)), cleanup(restaurar(E)),
                            true(K == 17) ]) :-
     catch(insertar_verificado("INSERT INTO inscripciones (legajo, materia) VALUES (999, 'am1')", _),
           error(sql(_), _), true),
     aggregate_all(count, base:inscripcion(_, _, _), K).
 
-test(ejercicio_7_acepta, [ setup(estado(E)), cleanup(restaurar(E)),
+test(ejercicio_9_acepta, [ setup(estado(E)), cleanup(restaurar(E)),
                            true(R == insertadas(1)) ]) :-
     insertar_verificado("INSERT INTO inscripciones (legajo, materia) VALUES (107, 'am1')", R).
 
-% Ejercicio 8
-test(ejercicio_8, [ setup(estado(E)), cleanup(restaurar(E)),
+% Ejercicio 10
+test(ejercicio_10, [ setup(estado(E)), cleanup(restaurar(E)),
                     true(K-Fs == 2-[[alg], [log], [pp], [ssl]]) ]) :-
     recursiva(requisito, "CREATE TABLE requisito (r TEXT)",
               "SELECT requisito FROM correlativas WHERE materia = 'bd'",
@@ -95,8 +95,8 @@ test(ejercicio_8, [ setup(estado(E)), cleanup(restaurar(E)),
               K),
     sql("SELECT r FROM requisito ORDER BY r", filas(_, Fs)).
 
-% Ejercicio 9: las filas de SQLite con LEFT JOIN, el par 19 del capítulo 43.
-test(ejercicio_9, [ setup(estado(E)), cleanup(restaurar(E)),
+% Ejercicio 11: las filas de SQLite con LEFT JOIN, el par 19 del capítulo 43.
+test(ejercicio_11, [ setup(estado(E)), cleanup(restaurar(E)),
                     true(Fs == [[alg, 4], [am1, 5], [am2, 2], [bd, 0], [log, 4],
                                 [pp, 2], [ssl, 0]]) ]) :-
     guion("CREATE VIEW materia_legajo AS
@@ -109,19 +109,19 @@ test(ejercicio_9, [ setup(estado(E)), cleanup(restaurar(E)),
            SELECT codigo, COUNT(legajo) FROM materia_legajo GROUP BY codigo",
           [creada(materia_legajo), filas(_, Fs)]).
 
-% Ejercicio 10
-test(ejercicio_10, [true(Fs == [])]) :-
+% Ejercicio 6
+test(ejercicio_6, [true(Fs == [])]) :-
     filas("SELECT nombre FROM alumnos WHERE ingreso NOT IN (SELECT nota FROM inscripciones)", _, Fs).
 
-test(ejercicio_10_meta,
+test(ejercicio_6_meta,
      [true(M =@= (base:alumno(_, A, _, B),
                   \+ ( base:inscripcion(C, D, E), E == null ),
                   \+ ( base:inscripcion(C, D, E), E \== null, B =:= E )))]) :-
     traducir("SELECT nombre FROM alumnos WHERE ingreso NOT IN (SELECT nota FROM inscripciones)",
              _, [A]-M).
 
-% Ejercicio 11
-test(ejercicio_11, [true(K-M =@= [[14]]-(base:inscripcion(L, _, N), N \== null))]) :-
+% Ejercicio 7
+test(ejercicio_7, [true(K-M =@= [[14]]-(base:inscripcion(L, _, N), N \== null))]) :-
     filas("SELECT COUNT(*) FROM inscripciones WHERE nota = nota", _, K),
     traducir("SELECT legajo FROM inscripciones WHERE nota = nota", _, [L]-M).
 

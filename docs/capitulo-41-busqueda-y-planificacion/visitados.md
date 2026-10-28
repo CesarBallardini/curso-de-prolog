@@ -1,12 +1,13 @@
 # Ciclos y visitados
 
-Esta página contiene la sección [41.3](index.md#413-ciclos-y-visitados) del
-[capítulo 41](index.md): el registro de los estados visitados, el rastro del
-camino actual y la lista de lo que queda. Los ejemplos están en
-`visitados.pl` y `reinas.pl`, en `ejemplos/capitulo-41/`, con sus pruebas, y
-corren en SWISH.
+Esta página continúa el [capítulo 41](index.md) después de la
+[sección 41.2](index.md#412-una-sola-busqueda-varias-estrategias), con la
+sección [41.3](#413-ciclos-y-visitados): el registro de los estados
+visitados, el rastro del camino actual y la lista de lo que queda. Los
+ejemplos están en `visitados.pl` y `reinas.pl`, en `ejemplos/capitulo-41/`,
+con sus pruebas, y corren en SWISH.
 
-## Ciclos y visitados
+## 41.3 Ciclos y visitados
 
 La búsqueda en anchura termina en las jarras, pero expande los mismos
 estados muchas veces; la de profundidad no termina. Las dos cosas se
@@ -241,3 +242,47 @@ millones de inferencias y 3,6 segundos contra 207 090 inferencias y 0,016
 segundos de `labeling([ff], Qs)`, que elige primero la reina con menos
 filas posibles. La heurística de elegir la variable más restringida es lo
 que la búsqueda a ciegas no tiene.
+
+Las secciones que siguen usan el bucle con visitados, `visitados.pl`. El
+capítulo continúa en la página
+[Profundización iterativa y heurísticas: A\* e IDA\*](heuristicas.md#414-profundidad-limitada-y-profundizacion-iterativa),
+con la profundidad limitada, la profundización iterativa y las búsquedas
+guiadas por una heurística.
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio, y los capítulos siguientes los dan por hechos.
+
+2. ★ **(1)** Predecir, con `visitados.pl` cargado, el plan, el costo y la
+   cantidad de nodos expandidos, o la falla, de cada consulta, y
+   comprobarlo: `buscar(anchura, jarras(4, 3, 4), P, C, K).` ·
+   `buscar(profundidad, jarras(4, 3, 1), P, C, K).` ·
+   `buscar(mejor(costo), jarras(6, 4, 3), P, C, K).`
+3. ★ **(2)** Un granjero cruza un río con un lobo, una cabra y una col; el
+   bote lleva al granjero y a lo sumo a uno de los tres. El lobo no puede
+   quedar solo con la cabra, ni la cabra con la col. Describir el problema
+   `rio` con `inicial/2`, `meta/2` y `sucesor/5`, y resolverlo con el bucle
+   de `visitados.pl` en anchura (Luger y Stubblefield, «Depth-, Breadth-, and Best-First Search»).
+4. **(2)** Tres misioneros y tres caníbales cruzan un río en un bote de dos
+   lugares; en ninguna orilla los caníbales pueden superar a los misioneros
+   si hay alguno. Describir el problema y encontrar el plan más corto.
+5. **(2)** Escribir `recorrido_caballo(N, Recorrido)`: un recorrido del
+   caballo de ajedrez por un tablero de N × N desde la casilla 1-1, que pasa
+   una vez por cada casilla. Usar la lista de las casillas que quedan, con
+   `select/3`, y encontrar uno para N = 5.
+
+## Referencias
+
+- William F. Clocksin, *Clause and Effect: Prolog Programming for the
+  Working Programmer*, Springer, 1997 — hojas de trabajo «Searching a
+  Cyclic Graph» y «Partial Maps with a Parameter». Sin edición en línea de
+  acceso libre. De allí vienen el rastro de los nodos del camino actual y
+  la lista de los nodos que quedan, reducida con `select/3`.
+- George F. Luger y William A. Stubblefield, *AI Algorithms, Data
+  Structures, and Idioms in Prolog, Lisp, and Java*, Pearson
+  Addison-Wesley, 2009 — capítulo «Depth- Breadth-, and Best-First
+  Search». Sin edición en línea de acceso libre verificada. Es el origen
+  del problema del granjero, el lobo, la cabra y la col del ejercicio 3.

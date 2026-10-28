@@ -1,13 +1,24 @@
 # Reglas de tránsito y marcos
 
-Esta página contiene las secciones
-[82.7](index.md#827-reglas-de-transito) y [82.8](index.md#828-marcos)
-del [capítulo 82](index.md): dos programas de *Artificial Intelligence
-through Prolog*, de Neil Rowe, que representan conocimiento con reglas.
-Los ejemplos están en `transito.pl` y `marcos.pl`, en
-`ejemplos/capitulo-82/`, con sus pruebas, y corren en SWISH.
+Esta página continúa el [capítulo 82](index.md) después de la
+[sección 82.6](estampillas.md#826-una-coleccion-de-estampillas), con las
+secciones [82.7](#827-reglas-de-transito) y [82.8](#828-marcos): dos
+programas de *Artificial Intelligence through Prolog*, de Neil Rowe, que
+representan conocimiento con reglas. Los ejemplos están en `transito.pl`
+y `marcos.pl`, en `ejemplos/capitulo-82/`, con sus pruebas, y corren en
+SWISH.
 
-## Reglas de tránsito, versión 1: las reglas de Rowe
+## 82.7 Reglas de tránsito
+
+Esta sección escribe las reglas de Rowe para los semáforos de California: qué
+puede hacer un auto o un peatón ante las luces que ve, con el orden de las
+reglas como prioridad y dos reglas por omisión. Ejecutadas, las reglas del libro
+dan para el ejemplo del peatón una respuesta distinta de la que el texto
+anuncia, y aplican la regla por omisión aunque haya un consejo específico; la
+versión 2 la limita a cuando no lo hay, y la tabla de todas las luces solas
+comprueba el resultado.
+
+### Reglas de tránsito, versión 1: las reglas de Rowe
 
 Rowe traduce a reglas los párrafos del manual de conducir de California
 de 1985 sobre los semáforos: qué significa cada luz para un auto y para
@@ -198,14 +209,14 @@ A = avanzar.
 La regla que daría `ceder_y_avanzar` pide la señal de paso fija, y la del
 ejemplo es intermitente; el texto describe la regla que el autor tenía en
 mente, no la que escribió. El
-[ejercicio 10](index.md#ejercicios) la corrige.
+[ejercicio 10](#ejercicios) la corrige.
 
 !!! question "Actividad"
     Predecir las respuestas de `accion_v1([luz(verde, fija)], peaton, A)`
     siguiendo las cláusulas en orden, y explicar por qué una de ellas
     aparece dos veces.
 
-## Reglas de tránsito, versión 2: lo que se hace por omisión
+### Reglas de tránsito, versión 2: lo que se hace por omisión
 
 Rowe define las reglas por omisión como consejos débiles, que solo se
 usan cuando no hay uno más específico. La regla que permite avanzar no
@@ -321,9 +332,15 @@ Cada luz sola da una sola acción, y las pruebas lo comprueban sobre las
 24 filas. La verde intermitente, que el manual no menciona, cae en la
 omisión. Con dos luces encendidas a la vez aparecen los conflictos que el
 orden de las reglas resuelve; el
-[ejercicio 9](index.md#ejercicios) los cuenta.
+[ejercicio 9](#ejercicios) los cuenta.
 
-## Marcos
+## 82.8 Marcos
+
+Esta sección escribe los marcos de Rowe: ranuras llenas y vacías, herencia de
+valores por `es_un` y `parte_de`, herencia de ranuras y de unidades, intensión y
+extensión, y la edad calculada a partir del año de fabricación. Las reglas del
+libro tienen un corte que pierde valores y dos reglas que se llaman una a la
+otra sin terminar; las del capítulo no.
 
 Un **marco** reúne lo que se sabe de un objeto o de una clase de objetos.
 Cada dato es una **ranura** con un valor: `valor(Objeto, Ranura, Valor)`.
@@ -621,4 +638,46 @@ El auto de Ana declara una marca que la lista de valores posibles de los
 autos, la del libro, no tiene. La herencia de las **partes** —un auto
 tiene sistema de propulsión porque lo tiene todo vehículo— es la tercera
 clase de herencia que distingue Rowe, y la escribe el
-[ejercicio 11](index.md#ejercicios).
+[ejercicio 11](#ejercicios).
+
+El capítulo continúa en la página [Rimas](rimas.md#829-rimas), con dos
+canciones cuya letra tiene una estructura que un programa puede producir.
+Antes, los [ejercicios](#ejercicios) de esta página practican las reglas
+de tránsito y los marcos.
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio. Los ejercicios que piden código se resuelven en archivos
+que cargan los del capítulo, sin modificarlos.
+
+9. ★ **(2)** Escribir `conflictos(+Quien, -C)`: las situaciones con dos
+   luces para los autos, de tipos distintos, en las que `accion/3`
+   permite a la vez detenerse y una acción que avanza. Contarlas, y
+   contar en cuántas `decision/3` elige avanzar. ¿Qué dice eso del orden
+   de las reglas?
+10. **(2)** Rowe anuncia que el peatón que ve la silueta intermitente
+    puede cruzar cediendo el paso. Escribir `peaton_v3/2` y `accion_v3/3`,
+    sin modificar `transito.pl`, para que el ejemplo dé esa respuesta.
+11. **(2)** Rowe llama herencia de partes a que un auto tenga sistema de
+    propulsión porque lo tiene todo vehículo. Escribir `partes(+Objeto,
+    -Partes)`, con las partes propias y las de las clases más generales.
+
+## Referencias
+
+- Neil C. Rowe, *Artificial Intelligence through Prolog*, Prentice-Hall,
+  1988 — capítulo «Definitions and inferences», apartados «A longer
+  example: some traffic laws» y «Running the traffic lights program»
+  ([edición en línea](https://faculty.nps.edu/ncrowe/book/chap4.html)),
+  y capítulo «Abstraction of facts»
+  ([edición en línea](https://faculty.nps.edu/ncrowe/book/chap12.html));
+  el libro completo está en el
+  [archivo de la Naval Postgraduate School](https://hdl.handle.net/10945/36984).
+  El capítulo toma las reglas de los semáforos, escritas por Rowe a
+  partir del *California Driver's Handbook* de 1985, sus dos ejemplos y
+  el orden de las reglas como prioridad; el ejemplo de los marcos de los
+  autos, la representación con valores, ranuras, unidades y valores
+  posibles, la lista de las ranuras que heredan por cada relación, la
+  intensión y la extensión, y la edad calculada con el año 1987.

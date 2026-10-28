@@ -1,15 +1,15 @@
 # La lógica de predicados
 
-Esta página contiene las secciones
-[63.6](index.md#636-version-5-la-forma-clausal-de-la-logica-de-predicados) y
-[63.7](index.md#637-version-6-resolucion-con-variables) del
-[capítulo 63](index.md): la versión 5, `primer_orden.pl`, que completa la
+Esta página continúa el [capítulo 63](index.md) después de la
+[sección 63.5](index.md#635-version-4-el-verificador), con las secciones
+[63.6](#636-version-5-la-forma-clausal-de-la-logica-de-predicados) y
+[63.7](#637-version-6-resolucion-con-variables): la versión 5, `primer_orden.pl`, que completa la
 forma clausal con los pasos que exigen los cuantificadores, y la versión 6,
 `resolucion_fo.pl`, que resuelve cláusulas con variables. Los dos archivos
 están en `ejemplos/capitulo-63/`, con sus pruebas, y cargan las versiones
 anteriores.
 
-## La forma clausal de la lógica de predicados
+## 63.6 Versión 5: la forma clausal de la lógica de predicados
 
 La forma normal negada de la versión 2 ya trata los cuantificadores: los
 deja en su lugar y cambia cada uno por su dual cuando queda bajo una
@@ -156,6 +156,9 @@ Cs = [[+mortal(_A), -hombre(_A)], [+hombre(socrates)], [-mortal(socrates)]].
 
 ?- clausulas_fo_texto("¬((∀x ∃y ama(x, y)) → ∃y ∀x ama(x, y))", Cs).
 Cs = [[+ama(_A, sk1(_A))], [-ama(sk2(_A, _B), _B)]].
+
+?- clausulas_fo_texto("¬∃x (bebe(x) → ∀y bebe(y))", Cs).
+Cs = [[+bebe(_A)], [-bebe(sk1(_A))]].
 ```
 
 En la segunda, `sk2` tiene dos argumentos, aunque el $\exists x$ de
@@ -164,9 +167,16 @@ $\forall y$: la forma prenexa lo puso después de los dos universales. El
 resultado es correcto, pero los términos de Skolem más grandes hacen más
 difícil la unificación. El apéndice de Clocksin y Mellish skolemiza antes
 de sacar los cuantificadores, con solo los universales que rodean al
-existencial; el [ejercicio 8](index.md#ejercicios) lo hace.
+existencial; el [ejercicio 8](#ejercicios) lo hace.
 
-## Resolución con variables
+## 63.7 Versión 6: resolución con variables
+
+!!! question "Actividad"
+    Antes de leer la sección, predecir si la negación de
+    `"¬∃x ∀y (afeita(x, y) ↔ ¬afeita(y, y))"` tiene una refutación que
+    use solo pasos de resolución, sin factorización. Justificar la
+    predicción con el tamaño de los resolventes de sus dos cláusulas, y
+    comprobarla con `refutar_con/4`.
 
 Dos cláusulas con variables se resuelven como en la versión 3, con dos
 diferencias. Primero, sus variables se **renombran**: las cláusulas están
@@ -357,7 +367,7 @@ lineal** exige que, desde el segundo paso, cada uno use la cláusula que
 agregó el anterior, el **centro**; la otra puede ser cualquier cláusula
 anterior, una de las iniciales o un centro de antes. La resolución lineal
 sigue siendo completa, como demostró Loveland
-([Referencias](index.md#referencias)), y cada prueba tiene menos órdenes
+([Referencias](#referencias)), y cada prueba tiene menos órdenes
 posibles.
 `derivar/4` lleva el número del centro, y `centro/3` decide qué cláusula
 debe usar el paso:
@@ -415,7 +425,7 @@ filtro de las repetidas.
 Una cláusula C **subsume** a D si alguna sustitución convierte cada
 literal de C en un literal de D: todo lo que D dice, C lo dice con más
 fuerza, y D no aporta nada a una refutación. El
-[capítulo 61](../capitulo-61-proyecto-interprete-dirigido-patrones/soluciones.md#8)
+[capítulo 61](../capitulo-61-proyecto-interprete-dirigido-patrones/soluciones.md#10)
 midió la subsunción en la lógica proposicional y dejó pendiente su
 efecto cuando las cláusulas crecen. Rowe observa que con variables es
 difícil de programar en Prolog, porque la unificación ligaría también las
@@ -459,7 +469,7 @@ muestra además que la subsunción no ahorra trabajo en estas búsquedas: la
 profundización iterativa ya encuentra la prueba más corta antes de que
 las cláusulas subsumidas se acumulen, y comparar cada resolvente con
 todas las cláusulas anteriores cuesta entre 1,3 y 1,9 veces más. La
-saturación por niveles del [ejercicio 11](index.md#ejercicios), que agrega
+saturación por niveles del [ejercicio 11](comparacion.md#ejercicios), que agrega
 todos los resolventes de cada nivel, es el lugar donde la subsunción
 debería rendir, y la medición tampoco lo confirma para el principio del
 palomar con 3 palomas: con el filtro llega a □ en el cuarto nivel con
@@ -467,3 +477,57 @@ palomar con 3 palomas: con el filtro llega a □ en el cuarto nivel con
 mismo nivel con 73 352. El beneficio exige conjuntos de cláusulas mucho
 más grandes que los de este capítulo, donde las cláusulas descartadas
 evitan más trabajo que el que cuesta encontrarlas.
+
+El capítulo continúa en la página
+[Tres maneras de decidir, un modelo y el conjunto de soporte](comparacion.md#638-tres-maneras-de-decidir), con
+la versión 7, que compara el demostrador con dos procedimientos que deciden
+la lógica proposicional, la construcción de un modelo y la estrategia de
+conjunto de soporte.
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio. Los ejercicios que piden código se resuelven en archivos
+que cargan los del capítulo, sin modificarlos.
+
+7. ★ **(2)** Demostrar con `demostrar_fo/3` que
+   `"(∃y ∀x ama(x, y)) → ∀x ∃y ama(x, y)"` es un teorema, escribir su
+   prueba y su forma clausal, y comparar esa forma clausal con la de la
+   implicación inversa, que no es un teorema. Explicar con los términos de
+   Skolem por qué una tiene refutación y la otra no.
+8. **(3)** La forma prenexa hace que un término de Skolem dependa de todas
+   las variables universales anteriores, aunque la variable existencial no
+   esté en su alcance. Escribir `skolemizar_fnn(G, H)`, que skolemiza una
+   fórmula en forma normal negada sin pasar por la forma prenexa, con
+   solo las variables universales cuyo cuantificador rodea al existencial,
+   como en el apéndice de Clocksin y Mellish. Comparar los términos que
+   da para la negación de `"(∀x ∃y ama(x, y)) → ∃y ∀x ama(x, y)"` con
+   los de `clausulas_fo/2`.
+
+## Referencias
+
+- William F. Clocksin y Christopher S. Mellish, *Programming in Prolog*,
+  5.ª edición, Springer, 2003 — apéndice «Clausal Form Program Listings».
+  Esta página toma las etapas de la forma clausal que exigen los
+  cuantificadores: skolemizar con las variables universales que rodean al
+  existencial, como pide el ejercicio 8, y quitar los universales.
+- Neil C. Rowe, *Artificial Intelligence through Prolog*, Prentice-Hall,
+  1988 — capítulo «A more general logic programming», apartados
+  «Resolution with variables», «Resolution search strategies» e
+  «Implementing resolution without variables».
+  [Edición en línea](https://faculty.nps.edu/ncrowe/book/chap14.html).
+  Esta página toma la resolución con variables y el renombrado de las
+  cláusulas antes de cada paso, y los filtros de redundancia: tautologías,
+  cláusulas repetidas y subsumidas. Rowe afirma que esos filtros son
+  difíciles de programar en Prolog con variables; `subsume/2` los
+  resuelve con `numbervars/3` dentro de una doble negación.
+- John Alan Robinson, «A Machine-Oriented Logic Based on the Resolution
+  Principle», *Journal of the ACM* 12(1), 1965. El artículo que Clocksin y
+  Mellish, Bratko y Rowe citan como origen de la resolución; esta página
+  toma de él la unificación más general con la comprobación de
+  ocurrencia, de la versión 6.
+- Donald W. Loveland, «A Linear Format for Resolution», *Symposium on
+  Automatic Demonstration*, Springer, 1970. La resolución lineal y su
+  completitud, en las que se apoya la estrategia lineal de la versión 6.

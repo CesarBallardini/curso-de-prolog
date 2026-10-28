@@ -38,14 +38,14 @@ test(lineas_3_y_4) :-
 test(lineas_5, [true(N == 12)]) :-
     aggregate_all(count, linea(5, _), N).
 
-% Ejercicio 9: pierde quien mueve con un múltiplo de 4.
+% Ejercicio 7: pierde quien mueve con un múltiplo de 4.
 test(restar, [true(Ps == [4, 8, 12])]) :-
     perdedoras(12, Ps).
 
 test(restar_jugada, [true(J == 3)]) :-
     alfabeta(restar(7), r(7, x), 7, J, _, _).
 
-% Ejercicio 11.
+% Ejercicio 12.
 test(poda_tabulada, [true(V-T == 0-5138)]) :-
     abolish_all_tables,
     inicial(tateti(3), P),

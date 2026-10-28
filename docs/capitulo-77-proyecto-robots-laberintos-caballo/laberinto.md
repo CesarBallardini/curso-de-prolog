@@ -1,13 +1,13 @@
 # El laberinto de compuertas
 
-Esta página contiene la sección
-[77.6](index.md#776-version-5-el-laberinto-de-compuertas) del
-[capítulo 77](index.md): el laberinto de Csenki, tres heurísticas
-admisibles y su comparación sobre laberintos sembrados, con A\* y con
-IDA\*. El programa es `laberinto.pl`, en `ejemplos/capitulo-77/`, con sus
-pruebas.
+Esta página continúa el [capítulo 77](index.md) después de la
+[sección 77.5](index.md#775-version-4-caminos-con-menos-giros), con la
+[sección 77.6](#776-version-5-el-laberinto-de-compuertas): el laberinto de
+Csenki, tres heurísticas admisibles y su comparación sobre laberintos
+sembrados, con A\* y con IDA\*. El programa es `laberinto.pl`, en
+`ejemplos/capitulo-77/`, con sus pruebas.
 
-## El laberinto de compuertas
+## 77.6 Versión 5: el laberinto de compuertas
 
 El laberinto de Csenki es una sucesión de paredes horizontales, una por
 fila, cada una con algunas aberturas, las compuertas. Se entra por la
@@ -237,3 +237,41 @@ laberintos sembrados encuentra el problema de la
 compuerta se llega por muchísimos recorridos. Con 8, 12 y 16 filas expande
 375, 1 026 y 119 428 nodos; con 20 filas no termina en 20 segundos. A\*
 expande 68.
+
+El capítulo continúa en la página
+[El caballo, de una casilla a otra, y su recorrido](recorrido.md#777-version-6-el-caballo-de-una-casilla-a-otra),
+con el caballo de ajedrez sobre el mismo tipo de grilla: primero de una
+casilla a otra, con A\* e IDA\*, y después por todo el tablero.
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio. Los ejercicios que piden código se resuelven en archivos
+que cargan los del capítulo, sin modificarlos.
+
+6. **(1)** Calcular `euclidea` y `vuelo` desde la entrada del laberinto
+   `csenki` y explicar, con la definición de cada una, por qué `vuelo`
+   nunca es menor.
+7. **(2)** Csenki propone basar las heurísticas del laberinto en la
+   distancia de Manhattan en lugar de la línea recta. Escribirla
+   (`salida_manhattan/3`), decir si es admisible y compararla con
+   `euclidea` en `csenki` y en `sembrado(1, 30, 40, 4)`.
+8. **(3)** La heurística H3 de Csenki generaliza `vuelo` a vuelos de tres
+   tramos que pasan por dos filas intermedias. Escribirla y medir si sus
+   nodos ahorrados compensan su costo en `csenki` y en
+   `sembrado(1, 30, 40, 4)`.
+
+## Referencias
+
+- Attila Csenki, *Applications of Prolog*, Ventus Publishing (Bookboon),
+  2009 — capítulo «Informed Search», apartado «Project: The Shortest Route
+  in a Maze».
+  [Página de la editorial, copia de archivo](https://web.archive.org/web/20260216182045/https://bookboon.com/en/applications-of-prolog-ebook).
+  La editorial ya no ofrece el libro;
+  [Google Libros](https://books.google.com/books?id=copBGLD4LKwC) muestra
+  páginas seleccionadas.
+  Esta página toma de allí el proyecto del laberinto: el laberinto de la
+  figura 3.10, su costo por corredor y sus heurísticas euclídea y de
+  vuelo, con los valores 15,52 y 17,13 y el recorrido de costo 54.

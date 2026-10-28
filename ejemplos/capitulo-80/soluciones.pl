@@ -2,7 +2,7 @@
 
 % Capítulo 80 - Soluciones de los ejercicios.
 %
-% Las tablas de consejos de los ejercicios 4, 9 y 11 son módulos propios:
+% Las tablas de consejos de los ejercicios 4, 11 y 12 son módulos propios:
 % sus cláusulas se escriben aquí con el nombre del módulo delante, y
 % mueve/2, meta/3 y jugadas/4 se toman de la biblioteca de krk.pl.
 %
@@ -70,7 +70,63 @@ probar([C|Cs], Tabla, Posicion) :-
         probar(Cs, Tabla, Posicion)
     ).
 
-% --- Ejercicio 6: una defensa al azar ------------------------------------
+% --- Ejercicio 6: cuántas posiciones por longitud del mate ---------------
+
+%!  cuantas(-Pares:list) is det.
+%
+%   Pares tiene un par K-N por cada K de 1 a 16: N posiciones normales de
+%   las blancas dan mate en K jugadas. Calcula la tabla si hace falta.
+cuantas(Pares) :-
+    (   nodo(_, _, _)
+    ->  true
+    ;   calcular
+    ),
+    findall(K-N,
+            ( between(1, 16, K),
+              aggregate_all(count,
+                            ( nodo(blancas, C, _),
+                              decodificar(blancas, C, P),
+                              mate_en(P, K) ),
+                            N) ),
+            Pares).
+
+% --- Ejercicio 7: los árboles de una partida -----------------------------
+
+%!  historia(+Tabla, :Defensa, +Posicion, -Consejos:list) is det.
+%
+%   Consejos son los consejos que dieron un árbol nuevo en la partida desde
+%   Posicion, en orden. La partida se repite siguiendo los árboles, como lo
+%   hace partida/5, para saber en qué jugadas empieza uno.
+:- meta_predicate historia(+, 2, +, -).
+historia(Tabla, Defensa, Posicion, Consejos) :-
+    partida(Tabla, Defensa, Posicion, Jugadas, _),
+    arboles(Jugadas, Tabla, Posicion, ninguno, Consejos).
+
+%!  arboles(+Jugadas:list, +Tabla, +Posicion, +Arbol, -Consejos:list)
+%!      is det.
+%
+%   Recorre Jugadas desde Posicion con Arbol, el árbol en curso o ninguno,
+%   y reúne el consejo de cada árbol nuevo.
+arboles([], _, _, _, []).
+arboles([blancas(J, C)|Js], Tabla, P, Arbol, Consejos) :-
+    (   Arbol = juega(J, A1)
+    ->  Consejos = Cs
+    ;   estrategia(Tabla, P, C, juega(J, A1)),
+        Consejos = [C|Cs]
+    ),
+    once(jugada(P, J, P1)),
+    (   Js = [negras(R)|Js1]
+    ->  once(jugada(P1, R, P2)),
+        (   A1 = responde(Ramas),
+            memberchk(R-A2, Ramas)
+        ->  true
+        ;   A2 = ninguno
+        ),
+        arboles(Js1, Tabla, P2, A2, Cs)
+    ;   Cs = []
+    ).
+
+% --- Ejercicio 8: una defensa al azar ------------------------------------
 
 %!  azar(+Semilla:integer, +Posicion, -Jugada) is semidet.
 %
@@ -110,7 +166,7 @@ medir_en(Tabla, Defensa, ReyNegro, r(Finales, Mayor)) :-
 % de_blancas(E): el elemento E de una partida es una jugada de las blancas.
 de_blancas(blancas(_, _)).
 
-% --- Ejercicio 8: la política sin memoria --------------------------------
+% --- Ejercicio 10: la política sin memoria -------------------------------
 
 :- dynamic elige/3, asegura/3, cae/3.
 
@@ -181,7 +237,7 @@ propagar(Tabla, K) :-
         propagar(Tabla, K1)
     ).
 
-% --- Ejercicio 9: el encierro sin cuidar la torre ------------------------
+% --- Ejercicio 11: el encierro sin cuidar la torre -----------------------
 
 sin_cuidado:regla(N, R) :-
     krk:regla(N, R).
@@ -201,27 +257,7 @@ sin_cuidado:meta(M, P, R) :-
 sin_cuidado:jugadas(N, P, J, S) :-
     krk:jugadas(N, P, J, S).
 
-% --- Ejercicio 10: cuántas posiciones por longitud del mate --------------
-
-%!  cuantas(-Pares:list) is det.
-%
-%   Pares tiene un par K-N por cada K de 1 a 16: N posiciones normales de
-%   las blancas dan mate en K jugadas. Calcula la tabla si hace falta.
-cuantas(Pares) :-
-    (   nodo(_, _, _)
-    ->  true
-    ;   calcular
-    ),
-    findall(K-N,
-            ( between(1, 16, K),
-              aggregate_all(count,
-                            ( nodo(blancas, C, _),
-                              decodificar(blancas, C, P),
-                              mate_en(P, K) ),
-                            N) ),
-            Pares).
-
-% --- Ejercicio 11: la otra corrección ------------------------------------
+% --- Ejercicio 12: la otra corrección ------------------------------------
 
 meta_mejor:regla(N, R) :-
     krk:regla(N, R).
@@ -237,39 +273,3 @@ meta_mejor:meta(M, P, R) :-
     krk:meta(M, P, R).
 meta_mejor:jugadas(N, P, J, S) :-
     krk:jugadas(N, P, J, S).
-
-% --- Ejercicio 12: los árboles de una partida ----------------------------
-
-%!  historia(+Tabla, :Defensa, +Posicion, -Consejos:list) is det.
-%
-%   Consejos son los consejos que dieron un árbol nuevo en la partida desde
-%   Posicion, en orden. La partida se repite siguiendo los árboles, como lo
-%   hace partida/5, para saber en qué jugadas empieza uno.
-:- meta_predicate historia(+, 2, +, -).
-historia(Tabla, Defensa, Posicion, Consejos) :-
-    partida(Tabla, Defensa, Posicion, Jugadas, _),
-    arboles(Jugadas, Tabla, Posicion, ninguno, Consejos).
-
-%!  arboles(+Jugadas:list, +Tabla, +Posicion, +Arbol, -Consejos:list)
-%!      is det.
-%
-%   Recorre Jugadas desde Posicion con Arbol, el árbol en curso o ninguno,
-%   y reúne el consejo de cada árbol nuevo.
-arboles([], _, _, _, []).
-arboles([blancas(J, C)|Js], Tabla, P, Arbol, Consejos) :-
-    (   Arbol = juega(J, A1)
-    ->  Consejos = Cs
-    ;   estrategia(Tabla, P, C, juega(J, A1)),
-        Consejos = [C|Cs]
-    ),
-    once(jugada(P, J, P1)),
-    (   Js = [negras(R)|Js1]
-    ->  once(jugada(P1, R, P2)),
-        (   A1 = responde(Ramas),
-            memberchk(R-A2, Ramas)
-        ->  true
-        ;   A2 = ninguno
-        ),
-        arboles(Js1, Tabla, P2, A2, Cs)
-    ;   Cs = []
-    ).

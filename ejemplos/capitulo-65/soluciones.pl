@@ -151,39 +151,6 @@ sin_registro(Red, Estrategia, Limite, N, Mt0-Rete0, Mt, Resultado) :-
 
 % Ejercicio 7.
 
-%!  carga_siempre(+K:integer, -Inferencias:integer) is det.
-%
-%   Inferencias son las de cargar pedido_ampliado(K, _) en la red del
-%   configurador activando por la derecha cada sucesor, aunque su padre no
-%   tenga tokens.
-carga_siempre(K, Inferencias) :-
-    red_de(configurador, Red),
-    pedido_ampliado(K, Hechos),
-    inferencias(cargar_con(@>=, siempre_derecha, Red, Hechos, _),
-                Inferencias).
-
-%!  carga_normal(+K:integer, -Inferencias:integer) is det.
-%
-%   Como carga_siempre/2, con activar_derecha/6, que no activa un nodo
-%   cuyo padre no tiene tokens.
-carga_normal(K, Inferencias) :-
-    red_de(configurador, Red),
-    pedido_ampliado(K, Hechos),
-    inferencias(cargar_con(@>=, activar_derecha(mas), Red, Hechos, _),
-                Inferencias).
-
-%!  siempre_derecha(+Sello:integer, +Red, +Activacion, +Rete0, -Rete)
-%!      is det.
-%
-%   Como activar_derecha/6 con el signo mas, sin mirar la memoria del
-%   padre.
-siempre_derecha(Sello, Red, Nodo-Paso, Rete0, Rete) :-
-    Red = red(_, _, Nodos, _),
-    get_assoc(Nodo, Nodos, beta(Tipo, Padre, Prefijo, _, _)),
-    derecha(Tipo, mas, Sello-Paso, Padre-Nodo, Prefijo, Red, Rete0, Rete).
-
-% Ejercicio 9.
-
 %!  rastrear_cambios(+Programa, +Estrategia, +Hechos:list, -Resultado)
 %!      is det.
 %
@@ -228,6 +195,39 @@ identidades(Rete, Identidades) :-
     conjunto_rete(Rete, Is),
     findall(N-S, member(instanciacion(N, S, _, _), Is), Pares),
     sort(Pares, Identidades).
+
+% Ejercicio 8.
+
+%!  carga_siempre(+K:integer, -Inferencias:integer) is det.
+%
+%   Inferencias son las de cargar pedido_ampliado(K, _) en la red del
+%   configurador activando por la derecha cada sucesor, aunque su padre no
+%   tenga tokens.
+carga_siempre(K, Inferencias) :-
+    red_de(configurador, Red),
+    pedido_ampliado(K, Hechos),
+    inferencias(cargar_con(@>=, siempre_derecha, Red, Hechos, _),
+                Inferencias).
+
+%!  carga_normal(+K:integer, -Inferencias:integer) is det.
+%
+%   Como carga_siempre/2, con activar_derecha/6, que no activa un nodo
+%   cuyo padre no tiene tokens.
+carga_normal(K, Inferencias) :-
+    red_de(configurador, Red),
+    pedido_ampliado(K, Hechos),
+    inferencias(cargar_con(@>=, activar_derecha(mas), Red, Hechos, _),
+                Inferencias).
+
+%!  siempre_derecha(+Sello:integer, +Red, +Activacion, +Rete0, -Rete)
+%!      is det.
+%
+%   Como activar_derecha/6 con el signo mas, sin mirar la memoria del
+%   padre.
+siempre_derecha(Sello, Red, Nodo-Paso, Rete0, Rete) :-
+    Red = red(_, _, Nodos, _),
+    get_assoc(Nodo, Nodos, beta(Tipo, Padre, Prefijo, _, _)),
+    derecha(Tipo, mas, Sello-Paso, Padre-Nodo, Prefijo, Red, Rete0, Rete).
 
 % Ejercicio 10.
 

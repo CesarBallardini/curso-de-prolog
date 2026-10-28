@@ -24,7 +24,7 @@ Ulf Nilsson y Jan Małuszyński ([edición en línea de los autores](https://www
 ([edición en línea](https://book.simply-logical.space/)) y *Prolog
 Experiments in Discrete Mathematics, Logic, and Computability* de James
 Hein; la lista completa, con los apartados que se usan, está en las
-[referencias](#referencias). La última sección
+[referencias](#referencias) de cada página. La última sección
 aplica el verificador de estratos a las reglas del sistema experto de los
 capítulos [20](../capitulo-20-operadores-y-reglas-como-datos/index.md) y [34](../capitulo-34-introspeccion-y-metainterpretes/index.md). El capítulo cumple tres anuncios: la forma
 clausal de fórmulas cualesquiera y la relación entre las consecuencias de un
@@ -55,7 +55,7 @@ Al terminar el capítulo, el lector puede:
 !!! info "Tiempo estimado"
     Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **3:00 h**.
     Resolver los 6 ejercicios marcados con ★: **1:35 h**.
-    Resolver los 15 ejercicios del final: **4:30 h**.
+    Resolver los 15 ejercicios del capítulo: **4:30 h**.
 
 ## 39.1 Modelos y consecuencia lógica
 
@@ -155,7 +155,7 @@ cumple(A, I, _) :-
 ```
 
 El tercer argumento de `cumple/3` es la interpretación contra la que se
-evalúan los literales negados; hasta la [sección 39.3](#393-negacion-como-falla-la-complecion-de-clark-y-sldnf) no hace falta, y es la
+evalúan los literales negados; hasta la [sección 39.3](resolucion.md#393-negacion-como-falla-la-complecion-de-clark-y-sldnf) no hace falta, y es la
 misma. Las consultas usan la forma que recibe el nombre del programa:
 
 ```prolog
@@ -182,7 +182,7 @@ consecuencias lógicas del programa que están en la base:
 $$M_P = \bigcap \{\, I \subseteq B_P \mid I \models P \,\} = \{\, A \in B_P \mid P \models A \,\}$$
 
 Es el significado del programa: lo que afirma, y nada más. `modelo_minimo/2`
-lo calcula, con el procedimiento de la [sección 39.6](#396-evaluacion-de-abajo-hacia-arriba), y `consecuencia/2`
+lo calcula, con el procedimiento de la [sección 39.6](negacion.md#396-evaluacion-de-abajo-hacia-arriba), y `consecuencia/2`
 da sus átomos, uno por respuesta:
 
 ```prolog
@@ -276,374 +276,12 @@ que se pliega debe provenir de un despliegue. El plegado de la definición
 con ella misma, que aquella sección muestra, no la cumple, y el resultado
 tiene un modelo mínimo menor: no contiene ningún par de consecutivos.
 
-## 39.2 Resolución SLD
-
-Un paso de resolución SLD elige un átomo de la consulta con una **regla de
-selección**, lo unifica con la cabeza de una cláusula renombrada y lo
-reemplaza por el cuerpo. La página
-[Resolución SLD y SLDNF](resolucion.md#resolucion-sld) escribe ese paso en
-Prolog, `paso/4`, recorre con `arbol_sld/5` el árbol SLD de una consulta con
-la regla de la izquierda, la de Prolog, y con la de la derecha, y enuncia
-los tres teoremas que ordenan lo observado: la resolución SLD es correcta,
-es completa, y sus respuestas no dependen de la regla de selección, que sí
-cambia la forma y la finitud del árbol.
-
-## 39.3 Negación como falla: la compleción de Clark y SLDNF
-
-Para leer el éxito de `\+ A` como $\lnot A$ hace falta agregar al programa
-lo que calla: que sus cláusulas son todas las razones por las que un átomo
-es verdadero. Es la **compleción de Clark**, y la misma página, en
-[Negación como falla](resolucion.md#negacion-como-falla-la-complecion-de-clark-y-sldnf),
-la construye con `complecion/3`, presenta la resolución SLDNF con una regla
-de selección segura, `sldnf/2`, que responde bien donde `\+` con una variable
-libre responde mal, y muestra el programa `circular`, cuya compleción no tiene
-modelos: `r :- \+ r`.
-
-## 39.4 Estratificación
-
-Un programa es **estratificado** si ningún ciclo de su grafo de dependencias
-pasa por una negación: entonces se evalúa en capas, cada una sobre las
-anteriores ya completas, y tiene un modelo privilegiado, el **modelo
-estándar**. La página [Estratificación y semántica bien fundada](negacion.md#estratificacion)
-construye el grafo con `dependencias/2`, calcula los estratos con
-`estratos/2`, localiza los ciclos que los impiden con `ciclos_negativos/2` y
-evalúa por estratos con `modelo_estandar/2`.
-
-## 39.5 La semántica bien fundada
-
-La **semántica bien fundada** asigna a cada átomo de cualquier programa uno
-de tres valores: verdadero, falso o indefinido. La misma página, en
-[La semántica bien fundada](negacion.md#la-semantica-bien-fundada), la
-calcula con el punto fijo alternado, `bien_fundado/3`, sobre el juego de
-posiciones ganadoras de Nilsson y Małuszyński, donde las posiciones de empate
-quedan indefinidas, y enuncia que coincide con el modelo mínimo y con el
-modelo estándar donde estos existen.
-
-## 39.6 Evaluación de abajo hacia arriba
-
-El **operador de consecuencia inmediata** $T_P$ lleva una interpretación a
-los átomos que el programa concluye en un paso a partir de ella:
-
-$$T_P(I) = \{\, A \mid A \leftarrow B_1, \dots, B_n \text{ es una instancia sin variables de una cláusula de } P, \; B_1, \dots, B_n \in I \,\}$$
-
-Maarten van Emden y Robert Kowalski demostraron en 1976 que el modelo mínimo
-es el menor punto fijo de $T_P$, y que se alcanza aplicándolo desde la
-interpretación vacía: $M_P = \bigcup_{k \ge 0} T_P^k(\varnothing)$
-(Nilsson y Małuszyński, apartado 2.4; Hein, *Prolog Experiments*, apartado
-10.1). Los hechos entran en el primer paso, lo que se deduce de ellos en el
-segundo, y así sucesivamente. `consecuencias_de/3` es $T_P$:
-
-<!-- ejemplo: capitulo-39/semantica.pl predicado: consecuencias_de/3 derivar/4 -->
-```prolog
-%!  consecuencias_de(+Clausulas:list, +I:list, -T:list) is det.
-%
-%   T es T_P(I), el conjunto ordenado de las consecuencias inmediatas de I:
-%   las cabezas de las cláusulas cuyo cuerpo es verdadero en I.
-consecuencias_de(Clausulas, I, T) :-
-    derivar(Clausulas, I, I, Cabezas),
-    sort(Cabezas, T).
-
-%!  derivar(+Clausulas:list, +I:list, +J:list, -Cabezas:list) is det.
-%
-%   Cabezas son las cabezas de las cláusulas cuyo cuerpo es verdadero con
-%   I y J (cumple/3), una por cada forma de hacerlo verdadero, con
-%   repeticiones. Error de instanciación si una cabeza queda con variables.
-derivar(Clausulas, I, J, Cabezas) :-
-    findall(Cabeza,
-            ( member(Cabeza :- Cuerpo, Clausulas),
-              cumple(Cuerpo, I, J),
-              must_be(ground, Cabeza) ),
-            Cabezas).
-```
-
-```prolog
-?- consecuencias(lluvia, [], T1), consecuencias(lluvia, T1, T2), consecuencias(lluvia, T2, T3).
-T1 = [llueve],
-T2 = T3, T3 = [calle_mojada, llueve].
-```
-
-`T2 = T3` es el punto fijo. La **evaluación ingenua** repite ese paso hasta
-que la interpretación no cambia; `ingenua_de/4` agrega cada vez $T_P(I)$ a I,
-lo que da lo mismo para un programa definido y permite empezar desde una
-interpretación dada, como hace `modelo_estandar_de/2` con cada estrato. Cuenta
-las aplicaciones de $T_P$ y las **derivaciones**, cada cabeza obtenida de una
-instancia de una cláusula:
-
-<!-- ejemplo: capitulo-39/semantica.pl predicado: ingenua_de/4 -->
-```prolog
-%!  ingenua_de(+Clausulas:list, +I0:list, -M:list, -Costo) is det.
-%
-%   Evaluación ingenua: M es el primer I que no cambia en la sucesión que
-%   empieza en I0 y agrega en cada paso T_P(I). Costo es costo(Pasos,
-%   Derivaciones): cuántas veces se aplicó T_P, y cuántas cabezas derivaron
-%   todas esas aplicaciones, contando las repetidas.
-ingenua_de(Clausulas, I0, M, Costo) :-
-    ingenua_de(Clausulas, I0, M, costo(0, 0), Costo).
-```
-
-La evaluación de abajo hacia arriba termina siempre en un programa sin
-functores, como los del capítulo, porque la base de Herbrand es finita: es
-lo que se llama **Datalog**. La recursión a la izquierda y los ciclos de
-`caminos`, que impiden terminar a Prolog, no le afectan. Su defecto es otro:
-cada paso vuelve a derivar todo lo que ya derivaron los anteriores. En el
-paso k, `camino(X, Y) :- camino(X, Z), arco(Z, Y)` recombina todos los
-caminos conocidos, aunque solo los del paso k − 1 puedan dar algo nuevo.
-
-La **evaluación semi-ingenua** evita esa repetición: después del primer
-paso, una cláusula se usa solo con al menos un átomo del cuerpo tomado de
-los **nuevos** del paso anterior, y los demás del conjunto completo
-(Nilsson y Małuszyński, apartado 15.2):
-
-<!-- ejemplo: capitulo-39/semantica.pl predicado: semi_ingenua_de/4 derivar_con_nuevos/4 -->
-```prolog
-%!  semi_ingenua_de(+Clausulas:list, +I0:list, -M:list, -Costo) is det.
-%
-%   Evaluación semi-ingenua: el mismo M que ingenua_de/4. Después del primer
-%   paso, cada cláusula se evalúa solo con al menos un átomo del cuerpo
-%   tomado de los nuevos del paso anterior. Costo, como en ingenua_de/4.
-semi_ingenua_de(Clausulas, I0, M, Costo) :-
-    derivar(Clausulas, I0, I0, Cabezas),
-    length(Cabezas, D),
-    sort(Cabezas, T),
-    ord_subtract(T, I0, Nuevos),
-    ord_union(I0, Nuevos, I1),
-    semi_ingenua_de(Clausulas, I1, Nuevos, M, costo(1, D), Costo).
-
-%!  derivar_con_nuevos(+Clausulas:list, +I:list, +Nuevos:list,
-%!                     -Cabezas:list) is det.
-%
-%   Cabezas son las de derivar/4 con I, restringidas a las derivaciones que
-%   toman de Nuevos el átomo de alguna posición del cuerpo; los demás
-%   literales se evalúan con I. Una derivación que usa dos átomos nuevos
-%   aparece dos veces.
-derivar_con_nuevos(Clausulas, I, Nuevos, Cabezas) :-
-    findall(Cabeza,
-            ( member(Cabeza :- Cuerpo, Clausulas),
-              conjuncion_lista(Cuerpo, Literales),
-              append(Antes, [Literal|Despues], Literales),
-              atomo(Literal),
-              member(Literal, Nuevos),
-              cumple_todos(Antes, I),
-              cumple_todos(Despues, I),
-              must_be(ground, Cabeza) ),
-            Cabezas).
-```
-
-```prolog
-?- ingenua(caminos, [], _, C1), semi_ingenua(caminos, [], _, C2).
-C1 = costo(5, 60),
-C2 = costo(5, 20).
-```
-
-Los dos métodos dan el mismo modelo en los mismos cinco pasos; el
-semi-ingenuo hace un tercio de las derivaciones. La diferencia crece con el
-programa. `cadena(N, Cs)` arma las cláusulas de `camino/2` sobre N arcos en
-fila, de 0 a N, y `generado/2` las registra como el programa `cadena(N)`:
-`clausulas/2` busca en él los nombres que no están en `programa/2`, y otros
-archivos le agregan programas, porque está declarado `multifile`, como
-`prolog:message//1` en la [sección 26.7](../capitulo-26-errores-y-excepciones/index.md#267-mensajes-para-el-usuario):
-
-<!-- ejemplo: capitulo-39/semantica.pl predicado: generado/2 -->
-```prolog
-%!  generado(+Programa, -Clausulas:list) is semidet.
-%
-%   Clausulas son las del programa Programa, construido como datos: aquí,
-%   cadena(N), el de cadena/2. Falla con otro nombre.
-generado(cadena(N), Clausulas) :-
-    cadena(N, Clausulas).
-```
-
-```text
-?- time(ingenua(cadena(40), [], _, C)).
-% 15,935,580 inferences, 1.609 CPU in 1.612 seconds (100% CPU, 9901720 Lips)
-C = costo(42, 24640).
-
-?- time(semi_ingenua(cadena(40), [], _, C)).
-% 483,874 inferences, 0.047 CPU in 0.048 seconds (97% CPU, 10322645 Lips)
-C = costo(42, 860).
-```
-
-El modelo tiene 860 átomos, 40 arcos y 820 caminos, y la evaluación
-semi-ingenua deriva cada uno exactamente una vez: cada camino de i a j se
-obtiene solo del camino de i a j − 1 y del arco de j − 1 a j. La ingenua
-hace casi treinta veces más derivaciones, y tarda más de treinta veces
-más.
-
-Queda un defecto en los dos métodos: calculan el modelo entero, aunque la
-consulta pregunte solo por los caminos que salen de un nodo. La
-**transformación mágica** (Nilsson y Małuszyński, apartado 15.3) reescribe el
-programa para que la evaluación de abajo hacia arriba derive solo lo que la
-consulta necesita. La tabulación del [capítulo 40](../capitulo-40-tabulacion/index.md) llega al mismo
-lugar desde el otro lado: parte de la consulta, como Prolog, y guarda las
-respuestas de cada subobjetivo en una tabla que completa hasta el punto
-fijo. Y la cláusula `WITH RECURSIVE` de SQL, del
-[capítulo 43](../capitulo-43-prolog-y-sql/index.md), es una evaluación semi-ingenua: cada iteración une
-la tabla con las filas nuevas de la iteración anterior. Flach escribe en
-Prolog un evaluador de abajo hacia arriba para cláusulas generales, que
-construye modelos (*Simply Logical*, apartado 5.4).
-
-!!! question "Actividad"
-    Predecir `costo(Pasos, Derivaciones)` de las dos evaluaciones con
-    el programa `cadena(10)`, y comprobarlo. ¿Cuántos pasos da cada una, y
-    por qué las derivaciones de la semi-ingenua son tantas como los átomos
-    del modelo?
-
-## 39.7 Las reglas del sistema experto
-
-Las reglas del sistema experto del [capítulo 34](../capitulo-34-introspeccion-y-metainterpretes/index.md#347-el-sistema-experto-explica) son términos
-`si Condiciones entonces Conclusion`, y su [ejercicio 13](../capitulo-34-introspeccion-y-metainterpretes/soluciones.md#13) les agregó la
-negación `no`: r11 concluye `pinguino` de `ave y no vuela y nada`, y r12
-`avestruz` de `ave y no vuela y peso(P) y P > 50`. `experto.pl` tiene esas
-reglas y las convierte en cláusulas de Prolog, con `,` en lugar de `y` y
-`\+` en lugar de `no`, para que los evaluadores de `semantica.pl`, que carga
-con `ensure_loaded/1`, las examinen como a cualquier programa:
-
-<!-- ejemplo: capitulo-39/experto.pl predicado: base/2 regla_clausula/2 condiciones_cuerpo/2 -->
-```prolog
-%!  base(+Version:atom, -Clausulas:list) is det.
-%
-%   Clausulas son las reglas de la base, más las que agrega Version
-%   (original, vuela o puede_volar), como cláusulas Conclusion :- Cuerpo.
-base(Version, Clausulas) :-
-    must_be(oneof([original, vuela, puede_volar]), Version),
-    findall(R, regla(_, R), Reglas),
-    findall(R, agregada(Version, _, R), Agregadas),
-    append(Reglas, Agregadas, Todas),
-    maplist(regla_clausula, Todas, Clausulas).
-
-%!  regla_clausula(+Regla, -Clausula) is det.
-%
-%   Clausula es Regla, si Condiciones entonces Conclusion, escrita como la
-%   cláusula Conclusion :- Cuerpo.
-regla_clausula(si Condiciones entonces Conclusion, Conclusion :- Cuerpo) :-
-    condiciones_cuerpo(Condiciones, Cuerpo).
-
-%!  condiciones_cuerpo(+Condiciones, -Cuerpo) is det.
-%
-%   Cuerpo es Condiciones con , en lugar de y, y \+ en lugar de no.
-condiciones_cuerpo(Condiciones, Cuerpo) :-
-    (   Condiciones = (A y B)
-    ->  Cuerpo = (CuerpoA, CuerpoB),
-        condiciones_cuerpo(A, CuerpoA),
-        condiciones_cuerpo(B, CuerpoB)
-    ;   Condiciones = (no A)
-    ->  Cuerpo = (\+ A)
-    ;   Cuerpo = Condiciones
-    ).
-```
-
-El programa de cada versión se llama `base(Version)`: `experto.pl` lo agrega
-a `generado/2`, y los evaluadores lo reciben por ese nombre:
-
-```prolog
-?- regla(r12, R), regla_clausula(R, C).
-R = (si ave y no vuela y peso(_A)y _A>50 entonces avestruz),
-C = (avestruz:-ave, \+vuela, peso(_A), _A>50).
-
-?- estratos(base(original), [_|Superiores]).
-Superiores = [1-[avestruz/0, pinguino/0]].
-```
-
-La base es estratificada: `vuela` es una observación, sin reglas, y
-`pinguino` y `avestruz`, que la usan negada, quedan en el estrato 1; todos
-los demás predicados están en el 0. El significado de la base es claro, y el
-intérprete del [capítulo 34](../capitulo-34-introspeccion-y-metainterpretes/index.md) lo calcula.
-
-Una regla natural de agregar es la de las aves que vuelan: «un ave que no es
-pingüino ni avestruz vuela». Flach analiza una regla de este tipo, con sus
-excepciones, como razonamiento por defecto (*Simply Logical*, apartados 8.1
-y 8.2). La versión `vuela` de la base agrega r13, `si ave y no pinguino y no
-avestruz entonces vuela`:
-
-```prolog
-?- estratos(base(vuela), E).
-false.
-
-?- ciclos_negativos(base(vuela), P).
-P = [avestruz/0-vuela/0, pinguino/0-vuela/0, vuela/0-avestruz/0, vuela/0-pinguino/0].
-```
-
-r13 crea dos clases de ciclos. Con r4, `si vuela y pone_huevos entonces
-ave`, crea uno **positivo**, `ave` → `vuela` → `ave`, que no afecta al
-significado: la evaluación de abajo hacia arriba lo recorre sin problema,
-aunque el intérprete del [capítulo 34](../capitulo-34-introspeccion-y-metainterpretes/index.md), que resuelve de arriba hacia
-abajo, entra en él y agota la pila con cualquier caso, también el del
-guepardo. Con r11 y r12 crea dos ciclos **negativos**: `pinguino` depende de
-no `vuela`, y `vuela` de no `pinguino`. Esos no los resuelve ninguna
-evaluación. `diagnostico/3` agrega las observaciones como hechos, con el
-programa `con_hechos(base(Version), Observaciones)` que `generado/2` define
-en `experto.pl`, y calcula el modelo bien fundado:
-
-<!-- ejemplo: capitulo-39/experto.pl predicado: generado/2 diagnostico/3 -->
-```prolog
-%!  generado(+Programa, -Clausulas:list) is semidet.
-%
-%   Los programas de este archivo: base(Version), las cláusulas de base/2,
-%   y con_hechos(Programa, Hechos), las del programa Programa más un hecho
-%   por cada uno de Hechos.
-generado(base(Version), Clausulas) :-
-    base(Version, Clausulas).
-generado(con_hechos(Programa, Hechos), Clausulas) :-
-    clausulas(Programa, Reglas),
-    findall(H :- true, member(H, Hechos), Nuevas),
-    append(Reglas, Nuevas, Clausulas).
-
-%!  diagnostico(+Version:atom, +Observaciones:list, -Resultado) is det.
-%
-%   Resultado es resultado(Verdaderas, Indefinidas): las hipótesis
-%   verdaderas y las indefinidas en el modelo bien fundado de la base de
-%   Version con Observaciones como hechos.
-diagnostico(Version, Observaciones, resultado(Verdaderas, Indefinidas)) :-
-    bien_fundado(con_hechos(base(Version), Observaciones), V, I),
-    findall(H, ( hipotesis(H), ord_memberchk(H, V) ), Verdaderas),
-    findall(H, ( hipotesis(H), ord_memberchk(H, I) ), Indefinidas).
-```
-
-```prolog
-?- diagnostico(original, [tiene_plumas, nada, peso(30)], R).
-R = resultado([pinguino], []).
-
-?- diagnostico(vuela, [tiene_plumas, nada, peso(30)], R).
-R = resultado([], [pinguino]).
-
-?- diagnostico(vuela, [tiene_plumas, peso(90)], R).
-R = resultado([], [avestruz]).
-```
-
-Con la base original, un ave que nada y pesa 30 es un pingüino. Con r13, el
-mismo caso queda indefinido: el ave es un pingüino que no vuela, o un ave que
-vuela y no es pingüino, y las reglas no deciden entre las dos lecturas. Una
-base de reglas con negación a través de la recursión no tiene un
-significado claro: el sistema no da una respuesta falsa, pero tampoco una
-respuesta.
-
-La corrección es romper el ciclo: que r13 concluya algo que r11 y r12 no
-usan. La versión `puede_volar` concluye `puede_volar`, y deja `vuela` como
-observación:
-
-```prolog
-?- estratos(base(puede_volar), [_|Superiores]).
-Superiores = [1-[avestruz/0, pinguino/0], 2-[puede_volar/0]].
-
-?- diagnostico(puede_volar, [tiene_plumas, nada, peso(30)], R).
-R = resultado([pinguino], []).
-```
-
-La base vuelve a ser estratificada, con un estrato más, y cada caso tiene
-una respuesta. La verificación es estática: `estratos/2` y
-`ciclos_negativos/2` leen las reglas, no las ejecutan, y se pueden aplicar a
-cada versión de la base antes de usarla. El [capítulo 40](../capitulo-40-tabulacion/index.md) lleva el
-intérprete a la tabulación, donde el ciclo positivo de r4 y r13 termina, y
-el [capítulo 66](../capitulo-66-proyecto-razonamiento-rebatible/index.md) trata las reglas con excepciones como razonamiento
-rebatible.
-
-!!! success "Criterios de calidad"
-    | Criterio | En este capítulo |
-    |---|---|
-    | C1 | cada evaluador declara modos y determinación: `estratos/2` y `modelo_estandar/2` son `semidet` y fallan solo si el programa no es estratificado; `bien_fundado/3`, `ingenua/4`, `semi_ingenua/4` y `arbol_sld/5` son `det`, y sus pruebas no declaran `nondet` |
-    | C2, C5 | `clausulas/2` produce un error de instanciación con el programa libre y uno de existencia con un nombre desconocido, también con una lista de cláusulas pasada en lugar de un nombre; `cumple/3` produce un error de instanciación con una negación que tiene variables, y `derivar/4` con una cabeza que el cuerpo no liga: un programa que no es Datalog permitido no da un modelo incorrecto sin aviso |
-    | C6 | los evaluadores `_de` son puros: reciben las cláusulas como una lista y devuelven conjuntos ordenados; las formas que reciben el nombre solo agregan `clausulas/2`, y el único contacto con el programa es `clause/2`, dentro de ella |
-    | C7 | 103 pruebas en tres archivos, que prueban cada evaluador por su nombre y con una lista; cada evaluador se compara con otro que calcula lo mismo por otro camino: `ingenua/4` con `semi_ingenua/4`, `modelo_estandar/2` con `modelo_minimo/2` en un programa definido, y `bien_fundado/3` con `modelo_estandar/2` en uno estratificado |
+El capítulo continúa en la página
+[Resolución SLD y SLDNF](resolucion.md#392-resolucion-sld), con la
+resolución SLD enunciada con precisión y la negación como falla, con la
+compleción de Clark y la resolución SLDNF. Antes, los
+[ejercicios](#ejercicios) de esta página practican la
+[sección 39.1](#391-modelos-y-consecuencia-logica).
 
 ## Ejercicios
 
@@ -661,164 +299,27 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
    programa sin functores, y `base_herbrand/2`, que recibe el nombre del
    programa. ¿Cuántos átomos tiene la base de `caminos`, y qué
    fracción de ellos está en el modelo mínimo?
-3. ★ **(2)** `modelo_minimo/2` sobre `circular` responde `M = [p, q, r,
-   s]`. Verificar con `es_modelo/2` si esa interpretación es un modelo,
-   buscar uno menor, y explicar por qué la sucesión de $T_P$ deja de crecer
-   de manera ordenada cuando el programa tiene negación.
-4. **(1)** Escribir, como la tabla de la
-   [sección 13.7](../capitulo-13-prolog-y-la-logica/inferencia.md#la-refutacion-en-forma-clausal), los resolventes de la refutación de
-   `conexion(a, c)` con la regla de la izquierda, y comprobarlos con
-   `paso/4`.
-5. ★ **(2)** Predecir cuántas respuestas, nodos y ramas cortadas da
-   `arbol_sld/5` con la consulta `[abuelo(A, luis)]` y cada regla de
-   selección, y comprobarlo. ¿Cuál de las dos reglas conviene para esa
-   consulta, y qué orden de los objetivos de `abuelo/2` daría a Prolog el
-   mismo árbol?
-6. **(2)** Escribir `refutacion_de(Seleccion, Clausulas, Metas, Limite,
-   Resolventes)`: la lista de los resolventes de cada refutación de Metas de
-   largo Limite o menor, uno por paso, empezando por Metas; y
-   `refutacion/5`, que recibe el nombre del programa.
-7. ★ **(2)** Escribir la compleción de `gana/2` y de `mueve/3`, del
-   programa `juego`, y compararla con la de `complecion/3`. Explicar por
-   qué la compleción de `gana/2` no decide `gana(j2, a)`, y por qué la de
-   `r/0` no tiene ningún modelo.
-8. **(1)** Escribir `mostrar_complecion(Programa)`, que escribe la
-   compleción de cada predicado de un programa de `sld.pl`, uno por línea.
-9. ★ **(2)** Determinar a mano si cada programa es estratificado y, si lo
-   es, sus estratos; comprobarlo con `estratos_de/2` y
-   `ciclos_negativos_de/2`, que reciben la lista de cláusulas:
-   (a) `a :- \+ b.` `b :- c.` `c :- \+ d.` (b) `a :- b, \+ c.`
-   `c :- \+ a.` (c) `a :- \+ b.` `b :- a.`
-10. **(2)** El programa `par(N) :- sigue(M, N), \+ par(M).` con los hechos
-    `sigue(0, 1)`, `sigue(1, 2)`, …, `sigue(5, 6)` y `par(0)` no es
-    estratificado. Calcular su modelo bien fundado, y explicar por qué es
-    total aunque `par/1` dependa de su propia negación.
-11. **(2)** Escribir `alternancia_de(Clausulas, Pasos)`, que da la sucesión
-    de pares $V_i$-$P_i$ del punto fijo alternado, y `alternancia/2`, que
-    recibe el nombre del programa, y seguirla con el juego j2:
-    en qué paso se sabe que c gana, y en cuál que d pierde.
-12. **(3)** Un modelo M es **estable** si M es igual al modelo reducido del
-    programa con las negaciones evaluadas contra M, `reducido(Cs, M, M)`.
-    Escribir `estables_de(Clausulas, Modelos)`, que prueba como candidatos
-    los subconjuntos de lo posible, `reducido(Cs, [], P)`, y `estables/2`,
-    que recibe el nombre del programa. ¿Cuántos modelos
-    estables tienen `p :- \+ q.` `q :- \+ p.`, el programa `circular` y el
-    juego j2?
-13. **(2)** Escribir el programa `alcanza(Y)`, los nodos alcanzables desde
-    0 en la fila del programa `cadena(N)`, y comparar el costo de su
-    evaluación semi-ingenua con la de `camino/2` para 40 arcos. ¿Qué parte del modelo
-    de `camino/2` hacía falta para responder `camino(0, Y)`?
-14. **(3)** Escribir `semi_ingenua_estricta_de/4`, y su forma por nombre
-    `semi_ingenua_estricta/4`, que en cada paso evalúa los
-    literales anteriores al nuevo con la interpretación del paso anterior, y
-    los posteriores con la actual, de modo que ninguna derivación se cuente
-    dos veces. Compararla con `semi_ingenua/4` en un programa donde una
-    cláusula tiene dos literales recursivos:
-    `camino(X, Y) :- camino(X, Z), camino(Z, Y).`
-15. ★ **(2)** Agregar a la versión `puede_volar` de la base r14, `si
-    mamifero y no carnivoro entonces herbivoro`, y r15, `si herbivoro y
-    no tiene_cascos entonces carnivoro`. Decidir si la base sigue siendo
-    estratificada, dar los ciclos negativos, y calcular con `valor/3` los
-    valores de `carnivoro` y de `herbivoro` cuando la única observación es
-    `tiene_pelo`. Proponer una corrección.
-
-## Resumen
-
-| | |
-|---|---|
-| **base de Herbrand** | los átomos sin variables que se construyen con los símbolos del programa |
-| **modelo** | una interpretación que hace verdadera cada instancia de cada cláusula |
-| **modelo mínimo** | la intersección de los modelos de un programa definido: sus consecuencias lógicas |
-| **forma clausal** | toda fórmula se escribe como conjunción de cláusulas; las de Horn con conclusión tienen modelo mínimo |
-| **resolución SLD** | regla de selección, cláusula renombrada, unificador más general; correcta, completa, independiente de la regla |
-| **compleción de Clark** | cada predicado definido con «si y solo si»; justifica la negación como falla finita |
-| **SLDNF** | SLD con negación como falla; un literal negado se elige solo sin variables |
-| **estratificación** | ningún ciclo de dependencias pasa por una negación; el modelo estándar se calcula por estratos |
-| **semántica bien fundada** | tres valores; coincide con el modelo mínimo y con el estándar donde existen |
-| **$T_P$** | el operador de consecuencia inmediata; su menor punto fijo es el modelo mínimo |
-| **evaluación semi-ingenua** | cada paso usa al menos un átomo nuevo del paso anterior |
-| `clausulas/2` | las cláusulas de un programa por su nombre: de `programa/2`, leídas con `clause/2`, o de `generado/2` |
-| `generado/2` | los programas construidos como datos, como `cadena(N)`; `multifile`, para que otros archivos agreguen los suyos |
-| `modelo_minimo/2` y `modelo_minimo_de/2` | las dos formas de cada evaluador: la primera recibe el nombre del programa, la terminada en `_de` la lista de sus cláusulas |
-| `es_modelo/2`, `consecuencias/3`, `modelo_minimo/2` | verificar un modelo, aplicar $T_P$, calcular el modelo mínimo |
-| `consecuencia/2` | los átomos del modelo mínimo, uno por respuesta |
-| `ingenua/4`, `semi_ingenua/4` | las dos evaluaciones, con su costo en pasos y derivaciones |
-| `estratos/2`, `ciclos_negativos/2`, `modelo_estandar/2` | los estratos, los ciclos que los impiden y el modelo estándar |
-| `bien_fundado/3`, `valor/3` | el modelo bien fundado y el valor de un átomo en él |
-| `paso/4`, `arbol_sld/5` | un paso SLD y el árbol SLD con una regla de selección |
-| `sldnf/2`, `complecion/3` | la resolución SLDNF con la regla segura, y la definición completada |
-| `unify_with_occurs_check/2` | la unificación con verificación de ocurrencia |
-| `ord_subset/2` | un conjunto ordenado está contenido en otro; en las soluciones, para elegir los modelos minimales |
-
-## Temas que se retoman
-
-| Tema | Se retoma en |
-|---|---|
-| La semántica bien fundada en SWI-Prolog: `tnot/1` y las respuestas indefinidas | [capítulo 40](../capitulo-40-tabulacion/index.md) |
-| El intérprete del sistema experto con tablas, donde los ciclos positivos terminan | [capítulo 40](../capitulo-40-tabulacion/index.md) |
-| La resolución general, sobre cláusulas que no son de Horn | [capítulo 63](../capitulo-63-proyecto-demostrador-teoremas/index.md) |
-| Las reglas con excepciones, como razonamiento rebatible | [capítulo 66](../capitulo-66-proyecto-razonamiento-rebatible/index.md) |
-| Un motor Datalog con evaluación semi-ingenua y transformación mágica | [capítulo 86](../capitulo-86-proyecto-motor-datalog/index.md) |
-| `WITH RECURSIVE`, la evaluación semi-ingenua de SQL | [capítulo 43](../capitulo-43-prolog-y-sql/index.md) |
 
 ## Referencias
 
 - Ulf Nilsson y Jan Małuszyński, *Logic, Programming and Prolog*, 2.ª
   edición, John Wiley & Sons, 1995 — capítulo «Definite Logic Programs»
   (apartados «The Least Herbrand Model» y «Construction of Least Herbrand
-  Models»), capítulo «SLD-Resolution» (apartados «Soundness of
-  SLD-resolution» y «Completeness of SLD-resolution»), capítulo «Negation
-  in Logic Programming» (apartados «The Completed Program»,
-  «SLDNF-resolution for Definite Programs», «General Logic Programs» y
-  «Well-founded Semantics») y capítulo «Query-answering in Deductive
-  Databases» (apartados «Semi-naive Evaluation» y «Magic Transformation»).
+  Models»).
   [Edición en línea de los autores](https://www.ida.liu.se/~ulfni53/lpp/).
-  El capítulo toma de allí el orden de la exposición, los enunciados de los
-  teoremas que cita sin demostrar, el juego de las posiciones ganadoras y
-  las evaluaciones ingenua y semi-ingenua.
+  El capítulo toma de allí el orden de la exposición y los enunciados de
+  los teoremas que esta página cita sin demostrar.
 - Michael Spivey, *An Introduction to Logic Programming through Prolog*,
   Prentice Hall, 1996 — apartado «Completeness» del capítulo «Inference
-  rules», y apartado «Semantics of negation» del capítulo «Negation as
-  failure».
+  rules».
   [Edición del autor](https://spivey.oriel.ox.ac.uk/wiki/files/logprog/logic.pdf).
-  De allí vienen la lectura del supuesto de mundo cerrado como la elección
-  del modelo mínimo y la construcción del modelo de un programa
-  estratificado capa por capa.
+  De allí viene la lectura del supuesto de mundo cerrado como la elección
+  del modelo mínimo.
 - Peter Flach, *Simply Logical: Intelligent Reasoning by Example*, John
-  Wiley & Sons, 1994 — apartados «The relation between clausal logic and
+  Wiley & Sons, 1994 — apartado «The relation between clausal logic and
   Predicate Logic»
-  ([en línea](https://book.simply-logical.space/src/text/1_part_i/2.5.html)),
-  «Forward chaining»
-  ([en línea](https://book.simply-logical.space/src/text/2_part_ii/5.4.html)),
-  «Default reasoning»
-  ([en línea](https://book.simply-logical.space/src/text/3_part_iii/8.1.html))
-  y «The semantics of incomplete information»
-  ([en línea](https://book.simply-logical.space/src/text/3_part_iii/8.2.html)).
-  El capítulo toma los pasos de la forma clausal, el evaluador de abajo
-  hacia arriba que construye modelos y la lectura de una regla con
-  excepciones como razonamiento por defecto.
-- James L. Hein, *Prolog Experiments in Discrete Mathematics, Logic, and
-  Computability*, Portland State University, 2009 — apartado «The
-  Immediate Consequence Operator» del capítulo «Logic Programming
-  Theory». Es la presentación de $T_P$ y de su sucesión desde la
-  interpretación vacía que sigue la [sección 39.6](#396-evaluacion-de-abajo-hacia-arriba).
-- Los artículos originales que el capítulo nombra, citados a través de los
-  libros anteriores: Maarten van Emden y Robert Kowalski, «The semantics
-  of predicate logic as a programming language», *Journal of the ACM*
-  23(4), 1976 ($T_P$ y el menor punto fijo); Keith Clark, «Negation as
-  failure», en *Logic and Data Bases*, Plenum Press, 1978 (la compleción);
-  Hisao Tamaki y Taisuke Sato, «Unfold/fold transformation of logic
-  programs», 1984 (la condición del plegado); Krzysztof Apt, Howard Blair
-  y Adrian Walker, «Towards a theory of declarative knowledge», 1988, y
-  Allen Van Gelder, «Negation as failure using tight derivations for
-  general logic programs», 1988 (la estratificación); Michael Gelfond y
-  Vladimir Lifschitz, «The stable model semantics for logic programming»,
-  1988 (los modelos estables); y Allen Van Gelder, Kenneth Ross y John
-  Schlipf, «The well-founded semantics for general logic programs»,
-  *Journal of the ACM* 38(3), 1991 (la semántica bien fundada).
-
-Los programas del capítulo son propios, escritos para el curso: las
-fuentes aportan las definiciones, los teoremas y los ejemplos, como el
-juego de Nilsson y Małuszyński, pero no código; los evaluadores sobre
-listas de cláusulas, el punto fijo alternado con `reducido/3`, el conteo de
-derivaciones y el verificador de estratos por rondas son del curso.
+  ([en línea](https://book.simply-logical.space/src/text/1_part_i/2.5.html)).
+  Esta página toma los pasos de la forma clausal.
+- El artículo original que esta página nombra, citado a través de los
+  libros anteriores: Hisao Tamaki y Taisuke Sato, «Unfold/fold
+  transformation of logic programs», 1984 (la condición del plegado).

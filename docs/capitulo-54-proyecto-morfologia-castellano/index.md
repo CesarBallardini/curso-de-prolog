@@ -94,9 +94,9 @@ Al terminar el capítulo, el lector puede:
   derivar con prefijos y sufijos usando las mismas reglas ortográficas.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **2:25 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **2:20 h**.
     Resolver los 6 ejercicios marcados con ★: **1:30 h**.
-    Resolver los 15 ejercicios del final: **4:50 h**.
+    Resolver los 15 ejercicios del capítulo: **4:50 h**.
 
 ## 54.1 El programa terminado
 
@@ -558,176 +558,12 @@ formas. El costo crece con el tamaño del léxico —con los 500 verbos
 inventados de `grande.pl`, que llevan el léxico a 6 328 formas, pasa a
 1 072 794—, y un léxico real tiene decenas de miles de palabras.
 
-## 54.5 Versión 3: dos niveles, con los transductores del capítulo 52
-
-La morfología de dos niveles de Koskenniemi, que Covington presenta, elimina
-los niveles intermedios: cada regla relaciona directamente la forma
-subyacente con la escrita, par de letras por par de letras, y todas se
-aplican **a la vez**. La página
-[Dos niveles con transductores](dos-niveles.md#dos-niveles-con-transductores)
-desarrolla la versión 3, `dos_niveles.pl`, con el módulo `transductores` del
-[capítulo 52](../capitulo-52-proyecto-automatas-expresiones-regulares/transductores.md#transductores):
-la palabra como sucesión de pares `Subyacente:Escrita`; cada regla como una
-lista de **patrones prohibidos**, convertida en autómata con
-`complemento/1`; las reglas en paralelo con `interseccion/2`; y el léxico
-como un árbol de letras que, compuesto con las reglas mediante
-`compuesta/2`, solo propone formas subyacentes que existen. Termina con su
-limitación, medida: para decidir qué estados son finales, la intersección
-construye el autómata producto entero, que con cinco de las nueve reglas
-tiene 4 465 estados y tarda casi nueve minutos en generar «luces».
-
-## 54.6 Versión 4: las reglas en paralelo
-
-El producto de las reglas no hace falta. Para decidir si una sucesión de
-pares es correcta basta con leerla con todas las reglas a la vez y
-rechazarla en cuanto una encuentra un patrón prohibido; los estados que
-importan son los que la palabra alcanza. `paralelo(Rs)` es ese
-transductor: su estado es la lista de los estados de cada regla, y el
-estado de una regla es el conjunto de estados de `contiene(R)` donde está la
-lectura, como en el determinista del [capítulo 52](../capitulo-52-proyecto-automatas-expresiones-regulares/index.md), pero calculado solo al
-pasar por él:
-
-<!-- ejemplo: capitulo-54/paralelo.pl fragmento: automatas:alfabeto(paralelo(_), Pares) :- .. memberchk(hallado, D1). -->
-```prolog
-automatas:alfabeto(paralelo(_), Pares) :-
-    findall(P, par(P), Pares0),
-    sort(Pares0, Pares).
-automatas:inicial(paralelo(Rs), Ds) :-
-    maplist(inicial_regla, Rs, Ds).
-automatas:final(paralelo(Rs), Ds) :-
-    maplist(acepta_regla, Rs, Ds).
-automatas:delta(paralelo(Rs), Ds, P, Ds1) :-
-    par(P),
-    maplist(paso(P), Rs, Ds, Ds1).
-
-%!  inicial_regla(+R, -D:list) is det.
-%
-%   D es el conjunto de estados de contiene(R) antes de leer un par.
-inicial_regla(R, D) :-
-    inicial(contiene(R), Q0),
-    clausura_conjunto(contiene(R), [Q0], D).
-
-%!  acepta_regla(+R, +D:list) is semidet.
-%
-%   Ningún estado de D es final en contiene(R): la sucesión leída no
-%   tiene un patrón prohibido por R.
-acepta_regla(R, D) :-
-    \+ ( member(Q, D), final(contiene(R), Q) ).
-
-:- table paso/4.
-
-%!  paso(+P, +R, +D:list, -D1:list) is semidet.
-%
-%   Leyendo el par P, la regla R pasa del conjunto D al D1, y no encuentra
-%   un patrón prohibido en el medio de la palabra. Tabulada: cada paso se
-%   calcula una vez.
-paso(P, R, D, D1) :-
-    mover(contiene(R), P, D, D1),
-    \+ memberchk(hallado, D1).
-```
-
-Un paso de una regla que llega a `hallado` falla: la regla rechaza, y el
-transductor no tiene estados muertos. `paso/4` está tabulado, como las
-tablas de transiciones que KIMMO compila de antemano; aquí se llenan a
-medida que las palabras las necesitan, y se reutilizan.
-
-`forma/2`, en la [sección 54.1](#541-el-programa-terminado), analiza con
-`inversa/1` aplicado al léxico compuesto con las reglas: el analizador es el
-transductor inverso del generador. Las tres construcciones de transductores
-del [capítulo 52](../capitulo-52-proyecto-automatas-expresiones-regulares/index.md) aparecen en la versión 4; `identidad/1` sirve para la forma
-subyacente de un lema, que la versión 2 obtenía con `escribir/2`: compuestas
-con la identidad sobre las letras sin límite, las reglas en sentido inverso
-no pueden proponer un `+`:
-
-<!-- ejemplo: capitulo-54/paralelo.pl predicado: raiz/2 -->
-```prolog
-%!  raiz(+Palabra:string, -Subyacente:list) is nondet.
-%
-%   Subyacente es una forma subyacente sin límites cuya forma escrita es
-%   Palabra: la de un lema, como subyacente/2 de la versión 2. La
-%   identidad sobre las letras sin el límite + restringe el nivel
-%   subyacente antes de las reglas.
-raiz(Palabra, Subyacente) :-
-    reglas(Rs),
-    findall(L, ( par([L]:_), L \== + ), Ls0),
-    sort(Ls0, Ls),
-    string_chars(Palabra, Letras),
-    transducir(inversa(compuesta(identidad(Ls), paralelo(Rs))), Letras,
-               Subyacente).
-```
-
-```prolog
-?- findall(S, raiz("proteger", S), Ss).
-Ss = [[p, r, o, t, e, 'J', e, r]].
-
-?- reglas(_Rs), findall(_S, transducir(paralelo(_Rs), _S, [l, u, c, e, s]), _Ss), length(_Ss, N).
-N = 26.
-```
-
-Las reglas solas admiten 26 formas subyacentes para «luces»: «luz+s»,
-«luz+es», «lu+z+s», «lúz+s» y otras, todas bien escritas y ninguna
-descartable sin saber qué palabras existen. Es la sobregeneración que
-Covington atribuye a las reglas que borran letras; el léxico la elimina, y
-por eso analiza con él.
-
-**Lo que se gana.** Las pruebas comparan la versión 4 con la 2 en todo el
-léxico: las 328 formas generadas y los análisis de cada una son los mismos.
-Las nueve reglas juntas responden en décimas de segundo. Medido en
-inferencias, en un proceso nuevo, con el léxico del capítulo y con los 500
-verbos de `grande.pl`:
-
-| Inferencias | Versión 2 | Versión 4 |
-|---|---|---|
-| analizar «luces», la primera consulta | 68 296 | 191 549 |
-| analizar «cuentas», después | 68 294 | 46 183 |
-| con `grande.pl`: analizar «luces», la primera consulta | 1 072 796 | 761 612 |
-| con `grande.pl`: analizar «cuentas», después | 1 072 794 | 14 994 |
-| generar «cuento», después | 303 | 516 587 |
-
-La primera consulta de la versión 4 completa las tablas de las formas
-subyacentes y del árbol de letras, y ese costo crece con el léxico; es
-una vez. Después, analizar una palabra cuesta lo que cuestan los caminos que
-la palabra abre en el árbol y en las reglas, y no crece con el léxico: con
-veinte veces más formas, «cuentas» cuesta menos, porque la primera consulta
-dejó tabulados más pasos de las reglas. La versión 2 recorre el léxico en
-cada análisis. Generar, en cambio, es más barato con la versión 2, que
-aplica cuatro pasadas a una lista, que con el transductor, que en cada
-posición prueba los 46 pares.
-
-## 54.7 Versión 5: reglas en notación de dos niveles
-
-Koskenniemi no escribe las reglas como patrones prohibidos sino como un par
-y su contexto, `e:0 => C:C _ +:0 V:V` en el ejemplo de Covington, y KIMMO
-las compila en transductores. La página
-[Notación de dos niveles y derivación](derivacion.md#la-notacion-de-dos-niveles)
-desarrolla la versión 5, `kimmo.pl`: las reglas como términos
-`regla_dos_niveles/5` con los operadores `=>`, `<=` y `<=>`; `compilar/5`,
-que las traduce a las listas de patrones de la versión 3; la regla z
-escrita así, que compila exactamente a la de la
-[sección 54.5](#545-version-3-dos-niveles-con-los-transductores-del-capitulo-52);
-y una regla nueva, `nasal`, que escribe la N del prefijo in- como m ante p
-o b: in+posible es «imposible».
-
-## 54.8 Versión 6: la derivación y los prefijos
-
-La flexión produce las formas de una palabra; la derivación, palabras
-nuevas. Covington aconseja listar la derivación que es irregular y escribir
-como reglas solo la regular. La versión 6, `derivacion.pl`, en la misma
-[página](derivacion.md#la-derivacion-y-los-prefijos), lista los nombres en
--ción y los verbos con des- y re-, que heredan la clase y las formas
-irregulares de su base —«deshizo», «recuento»—, y escribe como reglas el
-adverbio en -mente, el diminutivo —«lucecita», «saquito», «camioncito»,
-con las reglas ortográficas de las versiones anteriores— y el prefijo in-,
-con la regla `nasal` de la versión 5.
-
-!!! success "Criterios de calidad"
-    | Criterio | En este capítulo |
-    |---|---|
-    | C1 | cada predicado declara sus modos; `escribir/2` declara `?` en los dos argumentos y dice cuál debe llegar ligado, y `forma/2` de las versiones 1 y 4 dice qué argumento decide el sentido |
-    | C2 | las reglas son datos: listas de patrones de clases de pares, con un functor por clase; agregar una regla es agregar una cláusula de `regla/2`, y ningún otro predicado cambia |
-    | C3 | `escribir/2` evalúa cada condición después de la llamada recursiva y por eso funciona en los dos sentidos; los si-entonces-sino de `tildes/2` y `lexica/2` actúan sobre argumentos que llegan instanciados |
-    | C5 | las formas irregulares se listan y bloquean la regular; lo regular no se lista |
-    | C7 | 119 pruebas en diez archivos, y 36 en los de las soluciones; la versión 4 se compara con la 2 en las 328 formas del léxico y en sus análisis, y los defectos de la versión 1 están probados |
+El capítulo continúa en la página
+[Dos niveles con transductores](dos-niveles.md#545-version-3-dos-niveles-con-los-transductores-del-capitulo-52), con la
+morfología de dos niveles: las reglas como autómatas que se aplican a la vez,
+primero con los transductores del
+[capítulo 52](../capitulo-52-proyecto-automatas-expresiones-regulares/index.md)
+y después sin construir el autómata de todas las reglas juntas.
 
 ## Ejercicios
 
@@ -744,162 +580,39 @@ versión 3 `regla/2` y `par/1`.
    del plural del presente de «volver» y la tercera del singular del
    pretérito de «dormir», y qué análisis da para «siguen». Nombrar la regla
    o la pasada que explica cada letra que cambia, y comprobarlo.
-2. **(1)** Agregar al léxico los nombres «nariz» y «razón», femeninos, y
-   «origen», masculino, y el adjetivo invariable «cortés», sin cambiar
-   ninguna regla. Predecir sus plurales y comprobar que las versiones 2 y 4
-   dan los mismos.
-3. ★ **(1)** Agregar los verbos «empezar», de la clase `e_ie`, y
+2. ★ **(1)** Agregar los verbos «empezar», de la clase `e_ie`, y
    «colgar», de la clase `o_ue`. Predecir las seis formas del presente y
    las del pretérito de cada uno y comprobarlas. ¿Qué dos reglas actúan
    juntas en «empiezo» y «empecé», y por qué no hace falta ninguna regla
    nueva?
-4. **(2)** Agregar el pretérito imperfecto como otro tiempo: sus
+3. **(2)** Agregar el pretérito imperfecto como otro tiempo: sus
    terminaciones (-aba, -abas… para la conjugación en a; -ía, -ías… para
    las otras dos) y las formas de «ser» (era…) y de «ir» (iba…), listadas.
    Explicar por qué «contaba» y «tenía» no cambian la vocal de la raíz sin
    tocar `raiz_verbal/7`. ¿Cuántos análisis tiene «hacía»?
-5. ★ **(2)** Escribir `escribir_antes/2`, la parte de `escribir/2` que
+4. ★ **(2)** Escribir `escribir_antes/2`, la parte de `escribir/2` que
    trata la letra k y las letras que se escriben igual, con cada condición
    **antes** de la llamada recursiva. Predecir qué responden
    `escribir_antes([t, o, k, a, r], E)` y `escribir_antes(S, [t, o, c, a, r])`,
    comprobarlo y explicar la diferencia. Escribir su encabezado PlDoc: ¿qué
    modo puede declarar?
-6. **(2)** «Jugar» cambia la u de la raíz por ue: «juego», «jugamos».
+5. **(2)** «Jugar» cambia la u de la raíz por ue: «juego», «jugamos».
    Agregar la clase `u_ue` a `diptongo/3` y el verbo al léxico, y
    comprobar el presente y el pretérito. ¿De dónde sale la u de «jugué»?
-7. ★ **(2)** Agregar el **voseo**: la persona `vos`, con las terminaciones
+6. ★ **(2)** Agregar el **voseo**: la persona `vos`, con las terminaciones
    -ás, -és, -ís del presente y las de tú en el pretérito, y «sos» y
    «vas» para «ser» e «ir». Predecir «vos contás» o «vos cuentás», «vos
    pedís» o «vos pidís», y explicar por qué el cambio de la raíz no
    necesita ninguna condición nueva. ¿Cuántos análisis tiene «fuiste»?
-8. **(2)** Escribir `candidatos(Palabra, Subyacentes)`, las formas
-   subyacentes que las reglas de la versión 4 admiten sin el léxico.
-   Contarlas para «luces», «toqué» y «camiones», clasificar las de
-   «toqué», y explicar qué pasaría sin la regla `limite`.
-9. **(2)** Escribir `conjugacion(Lema, Tiempo, Formas)`, las seis formas de
-   un verbo en un tiempo, en el orden de las personas, con la versión 4.
-   Escribir su encabezado PlDoc y justificar la determinación que declara.
-   ¿Qué debe hacer con un lema que no es un verbo?
-10. ★ **(3)** «Leer» y «creer» escriben y la i de la terminación que queda
-    entre vocales: «leyó», «creyeron». Agregar a la versión 4 una regla
-    `ye` con el par `[i]:[y]`, y los dos verbos. Comprobar que las demás
-    formas del léxico no cambian. ¿Qué escribe la versión 4 para la
-    primera persona del plural del pretérito, y por qué no alcanza con
-    agregar otra regla para ponerle la tilde? ¿Qué escribe la versión 2?
-11. **(3)** «Averiguar» escribe ü la u que suena entre g y e: «averigüé».
-    Agregar a la versión 4 una regla `dieresis` con el par `[u]:['ü']`.
-    ¿Qué regla existente impide ya escribir «averigue», y por qué la
-    versión 2 no genera ninguna forma para ese pretérito?
-12. **(3)** Escribir `adivinar(Palabra, Analisis)`, que analiza formas de
-    verbos regulares que el léxico no tiene: entre las formas subyacentes
-    que las reglas admiten sin el léxico, se queda con las que son una
-    raíz, un límite y una terminación, y escribe el infinitivo de esa raíz
-    con las mismas reglas. Probarlo con «bloguearon», «tuiteé» y
-    «chateamos». ¿Qué responde para «cuentas», y por qué?
-13. ★ **(1)** Con `derivacion.pl` cargado, predecir qué responden
-    `findall(D, derivada("lapicito", D), Ds)`,
-    `findall(A, forma("desprotejo", A), As)` y
-    `findall(P, derivada(P, adverbio("inglés")), Ps)`, comprobarlo, y
-    nombrar la regla o la entrada del léxico que explica cada letra que
-    cambia respecto de la base.
-14. **(2)** Escribir la regla `jota` de la versión 3 en la notación de dos
-    niveles, como dos reglas: una para la `'J'` escrita g y otra para la j
-    escrita j. Comprobar con `compilar/5` que sus patrones, juntos, son
-    los de `regla(jota, Ps)`. ¿Por qué la segunda solo necesita `=>`?
-15. **(3)** El prefijo in- se escribe ir- ante r («irreal») e i- ante l
-    («ilegal»). Agregar los adjetivos «real» y «legal», y dos reglas en
-    notación de dos niveles, sin cambiar las otras. ¿Qué par hace falta
-    para «ilegal», que no tiene ninguna letra en lugar de la N?
-
-## Resumen
-
-| | |
-|---|---|
-| **morfología, flexión** | la estructura de las palabras; la flexión produce las formas de una misma palabra según sus rasgos |
-| **lema** | la forma que representa a todas las de una palabra: el singular, el masculino, el infinitivo |
-| **forma subyacente** | la palabra con una letra por sonido y los límites entre raíz y terminación marcados con `+` |
-| **regla ortográfica** | la relación entre la forma subyacente y la escrita en un contexto: `k` se escribe qu ante e, i |
-| **epéntesis** | una letra que aparece al unir las partes: la e de «luces» |
-| **bloqueo** | una forma listada en el léxico impide que se calcule la regular |
-| **morfología de dos niveles** | las reglas relacionan directamente la forma subyacente con la escrita, par por par, y se aplican a la vez |
-| **patrón prohibido** | una sucesión de clases de pares que ninguna palabra puede contener; una regla es una lista de ellos |
-| **sobregeneración** | las formas subyacentes que las reglas admiten sin que el léxico las tenga |
-| **árbol de letras** | el léxico como autómata cuyos estados son los prefijos de sus formas |
-| **[Patrón 61](../patrones.md#61-compilar-reglas-desde-una-notacion-declarativa)** | compilar reglas desde una notación declarativa |
-| `forma/2` | la relación entre una palabra y su análisis, en las cuatro versiones |
-| `partes/3` | la raíz y la terminación de un análisis, en la versión 1 |
-| `escribir/2`, `subyacente/2` | la ortografía en los dos sentidos, y la forma subyacente de un lema |
-| `lexica/2`, `superficie/2` | la forma subyacente de un análisis, y las cuatro pasadas que la escriben |
-| `raiz_verbal/7` | el cambio de la vocal de la raíz cuando recibe el acento |
-| `regla/2`, `contiene(R)` | las reglas como patrones, y el autómata que los encuentra |
-| `ortografia(Rs)`, `paralelo(Rs)` | las reglas en paralelo: como intersección de sus autómatas, y sin construir el producto |
-| `compuesta(lexico, …)`, `inversa/1`, `identidad/1` | el léxico compuesto con las reglas, el analizador como inverso, y la forma subyacente de un lema |
-| **derivación** | la formación de palabras nuevas: sufijos como -ción, -mente, -ito, y prefijos como des-, re-, in- |
-| **restricción de contexto, coerción** | `=>`: el par solo aparece en el contexto; `<=`: en el contexto, la letra subyacente solo se escribe así |
-| `regla_dos_niveles/5`, `compilar/5` | una regla en la notación de Koskenniemi, y su traducción a patrones prohibidos |
-| `derivada/2` | la relación entre una palabra derivada y su base |
-| `:- table P as subsumptive` | tabulación por subsunción: una consulta más particular usa la tabla completa de una más general |
-
-## Temas que se retoman
-
-| Tema | Se retoma en |
-|---|---|
-| Las formas de los nombres y los verbos de una pregunta, reducidas a su lema con `forma/2` | [capítulo 88](../capitulo-88-proyecto-preguntas-en-castellano/index.md) |
 
 ## Referencias
 
-- Michael A. Covington, *Natural Language Processing for Prolog
-  Programmers*, Prentice-Hall, 1994; edición digital del autor, 2013,
-  <https://www.covingtoninnovations.com/books/NLPPP.pdf>. Capítulo
-  «Morphology and the Lexicon»: la distinción entre flexión y derivación;
-  las palabras como listas de letras; el análisis que quita un sufijo y busca
-  la raíz en un árbol de letras («Implementing English Inflection»); la
-  discusión sobre qué listar en el léxico y qué expresar con reglas, y la
-  sobregeneración; las formas subyacentes y los niveles intermedios
-  («Underlying Forms»); por qué las reglas no se aplican al revés una por
-  una («Morphology as Parsing»); la morfología de dos niveles de Koskenniemi,
-  con las reglas como transductores finitos que se aplican en paralelo y el
-  léxico que guía el análisis («Two-Level Morphology», «Rules and
-  Transducers»), y la crítica de su costo («Critique of Two-Level
-  Morphology»). De «The Nature of Morphology», que la derivación es en
-  gran parte irregular y se lista, y de «Controlling Overgeneration», la
-  sobregeneración de una regla productiva, como -mente; de «Rules and
-  Transducers», la notación `e:0 => C:C _ +:0 V:V`.
-- Kimmo Koskenniemi, *Two-Level Morphology: A General Computational Model
-  for Word-Form Recognition and Production*, Publicación 11 del
-  Departamento de Lingüística General, Universidad de Helsinki, 1983; y su
-  resumen en «A General Computational Model for Word-Form Recognition and
-  Production», *COLING 1984* ([ACL Anthology P84-1038](https://aclanthology.org/P84-1038/)).
-  Covington toma de allí la morfología de dos niveles; el capítulo, a
-  través de él, la palabra como sucesión de pares subyacente:escrita, las
-  reglas que relacionan directamente los dos niveles sin niveles
-  intermedios, y su aplicación en paralelo, de las versiones 3 y 4; y la
-  notación de las reglas, un par, un operador y un contexto, de la
-  versión 5.
-- Lauri Karttunen, «KIMMO: A General Morphological Processor», *Texas
-  Linguistic Forum* 22, 1983, pp. 165–186. Es la implementación de la
-  morfología de dos niveles que Covington describe; el capítulo compara
-  con ella las tablas de transiciones que la versión 4 llena a medida que
-  las palabras las necesitan, y la compilación de las reglas escritas en
-  notación de dos niveles, que la versión 5 hace a patrones prohibidos.
-- G. Edward Barton, Robert C. Berwick y Eric Sven Ristad, *Computational
-  Complexity and Natural Language*, MIT Press, 1987; y G. Edward Barton,
-  «Computational Complexity in Two-Level Morphology», *24th Annual
-  Meeting of the Association for Computational Linguistics*, 1986
-  ([ACL Anthology P86-1009](https://aclanthology.org/P86-1009/)). Covington
-  los cita para la crítica de la morfología de dos niveles; el capítulo
-  toma de allí que el formalismo alcanza para codificar problemas
-  NP-completos, que la página de la versión 3 contrasta con el costo del
-  autómata producto.
-- Edward Fredkin, «Trie Memory», *Communications of the ACM* 3(9), 1960,
-  pp. 490–499; y René de la Briandais, «File Searching Using Variable
-  Length Keys», *Proceedings of the Western Joint Computer Conference*,
-  1959, pp. 295–298. Covington los cita para el árbol de letras; el
-  capítulo toma de allí el léxico como árbol de prefijos, que la versión 3
-  convierte en autómata.
-
-El código del capítulo es propio del curso: el léxico, las reglas del
-castellano, la escritura de las reglas como patrones prohibidos, su
-compilación desde la notación de dos niveles y las seis versiones se
-escribieron para él; de la fuente se toman las ideas,
-no los programas.
+- Michael A. Covington, *Natural Language Processing for Prolog Programmers*,
+  Prentice-Hall, 1994; edición digital del autor, 2013,
+  <https://www.covingtoninnovations.com/books/NLPPP.pdf>. Capítulo «Morphology
+  and the Lexicon»: la distinción entre flexión y derivación; las palabras como
+  listas de letras; el análisis que quita un sufijo y busca la raíz en un árbol
+  de letras («Implementing English Inflection»); la discusión sobre qué listar
+  en el léxico y qué expresar con reglas; las formas subyacentes y los niveles
+  intermedios («Underlying Forms»); y por qué las reglas no se aplican al revés
+  una por una («Morphology as Parsing»).

@@ -1,11 +1,11 @@
 # Soluciones del capítulo 66 — Proyecto: razonamiento rebatible
 
-Las soluciones de los ejercicios 2, 3, 6, 7, 9 y 10 están en
+Las soluciones de los ejercicios 2, 3, 5, 6, 7 y 10 están en
 `ejemplos/capitulo-66/soluciones.pl`, una base con varios dominios que no
 comparten predicados y que carga el módulo `explicaciones`
 (`explicaciones.pl`, que reexporta el intérprete de `rebatible.pl`); la del
-ejercicio 5, en `soluciones_pato.pl`; la del 8, en `soluciones_cadena.pl`;
-las de los ejercicios 4 y 11, en `soluciones_inscripciones.pl`, que carga
+ejercicio 11, en `soluciones_pato.pl`; la del 4, en `soluciones_cadena.pl`;
+las de los ejercicios 8 y 9, en `soluciones_inscripciones.pl`, que carga
 `correlativas.pl`; la del 12, en `soluciones_yale.pl`; y la del 13, en
 `soluciones_complecion.pl`, que carga `complecion.pl`. Cada archivo tiene sus pruebas en el `.plt` del mismo
 nombre.
@@ -107,175 +107,6 @@ los estudiantes es más específica, y prevalece.
 
 ## Ejercicio 4
 
-<!-- ejemplo: capitulo-66/soluciones_inscripciones.pl predicado: excepciones/3 -->
-```prolog
-%!  excepciones(+Legajo:integer, +Materia:atom, -Requisitos:list) is det.
-%
-%   Requisitos son las correlativas de Materia que el alumno Legajo cumple
-%   solo por una excepción: presumiblemente, y no en forma estricta.
-excepciones(Legajo, Materia, Requisitos) :-
-    findall(R,
-            ( correlativa(Materia, R),
-              respuesta([especificidad], cumple(Legajo, Materia, R),
-                        presumiblemente_si) ),
-            Requisitos).
-```
-
-```prolog
-?- excepciones(105, am2, Rs).
-Rs = [am1, alg].
-
-?- excepciones(101, bd, Rs).
-Rs = [pp].
-```
-
-`Legajo` y `Materia` son `+`: `respuesta/3` exige una meta sin variables,
-y con cualquiera de los dos libre produce un error de instanciación en
-lugar de enumerar. `Requisitos` es `-` y el predicado es `det`, porque
-`findall/3` da siempre una lista, vacía si no hay excepciones.
-
-## Ejercicio 5
-
-<!-- ejemplo: capitulo-66/soluciones_pato.pl fragmento: % tiene_plumas(X): X tiene plumas. .. pinguino(X) :~ ave(X), nada(X). -->
-```prolog
-% tiene_plumas(X): X tiene plumas.
-tiene_plumas(pato).
-tiene_plumas(pingu).
-
-% nada(X): X nada.
-nada(pato).
-nada(pingu).
-
-% vuela(X): se observó que X vuela.
-vuela(pato).
-
-%!  ave(?X) is nondet.
-%
-%   X es un ave: tiene plumas.
-ave(X) :-
-    tiene_plumas(X).
-
-% Un pingüino no vuela, y lo que vuela no es un pingüino.
-neg vuela(X) :-
-    pinguino(X).
-neg pinguino(X) :-
-    vuela(X).
-
-vuela(X) :~ ave(X).
-pinguino(X) :~ ave(X), nada(X).
-```
-
-```prolog
-?- respuesta([especificidad], pinguino(pato), R).
-R = definitivamente_no.
-```
-
-```text
-?- respuesta([especificidad], pinguino(pingu), R).
-ERROR: Stack limit (1.0Gb) exceeded
-```
-
-Con el pato, la parte estricta decide: se observó que vuela, y la
-contrapuesta concluye en forma estricta que no es un pingüino. Con Pingu,
-la regla rebatible de los pingüinos tiene un rival posible, la
-contrapuesta, cuyo cuerpo es `vuela(pingu)`; para saber si ese cuerpo se
-deriva hay que ver si la regla de las aves tiene rivales, y su rival es
-`neg vuela(pingu) :- pinguino(pingu)`, cuyo cuerpo es la meta del
-principio. Covington describe el mismo ciclo con una persona que es a la
-vez capitalista y marxista: para mostrar que una regla no está refutada
-hay que mostrar que la regla contraria no se aplica, y viceversa. Su
-solución es no escribir las contrapuestas y declarar en cambio qué
-literales son incompatibles, con un predicado que el intérprete usa sin
-volver a derivar.
-
-## Ejercicio 6
-
-<!-- ejemplo: capitulo-66/soluciones.pl predicado: sospechosas/2 literal/2 -->
-```prolog
-%!  sospechosas(+Auto, -Piezas:list) is det.
-%
-%   Piezas son las piezas cuyas presunciones sostienen la regla de
-%   arranca(Auto), que una observación derrotó; la lista está vacía si
-%   ninguna regla de arranca(Auto) está derrotada.
-sospechosas(Auto, Piezas) :-
-    por_que_no([especificidad], arranca(Auto), Motivos),
-    findall(Pieza,
-            ( member(derrotada((_ :- Cuerpo), _), Motivos),
-              literal(bien(Auto, Pieza), Cuerpo),
-              once(derivacion([especificidad], bien(Auto, Pieza), Arbol)),
-              supuestos(Arbol, [_|_]) ),
-            Piezas).
-
-%!  literal(?Literal, +Conjuncion) is nondet.
-%
-%   Literal es uno de los literales de Conjuncion.
-literal(Literal, (A, B)) :-
-    !,
-    (   literal(Literal, A)
-    ;   literal(Literal, B)
-    ).
-literal(Literal, Literal).
-```
-
-```prolog
-?- sospechosas(auto2, Ps).
-Ps = [bateria, arranque, combustible].
-
-?- sospechosas(auto3, Ps).
-Ps = [arranque, combustible].
-
-?- sospechosas(auto1, Ps).
-Ps = [].
-```
-
-Los automóviles 2 y 3 no arrancan; del 3, además, se observó que las luces
-encienden, y una regla estricta concluye de eso que su batería está bien.
-Esa pieza ya no se sostiene en una presunción, y sale de las sospechosas.
-El automóvil 1 no tiene ninguna predicción refutada. Es el paso previo a la
-abducción del [capítulo 50](../capitulo-50-proyecto-diagnostico-abduccion/index.md): las sospechosas son las presunciones que
-un diagnóstico puede retirar, y cada observación nueva que se deriva en
-forma estricta reduce el conjunto.
-
-## Ejercicio 7
-
-<!-- ejemplo: capitulo-66/soluciones.pl predicado: escribir_derivacion/1 escribir_derivacion/2 -->
-```prolog
-%!  escribir_derivacion(+Arbol) is det.
-%
-%   Escribe Arbol, un árbol de derivacion/3, con una línea por nodo.
-escribir_derivacion(Arbol) :-
-    escribir_derivacion(Arbol, 0).
-
-%!  escribir_derivacion(+Arbol, +Sangria:integer) is det.
-%
-%   Escribe Arbol con Sangria espacios antes de su raíz.
-escribir_derivacion(predefinido(Meta), S) :-
-    format("~t~*|~q, predefinido~n", [S, Meta]).
-escribir_derivacion(estricta(Meta), S) :-
-    format("~t~*|~q, en forma estricta~n", [S, Meta]).
-escribir_derivacion(regla(Regla, Arboles), S) :-
-    partes(Regla, Cabeza, _),
-    format("~t~*|~q, por ~q~n", [S, Cabeza, Regla]),
-    S1 is S + 2,
-    forall(member(A, Arboles), escribir_derivacion(A, S1)).
-```
-
-```prolog
-?- derivacion([especificidad], arranca(auto1), A), escribir_derivacion(A).
-arranca(auto1), por arranca(auto1):-bien(auto1,bateria),bien(auto1,arranque),bien(auto1,combustible)
-  bien(auto1,bateria), por bien(auto1,bateria):~true
-  bien(auto1,arranque), por bien(auto1,arranque):~true
-  bien(auto1,combustible), por bien(auto1,combustible):~true
-A = regla((arranca(auto1):-bien(auto1, bateria), bien(auto1, arranque), bien(auto1, combustible)), [regla((bien(auto1, bateria):~true), []), regla((bien(auto1, arranque):~true), []), regla((bien(auto1, combustible):~true), [])]) ;
-false.
-```
-
-`~t~*|` completa con espacios hasta la columna que da el argumento, que es
-la sangría. `partes/3`, que exporta el módulo `rebatible`, separa la
-cabeza de cualquier clase de regla.
-
-## Ejercicio 8
-
 <!-- ejemplo: capitulo-66/soluciones_cadena.pl predicado: cadena/1 medir/3 -->
 ```prolog
 %!  cadena(+N:integer) is det.
@@ -333,45 +164,93 @@ para las reglas que usa. Covington advierte que su intérprete prioriza la
 claridad sobre la eficiencia; tabular las comparaciones, como en el
 [capítulo 40](../capitulo-40-tabulacion/index.md), evitaría repetirlas.
 
-## Ejercicio 9
+## Ejercicio 5
 
-<!-- ejemplo: capitulo-66/soluciones.pl predicado: vuela_t/1 no_vuela_t/1 -->
+<!-- ejemplo: capitulo-66/soluciones.pl predicado: sospechosas/2 literal/2 -->
 ```prolog
-%!  vuela_t(?X) is nondet.
+%!  sospechosas(+Auto, -Piezas:list) is det.
 %
-%   X vuela: es un murciélago del que no se prueba que no vuela.
-vuela_t(X) :-
-    murcielago(X),
-    tnot(no_vuela_t(X)).
+%   Piezas son las piezas cuyas presunciones sostienen la regla de
+%   arranca(Auto), que una observación derrotó; la lista está vacía si
+%   ninguna regla de arranca(Auto) está derrotada.
+sospechosas(Auto, Piezas) :-
+    por_que_no([especificidad], arranca(Auto), Motivos),
+    findall(Pieza,
+            ( member(derrotada((_ :- Cuerpo), _), Motivos),
+              literal(bien(Auto, Pieza), Cuerpo),
+              once(derivacion([especificidad], bien(Auto, Pieza), Arbol)),
+              supuestos(Arbol, [_|_]) ),
+            Piezas).
 
-%!  no_vuela_t(?X) is nondet.
+%!  literal(?Literal, +Conjuncion) is nondet.
 %
-%   X no vuela: está muerto. La regla de los muertos, superior, ya no
-%   tiene la excepción.
-no_vuela_t(X) :-
-    muerto(X).
+%   Literal es uno de los literales de Conjuncion.
+literal(Literal, (A, B)) :-
+    !,
+    (   literal(Literal, A)
+    ;   literal(Literal, B)
+    ).
+literal(Literal, Literal).
 ```
 
 ```prolog
-?- vuela_t(dracula).
+?- sospechosas(auto2, Ps).
+Ps = [bateria, arranque, combustible].
+
+?- sospechosas(auto3, Ps).
+Ps = [arranque, combustible].
+
+?- sospechosas(auto1, Ps).
+Ps = [].
+```
+
+Los automóviles 2 y 3 no arrancan; del 3, además, se observó que las luces
+encienden, y una regla estricta concluye de eso que su batería está bien.
+Esa pieza ya no se sostiene en una presunción, y sale de las sospechosas.
+El automóvil 1 no tiene ninguna predicción refutada. Es el paso previo a la
+abducción del [capítulo 50](../capitulo-50-proyecto-diagnostico-abduccion/index.md): las sospechosas son las presunciones que
+un diagnóstico puede retirar, y cada observación nueva que se deriva en
+forma estricta reduce el conjunto.
+
+## Ejercicio 6
+
+<!-- ejemplo: capitulo-66/soluciones.pl predicado: escribir_derivacion/1 escribir_derivacion/2 -->
+```prolog
+%!  escribir_derivacion(+Arbol) is det.
+%
+%   Escribe Arbol, un árbol de derivacion/3, con una línea por nodo.
+escribir_derivacion(Arbol) :-
+    escribir_derivacion(Arbol, 0).
+
+%!  escribir_derivacion(+Arbol, +Sangria:integer) is det.
+%
+%   Escribe Arbol con Sangria espacios antes de su raíz.
+escribir_derivacion(predefinido(Meta), S) :-
+    format("~t~*|~q, predefinido~n", [S, Meta]).
+escribir_derivacion(estricta(Meta), S) :-
+    format("~t~*|~q, en forma estricta~n", [S, Meta]).
+escribir_derivacion(regla(Regla, Arboles), S) :-
+    partes(Regla, Cabeza, _),
+    format("~t~*|~q, por ~q~n", [S, Cabeza, Regla]),
+    S1 is S + 2,
+    forall(member(A, Arboles), escribir_derivacion(A, S1)).
+```
+
+```prolog
+?- derivacion([especificidad], arranca(auto1), A), escribir_derivacion(A).
+arranca(auto1), por arranca(auto1):-bien(auto1,bateria),bien(auto1,arranque),bien(auto1,combustible)
+  bien(auto1,bateria), por bien(auto1,bateria):~true
+  bien(auto1,arranque), por bien(auto1,arranque):~true
+  bien(auto1,combustible), por bien(auto1,combustible):~true
+A = regla((arranca(auto1):-bien(auto1, bateria), bien(auto1, arranque), bien(auto1, combustible)), [regla((bien(auto1, bateria):~true), []), regla((bien(auto1, arranque):~true), []), regla((bien(auto1, combustible):~true), [])]) ;
 false.
-
-?- no_vuela_t(dracula).
-true.
-
-?- vuela_t(rufo).
-true.
 ```
 
-Con `tnot/1`, la superioridad se escribe quitando la excepción de la regla
-superior: los muertos no vuelan, sin condiciones. El programa deja de tener
-un ciclo a través de la negación, pasa a ser estratificado, y la respuesta
-sobre Drácula es falsa, no indefinida. La derivación rebatible llega a lo
-mismo sin tocar las reglas, con un hecho `superior/2`, y sigue
-distinguiendo «presumiblemente no» de «no se sabe»: `vuela_t(nadie)` es
-falso, igual que `vuela_t(dracula)`.
+`~t~*|` completa con espacios hasta la columna que da el argumento, que es
+la sangría. `partes/3`, que exporta el módulo `rebatible`, separa la
+cabeza de cualquier clase de regla.
 
-## Ejercicio 10
+## Ejercicio 7
 
 <!-- ejemplo: capitulo-66/soluciones.pl predicado: explicar_por_defecto/2 explicar_f/3 probar_f/1 contradice/1 -->
 ```prolog
@@ -448,7 +327,36 @@ vuelan»; cada conflicto se resuelve a mano. La derivación rebatible
 resuelve el de Rufo sola, por la especificidad, y deja el de Drácula sin
 conclusión hasta que una declaración de superioridad lo decide.
 
-## Ejercicio 11
+## Ejercicio 8
+
+<!-- ejemplo: capitulo-66/soluciones_inscripciones.pl predicado: excepciones/3 -->
+```prolog
+%!  excepciones(+Legajo:integer, +Materia:atom, -Requisitos:list) is det.
+%
+%   Requisitos son las correlativas de Materia que el alumno Legajo cumple
+%   solo por una excepción: presumiblemente, y no en forma estricta.
+excepciones(Legajo, Materia, Requisitos) :-
+    findall(R,
+            ( correlativa(Materia, R),
+              respuesta([especificidad], cumple(Legajo, Materia, R),
+                        presumiblemente_si) ),
+            Requisitos).
+```
+
+```prolog
+?- excepciones(105, am2, Rs).
+Rs = [am1, alg].
+
+?- excepciones(101, bd, Rs).
+Rs = [pp].
+```
+
+`Legajo` y `Materia` son `+`: `respuesta/3` exige una meta sin variables,
+y con cualquiera de los dos libre produce un error de instanciación en
+lugar de enumerar. `Requisitos` es `-` y el predicado es `det`, porque
+`findall/3` da siempre una lista, vacía si no hay excepciones.
+
+## Ejercicio 9
 
 <!-- ejemplo: capitulo-66/soluciones_inscripciones.pl predicado: inscripcion_con_criterio/4 con_criterio/4 decisiones/2 las_dos/1 -->
 ```prolog
@@ -534,6 +442,98 @@ queda pendiente, `a_revisar(alg)`. Con la superioridad declarada, la autorizaci�
 la inscripción sigue siendo condicional. `decisiones/2` agrega la
 autorización con `assertz/1`, porque `autorizacion/3` es dinámico, y deja
 los datos como estaban con `estado/1` y `restaurar/1` del módulo `datos`.
+
+## Ejercicio 10
+
+<!-- ejemplo: capitulo-66/soluciones.pl predicado: vuela_t/1 no_vuela_t/1 -->
+```prolog
+%!  vuela_t(?X) is nondet.
+%
+%   X vuela: es un murciélago del que no se prueba que no vuela.
+vuela_t(X) :-
+    murcielago(X),
+    tnot(no_vuela_t(X)).
+
+%!  no_vuela_t(?X) is nondet.
+%
+%   X no vuela: está muerto. La regla de los muertos, superior, ya no
+%   tiene la excepción.
+no_vuela_t(X) :-
+    muerto(X).
+```
+
+```prolog
+?- vuela_t(dracula).
+false.
+
+?- no_vuela_t(dracula).
+true.
+
+?- vuela_t(rufo).
+true.
+```
+
+Con `tnot/1`, la superioridad se escribe quitando la excepción de la regla
+superior: los muertos no vuelan, sin condiciones. El programa deja de tener
+un ciclo a través de la negación, pasa a ser estratificado, y la respuesta
+sobre Drácula es falsa, no indefinida. La derivación rebatible llega a lo
+mismo sin tocar las reglas, con un hecho `superior/2`, y sigue
+distinguiendo «presumiblemente no» de «no se sabe»: `vuela_t(nadie)` es
+falso, igual que `vuela_t(dracula)`.
+
+## Ejercicio 11
+
+<!-- ejemplo: capitulo-66/soluciones_pato.pl fragmento: % tiene_plumas(X): X tiene plumas. .. pinguino(X) :~ ave(X), nada(X). -->
+```prolog
+% tiene_plumas(X): X tiene plumas.
+tiene_plumas(pato).
+tiene_plumas(pingu).
+
+% nada(X): X nada.
+nada(pato).
+nada(pingu).
+
+% vuela(X): se observó que X vuela.
+vuela(pato).
+
+%!  ave(?X) is nondet.
+%
+%   X es un ave: tiene plumas.
+ave(X) :-
+    tiene_plumas(X).
+
+% Un pingüino no vuela, y lo que vuela no es un pingüino.
+neg vuela(X) :-
+    pinguino(X).
+neg pinguino(X) :-
+    vuela(X).
+
+vuela(X) :~ ave(X).
+pinguino(X) :~ ave(X), nada(X).
+```
+
+```prolog
+?- respuesta([especificidad], pinguino(pato), R).
+R = definitivamente_no.
+```
+
+```text
+?- respuesta([especificidad], pinguino(pingu), R).
+ERROR: Stack limit (1.0Gb) exceeded
+```
+
+Con el pato, la parte estricta decide: se observó que vuela, y la
+contrapuesta concluye en forma estricta que no es un pingüino. Con Pingu,
+la regla rebatible de los pingüinos tiene un rival posible, la
+contrapuesta, cuyo cuerpo es `vuela(pingu)`; para saber si ese cuerpo se
+deriva hay que ver si la regla de las aves tiene rivales, y su rival es
+`neg vuela(pingu) :- pinguino(pingu)`, cuyo cuerpo es la meta del
+principio. Covington describe el mismo ciclo con una persona que es a la
+vez capitalista y marxista: para mostrar que una regla no está refutada
+hay que mostrar que la regla contraria no se aplica, y viceversa. Su
+solución es no escribir las contrapuestas y declarar en cambio qué
+literales son incompatibles, con un predicado que el intérprete usa sin
+volver a derivar.
 
 ## Ejercicio 12
 
@@ -656,7 +656,7 @@ La compleción de `amistoso(pedro) :- \+ amistoso(pedro)` dice que Pedro es
 amistoso si y solo si no lo es, y no tiene modelos, aunque la cláusula
 equivale en lógica clásica al hecho `amistoso(pedro)`: es el caso más
 simple de recursión a través de la negación, como `r :- \+ r` en la
-[sección 39.3](../capitulo-39-semantica-de-los-programas-logicos/index.md#393-negacion-como-falla-la-complecion-de-clark-y-sldnf).
+[sección 39.3](../capitulo-39-semantica-de-los-programas-logicos/resolucion.md#393-negacion-como-falla-la-complecion-de-clark-y-sldnf).
 La de `p :- p` es `p` si y solo si `p`, que vale en las dos
 interpretaciones: la compleción no siempre es completa, y una recursión
 sin negación ni hechos que la funden deja el átomo sin decidir, mientras

@@ -78,8 +78,9 @@ toma la búsqueda de un modelo como la contracara de la refutación. De
 resolución con variables, el renombrado antes de cada paso y los filtros de
 redundancia. De *Prolog Programming for Artificial Intelligence* de Ivan
 Bratko, del apartado «A simple theorem prover», toma el ejemplo que
-recorre el capítulo. La lista completa, con lo que se toma de cada uno,
-está en [Referencias](#referencias). El código es propio.
+recorre el capítulo. Las referencias de cada página dicen qué toma ella de
+cada uno; las de esta están en [Referencias](#referencias). El código es
+propio.
 
 El capítulo cumple tres anuncios: el del
 [capítulo 39](../capitulo-39-semantica-de-los-programas-logicos/index.md),
@@ -121,7 +122,7 @@ Al terminar el capítulo, el lector puede:
 !!! info "Tiempo estimado"
     Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **2:55 h**.
     Resolver los 5 ejercicios marcados con ★: **1:20 h**.
-    Resolver los 12 ejercicios del final: **4:15 h**.
+    Resolver los 12 ejercicios del capítulo: **4:15 h**.
 
 ## 63.1 El programa terminado
 
@@ -322,7 +323,7 @@ La resolución trabaja sobre **cláusulas**: disyunciones de literales. En
 cláusula es una lista ordenada de literales, sin repeticiones; la forma
 clausal de una fórmula es la lista de sus cláusulas, que se leen unidas
 por la conjunción. El camino tiene dos etapas, las de la
-[sección 61.6](../capitulo-61-proyecto-interprete-dirigido-patrones/index.md#616-version-4-un-demostrador-por-resolucion),
+[sección 61.6](../capitulo-61-proyecto-interprete-dirigido-patrones/resolucion.md#616-version-4-un-demostrador-por-resolucion),
 ahora con ↔ y con cuantificadores.
 
 La **forma normal negada** elimina → y ↔ y lleva la negación hasta las
@@ -411,7 +412,7 @@ Cs = [[+p], [+p, +q], [+p, -q]].
 La segunda forma clausal es correcta y redundante: las cláusulas
 `[+p, +q]` y `[+p, -q]` contienen a `[+p]`, y cualquier asignación que
 satisface `[+p]` las satisface. Una cláusula que contiene a otra está
-**subsumida** por ella; la [sección 63.7](#637-version-6-resolucion-con-variables)
+**subsumida** por ella; la [sección 63.7](primer-orden.md#637-version-6-resolucion-con-variables)
 vuelve sobre esa relación.
 
 La distribución tiene un costo que conviene medir. La disyunción de n
@@ -635,198 +636,15 @@ cambios. Las pruebas de `resolucion.plt` y de `resolucion_fo.plt` pasan
 por él cada refutación que el demostrador encuentra, y ninguna prueba del
 demostrador sale del capítulo sin esa verificación.
 
-## 63.6 Versión 5: la forma clausal de la lógica de predicados
-
-Con cuantificadores, la forma clausal necesita tres pasos más entre la
-forma normal negada y la distribución. La página
-[La lógica de predicados](primer-orden.md#la-forma-clausal-de-la-logica-de-predicados)
-los desarrolla: dar a cada cuantificador una variable propia, porque ↔
-duplica subfórmulas y con ellas sus variables ligadas; llevar los
-cuantificadores al frente, la **forma prenexa**; y **skolemizar**:
-reemplazar cada variable existencial por un término nuevo, que depende de
-las variables universales que la preceden. Como las variables del objeto
-son variables de Prolog, la skolemización es una unificación: la variable
-existencial se liga al término de Skolem.
-
-```prolog
-?- clausulas_fo_texto("¬∃x (bebe(x) → ∀y bebe(y))", Cs).
-Cs = [[+bebe(_A)], [-bebe(sk1(_A))]].
-```
-
-## 63.7 Versión 6: resolución con variables
-
-La misma página, en
-[Resolución con variables](primer-orden.md#resolucion-con-variables),
-extiende el demostrador: copia las cláusulas antes de cada paso, unifica
-con la comprobación de ocurrencia, agrega la **factorización**, sin la
-cual la paradoja del barbero no tiene refutación, y la **estrategia
-lineal**, que reduce el trabajo entre 2 y 71 veces en los ejemplos
-medidos. Muestra también la fórmula que un demostrador sin comprobación de
-ocurrencia «prueba» aunque no es un teorema, y que el verificador rechaza,
-y por qué la subsunción, que el
-[capítulo 61](../capitulo-61-proyecto-interprete-dirigido-patrones/soluciones.md#8)
-dejó pendiente, no mejora estas búsquedas.
-
-!!! question "Actividad"
-    Antes de leer la página, predecir si la negación de
-    `"¬∃x ∀y (afeita(x, y) ↔ ¬afeita(y, y))"` tiene una refutación que
-    use solo pasos de resolución, sin factorización. Justificar la
-    predicción con el tamaño de los resolventes de sus dos cláusulas, y
-    comprobarla con `refutar_con/4`.
-
-## 63.8 Tres maneras de decidir
-
-En la lógica proposicional hay procedimientos que siempre terminan. La
-página [Tres maneras de decidir](comparacion.md#tres-maneras-de-decidir)
-compara el demostrador con la separación de casos de Quine y con
-`library(clpb)` sobre el principio del palomar: n + 1 palomas no caben en
-n agujeros. `clpb` decide el caso de 7 palomas en 4,8 millones de
-inferencias; la resolución no resuelve el de 4 palomas en 100 millones.
-Cada método produce algo distinto: `clpb` da un veredicto y, si la
-fórmula no es un teorema, un contraejemplo; la resolución da una prueba
-que se puede verificar.
-
-## 63.9 Construir un modelo
-
-Cuando una fórmula no es un teorema, la resolución no termina sin un
-máximo, y `clpb` da el contraejemplo sin decir cómo lo obtuvo. Flach
-construye el contraejemplo con un programa de encadenamiento hacia
-adelante, adaptado del demostrador SATCHMO de Manthey y Bry: un **modelo**
-de un conjunto de cláusulas es un conjunto de fórmulas atómicas sin
-variables, las verdaderas, que hace verdadera cada cláusula. Una cláusula
-está **violada** cuando todos sus literales negativos son verdaderos y
-ninguno de los positivos lo es; el programa busca una, agrega al modelo
-uno de sus literales positivos, y repite hasta que no queda ninguna. Si la
-cláusula violada no tiene literales positivos, vuelve atrás y elige otro.
-`modelos.pl` lo escribe sobre las cláusulas del capítulo:
-
-<!-- ejemplo: capitulo-63/modelos.pl predicado: modelo/3 violada/3 -->
-```prolog
-%!  modelo(+Clausulas:list, +Modelo0:list, -Modelo:list) is nondet.
-%
-%   Modelo extiende Modelo0 hasta que ninguna de las Clausulas está
-%   violada.
-modelo(Clausulas, Modelo0, Modelo) :-
-    (   member(C, Clausulas),
-        violada(C, Modelo0, Positivos)
-    ->  member(A, Positivos),
-        ord_add_element(Modelo0, A, Modelo1),
-        modelo(Clausulas, Modelo1, Modelo)
-    ;   Modelo = Modelo0
-    ).
-
-%!  violada(+C:list, +Modelo:list, -Positivos:list) is semidet.
-%
-%   Una copia de la cláusula C está violada en Modelo: sus literales
-%   negativos son verdaderos, con las variables ligadas por el modelo, y
-%   ninguno de sus Positivos, ya sin variables, lo es. Una variable que
-%   queda libre en un literal positivo produce un error de dominio: la
-%   cláusula no es de rango restringido.
-violada(C, Modelo, Positivos) :-
-    copy_term(C, D),
-    signos(D, Negativos, Positivos),
-    maplist(verdadera(Modelo), Negativos),
-    (   ground(Positivos)
-    ->  true
-    ;   domain_error(clausula_de_rango_restringido, C)
-    ),
-    \+ ( member(A, Positivos),
-         ord_memberchk(A, Modelo)
-       ),
-    !.
-```
-
-Las cláusulas pueden tener variables, siempre que sean de **rango
-restringido**: cada variable de un literal positivo aparece en uno
-negativo. Al hacer verdaderos los negativos con fórmulas del modelo, que
-no tienen variables, los positivos quedan sin variables también. Una
-cláusula como `hombre(X) ∨ mujer(X)` no lo es, y `violada/3` lo señala con
-un error de dominio; Flach la corrige con un predicado `persona/1` que
-enumera los valores de `X`. El ejemplo de Flach da sus dos modelos
-mínimos:
-
-```prolog
-?- modelo([[+casado(X), +soltero(X), -hombre(X), -adulto(X)], [+tiene_esposa(Y), -casado(Y), -hombre(Y)], [+hombre(pablo)], [+adulto(pablo)]], M).
-M = [adulto(pablo), casado(pablo), hombre(pablo), tiene_esposa(pablo)] ;
-M = [adulto(pablo), hombre(pablo), soltero(pablo)].
-```
-
-No todo modelo que el programa construye es mínimo: el orden en que se
-satisfacen las cláusulas puede agregar una fórmula que otra elección hace
-innecesaria. Un conjunto de cláusulas tiene un modelo si y solo si no
-tiene refutación, así que un modelo de la negación de una fórmula es un
-contraejemplo. `contramodelo/2` lo busca para una fórmula escrita como
-texto; los átomos del modelo son los verdaderos, y los demás, falsos:
-
-```prolog
-?- contramodelo("(p → q) → (q → p)", M).
-M = [q].
-
-?- contramodelo("p ∨ ¬p", M).
-false.
-```
-
-Con q verdadera y p falsa, `p → q` es verdadera y `q → p` es falsa. El
-programa no termina si todo modelo de las cláusulas es infinito; Flach
-propone para ese caso un recorrido por niveles con una profundidad
-máxima, que el capítulo no escribe.
-
-## 63.10 El conjunto de soporte
-
-Rowe describe la estrategia de **conjunto de soporte**: las cláusulas se
-separan en las hipótesis, que se suponen consistentes, y el soporte, la
-negación de lo que se quiere probar. Cada paso usa al menos una cláusula
-del soporte, y cada resolvente pasa a formar parte de él; dos hipótesis
-nunca se resuelven entre sí, porque de hipótesis consistentes no se deriva
-la cláusula vacía. `soporte.pl` numera las hipótesis primero, y como cada
-paso `r(I, J, R)` tiene `I =< J`, le basta con exigir que `J` sea del
-soporte:
-
-<!-- ejemplo: capitulo-63/soporte.pl predicado: paso_soporte/4 -->
-```prolog
-%!  paso_soporte(+NH:integer, +Clausulas:list, -Paso, -R:list) is nondet.
-%
-%   Paso es un paso de resolución o de factorización sobre las Clausulas
-%   cuya cláusula de número mayor es del soporte, de número mayor que NH;
-%   R es la cláusula que agrega.
-paso_soporte(NH, Clausulas, r(I, J, R), R) :-
-    nth1(J, Clausulas, C2),
-    J > NH,
-    nth1(I, Clausulas, C1),
-    I =< J,
-    resolvente_fo(unify_with_occurs_check, C1, C2, R).
-paso_soporte(NH, Clausulas, f(I, R), R) :-
-    nth1(I, Clausulas, C),
-    I > NH,
-    factor(unify_with_occurs_check, C, R).
-```
-
-`comparar_estrategias/3` mide las tres estrategias sobre un problema con
-una cadena de implicaciones útil, de `a` a `e`, y otra que no interviene en
-la prueba, de `x` a `z`:
-
-```prolog
-?- comparar_estrategias([[-a, +b], [-b, +c], [-c, +d], [-d, +e], [+a], [-x, +y], [-y, +z], [+x]], [[-e]], I).
-I = [general-1544090, lineal-18840, soporte-6162].
-```
-
-La estrategia general resuelve también la cadena que no interviene; la
-lineal la evita una vez elegido el centro, pero puede empezar por
-cualquier par de cláusulas; el soporte empieza siempre por `¬e`. El
-precio es la completitud: si las hipótesis son inconsistentes, la
-estrategia no lo descubre, y `refutar_soporte([[+p], [-p]], [], 3, P)`
-falla aunque las dos cláusulas tengan una refutación de un paso. La
-búsqueda **en anchura**, la tercera estrategia de Rowe, es la saturación
-por niveles del [ejercicio 11](#ejercicios).
-
-!!! success "Criterios de calidad"
-    | Criterio | En este capítulo |
-    |---|---|
-    | C1 | cada predicado declara modos y determinación: `demostrar/3` y `refutar_fo/3` son `semidet` porque devuelven solo la refutación más corta, y los generadores de pasos, `resolvente/3` y `factor/3`, son `nondet` |
-    | C2 | la representación es limpia: fórmulas con un functor por conectivo, literales `+A` y `-A`, y la prueba como un término, que el verificador recibe sin conocer al demostrador |
-    | C4 | las cláusulas de `fnn/2`, `sustituir/4` y la escritura empiezan por el functor de la fórmula, `signo//2` por el carácter y `opuestos/3` por el literal, de modo que la indexación no deja alternativas; las pruebas lo confirman |
-    | C5 | un texto que no es una fórmula produce un error de sintaxis, y una fórmula con cuantificadores en la forma clausal proposicional, un error de tipo, en lugar de una falla silenciosa |
-    | C7 | 143 pruebas en nueve archivos; cada refutación que el demostrador encuentra, con cada combinación de opciones, pasa por el verificador, y los tres métodos de decisión dan el mismo veredicto sobre ocho fórmulas |
+El capítulo continúa en la página
+[La lógica de predicados](primer-orden.md#636-version-5-la-forma-clausal-de-la-logica-de-predicados),
+con las versiones 5 y 6: la forma clausal y la resolución de la lógica de
+predicados. La página siguiente,
+[Tres maneras de decidir, un modelo y el conjunto de soporte](comparacion.md#638-tres-maneras-de-decidir),
+compara el demostrador con dos procedimientos de decisión y termina el
+capítulo con la construcción de un modelo y el conjunto de soporte. Antes,
+los [ejercicios](#ejercicios) de esta página practican las secciones 63.1 a
+63.5.
 
 ## Ejercicios
 
@@ -841,15 +659,11 @@ que cargan los del capítulo, sin modificarlos.
    `"(p → q) → r → s"` · `"∀x ∃y ama(x, y) ∧ ∃y ama(y, x)"`. En el
    último, decir cuántas variables distintas tiene el término y a qué
    cuantificador pertenece cada una.
-2. **(2)** Escribir `clasificar(Texto, Clase)`: Clase es `tautologia`,
-   `contradiccion` o `contingente`, decidido con `tautologia/2` de
-   `comparacion.pl` y el método `clpb`. Clasificar
-   `"p ∨ ¬p"`, `"p ∧ ¬p"`, `"p → q"` y `"(p → q) ∨ (q → p)"`.
-3. ★ **(2)** Predecir cuántas cláusulas tiene la forma clausal de cada
+2. ★ **(2)** Predecir cuántas cláusulas tiene la forma clausal de cada
    fórmula, y comprobarlo con `clausulas_texto/2`:
    `"(p ∧ q) ∨ (r ∧ s)"` · `"¬((p ∨ q) → r)"` · `"p ↔ q"` ·
    `"(p ↔ q) ↔ r"`. Explicar por qué la última tiene las que tiene.
-4. **(3)** La **forma clausal definicional** evita la distribución: cada
+3. **(3)** La **forma clausal definicional** evita la distribución: cada
    subfórmula compuesta recibe un átomo nuevo, `d(N)`, y cláusulas que lo
    relacionan con ella. Escribir `clausulas_def(F, Cs)` para fórmulas sin
    cuantificadores, sobre su forma normal negada, de modo que Cs es
@@ -858,81 +672,19 @@ que cargan los del capítulo, sin modificarlos.
    [sección 63.3](#633-version-2-la-forma-clausal-proposicional), con n de
    1 a 8, y comprobar con `refutar/3` que la negación de
    `(p ∧ q) ∨ (p ∧ ¬q) → p` sigue teniendo refutación.
-5. ★ **(2)** Escribir a mano, como un término `prueba/2`, una refutación
+4. ★ **(2)** Escribir a mano, como un término `prueba/2`, una refutación
    del conjunto de cláusulas de Hein `[[-p, +q], [+p, +q], [+p, -q],
    [-p, -q]]`, y verificarla con `verificar/1`. Después cambiar un
    índice de un paso y explicar por qué el verificador la rechaza.
-6. **(2)** Escribir `primer_error(Prueba, K)`: K es el número del primer
+5. **(2)** Escribir `primer_error(Prueba, K)`: K es el número del primer
    paso de Prueba que no es correcto, o `ninguno` si todos lo son y la
    prueba termina en □. Usar los predicados de `verificador.pl` sin
    cambiarlos.
-7. ★ **(2)** Demostrar con `demostrar_fo/3` que
-   `"(∃y ∀x ama(x, y)) → ∀x ∃y ama(x, y)"` es un teorema, escribir su
-   prueba y su forma clausal, y comparar esa forma clausal con la de la
-   implicación inversa, que no es un teorema. Explicar con los términos de
-   Skolem por qué una tiene refutación y la otra no.
-8. **(3)** La forma prenexa hace que un término de Skolem dependa de todas
-   las variables universales anteriores, aunque la variable existencial no
-   esté en su alcance. Escribir `skolemizar_fnn(G, H)`, que skolemiza una
-   fórmula en forma normal negada sin pasar por la forma prenexa, con
-   solo las variables universales cuyo cuantificador rodea al existencial,
-   como en el apéndice de Clocksin y Mellish. Comparar los términos que
-   da para la negación de `"(∀x ∃y ama(x, y)) → ∃y ∀x ama(x, y)"` con
-   los de `clausulas_fo/2`.
-9. **(2)** La **resolución unitaria** exige que uno de los dos padres de
+6. **(2)** La **resolución unitaria** exige que uno de los dos padres de
    cada paso tenga un solo literal. Escribir `refutar_unitaria(Cs, Max,
    Pasos)` con `resolvente/3` de `resolucion.pl`, comprobar que refuta
    las negaciones de las fórmulas de Bratko y del modus ponens, y que no
-   refuta el conjunto de Hein del ejercicio 5. Explicar por qué.
-10. ★ **(2)** Escribir `decidir(Texto, Veredicto)` para fórmulas sin
-    cuantificadores: `teorema(Prueba)`, con una refutación de
-    `demostrar/3` de a lo sumo 10 pasos, o `contraejemplo(A)`, con una
-    asignación de `contraejemplo/2`. Verificar la prueba con
-    `verificar/1` y el contraejemplo evaluando la fórmula con él.
-11. **(3)** La **saturación por niveles** calcula todos los resolventes de
-    las cláusulas, los agrega, y repite hasta obtener □ o hasta que no
-    aparece ninguno nuevo. Escribir `saturar(Cs, Niveles, Resultado)` con
-    `resolvente/3`, donde Resultado es `refutada` o `saturada`, y medir
-    con `time/1` las inferencias para el principio del palomar con 3
-    palomas, comparadas con las de `refutar_fo/3`.
-12. **(2)** El primer modelo que `modelo/2` construye para el segundo
-    ejemplo de Flach no es mínimo. Escribir `modelo_minimo(Cs, M)`, que da
-    solo los modelos de `modelo/2` de los que ningún subconjunto propio es
-    un modelo, y comprobarlo con ese ejemplo. Explicar por qué no alcanza
-    con quitar una fórmula por vez.
-
-## Resumen
-
-| | |
-|---|---|
-| **representación limpia de una fórmula** | un functor por conectivo y por cuantificador, y otro para las fórmulas atómicas, leída de texto por un analizador léxico y una gramática por niveles |
-| **entorno de la lectura** | los pares `Nombre-Variable` de los cuantificadores que rodean el punto leído: cada cuantificador liga una variable de Prolog nueva |
-| **forma normal negada** | sin → ni ↔, con la negación delante de las fórmulas atómicas y los cuantificadores negados cambiados por su dual |
-| **forma clausal** | una lista de cláusulas, cada una una lista ordenada de literales `+A` o `-A`; la distribución puede multiplicar las cláusulas por 2 en cada disyunción |
-| **forma prenexa, skolemización** | los cuantificadores al frente; cada variable existencial ligada a un término nuevo de las universales anteriores |
-| **refutación** | una lista de pasos `r(I, J, R)` y `f(I, R)` que termina en □; la más corta se busca con profundización iterativa sobre su longitud |
-| **factorización** | unir dos literales del mismo signo de una cláusula; sin ella, la resolución binaria es incompleta |
-| **comprobación de ocurrencia** | sin ella, la unificación crea términos cíclicos y el demostrador «prueba» fórmulas que no son teoremas |
-| **estrategia lineal** | desde el segundo paso, cada uno usa la cláusula que agregó el anterior |
-| **verificador** | un programa independiente que rehace cada paso; para confiar en una prueba alcanza con confiar en él |
-| **modelo** | un conjunto de fórmulas atómicas sin variables que hace verdadera cada cláusula; existe si y solo si no hay refutación |
-| **rango restringido** | cada variable de un literal positivo aparece en uno negativo, de modo que el modelo la liga |
-| **conjunto de soporte** | la negación de lo que se prueba y sus descendientes; cada paso usa uno, y dos hipótesis no se resuelven entre sí |
-| `leer_formula/2`, `formula_texto/2` | la lectura y la escritura |
-| `fnn/2`, `fnc/2`, `clausulas/2`, `clausulas_fo/2` | la forma clausal |
-| `demostrar/3`, `demostrar_fo/3`, `refutar_con/4`, `escribir_prueba/1` | el demostrador |
-| `verificar/1` | el verificador |
-| `tautologia/2`, `contraejemplo/2`, `palomar/2` | la comparación |
-| `modelo/2`, `contramodelo/2` | la construcción de un modelo |
-| `refutar_soporte/4`, `comparar_estrategias/3` | la estrategia de conjunto de soporte |
-
-## Temas que se retoman
-
-| Tema | Se retoma en |
-|---|---|
-| Reglas con excepciones, que la lógica clásica de este capítulo no puede expresar sin contradicción | [capítulo 66](../capitulo-66-proyecto-razonamiento-rebatible/index.md) |
-| La subsunción entre cláusulas como orden de generalidad, para aprender reglas | [capítulo 68](../capitulo-68-proyecto-aprender-reglas-ejemplos/index.md) |
-| La saturación de abajo hacia arriba, restringida a cláusulas de Horn sin funciones | [capítulo 86](../capitulo-86-proyecto-motor-datalog/index.md) |
+   refuta el conjunto de Hein del ejercicio 4. Explicar por qué.
 
 ## Referencias
 
@@ -940,47 +692,44 @@ que cargan los del capítulo, sin modificarlos.
   Computability*, Jones and Bartlett, 2009 — apartados «Tautology
   Tester», «CNF Generator» y «Resolution Theorem Prover for Propositions».
   [Edición en línea](https://samples.jbpub.com/9780763772062/PrologLabBook09.pdf).
-  El capítulo toma el método de Quine para decidir tautologías, la forma
-  normal conjuntiva obtenida por reglas de reescritura, las cláusulas como
-  listas de literales y la prueba como una secuencia numerada de cláusulas
-  con su justificación; el conjunto de cuatro cláusulas del ejercicio 5 es
-  su ejemplo.
+  Esta página toma la forma normal conjuntiva obtenida por reglas de
+  reescritura, las cláusulas como listas de literales y la prueba como una
+  secuencia numerada de cláusulas con su justificación; el conjunto de
+  cuatro cláusulas del ejercicio 4 es su ejemplo. El método de Quine para
+  decidir tautologías está en la página
+  [Tres maneras de decidir, un modelo y el conjunto de soporte](comparacion.md#638-tres-maneras-de-decidir).
 - Markus Triska, *The Power of Prolog* — «Theorem Proving with Prolog».
   [Edición en línea](https://www.metalevel.at/prolog/theoremproving).
-  El capítulo toma la profundización iterativa con `length/2` sobre la
-  cadena de resolventes, que hace completo al demostrador; la refutación
-  como un término que otro programa verifica; y la comparación con
-  `library(clpb)`.
+  Esta página toma la profundización iterativa con `length/2` sobre la
+  cadena de resolventes, que hace completo al demostrador, y la refutación
+  como un término que otro programa verifica. La comparación con
+  `library(clpb)` está en la página
+  [Tres maneras de decidir, un modelo y el conjunto de soporte](comparacion.md#638-tres-maneras-de-decidir).
 - William F. Clocksin y Christopher S. Mellish, *Programming in Prolog*,
   5.ª edición, Springer, 2003 — apéndice «Clausal Form Program Listings».
-  El capítulo toma las etapas de la forma clausal con cuantificadores:
-  eliminar las implicaciones, llevar la negación hacia adentro con los
-  cuantificadores duales, skolemizar con las variables universales que
-  rodean al existencial, quitar los universales y distribuir; y el
-  descarte de las cláusulas tautológicas.
+  Esta página toma las etapas de la forma clausal: eliminar las
+  implicaciones, llevar la negación hacia adentro con los cuantificadores
+  duales y distribuir; y el descarte de las cláusulas tautológicas. Las
+  etapas que exigen los cuantificadores, skolemizar y quitar los
+  universales, están en la página
+  [La lógica de predicados](primer-orden.md#636-version-5-la-forma-clausal-de-la-logica-de-predicados).
 - Peter Flach, *Simply Logical: Intelligent Reasoning by Example*, John
   Wiley, 1994 — apartado 5.4, «Forward chaining».
   [Edición en línea](https://book.simply-logical.space/src/text/2_part_ii/5.4.html).
-  El capítulo toma la búsqueda de un modelo de cláusulas indefinidas como
-  la contracara de la refutación, que en la comparación es el
-  contraejemplo de `library(clpb)`, y, en la
-  [sección 63.9](#639-construir-un-modelo), el algoritmo de construcción:
-  satisfacer una cláusula violada con uno de sus literales positivos, las
-  cláusulas de rango restringido con un predicado de dominio, y sus
-  ejemplos de modelos mínimos y no mínimos. El programa de Flach se
-  escribe aquí de nuevo, sobre las cláusulas como listas de literales.
+  La introducción de esta página toma de él la búsqueda de un modelo
+  como la contracara de la refutación, que la
+  [sección 63.9](comparacion.md#639-construir-un-modelo) desarrolla.
 - Neil C. Rowe, *Artificial Intelligence through Prolog*, Prentice-Hall,
   1988 — capítulo «A more general logic programming», apartados
   «Resolution with variables», «Resolution search strategies» e
   «Implementing resolution without variables».
   [Edición en línea](https://faculty.nps.edu/ncrowe/book/chap14.html).
-  El capítulo toma la resolución con variables y el renombrado de las
-  cláusulas antes de cada paso, la estrategia de conjunto de soporte de
-  la [sección 63.10](#6310-el-conjunto-de-soporte), la de preferencia
-  unitaria y la búsqueda en anchura de los ejercicios 9 y 11, y los filtros de redundancia: tautologías,
-  cláusulas repetidas y subsumidas. Rowe afirma que esos filtros son
-  difíciles de programar en Prolog con variables; `subsume/2` los
-  resuelve con `numbervars/3` dentro de una doble negación.
+  Esta página toma la estrategia de preferencia unitaria del ejercicio 6.
+  La resolución con variables y los filtros de redundancia están en la
+  página
+  [La lógica de predicados](primer-orden.md#637-version-6-resolucion-con-variables),
+  y la estrategia de conjunto de soporte, en la
+  [sección 63.10](comparacion.md#6310-el-conjunto-de-soporte).
 - Ivan Bratko, *Prolog Programming for Artificial Intelligence*, 4.ª
   edición, Pearson, 2012 — apartado «A simple theorem prover».
   El capítulo toma el principio de resolución por refutación, la fórmula
@@ -989,40 +738,17 @@ que cargan los del capítulo, sin modificarlos.
 - John Alan Robinson, «A Machine-Oriented Logic Based on the Resolution
   Principle», *Journal of the ACM* 12(1), 1965. El artículo que Clocksin y
   Mellish, Bratko y Rowe citan como origen de la resolución: la regla única
-  de inferencia, la unificación más general con la comprobación de
-  ocurrencia y la refutación de la forma clausal de la negación, que son
-  las versiones 3 y 6 del capítulo.
+  de inferencia y la refutación de la forma clausal de la negación, que
+  son la versión 3 del capítulo. La unificación más general con la
+  comprobación de ocurrencia, de la versión 6, está en la página
+  [La lógica de predicados](primer-orden.md#637-version-6-resolucion-con-variables).
 - Richard E. Korf, «Depth-First Iterative-Deepening: An Optimal
   Admissible Tree Search», *Artificial Intelligence* 27, 1985. Flach lo
   cita como el origen de la profundización iterativa, y Triska la usa
   por la misma propiedad que Korf demuestra: encuentra la prueba más corta
   con la memoria de una búsqueda en profundidad.
-- Rainer Manthey y François Bry, «SATCHMO: A Theorem Prover Implemented in
-  Prolog», *9th International Conference on Automated Deduction*,
-  Springer, 1988. El programa de construcción de modelos de Flach está
-  adaptado de este demostrador; el capítulo toma de ahí la idea de un
-  modelo como respuesta cuando no hay refutación, que la
-  [sección 63.9](#639-construir-un-modelo) construye.
-- Donald W. Loveland, «A Linear Format for Resolution», *Symposium on
-  Automatic Demonstration*, Springer, 1970. La resolución lineal y su
-  completitud, en las que se apoya la estrategia lineal de la versión 6.
-- Armin Haken, «The Intractability of Resolution», *Theoretical Computer
-  Science* 39, 1985. La demostración de que toda refutación por
-  resolución del principio del palomar crece en forma exponencial, el
-  resultado que la comparación de la versión 7 mide.
-- Randal E. Bryant, «Graph-Based Algorithms for Boolean Function
-  Manipulation», *IEEE Transactions on Computers* C-35(8), 1986.
-  [Copia del autor](https://www.cs.cmu.edu/~bryant/pubdir/ieeetc86.pdf).
-  Los diagramas de decisión binarios ordenados sobre los que está
-  construida `library(clpb)`; el capítulo toma de ahí la explicación de
-  por qué `clpb` crece despacio con el palomar y por qué el orden de las
-  variables decide el tamaño del diagrama.
 - G. S. Tseitin, «On the Complexity of Derivation in Propositional
   Calculus», 1968, y David A. Plaisted y Steven Greenbaum, «A
   Structure-Preserving Clause Form Translation», *Journal of Symbolic
   Computation* 2(3), 1986. La forma clausal con átomos nuevos que crece en
-  forma lineal, del ejercicio 4, con las definiciones en un solo sentido.
-
-El código del capítulo es propio, escrito para el curso: ninguno de los
-programas de esos libros se copió, y la verificación independiente, la
-estrategia lineal y la comparación medida no tienen equivalente en ellos.
+  forma lineal, del ejercicio 3, con las definiciones en un solo sentido.

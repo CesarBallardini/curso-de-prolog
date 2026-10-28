@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 71 - Solución del ejercicio 7: el mundo con pinza, con
+% Capítulo 71 - Solución del ejercicio 11: el mundo con pinza, con
 % combinaciones imposibles.
 %
 % El mundo es el de pinza.pl, con imposible/1 y prueba/1 propios: la pinza

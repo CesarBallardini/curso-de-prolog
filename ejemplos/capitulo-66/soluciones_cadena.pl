@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 66 - Solución del ejercicio 8: una cadena de clases.
+% Capítulo 66 - Solución del ejercicio 4: una cadena de clases.
 %
 % La clase I+1 está incluida en la clase I, por una regla estricta, y cada
 % clase tiene normalmente la propiedad contraria a la de la anterior: las

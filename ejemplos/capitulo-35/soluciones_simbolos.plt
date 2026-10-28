@@ -30,7 +30,7 @@ test(asignar_cuenta, true(N == 1)) :-
     asignar(C0, C, N),
     memberchk(guardar(0), C).
 
-% Ejercicio 13: la marca liga la dirección que un salto anterior dejó libre.
+% Ejercicio 14: la marca liga la dirección que un salto anterior dejó libre.
 test(marcar_despues_de_saltar, true(D == 4)) :-
     buscar(e, T, D),
     marcar(e, T, 4).

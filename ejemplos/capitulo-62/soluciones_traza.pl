@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 62 - Solución del ejercicio 6: una versión que escribe cada
+% Capítulo 62 - Solución del ejercicio 5: una versión que escribe cada
 % paso.
 %
 % El módulo traza es una versión más de la máquina para ejecutar/5 de

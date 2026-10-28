@@ -115,6 +115,126 @@ Cs = [alumnos-legajo, alumnos-nombre, inscripciones-legajo, inscripciones-nota].
 
 ## 5
 
+`generadores/3` separa las llamadas a tablas con que empieza la meta, y
+`traducir_ordenado/2` las ordena por la cantidad de argumentos que la
+compilación dejó ligados, de mayor a menor, con un ordenamiento estable.
+
+<!-- ejemplo: capitulo-87/soluciones.pl predicado: traducir_ordenado/2 generadores/3 generador/1 ligados/2 -->
+```prolog
+%!  traducir_ordenado(+Texto, -Traduccion) is det.
+%
+%   Traduccion es Fila-Meta, la traducción de la consulta Texto con sus
+%   generadores ordenados de más a menos argumentos ligados al compilar.
+traducir_ordenado(Texto, Fila-Meta) :-
+    traducir(Texto, _, Fila-Meta0),
+    generadores(Meta0, Gs, Resto),
+    map_list_to_pairs(ligados, Gs, Pares),
+    sort(1, @>=, Pares, Ordenados),
+    pairs_values(Ordenados, Gs1),
+    (   Resto == true
+    ->  Metas = Gs1
+    ;   append(Gs1, [Resto], Metas)
+    ),
+    encadenar(Metas, Meta).
+
+%!  generadores(+Meta, -Generadores:list, -Resto) is det.
+%
+%   Generadores son las llamadas a tablas con que empieza la conjunción
+%   Meta, y Resto la meta que sigue.
+generadores((G, Resto0), [G|Gs], Resto) :-
+    generador(G),
+    !,
+    generadores(Resto0, Gs, Resto).
+generadores(G, [G], true) :-
+    generador(G),
+    !.
+generadores(Resto, [], Resto).
+
+% generador(G): G llama a una tabla o una vista.
+generador(M:_) :-
+    memberchk(M, [base, relaciones]).
+
+% ligados(G, K): K es la cantidad de argumentos de G ligados al compilar.
+ligados(_:G, K) :-
+    G =.. [_|Args],
+    include(nonvar, Args, Ligados),
+    length(Ligados, K).
+```
+
+```prolog
+?- T = "SELECT i.materia, i.nota FROM inscripciones i, alumnos a WHERE a.nombre = 'ana' AND a.legajo = i.legajo", traducir(T, _, F1-M1), traducir_ordenado(T, F2-M2).
+T = "SELECT i.materia, i.nota FROM inscripciones i, alumnos a WHERE a.nombre = 'ana' AND a.legajo = i.legajo",
+F1 = [_A, _B],
+M1 = (base:inscripcion(_C, _A, _B), base:alumno(_C, ana, _, _)),
+F2 = [_D, _E],
+M2 = (base:alumno(_F, ana, _, _), base:inscripcion(_F, _D, _E)).
+```
+
+En el orden del `FROM`, la meta recorre las diecisiete inscripciones y
+busca el alumno de cada una con el legajo ligado: 32 inferencias para
+dar las cinco filas. Con el alumno primero, encuentra a Ana y después
+sus cinco inscripciones por el índice del legajo: 16 inferencias (prueba
+`soluciones:ejercicio_5_costos`, dentro de un 10 %). Las filas son las
+mismas, en el mismo orden. Kluźniak y Szpakowicz señalan que la
+ganancia depende de que la implementación indexe las cláusulas, y citan
+el trabajo de David H. D. Warren sobre la optimización de consultas
+expresadas en lógica. El criterio de contar argumentos ligados es una
+aproximación: no sabe cuántas filas tiene cada tabla, que es lo que usa
+el optimizador de una base de datos.
+
+## 6
+
+La consulta no da ninguna fila: hay notas `NULL` entre las de la
+subconsulta, y entonces `x NOT IN (…)` nunca es verdadera.
+
+```prolog
+% mostrar_traduccion("SELECT nombre FROM alumnos WHERE ingreso NOT IN (SELECT nota FROM inscripciones)").
+consulta([A]) :-
+    base:alumno(_, A, _, B),
+    \+ ( base:inscripcion(C, D, E),
+         E==null
+       ),
+    \+ ( base:inscripcion(C, D, E),
+         E\==null,
+         B=:=E
+       ).
+```
+
+```prolog
+?- filas("SELECT nombre FROM alumnos WHERE ingreso NOT IN (SELECT nota FROM inscripciones)", _, Fs).
+Fs = [].
+```
+
+La primera negación exige que la subconsulta no tenga ningún `NULL`; la
+segunda, que ningún valor sea igual al ingreso. Hacen falta las dos para
+que la condición sea falsa, y la negación de `IN` exige que lo sea. Con
+tres notas `NULL`, la primera falla para todos los alumnos. Es el par 30
+del [capítulo 43](../capitulo-43-prolog-y-sql/index.md#ejercicios), con
+otras columnas. El ingreso no es `NULL` para ningún alumno, porque la
+columna es `NOT NULL`, y la meta no lo controla.
+
+## 7
+
+`nota = nota` es una igualdad de primer nivel entre una columna y ella
+misma: la unificación de la variable con sí misma tiene éxito, y la
+igualdad desaparece. Pero la columna admite `NULL`, y en SQL `NULL =
+NULL` es desconocida: la compilación deja el control `\== null`, y las
+tres inscripciones sin nota no pasan. Quedan catorce.
+
+```prolog
+% mostrar_traduccion("SELECT legajo FROM inscripciones WHERE nota = nota").
+consulta([A]) :-
+    base:inscripcion(A, _, B),
+    B\==null.
+```
+
+```prolog
+?- filas("SELECT COUNT(*) FROM inscripciones WHERE nota = nota", _, K).
+K = [[14]].
+```
+
+## 8
+
 `actualizar_tupla/2` compila la condición y las asignaciones como el
 mini-SQL, pero retira la tupla vieja y agrega la nueva dentro del
 recorrido, como el bucle de falla de Toy-Sequel.
@@ -179,79 +299,10 @@ nuevo para `c`, encuentra entonces el máximo 1 300, y `c`, con 1 200,
 cumple la condición. La vista lógica de actualización del
 [capítulo 21](../capitulo-21-base-de-datos-dinamica/index.md#213-la-vista-logica-de-actualizacion)
 evita que el recorrido vuelva a encontrar la fila nueva de `b`, pero no
-que la subconsulta la vea. La prueba `soluciones:ejercicio_5` verifica
+que la subconsulta la vea. La prueba `soluciones:ejercicio_8` verifica
 los dos resultados.
 
-## 6
-
-`generadores/3` separa las llamadas a tablas con que empieza la meta, y
-`traducir_ordenado/2` las ordena por la cantidad de argumentos que la
-compilación dejó ligados, de mayor a menor, con un ordenamiento estable.
-
-<!-- ejemplo: capitulo-87/soluciones.pl predicado: traducir_ordenado/2 generadores/3 generador/1 ligados/2 -->
-```prolog
-%!  traducir_ordenado(+Texto, -Traduccion) is det.
-%
-%   Traduccion es Fila-Meta, la traducción de la consulta Texto con sus
-%   generadores ordenados de más a menos argumentos ligados al compilar.
-traducir_ordenado(Texto, Fila-Meta) :-
-    traducir(Texto, _, Fila-Meta0),
-    generadores(Meta0, Gs, Resto),
-    map_list_to_pairs(ligados, Gs, Pares),
-    sort(1, @>=, Pares, Ordenados),
-    pairs_values(Ordenados, Gs1),
-    (   Resto == true
-    ->  Metas = Gs1
-    ;   append(Gs1, [Resto], Metas)
-    ),
-    encadenar(Metas, Meta).
-
-%!  generadores(+Meta, -Generadores:list, -Resto) is det.
-%
-%   Generadores son las llamadas a tablas con que empieza la conjunción
-%   Meta, y Resto la meta que sigue.
-generadores((G, Resto0), [G|Gs], Resto) :-
-    generador(G),
-    !,
-    generadores(Resto0, Gs, Resto).
-generadores(G, [G], true) :-
-    generador(G),
-    !.
-generadores(Resto, [], Resto).
-
-% generador(G): G llama a una tabla o una vista.
-generador(M:_) :-
-    memberchk(M, [base, relaciones]).
-
-% ligados(G, K): K es la cantidad de argumentos de G ligados al compilar.
-ligados(_:G, K) :-
-    G =.. [_|Args],
-    include(nonvar, Args, Ligados),
-    length(Ligados, K).
-```
-
-```prolog
-?- T = "SELECT i.materia, i.nota FROM inscripciones i, alumnos a WHERE a.nombre = 'ana' AND a.legajo = i.legajo", traducir(T, _, F1-M1), traducir_ordenado(T, F2-M2).
-T = "SELECT i.materia, i.nota FROM inscripciones i, alumnos a WHERE a.nombre = 'ana' AND a.legajo = i.legajo",
-F1 = [_A, _B],
-M1 = (base:inscripcion(_C, _A, _B), base:alumno(_C, ana, _, _)),
-F2 = [_D, _E],
-M2 = (base:alumno(_F, ana, _, _), base:inscripcion(_F, _D, _E)).
-```
-
-En el orden del `FROM`, la meta recorre las diecisiete inscripciones y
-busca el alumno de cada una con el legajo ligado: 32 inferencias para
-dar las cinco filas. Con el alumno primero, encuentra a Ana y después
-sus cinco inscripciones por el índice del legajo: 16 inferencias (prueba
-`soluciones:ejercicio_6_costos`, dentro de un 10 %). Las filas son las
-mismas, en el mismo orden. Kluźniak y Szpakowicz señalan que la
-ganancia depende de que la implementación indexe las cláusulas, y citan
-el trabajo de David H. D. Warren sobre la optimización de consultas
-expresadas en lógica. El criterio de contar argumentos ligados es una
-aproximación: no sabe cuántas filas tiene cada tabla, que es lo que usa
-el optimizador de una base de datos.
-
-## 7
+## 9
 
 `violacion/1` del [capítulo 43](../capitulo-43-prolog-y-sql/index.md) examina la base entera, y `estado/1` y
 `restaurar/1` del catálogo dan la manera de deshacer la inserción.
@@ -285,12 +336,12 @@ sigue con sus diecisiete filas. Verificar la base entera después de cada
 solo las filas nuevas con `referencia/4`, como hace `insertar/1` en el
 [capítulo 43](../capitulo-43-prolog-y-sql/restricciones.md#claves-restricciones-y-actualizaciones).
 
-## 8
+## 10
 
 Cada ronda agrega las filas que el paso deriva de las que ya están y que
 todavía no están: `EXCEPT` elimina las repetidas y las ya guardadas. Es
 la evaluación de abajo hacia arriba de la
-[sección 39.6](../capitulo-39-semantica-de-los-programas-logicos/index.md#396-evaluacion-de-abajo-hacia-arriba),
+[sección 39.6](../capitulo-39-semantica-de-los-programas-logicos/negacion.md#396-evaluacion-de-abajo-hacia-arriba),
 en su forma ingenua: cada ronda vuelve a combinar todas las filas, no
 solo las nuevas, que es lo que la evaluación semi-ingenua del
 [capítulo 86](../capitulo-86-proyecto-motor-datalog/index.md) evita.
@@ -335,7 +386,7 @@ correlativas; la segunda no agrega nada, porque las correlativas de
 `log` y de `alg` ya están o no existen. Las cuatro filas son las de
 SQLite para el par 35.
 
-## 9
+## 11
 
 La vista une las inscripciones de cada materia con una fila con `NULL`
 para cada materia sin inscriptos; `COUNT(legajo)` no cuenta los `NULL`, y
@@ -346,57 +397,6 @@ esas materias dan cero, como con `LEFT JOIN`.
 Rs = [creada(materia_legajo), filas([codigo, count], [[alg, 4], [am1, 5], [am2, 2], [bd, 0], [log, 4], [pp, 2], [ssl, 0]])].
 ```
 
-Las siete filas son las de SQLite (prueba `soluciones:ejercicio_9`). La
+Las siete filas son las de SQLite (prueba `soluciones:ejercicio_11`). La
 columna de la segunda selección es la constante `NULL`, de tipo `nulo`,
 que es compatible con el entero del legajo.
-
-## 10
-
-La consulta no da ninguna fila: hay notas `NULL` entre las de la
-subconsulta, y entonces `x NOT IN (…)` nunca es verdadera.
-
-```prolog
-% mostrar_traduccion("SELECT nombre FROM alumnos WHERE ingreso NOT IN (SELECT nota FROM inscripciones)").
-consulta([A]) :-
-    base:alumno(_, A, _, B),
-    \+ ( base:inscripcion(C, D, E),
-         E==null
-       ),
-    \+ ( base:inscripcion(C, D, E),
-         E\==null,
-         B=:=E
-       ).
-```
-
-```prolog
-?- filas("SELECT nombre FROM alumnos WHERE ingreso NOT IN (SELECT nota FROM inscripciones)", _, Fs).
-Fs = [].
-```
-
-La primera negación exige que la subconsulta no tenga ningún `NULL`; la
-segunda, que ningún valor sea igual al ingreso. Hacen falta las dos para
-que la condición sea falsa, y la negación de `IN` exige que lo sea. Con
-tres notas `NULL`, la primera falla para todos los alumnos. Es el par 30
-del [capítulo 43](../capitulo-43-prolog-y-sql/index.md#ejercicios), con
-otras columnas. El ingreso no es `NULL` para ningún alumno, porque la
-columna es `NOT NULL`, y la meta no lo controla.
-
-## 11
-
-`nota = nota` es una igualdad de primer nivel entre una columna y ella
-misma: la unificación de la variable con sí misma tiene éxito, y la
-igualdad desaparece. Pero la columna admite `NULL`, y en SQL `NULL =
-NULL` es desconocida: la compilación deja el control `\== null`, y las
-tres inscripciones sin nota no pasan. Quedan catorce.
-
-```prolog
-% mostrar_traduccion("SELECT legajo FROM inscripciones WHERE nota = nota").
-consulta([A]) :-
-    base:inscripcion(A, _, B),
-    B\==null.
-```
-
-```prolog
-?- filas("SELECT COUNT(*) FROM inscripciones WHERE nota = nota", _, K).
-K = [[14]].
-```

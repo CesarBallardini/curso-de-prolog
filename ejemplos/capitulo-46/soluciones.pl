@@ -1,8 +1,8 @@
 :- encoding(utf8).
 
-% Capítulo 46 - Soluciones de los ejercicios 2 a 7, 9, 10 y 12.
+% Capítulo 46 - Soluciones de los ejercicios 2 a 8, 10 y 11.
 %
-% Las extensiones del lenguaje (ejercicios 2, 3 y 4) agregan cláusulas a
+% Las extensiones del lenguaje (ejercicios 2, 3 y 5) agregan cláusulas a
 % predicados de los archivos del capítulo. Para que dos archivos definan
 % cláusulas del mismo predicado, este archivo lo declara multifile antes de
 % cargar compilador.pl; las cláusulas nuevas quedan después de las
@@ -63,7 +63,7 @@ repetir
   i := i + 1
 hasta i = 11").
 
-% Ejercicio 4: saltar_si_no(Op, D) compara los dos valores del tope y salta
+% Ejercicio 5: saltar_si_no(Op, D) compara los dos valores del tope y salta
 % a D si la comparación Op no se cumple.
 clase(saltar_si_no(_, _), fija).
 
@@ -91,7 +91,7 @@ compilar_fusion(Texto, Objeto) :-
     mirilla(modismo_fusion, Simbolico0, Simbolico),
     ensamblar(Simbolico, Objeto, _).
 
-% Ejercicio 5: la máquina que cuenta los pasos y la pila máxima.
+% Ejercicio 6: la máquina que cuenta los pasos y la pila máxima.
 
 %!  maquina_medida(+Objeto, -Salida, -Pasos, -Maxima) is det.
 %
@@ -129,7 +129,7 @@ medir_ejemplo(Nombre, Compilar, N, Pasos, Maxima) :-
     length(Objeto, N),
     maquina_medida(Objeto, _, Pasos, Maxima).
 
-% Ejercicio 6: las comparaciones también se reordenan, con la relación
+% Ejercicio 7: las comparaciones también se reordenan, con la relación
 % espejada.
 
 %!  reordenar_condiciones(+Programa0:list, -Programa:list) is det.
@@ -180,7 +180,7 @@ pila_condicion(rel(_, A, B), N) :-
     pila(B, NB),
     N is max(NA, NB + 1).
 
-% Ejercicio 7: reasociar para que las constantes de una suma queden juntas.
+% Ejercicio 8: reasociar para que las constantes de una suma queden juntas.
 
 %!  plegar_asociando(+E0, -E) is det.
 %
@@ -228,7 +228,7 @@ regla_asociar((X - A) - B, X - C) :-
     number(B),
     C is A + B.
 
-% Ejercicio 9: las marcas que ningún salto usa se quitan.
+% Ejercicio 10: las marcas que ningún salto usa se quitan.
 
 %!  mirilla_completa(+Codigo0:list, -Codigo:list) is det.
 %
@@ -261,7 +261,7 @@ marca_sin_uso(Codigo, etiqueta(L)) :-
 destino(saltar(D), D).
 destino(saltar_si_cero(D), D).
 
-% Ejercicio 10: de la sintaxis abstracta al texto.
+% Ejercicio 4: de la sintaxis abstracta al texto.
 
 %!  a_texto(+Programa:list, -Texto:atom) is det.
 %
@@ -326,7 +326,7 @@ precedencia(-, 1).
 precedencia(*, 2).
 precedencia(/, 2).
 
-% Ejercicio 12: subexpresiones comunes, con un diccionario incompleto.
+% Ejercicio 11: subexpresiones comunes, con un diccionario incompleto.
 
 %!  compartir(+Programa0:list, -Programa:list) is det.
 %

@@ -1,12 +1,13 @@
 # Un intérprete que cuenta
 
-Esta página contiene la [sección 60.5](index.md#605-un-interprete-que-cuenta) del
-[capítulo 60](index.md): un metaintérprete que ejecuta el programa y cuenta las
-llamadas a cada predicado, con predicados espiados como los del rastreador de
-Kluźniak y Szpakowicz. El ejemplo es `perfil.pl`, en `ejemplos/capitulo-60/`,
-con sus pruebas, y corre en SWISH.
+Esta página continúa el [capítulo 60](index.md) después de la
+[sección 60.4](index.md#604-revisiones-de-estilo), con la
+[sección 60.5](#605-un-interprete-que-cuenta): un metaintérprete que ejecuta el programa y
+cuenta las llamadas a cada predicado, con predicados espiados como los del
+rastreador de Kluźniak y Szpakowicz. El ejemplo es `perfil.pl`, en
+`ejemplos/capitulo-60/`, con sus pruebas, y corre en SWISH.
 
-## Un intérprete que cuenta
+## 60.5 Un intérprete que cuenta
 
 El análisis anterior no ejecuta nada. `perfil.pl` ejecuta el programa con un
 metaintérprete como el de la [sección 34.6](../capitulo-34-introspeccion-y-metainterpretes/index.md#346-un-depurador-en-prolog), que cuenta cada llamada a
@@ -124,3 +125,31 @@ resolver_espiado(G) :-
     R = falla,
     Cuentas = [concatenar/3-2, inversa/2-3].
     ```
+
+El capítulo continúa en la página
+[Comparación con prolog_xref](xref.md#606-comparacion-con-libraryprolog_xref), con el análisis de
+SWI-Prolog comparado con el del capítulo.
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio.
+
+10. **(1)** Con `inversa/2` espiado, predecir las líneas que escribe
+    `perfil(inversa([a, b], R), X, _)` y en qué orden, y comprobarlo.
+11. ★ **(3)** Escribir una variante del intérprete de `perfil.pl` que anote
+    cada arco `Llamador-Llamado` que la ejecución recorre, y
+    `sin_recorrer(+Meta, +PIs, -Arcos)`, los arcos del grafo que
+    `llamadas.pl` calcula sobre las cláusulas de `PIs` y la ejecución de
+    `Meta` no recorre. Explicar el resultado para `inversa([a], _)`.
+
+## Referencias
+
+- Feliks Kluźniak y Stanisław Szpakowicz, con Janusz S. Bień, *Prolog for
+  Programmers*, Academic Press, 1985 — apéndice «Three Useful Programs»: «A
+  Primitive Tracing Tool».
+  [Edición en línea en el sitio del coautor](https://www.site.uottawa.ca/~szpak/pub/P4P/Prolog_for_Programmers_neat.pdf).
+  El capítulo toma del rastreador los predicados espiados que escriben `+` al
+  tener éxito y `-` al fallar.

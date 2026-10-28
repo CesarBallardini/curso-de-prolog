@@ -1,7 +1,10 @@
 # Cinco ampliaciones: probabilidades, certezas y aprendizaje
 
-Esta página continúa el [capítulo 67](index.md) con cinco temas que las
-fuentes del capítulo tratan y las cinco versiones dejan afuera. Los dos
+Esta página continúa la página
+[El árbol de preguntas y su compilación](arbol.md#676-version-5-el-arbol-compilado) del
+[capítulo 67](index.md), con las secciones [67.7](#677-la-regla-de-bayes) a
+[67.11](#6711-del-arbol-al-reticulado): cinco temas que las fuentes del
+capítulo tratan y las cinco versiones dejan afuera. Los dos
 primeros vienen del capítulo de Rowe sobre la incertidumbre: la regla de Bayes, que obtiene una
 probabilidad de otras, y la conjunción de **entropía máxima**, que
 justifica el método independiente. El tercero reúne la evidencia en
@@ -19,7 +22,7 @@ instalación local.
 ## 67.7 La regla de Bayes
 
 Una fuerza se puede estimar con datos, como pide el
-[ejercicio 12](index.md#ejercicios), pero los datos de la dirección que
+[ejercicio 6](index.md#ejercicios), pero los datos de la dirección que
 interesa pueden ser pocos. La regla de Bayes obtiene una probabilidad
 condicional a partir de la inversa. Por la definición de probabilidad
 condicional,
@@ -69,7 +72,7 @@ Con $p(A) = 0{,}1$, $p(B) = 0{,}5$ y $p(A \mid B) = 0{,}6$, la
 probabilidad de A y B sería 0,3, más que la de A sola.
 
 La regla se aplica también a la identificación. Con la frecuencia de
-cada animal entre los consultados, la del [ejercicio 9](index.md#ejercicios),
+cada animal entre los consultados, la del [ejercicio 10](arbol.md#ejercicios),
 y las observaciones que presenta un animal típico de cada clase, la
 probabilidad de un animal dadas unas observaciones es proporcional a su
 frecuencia por la probabilidad de registrar esas observaciones en él.
@@ -317,7 +320,7 @@ de evaluación, la división por cero.
 
 ## 67.10 Aprender el árbol de ejemplos
 
-La [versión 4](arbol.md#version-4-el-arbol-de-preguntas) construye el
+La [versión 4](arbol.md#675-version-4-el-arbol-de-preguntas) construye el
 árbol a partir de reglas que alguien escribió. ID3, de Quinlan, lo
 **aprende** de ejemplos: objetos descritos por los valores de unos
 atributos, cada uno ya clasificado. La tabla 1 de su artículo tiene
@@ -664,7 +667,7 @@ difíciles de modificar porque cada pregunta supone las respuestas
 anteriores, y no guardan las respuestas para reusarlas. Por esas
 limitaciones, dice, los sistemas expertos avanzaron cuando las dejaron de
 lado como estructura principal y las usaron como una compilación, que es
-lo que hace la [versión 5](arbol.md#version-5-el-arbol-compilado).
+lo que hace la [versión 5](arbol.md#676-version-5-el-arbol-compilado).
 
 !!! example "Patrón 65 — Una tabla de valores como conjunto de nodos compartidos"
     **Problema.** Un término grande, como un árbol de decisión, repite
@@ -709,3 +712,110 @@ lo que hace la [versión 5](arbol.md#version-5-el-arbol-compilado).
     reticulado hace las mismas preguntas que el árbol, y
     `consultar_reticulado/4` busca cada nodo con `memberchk/2` en la
     lista, en lugar de bajar directamente a un hijo.
+
+!!! success "Criterios de calidad"
+    | Criterio | En este capítulo |
+    |---|---|
+    | C1 | cada predicado declara modos y determinación; `grado/4`, `arbol/2` y `nodo/3` son `det` |
+    | C2 | las reglas son las del [capítulo 34](../capitulo-34-introspeccion-y-metainterpretes/index.md), cargadas y no copiadas; las fuerzas son una tabla aparte y los métodos, cláusulas `multifile` que otro archivo puede extender |
+    | C4 | `se_cumple/2` no liga las preguntas y no deja alternativas; el árbol se consulta con `->/2` |
+    | C7 | 171 pruebas en catorce archivos; los tres árboles y el compilado se comparan con el sistema original sobre los 24 576 animales posibles, y la estimación independiente con las dos cotas |
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio.
+
+13. **(2)** Merritt propone que una regla pueda tener su propio umbral,
+    que reemplaza al general. Declarar `umbral_regla(Regla, U)` para c1
+    (0,4) y r7 (0,5), y escribir
+    `factor_con_umbrales(Meta, Observaciones, General, F)`, como
+    `factor/4` de la
+    [sección 67.9](ampliaciones.md#679-evidencia-a-favor-y-en-contra) con
+    el umbral de cada regla. Calcularlo para el guepardo del atardecer, y
+    con rayas de grado 0,5, y explicar los resultados.
+14. **(2)** Agregar a los sábados de la
+    [sección 67.10](ampliaciones.md#6710-aprender-el-arbol-de-ejemplos) un
+    atributo `dia`, el número del ejemplo. Calcular su ganancia y su razón
+    de ganancia, decidir qué atributo elige cada criterio para la raíz, y
+    explicar qué ocurre al clasificar un sábado nuevo.
+
+## Resumen
+
+| | |
+|---|---|
+| **fuerza de una regla** | la probabilidad de la conclusión cuando las condiciones son seguras; se combina como una condición más |
+| **grado de una observación** | la seguridad con que se observó un hecho: el par `Hecho-Grado` |
+| **combinación de la conjunción y de la disyunción** | cómo se juntan los grados de las condiciones de una regla, y los de las reglas que concluyen lo mismo |
+| **método independiente** | producto para la conjunción; $p_A + p_B - p_A p_B$ para la disyunción |
+| **métodos conservador y liberal** | los grados menor y mayor compatibles con los de las partes; las cotas de cualquier otro método |
+| **atenuación** | la pérdida de grado a lo largo de una cadena de reglas: fuerte con la independencia, total con el conservador, nula con el liberal |
+| **regla colapsada** | una regla de hipótesis cuyas condiciones son solo preguntas, sin conclusiones intermedias |
+| **árbol de preguntas** | una pregunta por nodo y una hipótesis, o ninguna, por hoja |
+| **ganancia de información** | lo que una respuesta reduce la entropía de las hipótesis de una población |
+| `fuerza/2`, `y/4`, `o/4`, `combinar/4`, `grado/4`, `ranking/3` | la evidencia combinada |
+| `intervalo/4`, `estimaciones/2`, `domina/3` | las cotas y la ventaja segura |
+| `colapsada/2`, `preguntas/1`, `se_cumple/2` | las reglas colapsadas |
+| `arbol/2`, `consultar/4`, `medir/4`, `prototipo/2` | el árbol, su consulta y sus medidas |
+| `identificar_compilado/2`, `consulta_interactiva/1`, `preguntas_encadenando/2` | el árbol compilado y la comparación con el encadenamiento |
+| **regla de Bayes** | $p(A \mid B) = p(B \mid A) \, p(A) / p(B)$: una probabilidad condicional a partir de la inversa |
+| **entropía máxima** | la estimación que menos información agrega; para la conjunción, el producto de la independencia |
+| **factor de certeza** | un número entre $-1$ y $1$ que reúne evidencia a favor y en contra; la premisa debe llegar a un umbral |
+| **razón de ganancia** | la ganancia dividida por la información del valor del atributo; corrige el sesgo hacia los atributos con muchos valores |
+| **ventana** | la parte de los ejemplos de la que ID3 aprende, que crece con los que el árbol clasifica mal |
+| **reticulado de decisión** | un árbol en el que los subárboles iguales se guardan una vez |
+| **[Patrón 65](../patrones.md#65-una-tabla-de-valores-como-conjunto-de-nodos-compartidos)** | una tabla de valores como conjunto de nodos compartidos |
+| `bayes/4`, `posterior/3`, `y_maxima_entropia/3` | la regla de Bayes, la probabilidad de cada animal, y la conjunción de entropía máxima |
+| `balance/4`, `factor/4`, `cf_combinar/3` | la evidencia a favor menos la en contra, y los factores de certeza con signo |
+| `id3/4`, `ventana/5`, `reticulado/3` | el árbol aprendido de ejemplos, el esquema de la ventana, y el reticulado |
+| `transpose_pairs/2` | invierte cada par `Clave-Valor` y ordena por la clave nueva |
+
+## Temas que se retoman
+
+| Tema | Se retoma en |
+|---|---|
+| Aprender las reglas a partir de ejemplos en lugar de escribirlas | [capítulo 68](../capitulo-68-proyecto-aprender-reglas-ejemplos/index.md) |
+| Ajustar números con datos, en lugar de pedirlos a un experto | [capítulo 70](../capitulo-70-proyecto-perceptron/index.md) |
+
+## Referencias
+
+- Neil C. Rowe, *Artificial Intelligence through Prolog*, Prentice Hall,
+  1988 — el capítulo «Representing uncertainty in rule-based systems» y el
+  apartado «Decision lattices: a compilation of a rule-based system» del
+  capítulo sobre el control de los sistemas de reglas.
+  [Edición en línea del autor](https://faculty.nps.edu/ncrowe/book/book.html).
+  Esta página toma, del primero, la regla de Bayes con sus desigualdades
+  de consistencia, la conjunción de entropía máxima y la resta de la
+  evidencia en contra, y del segundo, junto con el apartado «Decision
+  lattices» del capítulo sobre el control, el reticulado y sus ventajas y
+  desventajas.
+- Dennis Merritt, *Building Expert Systems in Prolog*, Springer, 1989 —
+  «Backward Chaining with Uncertainty».
+  [Edición en línea de Amzi!](https://www.amzi.com/ExpertSystemsInProlog/03backwarduncertainty.php).
+  Esta página toma de allí los factores de certeza negativos, la
+  combinación de tres casos según los signos y el umbral de la premisa, y
+  el ejercicio 13, el umbral por regla de su ejercicio 3.4.
+- J. Ross Quinlan, «Induction of decision trees», *Machine Learning* 1,
+  1986, pp. 81–106.
+  [Página de la editorial](https://doi.org/10.1007/BF00116251).
+  Esta página toma los catorce sábados de su tabla 1, el árbol de su
+  figura 2, la ventana, el ruido con la prueba de chi-cuadrado (apartado
+  «Noise») y la razón de ganancia (apartado «The selection criterion»).
+- Edward H. Shortliffe y Bruce G. Buchanan, «A Model of Inexact Reasoning
+  in Medicine», *Mathematical Biosciences* 23, 1975, págs. 351–379.
+  [DOI 10.1016/0025-5564(75)90047-4](https://doi.org/10.1016/0025-5564(75)90047-4).
+  Los factores de certeza de MYCIN que Merritt implementa en Clam, con
+  los signos de la
+  [sección 67.9](#679-evidencia-a-favor-y-en-contra).
+
+El código del capítulo es propio, escrito para el curso sobre el sistema
+experto del
+[capítulo 34](../capitulo-34-introspeccion-y-metainterpretes/index.md): de
+las fuentes se toman ideas, fórmulas y ejemplos, no código; las cotas
+como intervalo, la comparación de estrategias con su medición y la
+consulta del encadenamiento por repetición son del curso, como la
+búsqueda numérica de la entropía máxima, la probabilidad de cada animal
+con un error de registro, y el reticulado construido numerando los
+subárboles.

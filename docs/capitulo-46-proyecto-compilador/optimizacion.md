@@ -1,13 +1,16 @@
 # Optimización
 
-Esta página contiene la sección [46.6](index.md#466-optimizacion) del
-[capítulo 46](index.md): el plegado de constantes con el simplificador del
-[capítulo 33](../capitulo-33-inspeccion-de-terminos/index.md), el reordenamiento de los operandos y el optimizador de mirilla,
-con el caso de las etiquetas que una regla unifica sin querer. El código
-está en `optimizador.pl`, en `ejemplos/capitulo-46/`, con sus pruebas en
-`optimizador.plt`.
+Esta página continúa el [capítulo 46](index.md) después de la
+[sección 46.5](index.md#465-la-maquina-de-pila), con la sección
+[46.6](#466-optimizacion). El código de la máquina tiene instrucciones que
+sobran, y el [capítulo 33](../capitulo-33-inspeccion-de-terminos/index.md) ya
+tiene un simplificador de expresiones: la página agrega a la versión 4 el
+plegado de constantes con ese simplificador, el reordenamiento de los
+operandos y el optimizador de mirilla, con el caso de las etiquetas que una
+regla unifica sin querer. El código está en `optimizador.pl`, en
+`ejemplos/capitulo-46/`, con sus pruebas en `optimizador.plt`.
 
-## Optimización
+## 46.6 Optimización
 
 `optimizador.pl` agrega tres mejoras de *Clause and Effect*: dos sobre el
 árbol, antes de generar el código, y una sobre el código simbólico, antes
@@ -62,7 +65,7 @@ E0 = E, E = bin(+, bin(+, id(x), num(2)), num(3)).
 
 La segunda no se pliega: `x + 2 + 3` es `(x + 2) + 3`, y el 2 y el 3 no son
 operandos de la misma operación. Clocksin señala el caso; el
-[ejercicio 7](index.md#ejercicios) lo resuelve reasociando la suma antes de simplificar.
+[ejercicio 8](#ejercicios) lo resuelve reasociando la suma antes de simplificar.
 
 **Reordenar operandos.** La máquina evalúa el operando izquierdo, lo deja en
 la pila y evalúa el derecho. `a + (b + (c + d))` apila las cuatro variables
@@ -214,4 +217,59 @@ verifica que cada ejemplo escriba lo mismo que con el intérprete.
     Predecir el código objeto de `compilar_optimizado("si 2 > 1 entonces
     escribir 1 sino escribir 2 fin", O)` y comprobarlo. ¿Por qué quedan
     `apilar(2)` y `escribir`, que nunca se ejecutan? ¿Qué modismo haría
-    falta para quitarlos? (Es el [ejercicio 9](index.md#ejercicios).)
+    falta para quitarlos? (Es el [ejercicio 10](#ejercicios).)
+
+El capítulo continúa en la página
+[El intérprete especializado](especializacion.md#467-el-interprete-especializado),
+con el otro lado del problema: un compilador cuyo resultado Prolog ejecuta
+sin intermediario.
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio, y los capítulos siguientes los dan por hechos.
+
+5. **(2)** Agregar a la máquina la instrucción `saltar_si_no(Op, L)`, que
+   compara los dos valores del tope y salta a `L` si no cumplen `Op`, y un
+   modismo que reemplace `comparar(Op)` seguida de `saltar_si_cero(L)` por
+   ella. ¿Cuántas instrucciones ahorra en el factorial, y cuántos pasos?
+6. ★ **(2)** Escribir `maquina_medida(Objeto, Salida, Pasos, Maxima)`, que
+   ejecuta el código como `maquina/2` y cuenta los pasos y la mayor altura
+   de la pila, reutilizando `paso//3`. Comprobar con ella que
+   `x := a + (b + (c + d))` necesita cuatro lugares de pila sin
+   optimizar y dos optimizado.
+7. **(2)** Extender el reordenamiento a las condiciones: si el lado derecho
+   de una comparación necesita más pila, intercambiar los lados y usar la
+   relación espejada (`<` pasa a `>`). ¿Por qué `=` y `<>` quedan igual?
+8. **(2)** Escribir `plegar_asociando/2`, que pliega `x + 2 + 3` en `x + 5`
+   y `x + 2 - 2` en `x`: reasociar las sumas y restas encadenadas con
+   constantes antes de simplificar.
+9. ★ **(1)** Explicar por qué `modismo([etiqueta(L), etiqueta(L)|R],
+   [etiqueta(L)|R])` es correcto y `modismo_ingenuo([saltar(L),
+   etiqueta(L)|R], [etiqueta(L)|R])` no lo es, aunque las dos cabezas
+   unifican etiquetas. ¿Por qué el error de la regla ingenua aparece al
+   ensamblar y no al optimizar? ¿Qué pasaría si el ensamblador no
+   comprobara que cada etiqueta se marca en una sola dirección?
+10. **(2)** Escribir `mirilla_completa/2`: después de la mirilla, quitar las
+   marcas de etiquetas que ningún salto usa, y repetir hasta que el código
+   no cambie. Comprobar que el código de `si 2 > 1 entonces escribir 1
+   sino escribir 2 fin` queda en `[apilar(1), escribir]`.
+11. **(3)** Escribir `compartir(Programa0, Programa)`, que calcula una sola
+    vez cada subexpresión compuesta que aparece más de una vez en una
+    asignación o un `escribir`: `x := (a + b) * (a + b)` pasa a
+    `t_1 := a + b; x := t_1 * t_1`. Usar el diccionario incompleto de la
+    [sección 35.4](../capitulo-35-estructuras-incompletas-y-listas-diferencia/index.md#354-diccionarios-incompletos) para dar a cada subexpresión repetida su nombre,
+    el mismo en cada aparición.
+
+## Referencias
+
+- William F. Clocksin, *Clause and Effect: Prolog Programming for the
+  Working Programmer*, Springer, 1997 — «Case Study: A Compiler for Three
+  Model Computers». Esta página toma las tres optimizaciones: el orden de
+  los operandos, el plegado de constantes y el optimizador de mirilla.
+- Alfred V. Aho y Jeffrey D. Ullman, *Principles of Compiler Design*,
+  Addison-Wesley, 1977. Clocksin lo remite para las técnicas clásicas de
+  compilación; de esa tradición vienen el plegado de constantes y la
+  optimización de mirilla.

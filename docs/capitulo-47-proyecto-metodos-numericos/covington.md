@@ -1,11 +1,21 @@
 # La incógnita como variable de Prolog
 
-Esta página contiene la sección [47.9](index.md#479-version-6-la-incognita-como-variable-de-prolog) del [capítulo 47](index.md): la versión 6 del programa, el resolvedor de
-Covington con la incógnita como variable de Prolog y su evaluador aritmético. Los
+Esta página continúa el [capítulo 47](index.md) después de la
+[sección 47.8](index.md#478-version-5-un-resolvedor-que-elige-el-metodo), con
+la sección [47.9](#479-version-6-la-incognita-como-variable-de-prolog): la
+versión 6 del programa, el resolvedor de Covington con la incógnita como
+variable de Prolog y su evaluador aritmético. La versión reescribe ese
+programa con las herramientas del capítulo: el evaluador `:=/2` de
+Covington, con una cláusula por operación; `libre_en/2`, que encuentra la
+incógnita dentro de la ecuación; y `resolver_libre/1`, que evalúa la
+diferencia entre los dos miembros sobre copias de la ecuación hechas con
+`copy_term/2`, en lugar de agregar una cláusula con `assert`, y aplica la
+secante desde 1 y 2. La sección termina comparando las dos maneras de
+escribir la incógnita. Los
 ejemplos están en `covington.pl`, en `ejemplos/capitulo-47/`, con sus pruebas;
 cargan los programas del [capítulo 33](../capitulo-33-inspeccion-de-terminos/index.md), y se ejecutan localmente.
 
-## La incógnita como variable de Prolog
+## 47.9 Versión 6: la incógnita como variable de Prolog
 
 Las cinco versiones anteriores escriben la incógnita como un átomo, `x`, y
 la reciben como un argumento aparte. El programa SOLVER.PL de Covington, en
@@ -17,7 +27,7 @@ entre los dos miembros y aplica la secante desde 1 y 2. Esta versión lo
 reescribe con las herramientas del capítulo, junto con el evaluador
 aritmético que el mismo apartado presenta en la figura 7.9.
 
-## Un evaluador con una cláusula por operación
+### Un evaluador con una cláusula por operación
 
 Covington escribe un sustituto de `is/2` con el operador `:=`, que
 SWI-Prolog ya declara (prioridad 800, `xfx`), de modo que no hace falta una
@@ -91,9 +101,9 @@ evaluación aritmética es una relación más, definida por casos sobre la forma
 del término, como `evaluar/3` del
 [capítulo 33](../capitulo-33-inspeccion-de-terminos/index.md): agregar una
 operación es agregar una cláusula, lo que pide el
-[ejercicio 13](index.md#ejercicios).
+[ejercicio 13](#ejercicios).
 
-## Encontrar la incógnita
+### Encontrar la incógnita
 
 `free_in/2` de Covington recorre la ecuación con `=..` hasta encontrar una
 variable libre. `libre_en/2` hace lo mismo con `arg/3`, que enumera los
@@ -125,7 +135,7 @@ false.
 `term_variables/2`, predefinido, da la lista de las variables distintas de un
 término sin repeticiones; `libre_en/2` muestra el recorrido que hay detrás.
 
-## La diferencia sin `assert`
+### La diferencia sin `assert`
 
 Covington define la función *Dif* agregando al programa una cláusula,
 `dif(X, Dif) :- Dif is Left - Right`, con `abolish/1` y `assert/1`; cada
@@ -204,7 +214,7 @@ tercera es la secante horizontal de la
 X, la primera variable, y la Y que queda libre hace fallar la evaluación con
 un error de instanciación.
 
-## Las dos maneras de escribir la incógnita
+### Las dos maneras de escribir la incógnita
 
 | | `resolver/5` | `resolver_libre/1` |
 |---|---|---|
@@ -221,7 +231,7 @@ tiene incógnita, y para resolverla desde otro punto hay que volver a
 escribirla. El átomo separa la ecuación de su solución, y por eso la misma
 ecuación pasa sin cambios por `derivar/3`, por la bisección y por la
 secante. Las dos representaciones se convierten una en otra con
-`copy_term/2`, y el [ejercicio 14](index.md#ejercicios) lo aprovecha para dar a la
+`copy_term/2`, y el [ejercicio 14](#ejercicios) lo aprovecha para dar a la
 versión de Covington los métodos de `resolver/5`.
 
 !!! question "Actividad"
@@ -230,3 +240,79 @@ versión de Covington los métodos de `resolver/5`.
     de Covington, y comprobarlo. Explicar por qué
     `E = (X * X = 2), resolver_libre(E), resolver_libre(E)` falla en la
     segunda llamada.
+
+!!! success "Criterios de calidad"
+    | Criterio | En este capítulo |
+    |---|---|
+    | C1 | cada predicado declara modos y determinación; los métodos son `semidet` porque pueden no converger, y lo dicen en el encabezado junto con las condiciones de su fallo |
+    | C5 | un intervalo sin cambio de signo y una expresión que no se sabe derivar producen errores de dominio, y un átomo desconocido un error de existencia; la falta de convergencia es un fallo, porque no indica un error en los datos |
+    | C6 | todo el programa es puro: el ciclo, los pasos y el resolvedor no tienen estado ni efectos; la tolerancia y el punto de partida son argumentos |
+    | C7 | 113 pruebas en siete archivos; los resultados de punto flotante se comparan con una tolerancia, y cada fallo descrito en el texto (los tres de Covington, el ciclo de Newton, la tolerancia inalcanzable, el sistema que diverge) tiene su prueba |
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio.
+
+13. **(2)** Escribir `valor_ampliado/2`, que evalúa como `:=/2` y además la
+    potencia `X ^ N` con exponente entero, el opuesto `-X` y `sqrt/1`.
+    Evaluar `sqrt(2 ^ 2 * 4) - -1` y `2 ^ -1`, y explicar por qué no basta
+    con agregar tres cláusulas a `operacion/2`.
+14. ★ **(2)** Escribir `resolver_variable(Ecuacion, Metodo)`, que recibe la
+    ecuación con la incógnita como variable, como `resolver_libre/1`, la
+    reemplaza en una copia por un átomo que no aparece en la ecuación y
+    aplica `resolver/5` desde 1. Comparar sus respuestas con las de
+    `resolver_libre/1` para `X * X = X * 3` y `X + 1 = 1 / X`.
+
+## Resumen
+
+| | |
+|---|---|
+| **método iterativo** | produce una sucesión de aproximaciones, cada una a partir de la anterior, que se acerca a la solución |
+| **paso** | el cálculo de un método que da el estado siguiente, su aproximación y el cambio; `iterar/4` lo repite |
+| **tolerancia** | el cambio máximo entre dos aproximaciones para detenerse; no puede ser menor que la distancia entre flotantes cerca de la raíz |
+| **límite de pasos** | convierte la falta de convergencia en un fallo |
+| **bisección** | parte un intervalo con cambio de signo; siempre converge, un bit por paso |
+| **secante** | la recta por los dos últimos puntos; no necesita intervalo, puede no converger |
+| **Newton** | la recta tangente, con la derivada exacta; convergencia cuadrática en una raíz simple |
+| **raíz doble** | la derivada se anula en la raíz; Newton converge solo linealmente |
+| **Gauss–Seidel** | cada incógnita se despeja de su ecuación con los valores más recientes; converge con diagonal dominante |
+| `funcion/2`, `valor_en/4` | la ecuación como término y su valor en un punto, con la evaluación del [capítulo 33](../capitulo-33-inspeccion-de-terminos/index.md) |
+| `iterar/4`, `maximo_de_pasos/1` | el ciclo común de los métodos |
+| `biseccion/4,5`, `secante/4,5`, `newton/4,5` | los tres métodos para una ecuación; la versión de cinco argumentos da todas las aproximaciones |
+| `gauss_seidel/3,5`, `barrido/5` | el método para sistemas lineales |
+| `resolver/5`, `derivable/1` | el resolvedor que elige el método |
+| `errores/3` | la distancia de cada aproximación al valor exacto |
+| `:=/2`, `valor_c/2` | el evaluador de Covington, con una cláusula por operación |
+| `libre_en/2`, `resolver_libre/1` | la incógnita como variable de Prolog, encontrada en la ecuación y ligada con la raíz |
+| `nexttoward/2` | la función aritmética que da el flotante vecino en una dirección |
+
+## Temas que se retoman
+
+| Tema | Se retoma en |
+|---|---|
+| Las matrices como listas de listas, con aritmética exacta | [capítulo 48](../capitulo-48-proyecto-aritmetica-racional-matrices/index.md) |
+| Un perceptrón entrenado por iteración, con su curva de aprendizaje | [capítulo 70](../capitulo-70-proyecto-perceptron/index.md) |
+
+## Referencias
+
+- Michael A. Covington, Donald Nute y André Vellino, *Prolog Programming in
+  Depth*, Prentice Hall, 1997 — apartado 7.13, «Solving equations
+  numerically», figuras 7.9 «An expression evaluator in Prolog», 7.10 y
+  7.11 «A numerical equation solver».
+  [Edición en línea](https://www.covingtoninnovations.com/books/PPID.pdf).
+  Esta página toma, para la versión 6, el evaluador `:=`, la búsqueda de la
+  incógnita con `free_in/2` y la incógnita como variable de Prolog, con la
+  secante sobre la diferencia entre los dos miembros y la ecuación de
+  Kepler de sus ejercicios.
+- Michael A. Covington, «A numerical equation solver in Prolog»,
+  *Computer Language* 6 (10), octubre de 1989, págs. 45–51. Es el artículo
+  original del programa SOLVER.PL que reproduce el apartado 7.13 de
+  *Prolog Programming in Depth*; no tiene edición en línea.
+
+El código del capítulo es propio, escrito para el curso: la secante es un
+paso del ciclo de iteración común, y el barrido de Gauss–Seidel recorre las
+filas sin rotar la matriz y se detiene por tolerancia, a diferencia del
+programa de Csenki, que rota las filas y hace un número fijo de iteraciones.

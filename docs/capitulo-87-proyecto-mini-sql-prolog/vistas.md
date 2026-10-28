@@ -1,9 +1,12 @@
 # Las vistas
 
-Esta página contiene la [sección 87.10](index.md#8710-version-8-las-vistas) del
-[capítulo 87](index.md): `CREATE VIEW` compilada en una cláusula de Prolog. El código está en `vistas.pl`, en `ejemplos/capitulo-87/`, con sus pruebas.
+Esta página continúa la página
+[Las sentencias que cambian las tablas](modificaciones.md#879-version-7-las-sentencias-que-cambian-las-tablas)
+del [capítulo 87](index.md), con la sección [87.10](#8710-version-8-las-vistas): `CREATE VIEW`
+compilada en una cláusula de Prolog. El código está en `vistas.pl`, en
+`ejemplos/capitulo-87/`, con sus pruebas.
 
-## Las vistas
+## 87.10 Versión 8: las vistas
 
 Kluźniak y Szpakowicz llaman **vista** a una relación que se calcula en
 lugar de guardarse, y observan que, para quien la llama, un generador
@@ -79,4 +82,32 @@ evaluar de abajo hacia arriba. Una vista que se nombra a sí misma no se
 puede crear: cuando se compila su consulta, la vista todavía no está en
 el catálogo, y el error es `tabla_desconocida`. SQL escribe la recursión
 con `WITH RECURSIVE`
-([ejercicio 8](index.md#ejercicios)).
+([ejercicio 10](modificaciones.md#ejercicios)).
+
+El capítulo continúa en la página
+[El mini-SQL frente a SQLite](sqlite.md#8711-el-mini-sql-frente-al-sql-del-capitulo-43),
+con las sentencias
+del [capítulo 43](../capitulo-43-prolog-y-sql/index.md) ejecutadas en el
+mini-SQL y comparadas con SQLite.
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio. Los ejercicios que piden código se resuelven en archivos
+que cargan los del capítulo, sin modificarlos.
+
+11. **(2)** El mini-SQL no tiene `LEFT JOIN`. Escribir con una vista y
+    `UNION ALL` el par 19 del [capítulo 43](../capitulo-43-prolog-y-sql/index.md), la cantidad de inscriptos de
+    cada materia incluidas las que no tienen ninguno, y comprobar que da
+    las filas de SQLite.
+
+## Referencias
+
+- Feliks Kluźniak y Stanisław Szpakowicz, *Prolog for Programmers*,
+  Academic Press, 1985 — «Two Case Studies», apartado 8.2,
+  «Prolog and Relational Data Bases», con el listado 8.4, «Toy-Sequel
+  Interpreter». Sin edición en línea de acceso libre verificada.
+  Esta página toma de allí la definición de vista y la indistinción de su
+  generador, y las vistas definidas como extensión de Toy-Sequel.

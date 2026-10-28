@@ -1,13 +1,13 @@
 # La terminación
 
-Esta página contiene la sección
-[61.7](index.md#617-version-5-la-terminacion) del
-[capítulo 61](index.md): la versión 5, `terminacion.pl`, que ejecuta el
-ciclo con un límite y con un registro de las memorias vistas. El archivo
-está en `ejemplos/capitulo-61/`, con sus pruebas, y carga la versión 3,
-`conflictos.pl`.
+Esta página continúa la página
+[Un demostrador por resolución](resolucion.md#616-version-4-un-demostrador-por-resolucion) del
+[capítulo 61](index.md), con la [sección 61.7](#617-version-5-la-terminacion): la versión 5,
+`terminacion.pl`, que ejecuta el ciclo con un límite y con un registro de las
+memorias vistas. El archivo está en `ejemplos/capitulo-61/`, con sus pruebas,
+y carga la versión 3, `conflictos.pl`.
 
-## La terminación
+## 61.7 Versión 5: la terminación
 
 Un programa dirigido por patrones termina si cada ciclo reduce una medida
 que no puede decrecer para siempre, como pide el
@@ -26,6 +26,22 @@ registro de las memorias vistas en un árbol AVL de `library(assoc)`, de la
 Como la memoria es un término, reconocer que se repite es comparar
 términos; `msort/2` la ordena antes, porque dos memorias con los mismos
 hechos en otro orden son el mismo estado:
+
+<!-- ejemplo: capitulo-61/terminacion.pl predicado: vigilar/6 -->
+```prolog
+%!  vigilar(+Programa, +Estrategia, +Limite:integer, +Memoria0:list,
+%!          -Memoria:list, -Resultado) is semidet.
+%
+%   Como ejecutar/5, con dos resultados más: limite(N) si el programa hizo
+%   Limite ciclos sin terminar, y repetida(K, N) si la memoria después de
+%   N ciclos es la misma, como colección de hechos, que después de K.
+%   Falla si falla una acción de la instancia elegida.
+vigilar(Programa, Estrategia, Limite, Memoria0, Memoria, Resultado) :-
+    programa(Programa, Modulos),
+    empty_assoc(Vistas),
+    vigilado(Modulos, Estrategia, Limite, 0, Vistas, Memoria0, Memoria,
+             Resultado).
+```
 
 <!-- ejemplo: capitulo-61/terminacion.pl predicado: vigilado/8 -->
 ```prolog
@@ -104,3 +120,41 @@ mientras se lo prueba.
     `[numero(6), numero(4)]`, en qué ciclo aparece la repetición y cuál es
     la memoria repetida. Comprobarlo, y escribir la traza de los primeros
     ciclos a mano con `conflicto/3` y `elegir/4`.
+
+**Lo que falta.** En cada ciclo, cada patrón se compara con toda la lista de
+hechos, aunque solo pueda unificar con los de un nombre y una aridad; y en
+el máximo común divisor el programa depende de que la estrategia prefiera
+`resta` a `resultado`, que se puede aplicar siempre.
+
+El capítulo continúa en la página
+[Índices y metarreglas](indices.md#618-version-6-indices-y-metarreglas), con la memoria indexada y
+los programas por fases.
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio. Los ejercicios extienden los programas: cada solución es un
+archivo que carga los del capítulo, sin modificarlos.
+
+9. ★ **(2)** Escribir el programa `criba`, que parte de los hechos
+   `numero(2)`, …, `numero(N)` y quita todo número múltiplo de otro, de modo
+   que la memoria termina con los primos. Dar una medida que decrece en cada
+   ciclo y comprobar el resultado para N = 30.
+10. ★ **(3)** Agregar al demostrador un módulo que quite una cláusula cuando
+    otra, distinta, contiene solo literales suyos: `[a]` hace inútil a
+    `[a, b]`. Escribirlo como un programa nuevo, `resolucion_subsuncion`,
+    verificar con `vigilar/6` que termina —un resolvente quitado puede
+    volver a agregarse— y comparar sus ciclos con los de `resolucion` en las
+    fórmulas de las pruebas.
+11. ★ **(2)** Predecir qué ocurre si se quita del módulo `resolver` la
+    condición `no(clausula(R))`, con la fórmula `(p v q) ==> p`, que no es
+    un teorema, y con la fórmula de Bratko. Escribir ese programa,
+    `resolucion_sin_control`, y comprobar la predicción con `vigilar/6` y un
+    límite de 50 ciclos. Explicar por qué la vigilancia no informa una
+    memoria repetida.
+12. **(2)** Escribir el programa `luz_limitada`, que cambia la luz como
+    `luz` pero lleva la cuenta de los cambios en un hecho `cambios(N)` y
+    para después de un número dado de cambios. Indicar la medida que
+    decrece.

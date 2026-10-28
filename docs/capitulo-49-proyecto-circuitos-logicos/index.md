@@ -63,8 +63,8 @@ La primera consulta suma 3 y 5 con un sumador de tres bits: los bits van
 del menos significativo al más significativo, y el resultado es 0 0 0 con
 acarreo 1, es decir, 8. La segunda da la fórmula del acarreo de un sumador
 completo y su suma de productos; la tercera demuestra que ese sumador y otro
-construido de manera distinta calculan lo mismo para toda entrada; la cuarta
-cuenta los estados de un contador en código Gray.
+construido de manera distinta calculan lo mismo para toda entrada (`equivalentes/2` está en `verificar.pl`); la cuarta
+cuenta los estados de un contador en código Gray (`alcanzable/3` está en `estados.pl`).
 
 El proyecto parte de dos libros. De *Clause and Effect* de William Clocksin,
 de los casos de estudio «Manipulation of Combinational Circuits» y
@@ -81,7 +81,7 @@ simulation», toma la lectura de un circuito como el conjunto de sus estados
 estables: un circuito sin estados estables, como un inversor con la salida
 conectada a la entrada, y uno con dos, el biestable de dos compuertas NAND,
 que es la base de una memoria; y el modelo de transistores del
-[ejercicio 10](#ejercicios). El código y el texto son propios; los programas de los
+[ejercicio 13](transistores.md#ejercicios). El código y el texto son propios; los programas de los
 libros se reescribieron con la representación de este capítulo.
 
 El capítulo desarrolla el ejemplo de `library(clpb)` que la
@@ -121,9 +121,9 @@ Al terminar el capítulo, el lector puede:
   y reconocer un circuito sin estados estables.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **3:50 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **3:45 h**.
     Resolver los 6 ejercicios marcados con ★: **1:55 h**.
-    Resolver los 14 ejercicios del final: **4:25 h**.
+    Resolver los 14 ejercicios del capítulo: **4:25 h**.
 
 ## 49.1 Compuertas como tablas, circuitos como reglas
 
@@ -265,7 +265,7 @@ salidas pasan a 1 y 0, y cuando S vuelve a 1 se quedan así. El circuito
 **recuerda** un bit. En el hardware, la realimentación que oscila o que deja
 una tensión intermedia también existe; el modelo solo describe los estados
 estables, y lo que responde `inv(X, X)` es que no hay ninguno. Los circuitos
-secuenciales de la [sección 49.5](#495-circuitos-secuenciales) parten de esta memoria.
+secuenciales de la [sección 49.5](secuenciales.md#495-circuitos-secuenciales) parten de esta memoria.
 
 La representación tiene un límite. Un circuito es una regla, y lo único que
 el programa puede hacer con ella es ejecutarla: no puede contar sus
@@ -555,8 +555,8 @@ false.
     recorre y recibe como argumento la **conducta** de cada pieza. Cada
     significado es una conducta: `normal/4` da los valores, `simbolica/4`
     las fórmulas, la de la
-    [sección 49.4](#494-verificar-con-libraryclpb) una restricción
-    booleana; el ejercicio 5 agrega una falla y el ejercicio 11, la
+    [sección 49.4](verificacion.md#494-verificar-con-libraryclpb) una restricción
+    booleana; el ejercicio 3 agrega una falla y el ejercicio 8, la
     profundidad del circuito. Es la misma idea que el ciclo `iterar/4` del
     [capítulo 47](../capitulo-47-proyecto-metodos-numericos/index.md#472-la-ecuacion-como-termino-y-el-ciclo-de-iteracion),
     que recibe el paso de cada método, y que el
@@ -716,7 +716,7 @@ Ps = [[a, b], [a, ci], [b, ci]].
 Las dos listas son distintas, y las dos fórmulas son la misma función: el
 producto `[a, ci, ~b]` se reduce a `[a, ci]` combinándolo con `[a, b]`, una
 regla, el **consenso**, que `simplificar/2` no aplica (el
-[ejercicio 7](#ejercicios) la agrega). Con más reglas se obtiene la suma
+[ejercicio 5](#ejercicios) la agrega). Con más reglas se obtiene la suma
 mínima, pero comparar sumas de productos sigue sin ser una forma segura de
 decidir si dos circuitos calculan lo mismo: una función tiene en general
 varias sumas mínimas. El problema crece con el circuito: el acarreo final del
@@ -736,91 +736,14 @@ false.
     son. Comprobarlo con `formula/3` y `suma_de_productos/2`, y explicar
     por qué la absorción no elimina ninguno.
 
-## 49.4 Verificar con `library(clpb)`
-
-`library(clpb)` representa cada fórmula con un diagrama de decisión binario,
-una forma canónica: dos fórmulas equivalentes tienen el mismo diagrama. La
-página [Verificar con library(clpb)](verificacion.md#verificar-con-libraryclpb)
-simula la descripción una tercera vez, con una conducta que impone a cada
-compuerta la restricción de que su salida equivale a su fórmula, y con ella
-escribe `equivalentes/2`, que demuestra con `taut/2` que el sumador y el
-sumador con el acarreo como mayoría calculan lo mismo; `diferencia/3`, que da
-la entrada con la que un sumador con un cable mal conectado se equivoca; y
-`cuantas/4`, que cuenta con `sat_count/2` las entradas con las que una salida
-toma un valor.
-
-## 49.5 Circuitos secuenciales
-
-Los circuitos de las secciones anteriores son combinacionales: sus salidas
-dependen solo de las entradas del momento. La página
-[Circuitos secuenciales](secuenciales.md#circuitos-secuenciales) agrega el
-tiempo: un circuito secuencial es una parte combinacional, descrita como un
-circuito más del módulo `circuitos`, y un registro que guarda el estado de un
-pulso del reloj al siguiente. Ejecutarlo es recorrer las entradas con
-`foldl/6`, llevando el estado; los ejemplos son el divisor por dos, el
-verificador de paridad, el registro de desplazamiento de cuatro etapas y el
-contador en código Gray, construido con dos circuitos combinacionales.
-
-## 49.6 Los estados alcanzables
-
-Una ejecución recorre una sola sucesión de entradas. La misma página, en
-[Los estados alcanzables](secuenciales.md#los-estados-alcanzables), con el
-módulo de `estados.pl`, define
-los estados a los que un circuito secuencial puede llegar con cualquier
-sucesión como la clausura de su grafo de estados, que tiene ciclos y termina
-porque está tabulada, y verifica sobre ella, con `siempre/3`, que la salida
-del contador cambia un solo bit en cada pulso, para todos sus estados.
-
-## 49.7 Los productos como vectores de signos
-
-La suma de productos de la [sección 49.3](#493-que-calcula-un-circuito)
-escribe cada producto como una lista de literales. La página
-[Los productos como vectores de signos](vectores.md#los-productos-como-vectores-de-signos)
-toma de Clocksin, en el apartado 7.5 de *Clause and Effect*, «Alternative
-Representation», otra estructura para cuando las variables son pocas y se
-conocen de antemano: un signo por variable, en un orden fijo, `+`, `-` o
-`0`. Con ella escribe `vector/3` y `producto_de_vector/3`, que traducen
-entre las dos representaciones; `cubre/2` y `combinar/3`, que deciden la
-absorción y combinan dos productos que difieren en el signo de una sola
-variable; y `unos/3` e `implicantes_primos/2`, que repiten esa combinación
-desde las filas de la tabla de verdad y dan los implicantes primos de una
-salida, el primer paso del método que completa el
-[ejercicio 12](#ejercicios).
-
-## 49.8 Retardos en cascada
-
-El registro de desplazamiento de la
-[sección 49.5](#495-circuitos-secuenciales) tiene cuatro etapas, escritas
-una por una en su descripción. Clocksin, en el apartado 8.5 de *Clause and
-Effect*, «Specification of Cascaded Components», conecta N retardos
-unitarios en serie con una recursión sobre la lista de sus estados, de modo
-que la cantidad de etapas es la longitud de esa lista. La página
-[Retardos en cascada](secuenciales.md#retardos-en-cascada) escribe esa
-cascada como `retardo/4`, la ejecuta pulso a pulso con `retardar/3`, y
-describe para el simulador del capítulo un registro de desplazamiento de N
-etapas, `desplazamiento(N)`, con una regla que genera los nombres de sus
-cables a partir de N; las pruebas comparan los dos para varios N y con el
-registro de cuatro etapas.
-
-## 49.9 Compuertas hechas con transistores
-
-Las compuertas de las secciones anteriores son tablas. Spivey, en el
-capítulo «Hardware simulation» de su libro, las construye con
-transistores CMOS descritos, como las compuertas, por la relación de sus
-estados estables. La página
-[Compuertas hechas con transistores](transistores.md#compuertas-hechas-con-transistores)
-presenta los transistores p y n, el inversor de dos transistores, el
-cortocircuito, que no tiene ningún estado estable, y la compuerta XOR de
-seis transistores del ejercicio 12.2 de Spivey, que la consulta con las
-entradas libres reduce a su tabla de verdad.
-
-!!! success "Criterios de calidad"
-    | Criterio | En este capítulo |
-    |---|---|
-    | C1 | cada predicado declara modos y determinación; la simulación es `nondet` porque la relación, con entradas libres, tiene varias respuestas, aunque con las entradas ligadas tenga una |
-    | C3 | los circuitos son relaciones: `simular/3`, `sumar_bits/4` y `ejecutar/4` se consultan también en sentido inverso, y las pruebas lo verifican |
-    | C6 | la descripción de un circuito es solo datos, y el intérprete, `simular/4`, no depende de ninguno: cambia el significado de las compuertas con la conducta, sin tocar la descripción ni el intérprete |
-    | C7 | 152 pruebas en diez archivos; cada versión se compara con la anterior (la descripción del sumador con `sumador/5`, la fórmula con la simulación, el sumador de tres bits con la suma aritmética), y la recursión sin tabla se prueba con `call_with_inference_limit/3` |
+El capítulo continúa en la página
+[Verificar con library(clpb)](verificacion.md#494-verificar-con-libraryclpb),
+con una forma segura de decidir si dos circuitos calculan lo mismo. Las
+páginas siguientes la continúan con los circuitos secuenciales, los
+productos como vectores de signos y las compuertas hechas con transistores,
+hasta la [sección 49.9](transistores.md#499-compuertas-hechas-con-transistores).
+Antes, los [ejercicios](#ejercicios) de esta página practican
+las secciones 49.1 a 49.3.
 
 ## Ejercicios
 
@@ -841,162 +764,41 @@ tiene de propio, y el [capítulo 50](../capitulo-50-proyecto-diagnostico-abducci
    Verificar con `simular/3`, para todos los pares de números de 0 a 7, que
    el resultado es la diferencia módulo 8 y el préstamo final indica si el
    primero es menor.
-3. ★ **(2)** Describir un multiplexor de dos entradas, `mux`: entradas s, a
-   y b; la salida es a cuando s = 0 y b cuando s = 1. Usar un inversor, dos
-   AND y una OR. Obtener su tabla de verdad y su suma de productos, describir
-   una segunda versión, `mux_nand`, solo con compuertas NAND, y demostrar con
-   `equivalentes/2` que las dos calculan lo mismo.
-4. **(2)** Las compuertas NAND alcanzan para construir cualquier otra.
-   Describir `inv_nand`, `and_nand` y `or_nand` solo con compuertas NAND,
-   describir tres circuitos de una sola compuerta, `inv1`, `and1` y `or1`,
-   como el `xor1` de `verificar.pl`, y demostrar las tres equivalencias.
-5. ★ **(2)** Escribir la conducta `pegada(Ruta, Valor)`: la compuerta cuya
+3. ★ **(2)** Escribir la conducta `pegada(Ruta, Valor)`: la compuerta cuya
    ruta es Ruta da siempre Valor, sin importar sus entradas, y las demás
    cumplen su tabla. Escribir `detecta(Circuito, Ruta, Valor, Es)`: con las
    entradas Es, el circuito con esa falla da otras salidas que el circuito
    que funciona. ¿Qué entradas detectan que la compuerta `[m2, x1]` del
    sumador está pegada a 0? ¿Y que `[o1]` está pegada a 1?
-6. **(1)** Escribir `minterminos(Circuito, Salida, Ps)`: la suma de
+4. **(1)** Escribir `minterminos(Circuito, Salida, Ps)`: la suma de
    productos que se lee de la tabla de verdad, con un producto por cada fila
    donde Salida vale 1 y un literal por cada entrada. Compararla con la de
    `suma_de_productos/2` para la salida z de `xor_nand` y para la salida co
    del sumador.
-7. **(3)** El **consenso** de dos productos que tienen un literal X y ~X,
+5. **(3)** El **consenso** de dos productos que tienen un literal X y ~X,
    respectivamente, y ningún otro par opuesto, es la unión de los dos sin
    ese literal: P · X + Q · ¬X = P · X + Q · ¬X + P · Q. Escribir
    `simplificar_consenso/2`, que agrega los consensos de todos los pares y
    simplifica, hasta que la lista no cambia. Comprobar que la suma de
    productos del acarreo del sumador se reduce a la de la mayoría.
-8. ★ **(2)** Describir un contador binario de dos bits con una entrada de
-   habilitación e: con e = 1 el contador avanza, con e = 0 conserva el
-   estado. La salida es el estado. Declararlo con `secuencial/3` desde otro
-   archivo, ejecutarlo con la sucesión de habilitaciones 1, 1, 0, 1, 0, 1 y
-   verificar con `alcanzable/3` que alcanza sus cuatro estados.
-9. ★ **(2)** Describir un detector de la secuencia 1 0 1: la salida es 1
-   en el pulso en que la entrada es 1 y las dos entradas anteriores fueron
-   0 y 1, en ese orden. El estado son las dos últimas entradas. Ejecutarlo
-   con 1, 0, 1, 0, 1, 1, 0, 1 y verificar con `siempre/3` que la salida
-   nunca es 1 si la entrada del pulso es 0.
-10. **(2)** Con `ptran/3` y `ntran/3` de la
-    [sección 49.9](#499-compuertas-hechas-con-transistores), escribir la
-    compuerta NAND de la tecnología CMOS, con dos transistores p en paralelo
-    entre el 1 y la salida y dos n en serie entre la salida y el 0, y
-    verificar que tiene la tabla de `nand/3`. Explicar por qué el modelo de
-    Spivey admite también la consulta inversa, con la salida dada, aunque un
-    transistor real no puede llevar su compuerta a un valor.
-11. **(3)** El sumador de tres bits espera en cada etapa el acarreo de la
-    anterior. Un sumador con **acarreo anticipado** calcula cada acarreo
-    directamente de las entradas: con gᵢ = aᵢ·bᵢ y pᵢ = aᵢ ⊕ bᵢ, el
-    acarreo c₁ es g₀, c₂ es g₁ + p₁·g₀, y c₃ es g₂ + p₂·g₁ + p₂·p₁·g₀.
-    Describirlo como `sumador3_anticipado`, con la misma interfaz que
-    `sumador3`, demostrar que son equivalentes y comparar la cantidad de
-    compuertas de los dos.
-12. ★ **(3)** Escribir `cobertura(Unos, Primos, Elegidos)`: Elegidos es la
-    menor cantidad de vectores de Primos que cubre todos los vectores de
-    Unos, el segundo paso del método de Quine y McCluskey. Aplicarlo al
-    acarreo del sumador, y a la salida que vale 1 en las filas a · ¬b · ¬c,
-    a · ¬b · c, a · b · c y ¬a · b · c, cuyos implicantes primos son tres y
-    de los que basta con dos.
-13. **(1)** Predecir, sin ejecutarlas, las respuestas de
-    `retardar([1, 0, 1, 1], [0, 0], Qs)` y de
-    `retardar(Es, [0, 0], [0, 0, 1, 0])`, y comprobarlo. ¿Cuántos estados
-    alcanza `desplazamiento(N)` desde N ceros, y por qué?
-14. **(2)** Spivey señala que los dos transistores del par en paralelo de
-    la XOR son necesarios por efectos eléctricos que el modelo no
-    representa. Escribir las dos variantes de cinco transistores, sin el
-    transistor p y sin el n del par, y verificar que el modelo les da la
-    misma tabla que a `xor_cmos/3`. Explicar qué dice ese resultado sobre lo
-    que el modelo de estados estables puede verificar.
-
-## Resumen
-
-| | |
-|---|---|
-| **compuerta como tabla** | un hecho por fila de la tabla de verdad, con las entradas antes de la salida |
-| **circuito como conjunción** | una meta por compuerta y una variable por cable; los cables internos no aparecen en la cabeza |
-| **estado estable** | una solución de la conjunción: ninguna en un inversor realimentado, dos en un biestable |
-| **circuito como dato** | `circuito(Nombre, Entradas, Salidas)` y `componente(Circuito, Id, Tipo, Entradas, Salidas)`, con cables nombrados y jerarquía |
-| **conducta** | el significado de cada compuerta, argumento de `simular/4`: su tabla, su fórmula o una restricción booleana |
-| **ruta** | la lista de identificadores de componentes que lleva a una compuerta desde el circuito exterior |
-| **suma de productos** | una disyunción de conjunciones de literales; se obtiene con la forma normal negativa y la distribución, y se simplifica con la absorción |
-| **equivalencia** | con `library(clpb)`, `taut/2` sobre las restricciones de los dos circuitos; `sat/1` y `labeling/1` dan una entrada que los distingue |
-| **circuito secuencial** | una parte combinacional y un registro de estado; ejecutarlo es un `foldl/6` sobre los pulsos del reloj |
-| **estados alcanzables** | la clausura tabulada del grafo de estados; sobre ella, una propiedad se verifica para toda entrada |
-| `simular/3`, `simular/4`, `tabla_de_verdad/2`, `compuerta_en/3` | el intérprete de la descripción y las preguntas sobre la estructura |
-| `formula/3`, `fnn/2`, `suma_de_productos/2`, `como_formula/2` | la fórmula de una salida y su suma de productos |
-| `equivalentes/2`, `diferencia/3`, `cuantas/4` | la verificación con `library(clpb)` |
-| `secuencial/3`, `paso/5`, `ejecutar/4` | los circuitos secuenciales |
-| `alcanzable/3`, `grafo/3`, `siempre/3` | el grafo de estados, tabulado, y las propiedades sobre él |
-| **vector de signos** | un producto como un signo por variable: `+`, `-` o `0`; la absorción y la combinación se deciden posición por posición |
-| **implicante primo** | un producto que implica la función y que no se puede combinar con otro; se obtiene combinando vectores que difieren en un signo |
-| `vector/3`, `cubre/2`, `combinar/3`, `unos/3`, `implicantes_primos/2` | los productos como vectores y el primer paso de Quine y McCluskey |
-| `retardo/4`, `retardar/3` | N retardos unitarios en cascada, con N la longitud de la lista de estados |
-| **transistor** | la relación de sus estados estables: el p conduce con la compuerta en 0, el n con la compuerta en 1 |
-| `ptran/3`, `ntran/3`, `inversor_cmos/2`, `xor_cmos/3`, `cortocircuito/1` | las compuertas CMOS y un circuito sin estados estables |
-| **[Patrón 60](../patrones.md#60-interprete-con-conducta-como-parametro)** | intérprete con conducta como parámetro |
-| `acyclic_term/1` | se cumple si el término no es cíclico: un circuito sin realimentación |
-
-## Temas que se retoman
-
-| Tema | Se retoma en |
-|---|---|
-| Fallas de compuertas y diagnóstico por abducción sobre el módulo `circuitos` | [capítulo 50](../capitulo-50-proyecto-diagnostico-abduccion/index.md) |
-| Autómatas finitos, de los que un circuito secuencial es un caso | [capítulo 52](../capitulo-52-proyecto-automatas-expresiones-regulares/index.md) |
 
 ## Referencias
 
 - William F. Clocksin, *Clause and Effect: Prolog Programming for the
-  Working Programmer*, Springer, 1997 — casos de estudio «Manipulation of
-  Combinational Circuits» y «Manipulation of Clocked Sequential Circuits».
-  El capítulo toma la representación de las compuertas como tablas y de los
-  circuitos como conjunciones de metas, la simulación en los dos sentidos,
-  la suma de productos y su simplificación, y los circuitos secuenciales de
-  ejemplo: el divisor por dos, el verificador de paridad, el registro de
-  desplazamiento y el contador en código Gray. Del apartado 7.5,
-  «Alternative Representation», toma los productos como vectores de signos
-  de la [sección 49.7](#497-los-productos-como-vectores-de-signos), y del
-  apartado 8.5, «Specification of Cascaded Components», los retardos en
-  cascada de la [sección 49.8](#498-retardos-en-cascada).
+  Working Programmer*, Springer, 1997 — caso de estudio «Manipulation of
+  Combinational Circuits». Esta página toma la representación de las
+  compuertas como tablas y de los circuitos como conjunciones de metas, la
+  simulación en los dos sentidos, y la suma de productos y su
+  simplificación.
 - William F. Clocksin, «Logic programming and digital circuit analysis»,
   *Journal of Logic Programming* 4 (1), 1987, págs. 59–82. Es el artículo
   del que Clocksin toma los ejemplos de los dos casos de estudio de
-  *Clause and Effect*: las compuertas como relaciones, la simulación de
-  circuitos combinacionales y secuenciales, y los circuitos de ejemplo. No
-  tiene edición en línea gratuita.
+  *Clause and Effect*; esta página toma de él, a través del libro, las
+  compuertas como relaciones y la simulación de circuitos combinacionales.
+  No tiene edición en línea gratuita.
 - Michael Spivey, *An Introduction to Logic Programming through Prolog*,
   Prentice Hall International, 1996 — «Hardware simulation».
   [Edición en línea](https://spivey.oriel.ox.ac.uk/wiki/files/logprog/logic.pdf).
-  El capítulo toma la lectura de un circuito como el conjunto de sus estados
-  estables, los ejemplos del inversor realimentado y del biestable de dos
-  compuertas NAND, y, para la
-  [sección 49.9](#499-compuertas-hechas-con-transistores), el modelo de los
-  transistores p y n, el inversor CMOS, el cortocircuito y la compuerta XOR
-  de seis transistores de su ejercicio 12.2.
-- W. V. Quine, «The problem of simplifying truth functions», *The American
-  Mathematical Monthly* 59 (8), 1952, págs. 521–531, y E. J. McCluskey,
-  «Minimization of Boolean functions», *The Bell System Technical Journal*
-  35 (6), 1956, págs. 1417–1444. Son el origen del método que combina
-  productos que difieren en una variable para obtener los implicantes
-  primos, cuyo primer paso escribe la
-  [sección 49.7](#497-los-productos-como-vectores-de-signos) y cuyo segundo
-  paso pide el [ejercicio 12](#ejercicios). No tienen edición en línea
-  gratuita.
-- *SWI-Prolog Reference Manual* —
-  «[library(clpb): CLP(B): Constraint Logic Programming over Boolean
-  Variables](https://www.swi-prolog.org/pldoc/man?section=clpb)». La
-  verificación de equivalencias usa `sat/1`, `taut/2` y `labeling/1`, y los
-  operadores de fórmulas, de esa biblioteca.
-- Markus Triska, «The Boolean Constraint Solver of SWI-Prolog: System
-  Description», en *Functional and Logic Programming (FLOPS 2016)*, LNCS
-  9613, Springer, 2016, págs. 45–61
-  ([versión del autor](https://www.metalevel.at/swiclpb.pdf)). Es la
-  descripción de `library(clpb)` que cita su manual: las fórmulas se
-  representan con diagramas de decisión binarios reducidos y ordenados,
-  la forma canónica que la
-  [sección 49.4](#494-verificar-con-libraryclpb) usa para decidir si dos
-  circuitos son equivalentes.
-
-El código del capítulo es propio, escrito para el curso: los programas de
-Clocksin y de Spivey se reescribieron con la representación de este
-capítulo, y la verificación con `library(clpb)` no tiene equivalente en esos
-libros.
+  Esta página toma la lectura de un circuito como el conjunto de sus estados
+  estables, y los ejemplos del inversor realimentado y del biestable de dos
+  compuertas NAND.

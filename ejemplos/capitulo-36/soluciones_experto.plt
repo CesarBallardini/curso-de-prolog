@@ -2,7 +2,7 @@
 
 :- begin_tests(soluciones_experto).
 
-% Ejercicio 13
+% Ejercicio 14
 test(murcielago, all(A == [murcielago])) :-
     caso(6, Obs),
     identificar_compilado(Obs, A).
@@ -31,7 +31,7 @@ test(regla_agregada,
     findall(A, identificar([tiene_plumas, nada], A), As),
     findall(A, identificar_compilado([tiene_plumas, nada], A), Bs).
 
-% Ejercicio 14: la traducción directa da las cláusulas de la expansión.
+% Ejercicio 15: la traducción directa da las cláusulas de la expansión.
 test(sin_evaluador, forall(clause(regla(R, C), true))) :-
     compilar_regla(regla(R, C), Clausula),
     Clausula = (Cabeza :- _),

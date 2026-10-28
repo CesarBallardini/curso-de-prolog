@@ -1,8 +1,10 @@
 # Más elementos de Colossal Cave
 
-Esta página contiene las secciones
-[45.8](index.md#458-el-puntaje-y-los-turnos) a
-[45.11](index.md#4511-menus-de-una-tecla) del [capítulo 45](index.md):
+Esta página continúa la página
+[Órdenes en castellano, el bucle del juego y la pantalla completa](lenguaje.md#455-version-4-ordenes-y-respuestas-en-castellano)
+del [capítulo 45](index.md), con las secciones
+[45.8](#458-el-puntaje-y-los-turnos) a
+[45.11](#4511-menus-de-una-tecla):
 cuatro elementos de los juegos fuente que las versiones 1 a 6 no tienen. Los
 tres primeros vienen de *Colossal Cave Adventure*, de Crowther y Woods: el
 puntaje y los turnos contados, los personajes que recorren la cueva por su
@@ -312,7 +314,7 @@ false.
 
 `camino/3` busca la lista de direcciones más corta entre dos salas con la
 profundización iterativa de la
-[sección 41.4](../capitulo-41-busqueda-y-planificacion/index.md#414-profundidad-limitada-y-profundizacion-iterativa):
+[sección 41.4](../capitulo-41-busqueda-y-planificacion/heuristicas.md#414-profundidad-limitada-y-profundizacion-iterativa):
 `length/2` fija una longitud de 0, 1, 2…, y `andar/3` busca un recorrido de
 esa longitud. El primero que encuentra es el más corto. La longitud no pasa
 de la cantidad de salas, porque un camino más corto no repite salas; sin
@@ -506,3 +508,87 @@ teclas sueltas: `"x7\n3"` hace preguntar dos veces al menú antes de elegir
 la tercera opción, y `"x S"` hace que `si_o_no/3` repita la pregunta y
 responda `si`. La rama de `get_single_char/1` no la verifica ninguna
 prueba, porque las pruebas no tienen una terminal; se comprueba jugando.
+
+!!! success "Criterios de calidad"
+    | Criterio | En este capítulo |
+    |---|---|
+    | C1 | cada predicado declara modos y determinación; `realizar/2`, `entender/2`, `responder/2` y los no terminales de las respuestas son `det`, y las pruebas, que fallan si queda una alternativa pendiente, lo confirman |
+    | C5 | una orden desconocida, un hecho de estado inválido o un archivo de partida dañado producen un error de dominio, de sintaxis o de existencia; `restablecer/1` valida antes de cambiar nada |
+    | C6 | el estado cambia solo en `iniciar/0`, `restablecer/1` y los cinco predicados de cambio; `impedimento/2` y los modelos de respuesta y de pantalla no escriben; la lectura y la escritura están en `partida/1`, `menu/3` y `bucle/2`, que reciben el stream como argumento |
+    | C7 | 161 pruebas en diez archivos: la coherencia de los datos, cada impedimento, la ida y vuelta de la instantánea y de un archivo, las dos gramáticas en los dos sentidos, el menú y la partida entera con la entrada en una cadena, la pantalla comparada línea por línea, y en las secciones 45.8 a 45.11 el puntaje de una partida completa, el bloqueo del gato, los caminos más cortos del laberinto y los menús de una tecla leídos de cadenas |
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio. Los ejercicios extienden el programa: cada solución es un
+archivo que carga los del capítulo, sin modificarlos.
+
+13. **(1)** Agregar, en un archivo aparte y solo con hechos, un perro que va
+    y viene entre el taller y el sótano. Predecir los avisos de
+    `turno/2` a dos órdenes «mirar» seguidas con el jugador en el taller, y
+    comprobarlos.
+14. **(2)** Escribir `trampa(?S)`: `S` es una sala del laberinto que se
+    alcanza desde la entrada y desde la cual la entrada no se alcanza. Usar
+    `explorar/2`.
+15. **(1)** Escribir `logros_pendientes(-Logros)`, la lista de los pares
+    `Hecho-Puntos` de los logros que todavía no se obtuvieron, en el orden de
+    `logro/2`.
+
+## Resumen
+
+| | |
+|---|---|
+| **mundo como hechos** | nombres con género, salas, puertas y propiedades; el estado inicial, `inicio/1`, con los mismos términos que el estado del juego |
+| **estado detrás de una interfaz** | cuatro predicados dinámicos que solo cambian `iniciar/0`, `restablecer/1` y cinco predicados de cambio ([Patrón 19](../patrones.md#19-estado-detras-de-una-interfaz)) |
+| **[Patrón 58](../patrones.md#58-impedimento-y-efecto)** | impedimento y efecto: las reglas del juego como una relación sin efectos, consultada antes de aplicar un solo efecto; el orden de las cláusulas decide el aviso |
+| **[Patrón 57](../patrones.md#57-extension-por-clausulas-multifile)** | extensión por cláusulas multifile |
+| **instantánea** | la lista ordenada de los hechos del estado; sirve para probar, guardar, cargar y deshacer |
+| **cargar sin ejecutar** | `read_term/3` analiza los términos; `restablecer/1` los valida antes de cambiar nada |
+| **gramática de órdenes** | verbos como datos, sustantivos tomados de los nombres del mundo, tipos de complemento, contracciones y concordancia |
+| **lectura según la situación** | entre las lecturas de una orden, la primera que ningún impedimento bloquea |
+| **gramática de respuestas** | artículos por género, «al» y «a la», terminaciones de adjetivos y enumeraciones, generados como lista de códigos |
+| **bucle y menú** | leen líneas de un stream recibido como argumento; se prueban con `open_string/2` |
+| `same_length/2` | dos listas de la misma longitud (en las soluciones) |
+| **pantalla completa** | el modelo de pantalla del [capítulo 37](../capitulo-37-interfaces-de-usuario/index.md) con tres recuadros; el bucle lleva los mensajes en un argumento |
+| `mundo.pl`, `estado.pl`, `partidas.pl` | el mundo, el estado y las partidas guardadas |
+| `lenguaje.pl`, `juego.pl`, `aventura.pl` | el castellano, el bucle y el menú, y la pantalla completa |
+| **puntaje por logros** | un logro registrado la primera vez que un hecho del estado se cumple; turnos contados en `jugada/2`, que envuelve a `realizar/2` |
+| **personajes** | una posición en una ruta, avanzada cada turno; avisos por diferencia entre quiénes están antes y después |
+| **laberinto** | pasadizos por dirección sin sentido inverso; camino más corto por profundización iterativa acotada; exploración con una lista de salas marcadas |
+| **menú de una tecla** | la tecla se lee sin esperar Intro en la terminal y carácter a carácter en los demás streams, que es como se prueba |
+| `puntaje.pl`, `personajes.pl`, `laberinto.pl`, `teclas.pl` | el puntaje, los personajes, el laberinto y los menús de una tecla |
+| `get_char/2` | el carácter siguiente de un stream: la tecla de un menú fuera de la terminal |
+| `working_directory/2` | el directorio de trabajo, y su cambio; en las pruebas |
+
+## Temas que se retoman
+
+| Tema | Se retoma en |
+|---|---|
+| Órdenes en castellano traducidas a operaciones con archivos y procesos | [capítulo 57](../capitulo-57-proyecto-ordenes-castellano/index.md) |
+| Diálogos en castellano con plantillas de respuesta | [capítulo 56](../capitulo-56-proyecto-dialogos-plantillas/index.md) |
+| Preguntas en castellano sobre una base de datos | [capítulo 88](../capitulo-88-proyecto-preguntas-en-castellano/index.md) |
+
+## Referencias
+
+- William Crowther y Don Woods, *Colossal Cave Adventure*, 1976–1977, el
+  juego que Merritt nombra en su prefacio como el modelo de todos los que lo
+  siguieron. [Historia y versiones del juego](https://rickadams.org/adventure/),
+  en el sitio de Rick Adams. Las secciones
+  [45.8](#458-el-puntaje-y-los-turnos) a
+  [45.10](#4510-un-laberinto-de-pasadizos-retorcidos) toman de allí tres
+  elementos del juego: el puntaje por logros con los turnos contados y un
+  rango final, los personajes que recorren la cueva por su cuenta (los
+  enanos y el pirata) y el laberinto de pasadizos retorcidos que se
+  describen todos igual.
+- Michael A. Covington, Donald Nute y André Vellino, *Prolog Programming in
+  Depth*, Prentice Hall, 1997 — apartado 2.13.
+  [Edición en línea](https://www.covingtoninnovations.com/books/PPID.pdf).
+  La [sección 45.11](#4511-menus-de-una-tecla) toma de allí la lectura de
+  una sola tecla y la pregunta que solo acepta sí o no
+  (`get_yes_or_no/1`).
+
+El código del capítulo es propio, escrito para el curso: el mundo, los
+textos en castellano y los programas son nuevos, y de Merritt y de Covington
+se toman ideas y representaciones, no código.

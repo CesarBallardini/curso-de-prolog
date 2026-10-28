@@ -71,6 +71,12 @@ shown: ## Check that every predicate a transcript consults is shown on its page
 links: ## Check that every chapter, section and pattern mention in the prose is a link
 	$(UV) tools/check-links.py $(e)
 
+anchors: ## Check one chapter's links against its headings without building the site (make anchors e=capitulo-41)
+	$(UV) tools/check-anchors.py $(e) --incoming
+
+pages: ## Check that a chapter's pages read as one stream and close on the right page
+	$(UV) tools/check-pages.py $(e)
+
 patterns: ## Check that docs/patrones.md equals the Patrón boxes (make patterns w=1 rewrites it)
 	$(UV) tools/sync-patterns.py $(if $(w),--write,)
 
@@ -311,7 +317,7 @@ format: ## Fix formatting and whatever ruff can fix on its own
 # The order runs cheapest to dearest, and in the order that explains a failure
 # best: first the part I rule (static), then the examples, then the sandbox,
 # then the text matching the examples, and the site last.
-check: part-1 part-2 shown links patterns test swish transcripts math time vendor-check ## Everything that has to be green before a commit
+check: part-1 part-2 shown links pages patterns test swish transcripts math time vendor-check ## Everything that has to be green before a commit
 	$(UV) tools/sync-examples.py
 	$(MAKE) docs
 

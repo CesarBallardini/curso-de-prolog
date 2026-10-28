@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 39 - Soluciones de los ejercicios 4, 6, 7 y 8: las refutaciones
+% Capítulo 39 - Soluciones de los ejercicios 3, 5, 6 y 8: las refutaciones
 % con sus resolventes, y la compleción de los predicados de un programa.
 % Usa paso_de/4 y complecion_de/3 de sld.pl, y nombra juego(j2) con
 % generado/2.

@@ -364,6 +364,8 @@ make clean-pdf   # borrar los PDF generados
 | `make part-2` | Verifica que los capítulos 14 a 88 no usan un predicado antes del capítulo que lo presenta (lo declara su tabla «Resumen»). |
 | `make shown` | Verifica que cada predicado que consulta una transcripción se muestra en su página, o que la página nombra su archivo. |
 | `make links` | Verifica que cada mención de un capítulo, una sección o un patrón en el texto es un enlace. |
+| `make anchors e=capitulo-41` | Verifica, sin construir el sitio, que cada enlace de un capítulo y cada enlace de otras páginas hacia él lleva a un encabezado que existe. |
+| `make pages` | Verifica que las páginas de un capítulo se leen en orden: las secciones numeradas avanzan de una página a la siguiente, los ejercicios se numeran de corrido, y «Resumen» y «Temas que se retoman» están en la última página. |
 | `make patterns` | Verifica que `docs/patrones.md` coincide con los recuadros «Patrón» de los capítulos; `make patterns w=1` lo regenera. |
 | **Sitio y PDF** | |
 | `make docs` | Construye el sitio en `site/` con `--strict`: una advertencia es un error. No genera los PDF: enlaza solo los que ya existen. |
@@ -395,7 +397,7 @@ orden, de lo más barato a lo más costoso:
 | | |
 |---|---|
 | `make part-1`, `make part-2` | ningún capítulo usa un predicado antes del capítulo que lo presenta |
-| `make shown`, `make links`, `make patterns` | lo que muestran las transcripciones, los enlaces y el catálogo de patrones |
+| `make shown`, `make links`, `make pages`, `make patterns` | lo que muestran las transcripciones, los enlaces, el orden de las páginas y el catálogo de patrones |
 | `make test` | cada ejemplo se carga con su `.plt` y pasa sus pruebas plunit |
 | `make swish` | cada ejemplo es aceptado por el sandbox de SWISH, o declara por qué no puede serlo |
 | `make transcripts` | cada consulta `?- …` del texto se ejecuta y se comparan la cantidad de respuestas y el terminador |

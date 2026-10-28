@@ -3,7 +3,7 @@
 :- begin_tests(soluciones_maquinas).
 
 % iguales acepta exactamente las palabras con tantas a como b.
-test(ej10_iguales) :-
+test(ej12_iguales) :-
     forall(( between(0, 8, L),
              length(W, L),
              maplist([S]>>member(S, [a, b]), W) ),
@@ -12,7 +12,7 @@ test(ej10_iguales) :-
            ;   cuenta(a, W, Na), cuenta(b, W, Nb), Na =\= Nb
            )).
 
-test(ej11_palindromos) :-
+test(ej13_palindromos) :-
     forall(( between(0, 6, L),
              length(W, L),
              maplist([S]>>member(S, [a, b]), W) ),
@@ -21,7 +21,7 @@ test(ej11_palindromos) :-
            ;   \+ reverse(W, W)
            )).
 
-test(ej11_pasos, [true(Ns == [1, 3, 6, 15, 45])]) :-
+test(ej13_pasos, [true(Ns == [1, 3, 6, 15, 45])]) :-
     findall(N,
             ( member(L, [0, 1, 2, 4, 8]),
               length(W, L),

@@ -44,13 +44,71 @@ expr([id|Y], Y).
 
 % --- Ejercicio 3 -----------------------------------------------------------
 
+%!  reducciones(-Clausulas:list) is det.
+%
+%   El ejemplo de negación estratificada de Warren, con sus doce hechos
+%   reduce/2.
+reducciones(Clausulas) :-
+    Pares = [a-b, b-c, c-d, d-e, e-c, a-f, f-g, g-f, g-k, f-h, h-i, i-h],
+    findall((reduce(X, Y) :- true), member(X-Y, Pares), Hechos),
+    append(Hechos,
+           [ (reachable(X, Y) :- reduce(X, Y)),
+             (reachable(X, Y) :- reachable(X, Z), reduce(Z, Y)),
+             (reducible(X) :- reachable(X, Y), \+ reachable(Y, X)),
+             (fully_reduce(X, Y) :- reachable(X, Y), \+ reducible(Y)) ],
+           Clausulas).
+
+% --- Ejercicio 4 -----------------------------------------------------------
+
+%!  evaluar_ingenuo(+Clausulas:list, -Modelo:list, -Costo) is det.
+%
+%   El modelo de evaluar/3, con la evaluación ingenua en cada componente:
+%   cada paso aplica todas las reglas de la componente a la base entera,
+%   hasta que no aparece nada nuevo.
+evaluar_ingenuo(Clausulas, Modelo, Costo) :-
+    separar(Clausulas, Hechos, Reglas),
+    componentes(Clausulas, Componentes),
+    base(Hechos, Base0),
+    foldl(ingenua_componente(Reglas), Componentes,
+          Base0-costo(0, 0), Base-Costo),
+    atomos(Base, Modelo).
+
+%!  ingenua_componente(+Reglas:list, +Componente:list, +Estado0,
+%!                     -Estado) is det.
+%
+%   Estado0 es Base0-Costo0; Estado agrega lo que derivan las reglas de
+%   Componente, aplicadas a la base entera hasta el punto fijo.
+ingenua_componente(Reglas, Componente, Base0-costo(P0, D0), Base-Costo) :-
+    include(cabeza_en(Componente), Reglas, DeLaComponente),
+    findall(H, ( member(r(H, Ls), DeLaComponente), cumplir(Ls, Base0) ),
+            Hs),
+    length(Hs, D),
+    P is P0 + 1,
+    D1 is D0 + D,
+    agregar(Hs, Base0, Base1, Nuevos),
+    (   Nuevos == []
+    ->  Base = Base1,
+        Costo = costo(P, D1)
+    ;   ingenua_componente(Reglas, Componente, Base1-costo(P, D1),
+                           Base-Costo)
+    ).
+
+%!  cabeza_en(+Componente:list, +Regla) is semidet.
+%
+%   La cabeza de Regla es de un predicado de Componente.
+cabeza_en(Componente, r(H, _)) :-
+    functor(H, Nombre, Aridad),
+    memberchk(Nombre/Aridad, Componente).
+
+% --- Ejercicio 5 -----------------------------------------------------------
+
 %!  casados(-Clausulas:list) is det.
 %
 %   El programa con el que Nilsson y Małuszyński abren su capítulo.
 casados([ (married(X, Y) :- married(Y, X)),
           (married(adam, anne) :- true) ]).
 
-% --- Ejercicio 4 -----------------------------------------------------------
+% --- Ejercicio 6 -----------------------------------------------------------
 
 %!  suplementario(+Clausula, +K:integer, -Clausulas:list) is det.
 %
@@ -139,7 +197,7 @@ franjas(Clausulas) :-
                   alumno(A, Anio), inscripto(A, M), horario(M, F)) ]],
            Clausulas).
 
-% --- Ejercicio 5 -----------------------------------------------------------
+% --- Ejercicio 7 -----------------------------------------------------------
 
 %!  misma_profundidad(-Clausulas:list) is det.
 %
@@ -157,7 +215,7 @@ misma_profundidad(Clausulas) :-
               (sd(X, Y) :- child(X, Z), child(Y, W), sd(Z, W)) ]],
            Clausulas).
 
-% --- Ejercicio 6 -----------------------------------------------------------
+% --- Ejercicio 8 -----------------------------------------------------------
 
 %!  debe_camino(?X, ?Y) is nondet.
 %
@@ -188,23 +246,7 @@ programa_camino(Clausulas) :-
              (evita(X, Y) :- evita(X, Z), debe(Z, Y)) ],
            Clausulas).
 
-% --- Ejercicio 7 -----------------------------------------------------------
-
-%!  reducciones(-Clausulas:list) is det.
-%
-%   El ejemplo de negación estratificada de Warren, con sus doce hechos
-%   reduce/2.
-reducciones(Clausulas) :-
-    Pares = [a-b, b-c, c-d, d-e, e-c, a-f, f-g, g-f, g-k, f-h, h-i, i-h],
-    findall((reduce(X, Y) :- true), member(X-Y, Pares), Hechos),
-    append(Hechos,
-           [ (reachable(X, Y) :- reduce(X, Y)),
-             (reachable(X, Y) :- reachable(X, Z), reduce(Z, Y)),
-             (reducible(X) :- reachable(X, Y), \+ reachable(Y, X)),
-             (fully_reduce(X, Y) :- reachable(X, Y), \+ reducible(Y)) ],
-           Clausulas).
-
-% --- Ejercicio 8 -----------------------------------------------------------
+% --- Ejercicio 9 -----------------------------------------------------------
 
 %!  quitar_hechos(+Clausulas:list, +Hechos:list, -Modelo:list, -Costo)
 %!      is det.
@@ -230,7 +272,7 @@ volver_a_agregar(Clausulas, Hechos, Costo) :-
     iniciar(Quedan, Estado, _),
     agregar_hechos(Hechos, Estado, _, Costo).
 
-% --- Ejercicio 9 -----------------------------------------------------------
+% --- Ejercicio 10 ----------------------------------------------------------
 
 %!  segura_magica(+K, +Celda, -Respuestas:list, -Costo) is det.
 %
@@ -242,7 +284,7 @@ segura_magica(K, X-Y, Respuestas, Costo) :-
     programa_wumpus(K, Clausulas),
     respuestas_magicas(Clausulas, segura(N), Respuestas, Costo).
 
-% --- Ejercicio 10 ----------------------------------------------------------
+% --- Ejercicio 11 ----------------------------------------------------------
 
 %!  restar_con(+Sacar:list(integer), +N:integer, -Jugadas:list) is det.
 %
@@ -255,45 +297,3 @@ restar_con(Sacar, N, Jugadas) :-
               Y is X - M,
               Y >= 0 ),
             Jugadas).
-
-% --- Ejercicio 11 ----------------------------------------------------------
-
-%!  evaluar_ingenuo(+Clausulas:list, -Modelo:list, -Costo) is det.
-%
-%   El modelo de evaluar/3, con la evaluación ingenua en cada componente:
-%   cada paso aplica todas las reglas de la componente a la base entera,
-%   hasta que no aparece nada nuevo.
-evaluar_ingenuo(Clausulas, Modelo, Costo) :-
-    separar(Clausulas, Hechos, Reglas),
-    componentes(Clausulas, Componentes),
-    base(Hechos, Base0),
-    foldl(ingenua_componente(Reglas), Componentes,
-          Base0-costo(0, 0), Base-Costo),
-    atomos(Base, Modelo).
-
-%!  ingenua_componente(+Reglas:list, +Componente:list, +Estado0,
-%!                     -Estado) is det.
-%
-%   Estado0 es Base0-Costo0; Estado agrega lo que derivan las reglas de
-%   Componente, aplicadas a la base entera hasta el punto fijo.
-ingenua_componente(Reglas, Componente, Base0-costo(P0, D0), Base-Costo) :-
-    include(cabeza_en(Componente), Reglas, DeLaComponente),
-    findall(H, ( member(r(H, Ls), DeLaComponente), cumplir(Ls, Base0) ),
-            Hs),
-    length(Hs, D),
-    P is P0 + 1,
-    D1 is D0 + D,
-    agregar(Hs, Base0, Base1, Nuevos),
-    (   Nuevos == []
-    ->  Base = Base1,
-        Costo = costo(P, D1)
-    ;   ingenua_componente(Reglas, Componente, Base1-costo(P, D1),
-                           Base-Costo)
-    ).
-
-%!  cabeza_en(+Componente:list, +Regla) is semidet.
-%
-%   La cabeza de Regla es de un predicado de Componente.
-cabeza_en(Componente, r(H, _)) :-
-    functor(H, Nombre, Aridad),
-    memberchk(Nombre/Aridad, Componente).

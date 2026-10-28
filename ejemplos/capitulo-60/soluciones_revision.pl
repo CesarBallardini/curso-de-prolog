@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 60 - Soluciones de los ejercicios 5 y 10: un encabezado que
+% Capítulo 60 - Soluciones de los ejercicios 5 y 8: un encabezado que
 % describe otro predicado, y las consultas %?- de un ejemplo como puntos de
 % entrada.
 %
@@ -90,7 +90,7 @@ declarado(Comentario, Nombre/Aridad) :-
     functor(Cabeza2, Nombre, Aridad0),
     Aridad is Aridad0 + Mas.
 
-% Ejercicio 10: las consultas de un ejemplo como puntos de entrada.
+% Ejercicio 8: las consultas de un ejemplo como puntos de entrada.
 
 %!  raices_consultadas_de(+Leidos:list, -Raices:list) is det.
 %

@@ -1,8 +1,9 @@
 # Resolución SLD y SLDNF
 
-Esta página contiene las secciones [39.2](index.md#392-resolucion-sld) y
-[39.3](index.md#393-negacion-como-falla-la-complecion-de-clark-y-sldnf) del
-[capítulo 39](index.md): la resolución SLD enunciada con precisión, con un
+Esta página continúa el [capítulo 39](index.md) después de la
+[sección 39.1](index.md#391-modelos-y-consecuencia-logica), con las secciones
+[39.2](#392-resolucion-sld) y
+[39.3](#393-negacion-como-falla-la-complecion-de-clark-y-sldnf): la resolución SLD enunciada con precisión, con un
 paso de resolución y el árbol SLD escritos en Prolog, y la negación como
 falla, con la compleción de Clark y la resolución SLDNF. Los ejemplos están
 en `sld.pl`, en `ejemplos/capitulo-39/`, salvo el programa `circular` del
@@ -10,7 +11,7 @@ final, que está en `semantica.pl`; los dos corren en SWISH. Como en la
 [sección 39.1](index.md#391-modelos-y-consecuencia-logica), cada predicado tiene dos formas: la terminada en
 `_de` recibe la lista de cláusulas, y la otra, el nombre del programa.
 
-## Resolución SLD
+## 39.2 Resolución SLD
 
 La resolución del [capítulo 13](../capitulo-13-prolog-y-la-logica/inferencia.md#137-como-prueba-prolog) y el árbol del [capítulo 5](../capitulo-05-como-responde-prolog/index.md)
 se enuncian con precisión así. Una consulta es una lista de átomos,
@@ -209,7 +210,7 @@ puede calcular un término infinito que no corresponde a ninguna respuesta.
     izquierda sigue produciendo un árbol infinito aunque el destino esté
     ligado.
 
-## Negación como falla: la compleción de Clark y SLDNF
+## 39.3 Negación como falla: la compleción de Clark y SLDNF
 
 Un programa definido no tiene consecuencias negativas: la base de Herbrand
 entera es un modelo, y en ella todo es verdadero. Cuando `\+ A` tiene éxito,
@@ -471,3 +472,45 @@ contradictoria, pero tiene dos modelos, uno con p y otro con q, y no decide
 entre ellos. Las dos secciones siguientes dan dos respuestas a qué significan
 estos programas: la estratificación los excluye, y la semántica bien fundada
 les asigna un tercer valor.
+
+El capítulo continúa en la página
+[Estratificación, semántica bien fundada y evaluación de abajo hacia arriba](negacion.md#394-estratificacion),
+con esas dos respuestas, la evaluación de abajo hacia arriba y las reglas
+del sistema experto.
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio, y los capítulos siguientes los dan por hechos.
+
+3. **(1)** Escribir, como la tabla de la
+   [sección 13.7](../capitulo-13-prolog-y-la-logica/inferencia.md#la-refutacion-en-forma-clausal), los resolventes de la refutación de
+   `conexion(a, c)` con la regla de la izquierda, y comprobarlos con
+   `paso/4`.
+4. ★ **(2)** Predecir cuántas respuestas, nodos y ramas cortadas da
+   `arbol_sld/5` con la consulta `[abuelo(A, luis)]` y cada regla de
+   selección, y comprobarlo. ¿Cuál de las dos reglas conviene para esa
+   consulta, y qué orden de los objetivos de `abuelo/2` daría a Prolog el
+   mismo árbol?
+5. **(2)** Escribir `refutacion_de(Seleccion, Clausulas, Metas, Limite,
+   Resolventes)`: la lista de los resolventes de cada refutación de Metas de
+   largo Limite o menor, uno por paso, empezando por Metas; y
+   `refutacion/5`, que recibe el nombre del programa.
+6. **(1)** Escribir `mostrar_complecion(Programa)`, que escribe la
+   compleción de cada predicado de un programa de `sld.pl`, uno por línea.
+
+## Referencias
+
+- Ulf Nilsson y Jan Małuszyński, *Logic, Programming and Prolog*, 2.ª
+  edición, John Wiley & Sons, 1995 — capítulo «SLD-Resolution» (apartados
+  «Soundness of SLD-resolution» y «Completeness of SLD-resolution») y
+  capítulo «Negation in Logic Programming» (apartados «The Completed
+  Program» y «SLDNF-resolution for Definite Programs»).
+  [Edición en línea de los autores](https://www.ida.liu.se/~ulfni53/lpp/).
+  Esta página toma de allí los enunciados de los teoremas que cita sin
+  demostrar.
+- El artículo original que esta página nombra, citado a través del libro
+  anterior: Keith Clark, «Negation as failure», en *Logic and Data Bases*,
+  Plenum Press, 1978 (la compleción).

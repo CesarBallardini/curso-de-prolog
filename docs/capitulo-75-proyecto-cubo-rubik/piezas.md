@@ -1,16 +1,31 @@
 # Piezas y una ayuda para la búsqueda
 
-Esta página contiene la sección
-[75.9](index.md#759-version-8-piezas-y-una-ayuda-para-la-busqueda) del
-[capítulo 75](index.md): las dos partes del capítulo «Rubik's Cube» de
-Merritt que las versiones 1 a 7 no usan. La primera es su segunda
-representación del cubo, una lista de piezas, con la que su programa
-averigua dónde está una pieza. La segunda son sus heurísticas
-`shift_right`, que mueven una pieza a un lugar fijo antes de buscar. El
-ejemplo está en `piezas.pl`, en `ejemplos/capitulo-75/`, con sus pruebas;
-carga `etapas.pl` y se ejecuta localmente.
+Esta página continúa el [capítulo 75](index.md) después de la
+[sección 75.8](espacio.md#758-version-7-soluciones-mas-cortas), con la
+[sección 75.9](#759-version-8-piezas-y-una-ayuda-para-la-busqueda), que
+lo termina: las dos partes del capítulo «Rubik's Cube» de Merritt que las
+versiones 1 a 7 no usan. La primera es su segunda representación del
+cubo, una lista de piezas, con la que su programa averigua dónde está una
+pieza. La segunda son sus heurísticas `shift_right`, que mueven una pieza
+a un lugar fijo antes de buscar. El ejemplo está en `piezas.pl`, en
+`ejemplos/capitulo-75/`, con sus pruebas; carga `etapas.pl` y se ejecuta
+localmente.
 
-## El cubo como lista de piezas
+## 75.9 Versión 8: piezas y una ayuda para la búsqueda
+
+El programa de Merritt usa una segunda representación del cubo, una
+lista de piezas, y pasa de una a otra con un solo hecho cuyos dos
+argumentos comparten las variables, como los giros ([Patrón 75](../patrones.md#75-dos-representaciones-unidas-por-un-hecho-que-comparte-las-variables)). La octava versión
+genera ese hecho al cargar y escribe con él la búsqueda de Merritt de una
+pieza: recorre a la vez la lista del cubo resuelto y la del cubo dado, y
+responde dónde está la pieza y si está girada. Con esa información
+escribe también la ayuda de las heurísticas `shift_right` de Merritt, que
+sacan de la capa de abajo la pieza que está allí fuera de su lugar antes
+de buscar, y la mide: con los candidatos de este capítulo, la ayuda
+alarga las soluciones y aumenta las inferencias, porque la búsqueda ya
+encuentra esos movimientos cuando le sirven.
+
+### El cubo como lista de piezas
 
 Merritt observa que el cubo admite dos representaciones: 54 casillas, o
 20 cubitos con dos o tres casillas cada uno. El término de 54 casillas
@@ -111,7 +126,7 @@ casilla está en exactamente una pieza.
     una lista de largo variable u ordenada por valor: un hecho solo
     relaciona términos de forma fija.
 
-## Dónde está una pieza
+### Dónde está una pieza
 
 Para encontrar una pieza, Merritt recorre a la vez dos listas: la del
 cubo resuelto, que dice qué pieza va en cada lugar, y la del cubo dado,
@@ -236,13 +251,13 @@ izquierdo, y la secuencia R U R' U', repetida dos veces, la devuelve a
 su lugar, girada.
 
 El resolvedor de la
-[sección 75.7](index.md#757-version-6-la-solucion-por-etapas) no
+[sección 75.7](espacio.md#757-version-6-la-solucion-por-etapas) no
 necesita `donde/4`: no pregunta dónde está la pieza, sino si el cubo
 unifica con el criterio, y esa prueba es una sola unificación. Merritt
 hace la misma elección en su búsqueda, y reserva la lista de piezas para
 el análisis previo a cada búsqueda, que es lo que usa la ayuda siguiente.
 
-## Una ayuda para la búsqueda
+### Una ayuda para la búsqueda
 
 Merritt cuenta que su programa, con solo la búsqueda, «casi funciona»:
 cuando la pieza que hay que colocar ya está en una de las posiciones de
@@ -376,5 +391,82 @@ de abajo, y la subida de la etapa 2, R U R', es ella misma una de las
 candidatas: la búsqueda ya encuentra esas soluciones cuando le sirven, y
 aplicarlas siempre solo agrega giros. Merritt advierte lo mismo: una
 heurística cuesta tiempo, y solo conviene cuando la búsqueda sin ella
-es lenta. El [ejercicio 13](index.md#ejercicios) mide la ayuda etapa
+es lenta. El [ejercicio 13](#ejercicios) mide la ayuda etapa
 por etapa.
+
+!!! success "Criterios de calidad"
+    | Criterio | En este capítulo |
+    |---|---|
+    | C1 | cada regla declara modos y determinación; `mover/3` declara los dos cubos con `?`, porque funciona con cualquiera de ellos instanciado |
+    | C2 | representaciones limpias: el cubo es un término de tamaño fijo, un movimiento es una cara o `-Cara`, una macro es un par `Antes-Despues` |
+    | C3 | un giro es una relación: el mismo hecho da el giro y su inverso, y `leer_notacion/2` y `escribir_notacion/2` son lecturas inversas probadas una contra la otra |
+    | C4 | `simplificar/2` despliega cada grupo con `giros_de/4`, indexado por su primer argumento, y las pruebas no encuentran alternativas pendientes |
+    | C6 | `red/2` arma el texto y solo `mostrar/1` y `sesion/2` escriben |
+    | C7 | 111 pruebas en nueve archivos; las mezclas salen de una semilla, así que cada medición del capítulo se repite igual en cualquier instalación |
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio. Los ejercicios que piden código se resuelven en archivos
+que cargan los del capítulo, sin modificarlos.
+
+12. ★ **(1)** Predecir, con `piezas.pl` cargado, qué responden
+    `donde_tras([f], 'DF', L, E)`, `donde_tras([d], 'DF', L, E)`,
+    `donde_tras([f, f, d, d, -f, -f], 'DF', L, E)` y
+    `pieza_tras([u], 'UF', P)`, y comprobarlo.
+13. **(2)** Escribir `por_etapa(Metodo, Semillas, Pares)`, los cuartos de
+    vuelta que usa cada etapa de `resolver/2` o de
+    `resolver_con_ayuda/2`, sumados sobre las mezclas de 25 giros de las
+    semillas 1 a Semillas. Compararlos con 50 semillas y explicar por qué
+    la ayuda cambia también las etapas en las que no actúa.
+
+## Resumen
+
+| | |
+|---|---|
+| **giro como unificación** | un hecho con el cubo antes y después, dos términos con las mismas variables; el mismo hecho, leído en sentido inverso, es el giro inverso |
+| **hechos generados por geometría** | los giros no se escriben: se calculan al cargar, rotando las coordenadas de cada casilla |
+| **macro compilada** | una secuencia aplicada a un cubo de variables libres da un par con la misma forma que un giro; aplicarla cuesta una unificación |
+| **efecto de una macro** | las piezas cuyas casillas reciben otra variable, comparadas con `==/2` sin aplicar la macro a ningún cubo |
+| **conmutador** | A B A' B': mueve solo lo que A y B mueven en común y lo que eso arrastra |
+| **criterio** | un cubo con las casillas colocadas ligadas y las demás libres; la meta de una pieza es unificar con él |
+| **orientaciones de una familia** | la misma secuencia con las caras laterales cambiadas: el cubo girado sobre su eje vertical |
+| `resuelto/1`, `giro/3`, `aplicar/3`, `inversa/2`, `orden/2` | el cubo y sus giros |
+| `red/2`, `leer_notacion/2`, `escribir_notacion/2`, `mezcla/3` | la vista, la notación y las mezclas |
+| `en_anchura/3`, `profundizando/2`, `colocar_pieza/4`, `capas/2`, `estados/1` | el cubo como espacio de estados |
+| `compilar/2`, `efecto/2`, `pieza/3`, `conmutador/3`, `conjugado/3`, `descubrir/3` | las macros |
+| **[Patrón 74](../patrones.md#74-transformacion-como-par-de-terminos)** | transformación como par de términos |
+| **[Patrón 75](../patrones.md#75-dos-representaciones-unidas-por-un-hecho-que-comparte-las-variables)** | dos representaciones unidas por un hecho que comparte las variables |
+| `criterio/2`, `candidato/4`, `orientar/3`, `resolver/2` | la solución por etapas |
+| `resolver_cercana/2`, `sesion/2` | las mejoras y el programa terminado |
+| **dos representaciones** | el término de casillas para girar y la lista de piezas para buscar una pieza, unidas por un hecho que comparte las variables |
+| `piezas/2`, `donde/4`, `en_lugar/3`, `ayuda/5`, `resolver_con_ayuda/2`, `comparar_ayuda/3` | la versión 8 |
+| `nextto/3` | dos elementos consecutivos de una lista; en las pruebas |
+
+## Temas que se retoman
+
+| Tema | Se retoma en |
+|---|---|
+| Las simetrías de un rompecabezas para no explorar dos veces el mismo estado | [capítulo 76](../capitulo-76-proyecto-rompecabezas-simetrias/index.md) |
+
+## Referencias
+
+- Dennis Merritt, *Building Expert Systems in Prolog*, Springer-Verlag,
+  1989 — capítulo «Rubik's Cube» (las secciones sobre el cubo, la rotación,
+  las reglas de alto nivel, la búsqueda y las heurísticas) y el apéndice
+  con el código del programa.
+  [Edición en línea](https://www.amzi.com/ExpertSystemsInProlog/), de
+  Amzi!. Esta página toma de allí las ideas y no el código: la lista de piezas
+  como segunda representación, la búsqueda de una pieza recorriendo dos
+  listas a la vez, y las heurísticas que mueven la pieza antes de buscar.
+- David Singmaster, *Notes on Rubik's «Magic Cube»*, Enslow, 1981. Sin
+  edición en línea de acceso libre verificada. Esta página toma la
+  notación de las piezas.
+
+El código del capítulo es propio, escrito para el curso: los giros
+calculados por geometría, las macros compiladas al cargar, la lectura de
+su efecto, la búsqueda de conmutadores, las cinco etapas por capas con
+sus familias de candidatos, la ayuda limitada a la capa de abajo y las
+mediciones no provienen de esas fuentes.

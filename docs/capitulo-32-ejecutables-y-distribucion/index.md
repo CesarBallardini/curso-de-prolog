@@ -30,7 +30,7 @@ Al terminar el capítulo, el lector puede:
 !!! info "Tiempo estimado"
     Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **4:20 h**.
     Resolver los 6 ejercicios marcados con ★: **1:53 h**.
-    Resolver los 12 ejercicios del final: **3:22 h**.
+    Resolver los 12 ejercicios del capítulo: **3:22 h**.
 
 ## 32.1 Qué es un programa guardado
 

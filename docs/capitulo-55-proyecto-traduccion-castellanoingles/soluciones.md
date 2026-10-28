@@ -282,7 +282,7 @@ dos formas son válidas, y la de dos líneas deja la condición en los modos.
 fijo, `phrase(oracion_es(A), Es)` genera solo oraciones de ese largo, y la
 lista de adjetivos no puede crecer sin límite: cada largo tiene una
 cantidad finita de oraciones, y el recorrido llega a todas. Es la
-profundización iterativa de la [sección 41.4](../capitulo-41-busqueda-y-planificacion/index.md#414-profundidad-limitada-y-profundizacion-iterativa), con el largo de la
+profundización iterativa de la [sección 41.4](../capitulo-41-busqueda-y-planificacion/heuristicas.md#414-profundidad-limitada-y-profundizacion-iterativa), con el largo de la
 oración como profundidad:
 
 <!-- ejemplo: capitulo-55/soluciones.pl predicado: al_castellano_por_largo/2 -->

@@ -1,10 +1,10 @@
 # Soluciones del capítulo 40 — Tabulación
 
 El código de esta página está en `ejemplos/capitulo-40/`: `soluciones.pl`
-para los ejercicios 2, 4, 5, 6, 7, 8, 9 y 10, que repite los datos que usa y
+para los ejercicios 3, 4, 5, 6, 7, 8, 9 y 11, que repite los datos que usa y
 corre en SWISH; `soluciones_inscripciones.pl` para el 14, un módulo que usa
 los del [capítulo 32](../capitulo-32-ejecutables-y-distribucion/index.md); y `soluciones_experto.pl` para el 15, que carga
-`experto.pl`. Cada uno tiene sus pruebas. Los ejercicios 1, 3, 11, 12 y 13
+`experto.pl`. Cada uno tiene sus pruebas. Los ejercicios 1, 2, 10, 12 y 13
 se resuelven con los archivos del capítulo. Como en el capítulo, las
 respuestas de una tabla no tienen un orden fijo, y las pruebas las comparan
 ordenadas.
@@ -56,46 +56,6 @@ ERROR: Stack limit (1.0Gb) exceeded
 
 ## 2
 
-<!-- ejemplo: capitulo-40/soluciones.pl fragmento: :- table camino_der/2. .. camino_der(Z, Y). -->
-```prolog
-:- table camino_der/2.
-
-%!  camino_der(?X, ?Y) is nondet.
-%
-%   Hay un camino de X a Y, con la recursión a la derecha y tabulado.
-camino_der(X, Y) :-
-    arco(X, Y).
-camino_der(X, Y) :-
-    arco(X, Z),
-    camino_der(Z, Y).
-```
-
-<!-- ejemplo: capitulo-40/soluciones.pl predicado: tablas/1 -->
-```prolog
-%!  tablas(-N:integer) is det.
-%
-%   N es la cantidad de tablas que existen en este momento.
-tablas(N) :-
-    aggregate_all(count, current_table(_, _), N).
-```
-
-```prolog
-?- findall(Y, camino_der(a, Y), Ys), msort(Ys, Ordenadas), tablas(T).
-Ys = [b, a, d, c],
-Ordenadas = [a, b, c, d],
-T = 4.
-```
-
-Las respuestas ordenadas son las mismas que las de `camino/2`. La
-recursión a la derecha llama a `camino_der(b, Y)`, `camino_der(c, Y)` y
-`camino_der(d, Y)`, cada una con su tabla, y cuando el ciclo vuelve a
-`camino_der(a, Y)` encuentra la variante en curso y consume su tabla: cuatro
-tablas, una por nodo alcanzado. `camino(a, Y)`, con la recursión a la
-izquierda, llama siempre a `camino(a, Z)`, una variante de sí misma, y deja
-una sola tabla.
-
-## 3
-
 El intérprete `resolver_sin_ciclos/1` del [capítulo 34](../capitulo-34-introspeccion-y-metainterpretes/index.md) lleva los
 objetivos antepasados de la rama y, cuando encuentra una variante de uno de
 ellos, **abandona** la rama. Para `antepasado_izq(A, eva)`, la segunda
@@ -114,7 +74,7 @@ que la tabla crece. Lo que se evita es solo la repetición de la misma
 llamada, y como la tabla tiene finitas respuestas posibles, la ejecución
 termina con todas.
 
-## 4
+## 3
 
 <!-- ejemplo: capitulo-40/soluciones.pl fragmento: :- table suma_hasta/2. .. S is S1 + N. -->
 ```prolog
@@ -142,7 +102,7 @@ Hay una tabla por cada llamada, `suma_hasta(100, S)`, `suma_hasta(99, S1)`,
 que guardaba `suma_guardada/2`, más la suma de 1, y sin el predicado que la
 borra.
 
-## 5
+## 4
 
 <!-- ejemplo: capitulo-40/soluciones.pl fragmento: :- table formas/3. .. N is N1 + N2 -->
 ```prolog
@@ -196,7 +156,7 @@ con la cantidad de formas; con ella, con la cantidad de pares distintos de
 monto y lista de monedas, que es a lo sumo el monto por la cantidad de
 valores.
 
-## 6
+## 5
 
 Desde b solo sale el tramo a d, de 5; de d se va a a con 3, en total 8; de a
 a c con 1, en total 9; y a b se vuelve por a y c, 8 + 1 + 2 = 11, o por a
@@ -257,7 +217,7 @@ llamadas consumidoras, que dan otra vuelta, y la tabla no se completa nunca:
 en un grafo con un ciclo de longitud positiva, el recorrido más largo no
 existe.
 
-## 7
+## 6
 
 <!-- ejemplo: capitulo-40/soluciones.pl fragmento: :- table saltos(_, _, min). .. N is N0 + 1. -->
 ```prolog
@@ -284,7 +244,7 @@ D = 3.
 De a a b hay un recorrido de un tramo, de longitud 4, y el más corto, por c,
 tiene dos tramos y mide 3: el recorrido de menos tramos no es el más corto.
 
-## 8
+## 7
 
 <!-- ejemplo: capitulo-40/soluciones.pl predicado: dag/3 -->
 ```prolog
@@ -334,10 +294,10 @@ R = 9-[s, b, a, t].
 ```
 
 En el grafo de `tramo/3` no terminaría por la misma razón que el máximo del
-[ejercicio 6](#6): cada vuelta al ciclo da un recorrido más largo, que el
+[ejercicio 5](#5): cada vuelta al ciclo da un recorrido más largo, que el
 reticulado acepta como mejor, y la tabla no se completa.
 
-## 9
+## 8
 
 <!-- ejemplo: capitulo-40/soluciones.pl predicado: mueve/3 -->
 ```prolog
@@ -394,7 +354,7 @@ salida a e decide a, y con a decidida se decide b.
 Vs = [a-verdadero, b-falso, c-verdadero, d-falso, e-falso].
 ```
 
-## 10
+## 9
 
 <!-- ejemplo: capitulo-40/soluciones.pl predicado: p/0 q/0 r/0 r_prolog/0 -->
 ```prolog
@@ -440,7 +400,7 @@ llama a sí mismo dentro de la negación sin fin:
 ERROR: Stack limit (1.0Gb) exceeded
 ```
 
-## 11
+## 10
 
 Con `juego.pl` cargado:
 
@@ -482,6 +442,46 @@ con variables, `call_delays/2` daría una condición por cada instancia, y
 reunirlas con `findall/3` mezclaría los valores de átomos distintos. La
 tercera consulta muestra que `tnot/1` con variables no da un error: falla
 porque alguna posición gana, como fallaría `\+`, sin decir cuál.
+
+## 11
+
+<!-- ejemplo: capitulo-40/soluciones.pl fragmento: :- table camino_der/2. .. camino_der(Z, Y). -->
+```prolog
+:- table camino_der/2.
+
+%!  camino_der(?X, ?Y) is nondet.
+%
+%   Hay un camino de X a Y, con la recursión a la derecha y tabulado.
+camino_der(X, Y) :-
+    arco(X, Y).
+camino_der(X, Y) :-
+    arco(X, Z),
+    camino_der(Z, Y).
+```
+
+<!-- ejemplo: capitulo-40/soluciones.pl predicado: tablas/1 -->
+```prolog
+%!  tablas(-N:integer) is det.
+%
+%   N es la cantidad de tablas que existen en este momento.
+tablas(N) :-
+    aggregate_all(count, current_table(_, _), N).
+```
+
+```prolog
+?- findall(Y, camino_der(a, Y), Ys), msort(Ys, Ordenadas), tablas(T).
+Ys = [b, a, d, c],
+Ordenadas = [a, b, c, d],
+T = 4.
+```
+
+Las respuestas ordenadas son las mismas que las de `camino/2`. La
+recursión a la derecha llama a `camino_der(b, Y)`, `camino_der(c, Y)` y
+`camino_der(d, Y)`, cada una con su tabla, y cuando el ciclo vuelve a
+`camino_der(a, Y)` encuentra la variante en curso y consume su tabla: cuatro
+tablas, una por nodo alcanzado. `camino(a, Y)`, con la recursión a la
+izquierda, llama siempre a `camino(a, Z)`, una variante de sí misma, y deja
+una sola tabla.
 
 ## 12
 

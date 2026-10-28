@@ -397,7 +397,7 @@ o temprano la llamada es una variante de una anterior, y la tabla responde
 con las respuestas ya encontradas en lugar de volver a entrar. Lo que la
 tabla calcula es el **menor punto fijo** de los estados alcanzables, el
 mismo concepto que la evaluación de abajo hacia arriba de la
-[sección 39.6](../capitulo-39-semantica-de-los-programas-logicos/index.md#396-evaluacion-de-abajo-hacia-arriba).
+[sección 39.6](../capitulo-39-semantica-de-los-programas-logicos/negacion.md#396-evaluacion-de-abajo-hacia-arriba).
 `finales_signos/3` parte de cada estado inicial, una combinación de signos
 de las entradas, y reúne los estados finales:
 
@@ -463,7 +463,7 @@ K = 9 agota el espacio de tablas, 1 GB por omisión (la opción
 `table_space`), y termina con un error de recursos. Y con un dominio
 infinito, como los intervalos, la tabla no se completaría:
 cada vuelta de `i := i + 1` da un estado nuevo, como las longitudes de los
-recorridos de la [sección 40.3](../capitulo-40-tabulacion/index.md#403-subsuncion-de-respuestas).
+recorridos de la [sección 40.3](../capitulo-40-tabulacion/subsuncion.md#403-subsuncion-de-respuestas).
 
 ## 59.5 Un estado por punto: la unión con `lattice`
 
@@ -544,7 +544,7 @@ cabeza(mientras(C, Cuerpo), E0, I) :-
            _).
 ```
 
-Es la forma de `ruta/3` en la [sección 40.3](../capitulo-40-tabulacion/index.md#403-subsuncion-de-respuestas):
+Es la forma de `ruta/3` en la [sección 40.3](../capitulo-40-tabulacion/subsuncion.md#403-subsuncion-de-respuestas):
 la primera cláusula da el estado de entrada, y la segunda extiende una
 respuesta de la tabla con una vuelta más. Con el invariante calculado,
 `abs_sentencia//4` recorre el cuerpo una sola vez más, desde el estado

@@ -4,13 +4,74 @@ El código de esta página está en `ejemplos/capitulo-41/`: `soluciones.pl`
 para los ejercicios 3, 4, 5, 7 y 8, que repite el bucle con visitados y el
 problema de las jarras y corre en SWISH; `soluciones_strips.pl` para el 10,
 que también corre en SWISH; y cuatro archivos que cargan uno del capítulo y
-por eso no corren en SWISH: `soluciones_puzzle.pl` (ejercicios 5 y 9, sobre
-`puzzle8.pl`), `soluciones_agenda.pl` (6, sobre `agenda_dinamica.pl`),
+por eso no corren en SWISH: `soluciones_puzzle.pl` (ejercicios 7 y 9, sobre
+`puzzle8.pl`), `soluciones_agenda.pl` (1, sobre `agenda_dinamica.pl`),
 `soluciones_torre.pl` (11, sobre `strips.pl`) y `soluciones_buscaminas.pl`
 (13 y 14, sobre `buscaminas.pl`). Cada uno tiene sus pruebas. Los
-ejercicios 1, 2 y 12 se resuelven con los archivos del capítulo.
+ejercicios 2, 6 y 12 se resuelven con los archivos del capítulo.
 
 ## 1
+
+<!-- ejemplo: capitulo-41/soluciones_agenda.pl predicado: buscar_limpio/2 inicial/2 meta/2 sucesor/5 consulta: buscar_limpio(jarras(4, 3, 2), _), buscar_limpio(jarras(4, 3, 1), P). -->
+```prolog
+%!  buscar_limpio(+Problema, -Plan:list) is semidet.
+%
+%   Como buscar_con_agenda/2, con la agenda vacía al empezar y al terminar.
+buscar_limpio(Problema, Plan) :-
+    setup_call_cleanup(limpiar_agenda,
+                       buscar_con_agenda(Problema, Plan),
+                       limpiar_agenda).
+
+%!  inicial(+Problema, -Estado) is det.
+%
+%   Estado es el estado de partida de Problema. desde(E, J) es el problema
+%   J con E como estado inicial.
+inicial(desde(Estado, _), Estado).
+% prudente(J): el problema J, sin los estados desde los que no hay plan.
+inicial(prudente(J), Estado) :-
+    inicial(J, Estado).
+
+%!  meta(+Problema, +Estado) is semidet.
+%
+%   Estado es un estado buscado de Problema: en desde(E, J), uno de J.
+meta(desde(_, J), Estado) :-
+    meta(J, Estado).
+meta(prudente(J), Estado) :-
+    meta(J, Estado).
+
+%!  sucesor(+Problema, +Estado, -Accion, -Siguiente, -Costo) is nondet.
+%
+%   Accion lleva de Estado a Siguiente con Costo: en desde(E, J), como en J.
+sucesor(desde(_, J), Estado, Accion, Siguiente, Costo) :-
+    sucesor(J, Estado, Accion, Siguiente, Costo).
+sucesor(prudente(J), Estado, Accion, Siguiente, Costo) :-
+    sucesor(J, Estado, Accion, Siguiente, Costo),
+    buscar_limpio(desde(Siguiente, J), _).
+```
+
+`setup_call_cleanup/3` borra la agenda antes de la búsqueda y después,
+cuando la búsqueda termina, falla o lanza una excepción. Las pruebas de
+`agenda_dinamica.plt` que mostraban la segunda búsqueda equivocada tienen
+su versión correcta en `soluciones_agenda.plt`:
+
+```prolog
+?- buscar_limpio(jarras(4, 3, 2), _), buscar_limpio(jarras(4, 3, 1), P).
+P = [llenar(1), pasar(1, 2)].
+
+?- call_with_inference_limit(buscar_limpio(prudente(jarras(4, 3, 2)), P), 1000000, R).
+R = inference_limit_exceeded.
+```
+
+La segunda consulta sigue respondiendo mal. `prudente(J)` es el problema J
+sin los estados desde los que no se llega a una meta, y para saberlo
+`sucesor/5` hace otra búsqueda, desde el estado nuevo. Esa búsqueda de
+adentro borra, al empezar y al terminar, la agenda y los visitados de la
+de afuera, que pierde sus nodos pendientes y vuelve a visitar estados sin
+fin. El estado global no se arregla con disciplina en los bordes: dos
+búsquedas que comparten una base de datos se estorban, y la única
+corrección es que la agenda sea un argumento, como en `visitados.pl`.
+
+## 2
 
 Con `visitados.pl` cargado:
 
@@ -51,31 +112,6 @@ expande sin hijos nuevos antes de que se extraiga `j(1, 3)`. La tercera falla: c
 todas las cantidades que se pueden medir son múltiplos de 2, el máximo común
 divisor de las capacidades; con visitados, la búsqueda recorre los estados
 alcanzables y la frontera se vacía.
-
-## 2
-
-```prolog
-?- buscar(anchura, jarras(5, 3, 4), P, C, K).
-P = [llenar(1), pasar(1, 2), vaciar(2), pasar(1, 2), llenar(1), pasar(1, 2)],
-C = 19,
-K = 12.
-
-?- buscar(profundidad, jarras(5, 3, 4), P, C, K).
-P = [llenar(1), pasar(1, 2), vaciar(2), pasar(1, 2), llenar(1), pasar(1, 2)],
-C = 19,
-K = 7.
-
-?- buscar(mejor(costo), jarras(5, 3, 4), P, C, K).
-P = [llenar(1), pasar(1, 2), vaciar(2), pasar(1, 2), llenar(1), pasar(1, 2)],
-C = 19,
-K = 13.
-```
-
-Las tres estrategias dan el mismo plan, y `iterativo/2` de
-`profundizacion.pl` también: el plan más corto es también el que mueve
-menos agua, y la búsqueda en profundidad lo encuentra primero porque la
-primera acción que prueba, `llenar(1)`, es la buena. Lo que cambia es el
-trabajo: 7, 12 y 13 nodos expandidos.
 
 ## 3
 
@@ -178,6 +214,78 @@ Once cruces: la búsqueda en anchura asegura que no hay un plan más corto.
 
 ## 5
 
+<!-- ejemplo: capitulo-41/soluciones.pl predicado: recorrido_caballo/2 saltar/3 salto/2 consulta: recorrido_caballo(5, R). -->
+```prolog
+%!  recorrido_caballo(+N:integer, -Recorrido:list) is nondet.
+%
+%   Recorrido es un recorrido del caballo por un tablero de N x N que
+%   empieza en 1-1 y pasa una vez por cada casilla.
+recorrido_caballo(N, [1-1|Recorrido]) :-
+    findall(F-C, ( between(1, N, F), between(1, N, C) ), Casillas),
+    selectchk(1-1, Casillas, Libres),
+    saltar(1-1, Libres, Recorrido).
+
+%!  saltar(+Casilla, +Libres:list, -Recorrido:list) is nondet.
+%
+%   Recorrido pasa una vez por cada casilla de Libres, empezando con un
+%   salto desde Casilla.
+saltar(_, [], []).
+saltar(Casilla, Libres, [Siguiente|Recorrido]) :-
+    salto(Casilla, Siguiente),
+    select(Siguiente, Libres, Libres1),
+    saltar(Siguiente, Libres1, Recorrido).
+
+%!  salto(+Casilla, -Destino) is nondet.
+%
+%   Destino está a un salto de caballo de Casilla, dentro o fuera del
+%   tablero; select/3 descarta las que no están libres.
+salto(F-C, F1-C1) :-
+    member(DF-DC, [1-2, 2-1, 2-(-1), 1-(-2), -1-(-2), -2-(-1), -2-1, -1-2]),
+    F1 is F + DF,
+    C1 is C + DC.
+```
+
+```prolog
+?- once(recorrido_caballo(5, R)).
+R = [1-1, 2-3, 3-5, 5-4, 4-2, 2-1, 3-3, 1-4, 2-2, 4-1, 5-3, 4-5, 2-4, 1-2, 3-1, 5-2, 4-4, 2-5, 1-3, 3-2, 5-1, 4-3, 5-5, 3-4, 1-5].
+```
+
+`salto/2` genera los ocho destinos sin examinar el tablero, y
+`select(Siguiente, Libres, Libres1)`, con `Siguiente` ya ligado, hace las
+dos pruebas a la vez: que la casilla esté en el tablero y que no se haya
+visitado. La lista `Libres` se reduce en cada salto, y la recursión
+termina cuando se vacía. En un tablero de 4 × 4 no hay recorrido: la
+búsqueda termina y falla. La casilla de partida se quita con `selectchk/3`,
+la versión determinista de `select/3`: quita la primera aparición del
+elemento y no deja alternativas.
+
+## 6
+
+```prolog
+?- buscar(anchura, jarras(5, 3, 4), P, C, K).
+P = [llenar(1), pasar(1, 2), vaciar(2), pasar(1, 2), llenar(1), pasar(1, 2)],
+C = 19,
+K = 12.
+
+?- buscar(profundidad, jarras(5, 3, 4), P, C, K).
+P = [llenar(1), pasar(1, 2), vaciar(2), pasar(1, 2), llenar(1), pasar(1, 2)],
+C = 19,
+K = 7.
+
+?- buscar(mejor(costo), jarras(5, 3, 4), P, C, K).
+P = [llenar(1), pasar(1, 2), vaciar(2), pasar(1, 2), llenar(1), pasar(1, 2)],
+C = 19,
+K = 13.
+```
+
+Las tres estrategias dan el mismo plan, y `iterativo/2` de
+`profundizacion.pl` también: el plan más corto es también el que mueve
+menos agua, y la búsqueda en profundidad lo encuentra primero porque la
+primera acción que prueba, `llenar(1)`, es la buena. Lo que cambia es el
+trabajo: 7, 12 y 13 nodos expandidos.
+
+## 7
+
 `soluciones.pl` agrega las tres cláusulas al bucle de las jarras, y
 `soluciones_puzzle.pl` las mismas al de `puzzle8.pl`:
 
@@ -224,114 +332,6 @@ cola guarda un nivel entero del árbol, miles de nodos, y cada una de las
 más tiempo. Es la medición de la
 [sección 35.6](../capitulo-35-estructuras-incompletas-y-listas-diferencia/index.md#356-cuanto-se-gana), y la razón para usar la cola
 diferencia aunque en un problema chico no se note.
-
-## 6
-
-<!-- ejemplo: capitulo-41/soluciones_agenda.pl predicado: buscar_limpio/2 inicial/2 meta/2 sucesor/5 consulta: buscar_limpio(jarras(4, 3, 2), _), buscar_limpio(jarras(4, 3, 1), P). -->
-```prolog
-%!  buscar_limpio(+Problema, -Plan:list) is semidet.
-%
-%   Como buscar_con_agenda/2, con la agenda vacía al empezar y al terminar.
-buscar_limpio(Problema, Plan) :-
-    setup_call_cleanup(limpiar_agenda,
-                       buscar_con_agenda(Problema, Plan),
-                       limpiar_agenda).
-
-%!  inicial(+Problema, -Estado) is det.
-%
-%   Estado es el estado de partida de Problema. desde(E, J) es el problema
-%   J con E como estado inicial.
-inicial(desde(Estado, _), Estado).
-% prudente(J): el problema J, sin los estados desde los que no hay plan.
-inicial(prudente(J), Estado) :-
-    inicial(J, Estado).
-
-%!  meta(+Problema, +Estado) is semidet.
-%
-%   Estado es un estado buscado de Problema: en desde(E, J), uno de J.
-meta(desde(_, J), Estado) :-
-    meta(J, Estado).
-meta(prudente(J), Estado) :-
-    meta(J, Estado).
-
-%!  sucesor(+Problema, +Estado, -Accion, -Siguiente, -Costo) is nondet.
-%
-%   Accion lleva de Estado a Siguiente con Costo: en desde(E, J), como en J.
-sucesor(desde(_, J), Estado, Accion, Siguiente, Costo) :-
-    sucesor(J, Estado, Accion, Siguiente, Costo).
-sucesor(prudente(J), Estado, Accion, Siguiente, Costo) :-
-    sucesor(J, Estado, Accion, Siguiente, Costo),
-    buscar_limpio(desde(Siguiente, J), _).
-```
-
-`setup_call_cleanup/3` borra la agenda antes de la búsqueda y después,
-cuando la búsqueda termina, falla o lanza una excepción. Las pruebas de
-`agenda_dinamica.plt` que mostraban la segunda búsqueda equivocada tienen
-su versión correcta en `soluciones_agenda.plt`:
-
-```prolog
-?- buscar_limpio(jarras(4, 3, 2), _), buscar_limpio(jarras(4, 3, 1), P).
-P = [llenar(1), pasar(1, 2)].
-
-?- call_with_inference_limit(buscar_limpio(prudente(jarras(4, 3, 2)), P), 1000000, R).
-R = inference_limit_exceeded.
-```
-
-La segunda consulta sigue respondiendo mal. `prudente(J)` es el problema J
-sin los estados desde los que no se llega a una meta, y para saberlo
-`sucesor/5` hace otra búsqueda, desde el estado nuevo. Esa búsqueda de
-adentro borra, al empezar y al terminar, la agenda y los visitados de la
-de afuera, que pierde sus nodos pendientes y vuelve a visitar estados sin
-fin. El estado global no se arregla con disciplina en los bordes: dos
-búsquedas que comparten una base de datos se estorban, y la única
-corrección es que la agenda sea un argumento, como en `visitados.pl`.
-
-## 7
-
-<!-- ejemplo: capitulo-41/soluciones.pl predicado: recorrido_caballo/2 saltar/3 salto/2 consulta: recorrido_caballo(5, R). -->
-```prolog
-%!  recorrido_caballo(+N:integer, -Recorrido:list) is nondet.
-%
-%   Recorrido es un recorrido del caballo por un tablero de N x N que
-%   empieza en 1-1 y pasa una vez por cada casilla.
-recorrido_caballo(N, [1-1|Recorrido]) :-
-    findall(F-C, ( between(1, N, F), between(1, N, C) ), Casillas),
-    selectchk(1-1, Casillas, Libres),
-    saltar(1-1, Libres, Recorrido).
-
-%!  saltar(+Casilla, +Libres:list, -Recorrido:list) is nondet.
-%
-%   Recorrido pasa una vez por cada casilla de Libres, empezando con un
-%   salto desde Casilla.
-saltar(_, [], []).
-saltar(Casilla, Libres, [Siguiente|Recorrido]) :-
-    salto(Casilla, Siguiente),
-    select(Siguiente, Libres, Libres1),
-    saltar(Siguiente, Libres1, Recorrido).
-
-%!  salto(+Casilla, -Destino) is nondet.
-%
-%   Destino está a un salto de caballo de Casilla, dentro o fuera del
-%   tablero; select/3 descarta las que no están libres.
-salto(F-C, F1-C1) :-
-    member(DF-DC, [1-2, 2-1, 2-(-1), 1-(-2), -1-(-2), -2-(-1), -2-1, -1-2]),
-    F1 is F + DF,
-    C1 is C + DC.
-```
-
-```prolog
-?- once(recorrido_caballo(5, R)).
-R = [1-1, 2-3, 3-5, 5-4, 4-2, 2-1, 3-3, 1-4, 2-2, 4-1, 5-3, 4-5, 2-4, 1-2, 3-1, 5-2, 4-4, 2-5, 1-3, 3-2, 5-1, 4-3, 5-5, 3-4, 1-5].
-```
-
-`salto/2` genera los ocho destinos sin examinar el tablero, y
-`select(Siguiente, Libres, Libres1)`, con `Siguiente` ya ligado, hace las
-dos pruebas a la vez: que la casilla esté en el tablero y que no se haya
-visitado. La lista `Libres` se reduce en cada salto, y la recursión
-termina cuando se vacía. En un tablero de 4 × 4 no hay recorrido: la
-búsqueda termina y falla. La casilla de partida se quita con `selectchk/3`,
-la versión determinista de `select/3`: quita la primera aparición del
-elemento y no deja alternativas.
 
 ## 8
 
@@ -459,7 +459,7 @@ planificador no agrega antes `mover(c, a, mesa)`, que no logra ninguna
 precondición pendiente; y si empieza por `sobre(a, b)`, después tiene
 que volver a mover a para poner b sobre c. Con la pinza, el mismo método encuentra el plan
 óptimo por un efecto lateral de `apilar/2`, que vacía la pinza
-([Planificación](planificacion.md#planificacion-operadores-strips-y-analisis-de-medios-y-fines)).
+([Planificación](planificacion.md#416-planificacion-operadores-strips-y-analisis-de-medios-y-fines)).
 Aquí ese efecto no existe, y la anomalía de Sussman se ve entera: el
 análisis de medios y fines no intercala las metas.
 

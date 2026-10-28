@@ -32,7 +32,7 @@ test(exponentes, all(S == [x = 32 ^ (1 / 5)])) :-
 test(sin_coeficiente, all(S == [x = 6 / 3])) :-
     colectar:resolver(x + 2 * x = 6, x, S).
 
-% Ejercicio 5.
+% Ejercicio 7.
 test(cociente, all(S == [x = log(5)])) :-
     ecuaciones:resolver(exp(2 * x) / exp(x) = 5, x, S).
 

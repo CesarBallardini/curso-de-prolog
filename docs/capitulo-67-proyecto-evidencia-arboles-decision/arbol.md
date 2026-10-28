@@ -1,11 +1,9 @@
 # El árbol de preguntas y su compilación
 
-Esta página contiene las secciones
-[67.5](index.md#675-version-4-el-arbol-de-preguntas) y
-[67.6](index.md#676-version-5-el-arbol-compilado) del
-[capítulo 67](index.md): el árbol de preguntas construido a partir de las
-reglas colapsadas de la
-[sección 67.4](index.md#674-version-3-colapsar-las-reglas), con tres
+Esta página continúa el [capítulo 67](index.md) después de la
+[sección 67.4](index.md#674-version-3-colapsar-las-reglas), con las
+secciones [67.5](#675-version-4-el-arbol-de-preguntas) y [67.6](#676-version-5-el-arbol-compilado): el árbol de preguntas construido
+a partir de las reglas colapsadas, con tres
 estrategias medidas, y su compilación en cláusulas, comparada con el
 encadenamiento hacia atrás del
 [capítulo 34](../capitulo-34-introspeccion-y-metainterpretes/index.md).
@@ -13,7 +11,7 @@ Los ejemplos están en `arbol.pl` y `compilado.pl`, en
 `ejemplos/capitulo-67/`, con sus pruebas; cargan las versiones anteriores
 y se ejecutan localmente.
 
-## Versión 4: el árbol de preguntas
+## 67.5 Versión 4: el árbol de preguntas
 
 Un **árbol de preguntas** hace una pregunta en cada nodo y sigue por la
 rama de la respuesta; en cada hoja hay una hipótesis, o `ninguna`.
@@ -242,7 +240,7 @@ P2 = 6.5.
 
 El resultado contradice la intuición de que la pregunta más informativa
 siempre gana. Para los prototipos, `orden` ya es óptimo: una búsqueda
-exhaustiva de todos los árboles, que hace el [ejercicio 8](index.md#ejercicios)
+exhaustiva de todos los árboles, que hace el [ejercicio 9](#ejercicios)
 con tabulación, da como mínimo 68 preguntas para los doce, 5,67 por
 animal. La razón está en la forma de las reglas: confirmar una hipótesis
 exige preguntar todas las condiciones de una de sus reglas, en cualquier
@@ -251,7 +249,7 @@ descartan. `informacion` iguala a `orden` en los prototipos, para los que
 fue calculada, y es la peor en la población completa, que no vio;
 `frecuente`, que no mira ninguna población, es la mejor en esa. Qué
 pregunta conviene hacer primero depende de qué animales van a llegar: el
-[ejercicio 9](index.md#ejercicios) pesa los prototipos por su frecuencia.
+[ejercicio 10](#ejercicios) pesa los prototipos por su frecuencia.
 
 La prueba `igual_que_34` de `arbol.plt` recorre los 24 576 animales con los
 tres árboles y comprueba que la hoja es siempre una hipótesis que el
@@ -265,13 +263,13 @@ prueba, o `ninguna` cuando no prueba ninguna.
     `tiene_pelo` aunque la cebra del caso da leche. Comprobarlo con
     `consulta/4` y compararlo con las de `informacion`.
 
-## Versión 5: el árbol compilado
+## 67.6 Versión 5: el árbol compilado
 
 El árbol es un término, y consultarlo es recorrerlo. Rowe propone
 convertirlo en código: un nombre para cada nodo y una regla por nodo que
 elige el siguiente según la respuesta. `compilado.pl` lo hace al cargar el
 archivo, con `term_expansion/2`, como el
-[capítulo 36](../capitulo-36-transformacion-de-programas-y-compilacion/index.md#367-las-reglas-compiladas)
+[capítulo 36](../capitulo-36-transformacion-de-programas-y-compilacion/experto.md#367-las-reglas-compiladas)
 convierte las reglas en cláusulas: el término `arbol_compilado(orden)` del
 archivo se expande en las cláusulas de `nodo/3`, una por nodo, numerados
 en preorden. Es el
@@ -452,11 +450,76 @@ además que el árbol compilado da exactamente la primera hipótesis de
 `identificar/2` para los 24 576. Compilarlo no reduce las inferencias: el
 costo está en responder cada pregunta con `demostrar/4`, no en recorrer el
 término. Lo que se gana es un programa sin el árbol ni las reglas: el
-[ejercicio 10](index.md#ejercicios) escribe las cláusulas en un archivo que se
+[ejercicio 11](#ejercicios) escribe las cláusulas en un archivo que se
 carga solo.
+
+El capítulo continúa en la página
+[Cinco ampliaciones: probabilidades, certezas y aprendizaje](ampliaciones.md#677-la-regla-de-bayes),
+con cinco temas que las fuentes tratan y las cinco versiones dejan afuera.
 
 !!! question "Actividad"
     Predecir cuántas preguntas hacen el encadenamiento y el árbol con el
     caso 5, `[tiene_pelo, tiene_cascos]`, y cuál pregunta de más el
     encadenamiento. Comprobarlo con `preguntas_encadenando/2` y
     `consulta/4`.
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio.
+
+7. ★ **(1)** Predecir, con `proyecto.pl` cargado, qué responde cada
+   consulta, y comprobarlo:
+   `grado(ave, [tiene_plumas-0.5, vuela-0.8, pone_huevos-0.8], M, P)` con
+   cada uno de los tres métodos ·
+   `colapsada(pinguino, Ps).` ·
+   `consulta(frecuente, [tiene_plumas, no_vuela, nada], H, Ps).`
+8. **(3)** `vuela` y `no_vuela` son preguntas distintas para el árbol, que
+   puede preguntar las dos. Declarar `excluyentes/2` y escribir
+   `arbol_excluyentes(Estrategia, Arbol)`, que después de un sí descarta
+   las reglas con la pregunta excluida. Medir el árbol `orden` y
+   comprobarlo contra el sistema original sobre los animales que no
+   tienen las dos observaciones.
+9. ★ **(3)** Escribir `costo_minimo(C)`: la menor suma de preguntas sobre
+   los doce prototipos que alcanza algún árbol, probando en cada nodo todas
+   las preguntas posibles, con `:- table` para no repetir los subárboles.
+   Comparar el resultado con los árboles de las tres estrategias.
+10. **(2)** Suponer que de cada cien animales consultados 10 son guepardos,
+    10 tigres, 5 jirafas, 15 cebras, 40 pingüinos y 20 avestruces. Escribir
+    `promedio_ponderado(Arbol, P)`, la media de preguntas sobre los
+    prototipos con esos pesos, y decidir qué estrategia conviene.
+11. **(2)** Escribir `escribir_arbol(Archivo)`, que guarda las cláusulas
+    de `nodo/3` y un `responde/2` para listas de observaciones en un
+    archivo que no carga nada, y comprobar que ese archivo, cargado solo,
+    identifica la cebra del caso 2.
+12. **(3)** Unir las dos mitades del capítulo: escribir
+    `consultar_con_grado(Arbol, Observaciones, Umbral, H, P)`, que recorre
+    el árbol respondiendo que sí a las observaciones de grado al menos
+    Umbral y da el grado de la hipótesis de la hoja. Aplicarlo al animal
+    del atardecer con umbrales 0,5 y 0,7 y explicar el resultado.
+
+## Referencias
+
+- Neil C. Rowe, *Artificial Intelligence through Prolog*, Prentice Hall,
+  1988 — el apartado «Decision lattices: a compilation of a rule-based
+  system» del capítulo sobre el control de los sistemas de reglas.
+  [Edición en línea del autor](https://faculty.nps.edu/ncrowe/book/book.html).
+  Esta página toma de allí la elección de la pregunta que reparte las
+  reglas colapsadas.
+- J. Ross Quinlan, «Induction of decision trees», *Machine Learning* 1,
+  1986, pp. 81–106.
+  [Página de la editorial](https://doi.org/10.1007/BF00116251).
+  De allí viene la ganancia de información de la estrategia
+  `informacion` (apartado «ID3»), y la presentación de ID3 como
+  descendiente del *Concept Learning System*.
+- Claude E. Shannon, «A Mathematical Theory of Communication», *Bell
+  System Technical Journal* 27 (3), 1948, págs. 379–423.
+  [DOI 10.1002/j.1538-7305.1948.tb01338.x](https://doi.org/10.1002/j.1538-7305.1948.tb01338.x).
+  La entropía que la ganancia de información de Quinlan resta antes y
+  después de cada pregunta.
+- Earl B. Hunt, Janet Marin y Philip J. Stone, *Experiments in Induction*,
+  Academic Press, 1966. El *Concept Learning System*, que construye un
+  árbol de decisión partiendo los ejemplos por un atributo en cada nodo;
+  Quinlan lo cita como el origen de ID3.

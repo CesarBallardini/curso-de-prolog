@@ -121,3 +121,13 @@ interfaz.
 ?- catch(filas("SELECT nombre FROM alumnos WHERE nombre = 3", _, _), E, true).
 E = error(sql(tipos(texto, entero)), _).
 ```
+
+## Referencias
+
+- Feliks Kluźniak y Stanisław Szpakowicz, *Prolog for Programmers*,
+  Academic Press, 1985 — «Two Case Studies», apartado 8.2,
+  «Prolog and Relational Data Bases», con el listado 8.4, «Toy-Sequel
+  Interpreter». Sin edición en línea de acceso libre verificada.
+  Esta página toma de allí la forma en que Toy-Sequel señala un error de
+  sintaxis, el token problemático y los que le siguen, y la observación
+  sobre la interfaz que verifica los tipos antes de traducir.

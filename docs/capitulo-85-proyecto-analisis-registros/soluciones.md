@@ -186,6 +186,21 @@ agregado no es de ninguno de los dos formatos, y la gramática falla.
 
 ## 4
 
+El registro anota el cliente, el método, la ruta y el código, pero no el
+cuerpo del pedido, y el legajo que se intenta está en el cuerpo de
+`POST /sesion`. Para el registro, sesenta intentos contra un legajo y
+sesenta intentos contra sesenta legajos distintos son el mismo perfil,
+`[60, 60]`. Denning propone para el segundo caso un perfil por cuenta y el
+agregado de todas las cuentas: un ataque con una contraseña contra muchas
+cuentas no es anómalo en ninguna cuenta, y sí en el total. Para que
+`causa/3` lo distinga, el servicio debería anotar el legajo de cada
+intento, por ejemplo con un término más en el registro, y nunca la
+contraseña. Con ese dato, una regla nueva de `causa/5` daría
+`cuentas(Ip, K)`: la cantidad de legajos distintos que un cliente probó
+en la hora.
+
+## 5
+
 <!-- ejemplo: capitulo-85/soluciones.pl predicado: metricas_presentes/2 sin_pedidos/1 anomalias_presentes/3 metricas_anomalas/3 -->
 ```prolog
 %!  metricas_presentes(+Pedidos:list, -Horas:list) is det.
@@ -232,7 +247,7 @@ sin ceros no puede ver. Es la advertencia de Denning: los períodos sin
 eventos tienen que contarse, o lo que se mide queda sesgado hacia los
 períodos con actividad.
 
-## 5
+## 6
 
 Con 35 ceros de 36, la mediana es 0, y la mediana de las distancias a 0
 también: la MAD es 0, y el intervalo se reduce al punto 0.
@@ -275,7 +290,7 @@ resolución de la métrica: con contadores enteros, una diferencia de 1 es
 la menor posible, y un modelo que la considera grande es demasiado
 sensible.
 
-## 6
+## 7
 
 <!-- ejemplo: capitulo-85/soluciones.pl predicado: ajustar_cuantil/3 umbrales_cuantil/2 -->
 ```prolog
@@ -320,7 +335,7 @@ cuantil supone: que una fracción fija de las horas, aquí una de cada
 veinte, es anómala, aunque no lo sea ninguna; con días de referencia sin
 incidentes, el cuantil pone el límite en el valor normal más alto.
 
-## 7
+## 8
 
 Un perfil es de atacante si −18 − 56·N + 70·F ≥ 0. Para `[1, 1]`,
 −18 − 56 + 70 = −4: normal. Para `[4, 4]`, −18 − 224 + 280 = 38: atacante.
@@ -338,7 +353,7 @@ La recta que separa es F = 0,8·N + 0,257, que pasa por `[0, 0.26]` y por
 diagonal F = N. Un único fallo no alcanza, porque el sesgo pide algo más
 que el 80 % con pocos pedidos; dos fallos sin otra cosa, sí.
 
-## 8
+## 9
 
 <!-- ejemplo: capitulo-85/soluciones.pl predicado: perfiles_diarios/2 cliente/2 perfil_diario/2 sumar_perfil/3 ejemplos_diarios/1 ejemplos_diarios_de/2 ejemplo_diario/3 sospechosos_diarios/3 sospechoso_diario/2 entrenamiento_diario/3 -->
 ```prolog
@@ -429,36 +444,6 @@ pierde es la hora: el perfil diario dice que hubo un ataque, no cuándo,
 y un alumno que olvidó su contraseña por la mañana y volvió a olvidarla
 por la tarde suma sus fallos en un solo perfil.
 
-## 9
-
-<!-- ejemplo: capitulo-85/soluciones.pl predicado: repetidos/2 -->
-```prolog
-%!  repetidos(+K:integer, -Archivos:list) is det.
-%
-%   Archivos es la lista de los cuatro días repetida K veces.
-repetidos(K, Archivos) :-
-    Dias = [ registros('2026-09-28.log'), registros('2026-09-29.log'),
-             registros('2026-09-30.log'), registros('2026-10-01.log') ],
-    length(Copias, K),
-    maplist(=(Dias), Copias),
-    append(Copias, Archivos).
-```
-
-```text
-?- repetidos(10, _As), time(resumir_en_serie(fallos, _As, R1)), time(resumir_en_paralelo(fallos, _As, R2)), R1 == R2.
-% 625,701 inferences, 0.328 CPU in 0.331 seconds (99% CPU, 1906898 Lips)
-% 634,199 inferences, 0.312 CPU in 0.065 seconds (483% CPU, 2029437 Lips)
-```
-
-Con cuarenta archivos, la versión en paralelo tarda la quinta parte: hay
-cuarenta tareas para dieciséis hilos, y la CPU usada pasa del 480 %. La
-CPU total es la misma, porque el trabajo es el mismo; lo que cambia es
-cuánto de él se hace a la vez. El resumen tiene 480 horas porque cada
-archivo de la lista se resume aunque esté repetido: el resumen combinable
-no sabe de dónde vino cada valor, y combinar dos veces el mismo día pesa
-doble sus horas. Si los archivos pudieran repetirse, la lista debería
-pasar antes por `sort/2`.
-
 ## 10
 
 La media ponderada se actualiza con cada valor nuevo X:
@@ -515,15 +500,30 @@ ponderado se calcula con los valores que no resultaron anómalos.
 
 ## 11
 
-El registro anota el cliente, el método, la ruta y el código, pero no el
-cuerpo del pedido, y el legajo que se intenta está en el cuerpo de
-`POST /sesion`. Para el registro, sesenta intentos contra un legajo y
-sesenta intentos contra sesenta legajos distintos son el mismo perfil,
-`[60, 60]`. Denning propone para el segundo caso un perfil por cuenta y el
-agregado de todas las cuentas: un ataque con una contraseña contra muchas
-cuentas no es anómalo en ninguna cuenta, y sí en el total. Para que
-`causa/3` lo distinga, el servicio debería anotar el legajo de cada
-intento, por ejemplo con un término más en el registro, y nunca la
-contraseña. Con ese dato, una regla nueva de `causa/5` daría
-`cuentas(Ip, K)`: la cantidad de legajos distintos que un cliente probó
-en la hora.
+<!-- ejemplo: capitulo-85/soluciones.pl predicado: repetidos/2 -->
+```prolog
+%!  repetidos(+K:integer, -Archivos:list) is det.
+%
+%   Archivos es la lista de los cuatro días repetida K veces.
+repetidos(K, Archivos) :-
+    Dias = [ registros('2026-09-28.log'), registros('2026-09-29.log'),
+             registros('2026-09-30.log'), registros('2026-10-01.log') ],
+    length(Copias, K),
+    maplist(=(Dias), Copias),
+    append(Copias, Archivos).
+```
+
+```text
+?- repetidos(10, _As), time(resumir_en_serie(fallos, _As, R1)), time(resumir_en_paralelo(fallos, _As, R2)), R1 == R2.
+% 625,701 inferences, 0.328 CPU in 0.331 seconds (99% CPU, 1906898 Lips)
+% 634,199 inferences, 0.312 CPU in 0.065 seconds (483% CPU, 2029437 Lips)
+```
+
+Con cuarenta archivos, la versión en paralelo tarda la quinta parte: hay
+cuarenta tareas para dieciséis hilos, y la CPU usada pasa del 480 %. La
+CPU total es la misma, porque el trabajo es el mismo; lo que cambia es
+cuánto de él se hace a la vez. El resumen tiene 480 horas porque cada
+archivo de la lista se resume aunque esté repetido: el resumen combinable
+no sabe de dónde vino cada valor, y combinar dos veces el mismo día pesa
+doble sus horas. Si los archivos pudieran repetirse, la lista debería
+pasar antes por `sort/2`.

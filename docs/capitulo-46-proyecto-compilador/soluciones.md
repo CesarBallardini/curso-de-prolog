@@ -3,16 +3,16 @@
 El código de esta página está en `ejemplos/capitulo-46/soluciones.pl`, con
 sus pruebas en `soluciones.plt`. El archivo carga `compilador.pl`, y con él
 todas las versiones del capítulo: `sintaxis.pl`, `interprete.pl`,
-`generador.pl`, `maquina.pl`, `optimizador.pl` y `especializar.pl`. Los ejercicios 2, 3 y 4 agregan cláusulas
+`generador.pl`, `maquina.pl`, `optimizador.pl` y `especializar.pl`. Los ejercicios 2, 3 y 5 agregan cláusulas
 a predicados de esos archivos: para que dos archivos definan cláusulas del
 mismo predicado, `soluciones.pl` los declara `multifile`, como en el
 [capítulo 25](../capitulo-25-modulos-y-organizacion/index.md), **antes** de cargarlos, y las cláusulas nuevas quedan después
 de las originales. Desde que se agregaron las secciones
-[46.8](index.md#468-la-reduccion-de-fuerza) a
-[46.12](index.md#4612-funciones-y-marcos-de-pila), los archivos del
+[46.8](extensiones.md#468-la-reduccion-de-fuerza) a
+[46.12](extensiones.md#4612-funciones-y-marcos-de-pila), los archivos del
 capítulo ya declaran `multifile` esos predicados; la declaración de
 `soluciones.pl` se mantiene, porque no depende de que lo hagan. Los
-ejercicios 1, 8 y 11 se resuelven con los archivos del capítulo. Las
+ejercicios 1, 9 y 12 se resuelven con los archivos del capítulo. Las
 soluciones de los ejercicios 13 y 15 están en `soluciones_extensiones.pl`,
 que carga los archivos de esas secciones, y la del 14 usa `registros.pl`.
 
@@ -142,6 +142,60 @@ es agregar una cláusula a `sentencia_transformada/3` y a `compuesta/1`.
 
 ## 4
 
+`a_texto/2` recorre el árbol y escribe cada nodo; los paréntesis dependen de
+la precedencia de cada operador y de su lado. El operando izquierdo admite
+un operador de la misma precedencia, porque la gramática agrupa a la
+izquierda; el derecho necesita una precedencia mayor, y si no, lleva
+paréntesis: `a - (b - c)` los necesita, `(a - b) - c` no.
+
+<!-- ejemplo: capitulo-46/soluciones.pl predicado: a_texto/2 expresion_texto/3 -->
+```prolog
+%!  a_texto(+Programa:list, -Texto:atom) is det.
+%
+%   Texto es un texto de Programa que analizar/2 lee como Programa: las
+%   sentencias separadas por punto y coma y cada expresión con los
+%   paréntesis que su forma necesita. Los números deben ser naturales, como
+%   los que produce analizar/2.
+a_texto(Programa, Texto) :-
+    bloque_texto(Programa, Texto).
+
+%!  expresion_texto(+E, +Minima:integer, -T:atom) is det.
+%
+%   T es el texto de la expresión E; va entre paréntesis si la precedencia
+%   de su operador es menor que Minima. El operando derecho exige una
+%   precedencia mayor que la del operador, porque se agrupa a la
+%   izquierda: a - (b - c) necesita los paréntesis.
+expresion_texto(num(N), _, N).
+expresion_texto(id(X), _, X).
+expresion_texto(bin(Op, A, B), Minima, T) :-
+    precedencia(Op, P),
+    expresion_texto(A, P, TA),
+    P1 is P + 1,
+    expresion_texto(B, P1, TB),
+    format(atom(T0), "~w ~w ~w", [TA, Op, TB]),
+    (   P < Minima
+    ->  format(atom(T), "(~w)", [T0])
+    ;   T = T0
+    ).
+```
+
+```prolog
+?- analizar("x := (a - (b - c)) * d / 2", P), a_texto(P, T).
+P = [asignar(x, bin(/, bin(*, bin(-, id(a), bin(-, id(b), id(c))), id(d)), num(2)))],
+T = 'x := (a - (b - c)) * d / 2'.
+```
+
+El encabezado declara `a_texto(+Programa, -Texto) is det`: con un árbol,
+hay un solo texto. No declara el modo inverso, porque para eso está
+`analizar/2`. Tampoco alcanza con usar `programa//1` en sentido inverso: con
+el árbol dado y la lista de componentes libre, `expresion//1` llama primero a
+`termino(T)` con `T` libre, que genera términos sin relación con el árbol, y
+`mas_terminos//2` construye el resultado recién al final. La gramática está
+escrita para leer, no para escribir. La prueba `ida_y_vuelta` comprueba, con
+cada programa de ejemplo, que `analizar/2` lee el texto como el mismo árbol.
+
+## 5
+
 La instrucción nueva necesita su clase para el ensamblador y su paso en la
 máquina; el modismo va en una tabla propia, `modismo_fusion/2`, que agrega
 el reemplazo a los de `modismo/2`:
@@ -175,7 +229,7 @@ compilar_fusion(Texto, Objeto) :-
     ensamblar(Simbolico, Objeto, _).
 ```
 
-Con `medir_ejemplo/5` y la máquina del ejercicio 5:
+Con `medir_ejemplo/5` y la máquina del ejercicio 6:
 
 ```prolog
 ?- medir_ejemplo(factorial, compilar_optimizado, N, Pasos, Max).
@@ -193,7 +247,7 @@ La fusión ahorra una instrucción en el código, la comparación del bucle, y
 un paso por cada vez que se evalúa la condición: seis, cinco iteraciones y la
 evaluación que sale del bucle.
 
-## 5
+## 6
 
 `ciclo_medido//4` es `ciclo//2` con dos contadores más, que viajan en un par
 `Pasos-Maxima`; cada paso lo da el mismo `paso//3` de la máquina:
@@ -253,7 +307,7 @@ Las dos versiones ejecutan las mismas ocho instrucciones; cambia el orden,
 y con él la pila: cuatro lugares sin optimizar, dos con los operandos
 reordenados, como predijo `pila/2`.
 
-## 6
+## 7
 
 Una comparación no es conmutativa, pero cada una tiene su espejo: `A < B` se
 cumple si y solo si se cumple `B > A`. `=` y `<>` son su propio espejo,
@@ -293,7 +347,7 @@ P = [si(rel(>, bin(+, bin(+, id(b), id(c)), id(a)), num(1)), [escribir(num(1))],
 La condición original necesita tres lugares de pila: el 1 queda abajo
 mientras se evalúa la suma, que necesita dos. La reordenada necesita dos.
 
-## 7
+## 8
 
 El simplificador del [capítulo 33](../capitulo-33-inspeccion-de-terminos/index.md#337-un-simplificador-de-expresiones) no tiene una regla para `(x + 2) + 3`,
 porque el 2 y el 3 no son operandos de la misma operación. `reasociar/2`
@@ -343,7 +397,7 @@ E = bin(+, id(x), num(5)).
 La prueba `asociar_resta` comprueba que `x + 2 - 2` queda en `x`: la regla
 da `x + 0`, y el simplificador quita el 0.
 
-## 8
+## 9
 
 Dos marcas seguidas están en la misma dirección, sin ninguna instrucción
 entre ellas: las dos etiquetas valen lo mismo, y unificarlas solo adelanta
@@ -364,7 +418,7 @@ bucle perdería el salto hacia atrás y escribiría 3 una sola vez. Que el
 ensamblador falle es lo que convierte un código equivocado en un error
 visible.
 
-## 9
+## 10
 
 Una marca que ningún salto usa no es un destino, y quitarla deja al
 descubierto el código muerto que la seguía, que la mirilla puede quitar.
@@ -409,106 +463,7 @@ C0 = [apilar(2), apilar(1), comparar(>), saltar_si_cero(_A), apilar(1), escribir
 C = [apilar(1), escribir].
 ```
 
-## 10
-
-`a_texto/2` recorre el árbol y escribe cada nodo; los paréntesis dependen de
-la precedencia de cada operador y de su lado. El operando izquierdo admite
-un operador de la misma precedencia, porque la gramática agrupa a la
-izquierda; el derecho necesita una precedencia mayor, y si no, lleva
-paréntesis: `a - (b - c)` los necesita, `(a - b) - c` no.
-
-<!-- ejemplo: capitulo-46/soluciones.pl predicado: a_texto/2 expresion_texto/3 -->
-```prolog
-%!  a_texto(+Programa:list, -Texto:atom) is det.
-%
-%   Texto es un texto de Programa que analizar/2 lee como Programa: las
-%   sentencias separadas por punto y coma y cada expresión con los
-%   paréntesis que su forma necesita. Los números deben ser naturales, como
-%   los que produce analizar/2.
-a_texto(Programa, Texto) :-
-    bloque_texto(Programa, Texto).
-
-%!  expresion_texto(+E, +Minima:integer, -T:atom) is det.
-%
-%   T es el texto de la expresión E; va entre paréntesis si la precedencia
-%   de su operador es menor que Minima. El operando derecho exige una
-%   precedencia mayor que la del operador, porque se agrupa a la
-%   izquierda: a - (b - c) necesita los paréntesis.
-expresion_texto(num(N), _, N).
-expresion_texto(id(X), _, X).
-expresion_texto(bin(Op, A, B), Minima, T) :-
-    precedencia(Op, P),
-    expresion_texto(A, P, TA),
-    P1 is P + 1,
-    expresion_texto(B, P1, TB),
-    format(atom(T0), "~w ~w ~w", [TA, Op, TB]),
-    (   P < Minima
-    ->  format(atom(T), "(~w)", [T0])
-    ;   T = T0
-    ).
-```
-
-```prolog
-?- analizar("x := (a - (b - c)) * d / 2", P), a_texto(P, T).
-P = [asignar(x, bin(/, bin(*, bin(-, id(a), bin(-, id(b), id(c))), id(d)), num(2)))],
-T = 'x := (a - (b - c)) * d / 2'.
-```
-
-El encabezado declara `a_texto(+Programa, -Texto) is det`: con un árbol,
-hay un solo texto. No declara el modo inverso, porque para eso está
-`analizar/2`. Tampoco alcanza con usar `programa//1` en sentido inverso: con
-el árbol dado y la lista de componentes libre, `expresion//1` llama primero a
-`termino(T)` con `T` libre, que genera términos sin relación con el árbol, y
-`mas_terminos//2` construye el resultado recién al final. La gramática está
-escrita para leer, no para escribir. La prueba `ida_y_vuelta` comprueba, con
-cada programa de ejemplo, que `analizar/2` lee el texto como el mismo árbol.
-
 ## 11
-
-El `si` es `si_1/4`: sus argumentos son `n` antes y después y la salida. Su
-primera cláusula llama al bucle, `mientras_2/4`, que agrega `n` a la salida
-en la cabeza misma, `[A|C]`, porque el `escribir n` se desplegó en una
-unificación:
-
-```prolog
-principal(A, B) :-
-    si_1(3, _, A, B).
-si_1(A, B, C, D) :-
-    A>0,
-    mientras_2(A, B, C, D).
-si_1(A, A, B, B) :-
-    A=<0.
-mientras_2(A, B, [A|C], D) :-
-    A>0,
-    E is A-1,
-    mientras_2(E, B, C, D).
-mientras_2(A, A, B, B) :-
-    A=<0.
-```
-
-Con `n := 100000`, las cuatro formas miden:
-
-```text
-?- time(interpretar(P, S)).
-% 3,600,203 inferences, 0.406 CPU in 0.427 seconds (95% CPU, 8862038 Lips)
-
-?- time(maquina(O, S)).
-% 7,600,064 inferences, 1.078 CPU in 1.090 seconds (99% CPU, 7049335 Lips)
-
-?- time(maquina(O2, S)).
-% 7,600,063 inferences, 1.188 CPU in 1.213 seconds (98% CPU, 6400053 Lips)
-
-?- time(correr_especializado(P, S)).
-% 309,119 inferences, 0.062 CPU in 0.058 seconds (108% CPU, 4945904 Lips)
-```
-
-`P` es el árbol del programa, `O` su código compilado y `O2` el optimizado.
-Las inferencias son cien veces las de `n := 1000`, salvo en la versión
-especializada, donde el costo fijo de especializar pesa menos: 36 por iteración
-en el intérprete, 76 en la máquina y 3 en la versión especializada. La
-proporción de los tiempos es parecida.
-
-## 12
 
 Primero se cuentan las subexpresiones compuestas de la expresión, con
 `msort/2` y `clumped/2`, y se guardan las que aparecen más de una vez.
@@ -585,6 +540,51 @@ calcula primero `t_1 := a + b` y después `t_2 := t_1 * c`. Compartir es
 correcto porque una expresión de Mini no tiene efectos: calcularla una vez o
 dos da lo mismo. El resultado ya no es un árbol sino un grafo, en el que un
 nodo tiene varios padres; el [capítulo 51](../capitulo-51-proyecto-fft-simbolica/index.md) construye grafos así.
+
+## 12
+
+El `si` es `si_1/4`: sus argumentos son `n` antes y después y la salida. Su
+primera cláusula llama al bucle, `mientras_2/4`, que agrega `n` a la salida
+en la cabeza misma, `[A|C]`, porque el `escribir n` se desplegó en una
+unificación:
+
+```prolog
+principal(A, B) :-
+    si_1(3, _, A, B).
+si_1(A, B, C, D) :-
+    A>0,
+    mientras_2(A, B, C, D).
+si_1(A, A, B, B) :-
+    A=<0.
+mientras_2(A, B, [A|C], D) :-
+    A>0,
+    E is A-1,
+    mientras_2(E, B, C, D).
+mientras_2(A, A, B, B) :-
+    A=<0.
+```
+
+Con `n := 100000`, las cuatro formas miden:
+
+```text
+?- time(interpretar(P, S)).
+% 3,600,203 inferences, 0.406 CPU in 0.427 seconds (95% CPU, 8862038 Lips)
+
+?- time(maquina(O, S)).
+% 7,600,064 inferences, 1.078 CPU in 1.090 seconds (99% CPU, 7049335 Lips)
+
+?- time(maquina(O2, S)).
+% 7,600,063 inferences, 1.188 CPU in 1.213 seconds (98% CPU, 6400053 Lips)
+
+?- time(correr_especializado(P, S)).
+% 309,119 inferences, 0.062 CPU in 0.058 seconds (108% CPU, 4945904 Lips)
+```
+
+`P` es el árbol del programa, `O` su código compilado y `O2` el optimizado.
+Las inferencias son cien veces las de `n := 1000`, salvo en la versión
+especializada, donde el costo fijo de especializar pesa menos: 36 por iteración
+en el intérprete, 76 en la máquina y 3 en la versión especializada. La
+proporción de los tiempos es parecida.
 
 ## 13
 

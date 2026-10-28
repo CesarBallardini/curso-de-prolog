@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 49 - Soluciones de los ejercicios 10 y 14: la compuerta NAND CMOS
+% Capítulo 49 - Soluciones de los ejercicios 13 y 14: la compuerta NAND CMOS
 % y la XOR sin uno de los transistores del par en paralelo.
 %
 % Con los transistores de transistores.pl (Spivey, capítulo 12), la NAND

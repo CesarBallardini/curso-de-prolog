@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 71 - Soluciones de los ejercicios 2, 9 y 11: los cubos con más
+% Capítulo 71 - Soluciones de los ejercicios 2, 8 y 10: los cubos con más
 % estados iniciales y una combinación imposible más.
 %
 % El mundo es el de cubos.pl, con dos estados iniciales nuevos: torre, con

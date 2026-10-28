@@ -271,6 +271,19 @@ la versión 2.
 
 ## 7
 
+En `facultad(30)` hay 25 clases de un mismo año y quince momentos. La
+restricción `all_distinct/1` sobre los momentos de ese año falla al
+imponerse, antes de etiquetar nada, y la respuesta llega con unas
+doscientas mil inferencias, casi todas de la construcción del modelo:
+
+<!-- contexto: capitulo-74/restricciones.pl -->
+```prolog
+?- medir_clpfd(facultad(30), [modelo(simple)], R).
+R = r(no, 210746).
+```
+
+## 8
+
 Un docente viene un día si tiene alguna clase ese día: una variable 0/1
 por docente y día, reificada sobre la suma de las comparaciones de los
 días de sus clases. La cota inferior es la de `optimo/4` con docentes en
@@ -347,7 +360,7 @@ venir a los docentes 10 días. Los dos costos se oponen: juntar las clases
 de un docente en pocos días separa las de un año, y al revés. Un costo
 combinado, como la suma de los dos con pesos, elige entre esos extremos.
 
-## 8
+## 9
 
 <!-- ejemplo: capitulo-74/soluciones.pl predicado: primero_de_varios/3 mejor_de_varios/4 -->
 ```prolog
@@ -388,7 +401,7 @@ buenos son los primeros. Para empezar más cerca del óptimo hace falta que
 la búsqueda mire el costo, como `min(Costo)`, o una cota más ajustada, que
 acorte el intervalo desde abajo.
 
-## 9
+## 10
 
 La ruta se agrega en el archivo de la solución con `http_handler/3`, y el
 servidor de `iniciar_web/1` la sirve junto a las de `web.pl`, porque
@@ -436,7 +449,7 @@ La prueba `cuerpo_aula` verifica la primera fila de la ocupación del aula
 `a1` en el horario de ejemplo: Análisis 1 en la primera franja del lunes,
 el martes y el miércoles.
 
-## 10
+## 11
 
 El modelo es el de `llamado_clpfd/3` con la diferencia de conflicto
 reemplazada por `abs(D1 - D2) #>= 2`; los días posibles llegan hasta el
@@ -501,16 +514,3 @@ true.
 Con dos aulas hacen falta nueve días, y con una también: las cinco
 materias de ana están en conflicto entre sí, y cinco exámenes con un día
 libre entre cada dos necesitan nueve días.
-
-## 11
-
-En `facultad(30)` hay 25 clases de un mismo año y quince momentos. La
-restricción `all_distinct/1` sobre los momentos de ese año falla al
-imponerse, antes de etiquetar nada, y la respuesta llega con unas
-doscientas mil inferencias, casi todas de la construcción del modelo:
-
-<!-- contexto: capitulo-74/restricciones.pl -->
-```prolog
-?- medir_clpfd(facultad(30), [modelo(simple)], R).
-R = r(no, 210746).
-```

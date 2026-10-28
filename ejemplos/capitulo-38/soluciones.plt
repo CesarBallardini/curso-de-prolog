@@ -2,7 +2,7 @@
 
 % Pruebas de las soluciones. Las que usan hilos comparan cantidades o
 % conjuntos; la transferencia ingenua, que puede quedar detenida para
-% siempre, no se prueba: la solución del ejercicio 7 muestra una ejecución.
+% siempre, no se prueba: la solución del ejercicio 6 muestra una ejecución.
 
 :- begin_tests(soluciones).
 

@@ -1,12 +1,12 @@
 # Soluciones del capítulo 60 — Proyecto: análisis de programas
 
-Las soluciones de los ejercicios 2, 3 y 11 están en
+Las soluciones de los ejercicios 2, 3 y 9 están en
 `ejemplos/capitulo-60/soluciones.pl`, que carga `problemas.pl`; las de los
-ejercicios 5 y 10, en `soluciones_revision.pl`, que carga `analisis.pl`; las
+ejercicios 5 y 8, en `soluciones_revision.pl`, que carga `analisis.pl`; las
 de los ejercicios 6 y 7, en `soluciones_meta.pl`, que carga `leer.pl`; y la
-del ejercicio 9, en `soluciones_perfil.pl`, que carga `perfil.pl` y
+del ejercicio 11, en `soluciones_perfil.pl`, que carga `perfil.pl` y
 `llamadas.pl`. Cada archivo tiene sus pruebas en el `.plt` del mismo nombre.
-Los ejercicios 1, 4 y 8 se responden con consultas a los archivos del
+Los ejercicios 1, 4 y 10 se responden con consultas a los archivos del
 capítulo.
 
 ## Ejercicio 1
@@ -379,6 +379,110 @@ ve. `informe/3` tiene su declaración escrita.
 
 ## Ejercicio 8
 
+<!-- ejemplo: capitulo-60/soluciones_revision.pl predicado: raices_consultadas_de/2 no_usados_del_ejemplo/2 -->
+```prolog
+%!  raices_consultadas_de(+Leidos:list, -Raices:list) is det.
+%
+%   Raices son los predicados que llaman las consultas escritas en los
+%   comentarios %?- de Leidos, ordenados.
+raices_consultadas_de(Leidos, Raices) :-
+    findall(PI, ( member(leido(_, _, _, Cs), Leidos),
+                  member(C, Cs),
+                  split_string(C, "\n", "", Lineas),
+                  member(Linea, Lineas),
+                  string_concat("%?- ", Texto, Linea),
+                  catch(term_string(Consulta, Texto, [module(externo)]),
+                        error(syntax_error(_), _), fail),
+                  metas(Consulta, Metas),
+                  member(M, Metas),
+                  indicador(M, PI) ),
+            PIs),
+    sort(PIs, Raices).
+
+%!  no_usados_del_ejemplo(+Archivo, -Ps:list) is det.
+%
+%   Ps son los predicados de Archivo, una ruta o una especificación, que no
+%   se alcanzan ni desde sus puntos de entrada ni desde sus consultas %?-.
+no_usados_del_ejemplo(Archivo, Ps) :-
+    absolute_file_name(Archivo, Ruta, [file_type(prolog), access(read)]),
+    leer_archivo(Ruta, Leidos),
+    programa(Leidos, Clausulas, Raices0),
+    raices_consultadas_de(Leidos, Raices1),
+    append(Raices0, Raices1, Raices),
+    no_usados_de(Clausulas, Raices, Ps).
+```
+
+```prolog
+?- raices_consultadas(ejemplos('capitulo-34/experto.pl'), Rs).
+Rs = [caso/2, como/2, identificar/2, por_que_no/2].
+
+?- no_usados_del_ejemplo(ejemplos('capitulo-34/experto.pl'), Ps).
+Ps = [consultar/1].
+```
+
+`raices_consultadas/2` lee un archivo y llama a `raices_consultadas_de/2`;
+como `no_usados_del_ejemplo/2`, recibe una ruta o una especificación de
+archivo, como `ejemplos('capitulo-34/experto.pl')`.
+
+Sin las consultas, el único punto de entrada de `experto.pl` es
+`'<carga>'/0`, y ninguno de sus veinte predicados se alcanza. Con ellas,
+queda `consultar/1`: la consulta interactiva que pregunta las
+observaciones al usuario, que el archivo no incluye entre sus consultas de
+ejemplo porque espera respuestas por la entrada.
+
+## Ejercicio 9
+
+<!-- ejemplo: capitulo-60/soluciones.pl predicado: capas_de/2 componente_de/3 -->
+```prolog
+%!  capas_de(+Clausulas:list, -Capas:list(list)) is det.
+%
+%   Capas son las componentes fuertemente conexas del grafo, todas, en un
+%   orden en que cada una llama solo a las que vienen después: el orden
+%   topológico del grafo condensado.
+capas_de(Clausulas, Capas) :-
+    grafo(Clausulas, Grafo),
+    transitive_closure(Grafo, Clausura),
+    vertices(Grafo, Vs),
+    maplist(componente_de(Clausura), Vs, Cs0),
+    sort(Cs0, Componentes),
+    edges(Grafo, Arcos),
+    findall(CP-CQ, ( member(P-Q, Arcos),
+                     componente_de(Clausura, P, CP),
+                     componente_de(Clausura, Q, CQ),
+                     CP \== CQ ),
+            ArcosC),
+    vertices_edges_to_ugraph(Componentes, ArcosC, Condensado),
+    top_sort(Condensado, Capas).
+
+%!  componente_de(+Clausura, +P, -Componente:list) is det.
+%
+%   Componente es la lista ordenada de P y los predicados que P alcanza y
+%   lo alcanzan, según la clausura transitiva del grafo.
+componente_de(Clausura, P, Componente) :-
+    neighbours(P, Clausura, SP),
+    findall(Q, ( member(Q, SP),
+                 neighbours(Q, Clausura, SQ),
+                 ord_memberchk(P, SQ) ),
+            Qs),
+    sort([P|Qs], Componente).
+```
+
+```prolog
+?- capas(notas, Capas), length(Capas, N), last(Capas, U).
+Capas = [[informe/0], [varianza/2], [alumnos/1], [mejor/1], [mostrar/1], [desvio2/3], [promedo/2], [... / ...], [...]|...],
+N = 12,
+U = [suma/2].
+```
+
+El programa de notas tiene doce componentes: diez de un predicado y una de
+dos, `longitud_impar/1` y `longitud_par/1`, que queda entre las últimas.
+`informe/0` y `varianza/2` van primero porque nadie los llama, y `suma/2`,
+que no llama a otro predicado del programa, va al final. El grafo sin
+condensar hace fallar a `top_sort/2`, como verifica la prueba
+`ejercicio_9_ciclos`: `suma/2` es su propio sucesor.
+
+## Ejercicio 10
+
 Un predicado espiado escribe su línea `+` al terminar la prueba de su
 cuerpo, de modo que las llamadas internas terminan antes:
 
@@ -391,7 +495,7 @@ R = [b, a],
 X = exito.
 ```
 
-## Ejercicio 9
+## Ejercicio 11
 
 <!-- ejemplo: capitulo-60/soluciones_perfil.pl predicado: resolver_desde/2 sin_recorrer/3 -->
 ```prolog
@@ -454,110 +558,6 @@ Una prueba que solo invirtiera listas de un elemento dejaría esa cláusula
 sin probar; con dos elementos, todos los arcos se recorren. El grafo
 estático dice lo que el programa puede hacer; el dinámico, lo que una
 ejecución hizo, y la diferencia es lo que las pruebas no cubren.
-
-## Ejercicio 10
-
-<!-- ejemplo: capitulo-60/soluciones_revision.pl predicado: raices_consultadas_de/2 no_usados_del_ejemplo/2 -->
-```prolog
-%!  raices_consultadas_de(+Leidos:list, -Raices:list) is det.
-%
-%   Raices son los predicados que llaman las consultas escritas en los
-%   comentarios %?- de Leidos, ordenados.
-raices_consultadas_de(Leidos, Raices) :-
-    findall(PI, ( member(leido(_, _, _, Cs), Leidos),
-                  member(C, Cs),
-                  split_string(C, "\n", "", Lineas),
-                  member(Linea, Lineas),
-                  string_concat("%?- ", Texto, Linea),
-                  catch(term_string(Consulta, Texto, [module(externo)]),
-                        error(syntax_error(_), _), fail),
-                  metas(Consulta, Metas),
-                  member(M, Metas),
-                  indicador(M, PI) ),
-            PIs),
-    sort(PIs, Raices).
-
-%!  no_usados_del_ejemplo(+Archivo, -Ps:list) is det.
-%
-%   Ps son los predicados de Archivo, una ruta o una especificación, que no
-%   se alcanzan ni desde sus puntos de entrada ni desde sus consultas %?-.
-no_usados_del_ejemplo(Archivo, Ps) :-
-    absolute_file_name(Archivo, Ruta, [file_type(prolog), access(read)]),
-    leer_archivo(Ruta, Leidos),
-    programa(Leidos, Clausulas, Raices0),
-    raices_consultadas_de(Leidos, Raices1),
-    append(Raices0, Raices1, Raices),
-    no_usados_de(Clausulas, Raices, Ps).
-```
-
-```prolog
-?- raices_consultadas(ejemplos('capitulo-34/experto.pl'), Rs).
-Rs = [caso/2, como/2, identificar/2, por_que_no/2].
-
-?- no_usados_del_ejemplo(ejemplos('capitulo-34/experto.pl'), Ps).
-Ps = [consultar/1].
-```
-
-`raices_consultadas/2` lee un archivo y llama a `raices_consultadas_de/2`;
-como `no_usados_del_ejemplo/2`, recibe una ruta o una especificación de
-archivo, como `ejemplos('capitulo-34/experto.pl')`.
-
-Sin las consultas, el único punto de entrada de `experto.pl` es
-`'<carga>'/0`, y ninguno de sus veinte predicados se alcanza. Con ellas,
-queda `consultar/1`: la consulta interactiva que pregunta las
-observaciones al usuario, que el archivo no incluye entre sus consultas de
-ejemplo porque espera respuestas por la entrada.
-
-## Ejercicio 11
-
-<!-- ejemplo: capitulo-60/soluciones.pl predicado: capas_de/2 componente_de/3 -->
-```prolog
-%!  capas_de(+Clausulas:list, -Capas:list(list)) is det.
-%
-%   Capas son las componentes fuertemente conexas del grafo, todas, en un
-%   orden en que cada una llama solo a las que vienen después: el orden
-%   topológico del grafo condensado.
-capas_de(Clausulas, Capas) :-
-    grafo(Clausulas, Grafo),
-    transitive_closure(Grafo, Clausura),
-    vertices(Grafo, Vs),
-    maplist(componente_de(Clausura), Vs, Cs0),
-    sort(Cs0, Componentes),
-    edges(Grafo, Arcos),
-    findall(CP-CQ, ( member(P-Q, Arcos),
-                     componente_de(Clausura, P, CP),
-                     componente_de(Clausura, Q, CQ),
-                     CP \== CQ ),
-            ArcosC),
-    vertices_edges_to_ugraph(Componentes, ArcosC, Condensado),
-    top_sort(Condensado, Capas).
-
-%!  componente_de(+Clausura, +P, -Componente:list) is det.
-%
-%   Componente es la lista ordenada de P y los predicados que P alcanza y
-%   lo alcanzan, según la clausura transitiva del grafo.
-componente_de(Clausura, P, Componente) :-
-    neighbours(P, Clausura, SP),
-    findall(Q, ( member(Q, SP),
-                 neighbours(Q, Clausura, SQ),
-                 ord_memberchk(P, SQ) ),
-            Qs),
-    sort([P|Qs], Componente).
-```
-
-```prolog
-?- capas(notas, Capas), length(Capas, N), last(Capas, U).
-Capas = [[informe/0], [varianza/2], [alumnos/1], [mejor/1], [mostrar/1], [desvio2/3], [promedo/2], [... / ...], [...]|...],
-N = 12,
-U = [suma/2].
-```
-
-El programa de notas tiene doce componentes: diez de un predicado y una de
-dos, `longitud_impar/1` y `longitud_par/1`, que queda entre las últimas.
-`informe/0` y `varianza/2` van primero porque nadie los llama, y `suma/2`,
-que no llama a otro predicado del programa, va al final. El grafo sin
-condensar hace fallar a `top_sort/2`, como verifica la prueba
-`ejercicio_11_ciclos`: `suma/2` es su propio sucesor.
 
 ## Ejercicio 12
 

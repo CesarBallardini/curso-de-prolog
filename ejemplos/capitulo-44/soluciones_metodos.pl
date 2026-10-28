@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 44 - Soluciones de los ejercicios 6, 7, 8 y 12: métodos nuevos
+% Capítulo 44 - Soluciones de los ejercicios 5, 6, 8 y 12: métodos nuevos
 % alrededor del programa.
 %
 % resolver_factores/3 (factorización), resolver_homogeneo/3
@@ -40,7 +40,7 @@
                          ]).
 :- use_module(ecuaciones, [resolver/3]).
 
-% Ejercicio 6 ---------------------------------------------------------
+% Ejercicio 8 ---------------------------------------------------------
 
 %!  resolver_factores(+Ecuacion, +X:atom, -Solucion) is nondet.
 %
@@ -69,7 +69,7 @@ factores(E, X, Fs) :-
     ;   Fs = []
     ).
 
-% Ejercicio 7 ---------------------------------------------------------
+% Ejercicio 5 ---------------------------------------------------------
 
 %!  resolver_homogeneo(+Ecuacion, +X:atom, -Solucion) is nondet.
 %
@@ -133,7 +133,7 @@ potencia(U, C, P) :-
     ;   P = U ^ C
     ).
 
-% Ejercicio 8 ---------------------------------------------------------
+% Ejercicio 6 ---------------------------------------------------------
 
 %!  resolver_bicuadrada(+Ecuacion, +X:atom, -Solucion) is nondet.
 %

@@ -1,10 +1,10 @@
 :- encoding(utf8).
 
-% Capítulo 41 - Soluciones de los ejercicios 5 y 9 sobre el rompecabezas
+% Capítulo 41 - Soluciones de los ejercicios 7 y 9 sobre el rompecabezas
 % de 8.
 %
 % El archivo incluye puzzle8.pl y le agrega cláusulas: la estrategia
-% anchura_lista, con la cola como lista cerrada y append/3 (ejercicio 5), y
+% anchura_lista, con la cola como lista cerrada y append/3 (ejercicio 7), y
 % la heurística doble, el doble de manhattan, que estima de más
 % (ejercicio 9).
 %
@@ -18,7 +18,7 @@
 
 :- include(puzzle8).
 
-% Ejercicio 5
+% Ejercicio 7
 
 %!  vacia(+Estrategia, -Frontera) is det.
 %

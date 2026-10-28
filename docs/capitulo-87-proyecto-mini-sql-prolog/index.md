@@ -39,8 +39,8 @@ que traduce las operaciones del álgebra relacional a cláusulas y presenta
 Prolog: un escáner, un compilador de comandos que produce metas, un
 catálogo de relaciones y una tabla de símbolos. El mini-SQL sigue esa
 arquitectura con la sintaxis de SQL, para poder comparar sus resultados
-con los de SQLite, y corrige un error de su compilador. La lista completa
-de las fuentes está en las [Referencias](#referencias); el código es
+con los de SQLite, y corrige un error de su compilador. Las fuentes están
+en las [Referencias](#referencias) de cada página; el código es
 propio.
 
 El capítulo cumple los anuncios de los capítulos
@@ -82,7 +82,7 @@ Al terminar el capítulo, el lector puede:
 !!! info "Tiempo estimado"
     Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **3:30 h**.
     Resolver los 5 ejercicios marcados con ★: **1:05 h**.
-    Resolver los 11 ejercicios del final: **3:00 h**.
+    Resolver los 11 ejercicios del capítulo: **3:00 h**.
 
 ## 87.1 Un lenguaje de consultas sobre hechos
 
@@ -880,75 +880,12 @@ tipos y la integridad antes de traducir
     < 4 OR nota > 8)` y cuántas filas da. Comprobarlo con
     `mostrar_traduccion/1` y `filas/3`.
 
-## 87.8 Versión 6: el resultado entero
-
-Hasta aquí, cada fila del resultado sale de una solución de la meta, una
-por vez, sin construir el resultado: es el bucle de falla con que
-Toy-Sequel muestra las tuplas. Kluźniak y Szpakowicz observan que un
-agregado no puede funcionar así: necesita la columna entera, y la
-obtienen con `bagof/3`. Lo mismo vale para `DISTINCT`, `ORDER BY`,
-`LIMIT` y las operaciones de conjuntos. La versión 6 junta las filas con
-`findall/3`, las procesa y las entrega de nuevo de a una con `member/2`,
-de modo que toda consulta compilada conserva la misma forma: una meta que
-da una fila por solución. La página [El resultado entero](resultado.md)
-presenta los grupos, los agregados con `NULL`, el orden estable con
-`NULL` primero, el límite y las operaciones de conjuntos:
-
-```prolog
-?- filas("SELECT carrera, COUNT(*) AS n FROM alumnos GROUP BY carrera HAVING COUNT(*) >= 2 ORDER BY n DESC, carrera", Ns, Fs).
-Ns = [carrera, n],
-Fs = [[sistemas, 3], [civil, 2], [industrial, 2]].
-```
-
-## 87.9 Versión 7: las sentencias que cambian las tablas
-
-`modificaciones.pl` ejecuta `CREATE TABLE`, `DROP TABLE`, `INSERT`,
-`DELETE` y `UPDATE`. `CREATE TABLE` agrega una relación al catálogo y
-declara su predicado dinámico en el módulo `relaciones`. Las otras tres
-sentencias calculan primero, sobre el estado anterior, todas las filas
-que la tabla tendrá después; verifican los tipos, `NOT NULL`, los rangos
-y la clave primaria; y solo entonces reemplazan las filas de la tabla.
-Una sentencia cambia todas las filas o ninguna, y una subconsulta de su
-condición ve la tabla como estaba antes de empezar, como exige SQL;
-Toy-Sequel, en cambio, retira y agrega cada tupla dentro del bucle de
-falla. La página [Las sentencias que cambian las tablas](modificaciones.md)
-muestra la actualización, las restricciones y la conversación de
-Kluźniak y Szpakowicz con Toy-Sequel, reproducida en el mini-SQL con los
-mismos resultados que su libro.
-
-## 87.10 Versión 8: las vistas
-
-Kluźniak y Szpakowicz llaman vista a una relación que se calcula en lugar
-de guardarse, y proponen las vistas definidas como la primera extensión
-de Toy-Sequel. `vistas.pl` compila la consulta de `CREATE VIEW` una sola
-vez y la guarda como una cláusula del módulo `relaciones`, cuya cabeza
-lleva los valores de una fila; para quien la usa en un `FROM`, su
-generador no se distingue del de una tabla. La página
-[Las vistas](vistas.md) muestra la cláusula que resulta, que es la regla
-`aprobada/3` del [capítulo 43](../capitulo-43-prolog-y-sql/index.md#432-el-algebra-relacional-en-clausulas),
-y su relación con las reglas de Datalog del
-[capítulo 86](../capitulo-86-proyecto-motor-datalog/index.md).
-
-## 87.11 El mini-SQL frente al SQL del capítulo 43
-
-La página [El mini-SQL frente a SQLite](sqlite.md) ejecuta en el mini-SQL
-las sentencias de las 42 verificaciones de los ejercicios del
-[capítulo 43](../capitulo-43-prolog-y-sql/index.md#ejercicios) que su
-subconjunto admite, y compara las filas con las de SQLite 3.50: coinciden
-las 42 (prueba `comparacion:resumen`), incluidas las cinco en que la
-traducción directa a Prolog del [capítulo 43](../capitulo-43-prolog-y-sql/index.md) da otras filas que SQL. La
-página resume, diferencia por diferencia, qué hace el Prolog escrito a
-mano y qué hace el mini-SQL.
-
-!!! success "Criterios de calidad"
-    | Criterio | En este capítulo |
-    |---|---|
-    | C1 | cada predicado declara modos y determinación; las gramáticas son `nondet` y solo se llaman dentro de una condición de `->` o con `phrase/2` en `analizar_tokens/2`, que es `det`; los compiladores y las sentencias son `det` y lanzan `error(sql(Motivo), _)` |
-    | C2 | representaciones limpias: tokens `n/1`, `s/1`, `i/1`; sintaxis abstracta `consulta/3`, `seleccion/6`, `y/2`, `o/2`, `no/1`, `comparar/3`; columnas `col/4`; marcos `marco/2` |
-    | C3 | las tablas son las del [capítulo 43](../capitulo-43-prolog-y-sql/index.md), cargadas sin copiarlas; los resultados se comparan con los de SQLite en 42 pares |
-    | C5 | toda sentencia incorrecta produce un error que la nombra antes de ejecutar nada; una actualización que viola una restricción no cambia ninguna fila |
-    | C6 | el análisis y la compilación son puros; los efectos están en `modificaciones.pl` y `vistas.pl`, y cada uno reemplaza el estado entero o no lo toca |
-    | C7 | 168 pruebas en diez archivos y 17 más sobre las soluciones; `costos.plt` verifica las cuatro cifras de inferencias dentro de un 10 %, y `comparacion.plt` cada par frente a SQLite |
+El capítulo continúa en la página
+[El resultado entero](resultado.md#878-version-6-el-resultado-entero), con lo que el mini-SQL
+calcula sobre todas las filas de una consulta y no sobre una por vez:
+los grupos, los agregados, el orden, el límite y las operaciones de
+conjuntos. Antes, los [ejercicios](#ejercicios) de esta página
+practican las versiones 1 a 5.
 
 ## Ejercicios
 
@@ -972,89 +909,30 @@ que cargan los del capítulo, sin modificarlos.
    columnas que nombra un `SELECT` de un solo nivel como pares
    `Tabla-Columna`, resolviendo los alias y los nombres sin calificar con
    la tabla de símbolos.
-5. ★ **(2)** Escribir `actualizar_tupla(+Texto, -N)`, que ejecuta un
-   `UPDATE` como Toy-Sequel: retira y agrega cada tupla dentro del
-   recorrido. Con la tabla `s(n, x)` y las filas `a 1000`, `b 1100` y
-   `c 1200`, comparar el resultado de `UPDATE s SET x = x + 200 WHERE
-   x = (SELECT MAX(x) FROM s) - 100` con el de `sql/2` y con el de SQLite,
-   que deja `c` en 1 200, y explicar la diferencia.
-6. **(2)** Kluźniak y Szpakowicz proponen como optimización llamar
+5. **(2)** Kluźniak y Szpakowicz proponen como optimización llamar
    primero a la relación cuyo argumento la consulta fija. Escribir
    `traducir_ordenado(+Texto, -Fila-Meta)`, que ordena los generadores de
    más a menos argumentos ligados al compilar, y medir las inferencias de
    `SELECT i.materia, i.nota FROM inscripciones i, alumnos a WHERE
    a.nombre = 'ana' AND a.legajo = i.legajo` con los dos órdenes.
-7. **(2)** Escribir `insertar_verificado(+Texto, -Resultado)`, que
-   ejecuta un `INSERT` y verifica después las referencias del esquema
-   del [capítulo 43](../capitulo-43-prolog-y-sql/restricciones.md#claves-restricciones-y-actualizaciones)
-   con `violacion/1`; si alguna no se cumple, repone el estado anterior y
-   lanza el error.
-8. **(3)** Escribir `recursiva(+Tabla, +Crear, +Base, +Paso, -Rondas)`,
-   que calcula una consulta recursiva en una tabla: la crea, la llena con
-   el `SELECT` Base y repite `INSERT INTO Tabla Paso EXCEPT SELECT * FROM
-   Tabla` hasta que no agrega nada. Calcular los requisitos de `bd`, el
-   par 35 del [capítulo 43](../capitulo-43-prolog-y-sql/recursion.md#consultas-recursivas),
-   y relacionar las rondas con la evaluación de abajo hacia arriba.
-9. **(2)** El mini-SQL no tiene `LEFT JOIN`. Escribir con una vista y
-   `UNION ALL` el par 19 del [capítulo 43](../capitulo-43-prolog-y-sql/index.md), la cantidad de inscriptos de
-   cada materia incluidas las que no tienen ninguno, y comprobar que da
-   las filas de SQLite.
-10. ★ **(2)** Predecir la meta y las filas de `SELECT nombre FROM alumnos
-    WHERE ingreso NOT IN (SELECT nota FROM inscripciones)`. Comprobarlo,
-    y explicar el papel de cada una de las dos negaciones.
-11. **(1)** Explicar por qué `SELECT COUNT(*) FROM inscripciones WHERE
-    nota = nota` da 14 y no 17, y predecir la meta de su traducción.
-
-## Resumen
-
-| | |
-|---|---|
-| **analizador léxico** | separa el texto en tokens; la gramática trabaja sobre tokens, no sobre caracteres |
-| **sintaxis abstracta** | el término que representa una sentencia, independiente de su texto y de su traducción |
-| **punto más lejano** | el resto de la entrada más corto que alcanzó alguna alternativa; ahí está el error |
-| **catálogo** | cada relación con su generador y su marco de columnas, que comparten variables |
-| **tabla de símbolos** | los marcos de cada nivel de consulta; un nombre se busca desde adentro hacia afuera |
-| **igualdad al compilar** | unificar dos columnas o una columna y una constante; correcto solo en la conjunción de primer nivel |
-| **lógica de tres valores** | verdadera, falsa o desconocida; cada condición se compila en una meta por polaridad |
-| **instantánea** | una actualización calcula todas las filas nuevas sobre el estado anterior |
-| **vista** | una relación calculada; su generador no se distingue del de una tabla |
-| `tokens/2` | los tokens de un texto |
-| `analizar/2`, `analizar_tokens/2` | la sintaxis abstracta de una sentencia |
-| `relacion/4`, `restriccion/2`, `marcos/3`, `buscar_columna/4` | el catálogo y la tabla de símbolos |
-| `traducir_ingenuo/3`, `consulta_ingenua/2` | el compilador de Toy-Sequel |
-| `compilar_consulta/5`, `condicion/5`, `expresion/7`, `igualdades/3` | el compilador |
-| `traducir/3`, `filas/3`, `mostrar_traduccion/1` | una consulta traducida, ejecutada o escrita |
-| `modificar/2`, `vista/2` | las sentencias que cambian las tablas y las vistas |
-| `sql/2`, `sql/1`, `guion/2`, `sesion/0` | el intérprete |
-| `coincide/1`, `resumen/2` | la comparación con SQLite |
-| **[Patrón 97](../patrones.md#97-una-condicion-dos-metas)** | una condición, dos metas |
-| **[Patrón 98](../patrones.md#98-la-igualdad-se-unifica-solo-en-la-conjuncion-positiva)** | la igualdad se unifica solo en la conjunción positiva |
-| **[Patrón 99](../patrones.md#99-el-error-en-el-punto-mas-lejano)** | el error en el punto más lejano |
-| **[Patrón 100](../patrones.md#100-calcular-el-estado-nuevo-antes-de-cambiar)** | calcular el estado nuevo antes de cambiar |
-
-## Temas que se retoman
-
-| Tema | Se retoma en |
-|---|---|
-| Preguntas en castellano traducidas a consultas sobre las tablas de *Inscripciones* | [capítulo 88](../capitulo-88-proyecto-preguntas-en-castellano/index.md) |
+6. ★ **(2)** Predecir la meta y las filas de `SELECT nombre FROM alumnos
+   WHERE ingreso NOT IN (SELECT nota FROM inscripciones)`. Comprobarlo,
+   y explicar el papel de cada una de las dos negaciones.
 
 ## Referencias
 
 - Feliks Kluźniak y Stanisław Szpakowicz, *Prolog for Programmers*,
   Academic Press, 1985 — «Two Case Studies», apartado 8.2,
   «Prolog and Relational Data Bases», con el listado 8.4, «Toy-Sequel
-  Interpreter». Sin edición en línea de acceso libre verificada. El
-  capítulo toma de allí la traducción de la selección, la proyección y
+  Interpreter». Sin edición en línea de acceso libre verificada.
+  Esta página toma de allí la traducción de la selección, la proyección y
   la reunión a cláusulas, la selección por sustitución de la constante,
-  la observación de que un agregado necesita la columna entera, la
-  definición de vista y la indistinción de su generador, la conveniencia
-  de una interfaz que verifique tipos e integridad antes de traducir, y
-  de Toy-Sequel la arquitectura en tres fases, la clasificación de los
-  tokens, el catálogo con generador y marco, la tabla de símbolos como
-  pila de marcos, el filtro después de los generadores, la igualdad
-  resuelta al compilar, las vistas definidas y el orden de los
-  generadores como extensiones, y la conversación de la
-  [sección 87.9](#879-version-7-las-sentencias-que-cambian-las-tablas).
+  la conveniencia de una interfaz que verifique tipos e integridad antes
+  de traducir, y de Toy-Sequel la arquitectura en tres fases, la
+  clasificación de los tokens, el catálogo con generador y marco, la
+  tabla de símbolos como pila de marcos, el filtro después de los
+  generadores, la igualdad resuelta al compilar y el orden de los
+  generadores como extensión.
 - E. F. Codd, «A Relational Model of Data for Large Shared Data Banks»,
   *Communications of the ACM* 13(6), 1970, páginas 377–387.
   [Edición de la ACM](https://doi.org/10.1145/362384.362685). Es el
@@ -1070,7 +948,7 @@ que cargan los del capítulo, sin modificarlos.
   International Conference on Very Large Data Bases*, 1981. Sin edición
   en línea de acceso libre verificada. Citado por Kluźniak y Szpakowicz
   por la optimización de las consultas en lógica, el orden de los
-  generadores del [ejercicio 6](#ejercicios).
+  generadores del [ejercicio 5](#ejercicios).
 - David H. D. Warren y Fernando C. N. Pereira, «An Efficient Easily
   Adaptable System for Interpreting Natural Language Queries», *American
   Journal of Computational Linguistics* 8(3–4), 1982.
@@ -1082,15 +960,7 @@ que cargan los del capítulo, sin modificarlos.
 - *SQLite Documentation*, «NULL Handling in SQLite Versus Other Database
   Engines» y «SELECT».
   [NULL](https://www.sqlite.org/nulls.html) y
-  [SELECT](https://www.sqlite.org/lang_select.html). De allí vienen el
-  lugar de `NULL` en `ORDER BY`, los agregados de ninguna fila y la
-  división entera que el mini-SQL imita.
+  [SELECT](https://www.sqlite.org/lang_select.html).
+  De allí viene la división entera que el mini-SQL imita.
 - Booyabazooka, imagen «Relational database terms.svg», Wikimedia
   Commons, dominio público.
-
-El código del capítulo es propio, escrito para el curso: el listado de
-Toy-Sequel se tomó como descripción de la arquitectura, no se copió, y el
-mini-SQL usa la sintaxis de SQL; la lógica de tres valores, la igualdad
-al compilar restringida a la conjunción, las subconsultas, los
-agregados, las actualizaciones sobre la instantánea y la comparación con
-SQLite no tienen equivalente en la fuente.

@@ -1,15 +1,15 @@
 # Circuitos secuenciales
 
-Esta página contiene las secciones [49.5](index.md#495-circuitos-secuenciales),
-[49.6](index.md#496-los-estados-alcanzables) y
-[49.8](index.md#498-retardos-en-cascada) del [capítulo 49](index.md): los
-circuitos secuenciales, ejecutados pulso a pulso, el grafo de sus estados
-alcanzables, tabulado, y los retardos en cascada. Los ejemplos están en
-`secuenciales.pl`, `estados.pl` y `retardos.pl`, en
-`ejemplos/capitulo-49/`, con sus pruebas; cargan el módulo `circuitos`, y se
-ejecutan localmente.
+Esta página continúa la página
+[Verificar con library(clpb)](verificacion.md#494-verificar-con-libraryclpb)
+del [capítulo 49](index.md), con las secciones
+[49.5](#495-circuitos-secuenciales) y [49.6](#496-los-estados-alcanzables):
+los circuitos secuenciales, ejecutados pulso a pulso, y el grafo de sus
+estados alcanzables, tabulado. Los ejemplos están en `secuenciales.pl` y
+`estados.pl`, en `ejemplos/capitulo-49/`, con sus pruebas; cargan el módulo
+`circuitos`, y se ejecutan localmente.
 
-## Circuitos secuenciales
+## 49.5 Circuitos secuenciales
 
 Un circuito **secuencial** sincrónico separa la memoria de la lógica: un
 **registro** de biestables D guarda el estado, una lista de bits, y un
@@ -164,7 +164,7 @@ pulsos lo muestran para seis estados; que valga para todos, y para toda
 sucesión de entradas en los circuitos que las tienen, es una pregunta que
 ninguna ejecución responde.
 
-## Los estados alcanzables
+## 49.6 Los estados alcanzables
 
 Los estados de un circuito secuencial y los pasos entre ellos forman un
 grafo: un arco por cada estado, cada combinación de entradas y el estado
@@ -267,7 +267,7 @@ salida es 1 y el estado pasa a 1. La segunda consulta verifica la definición
 de la paridad en los cuatro arcos. La tercera es la propiedad del código
 Gray: para cada arco del contador, la salida del estado siguiente difiere de
 la actual en un bit, con `distancia/3` como la cantidad de posiciones
-distintas. Es la pregunta que la [sección 49.5](#circuitos-secuenciales) no podía responder
+distintas. Es la pregunta que la [sección 49.5](#495-circuitos-secuenciales) no podía responder
 ejecutando el circuito, y la tabla la hace terminar aunque el contador
 vuelva a su estado inicial.
 
@@ -283,123 +283,41 @@ con salidas, y la verificación de una propiedad sobre todos sus estados
 alcanzables es, en pequeño, lo que hacen las herramientas de verificación de
 hardware.
 
-## Retardos en cascada
+El capítulo continúa en la página
+[Los productos como vectores de signos y los retardos en cascada](vectores.md#497-los-productos-como-vectores-de-signos),
+con otra representación de los productos de una suma, y vuelve a los
+circuitos secuenciales en la
+[sección 49.8](vectores.md#498-retardos-en-cascada), con los retardos en
+cascada.
 
-Un **retardo unitario** es el circuito secuencial más simple: su salida es
-la entrada del pulso anterior. Es un biestable D sin lógica alrededor, y una
-etapa del registro de desplazamiento. Clocksin, en el apartado 8.5 de
-*Clause and Effect*, «Specification of Cascaded Components», conecta N
-retardos en serie sin escribir N: la cascada es una recursión sobre la lista
-de los estados de sus etapas, y la cantidad de etapas es la longitud de esa
-lista. `retardo/4` es esa recursión, con el estado como primer argumento:
+## Ejercicios
 
-<!-- ejemplo: capitulo-49/retardos.pl predicado: retardo/4 retardar/3 retardo_en_pulso/4 -->
-```prolog
-%!  retardo(?Estado0:list, ?A, ?Q, ?Estado:list) is det.
-%
-%   Una cascada de tantos retardos unitarios como elementos tiene Estado0:
-%   con la entrada A, la salida es Q, el estado de la última etapa, y
-%   Estado es el estado del pulso siguiente: la primera etapa toma A, y
-%   cada una de las demás, el estado de la anterior. Sin etapas, Q es A.
-%   Estado0 o Estado debe tener longitud conocida. El estado va primero,
-%   para que la indexación distinga la lista vacía de la que no lo es.
-retardo([], A, A, []).
-retardo([S|Ss], A, Q, [A|Zs]) :-
-    retardo(Ss, S, Q, Zs).
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio, y el [capítulo 50](../capitulo-50-proyecto-diagnostico-abduccion/index.md) los da por hechos.
 
-%!  retardar(?Entradas:list, +Estado0:list, ?Salidas:list) is det.
-%
-%   Salidas son las salidas de la cascada de retardo/4 en cada pulso,
-%   desde el Estado0, cuando Entradas son sus entradas. Una de las dos
-%   listas debe tener longitud conocida.
-retardar(Entradas, Estado0, Salidas) :-
-    foldl(retardo_en_pulso, Entradas, Salidas, Estado0, _).
+9. ★ **(2)** Describir un contador binario de dos bits con una entrada de
+   habilitación e: con e = 1 el contador avanza, con e = 0 conserva el
+   estado. La salida es el estado. Declararlo con `secuencial/3` desde otro
+   archivo, ejecutarlo con la sucesión de habilitaciones 1, 1, 0, 1, 0, 1 y
+   verificar con `alcanzable/3` que alcanza sus cuatro estados.
+10. ★ **(2)** Describir un detector de la secuencia 1 0 1: la salida es 1
+   en el pulso en que la entrada es 1 y las dos entradas anteriores fueron
+   0 y 1, en ese orden. El estado son las dos últimas entradas. Ejecutarlo
+   con 1, 0, 1, 0, 1, 1, 0, 1 y verificar con `siempre/3` que la salida
+   nunca es 1 si la entrada del pulso es 0.
 
-%!  retardo_en_pulso(?A, ?Q, +Estado0:list, -Estado:list) is det.
-%
-%   retardo/4 con los argumentos en el orden de foldl/6.
-retardo_en_pulso(A, Q, Estado0, Estado) :-
-    retardo(Estado0, A, Q, Estado).
-```
+## Referencias
 
-En cada pulso, la primera etapa toma la entrada, cada una de las demás toma
-el estado de la anterior, y la salida es el estado de la última. Sin etapas,
-la salida es la entrada. Con los mismos ocho pulsos que usa Clocksin, tres
-retardos dan la entrada desplazada tres pulsos; en sentido inverso, las
-salidas determinan las entradas de todos los pulsos menos los últimos, que
-todavía no salieron de la cascada:
-
-```prolog
-?- retardar([1, 1, 0, 0, 1, 1, 0, 0], [0, 0, 0], Qs).
-Qs = [0, 0, 0, 1, 1, 0, 0, 1].
-
-?- retardo([S1, S2], A, Q, E).
-S2 = Q,
-E = [A, S1].
-
-?- retardar(Es, [0, 0], [0, 0, 1, 0]).
-Es = [1, 0, _, _].
-```
-
-La segunda consulta muestra la cascada entera de una vez, con variables en
-lugar de valores: la salida es el estado de la última etapa, y el estado
-siguiente es la entrada seguida de los estados de las etapas anteriores a la
-última.
-
-El mismo circuito, descrito para el simulador del capítulo, es el registro
-de desplazamiento de la [sección 49.5](#circuitos-secuenciales) con N etapas.
-La descripción no puede ser un hecho, porque la lista de cables depende de
-N, pero puede ser una regla: `circuitos:circuito/3` y
-`secuenciales:secuencial/3` admiten cláusulas con cuerpo, y la de
-`desplazamiento_c(N)` genera los nombres `q1`, …, `qN` con `etapas/2`:
-
-<!-- ejemplo: capitulo-49/retardos.pl fragmento: %!  etapas(+N .. append(Previas, [Ultima], Qs). -->
-```prolog
-%!  etapas(+N:integer, -Nombres:list(atom)) is det.
-%
-%   Nombres son los nombres de los cables de estado de un registro de N
-%   etapas: q1, q2, ..., qN.
-etapas(N, Nombres) :-
-    findall(Q,
-            ( between(1, N, I),
-              atom_concat(q, I, Q) ),
-            Nombres).
-
-% desplazamiento(N): un registro de desplazamiento de N etapas, para
-% cualquier N positivo. La parte combinacional son solo cables: la salida
-% es la última etapa, la entrada pasa a la primera y cada etapa a la
-% siguiente.
-secuenciales:secuencial(desplazamiento(N), desplazamiento_c(N), N) :-
-    integer(N),
-    N > 0.
-
-circuitos:circuito(desplazamiento_c(N), [x|Qs], [Ultima, x|Previas]) :-
-    integer(N),
-    N > 0,
-    etapas(N, Qs),
-    N1 is N - 1,
-    length(Previas, N1),
-    append(Previas, [Ultima], Qs).
-```
-
-`integer(N)` hace que la regla no se aplique a un nombre con N libre, y así
-una consulta que recorre todos los circuitos no genera infinitos registros.
-`ejecutar/4` acepta `desplazamiento(3)` como cualquier otro circuito
-secuencial, y da las salidas de la cascada:
-
-```prolog
-?- ejecutar(desplazamiento(3), [0, 0, 0], [[1], [1], [0], [0], [1], [1], [0], [0]], Ss).
-Ss = [[0], [0], [0], [1], [1], [0], [0], [1]].
-```
-
-Las pruebas de `retardos.plt` comparan las dos versiones para N de 1 a 5,
-comparan `desplazamiento(4)` con `registro4`, y cuentan con `alcanzable/3`
-los 8 estados de `desplazamiento(3)`. La recursión de Clocksin da un circuito
-de cualquier tamaño en pocas líneas; la descripción como datos lo hace
-visible para las demás preguntas del capítulo, desde la simulación en
-sentido inverso hasta el grafo de estados.
-
-!!! question "Actividad"
-    Escribir con `retardo/4` un detector de flancos: su salida es 1 en el
-    pulso en que la entrada pasa de 0 a 1, y para eso necesita una sola
-    etapa. Comprobarlo con la entrada `[0, 1, 1, 0, 1]`.
+- William F. Clocksin, *Clause and Effect: Prolog Programming for the
+  Working Programmer*, Springer, 1997 — caso de estudio «Manipulation of
+  Clocked Sequential Circuits». Esta página toma los circuitos secuenciales
+  de ejemplo: el divisor por dos, el verificador de paridad, el registro de
+  desplazamiento y el contador en código Gray.
+- William F. Clocksin, «Logic programming and digital circuit analysis»,
+  *Journal of Logic Programming* 4 (1), 1987, págs. 59–82. Es el artículo
+  del que Clocksin toma los ejemplos de los dos casos de estudio de
+  *Clause and Effect*; esta página toma de él, a través del libro, la
+  simulación de circuitos secuenciales y sus circuitos de ejemplo. No tiene
+  edición en línea gratuita.

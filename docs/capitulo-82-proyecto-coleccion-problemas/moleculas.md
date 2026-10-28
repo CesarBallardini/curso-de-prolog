@@ -1,12 +1,25 @@
 # Moléculas
 
-Esta página contiene la
-[sección 82.5](index.md#825-moleculas) del [capítulo 82](index.md): la
-búsqueda de grupos de átomos en una molécula, en tres versiones. El
-ejemplo está en `moleculas.pl`, en `ejemplos/capitulo-82/`, con sus
-pruebas, y corre en SWISH.
+Esta página continúa el [capítulo 82](index.md) después de la
+[sección 82.4](index.md#824-version-3-las-simetrias-en-el-registro-de-visitados),
+con la sección [82.5](#825-moleculas): la búsqueda de grupos de átomos en
+una molécula, en tres versiones. El ejemplo está en `moleculas.pl`, en
+`ejemplos/capitulo-82/`, con sus pruebas, y corre en SWISH.
 
-## Moléculas, versión 1: estructuras en un grafo
+## 82.5 Moléculas
+
+Esta sección escribe la búsqueda de grupos de átomos de Covington sobre una
+molécula representada como grafo: el metilo, el hidroxilo, el grupo nitro y los
+anillos de carbonos. Las consultas del libro dan el metilo del 3-clorotolueno
+seis veces y su anillo doce; con los átomos intercambiables en orden y una
+escritura canónica de los ciclos, dan una respuesta por estructura. La versión 3
+deduce qué enlaces son dobles a partir de la valencia de cada elemento, con las
+restricciones del [capítulo
+24](../capitulo-24-programacion-con-restricciones/index.md): encuentra las dos
+estructuras de Kekulé del anillo y ninguna para el TNT, cuyo grupo nitro
+necesita cargas que el modelo no tiene.
+
+### Moléculas, versión 1: estructuras en un grafo
 
 Una fórmula estructural es un grafo: los nodos son los átomos, rotulados
 con su elemento, y las aristas son los enlaces. Buscar un grupo de átomos
@@ -174,7 +187,7 @@ false.
     `anillo_metilado` de Covington. Comprobarlo con
     `aggregate_all(count, …)`.
 
-## Moléculas, versión 2: una respuesta por estructura
+### Moléculas, versión 2: una respuesta por estructura
 
 Las respuestas repetidas son las imágenes de una misma estructura por las
 permutaciones de sus átomos intercambiables, el mismo fenómeno que las
@@ -354,7 +367,7 @@ F = 'C7H5N3O6'.
 F = 'H3NO'.
 ```
 
-## Moléculas, versión 3: los enlaces dobles
+### Moléculas, versión 3: los enlaces dobles
 
 El grafo no dice qué enlaces son dobles. Covington observa que, con
 suficiente química, Prolog podría deducirlo, y basta con una regla: cada
@@ -448,3 +461,36 @@ ninguna: en un grupo nitro, el nitrógeno forma cuatro enlaces y uno de
 los oxígenos uno solo, con cargas eléctricas opuestas que el modelo no
 representa. La respuesta `false` no dice que la molécula no exista, sino
 que la regla de la valencia fija no alcanza para describirla.
+
+El capítulo continúa en la página
+[Una colección de estampillas](estampillas.md#826-una-coleccion-de-estampillas),
+con el álbum de estampillas de Csenki, guardado primero en la base de
+datos dinámica y después como un valor. Antes, el [ejercicio](#ejercicios)
+de esta página practica las tres versiones de las moléculas.
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio. Los ejercicios que piden código se resuelven en archivos
+que cargan los del capítulo, sin modificarlos.
+
+6. ★ **(2)** Agregar a `molecula/3` el naftaleno, dos anillos de seis
+   carbonos que comparten un enlace, con ocho hidrógenos. Predecir, antes
+   de ejecutar, cuántas respuestas dan `anillo(naftaleno, 6, A)`,
+   `anillo(naftaleno, 10, A)` y `ordenes(naftaleno, O)`, y explicar la del
+   anillo de diez.
+
+## Referencias
+
+- Michael A. Covington, Donald Nute y André Vellino, *Prolog Programming
+  in Depth*, Prentice Hall, 1997 — capítulo «Artificial Intelligence
+  Techniques», apartado «Examining molecules» (8.6, con CHEM.PL).
+  [Edición en línea](https://www.covingtoninnovations.com/books/PPID.pdf).
+  El capítulo toma la molécula como grafo con rótulos, el
+  3-clorotolueno con su numeración, las consultas del metilo, del anillo
+  de seis, del anillo metilado y del hidroxilo, y el difenilo, el grupo
+  nitro, el TNT y la hidroxilamina de sus ejercicios.
+- *SWI-Prolog Reference Manual*, sección de `library(clpfd)`:
+  [manual en línea](https://www.swi-prolog.org/pldoc/doc_for?object=manual).

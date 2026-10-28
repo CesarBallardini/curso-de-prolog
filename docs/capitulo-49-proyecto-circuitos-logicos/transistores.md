@@ -1,13 +1,15 @@
 # Compuertas hechas con transistores
 
-Esta página contiene la sección
-[49.9](index.md#499-compuertas-hechas-con-transistores) del
-[capítulo 49](index.md): los transistores CMOS descritos por sus estados
-estables, el inversor, el cortocircuito y una compuerta XOR de seis
-transistores. Los ejemplos están en `transistores.pl`, en
+Esta página continúa la página
+[Los productos como vectores de signos y los retardos en cascada](vectores.md#498-retardos-en-cascada)
+del [capítulo 49](index.md), con la sección
+[49.9](#499-compuertas-hechas-con-transistores): las compuertas de las
+secciones anteriores son tablas, y aquí se construyen con los transistores
+CMOS descritos por sus estados estables: el inversor, el cortocircuito y una
+compuerta XOR de seis transistores. Los ejemplos están en `transistores.pl`, en
 `ejemplos/capitulo-49/`, con sus pruebas.
 
-## Compuertas hechas con transistores
+## 49.9 Compuertas hechas con transistores
 
 Spivey, en el capítulo «Hardware simulation» de *An Introduction to Logic
 Programming through Prolog*
@@ -138,7 +140,7 @@ estado estable, y la prueba `xor_tabla` de `transistores.plt` lo verifica.
 El modelo comprueba la lógica del circuito, no su comportamiento eléctrico:
 Spivey advierte que los dos transistores del par en paralelo hacen falta por
 efectos que la simulación no representa, y el
-[ejercicio 14](index.md#ejercicios) muestra que el modelo no los distingue.
+[ejercicio 14](#ejercicios) muestra que el modelo no los distingue.
 Como en la [sección 49.1](index.md#491-compuertas-como-tablas-circuitos-como-reglas),
 la relación responde también en sentido inverso, aunque un transistor real
 no lleve su compuerta a un valor desde el drenador: el modelo es más
@@ -150,3 +152,82 @@ mal, no que funciona.
     comprobarlo. Después, cambiar en una copia de `transistores.pl` el
     `ntran(NA, B, Z)` por `ntran(A, B, Z)` y explicar las respuestas de la
     misma consulta.
+
+!!! success "Criterios de calidad"
+    | Criterio | En este capítulo |
+    |---|---|
+    | C1 | cada predicado declara modos y determinación; la simulación es `nondet` porque la relación, con entradas libres, tiene varias respuestas, aunque con las entradas ligadas tenga una |
+    | C3 | los circuitos son relaciones: `simular/3`, `sumar_bits/4` y `ejecutar/4` se consultan también en sentido inverso, y las pruebas lo verifican |
+    | C6 | la descripción de un circuito es solo datos, y el intérprete, `simular/4`, no depende de ninguno: cambia el significado de las compuertas con la conducta, sin tocar la descripción ni el intérprete |
+    | C7 | 152 pruebas en diez archivos; cada versión se compara con la anterior (la descripción del sumador con `sumador/5`, la fórmula con la simulación, el sumador de tres bits con la suma aritmética), y la recursión sin tabla se prueba con `call_with_inference_limit/3` |
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio, y el [capítulo 50](../capitulo-50-proyecto-diagnostico-abduccion/index.md) los da por hechos.
+
+13. **(2)** Con `ptran/3` y `ntran/3` de la
+    [sección 49.9](#499-compuertas-hechas-con-transistores), escribir la
+    compuerta NAND de la tecnología CMOS, con dos transistores p en paralelo
+    entre el 1 y la salida y dos n en serie entre la salida y el 0, y
+    verificar que tiene la tabla de `nand/3`. Explicar por qué el modelo de
+    Spivey admite también la consulta inversa, con la salida dada, aunque un
+    transistor real no puede llevar su compuerta a un valor.
+14. **(2)** Spivey señala que los dos transistores del par en paralelo de
+    la XOR son necesarios por efectos eléctricos que el modelo no
+    representa. Escribir las dos variantes de cinco transistores, sin el
+    transistor p y sin el n del par, y verificar que el modelo les da la
+    misma tabla que a `xor_cmos/3`. Explicar qué dice ese resultado sobre lo
+    que el modelo de estados estables puede verificar.
+
+## Resumen
+
+| | |
+|---|---|
+| **compuerta como tabla** | un hecho por fila de la tabla de verdad, con las entradas antes de la salida |
+| **circuito como conjunción** | una meta por compuerta y una variable por cable; los cables internos no aparecen en la cabeza |
+| **estado estable** | una solución de la conjunción: ninguna en un inversor realimentado, dos en un biestable |
+| **circuito como dato** | `circuito(Nombre, Entradas, Salidas)` y `componente(Circuito, Id, Tipo, Entradas, Salidas)`, con cables nombrados y jerarquía |
+| **conducta** | el significado de cada compuerta, argumento de `simular/4`: su tabla, su fórmula o una restricción booleana |
+| **ruta** | la lista de identificadores de componentes que lleva a una compuerta desde el circuito exterior |
+| **suma de productos** | una disyunción de conjunciones de literales; se obtiene con la forma normal negativa y la distribución, y se simplifica con la absorción |
+| **equivalencia** | con `library(clpb)`, `taut/2` sobre las restricciones de los dos circuitos; `sat/1` y `labeling/1` dan una entrada que los distingue |
+| **circuito secuencial** | una parte combinacional y un registro de estado; ejecutarlo es un `foldl/6` sobre los pulsos del reloj |
+| **estados alcanzables** | la clausura tabulada del grafo de estados; sobre ella, una propiedad se verifica para toda entrada |
+| `simular/3`, `simular/4`, `tabla_de_verdad/2`, `compuerta_en/3` | el intérprete de la descripción y las preguntas sobre la estructura |
+| `formula/3`, `fnn/2`, `suma_de_productos/2`, `como_formula/2` | la fórmula de una salida y su suma de productos |
+| `equivalentes/2`, `diferencia/3`, `cuantas/4` | la verificación con `library(clpb)` |
+| `secuencial/3`, `paso/5`, `ejecutar/4` | los circuitos secuenciales |
+| `alcanzable/3`, `grafo/3`, `siempre/3` | el grafo de estados, tabulado, y las propiedades sobre él |
+| **vector de signos** | un producto como un signo por variable: `+`, `-` o `0`; la absorción y la combinación se deciden posición por posición |
+| **implicante primo** | un producto que implica la función y que no se puede combinar con otro; se obtiene combinando vectores que difieren en un signo |
+| `vector/3`, `cubre/2`, `combinar/3`, `unos/3`, `implicantes_primos/2` | los productos como vectores y el primer paso de Quine y McCluskey |
+| `retardo/4`, `retardar/3` | N retardos unitarios en cascada, con N la longitud de la lista de estados |
+| **transistor** | la relación de sus estados estables: el p conduce con la compuerta en 0, el n con la compuerta en 1 |
+| `ptran/3`, `ntran/3`, `inversor_cmos/2`, `xor_cmos/3`, `cortocircuito/1` | las compuertas CMOS y un circuito sin estados estables |
+| **[Patrón 60](../patrones.md#60-interprete-con-conducta-como-parametro)** | intérprete con conducta como parámetro |
+| `acyclic_term/1` | se cumple si el término no es cíclico: un circuito sin realimentación |
+
+## Temas que se retoman
+
+| Tema | Se retoma en |
+|---|---|
+| Fallas de compuertas y diagnóstico por abducción sobre el módulo `circuitos` | [capítulo 50](../capitulo-50-proyecto-diagnostico-abduccion/index.md) |
+| Autómatas finitos, de los que un circuito secuencial es un caso | [capítulo 52](../capitulo-52-proyecto-automatas-expresiones-regulares/index.md) |
+
+## Referencias
+
+- Michael Spivey, *An Introduction to Logic Programming through Prolog*,
+  Prentice Hall International, 1996 — «Hardware simulation».
+  [Edición en línea](https://spivey.oriel.ox.ac.uk/wiki/files/logprog/logic.pdf).
+  Esta página toma, para la
+  [sección 49.9](#499-compuertas-hechas-con-transistores), el modelo de los
+  transistores p y n, el inversor CMOS, el cortocircuito y la compuerta XOR
+  de seis transistores de su ejercicio 12.2.
+
+El código del capítulo es propio, escrito para el curso: los programas de
+Clocksin y de Spivey se reescribieron con la representación de este
+capítulo, y la verificación con `library(clpb)` no tiene equivalente en esos
+libros.

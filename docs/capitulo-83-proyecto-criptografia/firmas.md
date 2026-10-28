@@ -1,15 +1,15 @@
-# Firmas
+# RSA y la entrega firmada
 
-Esta página contiene las secciones
-[83.6](index.md#836-version-4-rsa-con-enteros) y
-[83.7](index.md#837-version-5-la-entrega-firmada) del
-[capítulo 83](index.md): RSA escrito con enteros, y las firmas de
-`library(crypto)` aplicadas a la entrega del pack del
+Esta página continúa el [capítulo 83](index.md) después de la
+[sección 83.5](index.md#835-version-3-fichas-de-sesion), con las secciones
+[83.6](#836-version-4-rsa-con-enteros) y
+[83.7](#837-version-5-la-entrega-firmada): RSA escrito con enteros, y las
+firmas de `library(crypto)` aplicadas a la entrega del pack del
 [capítulo 32](../capitulo-32-ejecutables-y-distribucion/index.md). Los
 ejemplos están en `rsa.pl` y `firmas.pl`, en `ejemplos/capitulo-83/`,
 con sus pruebas.
 
-## Firmas, versión 4: RSA con enteros
+## 83.6 Versión 4: RSA con enteros
 
 En un esquema de **clave pública** cada participante tiene dos claves: la
 **privada**, que guarda, y la **pública**, que publica. Lo que firma la
@@ -400,7 +400,7 @@ un bloque con un formato fijo.
     `adivinar/4` con las opciones `[si, no]` no necesitaría la clave si los
     votos se codificaran como 0 y 1. Comprobarlo con `clave_de_ejemplo/2`.
 
-## Firmas, versión 5: la entrega firmada
+## 83.7 Versión 5: la entrega firmada
 
 Los dos defectos de la versión 4 se corrigen del mismo modo: no se firma
 el mensaje, sino un bloque del tamaño del módulo construido con un
@@ -735,7 +735,7 @@ agregada al manifiesto, `R = firma_invalida`.
 
     **Versión ingenua.** Interpretar primero y comprobar después, o no
     comprobar: `abrir_sin_mac/3`, de la
-    [versión 6](canal.md#canal-version-6-un-secreto-acordado-y-un-canal-cifrado),
+    [versión 6](canal.md#838-version-6-un-secreto-acordado-y-un-canal-cifrado),
     descifra sin mirar el código, y un cambio de un dígito hexadecimal en
     el cifrado hace leer «Pagar 900 pesos a Ana» donde se envió «Pagar 100
     pesos a Ana».
@@ -769,3 +769,61 @@ agregada al manifiesto, `R = firma_invalida`.
     el pack, el manifiesto y la firma por los suyos, firmados con su
     propia clave, y quien instala usa la clave del autor. Explicar qué
     papel cumple la huella en ese caso.
+
+El capítulo continúa en la página
+[El canal cifrado](canal.md#838-version-6-un-secreto-acordado-y-un-canal-cifrado),
+con la tercera propiedad, la confidencialidad: un secreto acordado por un
+canal público y los mensajes cifrados y autenticados con él.
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio. Los ejercicios que piden código se resuelven en archivos
+que cargan los del capítulo, sin modificarlos.
+
+6. **(2)** Escribir `inverso_lineal(+A, +M, -X)`, el inverso modular por
+   búsqueda (`between/3` hasta encontrar `A*X mod M =:= 1`), y comparar
+   con `time/1` su costo y el de `inverso/3` para `inverso(65537, Fi, D)`
+   con Fi de 16, 20 y 24 bits. Estimar cuánto tardaría con un Fi de 2048
+   bits.
+7. ★ **(2)** El **teorema chino del resto** permite descifrar con dos
+   potencias de la mitad de tamaño. Escribir `privada_crt(+P, +Q, +D,
+   -Clave)`, que calcule una vez `DP`, `DQ` y el inverso de Q módulo P,
+   como `clave_desde_primos/4`, y `descifrar_crt(+C, +Clave, -M)`, y
+   comprobar que da lo mismo que `descifrar/3`. Medir los dos con 1000
+   descifrados y claves de 1024 bits.
+8. **(3)** El ataque de Wiener: si el exponente privado D es pequeño,
+   las fracciones continuas de E/N lo revelan. Escribir `wiener(+Publica,
+   -D)` y probarlo con una clave construida con un D de 60 bits y primos
+   de 256 bits. ¿Por qué `claves_aleatorias/3` no corre ese riesgo?
+9. ★ **(2)** Escribir `firmar_archivo(+Nombre, +Archivo, -Firma)` y
+   `verificar_archivo(+Nombre, +Archivo, +Firma)`, que firmen el resumen
+   del archivo (no su texto), y comprobar que la firma de un archivo y la
+   de su contenido leído como texto coinciden.
+
+## Referencias
+
+- Markus Triska, *The Power of Prolog*, capítulo «Cryptography with
+  Prolog». [Edición en línea](https://www.metalevel.at/prolog/cryptography).
+  Esta página toma de allí la idea de firmar para establecer la
+  autenticidad de un resumen de referencia. Triska trabaja con Scryer
+  Prolog: la `library(crypto)` de SWI-Prolog 9.2.9 no tiene Ed25519, y la
+  página firma con RSA.
+- Ronald L. Rivest, Adi Shamir y Leonard Adleman, «A method for obtaining
+  digital signatures and public-key cryptosystems», *Communications of
+  the ACM*, volumen 21, número 2, 1978, páginas 120–126.
+  [Edición en línea](https://doi.org/10.1145/359340.359342). Esta página
+  toma las claves, el cifrado y la firma de la versión 4.
+- Michael O. Rabin, «Probabilistic algorithm for testing primality»,
+  *Journal of Number Theory*, volumen 12, número 1, 1980, páginas
+  128–138. [Edición en línea](https://doi.org/10.1016/0022-314X(80)90084-0).
+  La prueba de primalidad de `primo/1`, sobre la de Gary L. Miller de
+  1976.
+- RFC 8017, PKCS #1 versión 2.2, el formato de las firmas RSA, 2016
+  ([en línea](https://www.rfc-editor.org/rfc/rfc8017)). Esta página toma
+  de allí el formato del bloque firmado que lee `relleno_pkcs1/2`.
+- *SWI-Prolog Reference Manual*, la documentación de `library(crypto)` y
+  las funciones aritméticas `powm`, `lsb` y `msb`:
+  [manual en línea](https://www.swi-prolog.org/pldoc/doc/_SWI_/library/ext/ssl/crypto.pl).

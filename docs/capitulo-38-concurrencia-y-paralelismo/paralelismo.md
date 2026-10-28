@@ -1,14 +1,15 @@
 # Paralelismo de datos y motores
 
-Esta página contiene las secciones [38.4](index.md#384-paralelismo-de-datos) y
-[38.5](index.md#385-motores) del [capítulo 38](index.md): repartir un
+Esta página continúa el [capítulo 38](index.md) después de la
+[sección 38.3](index.md#383-estado-compartido), con las secciones
+[38.4](#384-paralelismo-de-datos) y [38.5](#385-motores): repartir un
 cálculo sobre muchos datos entre los núcleos del procesador, y ejecutar una
 meta con un motor que entrega sus respuestas de a una. Los ejemplos están en
 `paralelo.pl` y `motores.pl`, en `ejemplos/capitulo-38/`, con sus pruebas;
 los dos usan lo que presentan las secciones [38.1](index.md#381-hilos) a
 [38.3](index.md#383-estado-compartido), y ninguno corre en SWISH.
 
-## Paralelismo de datos
+## 38.4 Paralelismo de datos
 
 Un cálculo sobre muchos datos independientes se puede repartir entre los
 núcleos del procesador. La bandera `cpu_count` da cuántos ve SWI-Prolog; en
@@ -208,7 +209,7 @@ y lo bastante grandes para pagar el reparto.
     400 000 números o con 32 de 50 000, que cubren los mismos números.
     Comprobarlo con `time/1`.
 
-## Motores
+## 38.5 Motores
 
 Un **motor** (*engine*) ejecuta una meta y entrega sus respuestas de a una,
 cuando se le piden. `engine_create(Plantilla, Meta, Motor)` lo crea sin
@@ -350,3 +351,42 @@ el final de la sesión, y la prueba `sin_motores` comprueba con
 !!! question "Actividad"
     Predecir la respuesta de `primeros(3, X, member(X, [a]), L)` y la de
     `mezclar(5, multiplo(2), multiplo(2), L)`, y comprobarlas.
+
+El capítulo continúa en la página
+[Los hilos del servidor HTTP y las inscripciones concurrentes](servidor.md#386-los-hilos-del-servidor-http),
+con los hilos trabajadores que atienden los pedidos de un servicio y la
+inscripción concurrente de *Inscripciones*.
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio, y los capítulos siguientes los dan por hechos.
+
+8. ★ **(2)** `concurrent_forall/3` acepta la opción `threads(N)`. Medir
+   `goldbach_paralelo/1` hasta 100 000 con 1, 2, 4, 8 y 16 hilos, armar
+   una tabla con los tiempos y explicar por qué la mejora se detiene antes
+   de 16.
+9. **(2)** Escribir `posicion_extremos(Lista, Condicion, Pos)`, que busca
+   con `first_solution/3` un elemento que cumpla Condicion recorriendo la
+   lista desde el principio y desde el final a la vez, y da su posición.
+   Decir en qué casos la respuesta depende del orden de los hilos, y cómo
+   se prueba.
+10. ★ **(2)** Escribir `emparejar(N, Gen1, Gen2, Pares)` con dos motores: los
+    primeros N pares X-Y, con X la i-ésima respuesta de Gen1 e Y la i-ésima
+    de Gen2. `emparejar(3, multiplo(2), multiplo(5), P)` da
+    `P = [2-5, 4-10, 6-15]`.
+11. **(2)** Escribir un generador de identificadores con un motor:
+    `nuevo_generador(M)` y `siguiente_id(M, Id)`, que da `id(1)`, `id(2)`,
+    … en llamadas sucesivas. ¿Puede un segundo hilo pedirle identificadores
+    al mismo motor mientras el primero lo usa? Consultar el manual y
+    comprobarlo.
+
+## Referencias
+
+- El manual de SWI-Prolog: «Coroutining using Prolog engines»
+  ([en línea](https://www.swi-prolog.org/pldoc/man?section=engines)) y
+  `library(thread)` ([en línea](https://www.swi-prolog.org/pldoc/doc/_SWI_/library/thread.pl)).
+  Esta página toma de ahí las primitivas del paralelismo de datos y de los
+  motores.

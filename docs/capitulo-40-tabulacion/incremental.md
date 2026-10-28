@@ -1,14 +1,19 @@
-# Tablas incrementales, hilos y costo
+# Tablas incrementales, hilos, costo y el intérprete con tablas
 
-Esta página contiene las secciones [40.5](index.md#405-tabulacion-incremental)
-y [40.6](index.md#406-lo-que-cuesta) del [capítulo 40](index.md): las
-tablas que siguen los cambios de un predicado dinámico, las tablas y los
-hilos, y lo que cuesta una tabla, medido en esta máquina. Los ejemplos
-están en `incremental.pl`, `compartida.pl` y `costo.pl`, en
-`ejemplos/capitulo-40/`, con sus pruebas; `compartida.pl` crea hilos y no
-corre en SWISH.
+Esta página continúa la página
+[Subsunción de respuestas y negación tabulada](subsuncion.md#404-negacion-tabulada) del
+[capítulo 40](index.md), con las secciones [40.5](#405-tabulacion-incremental)
+a [40.7](#407-el-interprete-con-tablas-las-correlativas): las tablas que
+siguen los cambios de un predicado dinámico, las tablas y los hilos, lo que
+cuesta una tabla, medido en esta máquina, y dos aplicaciones, el intérprete
+del sistema experto con tablas y la cadena de correlativas de
+*Inscripciones*. Los ejemplos están en `incremental.pl`, `compartida.pl`,
+`costo.pl`, `experto.pl` y `requisitos.pl`, en `ejemplos/capitulo-40/`, con
+sus pruebas; `compartida.pl` crea hilos y `requisitos.pl` carga los datos
+del [capítulo 32](../capitulo-32-ejecutables-y-distribucion/index.md), y
+ninguno de los dos corre en SWISH.
 
-## Tabulación incremental
+## 40.5 Tabulación incremental
 
 Una tabla guarda las respuestas calculadas con los datos del momento en que
 se completó. Si un predicado dinámico del que depende cambia, la tabla no se
@@ -158,7 +163,7 @@ encuentra la tabla completa. Es la diferencia entre `guardado/2` y
 repetidos que allí dejaba la tabla compartida escrita a mano:
 `abolish_all_tables/0` borra también las tablas compartidas.
 
-## Lo que cuesta
+## 40.6 Lo que cuesta
 
 `costo.pl` arma una red de N enlaces en fila, de 0 a N, sin ciclos, y
 define el alcance de tres maneras: sin tabla con la recursión a la derecha,
@@ -276,7 +281,7 @@ el de la izquierda linealmente:
 La conclusión no es que la recursión a la izquierda sea siempre mejor: la
 cantidad de tablas depende de qué argumentos llegan ligados. Con el primer
 argumento ligado, la recursión a la izquierda reutiliza la llamada inicial;
-con el segundo, lo hace la derecha ([ejercicio 13](index.md#ejercicios)). La
+con el segundo, lo hace la derecha ([ejercicio 13](#ejercicios)). La
 memorización es otro caso: `fib_tabla(1000, F)` hace 40 031 inferencias, y
 `fib_memo(1000, F)` del [capítulo 21](../capitulo-21-base-de-datos-dinamica/index.md#215-memorizacion), con `assertz/1`, hace 8 997: la
 tabla cuesta unas cuatro veces más por valor que el hecho dinámico escrito a
@@ -288,3 +293,279 @@ ciclos.
     `cadena(100)`, y cuántas `alcanza_izq(50, Y)`. Comprobarlo con
     `tablas/1`, y explicar por qué la primera no crea las tablas de los
     nodos 0 a 49.
+
+## 40.7 El intérprete con tablas; las correlativas
+
+### El sistema experto
+
+La [sección 39.7](../capitulo-39-semantica-de-los-programas-logicos/negacion.md#397-las-reglas-del-sistema-experto) analizó las reglas del sistema experto con la
+negación `no`: la base original es estratificada, y la versión que agrega
+r13, «un ave que no es pingüino ni avestruz vuela», crea un ciclo positivo
+con r4 (`ave`, `vuela`, `ave`) y dos negativos con r11 y r12. El intérprete
+del [capítulo 34](../capitulo-34-introspeccion-y-metainterpretes/index.md#347-el-sistema-experto-explica), que resuelve de arriba hacia abajo, entra en el
+ciclo positivo con cualquier caso. Tiene además un costo menos visible:
+cada hipótesis vuelve a probar las conclusiones intermedias, y `mamifero` se
+prueba una vez para el guepardo, otra para el tigre, otra para la jirafa.
+El encadenamiento hacia adelante del [capítulo 21](../capitulo-21-base-de-datos-dinamica/index.md) evitaba esa repetición
+guardando cada conclusión con `assertz/1`.
+
+`experto.pl` tiene las reglas, las versiones de la base y el intérprete sin
+tabla, `probar_sin_tabla/3`, con `\+` para `no`. La versión tabulada separa
+el intérprete en dos predicados: `probar/3` recorre las condiciones, y
+`cierto/3`, tabulado, prueba cada conclusión una vez por conjunto de
+observaciones:
+
+<!-- ejemplo: capitulo-40/experto.pl predicado: probar/3 -->
+```prolog
+%!  probar(+Version:atom, +Observaciones:list, +Condicion) is nondet.
+%
+%   Condicion se prueba con las reglas de Version y las Observaciones. Cada
+%   conclusión se busca en la tabla de cierto/3, y la negación es tnot/1.
+probar(Version, Os, A y B) :-
+    probar(Version, Os, A),
+    probar(Version, Os, B).
+probar(_, _, X > Y) :-
+    X > Y.
+probar(Version, Os, no A) :-
+    tnot(cierto(Version, Os, A)).
+probar(Version, Os, Meta) :-
+    atomica(Meta),
+    cierto(Version, Os, Meta).
+```
+
+<!-- ejemplo: capitulo-40/experto.pl fragmento: :- table cierto/3. .. probar(Version, Os, Condiciones). -->
+```prolog
+:- table cierto/3.
+
+%!  cierto(+Version:atom, +Observaciones:list, ?Meta) is nondet.
+%
+%   Meta es una observación, o la conclusión de una regla de Version cuyas
+%   condiciones se prueban. Las respuestas que dependen de un ciclo
+%   negativo quedan indefinidas.
+cierto(_, Os, Meta) :-
+    member(Meta, Os).
+cierto(Version, Os, Meta) :-
+    regla_de(Version, _, si Condiciones entonces Meta),
+    probar(Version, Os, Condiciones).
+```
+
+La tabla es la de la memorización a mano y la del encadenamiento hacia
+adelante, sin predicados dinámicos que borrar entre dos consultas: las
+observaciones son un argumento, y cada conjunto de observaciones tiene sus
+propias tablas. La negación `no` es `tnot/1`, y la conclusión negada tiene
+que ser un átomo sin variables, como lo son todas las de la base.
+`diagnostico/3` clasifica las hipótesis con el `valor/2` de la
+[sección 40.4](subsuncion.md#404-negacion-tabulada):
+
+<!-- ejemplo: capitulo-40/experto.pl predicado: diagnostico/3 -->
+```prolog
+%!  diagnostico(+Version:atom, +Observaciones:list, -Resultado) is det.
+%
+%   Resultado es resultado(Verdaderas, Indefinidas): las hipótesis
+%   verdaderas y las indefinidas con las reglas de Version y las
+%   Observaciones.
+diagnostico(Version, Os, resultado(Verdaderas, Indefinidas)) :-
+    must_be(oneof([original, vuela, puede_volar]), Version),
+    findall(H-V,
+            ( hipotesis(H),
+              valor(cierto(Version, Os, H), V) ),
+            Valores),
+    findall(H, member(H-verdadero, Valores), Verdaderas),
+    findall(H, member(H-indefinido, Valores), Indefinidas).
+```
+
+```prolog
+?- diagnostico(original, [tiene_plumas, nada, peso(30)], R).
+R = resultado([pinguino], []).
+
+?- diagnostico(vuela, [tiene_plumas, nada, peso(30)], R).
+R = resultado([], [pinguino]).
+
+?- diagnostico(vuela, [tiene_pelo, come_carne, color_leonado, manchas_oscuras], R).
+R = resultado([guepardo], []).
+```
+
+Son los resultados del modelo bien fundado de la [sección 39.7](../capitulo-39-semantica-de-los-programas-logicos/negacion.md#397-las-reglas-del-sistema-experto): con la
+base original, el ave que nada y pesa 30 es un pingüino; con r13, queda
+indefinida. El tercer caso es el que el intérprete sin tabla no podía
+responder: para descartar `pinguino`, prueba `ave`, que por r4 necesita
+`vuela`, que por r13 necesita `ave`. Con la tabla, la llamada a `ave`
+dentro de su propia prueba es una variante en curso, consume las respuestas
+que haya —ninguna— y la tabla se completa vacía: `ave` es falsa para un
+guepardo, y el ciclo positivo termina.
+
+```prolog
+?- call_with_inference_limit(probar_sin_tabla(vuela, [tiene_pelo, come_carne, color_leonado, manchas_oscuras], pinguino), 1000000, R).
+R = inference_limit_exceeded.
+```
+
+El precio es el árbol de prueba: `cierto/3` responde si una conclusión se
+prueba, pero no guarda cómo, y el «¿cómo?» del [capítulo 34](../capitulo-34-introspeccion-y-metainterpretes/index.md) necesita
+reconstruirlo. El [ejercicio 15](#ejercicios) lo hace, usando la tabla para
+elegir solo reglas cuyas condiciones son verdaderas.
+
+### *Inscripciones*: la cadena de correlativas
+
+El módulo `reglas` del [capítulo 32](../capitulo-32-ejecutables-y-distribucion/index.md#328-el-proyecto-inscripciones-se-entrega) calcula los requisitos de una materia
+con `requisito/2`, la clausura transitiva de `correlativa/2`, y guarda cada
+resultado en el predicado dinámico `requisitos_guardados/2`: es el
+[Patrón 17](../patrones.md#17-memorizacion-con-assertz) aplicado a una relación. `requisito/2` da una respuesta por
+cada cadena de correlativas, y bases de datos tiene a lógica como requisito
+por dos caminos, por paradigmas y por sintaxis; por eso `requisitos_de/2`
+ordena el resultado con `sort/2` antes de guardarlo. `requisitos.pl` es un
+módulo que usa los datos del [capítulo 32](../capitulo-32-ejecutables-y-distribucion/index.md) y reemplaza las dos cosas por una
+tabla:
+
+<!-- ejemplo: capitulo-40/requisitos.pl fragmento: :- table requisito/2. .. correlativa(Intermedia, Requisito). -->
+```prolog
+:- table requisito/2.
+
+%!  requisito(?Materia:atom, ?Requisito:atom) is nondet.
+%
+%   La misma relación, tabulada: una respuesta por requisito.
+requisito(Materia, Requisito) :-
+    correlativa(Materia, Requisito).
+requisito(Materia, Requisito) :-
+    requisito(Materia, Intermedia),
+    correlativa(Intermedia, Requisito).
+```
+
+<!-- ejemplo: capitulo-40/requisitos.pl predicado: requisito_sin_tabla/2 requisitos_de/2 -->
+```prolog
+%!  requisito_sin_tabla(+Materia:atom, -Requisito:atom) is nondet.
+%
+%   Requisito es una correlativa de Materia, o una correlativa de una de
+%   ellas. Una respuesta por cada camino de correlativas.
+requisito_sin_tabla(Materia, Requisito) :-
+    correlativa(Materia, Requisito).
+requisito_sin_tabla(Materia, Requisito) :-
+    correlativa(Materia, Intermedia),
+    requisito_sin_tabla(Intermedia, Requisito).
+
+%!  requisitos_de(+Materia:atom, -Requisitos:list(atom)) is det.
+%
+%   Requisitos son todas las materias que se deben aprobar antes de cursar
+%   Materia, directa o indirectamente, en orden y sin repetidos.
+requisitos_de(Materia, Requisitos) :-
+    must_be(atom, Materia),
+    findall(R, requisito(Materia, R), Todos),
+    sort(Todos, Requisitos).
+```
+
+```prolog
+?- findall(R, requisito_sin_tabla(bd, R), Rs).
+Rs = [pp, ssl, log, log, alg].
+
+?- requisitos_de(bd, Rs).
+Rs = [alg, log, pp, ssl].
+```
+
+La tabla da cada requisito una vez, sin el estado de
+`requisitos_guardados/2`, y la prueba `como_el_32` de `requisitos.plt`
+compara el resultado con el del módulo `reglas` para cada materia. Dos
+propiedades se obtienen sin agregar nada: la relación se consulta también en sentido
+inverso, `requisito(M, log)` da las materias que exigen lógica, y un plan de
+estudios con un ciclo de correlativas, que es un error de los datos, no
+impide que la consulta termine. El `sort/2` de `requisitos_de/2` sigue haciendo falta,
+pero para el orden, no para quitar repetidos.
+
+!!! success "Criterios de calidad"
+    | Criterio | En este capítulo |
+    |---|---|
+    | C1 | cada predicado declara modos y determinación; los que tienen un argumento con modo de subsunción dicen que debe llegar libre, y el error de desinstanciación está probado |
+    | C3 | las definiciones tabuladas son las cláusulas de la relación sin cambios de orden ni argumentos de control: `camino/2`, `requisito/2` y `cierto/3` se consultan en cualquier modo, incluido el inverso |
+    | C6 | ninguna tabla tiene efectos en sus cláusulas; el único estado es el de `incremental.pl` y `costo.pl`, en predicados de borde con nombre propio (`restaurar/0`, `cadena/1`) que también borran las tablas |
+    | C7 | 69 pruebas en nueve archivos; comparan las respuestas ordenadas, porque una tabla no tiene orden fijo; cada versión tabulada se compara con la que no lo está donde esta termina (`requisitos_de/2` con el del [capítulo 32](../capitulo-32-ejecutables-y-distribucion/index.md), `fib_tabla/2` con `fib/2`), y lo que no termina se prueba con `call_with_inference_limit/3`, sin depender del tiempo de la máquina |
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio, y los capítulos siguientes los dan por hechos.
+
+11. **(1)** Escribir `camino_der/2`, la relación de camino con la
+    recursión a la derecha, tabulada. ¿Da las mismas respuestas que
+    `camino/2`? Contar con `current_table/2` cuántas tablas deja
+    `camino_der(a, Y)` y cuántas `camino(a, Y)`, y explicar la diferencia.
+12. ★ **(2)** Con `incremental.pl` cargado, predecir las respuestas de
+    `alcanza(c, Y)` y de `alcanza_fijo(c, Y)` después de
+    `assertz(enlace(c, a))`, y después de un `retract(enlace(a, b))`.
+    Comprobarlo, y decir qué hace falta para que `alcanza_fijo/2` quede al
+    día.
+13. **(2)** Con `costo.pl` y `cadena(500)`, medir con `time/1`
+    `aggregate_all(count, alcanza_izq(_, 500), N)` y lo mismo con
+    `alcanza_der/2` y con `alcanza_sin_tabla/2`, y contar las tablas.
+    Explicar por qué el resultado se invierte respecto de la consulta
+    `alcanza_*(0, _)` de la [sección 40.6](#406-lo-que-cuesta).
+14. ★ **(2)** Escribir, en un módulo que use los del
+    [capítulo 32](../capitulo-32-ejecutables-y-distribucion/index.md), `habilita(Materia, Otra)`, tabulado: aprobar Materia
+    es necesario, directa o indirectamente, para cursar Otra. Escribir
+    después `materias_habilitadas(Legajo, Ms)`: las materias que el alumno
+    todavía no aprobó ni cursa y cuyos requisitos aprobó todos.
+15. **(3)** Escribir `como_tabulado(Version, Observaciones, Meta, Arbol)`,
+    que construye el árbol de prueba de una conclusión verdadera con las
+    formas `observado(M)`, `deducido(M, Regla, Arbol)`, `A y B` y `X > Y`
+    del [capítulo 34](../capitulo-34-introspeccion-y-metainterpretes/index.md). Usar `cierto/3` para elegir solo reglas cuyas
+    condiciones son verdaderas, y evitar que el ciclo de r4 y r13 dé un
+    árbol infinito.
+
+## Resumen
+
+| | |
+|---|---|
+| **tabulación** | cada llamada guarda sus respuestas en una tabla; una variante de una llamada en curso consume la tabla en lugar de resolverse de nuevo |
+| **variante** | una llamada igual a otra salvo el nombre de sus variables |
+| **tabla completa** | ninguna llamada consumidora tiene respuestas nuevas que usar; recién entonces se entregan las respuestas |
+| **resolución SLG** | la resolución con tablas y negación tabulada que implementa SWI-Prolog |
+| **subsunción de respuestas** | un modo en un argumento guarda solo la mejor respuesta: `min`, `max`, `first`, `last`, `sum`, `lattice(P/3)`, `po(P/2)` |
+| **respuesta condicional** | una respuesta indefinida, con el programa residual que la condiciona |
+| **tabla incremental** | se invalida cuando cambia un predicado dinámico declarado `incremental` del que depende |
+| `:- table p/N` | tabular un predicado; `:- table p(_, _, min)` con modos; `as incremental`, `as shared` |
+| `:- dynamic p/N as incremental` | un predicado dinámico que invalida las tablas incrementales que dependen de él |
+| `tnot/1` | la negación de un objetivo tabulado y sin variables, con la semántica bien fundada |
+| `call_delays/2` | ejecuta una meta y da la condición de cada respuesta, `true` si no tiene |
+| `abolish_all_tables/0` | borra todas las tablas |
+| `current_table/2` | enumera las tablas existentes |
+| bandera `table_space_used` de `statistics/2` | los bytes que ocupan las tablas |
+| `camino/2`, `antepasado_izq/2` | la recursión a la izquierda tabulada |
+| `fib_tabla/2`, `caminos_grilla/3` | memorización y programación dinámica con tablas |
+| `distancia/3`, `ruta/3`, `mas_corta/3` | la distancia mínima con `min` y el recorrido más corto con `lattice` |
+| `gana/2`, `valor/2` | el juego con `tnot/1`, y el valor de una meta en la semántica bien fundada |
+| `alcanza/2`, `fib_compartida/2`, `cadena/1`, `tablas/1` | una tabla incremental, una compartida, y la medición del costo |
+| `cierto/3`, `probar/3`, `diagnostico/3` | el intérprete del sistema experto con tablas |
+| `requisito/2`, `requisitos_de/2` | la cadena de correlativas de *Inscripciones*, tabulada |
+
+## Temas que se retoman
+
+| Tema | Se retoma en |
+|---|---|
+| Conjuntos de visitados y búsqueda en grafos de estados | [capítulo 41](../capitulo-41-busqueda-y-planificacion/index.md) |
+| Tablas de transposición con tabulación | [capítulo 42](../capitulo-42-juegos/index.md) |
+| `WITH RECURSIVE` frente a la tabulación | [capítulo 43](../capitulo-43-prolog-y-sql/index.md) |
+| La clausura ε de un autómata, tabulada | [capítulo 52](../capitulo-52-proyecto-automatas-expresiones-regulares/index.md) |
+| Análisis estático con tablas | [capítulo 59](../capitulo-59-proyecto-interpretacion-abstracta/index.md) |
+| Un motor Datalog, de abajo hacia arriba, comparado con las tablas | [capítulo 86](../capitulo-86-proyecto-motor-datalog/index.md) |
+| Preguntas en castellano evaluadas con tablas | [capítulo 88](../capitulo-88-proyecto-preguntas-en-castellano/index.md) |
+
+## Referencias
+
+- David S. Warren, *Programming in Tabled Prolog*, borrador, Stony Brook
+  University, 1999 — capítulo «Tabling and Datalog Programming».
+  [Edición en línea del autor, en el archivo web](https://web.archive.org/web/20240628211257/https://www3.cs.stonybrook.edu/~warren/xsbbook/book.html).
+  Esta página toma de allí el análisis de la cantidad de tablas según la
+  dirección de la recursión. Warren escribe para XSB; los programas del
+  capítulo usan la sintaxis y las primitivas de SWI-Prolog.
+- Jan Wielemaker y otros, *SWI-Prolog Reference Manual*, sección «Tabled
+  execution (SLG resolution)», con sus apartados sobre la tabulación
+  incremental y las tablas compartidas.
+  [En línea](https://www.swi-prolog.org/pldoc/man?section=tabling). Es la
+  referencia de las directivas `incremental` y `shared`, de
+  `abolish_all_tables/0` y de `current_table/2`.
+
+Los programas del capítulo son propios, escritos para el curso: el grafo,
+el juego y las reglas del sistema experto vienen de los capítulos
+[34](../capitulo-34-introspeccion-y-metainterpretes/index.md) y
+[39](../capitulo-39-semantica-de-los-programas-logicos/index.md), las
+correlativas del [capítulo 32](../capitulo-32-ejecutables-y-distribucion/index.md),
+y las mediciones se hicieron en esta máquina con SWI-Prolog 9.2.9.

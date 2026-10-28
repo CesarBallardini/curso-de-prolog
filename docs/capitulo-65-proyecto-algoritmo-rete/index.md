@@ -4,7 +4,7 @@ El intérprete del
 [capítulo 64](../capitulo-64-proyecto-sistema-produccion/index.md) reúne en
 cada ciclo el conjunto de conflicto entero: compara todas las reglas con
 toda la memoria de trabajo, aunque el ciclo anterior haya cambiado uno o dos
-hechos. La [sección 64.6](../capitulo-64-proyecto-sistema-produccion/index.md#646-version-5-el-costo-del-reconocimiento)
+hechos. La [sección 64.6](../capitulo-64-proyecto-sistema-produccion/configurador.md#646-version-5-el-costo-del-reconocimiento)
 lo midió: el 96 % de las instanciaciones de `familia` ya estaba en el ciclo
 anterior, y el costo por ciclo del configurador crece con cada hecho del
 catálogo, aunque ninguna regla lo use. El **algoritmo Rete** evita ese
@@ -48,8 +48,9 @@ Prolog* de Dennis Merritt, que implementa un Rete simplificado para su
 sistema *Foops*: nodos raíz, nodos de dos entradas con memorias izquierda y
 derecha, tokens con un signo que dice si agregan o quitan, un compilador
 que reconoce patrones repetidos y nodos de negación con una cuenta. El
-algoritmo es de Charles Forgy. La lista completa está en
-[Referencias](#referencias); el código es propio.
+algoritmo es de Charles Forgy. Las referencias de cada página dicen qué
+toma ella de cada fuente; las de esta están en [Referencias](#referencias).
+El código es propio.
 
 El capítulo reutiliza las tablas de `library(assoc)` del
 [capítulo 23](../capitulo-23-estructuras-de-datos-de-la-biblioteca/index.md#235-libraryassoc-y-libraryrbtrees),
@@ -82,7 +83,7 @@ Al terminar el capítulo, el lector puede:
 !!! info "Tiempo estimado"
     Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **2:20 h**.
     Resolver los 5 ejercicios marcados con ★: **1:35 h**.
-    Resolver los 14 ejercicios del final: **4:15 h**.
+    Resolver los 14 ejercicios del capítulo: **4:15 h**.
 
 ## 65.1 El programa terminado
 
@@ -610,19 +611,13 @@ tres pedidos del [capítulo 64](../capitulo-64-proyecto-sistema-produccion/index
     `cambios_rete/4`, aplicando a mano los cambios de los tres primeros
     ciclos.
 
-La [versión 6](medicion.md#657-version-6-la-medicion) mide la red contra el
-[capítulo 64](../capitulo-64-proyecto-sistema-produccion/index.md), y la [versión 7](medicion.md#658-version-7-las-pruebas-de-un-solo-hecho-en-la-red-alfa)
-mueve a la red alfa las pruebas que miran un solo hecho. Las dos están en
-[una página aparte](medicion.md).
-
-!!! success "Criterios de calidad"
-    | Criterio | En este capítulo |
-    |---|---|
-    | C1 | cada predicado declara modos y determinación; la propagación, la compilación y el ciclo son `det`, y `retirar_rete/4`, `un_ciclo/9` y `acciones_rete/5` son `semidet`, como sus originales del [capítulo 64](../capitulo-64-proyecto-sistema-produccion/index.md) |
-    | C2 | la red es un término, `red/4`, con tablas de `library(assoc)`; el estado, `rete/3`, viaja en argumentos junto a la memoria `mt/2`; los nodos se comparan con `=@=` y no con unificación |
-    | C4 | las cláusulas de los tres tipos de nodo se distinguen por su primer argumento, y la negación despacha por el signo en `llega_a_negacion/8`; las pruebas fallan si queda una alternativa pendiente |
-    | C6 | la red se escribe sin copiar el [capítulo 64](../capitulo-64-proyecto-sistema-produccion/index.md): carga sus archivos, reutiliza su memoria, su refracción, sus estrategias y su traza, y la negación y las pruebas alfa se agregan con cláusulas `multifile` y con otro agrupador para el mismo compilador |
-    | C7 | 51 pruebas en siete archivos; la central compara con el [capítulo 64](../capitulo-64-proyecto-sistema-produccion/index.md) el conjunto de conflicto después de cambios sueltos y la memoria final de ejecuciones enteras, sello por sello, en todos sus programas y estrategias |
+El capítulo continúa en la página
+[La medición y las pruebas alfa](medicion.md#657-version-6-la-medicion), con la versión 6, que
+mide la red contra el
+[capítulo 64](../capitulo-64-proyecto-sistema-produccion/index.md), y la
+versión 7, que mueve a la red alfa las pruebas que miran un solo hecho.
+Antes, los [ejercicios](#ejercicios) de esta página practican las
+secciones 65.1 a 65.6.
 
 ## Ejercicios
 
@@ -664,73 +659,11 @@ archivo que carga los del capítulo, sin modificarlos.
    disparada sale del conjunto, con un límite de ciclos. Ejecutar
    `reingreso` y explicar lo que ocurre; comprobar que con `familia` y con
    el configurador da los mismos resultados que el [capítulo 64](../capitulo-64-proyecto-sistema-produccion/index.md).
-7. **(2)** Escribir una versión de `activar_derecha/6` que activa el nodo
-   aunque su padre no tenga tokens, y medir con ella la carga del
-   configurador con 0 y 400 memorias agregadas. Explicar la diferencia.
-8. **(1)** `red_de/2` está tabulada. Agregar, en una sesión, una cláusula
-   nueva de `programa/2` para un nombre ya compilado es imposible, pero sí
-   puede cambiar un predicado que una prueba `{Meta}` llama. Explicar qué
-   parte de la red queda desactualizada cuando cambia un marco que usa
-   `es_de_clase/2` en la versión 7, y qué hace falta para compilarla de
-   nuevo.
-9. ★ **(3)** Escribir `rastrear_cambios/4`, que ejecuta un programa en la
+7. ★ **(3)** Escribir `rastrear_cambios/4`, que ejecuta un programa en la
    red y escribe en cada ciclo, además de la regla elegida, qué
    instanciaciones entraron en el conjunto de conflicto y cuáles salieron
    por las acciones de ese ciclo. Usarlo con el robot y explicar las
    salidas que provoca una negación.
-10. **(2)** Contar con `tokens_guardados/3` los tokens de la red de
-    `familia` al terminar la cadena de 10, 20 y 40 generaciones, y
-    relacionarlos con la cantidad de hechos `antepasado/2` de la memoria.
-    Explicar qué parte de la memoria del programa ocupa la red.
-11. **(3)** Escribir `pasos_forzados/2`, un agrupador que mueve al nodo alfa
-    todas las pruebas que siguen a un patrón, sin mirar sus variables.
-    Encontrar una regla del configurador cuyo resultado cambia con él, y
-    explicar el cambio con `solo_del_hecho/3`.
-12. **(2)** Con las filas de la
-    [sección 65.8](medicion.md#658-version-7-las-pruebas-de-un-solo-hecho-en-la-red-alfa),
-    calcular cuántos ciclos tendría que hacer el configurador sobre el
-    catálogo de 828 hechos para que la red con pruebas alfa costara menos
-    que el [capítulo 64](../capitulo-64-proyecto-sistema-produccion/index.md), suponiendo que cada ciclo agregado cuesta lo que el
-    promedio de los medidos. Discutir si la suposición es razonable.
-13. **(2)** Escribir el programa `bloques_aux`, que declara libres de rojo
-    los mismos bloques que `bloques` de la
-    [sección 65.11](extensiones.md#6511-la-negacion-de-una-conjuncion) con
-    una regla auxiliar que agrega `rojo_encima(X)` y una negación simple.
-    Comparar los ciclos de las dos versiones, y lo que cada una concluye
-    cuando, después de ejecutarlas, se quita el hecho `color(c, rojo)`.
-14. **(3)** Escribir `quitar_regla/5`, el camino inverso de la
-    [sección 65.13](extensiones.md#6513-una-regla-nueva-con-la-red-en-marcha):
-    quita de una red cargada una regla, sus instanciaciones, los nodos beta
-    que ninguna otra regla usa y los nodos alfa que quedan sin sucesores.
-    Verificar que el resultado coincide con compilar el programa sin esa
-    regla, para cada regla de `familia` y del configurador.
-
-## Resumen
-
-| | |
-|---|---|
-| **Rete** | las reglas compiladas en una red que guarda entre ciclos las comparaciones hechas; solo los hechos que cambian la recorren |
-| **nodo alfa** | un patrón suelto y su memoria: los hechos que unifican con él, indexados por el primer argumento |
-| **nodo beta** | un prefijo de las condiciones de una regla y su memoria de tokens; dos reglas con prefijos variantes lo comparten |
-| **token** | una manera de cumplir un prefijo: los sellos de los hechos usados y el prefijo con las variables ligadas |
-| **activación por la derecha** | un hecho que entra en la memoria alfa se une con cada token del padre |
-| **activación por la izquierda** | un token nuevo del padre se une con cada hecho de la memoria alfa, o pasa la prueba |
-| **negación con cuentas** | cada token recuerda cuántos hechos lo bloquean, y pasa mientras la cuenta es cero |
-| **prueba en la red alfa** | una prueba que solo mira el hecho de su patrón se ejecuta antes de las uniones |
-| `red.pl`, `alfa.pl` | la compilación con nodos compartidos y las memorias alfa |
-| `tokens.pl`, `negacion.pl` | la propagación con signo, el conjunto de conflicto y la negación |
-| `rete.pl`, `medida.pl`, `pruebas.pl` | el ciclo, su comparación con el [capítulo 64](../capitulo-64-proyecto-sistema-produccion/index.md), la medición y las pruebas alfa |
-| **negación conjuntiva** | `no_todos([F1, ..., Fn])`: no hay una combinación de hechos que cumpla los patrones a la vez; el nodo cuenta las combinaciones por token |
-| **activación nula** | una activación que no puede producir nada: por la derecha con el padre vacío, por la izquierda con la memoria alfa vacía |
-| `herencia.pl`, `referencias.pl` | la herencia de los marcos evaluada en los nodos alfa, y los tokens reconstruidos a partir de sus sellos |
-| `conjuntiva.pl`, `desconexion.pl`, `en_marcha.pl` | la negación de una conjunción, la cuenta de las activaciones nulas y una regla agregada con la red cargada |
-| `max_assoc/3`, `gen_assoc/3` | la clave mayor de un assoc; sus pares por retroceso, en orden de clave |
-
-## Temas que se retoman
-
-| Tema | Se retoma en |
-|---|---|
-| La evaluación de reglas de abajo hacia arriba sobre una base que crece, con la técnica semi-ingenua, que como la red solo procesa lo que cambió en cada paso | [capítulo 86](../capitulo-86-proyecto-motor-datalog/index.md) |
 
 ## Referencias
 
@@ -739,29 +672,18 @@ archivo que carga los del capítulo, sin modificarlos.
   Rete Graph Data Structures», «Propagating Tokens», «The Rule Compiler»,
   «Integration with Foops» y «Design Tradeoffs».
   [Edición en línea](https://www.amzi.com/ExpertSystemsInProlog/08performance.php),
-  de Amzi!. El capítulo toma de allí la red de nodos raíz, de dos entradas y
+  de Amzi!. Esta página toma de allí la red de nodos raíz, de dos entradas y
   de regla; las memorias izquierda y derecha; los tokens con un signo que
   agrega o quita; el compilador que reconoce patrones y prefijos repetidos
   comparando los términos salvo el nombre de las variables; los nodos de
-  prueba sin memoria; la negación con una cuenta por token; la observación
-  de que la refracción se vuelve innecesaria sin negación, y el intercambio
-  entre memoria y velocidad. La licencia de esa edición no permite obras
-  derivadas: se toman las ideas, no el código.
-- Dennis Merritt, *Building Expert Systems in Prolog*, apéndice «Rete-Foops»
-  (`retepred.pro` y `retefoop.pro`), en la misma
-  [edición en línea](https://www.amzi.com/ExpertSystemsInProlog/appendix.php). Es el
-  código completo del capítulo «Performance»: allí la negación no es un nodo con
-  cuentas sino una prueba `not(X)` que consulta la memoria de trabajo en un
-  nodo sin memoria, y el comentario del archivo deja pendiente guardar
-  referencias a los hechos en lugar de tokens completos, el ejercicio 8.2 del
-  libro, que la [sección 65.10](extensiones.md#6510-tokens-con-referencias)
-  mide; el ejercicio 8.4, la herencia en los patrones, es la
-  [sección 65.9](extensiones.md#659-la-herencia-en-los-patrones). Se
-  consulta para comparar, no se copia.
+  prueba sin memoria; la negación con una cuenta por token, y la
+  observación de que la refracción se vuelve innecesaria sin negación. La
+  licencia de esa edición no permite obras derivadas: se toman las ideas,
+  no el código.
 - Charles L. Forgy, «Rete: A Fast Algorithm for the Many Pattern/Many
   Object Pattern Match Problem», *Artificial Intelligence* 19 (1), 1982.
   [DOI 10.1016/0004-3702(82)90020-0](https://doi.org/10.1016/0004-3702(82)90020-0).
-  El artículo que presenta el algoritmo; el capítulo toma de allí el nombre,
+  El artículo que presenta el algoritmo; esta página toma de allí el nombre,
   la idea de guardar entre ciclos el estado de la comparación, los tokens
   con las marcas `+` y `-` que los nodos de dos entradas y los terminales
   usan para agregar o quitar, el nodo de dos entradas para un patrón negado
@@ -777,27 +699,16 @@ archivo que carga los del capítulo, sin modificarlos.
   tesis doctoral, Carnegie Mellon University, 1995 (informe
   CMU-CS-95-113).
   [Edición en línea](http://reports-archive.adm.cs.cmu.edu/anon/1995/CMU-CS-95-113.pdf),
-  del archivo de informes técnicos de la universidad. El capítulo toma del
+  del archivo de informes técnicos de la universidad. Esta página toma del
   capítulo «The Basic Rete Algorithm» los nombres de memorias alfa y beta y
   la separación entre la red alfa y la red beta, el orden de los sucesores
   de una memoria alfa, del más profundo al menos profundo, para no unir dos
   veces un hecho consigo mismo (apartado «Join Node Implementation»), y los
   nodos negativos que guardan los tokens del padre (apartado «Negated
   Conditions»); del capítulo «Adding Right Unlinking to Rete», la idea de no
-  activar por la derecha un nodo cuyo padre no tiene tokens. Las
-  extensiones toman además el apartado «Conjunctive Negations» para la
-  negación de una conjunción, el apartado «Adding and Removing
-  Productions» para agregar una regla con la red cargada, y la medición
-  de las activaciones nulas por la izquierda y por la derecha de los
-  capítulos «Adding Right Unlinking to Rete» y «Adding Left Unlinking to
-  Rete», con la red Rete/UL y la observación de que un nodo no puede
-  quedar desconectado de los dos lados.
+  activar por la derecha un nodo cuyo padre no tiene tokens.
 - H. S. Lee y M. I. Schor, «Match Algorithms for Generalized Rete
   Networks», *Artificial Intelligence* 54, 1992.
   [DOI 10.1016/0004-3702(92)90047-2](https://doi.org/10.1016/0004-3702(92)90047-2).
   Doorenbos remite a este artículo para la discusión completa del orden de
   las activaciones de nodos que leen la misma memoria alfa.
-
-El código del capítulo es propio, escrito para el curso: la compilación, las
-memorias, la propagación, la negación, el ciclo, la medición y las pruebas
-alfa son nuevos, y de las fuentes se toman las ideas, no el código.

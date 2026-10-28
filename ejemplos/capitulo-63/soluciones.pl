@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 63 - Soluciones de los ejercicios 2, 4, 6, 8, 9, 10, 11 y 12.
+% Capítulo 63 - Soluciones de los ejercicios 3, 5, 6, 8, 9, 10, 11 y 12.
 %
 % Cada solución usa los módulos del capítulo sin modificarlos: comparacion
 % carga todas las versiones, resolucion agrega el demostrador
@@ -20,23 +20,7 @@
 :- ensure_loaded(verificador).
 :- use_module(modelos).
 
-% --- Ejercicio 2 ---------------------------------------------------------
-
-%!  clasificar(+Texto, -Clase) is det.
-%
-%   Clase es tautologia, contradiccion o contingente, según la fórmula
-%   sin cuantificadores que Texto escribe: una contradicción es una
-%   fórmula cuya negación es una tautología.
-clasificar(Texto, Clase) :-
-    leer_formula(Texto, F),
-    (   tautologia(clpb, F)
-    ->  Clase = tautologia
-    ;   tautologia(clpb, no(F))
-    ->  Clase = contradiccion
-    ;   Clase = contingente
-    ).
-
-% --- Ejercicio 4 ---------------------------------------------------------
+% --- Ejercicio 3 ---------------------------------------------------------
 
 %!  clausulas_def(+F, -Clausulas:list) is det.
 %
@@ -87,7 +71,7 @@ comparar_def(N, D, E) :-
     clausulas_def(F, C2),
     length(C2, E).
 
-% --- Ejercicio 6 ---------------------------------------------------------
+% --- Ejercicio 5 ---------------------------------------------------------
 
 %!  primer_error(+Prueba, -K) is det.
 %
@@ -112,6 +96,38 @@ primer_error([Paso|Pasos], Clausulas, I, K) :-
         primer_error(Pasos, Clausulas1, I1, K)
     ;   K = I
     ).
+
+% --- Ejercicio 6 ---------------------------------------------------------
+
+%!  refutar_unitaria(+Clausulas:list, +Max:integer, -Pasos:list) is semidet.
+%
+%   Pasos es la refutación más corta, de a lo sumo Max pasos, en la que
+%   uno de los dos padres de cada paso tiene un solo literal.
+refutar_unitaria(Clausulas, Max, Pasos) :-
+    between(0, Max, N),
+    length(Pasos, N),
+    derivar_unitaria(Pasos, Clausulas),
+    !.
+
+%!  derivar_unitaria(?Pasos:list, +Clausulas:list) is nondet.
+%
+%   Como derivar/2 de resolucion.pl, con un padre unitario en cada paso.
+%   La condición es un condicional y no una disyunción: con los dos
+%   padres unitarios, la disyunción daría cada derivación dos veces.
+derivar_unitaria([], Clausulas) :-
+    memberchk([], Clausulas).
+derivar_unitaria([r(I, J, R)|Pasos], Clausulas) :-
+    nth1(J, Clausulas, C2),
+    nth1(I, Clausulas, C1),
+    I < J,
+    (   C1 = [_]
+    ->  true
+    ;   C2 = [_]
+    ),
+    resolvente(C1, C2, R),
+    \+ memberchk(R, Clausulas),
+    append(Clausulas, [R], Clausulas1),
+    derivar_unitaria(Pasos, Clausulas1).
 
 % --- Ejercicio 8 ---------------------------------------------------------
 
@@ -162,35 +178,19 @@ skolemizar([existe(X)|P], Us, N0, N) :-
 
 % --- Ejercicio 9 ---------------------------------------------------------
 
-%!  refutar_unitaria(+Clausulas:list, +Max:integer, -Pasos:list) is semidet.
+%!  clasificar(+Texto, -Clase) is det.
 %
-%   Pasos es la refutación más corta, de a lo sumo Max pasos, en la que
-%   uno de los dos padres de cada paso tiene un solo literal.
-refutar_unitaria(Clausulas, Max, Pasos) :-
-    between(0, Max, N),
-    length(Pasos, N),
-    derivar_unitaria(Pasos, Clausulas),
-    !.
-
-%!  derivar_unitaria(?Pasos:list, +Clausulas:list) is nondet.
-%
-%   Como derivar/2 de resolucion.pl, con un padre unitario en cada paso.
-%   La condición es un condicional y no una disyunción: con los dos
-%   padres unitarios, la disyunción daría cada derivación dos veces.
-derivar_unitaria([], Clausulas) :-
-    memberchk([], Clausulas).
-derivar_unitaria([r(I, J, R)|Pasos], Clausulas) :-
-    nth1(J, Clausulas, C2),
-    nth1(I, Clausulas, C1),
-    I < J,
-    (   C1 = [_]
-    ->  true
-    ;   C2 = [_]
-    ),
-    resolvente(C1, C2, R),
-    \+ memberchk(R, Clausulas),
-    append(Clausulas, [R], Clausulas1),
-    derivar_unitaria(Pasos, Clausulas1).
+%   Clase es tautologia, contradiccion o contingente, según la fórmula
+%   sin cuantificadores que Texto escribe: una contradicción es una
+%   fórmula cuya negación es una tautología.
+clasificar(Texto, Clase) :-
+    leer_formula(Texto, F),
+    (   tautologia(clpb, F)
+    ->  Clase = tautologia
+    ;   tautologia(clpb, no(F))
+    ->  Clase = contradiccion
+    ;   Clase = contingente
+    ).
 
 % --- Ejercicio 10 --------------------------------------------------------
 

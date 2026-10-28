@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 45 - Soluciones de los ejercicios 4, 5, 6, 7, 9, 11 y 12. Cada
+% Capítulo 45 - Soluciones de los ejercicios 2, 7, 8, 9, 10, 11 y 12. Cada
 % una extiende la aventura sin modificar los archivos del capítulo: usa lo
 % que exportan, y algunos no terminales de lenguaje.pl calificados con el
 % módulo.
@@ -23,7 +23,7 @@
 
 :- reexport(juego).
 
-% Ejercicio 4
+% Ejercicio 7
 
 %!  entender_con_origen(+Texto:string, -Orden) is det.
 %
@@ -57,7 +57,7 @@ origen(R) -->
     [de],
     lenguaje:cosa(R).
 
-% Ejercicio 5
+% Ejercicio 8
 
 %!  ejecutar_varias(+Texto:string, -Salida:string) is det.
 %
@@ -105,7 +105,7 @@ respuestas_en_orden([T|Ts], [R|Rs]) :-
         respuestas_en_orden(Ts, Rs)
     ).
 
-% Ejercicio 6
+% Ejercicio 9
 
 %!  partida_con_limite(+In, +Maximo:integer) is det.
 %
@@ -136,7 +136,7 @@ partida_con_limite(In, Maximo, Hechas) :-
     ;   partida_con_limite(In, Maximo, Hechas1)
     ).
 
-% Ejercicio 7
+% Ejercicio 10
 
 %!  ejecutar_con_todo(+Texto:string, -Salida:string) is det.
 %
@@ -173,7 +173,7 @@ tomable(O) :-
     \+ fijo(O),
     \+ esta_en(O, jugador).
 
-% Ejercicio 9
+% Ejercicio 2
 
 %!  guardar_con_formato(+Archivo) is det.
 %

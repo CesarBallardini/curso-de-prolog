@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 66 - Solución del ejercicio 5: la regla contrapuesta.
+% Capítulo 66 - Solución del ejercicio 11: la regla contrapuesta.
 %
 % Dos aves con plumas que nadan: un pato, del que se observó que vuela, y
 % Pingu, del que no se observó nada. «Los pingüinos no vuelan» tiene su

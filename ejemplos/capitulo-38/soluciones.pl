@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 38 - Soluciones de los ejercicios 2, 4, 6, 7, 10, 11 y 12.
+% Capítulo 38 - Soluciones de los ejercicios 2, 4, 6, 9, 10, 11 y 12.
 %
 % solo-local: SWISH no permite crear hilos, colas, mutex, transacciones ni
 % motores.
@@ -11,10 +11,10 @@
 
 :- dynamic contador/1, saldo/2.
 
-% contador(N): el valor del contador del ejercicio 6.
+% contador(N): el valor del contador del ejercicio 12.
 contador(0).
 
-% saldo(Cuenta, Monto): el saldo de cada cuenta del ejercicio 7.
+% saldo(Cuenta, Monto): el saldo de cada cuenta del ejercicio 6.
 saldo(a, 1000).
 saldo(b, 1000).
 saldo(c, 1000).
@@ -96,7 +96,7 @@ sumar_cola(Entrada, S0, Destino) :-
     ;   thread_send_message(Destino, suma(S0))
     ).
 
-% --- Ejercicio 6 -----------------------------------------------------------
+% --- Ejercicio 12 ----------------------------------------------------------
 
 %!  sumar_cas(-N:integer) is det.
 %
@@ -130,7 +130,7 @@ sumar_en_hilos(Hilos, Veces, Final) :-
 hilo_sumador(Veces, Id) :-
     thread_create(forall(between(1, Veces, _), sumar_cas(_)), Id).
 
-% --- Ejercicio 7 -----------------------------------------------------------
+% --- Ejercicio 6 -----------------------------------------------------------
 
 %!  mover(+Desde:atom, +Hacia:atom, +Monto:integer) is det.
 %
@@ -209,7 +209,7 @@ hilo_al_azar(Veces, Id) :-
                          ;   true )),
                   Id).
 
-% --- Ejercicio 10 ----------------------------------------------------------
+% --- Ejercicio 9 -----------------------------------------------------------
 
 %!  posicion_extremos(+Lista:list, :Condicion, -Pos:integer) is semidet.
 %
@@ -240,7 +240,7 @@ desde_el_final(Lista, Condicion, Pos) :-
     !,
     Pos is N + 1 - I.
 
-% --- Ejercicio 11 ----------------------------------------------------------
+% --- Ejercicio 10 ----------------------------------------------------------
 
 %!  multiplo(+K:integer, -M:integer) is multi.
 %
@@ -274,7 +274,7 @@ pares(N, M1, M2, Pares) :-
     ;   Pares = []
     ).
 
-% --- Ejercicio 12 ----------------------------------------------------------
+% --- Ejercicio 11 ----------------------------------------------------------
 
 %!  nuevo_generador(-Motor) is det.
 %

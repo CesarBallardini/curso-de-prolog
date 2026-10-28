@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 54 - Solución del ejercicio 4: el pretérito imperfecto.
+% Capítulo 54 - Solución del ejercicio 3: el pretérito imperfecto.
 %
 % Un tiempo nuevo es una tabla de terminaciones más; ser e ir, que no la
 % siguen, se listan. Ninguna regla cambia: contaba no diptonga porque la

@@ -85,6 +85,105 @@ C = costo(4, 2).
 
 ## 3
 
+<!-- ejemplo: capitulo-86/soluciones.pl predicado: reducciones/1 -->
+```prolog
+%!  reducciones(-Clausulas:list) is det.
+%
+%   El ejemplo de negación estratificada de Warren, con sus doce hechos
+%   reduce/2.
+reducciones(Clausulas) :-
+    Pares = [a-b, b-c, c-d, d-e, e-c, a-f, f-g, g-f, g-k, f-h, h-i, i-h],
+    findall((reduce(X, Y) :- true), member(X-Y, Pares), Hechos),
+    append(Hechos,
+           [ (reachable(X, Y) :- reduce(X, Y)),
+             (reachable(X, Y) :- reachable(X, Z), reduce(Z, Y)),
+             (reducible(X) :- reachable(X, Y), \+ reachable(Y, X)),
+             (fully_reduce(X, Y) :- reachable(X, Y), \+ reducible(Y)) ],
+           Clausulas).
+```
+
+```prolog
+?- reducciones(Cs), componentes(Cs, Ks), respuestas(Cs, fully_reduce(a, Y), Rs, C).
+Cs = [(reduce(a, b):-true), (reduce(b, c):-true), (reduce(c, d):-true), (reduce(d, e):-true), (reduce(e, c):-true), (reduce(a, f):-true), (reduce(f, g):-true), (reduce(..., ...):-true), (... :- ...)|...],
+Ks = [[reachable/2], [reducible/1], [fully_reduce/2]],
+Rs = [fully_reduce(a, c), fully_reduce(a, d), fully_reduce(a, e), fully_reduce(a, h), fully_reduce(a, i), fully_reduce(a, k)],
+C = costo(7, 96).
+```
+
+Son los tres estratos de Warren, y las seis respuestas de su texto:
+`c`, `d` y `e` forman una componente final del grafo de `reduce/2`,
+`h` e `i` otra, y `k` no tiene sucesores. `f` y `g` no están: forman un
+ciclo, pero desde `g` se llega a `k`, que no vuelve.
+
+## 4
+
+<!-- ejemplo: capitulo-86/soluciones.pl predicado: evaluar_ingenuo/3 ingenua_componente/4 cabeza_en/2 -->
+```prolog
+%!  evaluar_ingenuo(+Clausulas:list, -Modelo:list, -Costo) is det.
+%
+%   El modelo de evaluar/3, con la evaluación ingenua en cada componente:
+%   cada paso aplica todas las reglas de la componente a la base entera,
+%   hasta que no aparece nada nuevo.
+evaluar_ingenuo(Clausulas, Modelo, Costo) :-
+    separar(Clausulas, Hechos, Reglas),
+    componentes(Clausulas, Componentes),
+    base(Hechos, Base0),
+    foldl(ingenua_componente(Reglas), Componentes,
+          Base0-costo(0, 0), Base-Costo),
+    atomos(Base, Modelo).
+
+%!  ingenua_componente(+Reglas:list, +Componente:list, +Estado0,
+%!                     -Estado) is det.
+%
+%   Estado0 es Base0-Costo0; Estado agrega lo que derivan las reglas de
+%   Componente, aplicadas a la base entera hasta el punto fijo.
+ingenua_componente(Reglas, Componente, Base0-costo(P0, D0), Base-Costo) :-
+    include(cabeza_en(Componente), Reglas, DeLaComponente),
+    findall(H, ( member(r(H, Ls), DeLaComponente), cumplir(Ls, Base0) ),
+            Hs),
+    length(Hs, D),
+    P is P0 + 1,
+    D1 is D0 + D,
+    agregar(Hs, Base0, Base1, Nuevos),
+    (   Nuevos == []
+    ->  Base = Base1,
+        Costo = costo(P, D1)
+    ;   ingenua_componente(Reglas, Componente, Base1-costo(P, D1),
+                           Base-Costo)
+    ).
+
+%!  cabeza_en(+Componente:list, +Regla) is semidet.
+%
+%   La cabeza de Regla es de un predicado de Componente.
+cabeza_en(Componente, r(H, _)) :-
+    functor(H, Nombre, Aridad),
+    memberchk(Nombre/Aridad, Componente).
+```
+
+```prolog
+?- clausulas(cadena(40), Cs), evaluar_ingenuo(Cs, M, C), evaluar(Cs, M, C2).
+Cs = [(arco(0, 1):-true), (arco(1, 2):-true), (arco(2, 3):-true), (arco(3, 4):-true), (arco(4, 5):-true), (arco(5, 6):-true), (arco(6, 7):-true), (arco(..., ...):-true), (... :- ...)|...],
+M = [arco(0, 1), arco(1, 2), arco(2, 3), arco(3, 4), arco(4, 5), arco(5, 6), arco(6, 7), arco(7, 8), arco(..., ...)|...],
+C = costo(41, 22960),
+C2 = costo(41, 820).
+
+?- clausulas(grafo, Cs), evaluar_ingenuo(Cs, M, C), evaluar(Cs, M, C2).
+Cs = [(arco(a, b):-true), (arco(b, c):-true), (arco(c, a):-true), (arco(c, d):-true), (nodo(a):-true), (nodo(b):-true), (nodo(c):-true), (nodo(...):-true), (... :- ...)|...],
+M = [nodo(a), nodo(b), nodo(c), nodo(d), arco(a, b), arco(b, c), arco(c, a), arco(c, d), camino(..., ...)|...],
+C = costo(6, 48),
+C2 = costo(5, 20).
+```
+
+Los modelos son iguales, porque la segunda consulta unifica el modelo de
+`evaluar/3` con el de `evaluar_ingenuo/3`. En la fila, la evaluación
+ingenua deriva 22 960 cabezas, la suma de los caminos conocidos en cada
+paso, contra 820; en `grafo`, el ciclo hace que `camino/2` necesite cuatro
+pasos que repiten lo anterior. El número de pasos es el mismo en la fila:
+la semi-ingenua no acorta la sucesión, solo deja de repetir lo ya
+derivado en cada paso.
+
+## 5
+
 <!-- ejemplo: capitulo-86/soluciones.pl predicado: casados/1 -->
 ```prolog
 %!  casados(-Clausulas:list) is det.
@@ -117,7 +216,7 @@ segundo. Prolog, con la regla primero, llama a `married(X, anne)`, que
 llama a `married(anne, X)`, y así sin fin: el árbol SLD es infinito por su
 primera rama, y el hecho nunca se alcanza.
 
-## 4
+## 6
 
 <!-- ejemplo: capitulo-86/soluciones.pl predicado: suplementario/3 encadenar/8 conjuncion/3 aparece_en/2 suplementarios/2 -->
 ```prolog
@@ -254,7 +353,7 @@ seguida de una proyección. Las pruebas `soluciones:suplementarios_sd` y
 `soluciones:suplementarios_franjas` verifican las derivaciones con su
 valor exacto, y las inferencias dentro de un 10 %.
 
-## 5
+## 7
 
 <!-- ejemplo: capitulo-86/soluciones.pl predicado: misma_profundidad/1 -->
 ```prolog
@@ -304,7 +403,7 @@ resolvería primero el padre de `d` y después recorrería los nodos de la
 misma generación, pero eso necesita un paso de información distinto del
 de izquierda a derecha.
 
-## 6
+## 8
 
 <!-- ejemplo: capitulo-86/soluciones.pl predicado: debe_camino/2 evita_camino/2 programa_camino/1 -->
 ```prolog
@@ -355,39 +454,7 @@ camino: 99 desde la 1 y 50 desde la 50. Sin el ciclo, la cantidad de
 respuestas depende del punto de partida, y las dos medidas siguen
 coincidiendo.
 
-## 7
-
-<!-- ejemplo: capitulo-86/soluciones.pl predicado: reducciones/1 -->
-```prolog
-%!  reducciones(-Clausulas:list) is det.
-%
-%   El ejemplo de negación estratificada de Warren, con sus doce hechos
-%   reduce/2.
-reducciones(Clausulas) :-
-    Pares = [a-b, b-c, c-d, d-e, e-c, a-f, f-g, g-f, g-k, f-h, h-i, i-h],
-    findall((reduce(X, Y) :- true), member(X-Y, Pares), Hechos),
-    append(Hechos,
-           [ (reachable(X, Y) :- reduce(X, Y)),
-             (reachable(X, Y) :- reachable(X, Z), reduce(Z, Y)),
-             (reducible(X) :- reachable(X, Y), \+ reachable(Y, X)),
-             (fully_reduce(X, Y) :- reachable(X, Y), \+ reducible(Y)) ],
-           Clausulas).
-```
-
-```prolog
-?- reducciones(Cs), componentes(Cs, Ks), respuestas(Cs, fully_reduce(a, Y), Rs, C).
-Cs = [(reduce(a, b):-true), (reduce(b, c):-true), (reduce(c, d):-true), (reduce(d, e):-true), (reduce(e, c):-true), (reduce(a, f):-true), (reduce(f, g):-true), (reduce(..., ...):-true), (... :- ...)|...],
-Ks = [[reachable/2], [reducible/1], [fully_reduce/2]],
-Rs = [fully_reduce(a, c), fully_reduce(a, d), fully_reduce(a, e), fully_reduce(a, h), fully_reduce(a, i), fully_reduce(a, k)],
-C = costo(7, 96).
-```
-
-Son los tres estratos de Warren, y las seis respuestas de su texto:
-`c`, `d` y `e` forman una componente final del grafo de `reduce/2`,
-`h` e `i` otra, y `k` no tiene sucesores. `f` y `g` no están: forman un
-ciclo, pero desde `g` se llega a `k`, que no vuelve.
-
-## 8
+## 9
 
 <!-- ejemplo: capitulo-86/soluciones.pl predicado: quitar_hechos/4 hecho_de/2 volver_a_agregar/3 -->
 ```prolog
@@ -437,7 +504,7 @@ el paso semi-ingenuo solo produce lo nuevo; quitar no tiene un paso
 equivalente, porque un camino que usaba el arco quitado podría tener otra
 derivación, y saberlo exige la técnica de DRed.
 
-## 9
+## 10
 
 <!-- ejemplo: capitulo-86/soluciones.pl predicado: segura_magica/4 -->
 ```prolog
@@ -468,7 +535,7 @@ saber dónde está el wumpus, `wumpus(W)` con W libre, que también se
 calcula entero. Lo único que la consulta restringe es `sin_pozo/1` y la
 última regla.
 
-## 10
+## 11
 
 <!-- ejemplo: capitulo-86/soluciones.pl predicado: restar_con/3 -->
 ```prolog
@@ -506,70 +573,3 @@ N2 = 2995.
 
 `retrogrado/3` recorre cada una de las 2 995 jugadas una vez; `rondas/3`,
 857 564 arcos.
-
-## 11
-
-<!-- ejemplo: capitulo-86/soluciones.pl predicado: evaluar_ingenuo/3 ingenua_componente/4 cabeza_en/2 -->
-```prolog
-%!  evaluar_ingenuo(+Clausulas:list, -Modelo:list, -Costo) is det.
-%
-%   El modelo de evaluar/3, con la evaluación ingenua en cada componente:
-%   cada paso aplica todas las reglas de la componente a la base entera,
-%   hasta que no aparece nada nuevo.
-evaluar_ingenuo(Clausulas, Modelo, Costo) :-
-    separar(Clausulas, Hechos, Reglas),
-    componentes(Clausulas, Componentes),
-    base(Hechos, Base0),
-    foldl(ingenua_componente(Reglas), Componentes,
-          Base0-costo(0, 0), Base-Costo),
-    atomos(Base, Modelo).
-
-%!  ingenua_componente(+Reglas:list, +Componente:list, +Estado0,
-%!                     -Estado) is det.
-%
-%   Estado0 es Base0-Costo0; Estado agrega lo que derivan las reglas de
-%   Componente, aplicadas a la base entera hasta el punto fijo.
-ingenua_componente(Reglas, Componente, Base0-costo(P0, D0), Base-Costo) :-
-    include(cabeza_en(Componente), Reglas, DeLaComponente),
-    findall(H, ( member(r(H, Ls), DeLaComponente), cumplir(Ls, Base0) ),
-            Hs),
-    length(Hs, D),
-    P is P0 + 1,
-    D1 is D0 + D,
-    agregar(Hs, Base0, Base1, Nuevos),
-    (   Nuevos == []
-    ->  Base = Base1,
-        Costo = costo(P, D1)
-    ;   ingenua_componente(Reglas, Componente, Base1-costo(P, D1),
-                           Base-Costo)
-    ).
-
-%!  cabeza_en(+Componente:list, +Regla) is semidet.
-%
-%   La cabeza de Regla es de un predicado de Componente.
-cabeza_en(Componente, r(H, _)) :-
-    functor(H, Nombre, Aridad),
-    memberchk(Nombre/Aridad, Componente).
-```
-
-```prolog
-?- clausulas(cadena(40), Cs), evaluar_ingenuo(Cs, M, C), evaluar(Cs, M, C2).
-Cs = [(arco(0, 1):-true), (arco(1, 2):-true), (arco(2, 3):-true), (arco(3, 4):-true), (arco(4, 5):-true), (arco(5, 6):-true), (arco(6, 7):-true), (arco(..., ...):-true), (... :- ...)|...],
-M = [arco(0, 1), arco(1, 2), arco(2, 3), arco(3, 4), arco(4, 5), arco(5, 6), arco(6, 7), arco(7, 8), arco(..., ...)|...],
-C = costo(41, 22960),
-C2 = costo(41, 820).
-
-?- clausulas(grafo, Cs), evaluar_ingenuo(Cs, M, C), evaluar(Cs, M, C2).
-Cs = [(arco(a, b):-true), (arco(b, c):-true), (arco(c, a):-true), (arco(c, d):-true), (nodo(a):-true), (nodo(b):-true), (nodo(c):-true), (nodo(...):-true), (... :- ...)|...],
-M = [nodo(a), nodo(b), nodo(c), nodo(d), arco(a, b), arco(b, c), arco(c, a), arco(c, d), camino(..., ...)|...],
-C = costo(6, 48),
-C2 = costo(5, 20).
-```
-
-Los modelos son iguales, porque la segunda consulta unifica el modelo de
-`evaluar/3` con el de `evaluar_ingenuo/3`. En la fila, la evaluación
-ingenua deriva 22 960 cabezas, la suma de los caminos conocidos en cada
-paso, contra 820; en `grafo`, el ciclo hace que `camino/2` necesite cuatro
-pasos que repiten lo anterior. El número de pasos es el mismo en la fila:
-la semi-ingenua no acorta la sucesión, solo deja de repetir lo ya
-derivado en cada paso.

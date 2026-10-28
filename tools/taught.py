@@ -1,9 +1,9 @@
 """What the book has taught by each chapter, read from the book itself.
 
-A chapter declares what it teaches in two places: its `## Resumen` table (one row per
-primitive, with the indicator in backticks: `findall/3`, `phrase//1`, `maplist/2..5`,
-`py_call/2,3`) and its numbered section headings. `taught_by()` reads both from every
-written chapter and gives, per predicate name, the first chapter that presents it.
+A chapter declares what it teaches in two places, on any of its pages: its `## Resumen`
+table (one row per primitive, with the indicator in backticks: `findall/3`, `phrase//1`,
+`maplist/2..5`, `py_call/2,3`) and its numbered section headings. `taught_by()` reads both
+from every written chapter and gives, per predicate name, the first chapter that presents it.
 
 Part I is assumed known from chapter 14 on: every name that appears in a prolog code block
 of chapters 1 to 13 counts as taught in chapter 13 at the latest.
@@ -44,10 +44,21 @@ def chapter_pages():
             yield int(match.group(1)), index
 
 
+def content_pages(index: Path) -> list[Path]:
+    """index.md and the chapter's other pages, without soluciones.md.
+
+    A chapter that continues on extra pages has its numbered sections on them, and its Resumen
+    on the last one.
+    """
+    others = (page for page in index.parent.glob('*.md') if page.name not in ('index.md', 'soluciones.md'))
+    return [index, *sorted(others)]
+
+
 def declaring_lines(index: Path):
-    """The lines of a page that declare what it teaches: its Resumen table and section headings."""
+    """The lines of a chapter that declare what it teaches: its Resumen table and section headings."""
     in_resumen = False
-    for line in index.read_text(encoding='utf-8').split('\n'):
+    text = '\n'.join(page.read_text(encoding='utf-8') for page in content_pages(index))
+    for line in text.split('\n'):
         if RESUMEN.match(line):
             in_resumen = True
         elif NEXT_H2.match(line):
@@ -57,7 +68,7 @@ def declaring_lines(index: Path):
 
 
 def declared(index: Path) -> set[str]:
-    """The predicate names the Resumen table and the section headings of a page name."""
+    """The predicate names the Resumen table and the section headings of a chapter name."""
     return {m.group(1) for line in declaring_lines(index) for m in INDICATOR.finditer(line)}
 
 
@@ -87,7 +98,7 @@ def used_in_part_1() -> set[str]:
     for chapter, index in chapter_pages():
         if chapter > examples.LAST_OF_PART_1:
             continue
-        for page in (index, index.with_name('soluciones.md')):
+        for page in (*content_pages(index), index.with_name('soluciones.md')):
             if not page.exists():
                 continue
             for block in CODE_BLOCK.finditer(page.read_text(encoding='utf-8')):

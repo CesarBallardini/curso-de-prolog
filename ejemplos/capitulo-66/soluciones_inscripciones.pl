@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 66 - Soluciones de los ejercicios 4 y 11: Inscripciones.
+% Capítulo 66 - Soluciones de los ejercicios 8 y 9: Inscripciones.
 %
 % excepciones/3 da los requisitos que un alumno cumple solo por una
 % excepción. inscripcion_con_criterio/4 es inscripcion_rebatible/3 con el

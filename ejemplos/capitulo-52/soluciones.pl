@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 52 - Soluciones de los ejercicios 2 a 9, 12 y 13.
+% Capítulo 52 - Soluciones de los ejercicios 2 a 11.
 %
 % Carga los módulos del proyecto y agrega autómatas, construcciones, un
 % operador de las expresiones regulares y dos clases de componentes
@@ -49,7 +49,7 @@ automatas:delta(b_par, 0, b, 1).
 automatas:delta(b_par, 1, b, 0).
 automatas:delta(b_par, R, a, R) :- member(R, [0, 1]).
 
-% Ejercicio 3: sin_epsilon(M) tiene los estados de M; una transición con
+% Ejercicio 4: sin_epsilon(M) tiene los estados de M; una transición con
 % S es ε, S, ε en M, y un estado es final si su clausura tiene un final.
 
 automatas:alfabeto(sin_epsilon(M), Sigma) :-
@@ -76,7 +76,7 @@ automatas:delta(contra, q0, a, x).
 automatas:delta(contra, q0, b, f).
 automatas:epsilon(contra, f, x).
 
-% Ejercicio 4: diferencia(M1, M2), el producto de los deterministas con
+% Ejercicio 5: diferencia(M1, M2), el producto de los deterministas con
 % los pares finales en M1 y no finales en M2.
 
 automatas:alfabeto(diferencia(M1, M2), Sigma) :-
@@ -104,7 +104,7 @@ contiene_final(M, D) :-
     final(M, Q),
     !.
 
-% Ejercicio 5: enesima(N), la letra N-ésima desde el final es a. El
+% Ejercicio 3: enesima(N), la letra N-ésima desde el final es a. El
 % estado 0 lee cualquier cosa y apuesta por la a; los estados 1 a N
 % cuentan las letras que siguen.
 
@@ -161,7 +161,7 @@ lexico:componente(cadena, Lexema, [cadena(A)|Cs], Cs) :-
     once(append(['"'|Caracteres], ['"'], Lexema)),
     atom_chars(A, Caracteres).
 
-% Ejercicio 8: complemento a dos, el bit menos significativo primero:
+% Ejercicio 9: complemento a dos, el bit menos significativo primero:
 % copia hasta el primer 1 inclusive, y después invierte.
 
 automatas:inicial(complemento2, copia).
@@ -172,7 +172,7 @@ automatas:delta(complemento2, copia, [1]:[1], invierte).
 automatas:delta(complemento2, invierte, [0]:[1], invierte).
 automatas:delta(complemento2, invierte, [1]:[0], invierte).
 
-% Ejercicio 9: un contador de dos bits cuya salida es 1 cuando vale 0 o
+% Ejercicio 10: un contador de dos bits cuya salida es 1 cuando vale 0 o
 % 2, es decir, cuando su bit menos significativo es 0.
 
 :- multifile secuenciales:secuencial/3.
@@ -183,7 +183,7 @@ circuitos:circuito(par2_c, [b0, b1], [n0, n0, n1]).
 circuitos:componente(par2_c, i1, inv, [b0], [n0]).
 circuitos:componente(par2_c, x1, xor, [b1, b0], [n1]).
 
-% Ejercicio 12: la expresión de multiplo3 por la construcción de Kleene,
+% Ejercicio 8: la expresión de multiplo3 por la construcción de Kleene,
 % y una más corta escrita a mano.
 
 %!  expresion_corta(-T:string) is det.
@@ -194,7 +194,7 @@ circuitos:componente(par2_c, x1, xor, [b1, b0], [n1]).
 %   el último 1 vuelve al 0.
 expresion_corta("(0|1(01*0)*1)*").
 
-% Ejercicio 13: la máquina de Moore de una máquina de Mealy. Sus estados
+% Ejercicio 11: la máquina de Moore de una máquina de Mealy. Sus estados
 % son pares Q-S: el estado de la máquina de Mealy y la salida que escribió
 % al llegar. El estado inicial escribe S0, que no viene de ninguna
 % transición.

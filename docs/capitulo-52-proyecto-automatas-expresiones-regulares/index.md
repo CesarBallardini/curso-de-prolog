@@ -53,7 +53,7 @@ cuenta los estados de tres autómatas del mismo lenguaje: el que la
 construcción de Thompson obtiene de la expresión, el determinista que se
 obtiene de él y el mínimo. La tercera encuentra la palabra más corta que una
 expresión acepta y la otra no: a está en el lenguaje de a\*b\* y no en el de
-(ab)\*. La cuarta usa un transductor en sentido inverso: las palabras cuyo
+(ab)\*. La cuarta usa un transductor de `transductores.pl` en sentido inverso: las palabras cuyo
 plural se escribe *luces* son *luz* y, para la ortografía sola, *luce* y
 *luc*.
 
@@ -90,7 +90,7 @@ autómatas de ejemplo y el texto son propios. Dos observaciones del capítulo
 son sobre esos programas: la clausura de Hein no termina si las
 transiciones λ forman un ciclo, y la construcción de Warren que nombra los
 estados por la subexpresión confunde dos subexpresiones iguales
-([sección 52.5](#525-expresiones-regulares)).
+([sección 52.5](expresiones.md#525-expresiones-regulares)).
 
 El capítulo usa las gramáticas del
 [capítulo 22](../capitulo-22-gramaticas-dcg/index.md) para leer expresiones
@@ -102,7 +102,7 @@ tabulación del [capítulo 40](../capitulo-40-tabulacion/index.md), cuyo anuncio
 cumple: la clausura ε de un autómata, tabulada. Cumple también el del
 [capítulo 49](../capitulo-49-proyecto-circuitos-logicos/index.md): un
 circuito secuencial es un autómata finito, y la
-[sección 52.7](#527-transductores) carga sus módulos para ejecutarlo como
+[sección 52.7](transductores.md#527-transductores) carga sus módulos para ejecutarlo como
 una máquina de Mealy. El analizador léxico produce los mismos componentes
 que el del compilador del
 [capítulo 46](../capitulo-46-proyecto-compilador/index.md). La notación es la
@@ -141,7 +141,7 @@ Al terminar el capítulo, el lector puede:
 !!! info "Tiempo estimado"
     Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **3:50 h**.
     Resolver los 7 ejercicios marcados con ★: **1:55 h**.
-    Resolver los 16 ejercicios del final: **5:15 h**.
+    Resolver los 16 ejercicios del capítulo: **5:15 h**.
 
 ## 52.1 Autómatas finitos como hechos
 
@@ -654,83 +654,14 @@ otro no. El estado e4, que es final pero no alcanzable, no aparece: la
 minimización trabaja sobre los estados alcanzables, y los demás no
 cambian el lenguaje.
 
-## 52.5 Expresiones regulares
-
-Una expresión regular describe un lenguaje con la concatenación, la unión y
-la clausura de Kleene. La página
-[Expresiones regulares y un analizador léxico](expresiones.md#expresiones-regulares)
-la lee como texto con una gramática del
-[capítulo 22](../capitulo-22-gramaticas-dcg/index.md), la convierte en un
-término limpio, y la traduce a un autómata con la construcción de Thompson,
-`er(Texto)`, con los estados nombrados por la posición de cada subexpresión
-en el árbol. La elección de Warren, nombrarlos por la subexpresión misma,
-confunde dos subexpresiones iguales: su autómata para aa acepta a. Con
-`er/1`, el determinista, el mínimo y las decisiones de las secciones
-anteriores se aplican a expresiones: (a|b)\*abb da 20 estados de Thompson, 5
-en el determinista y 4 en el mínimo, y (a\*b\*)\* resulta equivalente a
-(a|b)\*. El camino inverso, en
-[De un autómata a una expresión regular](expresiones.md#de-un-automata-a-una-expresion-regular),
-es la construcción de Kleene en la forma de McNaughton y Yamada, con una
-relación tabulada: `expresion_de/2` obtiene una expresión del lenguaje de
-cualquier autómata, que `equivalentes/2` compara con el original.
-
-## 52.6 Un analizador léxico
-
-La misma página, en [Un analizador léxico](expresiones.md#un-analizador-lexico),
-define cada clase de componente léxico con una expresión regular, en una
-tabla ordenada, y divide un texto en componentes con la regla de la
-coincidencia más larga: el prefijo más largo que alguna expresión acepta, y
-ante un empate, la primera regla. El prefijo más largo se busca con los
-conjuntos de estados del autómata de cada expresión. Los componentes son los
-de Mini, y las pruebas verifican que coinciden con los del analizador del
-[capítulo 46](../capitulo-46-proyecto-compilador/index.md).
-
-## 52.7 Transductores
-
-Un transductor es un autómata que escribe mientras lee: sus símbolos son
-pares `Entrada:Salida` de palabras, y todo lo anterior se le aplica sin
-cambios. La página [Transductores](transductores.md#transductores) define, en
-`transductores.pl`, `transducir/3`, que se consulta en los dos sentidos; una máquina de Mealy que
-convierte un número binario en su código Gray y lo decodifica; un
-transductor de pares de letras que escribe el plural de un sustantivo y, en
-sentido inverso, lo analiza; y las construcciones `inversa/1`,
-`compuesta/2` e `identidad/1`, que el
-[capítulo 54](../capitulo-54-proyecto-morfologia-castellano/index.md) usa
-para la morfología de dos niveles. En
-[Un circuito secuencial es una máquina de Mealy](transductores.md#un-circuito-secuencial-es-una-maquina-de-mealy)
-carga los módulos del
-[capítulo 49](../capitulo-49-proyecto-circuitos-logicos/index.md): cada
-circuito secuencial es un transductor, su ejecución da lo mismo que allí, y
-minimizarlo es minimizar su autómata; un sumador serie, en sentido inverso,
-enumera los pares de números que suman un resultado. En
-[Máquinas de Moore](transductores.md#maquinas-de-moore), la salida pasa de
-las transiciones a los estados: `moore/3` ejecuta una máquina de Moore, y
-`mealy(M)` la convierte en una de Mealy.
-
-## 52.8 Autómatas de pila y máquinas de Turing
-
-Los autómatas finitos no reconocen las sucesiones de paréntesis bien
-anidadas: para eso hace falta contar sin límite. La página
-[Autómatas de pila y máquinas de Turing](pila-y-turing.md#automatas-de-pila-y-maquinas-de-turing)
-agrega una pila al autómata, con la que reconoce los paréntesis y los
-palíndromos —estos, eligiendo de manera no determinista dónde está la
-mitad—, y después una cinta, con la que una máquina de Turing reconoce
-aⁿbⁿcⁿ, un lenguaje que ningún autómata de pila reconoce. La misma página
-agrega la [aceptación por pila vacía](pila-y-turing.md#aceptacion-por-pila-vacia),
-con la construcción `vacia(M)`, que la obtiene de la aceptación por estado
-final; las [máquinas de varias cintas](pila-y-turing.md#maquinas-de-varias-cintas),
-con una que reconoce los palíndromos en 3n + 3 pasos; y los
-[algoritmos de Markov y los sistemas de Post](pila-y-turing.md#algoritmos-de-markov-y-sistemas-de-post),
-que computan reescribiendo la palabra, sin estados ni cinta.
-
-!!! success "Criterios de calidad"
-    | Criterio | En este capítulo |
-    |---|---|
-    | C1 | cada predicado declara modos y determinación; `acepta/2` es `semidet` porque recorre conjuntos de estados, y `reconoce/2` es `nondet`, una respuesta por camino |
-    | C2 | las construcciones son nombres de autómata, `det(M)`, `min(M)`, `er(Texto)`, con reglas para las mismas cinco relaciones: se componen sin límite y nada se genera ni se copia; la clausura, los estados alcanzables y la relación de distinguibles son relaciones puras, tabuladas |
-    | C3 | `transducir/3` se consulta en los dos sentidos, y las pruebas lo verifican con `gray`, `plural` y el sumador serie |
-    | C5 | los estados de Thompson se nombran por posición y no por subexpresión, y la representación de las expresiones es limpia: cada clase de nodo tiene su functor |
-    | C7 | 248 pruebas en catorce archivos; las respuestas de las tablas se comparan ordenadas; cada construcción se compara con otra por equivalencia (el determinista con el original, el mínimo con el determinista, la expresión con el autómata escrito a mano, la expresión obtenida de un autómata con el autómata, `vacia(M)` con M), el analizador léxico con el del [capítulo 46](../capitulo-46-proyecto-compilador/index.md), y los circuitos con `ejecutar/4` del [capítulo 49](../capitulo-49-proyecto-circuitos-logicos/index.md) |
+El capítulo continúa en la página
+[Expresiones regulares y un analizador léxico](expresiones.md#525-expresiones-regulares),
+con las expresiones regulares, que describen los mismos lenguajes que los
+autómatas. Las páginas siguientes la continúan con los transductores y con
+los autómatas de pila y las máquinas de Turing, hasta la
+[sección 52.8](pila-y-turing.md#528-automatas-de-pila-y-maquinas-de-turing).
+Antes, los [ejercicios](#ejercicios) de esta página practican
+las secciones 52.1 a 52.4.
 
 ## Ejercicios
 
@@ -751,205 +682,42 @@ los da por hechos.
    a y una cantidad par de b. Verificar con `palabras/3` las palabras de
    longitud 4, y con `equivalentes/2` que es la intersección de dos
    autómatas más chicos, uno para cada letra.
-3. ★ **(2)** Warren elimina las transiciones ε con otra construcción:
-   `sin_epsilon(M)` tiene los mismos estados, una transición con S de Q a
-   Q1 si desde Q se llega a Q1 con ε, S y ε, y son finales los estados
-   cuya clausura contiene un final. Definir `sin_epsilon/1` con reglas
-   para las cinco relaciones, y verificar que `sin_epsilon(ciclo)` y
-   `sin_epsilon(er("(a|b)*abb"))` no tienen transiciones ε y son
-   equivalentes a sus originales.
-4. ★ **(2)** Definir la construcción `diferencia(M1, M2)`, que acepta las
-   palabras de M1 que M2 no acepta, sin usar `interseccion/2` ni
-   `complemento/1`: con el producto de los deterministas. Obtener las
-   palabras de longitud hasta 4 de `diferencia(er("a*b*"), er("(ab)*"))` y
-   verificar que `diferencia(M, M)` es vacío para tres autómatas.
-5. **(2)** El autómata no determinista que acepta las palabras sobre
+3. **(2)** El autómata no determinista que acepta las palabras sobre
    {a, b} cuya letra n-ésima desde el final es a tiene n + 1 estados.
    Escribir `enesima(N)` como un nombre de autómata definido con reglas, y
    tabular, para n de 1 a 6, la cantidad de estados de `det(enesima(N))`
    y de `min(enesima(N))`. Explicar el crecimiento.
-6. ★ **(2)** Agregar a la gramática de las expresiones la repetición
-   contada: `E{n}` es E concatenada n veces, con n un número de un
-   dígito. Verificar que `er("a{3}")` es equivalente a `er("aaa")` y que
-   `er("(ab){2}c")` acepta ababc. Sin modificar `arco/8`: la gramática
-   produce los términos que ya existen.
-7. **(2)** Agregar al analizador léxico comentarios, desde `#` hasta el
-   fin de la línea, que se descartan como los blancos, y cadenas entre
-   comillas dobles sin comillas adentro, que dan el componente
-   `cadena(Atomo)`. Escribir las dos reglas en la tabla y los casos en
-   `componente/4`, y probarlo con un programa de tres líneas.
-8. ★ **(2)** El complemento a dos de un número binario escrito con el bit
-   menos significativo primero se obtiene copiando los bits hasta el
-   primer 1 inclusive, e invirtiendo los que siguen. Escribirlo como una
-   máquina de Mealy `complemento2` con dos estados, verificar para todos
-   los números de 4 bits que el resultado es 16 − N módulo 16, y explicar
-   por qué `transducir(complemento2, B, S)` y
-   `transducir(complemento2, S, B)` dan lo mismo.
-9. **(3)** Describir con `secuencial/3` del [capítulo 49](../capitulo-49-proyecto-circuitos-logicos/index.md), en un archivo que
-   cargue `secuencial.pl`, un contador de dos bits sin entradas cuya
-   salida es 1 cuando el contador vale 0 o 2, y 0 en los otros casos.
-   Calcular los estados de `circuito(Nombre, [0, 0])` y de su mínimo,
-   explicar qué estados se funden, y proponer un circuito con un solo bit
-   de estado que tenga la misma salida.
-10. **(2)** Escribir para `maquinas.pl` un autómata de pila `iguales` que
-    acepte las palabras sobre {a, b} con tantas a como b, en cualquier
-    orden, y verificar para todas las palabras de longitud hasta 8 que lo
-    que acepta coincide con la cuenta de letras.
-11. **(3)** Escribir para `maquinas.pl` una máquina de Turing determinista,
-    con estados sin parámetros y δ como hechos, que acepte los palíndromos
-    sobre {a, b}, de cualquier longitud: borra el primer símbolo, recorre
-    hasta el último, lo compara y lo borra, y vuelve. Verificarla contra
-    `reverse/2` para todas las palabras de longitud hasta 6, y comparar la
-    cantidad de pasos con la longitud de la palabra.
-12. ★ **(2)** Obtener con `expresion_texto/2` la expresión de `multiplo3`,
-    con `kleene.pl` cargado, y verificar con `equivalentes/2` que describe
-    su lenguaje. Verificar después que (0|1(01\*0)\*1)\* también lo
-    describe, explicar por qué siguiendo los restos de la
-    [sección 52.1](#521-automatas-finitos-como-hechos), y explicar por qué
-    la construcción no llega a una expresión tan corta.
-13. **(3)** Escribir la construcción `moore_de(M, S0)`, la máquina de
-    Moore de una máquina de Mealy M, con S0 como salida del estado
-    inicial: sus estados son pares `Q-S`, un estado de M y la salida que M
-    escribió al llegar a él. Verificar para todas las entradas de hasta 5
-    bits que `moore(moore_de(gray, 0), E, S)` da S = [0|G] cuando
-    `transducir(gray, E, G)` da G, y contar sus estados alcanzables.
-14. **(2)** Escribir, en un archivo que cargue `cintas.pl`, la
-    construcción inversa de `vacia/1`: `final_de(M)` acepta por estado
-    final lo que M acepta por pila vacía. Verificar que `final_de(anbn)` y
-    `anbn` aceptan las mismas palabras de longitud hasta 6, y que
-    `vacia(final_de(anbn))` acepta otra vez las de `anbn`.
-15. **(2)** Con la máquina del ejercicio 11 y `palindromo_2c`, tabular los
-    pasos con los que cada una acepta la palabra de n letras a, para n
-    igual a 2, 4, 8 y 16. Explicar el crecimiento de cada columna con el
-    recorrido que hace cada máquina sobre sus cintas.
-16. ★ **(2)** Escribir un algoritmo de Markov `unario`, de tres reglas,
-    que convierta un número binario escrito con 0 y 1, el bit más
-    significativo primero, en tantas `i` como su valor: [1, 0, 1] en
-    [i, i, i, i, i]. Verificarlo con todos los números de hasta 5 bits.
-    Una pista: una i que pasa hacia la derecha por un 0 vale el doble.
-
-## Resumen
-
-| | |
-|---|---|
-| **autómata como hechos** | `alfabeto/2`, `inicial/2`, `final/2`, `delta/4` y `epsilon/3`, con el nombre del autómata como primer argumento |
-| **no determinismo** | una palabra se acepta si algún camino llega a un estado final; Prolog prueba los caminos con retroceso |
-| **clausura ε** | los estados a los que se llega con cero o más transiciones ε; con ciclos, termina si está tabulada |
-| **construcción de subconjuntos** | `det(M)`: los estados son conjuntos cerrados por ε, alcanzables desde el inicial; el conjunto vacío es el sumidero |
-| **construcción como nombre** | `det(M)`, `complemento(M)`, `interseccion(M1, M2)`, `min(M)`, `er(Texto)`: reglas para las mismas relaciones, que se componen |
-| **decisión** | vacío, inclusión y equivalencia de lenguajes regulares, sobre los estados alcanzables del producto; el contraejemplo más corto |
-| **minimización** | fundir los estados indistinguibles; la relación de distinguibles es recursiva, tabulada, y se calcula hacia atrás |
-| **construcción de Thompson** | un fragmento con un inicial y un final por subexpresión; los estados se nombran por posición |
-| **coincidencia más larga** | el analizador léxico toma el prefijo más largo, y ante un empate, la primera regla |
-| **transductor** | un autómata sobre pares `Entrada:Salida`; `transducir/3` en los dos sentidos |
-| **máquina de Mealy** | un transductor que lee un símbolo y escribe uno; un circuito secuencial es una |
-| **de autómata a expresión** | R(I, J, K), las palabras de I a J sin pasar por estados de número K o mayor, tabulada; la expresión obtenida es correcta, no la más corta |
-| **máquina de Moore** | la salida está en los estados; `mealy(M)` es la máquina de Mealy que escribe lo mismo |
-| **aceptación por pila vacía** | equivalente a la aceptación por estado final; `vacia(M)` convierte una en la otra |
-| **varias cintas** | un cabezal por cinta; reconocen lo mismo que una sola, y una cinta las simula con a lo sumo el cuadrado de los pasos |
-| **reescritura de palabras** | algoritmos de Markov, con reglas ordenadas aplicadas a la primera aparición, y sistemas de Post, con producciones que tienen variables |
-| `acepta/2`, `reconoce/2`, `palabras/3`, `clausura/3`, `mover/4`, `alcanzable/2`, `estados/2`, `tabla/2` | el módulo `automatas` |
-| `vacio/1`, `incluido/2`, `equivalentes/2`, `contraejemplo/3`, `distinguible/3`, `distinguibles/4` | las decisiones y la minimización |
-| `expresion/2`, `componentes/2`, `prefijo_mas_largo/3` | las expresiones regulares y el analizador léxico |
-| `expresion_de/2`, `expresion_texto/2` | de un autómata a una expresión regular |
-| `transducir/3`, `inversa/1`, `compuesta/2`, `identidad/1`, `moore/3` | los transductores y las máquinas de Moore |
-| `acepta_pila/2`, `acepta_vacia/2`, `turing/4`, `turing_cintas/4` | los autómatas de pila y las máquinas de Turing |
-| `markov/4`, `post/4` | los algoritmos de Markov y los sistemas de Post |
-| `number_chars/2` | convierte entre un número y la lista de sus caracteres: el valor de un lexema |
-
-## Temas que se retoman
-
-| Tema | Se retoma en |
-|---|---|
-| Las máquinas de Turing en la notación de Turing (1936): estados con parámetros y funciones de configuración, ejecutadas por reescritura perezosa de términos | [capítulo 53](../capitulo-53-proyecto-interprete-perezoso-reescritura-terminos/index.md) |
-| Transductores de pares de letras y morfología de dos niveles, con el módulo `transductores` | [capítulo 54](../capitulo-54-proyecto-morfologia-castellano/index.md) |
 
 ## Referencias
 
 - David S. Warren, *Programming in Tabled Prolog*, borrador distribuido
-  con el sistema XSB, 1999 — «Automata Theory in XSB». [Copia de archivo de la página del autor](https://web.archive.org/web/20240628211257/https://www3.cs.stonybrook.edu/~warren/xsbbook/book.html). El capítulo toma
+  con el sistema XSB, 1999 — «Automata Theory in XSB». [Copia de archivo de la página del autor](https://web.archive.org/web/20240628211257/https://www3.cs.stonybrook.edu/~warren/xsbbook/book.html). Esta página toma
   de allí ideas y la representación: los autómatas como relaciones con el
   nombre del autómata como primer argumento, las construcciones como
   reglas sobre nombres compuestos (el determinista, el complemento, el
-  mínimo, el autómata de una expresión), la clausura ε y los estados
-  alcanzables con tabulación, la minimización por estados
-  distinguibles, y el esbozo, inconcluso, de la conversión de un autómata
-  en una expresión regular como relación tabulada, que la página
-  [De un autómata a una expresión regular](expresiones.md#de-un-automata-a-una-expresion-regular)
-  completa; el código de XSB se reescribió para la tabulación de
-  SWI-Prolog, y los estados de Thompson se nombran de otra manera.
+  mínimo), la clausura ε y los estados alcanzables con tabulación, y la
+  minimización por estados distinguibles; el código de XSB se reescribió
+  para la tabulación de SWI-Prolog.
 - James L. Hein, *Prolog Experiments in Discrete Mathematics, Logic, and
   Computability*, Jones and Bartlett, 2009 ([edición en línea](https://samples.jbpub.com/9780763772062/PrologLabBook09.pdf)) — «Computability» (autómatas
-  finitos deterministas y no deterministas, máquinas de Mealy y de Moore,
-  autómatas de pila, máquinas de Turing, algoritmos de Markov y de Post) y
-  los apartados «Lambda Closure» y «Transforming an NFA into a DFA». El
-  capítulo toma de allí la forma de los intérpretes de cada modelo, con la
-  cinta de la máquina de Turing como dos listas alrededor del cabezal, el
-  algoritmo de Markov que intercambia las a y las b, dos experimentos que
-  el libro propone y no resuelve (la aceptación por pila vacía, con el
-  autómata de aⁿbⁿ, y el intérprete de varias cintas), y la clausura λ como
-  paso de la conversión, con otra representación y otros ejemplos.
-- Ken Thompson, «Regular expression search algorithm», *Communications
-  of the ACM* 11 (6), 1968, pp. 419–422. El capítulo toma de allí la idea
-  de la construcción de un autómata con transiciones ε a partir de una
-  expresión regular, un fragmento por subexpresión.
-
+  finitos deterministas y no deterministas) y los apartados «Lambda
+  Closure» y «Transforming an NFA into a DFA». Esta página toma de allí la
+  forma del intérprete de los autómatas finitos, y la clausura λ como paso
+  de la conversión, con otra representación y otros ejemplos.
 - James L. Hein, *Discrete Structures, Logic, and Computability*, Jones
   and Bartlett, 3.ª edición, 2010 — los capítulos de lenguajes regulares y
   de autómatas. Es el libro de texto al que acompaña el de experimentos de
-  Hein: allí están la construcción de Thompson y la conversión de un
-  autómata no determinista en uno determinista que los experimentos
-  programan. No tiene edición en línea gratuita.
-- Stephen C. Kleene, «Representation of events in nerve nets and finite
-  automata», RAND, memorándum RM-704, 1951, publicado en C. E. Shannon y
-  J. McCarthy (eds.), *Automata Studies*, Princeton University Press, 1956.
-  [Edición de RAND](https://www.rand.org/pubs/research_memoranda/RM704.html).
-  Define los eventos regulares y prueba que son los que un autómata finito
-  reconoce: el origen de las expresiones regulares y de la clausura que
-  lleva su nombre, y la equivalencia entre expresiones y autómatas sobre la
-  que se apoyan la [sección 52.5](#525-expresiones-regulares),
-  `contraejemplo/3` y `expresion_de/2`.
-- Robert McNaughton y Hisao Yamada, «Regular expressions and state graphs
-  for automata», *IRE Transactions on Electronic Computers* EC-9 (1),
-  1960, págs. 39–47. Da la construcción de la expresión de un autómata por
-  las expresiones R(I, J, K), con los estados intermedios acotados por K,
-  que `kleene.pl` programa como relación tabulada. No tiene edición en
-  línea gratuita.
+  Hein: allí está la conversión de un autómata no determinista en uno
+  determinista que los experimentos programan. No tiene edición en línea
+  gratuita.
 - Michael O. Rabin y Dana Scott, «Finite automata and their decision
   problems», *IBM Journal of Research and Development* 3 (2), 1959,
   págs. 114–125. Introduce los autómatas no deterministas, la construcción
   de subconjuntos y la decisión del vacío y de la equivalencia, que la
   [sección 52.3](#523-construcciones-el-determinista-el-complemento-la-interseccion)
   programa. No tiene edición en línea gratuita.
-- George H. Mealy, «A method for synthesizing sequential circuits», *Bell
-  System Technical Journal* 34 (5), 1955, págs. 1045–1079, y Edward F.
-  Moore, «Gedanken-experiments on sequential machines», en *Automata
-  Studies*, Princeton University Press, 1956. De Mealy vienen las máquinas
-  con salida en las transiciones de la [sección 52.7](#527-transductores);
-  de Moore, las máquinas con salida en los estados de
-  [Máquinas de Moore](transductores.md#maquinas-de-moore) y los estados que
-  ningún experimento distingue, en los que se basa la minimización de la
-  [sección 52.4](#524-el-automata-minimo). No tienen edición en línea
-  gratuita.
-- Juris Hartmanis y Richard E. Stearns, «On the computational complexity
-  of algorithms», *Transactions of the American Mathematical Society* 117,
-  1965, págs. 285–306.
-  [Edición de la AMS](https://www.ams.org/journals/tran/1965-117-00/S0002-9947-1965-0170805-7/).
-  Define la complejidad temporal sobre máquinas de Turing de varias cintas
-  y prueba que una de una sola cinta las simula con a lo sumo el cuadrado
-  de los pasos: la relación que la página
-  [Máquinas de varias cintas](pila-y-turing.md#maquinas-de-varias-cintas)
-  enuncia y el ejercicio 15 mide.
-- Andréi A. Markov, *Teoría de los algoritmos* (en ruso), *Trudy del
-  Instituto Matemático Steklov* 42, 1954; traducción inglesa, *Theory of
-  Algorithms*, Israel Program for Scientific Translations, 1961. Define los
-  algoritmos normales, los de
-  [Algoritmos de Markov y sistemas de Post](pila-y-turing.md#algoritmos-de-markov-y-sistemas-de-post).
-- Emil L. Post, «Formal reductions of the general combinatorial decision
-  problem», *American Journal of Mathematics* 65 (2), 1943, págs. 197–215.
-  Define los sistemas canónicos, de los que vienen las producciones con
-  variables de la misma página.
-
-El código del capítulo es propio del curso: los programas de los libros
-se reescribieron con la representación de este capítulo, y ninguno se
-copió.
+- Edward F. Moore, «Gedanken-experiments on sequential machines», en
+  *Automata Studies*, Princeton University Press, 1956. De Moore vienen los
+  estados que ningún experimento distingue, en los que se basa la
+  minimización de la [sección 52.4](#524-el-automata-minimo). No tiene
+  edición en línea gratuita.

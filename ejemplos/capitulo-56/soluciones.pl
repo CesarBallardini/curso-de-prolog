@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 56 - Soluciones de los ejercicios 3, 4 y 5: reglas nuevas para
+% Capítulo 56 - Soluciones de los ejercicios 2, 3 y 4: reglas nuevas para
 % ELIZA, el pronombre después de una preposición y los verbos regulares
 % declarados por su infinitivo.
 %
@@ -19,7 +19,7 @@
 :- use_module(eliza).
 :- use_module(persona).
 
-% Ejercicio 3: dos reglas más para ELIZA, agregadas al predicado multifile
+% Ejercicio 2: dos reglas más para ELIZA, agregadas al predicado multifile
 % regla/4 del módulo eliza.
 eliza:regla(no_puedo, 3, [_, no, puedo, X],
             [ ["¿Qué te impide ", X, "?"],
@@ -37,7 +37,7 @@ primera_respuesta(Frase, Respuesta) :-
     estado_inicial(E0),
     responder(Frase, E0, _, Respuesta).
 
-% Ejercicio 4.
+% Ejercicio 3.
 
 % preposicion(P): después de P, mi es el pronombre mí.
 preposicion(para).
@@ -86,7 +86,7 @@ pronombre_tras_preposicion(ti, "mí").
 reflejar_prep(Palabras, Cambiadas) :-
     phrase(persona_prep(Cambiadas), Palabras).
 
-% Ejercicio 5.
+% Ejercicio 4.
 
 % verbo_regular(I): I es el infinitivo de un verbo regular.
 verbo_regular(caminar).

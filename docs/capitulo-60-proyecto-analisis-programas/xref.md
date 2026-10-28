@@ -1,12 +1,14 @@
 # Comparación con prolog_xref
 
-Esta página contiene la [sección 60.6](index.md#606-comparacion-con-libraryprolog_xref) del
-[capítulo 60](index.md): el análisis del capítulo comparado con
-`library(prolog_xref)`, el de SWI-Prolog, sobre los archivos de *Inscripciones*.
-El ejemplo es `comparar.pl`, en `ejemplos/capitulo-60/`, con sus pruebas; lee
-archivos, y se ejecuta localmente.
+Esta página continúa la página
+[Un intérprete que cuenta](perfil.md#605-un-interprete-que-cuenta) del
+[capítulo 60](index.md), con la [sección 60.6](#606-comparacion-con-libraryprolog_xref): el
+análisis del capítulo comparado con `library(prolog_xref)`, el de SWI-Prolog,
+sobre los archivos de *Inscripciones*. El ejemplo es `comparar.pl`, en
+`ejemplos/capitulo-60/`, con sus pruebas; lee archivos, y se ejecuta
+localmente.
 
-## Comparación con `library(prolog_xref)`
+## 60.6 Comparación con `library(prolog_xref)`
 
 SWI-Prolog incluye su propio analizador, `library(prolog_xref)`, que usan
 `gxref/0` y el entorno de desarrollo. `xref_source/2` lee un archivo y
@@ -68,3 +70,18 @@ analizador del capítulo es más
 corto y se cambia en el mismo lenguaje que analiza: la revisión de las
 convenciones del curso o el árbol de llamadas numerado se agregan con unas
 pocas cláusulas.
+
+El capítulo continúa en la página
+[Un editor de cláusulas](editor.md#607-un-editor-de-clausulas), con el primero de los tres
+programas del apéndice de Kluźniak y Szpakowicz.
+
+## Referencias
+
+- *SWI-Prolog Reference Manual* —
+  «[library(prolog_xref): Prolog cross-referencer data collection](https://www.swi-prolog.org/pldoc/man?section=prologxref)»
+  y la documentación de
+  «[prolog_codewalk.pl: Prolog code walker](https://www.swi-prolog.org/pldoc/doc/_SWI_/library/prolog_codewalk.pl)».
+  La comparación de la [sección 60.6](#606-comparacion-con-libraryprolog_xref)
+  usa `xref_source/2`, `xref_defined/3`, `xref_exported/2` y `xref_called/3`, y
+  distingue ese análisis del de `check/0`, que recorre el código cargado con
+  `library(prolog_codewalk)`.

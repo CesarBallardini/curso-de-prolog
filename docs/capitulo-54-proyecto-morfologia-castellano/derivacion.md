@@ -1,16 +1,16 @@
 # Notación de dos niveles y derivación
 
-Esta página contiene las secciones
-[54.7](index.md#547-version-5-reglas-en-notacion-de-dos-niveles) y
-[54.8](index.md#548-version-6-la-derivacion-y-los-prefijos) del
-[capítulo 54](index.md): la versión 5, `kimmo.pl`, que escribe las reglas en
+Esta página continúa la página
+[Dos niveles con transductores](dos-niveles.md#546-version-4-las-reglas-en-paralelo) del
+[capítulo 54](index.md), con las secciones [54.7](#547-version-5-reglas-en-notacion-de-dos-niveles) y
+[54.8](#548-version-6-la-derivacion-y-los-prefijos): la versión 5, `kimmo.pl`, que escribe las reglas en
 la notación de Koskenniemi y las compila a patrones prohibidos, y la versión
 6, `derivacion.pl`, que agrega la derivación y los prefijos. Las dos cargan
 la versión 4.
 
-## La notación de dos niveles
+## 54.7 Versión 5: reglas en notación de dos niveles
 
-Las reglas de la [sección 54.5](index.md#545-version-3-dos-niveles-con-los-transductores-del-capitulo-52)
+Las reglas de la [sección 54.5](dos-niveles.md#545-version-3-dos-niveles-con-los-transductores-del-capitulo-52)
 son listas de patrones prohibidos, escritas a mano. Koskenniemi las escribe
 de otra manera: un par Subyacente:Escrita, un operador y un contexto, con un
 guion bajo en el lugar del par. Covington da como ejemplo la regla de la e
@@ -135,7 +135,7 @@ Ps = [[par([z]:[c]), no(o(limite, frontal))]-medio, [par([z]:[c])]-final, [par([
 
 La segunda es la regla z de la versión 3, escrita como
 `[z]:[c] <=> _ (+:0) frontal`: compila exactamente a los patrones que la
-[sección 54.5](index.md#545-version-3-dos-niveles-con-los-transductores-del-capitulo-52)
+[sección 54.5](dos-niveles.md#545-version-3-dos-niveles-con-los-transductores-del-capitulo-52)
 escribe con `solo_ante_frontal/2` y `no_ante_frontal/2`, y las pruebas lo
 verifican. Lo que en la versión 3 había que deducir para cada regla —qué
 sucesiones quedan prohibidas— ahora lo deduce el compilador a partir de la
@@ -199,7 +199,7 @@ léxico y verifican que no cambian.
     no sirve cuando las reglas se agregan durante la ejecución: una regla
     agregada después no se compila.
 
-## La derivación y los prefijos
+## 54.8 Versión 6: la derivación y los prefijos
 
 La flexión produce las formas de una palabra; la **derivación** produce
 palabras nuevas: «elección» de «elegir», «rápidamente» de «rápido»,
@@ -314,3 +314,100 @@ adjetivos con in- entran al léxico con su forma escrita, y la versión 4 los
 flexiona y analiza: «imposibles», «infelices». Lo que la derivación no
 resuelve es el significado: «eleccioncita» y «proteccioncita» salen de la
 misma regla que «casita», y solo el uso dice cuáles se emplean.
+
+!!! success "Criterios de calidad"
+    | Criterio | En este capítulo |
+    |---|---|
+    | C1 | cada predicado declara sus modos; `escribir/2` declara `?` en los dos argumentos y dice cuál debe llegar ligado, y `forma/2` de las versiones 1 y 4 dice qué argumento decide el sentido |
+    | C2 | las reglas son datos: listas de patrones de clases de pares, con un functor por clase; agregar una regla es agregar una cláusula de `regla/2`, y ningún otro predicado cambia |
+    | C3 | `escribir/2` evalúa cada condición después de la llamada recursiva y por eso funciona en los dos sentidos; los si-entonces-sino de `tildes/2` y `lexica/2` actúan sobre argumentos que llegan instanciados |
+    | C5 | las formas irregulares se listan y bloquean la regular; lo regular no se lista |
+    | C7 | 119 pruebas en diez archivos, y 36 en los de las soluciones; la versión 4 se compara con la 2 en las 328 formas del léxico y en sus análisis, y los defectos de la versión 1 están probados |
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio. Los ejercicios que agregan palabras o reglas lo hacen desde un
+archivo propio, con cláusulas como `lexico:verbo("empezar", e_ie).`: el léxico
+declara `multifile` sus predicados, la versión 2 su tabla `diptongo/3` y la
+versión 3 `regla/2` y `par/1`.
+
+13. ★ **(1)** Con `derivacion.pl` cargado, predecir qué responden
+    `findall(D, derivada("lapicito", D), Ds)`,
+    `findall(A, forma("desprotejo", A), As)` y
+    `findall(P, derivada(P, adverbio("inglés")), Ps)`, comprobarlo, y
+    nombrar la regla o la entrada del léxico que explica cada letra que
+    cambia respecto de la base.
+14. **(2)** Escribir la regla `jota` de la versión 3 en la notación de dos
+    niveles, como dos reglas: una para la `'J'` escrita g y otra para la j
+    escrita j. Comprobar con `compilar/5` que sus patrones, juntos, son
+    los de `regla(jota, Ps)`. ¿Por qué la segunda solo necesita `=>`?
+15. **(3)** El prefijo in- se escribe ir- ante r («irreal») e i- ante l
+    («ilegal»). Agregar los adjetivos «real» y «legal», y dos reglas en
+    notación de dos niveles, sin cambiar las otras. ¿Qué par hace falta
+    para «ilegal», que no tiene ninguna letra en lugar de la N?
+
+## Resumen
+
+| | |
+|---|---|
+| **morfología, flexión** | la estructura de las palabras; la flexión produce las formas de una misma palabra según sus rasgos |
+| **lema** | la forma que representa a todas las de una palabra: el singular, el masculino, el infinitivo |
+| **forma subyacente** | la palabra con una letra por sonido y los límites entre raíz y terminación marcados con `+` |
+| **regla ortográfica** | la relación entre la forma subyacente y la escrita en un contexto: `k` se escribe qu ante e, i |
+| **epéntesis** | una letra que aparece al unir las partes: la e de «luces» |
+| **bloqueo** | una forma listada en el léxico impide que se calcule la regular |
+| **morfología de dos niveles** | las reglas relacionan directamente la forma subyacente con la escrita, par por par, y se aplican a la vez |
+| **patrón prohibido** | una sucesión de clases de pares que ninguna palabra puede contener; una regla es una lista de ellos |
+| **sobregeneración** | las formas subyacentes que las reglas admiten sin que el léxico las tenga |
+| **árbol de letras** | el léxico como autómata cuyos estados son los prefijos de sus formas |
+| **[Patrón 61](../patrones.md#61-compilar-reglas-desde-una-notacion-declarativa)** | compilar reglas desde una notación declarativa |
+| `forma/2` | la relación entre una palabra y su análisis, en las cuatro versiones |
+| `partes/3` | la raíz y la terminación de un análisis, en la versión 1 |
+| `escribir/2`, `subyacente/2` | la ortografía en los dos sentidos, y la forma subyacente de un lema |
+| `lexica/2`, `superficie/2` | la forma subyacente de un análisis, y las cuatro pasadas que la escriben |
+| `raiz_verbal/7` | el cambio de la vocal de la raíz cuando recibe el acento |
+| `regla/2`, `contiene(R)` | las reglas como patrones, y el autómata que los encuentra |
+| `ortografia(Rs)`, `paralelo(Rs)` | las reglas en paralelo: como intersección de sus autómatas, y sin construir el producto |
+| `compuesta(lexico, …)`, `inversa/1`, `identidad/1` | el léxico compuesto con las reglas, el analizador como inverso, y la forma subyacente de un lema |
+| **derivación** | la formación de palabras nuevas: sufijos como -ción, -mente, -ito, y prefijos como des-, re-, in- |
+| **restricción de contexto, coerción** | `=>`: el par solo aparece en el contexto; `<=`: en el contexto, la letra subyacente solo se escribe así |
+| `regla_dos_niveles/5`, `compilar/5` | una regla en la notación de Koskenniemi, y su traducción a patrones prohibidos |
+| `derivada/2` | la relación entre una palabra derivada y su base |
+| `:- table P as subsumptive` | tabulación por subsunción: una consulta más particular usa la tabla completa de una más general |
+
+## Temas que se retoman
+
+| Tema | Se retoma en |
+|---|---|
+| Las formas de los nombres y los verbos de una pregunta, reducidas a su lema con `forma/2` | [capítulo 88](../capitulo-88-proyecto-preguntas-en-castellano/index.md) |
+
+## Referencias
+
+- Michael A. Covington, *Natural Language Processing for Prolog Programmers*,
+  Prentice-Hall, 1994; edición digital del autor, 2013,
+  <https://www.covingtoninnovations.com/books/NLPPP.pdf>. Capítulo «Morphology
+  and the Lexicon»: de «The Nature of Morphology», que la derivación es en gran
+  parte irregular y se lista; de «Controlling Overgeneration», la
+  sobregeneración de una regla productiva, como -mente; y de «Rules and
+  Transducers», la notación `e:0 => C:C _ +:0 V:V`.
+- Kimmo Koskenniemi, *Two-Level Morphology: A General Computational Model for
+  Word-Form Recognition and Production*, Publicación 11 del Departamento de
+  Lingüística General, Universidad de Helsinki, 1983; y su resumen en «A General
+  Computational Model for Word-Form Recognition and Production», *COLING 1984*
+  ([ACL Anthology P84-1038](https://aclanthology.org/P84-1038/)). Covington toma
+  de allí la morfología de dos niveles; el capítulo, a través de él, la notación
+  de las reglas, un par, un operador y un contexto, de la versión 5.
+- Lauri Karttunen, «KIMMO: A General Morphological Processor», *Texas Linguistic
+  Forum* 22, 1983, pp. 165–186. Es la implementación de la morfología de dos
+  niveles que Covington describe; el capítulo compara con ella la compilación de
+  las reglas escritas en notación de dos niveles, que la versión 5 hace a
+  patrones prohibidos.
+
+El código del capítulo es propio del curso: el léxico, las reglas del
+castellano, la escritura de las reglas como patrones prohibidos, su
+compilación desde la notación de dos niveles y las seis versiones se
+escribieron para él; de la fuente se toman las ideas,
+no los programas.

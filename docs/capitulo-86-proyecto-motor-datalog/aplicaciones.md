@@ -1,13 +1,16 @@
 # Aplicaciones: el Wumpus, los marcos y los registros
 
-Esta página contiene la [sección 86.8](index.md#868-aplicaciones-el-wumpus-los-marcos-y-los-registros)
-del [capítulo 86](index.md): el motor evalúa, sin cambiarlos, programas
-y datos de otros capítulos. El código está en `wumpus.pl`, `marcos.pl` y
-`metricas.pl`,
-en `ejemplos/capitulo-86/`, con sus pruebas; los dos cargan los archivos
-de su capítulo sin copiarlos.
+Esta página continúa la página
+[La transformación mágica y los hechos que llegan después](magia.md#867-version-5-los-hechos-que-llegan-despues) del
+[capítulo 86](index.md), con la sección
+[86.8](#868-aplicaciones-el-wumpus-los-marcos-y-los-registros): el motor
+evalúa, sin cambiarlos, programas y datos de otros capítulos. El código está en
+`wumpus.pl`, `marcos.pl` y `metricas.pl`, en `ejemplos/capitulo-86/`, con
+sus pruebas; los dos cargan los archivos de su capítulo sin copiarlos.
 
-## Las reglas de seguridad del Wumpus
+## 86.8 Aplicaciones: el Wumpus, los marcos y los registros
+
+### Las reglas de seguridad del Wumpus
 
 El [capítulo 78](../capitulo-78-proyecto-mundo-wumpus/enfoques.md#el-mismo-conocimiento-seis-inferencias)
 escribió las reglas con las que el agente decide qué celdas son seguras
@@ -124,14 +127,14 @@ con la versión 5 del motor en lugar de recalcularlo. No se puede: las
 reglas tienen negación, y una brisa nueva quita la conclusión `sin_pozo`
 de las celdas vecinas, lo que el paso semi-ingenuo, que solo agrega, no
 hace. Es lo que la
-[sección 86.7](index.md#867-version-5-los-hechos-que-llegan-despues)
+[sección 86.7](magia.md#867-version-5-los-hechos-que-llegan-despues)
 dice de la negación y de la red Rete, que sí retira lo que un hecho
 invalidó.
 
-## La herencia de los marcos
+### La herencia de los marcos
 
 Los marcos del
-[capítulo 82](../capitulo-82-proyecto-coleccion-problemas/transito-y-marcos.md#marcos)
+[capítulo 82](../capitulo-82-proyecto-coleccion-problemas/transito-y-marcos.md#828-marcos)
 guardan lo que se sabe de cada objeto en ranuras, `valor(Objeto, Ranura,
 Valor)`, y un objeto hereda el valor de una ranura por `es_un`, por
 `parte_de` o por `intension` cuando no tiene uno propio. Rowe guarda las
@@ -227,10 +230,10 @@ I = true.
 La transformación mágica no reduce aquí el trabajo: `con_propio/2` se
 usa negado, y la transformación lo evalúa completo, junto con `propio/3`
 y las partes, de los que depende; lo que queda por especializar es poco.
-El [ejercicio 9](index.md#ejercicios) encuentra el mismo efecto en el
+El [ejercicio 10](#ejercicios) encuentra el mismo efecto en el
 Wumpus.
 
-## Las anomalías de los registros
+### Las anomalías de los registros
 
 Los informes del
 [capítulo 85](../capitulo-85-proyecto-analisis-registros/index.md)
@@ -278,3 +281,31 @@ pedidos. Como los datos del día no cambian, el modelo se calcula una vez
 y responde todas las preguntas sobre ese día; con un registro que crece,
 las reglas con negación impedirían usar la versión 5 del motor, como en
 el Wumpus.
+
+El capítulo continúa en la página
+[La tabla de un juego](finales.md#869-la-tabla-de-un-juego), con un programa que el motor
+no acepta, porque no es estratificado, y la tabla que se calcula igual
+con la idea de la evaluación semi-ingenua.
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio. Los ejercicios que piden código se resuelven en archivos
+que cargan los del capítulo, sin modificarlos.
+
+10. **(2)** Calcular con `respuestas_magicas/4` si la celda (2, 2) es
+    segura en la situación de la figura 7.4 de Russell y Norvig, y
+    comparar las derivaciones con las del modelo entero. Explicar por qué
+    la diferencia es pequeña.
+
+## Referencias
+
+- David S. Warren, *Programming in Tabled Prolog*, borrador, Stony Brook
+  University, 1999 — capítulo «Introduction to Prolog», sección
+  «Deductive Databases»; capítulo «Tabling and Datalog Programming»; y
+  sección «Stratified Negation» del capítulo «Negation in XSB».
+  [Edición en línea del autor, en el archivo web](https://web.archive.org/web/20240628211257/https://www3.cs.stonybrook.edu/~warren/xsbbook/book.html).
+  Esta página toma de allí la distinción entre la base extensional y la
+  intensional.

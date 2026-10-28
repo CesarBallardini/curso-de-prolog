@@ -9,7 +9,9 @@ Each chapter opens with an `!!! info "Tiempo estimado"` block holding three figu
 in h:mm: reading the chapter with its examples and activities, solving the starred
 exercises, and solving all of them. Reading covers the chapter's extra pages too: a
 long chapter moves some sections out of index.md into pages of their own in the same
-folder, and those are part of the chapter; only soluciones.md is left out. The
+folder, and those are part of the chapter; only soluciones.md is left out. Each page is
+read up to its closing sections (Ejercicios, Resumen, Temas que se retoman, Referencias),
+and the exercises are those of every page's Ejercicios. The
 figures are written by hand, so an exercise added, removed or re-graded, or a page
 added to the chapter, leaves them wrong with nothing to say so.
 
@@ -47,7 +49,10 @@ STAR = '★'
 READING = re.compile(r'hacer las actividades: \*\*(\d+):(\d\d) h\*\*')
 STARRED = re.compile(rf'Resolver los (\d+) ejercicios marcados con {STAR}: \*\*(\d+):(\d\d) h\*\*')
 NONE_STARRED = re.compile(rf'Ningún ejercicio está marcado con {STAR}\.')  # a count of 0 and 0:00
-EVERY = re.compile(r'Resolver los (\d+) ejercicios del final: \*\*(\d+):(\d\d) h\*\*')
+# «del final» when all the exercises close index.md, «del capítulo» when they are spread over its pages.
+EVERY = re.compile(r'Resolver los (\d+) ejercicios del (?:final|capítulo): \*\*(\d+):(\d\d) h\*\*')
+CLOSING = re.compile(r'^## (?:Ejercicios|Resumen|Temas que se retoman|Referencias)\s*$', re.M)
+NEXT_H2 = re.compile(r'^## ', re.M)
 
 FENCE = re.compile(r'^```.*?^```', re.M | re.S)
 ACTIVITY = re.compile(r'!!! question "Actividad"')
@@ -82,6 +87,8 @@ def exercises(section: str) -> list[tuple[bool, str]]:
     found = []
     text, _ = split_fences(section)
     starts = [match.start() for match in ITEM.finditer(text)]
+    if not starts:
+        return found  # a page without exercises
     for begin, end in zip(starts, [*starts[1:], len(text)], strict=True):
         item = text[begin:end]
         graded = DIFFICULTY.search(item)
@@ -118,16 +125,29 @@ def extra_pages(page: Path) -> list[Path]:
     return sorted(other for other in page.parent.glob('*.md') if other.name not in ('index.md', 'soluciones.md'))
 
 
+def body(text: str) -> str:
+    """The page up to its first closing section."""
+    closing = CLOSING.search(text)
+    return text[: closing.start()] if closing else text
+
+
+def exercise_section(text: str) -> str:
+    """The page's `## Ejercicios` section, up to the next level-2 heading; empty if it has none."""
+    _, found, rest = text.partition('\n## Ejercicios\n')
+    if not found:
+        return ''
+    following = NEXT_H2.search(rest)
+    return rest[: following.start()] if following else rest
+
+
 def check(page: Path) -> tuple[list[str], tuple[float, int, int]]:
     """Compare one chapter with the model; returns its complaints and its minutes."""
     text = page.read_text(encoding='utf-8')
-    body, _, rest = text.partition('## Ejercicios')
-    section = rest.partition('## Resumen')[0]
-    items = exercises(section)
+    texts = [text] + [other.read_text(encoding='utf-8') for other in extra_pages(page)]
+    items = [item for one in texts for item in exercises(exercise_section(one))]
     starred = [item for item in items if item[0]]
 
-    read = reading_minutes(body)
-    read += sum(reading_minutes(other.read_text(encoding='utf-8')) for other in extra_pages(page))
+    read = sum(reading_minutes(body(one)) for one in texts)
     star_time = solving_minutes(starred)
     all_time = solving_minutes(items)
     says_read, says_star, says_all, says_star_count, says_count = claimed(text, page)

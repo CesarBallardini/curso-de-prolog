@@ -1,17 +1,29 @@
 # Otras formas de inducir
 
-Esta página contiene la sección
-[68.7](index.md#687-version-6-otras-formas-de-inducir) del
-[capítulo 68](index.md): las partes del capítulo «Inductive reasoning» de
-Flach que las versiones 1 a 5 no cubren. La inducción planteada como
-abducción, la búsqueda descendente incremental del sistema MIS de
-Shapiro, que retira la cláusula falsa de la prueba de un negativo, los
-tipos que permiten aprender relaciones entre listas, y el aprendizaje de
-un programa con acumulador. Los ejemplos están en `abductiva.pl`, `mis.pl`
+Esta página continúa la página
+[La mejor cláusula y la recursión](recursion.md#686-version-5-la-mejor-clausula-y-la-recursion) del
+[capítulo 68](index.md), con la sección [68.7](#687-version-6-otras-formas-de-inducir): las partes del
+capítulo «Inductive reasoning» de Flach que las versiones 1 a 5 no
+cubren. La inducción planteada como abducción, la búsqueda descendente
+incremental del sistema MIS de Shapiro, que retira la cláusula falsa de
+la prueba de un negativo, los tipos que permiten aprender relaciones
+entre listas, y el aprendizaje de un programa con acumulador. Los ejemplos están en `abductiva.pl`, `mis.pl`
 y `acumulador.pl`, en `ejemplos/capitulo-68/`, con sus pruebas; se
 ejecutan localmente.
 
-## La inducción como abducción
+## 68.7 Versión 6: otras formas de inducir
+
+El capítulo de Flach contiene cuatro ideas que las versiones anteriores
+no usan. La primera plantea la inducción como abducción de cláusulas:
+un metaintérprete que, para explicar un ejemplo, supone cláusulas de una
+lista de cláusulas posibles. La segunda es la búsqueda incremental del
+sistema MIS de Shapiro: los ejemplos llegan de a uno, y un negativo que
+la hipótesis deduce se corrige quitando la cláusula falsa de su prueba.
+La tercera agrega términos y tipos al lenguaje, y con ellos el programa
+aprende `append/3` y una traducción entre listas. La cuarta es el
+ejercicio de Flach de aprender `reverse/3`, un programa con acumulador.
+
+### La inducción como abducción
 
 El metaintérprete abductivo del
 [capítulo 50](../capitulo-50-proyecto-diagnostico-abduccion/index.md)
@@ -62,7 +74,7 @@ cláusula posible que se cumple da una, y `padre(A, C)` sin el eslabón
 siguiente se cumple con los dos hijos de juan. Para obtener una regla,
 Flach propone dos caminos: procesar todos los ejemplos a la vez con
 cláusulas sin instanciar (el
-[ejercicio 12](index.md#ejercicios)), o **generalizar** las
+[ejercicio 12](#ejercicios)), o **generalizar** las
 explicaciones. El segundo ya está escrito: es la lgg de cláusulas de la
 [sección 68.3](index.md#683-version-2-subsuncion-y-lgg-de-clausulas).
 `explicaciones_comunes/3` explica dos ejemplos con la misma cláusula
@@ -97,7 +109,7 @@ eso Flach abandona este planteo, que además exige enumerar de antemano
 todas las cláusulas posibles, y pasa a buscar en el espacio ordenado por
 la θ-subsunción, como las versiones 3 a 5.
 
-## Tipos y términos
+### Tipos y términos
 
 El lenguaje de la versión 4 tiene literales cuyos argumentos son
 variables de la cláusula. No puede escribir `append([X|Xs], Ys,
@@ -174,7 +186,7 @@ uniones de dos variables y seis reemplazos, ninguno por un literal,
 porque `append/3` usaría las tres variables de la cabeza. Los tipos
 podan: `num(X, Y)`, con dos elementos, solo admite `num(X, X)`.
 
-## Refutar la cláusula falsa
+### Refutar la cláusula falsa
 
 La versión 4 recibe todos los ejemplos juntos. El sistema MIS de
 Shapiro, que Flach reproduce, los recibe **de a uno** y mantiene una
@@ -333,9 +345,9 @@ listnum([], _).
 Dos cláusulas recursivas, una para cada sentido de la traducción, como
 en Flach, y una cláusula base demasiado general: ningún negativo dice que
 `listnum([], [uno])` es falso. El
-[ejercicio 13](index.md#ejercicios) la corrige.
+[ejercicio 13](#ejercicios) la corrige.
 
-## Un programa con acumulador
+### Un programa con acumulador
 
 La restricción de Flach —un literal del cuerpo usa menos variables que la
 cabeza— excluye las tautologías, pero también los programas con
@@ -427,3 +439,83 @@ false.
     `reverse([], [], [])` y predecir qué cláusula base aprende
     `aprender_reverse(rlgg_bien_fundada, H)`. Comprobarlo, y verificar
     con `invertir/3` si la lista vacía se invierte.
+
+!!! success "Criterios de calidad"
+    | Criterio | En este capítulo |
+    |---|---|
+    | C1 | cada predicado declara modos y determinación; `refinar/3` e `incluido/2` son `nondet` porque enumeran alternativas, y los que aprenden son `det`: devuelven una hipótesis y la cuenta de cláusulas |
+    | C2 | el problema es de datos: los ejemplos salen de `ejemplos/3`, el fondo de `de_fondo/1` y el lenguaje de `lenguaje/1`; los hechos son los del [capítulo 3](../capitulo-03-reglas-y-conjunciones/index.md), sin copiarlos |
+    | C4 | `subsume/2`, `cubre/3` y `cubre_alguno/3` no dejan ligaduras ni alternativas: usan `\+ \+` o un corte después de la primera prueba |
+    | C7 | 150 pruebas en nueve archivos; cada versión se verifica contra la anterior o contra la relación esperada: la lgg subsume a los dos términos, cada refinamiento es subsumido por su cláusula, y la extensión de cada hipótesis se compara con `esperado/2` |
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio.
+
+12. ★ **(2)** Flach propone procesar todos los ejemplos a la vez, con
+    cláusulas supuestas sin instanciar, para que una cláusula sirva a
+    varios ejemplos. Escribir `inducir_todos(Ejemplos, Inducibles, Fondo,
+    H)`, con su encabezado de PlDoc, y aplicarlo a los positivos de
+    `abuelo/2` con las cláusulas de `inducibles/2`. Comparar su primera
+    respuesta con las explicaciones de la
+    [sección 68.7](#la-induccion-como-abduccion).
+13. **(1)** La hipótesis de `numerales` en la
+    [sección 68.7](#refutar-la-clausula-falsa) tiene la
+    cláusula base `listnum([], _)`. Agregar a los ejemplos los negativos
+    necesarios para que `mis/4` aprenda `listnum([], [])`, y explicar por
+    qué con uno solo, `listnum([], [uno])`, la cláusula base pasa a ser
+    `listnum(_, [])`.
+
+## Resumen
+
+| | |
+|---|---|
+| **ejemplo positivo, negativo** | un hecho sin variables que pertenece, o no, a la relación que se aprende |
+| **conocimiento de fondo** | las relaciones conocidas; aquí, su modelo mínimo como lista de hechos |
+| **cobertura extensional** | la cabeza unifica con el ejemplo y el cuerpo es verdadero en el modelo |
+| **cobertura intensional** | el ejemplo se deduce de la hipótesis y del fondo |
+| **completa, consistente** | la hipótesis cubre todos los positivos; no cubre ningún negativo |
+| **θ-subsunción** | una sustitución lleva un término o una cláusula a otro, o a una parte de otro |
+| **lgg, antiunificación** | la generalización menos general; se calcula con una sustitución inversa |
+| **rlgg** | la lgg de dos ejemplos con el modelo de fondo como cuerpo |
+| **refinamiento** | especialización mínima: unificar dos variables o agregar un literal |
+| **sobregeneralización** | la extensión de la hipótesis incluye átomos que no pertenecen a la relación |
+| `mas_general/2`, `lgg/3`, `lgg/5` | la versión 1 |
+| `subsume/2`, `lgg_clausula/3` | la versión 2 |
+| `rlgg/4`, `cubre/3`, `reducir/4`, `aprender_asc/3`, `evaluar/5` | la versión 3 |
+| `refinar/3`, `buscar_clausula/8`, `aprender_desc/3`, `evaluar_en/6` | la versión 4 |
+| **[Patrón 66](../patrones.md#66-especializar-podando-por-el-ejemplo)** | especializar podando por el ejemplo |
+| `mejor_clausula/9`, `aprender_rec/3`, `probar/4` | la versión 5 |
+| **cláusula falsa** | la cláusula más alta de una prueba que deduce una cabeza falsa de un cuerpo verdadero |
+| `inducir/5`, `refinar_tipado/3`, `clausula_falsa/3`, `mis/4`, `bien_fundada/2` | la versión 6 |
+
+## Temas que se retoman
+
+| Tema | Se retoma en |
+|---|---|
+| El espacio de hipótesis ordenado por generalidad, con sus dos bordes, y la generalización guiada por una prueba | [capítulo 69](../capitulo-69-proyecto-espacios-versiones-generalizacion-explicacion/index.md) |
+
+## Referencias
+
+- Peter Flach, *Simply Logical: Intelligent Reasoning by Example*, John
+  Wiley & Sons, 1994 — capítulo «Inductive reasoning».
+  [Edición en línea](https://book.simply-logical.space/src/text/3_part_iii/9.1.html).
+  Esta página toma de allí la inducción planteada como abducción de
+  cláusulas, la búsqueda incremental del sistema MIS con la cláusula
+  falsa, los términos y los tipos del lenguaje de hipótesis, y el
+  ejercicio de aprender `reverse/3`, un programa con acumulador.
+- Ehud Y. Shapiro, *Algorithmic Program Debugging*, MIT Press, 1983. Sin
+  edición en línea de acceso libre verificada. La versión 6
+  toma de él, a través de Flach, el procesamiento incremental de los
+  ejemplos y la búsqueda de la cláusula falsa en la prueba de un
+  negativo, la idea de su depuración algorítmica.
+
+El código del capítulo es propio, escrito para el curso sobre la familia
+de los [capítulos 2](../capitulo-02-hechos-consultas-y-variables/index.md) y [3](../capitulo-03-reglas-y-conjunciones/index.md): de Flach se toman las ideas y la
+estructura de los algoritmos, no el código; las variables enlazadas en
+lugar de las cláusulas restringidas, el conteo de cláusulas generadas, la
+elección de la mejor cláusula y la medición de la extensión con el modelo
+mínimo son del curso.

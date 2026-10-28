@@ -72,7 +72,7 @@ base dinámica del [capítulo 21](../capitulo-21-base-de-datos-dinamica/index.md
 quitan y se reemplazan— y la idea de intérprete del
 [capítulo 34](../capitulo-34-introspeccion-y-metainterpretes/index.md).
 Cumple el anuncio del
-[capítulo 56](../capitulo-56-proyecto-dialogos-plantillas/index.md#temas-que-se-retoman):
+[capítulo 56](../capitulo-56-proyecto-dialogos-plantillas/guiones.md#temas-que-se-retoman):
 reglas de condición y acción sobre una base de datos. Cada versión carga la
 anterior o el archivo de programas, y por eso los archivos del capítulo se
 ejecutan en una instalación local, no en SWISH.
@@ -97,9 +97,9 @@ Al terminar el capítulo, el lector puede:
   programa en fases con una metarregla de transición.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **2:35 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **2:30 h**.
     Resolver los 5 ejercicios marcados con ★: **1:35 h**.
-    Resolver los 13 ejercicios del final: **3:35 h**.
+    Resolver los 13 ejercicios del capítulo: **3:35 h**.
 
 ## 61.1 El programa terminado
 
@@ -282,7 +282,7 @@ programa, y el retroceso prueba las demás, como lo muestran el intérprete
 vainilla de la
 [sección 34.2](../capitulo-34-introspeccion-y-metainterpretes/index.md#342-el-interprete-vainilla)
 y la resolución SLD del
-[capítulo 39](../capitulo-39-semantica-de-los-programas-logicos/resolucion.md#resolucion-sld).
+[capítulo 39](../capitulo-39-semantica-de-los-programas-logicos/resolucion.md#392-resolucion-sld).
 
 !!! question "Actividad"
     Predecir qué módulos del programa `mcd` se pueden aplicar a la memoria
@@ -747,154 +747,10 @@ entre ciclos lo que ya se comparó.
     módulos. Predecir cuál elige cada estrategia en el primer ciclo, y
     comprobarlo con `conflicto/3` y `elegir/4`.
 
-## 61.6 Versión 4: un demostrador por resolución
-
-Una fórmula es un **teorema** si es verdadera cualquiera que sea el valor de
-sus átomos. El método de resolución lo prueba por el absurdo: pasa la
-negación de la fórmula a **cláusulas** —disyunciones de átomos y de átomos
-negados— y combina dos cláusulas con literales opuestos, `P` y `-P`, en un
-**resolvente** que reúne los demás literales, hasta obtener la cláusula
-vacía, que ninguna asignación satisface. `resolucion.pl` lo escribe como un
-programa de cuatro módulos sobre hechos `clausula(C)`, con cada cláusula
-como una lista ordenada de literales:
-
-<!-- ejemplo: capitulo-61/resolucion.pl fragmento: programa(resolucion, .. ]). -->
-```prolog
-programa(resolucion,
-    [ contradiccion :: [clausula([])]
-           ---> [parar(contradiccion)],
-      tautologia :: [clausula(C), {tautologica(C)}]
-           ---> [quitar(clausula(C))],
-      resolver :: [clausula(C1), clausula(C2),
-                   {resolvente(C1, C2, R), \+ tautologica(R)},
-                   no(clausula(R))]
-           ---> [agregar(clausula(R))],
-      agotado :: []
-           ---> [parar(sin_contradiccion)]
-    ]).
-```
-
-`contradiccion` termina al aparecer la cláusula vacía, `tautologia` quita
-las cláusulas que tienen un literal y su opuesto, y `resolver` agrega un
-resolvente que todavía no está en la memoria; esa condición,
-`no(clausula(R))`, cumple el papel del registro de Bratko de los pares ya
-resueltos. `agotado`, sin condiciones, va al final:
-
-```prolog
-?- demostrar((p ==> q) ==> (q ==> p), primera, V).
-V = no_teorema.
-```
-
-La página [Un demostrador por resolución](resolucion.md#un-demostrador-por-resolucion)
-desarrolla la versión: la forma clausal, el paso de resolución, el efecto
-de la estrategia sobre la cantidad de ciclos y los límites de un demostrador
-tan pequeño, que el
-[capítulo 63](../capitulo-63-proyecto-demostrador-teoremas/index.md)
-supera.
-
-**Lo que falta.** Los tres programas de ejemplo terminan, pero nada en el
-intérprete lo garantiza: un módulo mal escrito puede hacer que el ciclo no
-termine nunca.
-
-## 61.7 Versión 5: la terminación
-
-Un programa dirigido por patrones termina si cada ciclo reduce una medida
-que no puede decrecer para siempre, como pide el
-[Patrón 56](../capitulo-44-proyecto-resolver-ecuaciones/index.md#443-version-2-reglas-de-reescritura-y-coleccion),
-«Medida que decrece»: la suma de los números en el máximo común divisor, la
-cantidad de inversiones en el ordenamiento. Cuando la medida no existe, la
-memoria puede crecer sin fin o volver a un estado por el que ya pasó.
-`vigilar/6` ejecuta el ciclo de la versión 3 con un límite de ciclos y un
-registro de las memorias vistas, y detecta los dos casos. `mcd_mal`, el
-máximo común divisor con `>=` en lugar de `>`, cae en el segundo: las dos
-condiciones `numero(X)` y `numero(Y)` pueden usar el mismo hecho, la resta
-de un número consigo mismo da 0, y desde ahí `0 - 0` deja la memoria igual:
-
-<!-- ejemplo: capitulo-61/terminacion.pl predicado: vigilar/6 -->
-```prolog
-%!  vigilar(+Programa, +Estrategia, +Limite:integer, +Memoria0:list,
-%!          -Memoria:list, -Resultado) is semidet.
-%
-%   Como ejecutar/5, con dos resultados más: limite(N) si el programa hizo
-%   Limite ciclos sin terminar, y repetida(K, N) si la memoria después de
-%   N ciclos es la misma, como colección de hechos, que después de K.
-%   Falla si falla una acción de la instancia elegida.
-vigilar(Programa, Estrategia, Limite, Memoria0, Memoria, Resultado) :-
-    programa(Programa, Modulos),
-    empty_assoc(Vistas),
-    vigilado(Modulos, Estrategia, Limite, 0, Vistas, Memoria0, Memoria,
-             Resultado).
-```
-
-```prolog
-?- vigilar(mcd_mal, primera, 100, [numero(25), numero(10)], M, R).
-M = [numero(0), numero(10)],
-R = repetida(1, 2).
-```
-
-La página [La terminación](terminacion.md#la-terminacion) desarrolla la
-versión: las medidas de los tres programas, el registro de memorias vistas,
-los programas `luz` y `contador`, el análisis de `mcd_mal` y lo que la
-vigilancia no puede detectar, con una actividad.
-
-**Lo que falta.** En cada ciclo, cada patrón se compara con toda la lista de
-hechos, aunque solo pueda unificar con los de un nombre y una aridad; y en
-el máximo común divisor el programa depende de que la estrategia prefiera
-`resta` a `resultado`, que se puede aplicar siempre.
-
-## 61.8 Versión 6: índices y metarreglas
-
-Bratko cierra su capítulo con dos maneras de que el emparejamiento no
-recorra toda la memoria: indexar los hechos y partir los módulos en grupos
-que se activan y desactivan con «una especie de metarreglas». La versión 6,
-`indices.pl`, escribe las dos. La **memoria indexada** guarda los hechos en
-un `library(assoc)` por su nombre y su aridad, cada uno con una **marca de
-tiempo** que reemplaza a la posición en la lista para la estrategia
-`reciente`; `ejecutar_indexado/5` da la misma memoria y el mismo resultado
-que `ejecutar/5` con todos los programas y estrategias del capítulo. Un
-**programa por fases** es una lista de pares `Fase-Modulos`; en cada ciclo
-solo compiten los módulos de la fase activa, y una **metarregla**, una regla
-sobre las reglas, pasa a la fase siguiente cuando ninguno se puede aplicar:
-
-<!-- ejemplo: capitulo-61/indices.pl fragmento: programa_fases(mcd_fases, .. ]). -->
-```prolog
-programa_fases(mcd_fases,
-    [ calcular - [ resta :: [numero(X), numero(Y), {X > Y}]
-                        ---> [{Z is X - Y},
-                              reemplazar(numero(X), numero(Z))] ],
-      informar - [ resultado :: [numero(X)]
-                        ---> [parar(X)] ]
-    ]).
-```
-
-Con `mcd_invertido` y la estrategia `primera`, la versión 3 responde el
-primer número; con las fases, `resultado` no se considera hasta que `resta`
-deja de aplicarse, y el orden de los módulos y la estrategia dejan de
-importar:
-
-```prolog
-?- ejecutar(mcd_invertido, primera, [numero(25), numero(10)], M, R).
-M = [numero(25), numero(10)],
-R = 25.
-
-?- ejecutar_fases_de(mcd_fases, primera, [numero(25), numero(10)], M, R).
-M = [numero(5), numero(5)],
-R = 5.
-```
-
-La página [Índices y metarreglas](indices.md#indices-y-metarreglas)
-desarrolla la versión: la memoria indexada y sus marcas, el conjunto de
-conflicto sobre ella, las fases y lo que cuesta cada versión con 100 hechos
-que ningún módulo usa, con una actividad.
-
-!!! success "Criterios de calidad"
-    | Criterio | En este capítulo |
-    |---|---|
-    | C1 | cada predicado declara modos y determinación; los ciclos son `semidet`, porque fallan si falla una acción, `satisface/3` y `ejecucion/4` son `nondet`, y `bien_formado/1` es `semidet` |
-    | C2 | los programas son datos: `bien_formado/1` los examina antes de ejecutarlos, y los hechos de la memoria no pueden ser variables ni términos `{_}` o `no(_)`, que tienen otro significado |
-    | C4 | los ciclos eligen con un si-entonces, `acciones/4` distingue `parar/1` con otro, y las cláusulas de `fnn/2` y `fnc/2` empiezan por el átomo para que la indexación no deje alternativas; las pruebas, que fallan si queda una alternativa pendiente, lo confirman |
-    | C6 | desde la versión 2 la memoria viaja en argumentos; la versión 1 usa la base dinámica para mostrar lo que se pierde, y la traza es la única salida |
-    | C7 | 103 pruebas en siete archivos: cada programa en cada versión, una acción que falla, las tres estrategias con sus empates, la cantidad de ejecuciones, la traza como texto, los teoremas y los no teoremas, y los tres modos de no terminar; la versión 6 se compara con la 3 en todos los programas y estrategias, y una prueba mide que el índice no paga los hechos que ningún módulo usa |
+El capítulo continúa en la página
+[Un demostrador por resolución](resolucion.md#616-version-4-un-demostrador-por-resolucion), con un
+programa dirigido por patrones que demuestra fórmulas de la lógica
+proposicional.
 
 ## Ejercicios
 
@@ -911,128 +767,52 @@ archivo que carga los del capítulo, sin modificarlos.
 2. **(1)** Escribir el programa `maximo`, que quita de la memoria todo
    número menor que otro y para con el que queda. Ejecutarlo con la versión
    2 sobre 25, 10, 15 y 30.
-3. ★ **(2)** Escribir el programa `criba`, que parte de los hechos
-   `numero(2)`, …, `numero(N)` y quita todo número múltiplo de otro, de modo
-   que la memoria termina con los primos. Dar una medida que decrece en cada
-   ciclo y comprobar el resultado para N = 30.
-4. **(2)** Escribir el programa `burbuja`, que solo intercambia elementos
+3. **(2)** Escribir el programa `burbuja`, que solo intercambia elementos
    vecinos. Comparar con `ciclos/4` la cantidad de ciclos de `burbuja` y de
    `ordenar` para la lista invertida de 10 elementos y para `[4, 5, 1, 3, 2]`,
    con las estrategias `primera` y `reciente`, y explicar las diferencias.
-5. ★ **(2)** Agregar a `clave/4`, desde otro archivo, la estrategia
+4. ★ **(2)** Agregar a `clave/4`, desde otro archivo, la estrategia
    `lejana`, que al ordenar prefiere el intercambio entre las posiciones
    más separadas de la lista; la clave puede leerlas en las acciones ya
    instanciadas de la instancia. Contar los ciclos de `ordenar` con
    `lejana` para la lista invertida de 20 elementos, y explicar el
    resultado.
-6. **(1)** Predecir cuántas ejecuciones tiene el programa `mcd` con
+5. **(1)** Predecir cuántas ejecuciones tiene el programa `mcd` con
    `ejecucion/4` desde `[numero(12), numero(8)]`, y qué resultados dan.
    Comprobarlo con `aggregate_all/3` y `setof/3`.
-7. **(2)** Escribir el programa `escrutinio`, que parte de hechos
+6. **(2)** Escribir el programa `escrutinio`, que parte de hechos
    `voto(Candidato)` y termina con un hecho `total(Candidato, N)` por
    candidato, sin votos. Usar `no/1` para el primer voto de cada candidato.
-8. ★ **(3)** Agregar al demostrador un módulo que quite una cláusula cuando
-   otra, distinta, contiene solo literales suyos: `[a]` hace inútil a
-   `[a, b]`. Escribirlo como un programa nuevo, `resolucion_subsuncion`,
-   verificar con `vigilar/6` que termina —un resolvente quitado puede
-   volver a agregarse— y comparar sus ciclos con los de `resolucion` en las
-   fórmulas de las pruebas.
-9. ★ **(2)** Predecir qué ocurre si se quita del módulo `resolver` la
-   condición `no(clausula(R))`, con la fórmula `(p v q) ==> p`, que no es
-   un teorema, y con la fórmula de Bratko. Escribir ese programa,
-   `resolucion_sin_control`, y comprobar la predicción con `vigilar/6` y un
-   límite de 50 ciclos. Explicar por qué la vigilancia no informa una
-   memoria repetida.
-10. **(2)** Escribir `historia(+Programa, +Estrategia, +Memoria0,
+7. **(2)** Escribir `historia(+Programa, +Estrategia, +Memoria0,
     -Historia, -Resultado)`, que devuelve la traza como una lista de
     términos `ciclo(N, Nombre, Cantidad, Hechos)`, uno por ciclo, en lugar
     de escribirla, y `escribir_historia/1`, que la escribe con el formato
     de `trazar/5`.
-11. **(2)** Agregar a la memoria del máximo común divisor 100 hechos
+8. **(2)** Agregar a la memoria del máximo común divisor 100 hechos
     `ruido(I)` que ningún módulo usa, y medir con `time/1` cuántas
     inferencias cuesta con la versión 2 y con la versión 3. Explicar el
     aumento a partir de `condicion/4`.
-12. **(2)** Escribir el programa `luz_limitada`, que cambia la luz como
-    `luz` pero lleva la cuenta de los cambios en un hecho `cambios(N)` y
-    para después de un número dado de cambios. Indicar la medida que
-    decrece.
-13. **(2)** La metarregla de `ejecutar_fases/5` trata las fases como
-    etapas: una fase terminada no vuelve a activarse. Escribir
-    `ejecutar_prioridades/5`, con la metarregla que en cada ciclo activa la
-    primera fase que tiene algún módulo aplicable, y un programa por fases,
-    `contador_fases`, en el que las dos metarreglas dejan memorias
-    distintas. Comprobar que con `mcd_fases` dan el mismo resultado.
-
-## Resumen
-
-| | |
-|---|---|
-| **módulo dirigido por patrones** | `Nombre :: Condiciones ---> Acciones`; ningún módulo llama a otro, la memoria decide cuál se aplica |
-| **memoria de trabajo** | la colección de hechos sin variables que las condiciones examinan y las acciones cambian |
-| **condiciones** | un patrón (algún hecho unifica), `no(F)` (ninguno unifica) y `{Meta}` (una prueba de Prolog) |
-| **acciones** | `agregar/1`, `quitar/1`, `reemplazar/2`, `{Meta}` y `parar/1` |
-| **ciclo** | reconocimiento, resolución del conflicto y ejecución, hasta `parar/1` o hasta que ningún módulo se aplica; es `semidet`: falla si falla una acción |
-| **conjunto de conflicto** | todas las instancias aplicables: cada módulo con cada manera de cumplir sus condiciones |
-| **estrategia** | una clave de orden sobre el conjunto de conflicto: `primera`, `reciente`, `especifica` |
-| **memoria como argumento** | recupera el retroceso: `ejecucion/4` enumera todas las ejecuciones |
-| **resolución** | combinar dos cláusulas con literales opuestos; la cláusula vacía prueba que la negación es contradictoria |
-| **terminación** | una medida que decrece en cada ciclo; el límite y las memorias repetidas detectan los programas que no terminan |
-| **memoria indexada** | los hechos agrupados por nombre y aridad, con marcas de tiempo; cada patrón examina solo los de su clave |
-| **metarregla** | una regla sobre las reglas: decide qué fase del programa está activa |
-| `programas.pl` | el lenguaje de los módulos y los programas de ejemplo |
-| `dinamico.pl`, `ciclo.pl` | el ciclo con la base dinámica y con la memoria como argumento |
-| `conflictos.pl` | el conjunto de conflicto, las estrategias y la traza |
-| `resolucion.pl`, `terminacion.pl` | el demostrador y la vigilancia de la terminación |
-| `indices.pl` | la memoria indexada y los programas por fases |
-
-## Temas que se retoman
-
-| Tema | Se retoma en |
-|---|---|
-| La resolución general, con la lógica de predicados, la forma clausal completa y refutaciones que se verifican | [capítulo 63](../capitulo-63-proyecto-demostrador-teoremas/index.md) |
-| Un sistema de producción sobre una memoria de trabajo: encadenamiento hacia adelante, resolución de conflictos por recencia y especificidad, marcos | [capítulo 64](../capitulo-64-proyecto-sistema-produccion/index.md) |
-| La comparación incremental de los patrones con la memoria, sin repetirla en cada ciclo | [capítulo 65](../capitulo-65-proyecto-algoritmo-rete/index.md) |
 
 ## Referencias
 
-- Ivan Bratko, *Prolog Programming for Artificial Intelligence*,
-  Addison-Wesley, 1986 — capítulo «Pattern-directed Programming», con sus
-  apartados «Pattern-directed architecture», «A simple interpreter for
-  pattern-directed programs», «A simple theorem prover» y «Concluding
-  remarks». No tiene una edición en línea de acceso libre. El capítulo toma
-  de allí la arquitectura de módulos de condición y acción sobre una base de
-  datos, el ciclo de tres pasos con el conjunto de conflicto, la lectura de
-  Prolog como un sistema dirigido por patrones, el máximo común divisor de
-  varios números con dos módulos, el demostrador proposicional por
-  resolución con su registro de lo ya hecho, y las propuestas finales: una
-  resolución de conflictos programable, la memoria como argumento, para
-  recuperar el retroceso, y el índice de la base y los grupos de módulos
-  activados por metarreglas, que son la versión 6. Las referencias del capítulo de Bratko son las
-  dos que siguen, para los sistemas dirigidos por patrones, y el libro de
-  Nilsson *Principles of Artificial Intelligence* (Tioga, 1980), para la
-  demostración por resolución.
+- Ivan Bratko, *Prolog Programming for Artificial Intelligence*, Addison-Wesley,
+  1986 — capítulo «Pattern-directed Programming», con sus apartados
+  «Pattern-directed architecture», «A simple interpreter for pattern-directed
+  programs» y «Concluding remarks». No tiene una edición en línea de acceso
+  libre. El capítulo toma de allí la arquitectura de módulos de condición y
+  acción sobre una base de datos, el ciclo de tres pasos con el conjunto de
+  conflicto, la lectura de Prolog como un sistema dirigido por patrones, el
+  máximo común divisor de varios números con dos módulos, y las propuestas
+  finales: una resolución de conflictos programable y la memoria como argumento,
+  para recuperar el retroceso. La referencia del capítulo de Bratko para los
+  sistemas dirigidos por patrones es la que sigue.
 - D. A. Waterman y Frederick Hayes-Roth (eds.), *Pattern-Directed Inference
   Systems*, Academic Press, 1978, y en él John McDermott y Charles Forgy,
-  «Production system conflict resolution strategies», págs. 177–199; una
-  versión anterior es el informe técnico de Carnegie Mellon de 1976,
-  DOI [10.21236/ADA037771](https://doi.org/10.21236/ADA037771). Bratko
-  presenta el libro como la obra clásica sobre los sistemas dirigidos por
-  patrones. El capítulo toma del artículo las estrategias `reciente` y
-  `especifica` de la [sección 61.5](#615-version-3-el-conjunto-de-conflicto).
-- John Alan Robinson, «A machine-oriented logic based on the resolution
-  principle», *Journal of the ACM* 12(1), 1965, págs. 23–41.
-  DOI [10.1145/321250.321253](https://doi.org/10.1145/321250.321253). Es el
-  origen del principio de resolución que la versión 4 aplica a la lógica
-  proposicional, en la [sección 61.6](#616-version-4-un-demostrador-por-resolucion).
-- William F. Clocksin y Christopher S. Mellish, *Programming in Prolog*,
-  Springer, 5.ª edición, 2003 — capítulo «The Relation of Prolog to Logic»
-  y apéndice «Clausal Form Program Listings», que Bratko cita para el paso
-  a forma clausal; `clausulas/2` hace la misma transformación, restringida
-  a la lógica proposicional, con código propio.
-- Drini, imagen «Algoritmo de Euclides geométrico.svg», Wikimedia Commons,
-  CC BY-SA 4.0.
-
-El código del capítulo es propio, escrito para el curso: el lenguaje de los
-módulos, los intérpretes, las estrategias, el ordenamiento, la vigilancia de
-la terminación, el demostrador, la memoria indexada y las fases son nuevos,
-y del libro se toman las ideas y los ejemplos, no el código.
+  «Production system conflict resolution strategies», págs. 177–199; una versión
+  anterior es el informe técnico de Carnegie Mellon de 1976, DOI
+  [10.21236/ADA037771](https://doi.org/10.21236/ADA037771). Bratko presenta el
+  libro como la obra clásica sobre los sistemas dirigidos por patrones. El
+  capítulo toma del artículo las estrategias `reciente` y `especifica` de la
+  [sección 61.5](#615-version-3-el-conjunto-de-conflicto).
+- Drini, imagen «Algoritmo de Euclides geométrico.svg», Wikimedia Commons, CC
+  BY-SA 4.0.

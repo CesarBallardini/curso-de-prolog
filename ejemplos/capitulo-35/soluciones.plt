@@ -113,7 +113,7 @@ test(invertir_iguales, true(L1 == L2)) :-
     invertir_app(L, L1),
     invertir(L, L2).
 
-% Ejercicio 15
+% Ejercicio 16
 test(nivelar,
      true(N == n(n(vacio, 9, vacio), 9, n(vacio, 9, vacio)))) :-
     nivelar(n(n(vacio, 4, vacio), 3, n(vacio, 9, vacio)), N).
@@ -126,7 +126,7 @@ test(nivelar_maximo_en_la_raiz,
      true(N == n(n(n(vacio, 3, vacio), 3, vacio), 3, vacio))) :-
     nivelar(n(n(n(vacio, 1, vacio), 2, vacio), 3, vacio), N).
 
-% Ejercicio 16: las dos versiones, con las dos formas de la suma.
+% Ejercicio 13: las dos versiones, con las dos formas de la suma.
 test(asociar_izquierda, true(S == a + b + c + d)) :-
     asociar_izquierda((a + b) + (c + d), S).
 
@@ -153,7 +153,7 @@ test(pares_una_respuesta, all(P == [[b-2]])) :-
     buscar_arbol(b, A, 2),
     phrase(pares(A), P).
 
-% Ejercicio 16: un átomo como valor inicial queda en el resultado.
+% Ejercicio 13: un átomo como valor inicial queda en el resultado.
 test(agregar_ninguno, true(S == ninguno + a + b + c + d)) :-
     agregar((a + b) + (c + d), ninguno, S).
 

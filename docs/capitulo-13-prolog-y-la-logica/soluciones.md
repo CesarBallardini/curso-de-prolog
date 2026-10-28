@@ -231,34 +231,6 @@ Horn no puede expresar esa indefinición.
 
 ## 10
 
-**a.** La consulta `?- padre(juan, Quien).` es una cláusula de Horn sin
-conclusión, es decir un conjunto de condiciones sin nada que concluir:
-
-$$\exists \mathit{Quien} \; \mathit{padre}(\mathit{juan}, \mathit{Quien})$$
-
-Prolog no intenta demostrar esa fórmula de manera directa. Hace lo contrario:
-supone que es **falsa** —que no existe ningún `Quien` que la cumpla— y agrega
-esa suposición al programa. Si de esa suma se deduce una contradicción, la
-suposición era errónea, y por lo tanto la fórmula original es cierta.
-
-Eso es refutar. La ventaja práctica es la que describe la
-[sección 13.7](inferencia.md#137-como-prueba-prolog): el método necesita una sola
-regla de inferencia, la resolución, y termina cuando llega a la cláusula vacía,
-que es la contradicción. Los valores de `Quien` que aparecen en el camino son
-la respuesta.
-
-**b.** Las cinco afirmaciones:
-
-| Afirmación | | Por qué |
-|---|---|---|
-| un programa es un conjunto de hechos y reglas | verdadera | es la definición de la [sección 13.2](index.md#132-terminos-formulas-y-programas) |
-| la consulta forma parte del programa | falsa | se le agrega en cada ejecución, negada, y cambia de una ejecución a otra mientras el programa es el mismo |
-| `odia(X, Y), odia(Y, X) :- enemigo(X, Y).` puede ser una cláusula de un programa | falsa | tiene dos conclusiones y no es de Horn; lo que afirma se escribe como dos cláusulas (ejercicio 11) |
-| un hecho es una cláusula sin condiciones | verdadera | es el primer caso de la [sección 13.5](index.md#135-clausulas-de-horn) |
-| una consulta sin variables pregunta si el programa contiene esa afirmación como hecho | falsa | pregunta si la afirmación es **consecuencia lógica** del programa: `?- madre(marta, ana).` responde `true.` y `madre(marta, ana)` no es un hecho del programa |
-
-## 11
-
 **La primera** tiene una conjunción en la conclusión. Afirma que, si X es
 enemigo de Y, entonces X odia a Y **y** Y odia a X: dos conclusiones, y una
 cláusula de Horn tiene una sola. Como la conclusión es una conjunción y no una
@@ -307,6 +279,34 @@ La segunda línea del mensaje supone que se intentó escribir una regla en una
 consulta; aquí la causa es otra, y la información está en la primera línea. En
 ninguno de los dos casos Prolog interpreta la cláusula como la fórmula que
 parece expresar.
+
+## 11
+
+**a.** La consulta `?- padre(juan, Quien).` es una cláusula de Horn sin
+conclusión, es decir un conjunto de condiciones sin nada que concluir:
+
+$$\exists \mathit{Quien} \; \mathit{padre}(\mathit{juan}, \mathit{Quien})$$
+
+Prolog no intenta demostrar esa fórmula de manera directa. Hace lo contrario:
+supone que es **falsa** —que no existe ningún `Quien` que la cumpla— y agrega
+esa suposición al programa. Si de esa suma se deduce una contradicción, la
+suposición era errónea, y por lo tanto la fórmula original es cierta.
+
+Eso es refutar. La ventaja práctica es la que describe la
+[sección 13.7](inferencia.md#137-como-prueba-prolog): el método necesita una sola
+regla de inferencia, la resolución, y termina cuando llega a la cláusula vacía,
+que es la contradicción. Los valores de `Quien` que aparecen en el camino son
+la respuesta.
+
+**b.** Las cinco afirmaciones:
+
+| Afirmación | | Por qué |
+|---|---|---|
+| un programa es un conjunto de hechos y reglas | verdadera | es la definición de la [sección 13.2](index.md#132-terminos-formulas-y-programas) |
+| la consulta forma parte del programa | falsa | se le agrega en cada ejecución, negada, y cambia de una ejecución a otra mientras el programa es el mismo |
+| `odia(X, Y), odia(Y, X) :- enemigo(X, Y).` puede ser una cláusula de un programa | falsa | tiene dos conclusiones y no es de Horn; lo que afirma se escribe como dos cláusulas (ejercicio 10) |
+| un hecho es una cláusula sin condiciones | verdadera | es el primer caso de la [sección 13.5](index.md#135-clausulas-de-horn) |
+| una consulta sin variables pregunta si el programa contiene esa afirmación como hecho | falsa | pregunta si la afirmación es **consecuencia lógica** del programa: `?- madre(marta, ana).` responde `true.` y `madre(marta, ana)` no es un hecho del programa |
 
 ## 12
 

@@ -5,7 +5,7 @@ sus pruebas en `soluciones.plt`. El archivo carga las versiones 4 y 5, que
 cargan las anteriores, y no modifica ningún archivo del capítulo: los
 programas nuevos son cláusulas de `programa/2` y la estrategia nueva es una
 cláusula de `clave/4`, dos predicados que el capítulo declara `multifile`.
-Los ejercicios 1 y 6 se resuelven con los archivos del capítulo. Es
+Los ejercicios 1 y 5 se resuelven con los archivos del capítulo. Es
 `% solo-local`, porque carga otros archivos.
 
 ## 1
@@ -78,52 +78,6 @@ Si el máximo aparece dos veces, ninguno de los dos es menor que el otro, y
 
 ## 3
 
-<!-- ejemplo: capitulo-61/soluciones.pl fragmento: programa(criba, .. ]). -->
-```prolog
-programa(criba,
-    [ multiplo :: [numero(X), numero(Y), {X < Y, Y mod X =:= 0}]
-           ---> [quitar(numero(Y))]
-    ]).
-```
-
-<!-- ejemplo: capitulo-61/soluciones.pl predicado: numeros/3 -->
-```prolog
-%!  numeros(+Desde:integer, +Hasta:integer, -Hechos:list) is det.
-%
-%   Hechos son los hechos numero(I) para I de Desde a Hasta.
-numeros(Desde, Hasta, Hechos) :-
-    findall(numero(I), between(Desde, Hasta, I), Hechos).
-```
-
-<!-- ejemplo: capitulo-61/soluciones.pl predicado: primos_hasta/2 -->
-```prolog
-%!  primos_hasta(+N:integer, -Primos:list(integer)) is det.
-%
-%   Ejercicio 3. Primos son los primos hasta N, en orden, según el
-%   programa criba.
-primos_hasta(N, Primos) :-
-    numeros(2, N, Hechos),
-    ejecutar(criba, Hechos, Memoria, nada_aplicable),
-    findall(X, member(numero(X), Memoria), Xs),
-    msort(Xs, Primos).
-```
-
-```prolog
-?- primos_hasta(20, P).
-P = [2, 3, 5, 7, 11, 13, 17, 19].
-```
-
-La prueba `ej3_criba` verifica también el caso N = 30, cuya lista el
-intérprete interactivo abrevia al escribirla.
-
-La medida es la cantidad de hechos de la memoria: cada ciclo quita uno y no
-agrega ninguno. Un número compuesto `Y` tiene un divisor `X` con
-`1 < X < Y`, que está en la memoria mientras nadie lo quite, y solo se
-quitan compuestos; un primo no es múltiplo de ningún otro número de la
-memoria. Por eso quedan exactamente los primos.
-
-## 4
-
 `burbuja` agrega a la condición de `ordenar` que las posiciones sean
 vecinas:
 
@@ -149,7 +103,7 @@ de qué instancia se elige: con la lista invertida de 10, las dos
 estrategias eligen pares que quitan una sola, y con `[4, 5, 1, 3, 2]`,
 `reciente` encuentra intercambios más provechosos.
 
-## 5
+## 4
 
 La clave se lee en las acciones de la instancia, que ya tienen las
 posiciones ligadas:
@@ -158,7 +112,7 @@ posiciones ligadas:
 ```prolog
 %!  clave(+Estrategia, +Largo:integer, +Instancia, -Clave) is det.
 %
-%   Ejercicio 5: la estrategia lejana. Al ordenar, las acciones de una
+%   Ejercicio 4: la estrategia lejana. Al ordenar, las acciones de una
 %   instancia nombran las dos posiciones que intercambia; la clave prefiere
 %   la mayor distancia entre ellas. Una instancia sin intercambio tiene
 %   clave 0.
@@ -181,7 +135,7 @@ distancia(Acciones, Clave) :-
 %!  ciclos_invertida(+Programa, +Estrategia, +Largo:integer,
 %!                   -Ciclos:integer) is det.
 %
-%   Ejercicios 4 y 5. Ciclos es la cantidad de ciclos del Programa de
+%   Ejercicios 3 y 4. Ciclos es la cantidad de ciclos del Programa de
 %   ordenamiento, con la Estrategia, para la lista Largo, ..., 2, 1.
 ciclos_invertida(Programa, Estrategia, Largo, Ciclos) :-
     numlist(1, Largo, Creciente),
@@ -202,7 +156,7 @@ hasta 10 y 11. Cada intercambio deja dos elementos en su lugar definitivo.
 La estrategia no forma parte del programa `ordenar`, que no cambió: se
 agregó desde otro archivo como una clave más.
 
-## 6
+## 5
 
 `ejecucion/4` puede aplicar `resultado` en cualquier ciclo. Desde 12 y 8 la
 memoria pasa por 12 y 8, después 4 y 8, después 4 y 4: los resultados
@@ -230,7 +184,7 @@ Rs = [4, 8, 12].
 Seis ejecuciones: en cada una de las tres memorias, `resultado` puede usar
 cualquiera de los dos hechos.
 
-## 7
+## 6
 
 <!-- ejemplo: capitulo-61/soluciones.pl fragmento: programa(escrutinio, .. ]). -->
 ```prolog
@@ -254,7 +208,144 @@ módulos son mutuamente excluyentes para un mismo voto, así que el orden
 entre ellos no cambia el resultado. Cada ciclo quita un voto: la medida es
 la cantidad de votos.
 
+## 7
+
+<!-- ejemplo: capitulo-61/soluciones.pl predicado: historia/5 historia/6 escribir_historia/1 -->
+```prolog
+%!  historia(+Programa, +Estrategia, +Memoria0:list, -Historia:list,
+%!           -Resultado) is semidet.
+%
+%   Ejercicio 7. Historia es la traza de la ejecución como datos: un
+%   término ciclo(N, Nombre, Cantidad, Hechos) por ciclo, con el módulo
+%   elegido, el tamaño del conjunto de conflicto y los hechos que usa.
+%   Falla si falla una acción de la instancia elegida.
+historia(Programa, Estrategia, Memoria0, Historia, Resultado) :-
+    programa(Programa, Modulos),
+    historia(Modulos, Estrategia, 1, Memoria0, Historia, Resultado).
+
+%!  historia(+Modulos:list, +Estrategia, +N:integer, +Memoria0:list,
+%!           -Historia:list, -Resultado) is semidet.
+%
+%   Historia es la traza desde el ciclo N con la memoria Memoria0. Falla
+%   si falla una acción de la instancia elegida.
+historia(Modulos, Estrategia, N, Memoria0, Historia, Resultado) :-
+    conflicto(Modulos, Memoria0, Instancias),
+    (   Instancias == []
+    ->  Historia = [],
+        Resultado = nada_aplicable
+    ;   elegir(Estrategia, Memoria0, Instancias, Elegida),
+        Elegida = instancia(Nombre, _, Posiciones, Acciones),
+        length(Instancias, Cantidad),
+        findall(F, ( member(I, Posiciones), nth0(I, Memoria0, F) ), Hechos),
+        Historia = [ciclo(N, Nombre, Cantidad, Hechos)|Resto],
+        acciones(Acciones, Memoria0, Memoria1, Fin),
+        (   Fin = parar(R)
+        ->  Resto = [],
+            Resultado = R
+        ;   N1 is N + 1,
+            historia(Modulos, Estrategia, N1, Memoria1, Resto, Resultado)
+        )
+    ).
+
+%!  escribir_historia(+Historia:list) is det.
+%
+%   Escribe la Historia con el formato de trazar/5.
+escribir_historia(Historia) :-
+    forall(member(ciclo(N, Nombre, Cantidad, Hechos), Historia),
+           format("~w: ~w de ~w, con ~w~n", [N, Nombre, Cantidad, Hechos])).
+```
+
+```prolog
+?- historia(mcd, primera, [numero(12), numero(8)], H, R), escribir_historia(H).
+1: resta de 3, con [numero(12),numero(8)]
+2: resta de 3, con [numero(8),numero(4)]
+3: resultado de 2, con [numero(4)]
+H = [ciclo(1, resta, 3, [numero(12), numero(8)]), ciclo(2, resta, 3, [numero(8), numero(4)]), ciclo(3, resultado, 2, [numero(4)])],
+R = 4.
+```
+
+La historia es un valor: una prueba la compara con `==`, otra la cuenta, y
+`escribir_historia/1` la escribe. La prueba `ej7_igual_a_trazar` verifica
+que el texto es el mismo que el de `trazar/5`. Separar el cálculo de la
+escritura es lo que el criterio C6 pide.
+
 ## 8
+
+<!-- ejemplo: capitulo-61/soluciones.pl predicado: ruido/2 -->
+```prolog
+%!  ruido(+Cantidad:integer, -Hechos:list) is det.
+%
+%   Ejercicio 8. Hechos son Cantidad hechos ruido(I) que ningún módulo
+%   usa.
+ruido(Cantidad, Hechos) :-
+    findall(ruido(I), between(1, Cantidad, I), Hechos).
+```
+
+Con los números 60, 120, …, 720 y los 100 hechos `ruido(I)` agregados al
+final de la memoria, las mediciones con `time/1` dan:
+
+| Versión | Sin ruido | Con ruido al final | Con ruido al principio |
+|---|---|---|---|
+| 2, `ejecutar/4` | 8 759 | 16 658 | 18 958 |
+| 3, `ejecutar/5` con `primera` | 80 533 | 174 333 | — |
+
+`condicion/4` busca cada patrón con `nth0/3`, que recorre la lista entera:
+un hecho que ningún módulo usa cuesta lo mismo que uno útil. En la versión
+2 la búsqueda se detiene en la primera instancia, y el ruido al final se
+recorre solo cuando hace falta llegar hasta él; en la versión 3 el conjunto
+de conflicto entero se reúne en cada ciclo, y cada patrón recorre los 112
+hechos. Bratko sugiere indexar o partir la memoria para que cada patrón vea
+solo los hechos que pueden unificar con él; el
+[capítulo 65](../capitulo-65-proyecto-algoritmo-rete/index.md) lleva esa
+idea hasta no repetir la comparación entre ciclos.
+
+## 9
+
+<!-- ejemplo: capitulo-61/soluciones.pl fragmento: programa(criba, .. ]). -->
+```prolog
+programa(criba,
+    [ multiplo :: [numero(X), numero(Y), {X < Y, Y mod X =:= 0}]
+           ---> [quitar(numero(Y))]
+    ]).
+```
+
+<!-- ejemplo: capitulo-61/soluciones.pl predicado: numeros/3 -->
+```prolog
+%!  numeros(+Desde:integer, +Hasta:integer, -Hechos:list) is det.
+%
+%   Hechos son los hechos numero(I) para I de Desde a Hasta.
+numeros(Desde, Hasta, Hechos) :-
+    findall(numero(I), between(Desde, Hasta, I), Hechos).
+```
+
+<!-- ejemplo: capitulo-61/soluciones.pl predicado: primos_hasta/2 -->
+```prolog
+%!  primos_hasta(+N:integer, -Primos:list(integer)) is det.
+%
+%   Ejercicio 9. Primos son los primos hasta N, en orden, según el
+%   programa criba.
+primos_hasta(N, Primos) :-
+    numeros(2, N, Hechos),
+    ejecutar(criba, Hechos, Memoria, nada_aplicable),
+    findall(X, member(numero(X), Memoria), Xs),
+    msort(Xs, Primos).
+```
+
+```prolog
+?- primos_hasta(20, P).
+P = [2, 3, 5, 7, 11, 13, 17, 19].
+```
+
+La prueba `ej9_criba` verifica también el caso N = 30, cuya lista el
+intérprete interactivo abrevia al escribirla.
+
+La medida es la cantidad de hechos de la memoria: cada ciclo quita uno y no
+agrega ninguno. Un número compuesto `Y` tiene un divisor `X` con
+`1 < X < Y`, que está en la memoria mientras nadie lo quite, y solo se
+quitan compuestos; un primo no es múltiplo de ningún otro número de la
+memoria. Por eso quedan exactamente los primos.
+
+## 10
 
 La memoria inicial la construye `memoria_inicial/2` de la versión 4:
 
@@ -318,7 +409,7 @@ la memoria crece y cada cláusula quitada evita muchos resolventes; el
 [capítulo 63](../capitulo-63-proyecto-demostrador-teoremas/index.md) la
 retoma.
 
-## 9
+## 11
 
 <!-- ejemplo: capitulo-61/soluciones.pl fragmento: programa(resolucion_sin_control, .. ]). -->
 ```prolog
@@ -347,7 +438,7 @@ ciclo:
 %!  vigilar_formula(+Programa, +Formula, +Limite:integer, -Resultado,
 %!                  -Hechos:integer) is det.
 %
-%   Ejercicio 9. Ejecuta el Programa de resolución sobre la negación de
+%   Ejercicio 11. Ejecuta el Programa de resolución sobre la negación de
 %   Formula con vigilar/6. Hechos es la cantidad de hechos de la memoria
 %   final.
 vigilar_formula(Programa, Formula, Limite, Resultado, Hechos) :-
@@ -373,97 +464,6 @@ memoria como conjunto, sin hechos repetidos, habría hecho de este programa
 uno que repite su memoria; es una decisión de diseño que el
 [capítulo 64](../capitulo-64-proyecto-sistema-produccion/index.md) toma
 para su memoria de trabajo.
-
-## 10
-
-<!-- ejemplo: capitulo-61/soluciones.pl predicado: historia/5 historia/6 escribir_historia/1 -->
-```prolog
-%!  historia(+Programa, +Estrategia, +Memoria0:list, -Historia:list,
-%!           -Resultado) is semidet.
-%
-%   Ejercicio 10. Historia es la traza de la ejecución como datos: un
-%   término ciclo(N, Nombre, Cantidad, Hechos) por ciclo, con el módulo
-%   elegido, el tamaño del conjunto de conflicto y los hechos que usa.
-%   Falla si falla una acción de la instancia elegida.
-historia(Programa, Estrategia, Memoria0, Historia, Resultado) :-
-    programa(Programa, Modulos),
-    historia(Modulos, Estrategia, 1, Memoria0, Historia, Resultado).
-
-%!  historia(+Modulos:list, +Estrategia, +N:integer, +Memoria0:list,
-%!           -Historia:list, -Resultado) is semidet.
-%
-%   Historia es la traza desde el ciclo N con la memoria Memoria0. Falla
-%   si falla una acción de la instancia elegida.
-historia(Modulos, Estrategia, N, Memoria0, Historia, Resultado) :-
-    conflicto(Modulos, Memoria0, Instancias),
-    (   Instancias == []
-    ->  Historia = [],
-        Resultado = nada_aplicable
-    ;   elegir(Estrategia, Memoria0, Instancias, Elegida),
-        Elegida = instancia(Nombre, _, Posiciones, Acciones),
-        length(Instancias, Cantidad),
-        findall(F, ( member(I, Posiciones), nth0(I, Memoria0, F) ), Hechos),
-        Historia = [ciclo(N, Nombre, Cantidad, Hechos)|Resto],
-        acciones(Acciones, Memoria0, Memoria1, Fin),
-        (   Fin = parar(R)
-        ->  Resto = [],
-            Resultado = R
-        ;   N1 is N + 1,
-            historia(Modulos, Estrategia, N1, Memoria1, Resto, Resultado)
-        )
-    ).
-
-%!  escribir_historia(+Historia:list) is det.
-%
-%   Escribe la Historia con el formato de trazar/5.
-escribir_historia(Historia) :-
-    forall(member(ciclo(N, Nombre, Cantidad, Hechos), Historia),
-           format("~w: ~w de ~w, con ~w~n", [N, Nombre, Cantidad, Hechos])).
-```
-
-```prolog
-?- historia(mcd, primera, [numero(12), numero(8)], H, R), escribir_historia(H).
-1: resta de 3, con [numero(12),numero(8)]
-2: resta de 3, con [numero(8),numero(4)]
-3: resultado de 2, con [numero(4)]
-H = [ciclo(1, resta, 3, [numero(12), numero(8)]), ciclo(2, resta, 3, [numero(8), numero(4)]), ciclo(3, resultado, 2, [numero(4)])],
-R = 4.
-```
-
-La historia es un valor: una prueba la compara con `==`, otra la cuenta, y
-`escribir_historia/1` la escribe. La prueba `ej10_igual_a_trazar` verifica
-que el texto es el mismo que el de `trazar/5`. Separar el cálculo de la
-escritura es lo que el criterio C6 pide.
-
-## 11
-
-<!-- ejemplo: capitulo-61/soluciones.pl predicado: ruido/2 -->
-```prolog
-%!  ruido(+Cantidad:integer, -Hechos:list) is det.
-%
-%   Ejercicio 11. Hechos son Cantidad hechos ruido(I) que ningún módulo
-%   usa.
-ruido(Cantidad, Hechos) :-
-    findall(ruido(I), between(1, Cantidad, I), Hechos).
-```
-
-Con los números 60, 120, …, 720 y los 100 hechos `ruido(I)` agregados al
-final de la memoria, las mediciones con `time/1` dan:
-
-| Versión | Sin ruido | Con ruido al final | Con ruido al principio |
-|---|---|---|---|
-| 2, `ejecutar/4` | 8 759 | 16 658 | 18 958 |
-| 3, `ejecutar/5` con `primera` | 80 533 | 174 333 | — |
-
-`condicion/4` busca cada patrón con `nth0/3`, que recorre la lista entera:
-un hecho que ningún módulo usa cuesta lo mismo que uno útil. En la versión
-2 la búsqueda se detiene en la primera instancia, y el ruido al final se
-recorre solo cuando hace falta llegar hasta él; en la versión 3 el conjunto
-de conflicto entero se reúne en cada ciclo, y cada patrón recorre los 112
-hechos. Bratko sugiere indexar o partir la memoria para que cada patrón vea
-solo los hechos que pueden unificar con él; el
-[capítulo 65](../capitulo-65-proyecto-algoritmo-rete/index.md) lleva esa
-idea hasta no repetir la comparación entre ciclos.
 
 ## 12
 

@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 56 - Solución del ejercicio 12: la aventura del capítulo 45 y
+% Capítulo 56 - Solución del ejercicio 9: la aventura del capítulo 45 y
 % ELIZA en una conversación.
 %
 % Una frase que la gramática de órdenes de la aventura entiende se ejecuta

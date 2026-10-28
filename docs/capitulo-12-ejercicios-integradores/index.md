@@ -72,7 +72,7 @@ vincula las dos formas con una equivalencia:
 $$\forall x \, P \quad \equiv \quad \lnot \, \exists x \, \lnot P$$
 
 «Para todo x, P» equivale a «no existe un x para el que no valga P». La
-[sección 10.10](../capitulo-10-negacion-como-falla/index.md#1010-todas-las-materias-de-un-ciclo)
+[sección 10.10](../capitulo-10-negacion-como-falla/recolectar.md#1010-todas-las-materias-de-un-ciclo)
 la aplicó a las materias de un ciclo, y la
 [sección 13.4](../capitulo-13-prolog-y-la-logica/index.md#134-las-variables-y-los-cuantificadores)
 la usa para leer las variables de un `\+`. Esta sección la presenta como una
@@ -214,7 +214,7 @@ Varios ejercicios de este capítulo requieren la lista de todas las respuestas
 de una consulta: las editoriales de una base de libros, los jugadores que
 ganaron todos sus partidos, los vértices de un grafo. La parte I no tiene un
 predicado que la arme en una llamada; la página
-[Recolectar soluciones](../capitulo-10-negacion-como-falla/recolectar.md#estrategia-para-recolectar-soluciones)
+[Recolectar soluciones](../capitulo-10-negacion-como-falla/recolectar.md#109-estrategia-para-recolectar-soluciones)
 del [capítulo 10](../capitulo-10-negacion-como-falla/index.md) presenta la
 estrategia: un acumulador `YaIncluidas`, `\+` sobre la pertenencia a ese
 acumulador, un corte y una cláusula de cierre. Las soluciones de
@@ -345,7 +345,7 @@ varios de ellos se describen después del último ejercicio.
     a. Escribir `grado_salida(G, V, N)`: `N` es la cantidad de aristas que salen
        del vértice `V`. Con `V` libre, una respuesta por vértice: la lista de
        vértices se arma con la
-       [estrategia para recolectar soluciones](../capitulo-10-negacion-como-falla/recolectar.md#estrategia-para-recolectar-soluciones).
+       [estrategia para recolectar soluciones](../capitulo-10-negacion-como-falla/recolectar.md#109-estrategia-para-recolectar-soluciones).
        En el grafo 3, los vértices de grado 2 son `a` y `c`.
 
     b. Escribir `ordenados_x_grado(G, Vs)`: `Vs` son los vértices de `G` en
@@ -358,7 +358,7 @@ varios de ellos se describen después del último ejercicio.
    `Y` si en `G1` hay un camino de `N` aristas, que se pueden repetir, de `X`
    a `Y`. Los grafos son dirigidos, con la representación del ejercicio 7, y
    `G2` se arma con la
-   [estrategia para recolectar soluciones](../capitulo-10-negacion-como-falla/recolectar.md#estrategia-para-recolectar-soluciones).
+   [estrategia para recolectar soluciones](../capitulo-10-negacion-como-falla/recolectar.md#109-estrategia-para-recolectar-soluciones).
    Para el grafo 5 y `N = 2`, `G2` tiene nueve aristas; una va de 1 a 2,
    por el camino 1, 2, 2.
 9. **(3)** Colorear un mapa es asignar a cada región un color de una lista dada
@@ -433,7 +433,7 @@ varios de ellos se describen después del último ejercicio.
     ```
 
     Las dos listas se arman con la
-    [estrategia para recolectar soluciones](../capitulo-10-negacion-como-falla/recolectar.md#estrategia-para-recolectar-soluciones).
+    [estrategia para recolectar soluciones](../capitulo-10-negacion-como-falla/recolectar.md#109-estrategia-para-recolectar-soluciones).
 
     a. Escribir `jugadores_victoriosos(Js)`: `Js` es la lista de los apellidos
        de los jugadores que ganaron todos los partidos que jugaron. La

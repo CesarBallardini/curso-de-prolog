@@ -1,16 +1,16 @@
 # Recolectar soluciones
 
-Esta página contiene las secciones
-[10.9](index.md#109-estrategia-para-recolectar-soluciones) y
-[10.10](index.md#1010-todas-las-materias-de-un-ciclo) del
-[capítulo 10](index.md): una estrategia general para armar la lista de todas
+Esta página continúa el [capítulo 10](index.md) después de la
+[sección 10.8](index.md#108-prescindir-de), con las secciones
+[10.9](#109-estrategia-para-recolectar-soluciones) y
+[10.10](#1010-todas-las-materias-de-un-ciclo): una estrategia general para armar la lista de todas
 las respuestas de una consulta, con un acumulador, `\+`, el corte y una
 cláusula de cierre, y su aplicación a los alumnos que aprobaron todas las
 materias de un ciclo de la carrera, una condición que se expresa con negación.
 El ejemplo está en `recolectar.pl`, en `ejemplos/capitulo-10/`, con sus
 pruebas.
 
-## Estrategia para recolectar soluciones
+## 10.9 Estrategia para recolectar soluciones
 
 Una consulta como `persona(X)` entrega sus respuestas de a una, por
 backtracking. Muchos problemas requieren en cambio todas las respuestas
@@ -239,7 +239,7 @@ aclara que `L` debe llegar libre.
 **Variaciones.** La estrategia se adapta cambiando el objetivo que produce las
 respuestas: las personas de una ciudad, las materias aprobadas por un alumno,
 los vértices de un grafo, los caminos entre dos ciudades. La
-[sección siguiente](#todas-las-materias-de-un-ciclo) la aplica a un objetivo
+[sección siguiente](#1010-todas-las-materias-de-un-ciclo) la aplica a un objetivo
 que contiene a su vez una negación. El
 [capítulo 18](../capitulo-18-todas-las-soluciones/index.md) presenta
 `findall/3`, que obtiene la lista de todas las respuestas de una consulta en
@@ -250,7 +250,7 @@ una sola llamada.
     ejecutar la consulta, e indicar en cuál de las llamadas se usa la
     cláusula de cierre.
 
-## Todas las materias de un ciclo
+## 10.10 Todas las materias de un ciclo
 
 La carrera se divide en ciclos, uno por año: las materias del ciclo 1 se
 cursan el primer año, las del ciclo 2 el segundo. La base registra los
@@ -404,3 +404,48 @@ No existe ninguna materia del ciclo 3, de modo que tampoco existe una sin
 aprobar, y todos los alumnos cumplen la condición. Es la lectura de «para
 toda materia del ciclo 3» cuando no hay ninguna: se cumple para cualquier
 alumno.
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio, y los capítulos siguientes los dan por hechos.
+
+18. **(2)** Escribir `palindromos(L, Ps)`: `Ps` es la lista de todos los
+    palíndromos distintos que se forman con los elementos de `L`. Usar
+    `permuta/2` del
+    [ejercicio 21 del capítulo 7](../capitulo-07-listas/index.md#ejercicios) y la
+    estrategia de la [sección 10.9](#109-estrategia-para-recolectar-soluciones).
+    `palindromos([1, 2, 0, 0, 2], Ps)` da `Ps = [[2, 0, 1, 0, 2], [0, 2, 1, 2, 0]]`,
+    y `palindromos([0, 1, 1, 1, 2, 2], [])` se cumple.
+
+## Resumen
+
+| | |
+|---|---|
+| `\+ Objetivo` | se cumple cuando Objetivo **no** se puede probar |
+| **árbol subordinado** | el árbol de Objetivo que `\+` abre, en un recuadro: sin hoja de éxito, `\+` se cumple y desaparece; con alguna, falla; sus sustituciones no salen del recuadro |
+| **negación como falla** | no demuestra que una afirmación sea falsa: no logra demostrar que sea cierta |
+| **mundo cerrado** | lo que el programa no puede deducir se considera no cierto |
+| ubicación de `\+` | después de los objetivos que instancian sus variables |
+| corte y falla | `p(X) :- q(X), !, fail.` y `p(_).`: la definición de `\+` escrita a mano |
+| sin negación | recorrer una lista en lugar de negar; requiere los datos en una lista |
+| respuesta por negación | `edad(P, E), \+ ( edad(_, Otra), Otra > E )`: el candidato se genera antes; el `\+` niega que exista uno mejor |
+| `\+ \+ Objetivo` | se cumple cuando Objetivo se cumple, sin dejar ninguna ligadura |
+| `=` `\=` | pueden unificar, o no pueden unificar |
+| `==` `\==` | son el mismo término, o no lo son |
+| `=:=` `=\=` | tienen el mismo valor numérico, o distinto |
+| recolectar soluciones | acumulador `YaIncluidas`, `\+ pertenece(X, YaIncluidas)`, corte y cláusula de cierre: la lista de todas las respuestas |
+
+## Temas que se retoman
+
+| Tema | Se retoma en |
+|---|---|
+| Todo el capítulo, desde el punto de vista de la lógica | [capítulo 13](../capitulo-13-prolog-y-la-logica/index.md) |
+| `->` y `;`, construcciones relacionadas con `\+` | [capítulo 16](../capitulo-16-control/index.md) |
+| `forall/2`, que expresa "para todos" sin los problemas de `\+` | [capítulo 18](../capitulo-18-todas-las-soluciones/index.md) |
+| `findall/3`, que recolecta todas las respuestas en una llamada | [capítulo 18](../capitulo-18-todas-las-soluciones/index.md) |
+| Verificación del tipo de un término antes de compararlo | [capítulo 33](../capitulo-33-inspeccion-de-terminos/index.md) |
+| Otras formas de obtener el máximo: `aggregate_all(max, …)` y ordenar con `sort/4` | [capítulo 18](../capitulo-18-todas-las-soluciones/index.md) y [capítulo 23](../capitulo-23-estructuras-de-datos-de-la-biblioteca/index.md) |
+| `dif/2`, la desigualdad `\=` que se posterga hasta que las variables tengan valor | [capítulo 24](../capitulo-24-programacion-con-restricciones/index.md) |

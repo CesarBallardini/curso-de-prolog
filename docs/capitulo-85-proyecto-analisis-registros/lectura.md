@@ -1,11 +1,14 @@
-# Lectura de los registros
+# Lectura de los registros, métricas e informes
 
-Esta página es parte del
-[capítulo 85](index.md): sus versiones 1 y 2, las que leen los registros.
-La [sección 85.3](index.md#853-version-1-el-registro-como-hechos) y la
-[sección 85.4](index.md#854-version-2-el-formato-comun) las resumen.
+Esta página continúa el [capítulo 85](index.md) después de la
+[sección 85.2](index.md#852-el-programa-terminado), con las secciones
+[85.3](#853-version-1-el-registro-como-hechos),
+[85.4](#854-version-2-el-formato-comun) y
+[85.5](#855-version-3-metricas-por-hora-e-informes): las versiones 1 y 2,
+las que leen los registros, y la versión 3, que resume los pedidos leídos en métricas por
+hora, busca las anomalías con límites fijos y escribe los informes.
 
-## Versión 1: el registro como hechos
+## 85.3 Versión 1: el registro como hechos
 
 Triska observa que un registro escrito como hechos de Prolog se carga y
 se consulta sin escribir un lector: la pregunta «¿algún pedido quedó sin
@@ -198,7 +201,7 @@ instante, porque `msort/2` ordena por el primer argumento.
     Comprobarlo, y explicar por qué `leer_registro/3` no tiene ese
     problema aunque los números se repitan.
 
-## Versión 2: el formato común
+## 85.4 Versión 2: el formato común
 
 No todos los servidores escriben términos de Prolog. El formato común
 de los servidores web, el de la documentación del servidor del W3C, es
@@ -367,3 +370,401 @@ Falta un solo pedido, el de la línea cortada, y no sobra ninguno.
     Predecir qué responde `phrase(linea(P), Cs)` cuando la línea termina
     con un blanco después de los bytes, y cuando los bytes son `-`.
     Comprobarlo, y decir qué no terminal decide cada caso.
+
+## 85.5 Versión 3: métricas por hora e informes
+
+Un pedido aislado dice poco; lo que tiene sentido comparar son totales
+por período. Denning llama **métrica** a una cantidad acumulada en un
+período, y distingue tres clases: un contador de eventos (los inicios de
+sesión rechazados en una hora), un temporizador (el tiempo entre dos
+eventos) y una medida de recursos (el tiempo de CPU usado en una hora).
+`medir/2` calcula cuatro métricas sobre los pedidos de una hora, y
+`metricas/2` agrupa los pedidos de un día por hora con los pares de la
+[sección 23.4](../capitulo-23-estructuras-de-datos-de-la-biblioteca/index.md#234-pares-y-keysort2):
+
+<!-- ejemplo: capitulo-85/informes.pl predicado: hora/2 metricas/2 metricas_de_la_hora/3 medir/2 metrica/3 -->
+```prolog
+%!  hora(+Instante:number, -Hora:integer) is det.
+%
+%   Hora es la hora del Instante en Buenos Aires, UTC-3: el último
+%   argumento de stamp_date_time/3 son los segundos al oeste de UTC.
+hora(Instante, Hora) :-
+    stamp_date_time(Instante, date(_, _, _, Hora, _, _, _, _, _), 10800).
+
+%!  metricas(+Pedidos:list, -Horas:list) is det.
+%
+%   Horas tiene un elemento hora(H, Metricas) por cada hora de servicio,
+%   con las métricas de medir/2 sobre los Pedidos que llegaron en esa
+%   hora; una hora sin pedidos tiene todas las métricas en cero.
+metricas(Pedidos, Horas) :-
+    map_list_to_pairs(hora_del_pedido, Pedidos, Pares),
+    keysort(Pares, Ordenados),
+    group_pairs_by_key(Ordenados, Grupos),
+    horas_de_servicio(Desde, Hasta),
+    numlist(Desde, Hasta, Hs),
+    maplist(metricas_de_la_hora(Grupos), Hs, Horas).
+
+% metricas_de_la_hora(Grupos, H, hora(H, Ms)): las métricas de la hora H.
+metricas_de_la_hora(Grupos, H, hora(H, Metricas)) :-
+    (   memberchk(H-Pedidos, Grupos)
+    ->  true
+    ;   Pedidos = []
+    ),
+    medir(Pedidos, Metricas).
+
+%!  medir(+Pedidos:list, -Metricas) is det.
+%
+%   Metricas es m(N, Fallos, NoEncontradas, Cpu): la cantidad de Pedidos,
+%   los inicios de sesión rechazados, los pedidos con código 404 y el
+%   tiempo de CPU sumado, en segundos, de los pedidos que lo registran.
+medir(Pedidos, m(N, Fallos, NoEncontradas, Cpu)) :-
+    length(Pedidos, N),
+    aggregate_all(count,
+                  member(pedido(_, _, post, '/sesion', 401, _), Pedidos),
+                  Fallos),
+    aggregate_all(count,
+                  member(pedido(_, _, _, _, 404, _), Pedidos),
+                  NoEncontradas),
+    aggregate_all(sum(C),
+                  ( member(pedido(_, _, _, _, _, C), Pedidos),
+                    number(C) ),
+                  Cpu).
+
+%!  metrica(?Nombre, +Metricas, -Valor:number) is nondet.
+%
+%   Valor es la métrica Nombre de Metricas: pedidos, fallos,
+%   no_encontradas o cpu.
+metrica(pedidos, m(N, _, _, _), N).
+metrica(fallos, m(_, F, _, _), F).
+metrica(no_encontradas, m(_, _, X, _), X).
+metrica(cpu, m(_, _, _, C), C).
+```
+
+`metricas/2` recorre las doce horas de servicio, no las horas que
+aparecen en los pedidos. Una hora sin pedidos está en la lista, con todas
+sus métricas en cero. Denning lo advierte: si los períodos sin eventos no
+se cuentan, los valores observados quedan sesgados hacia arriba, y un
+período sin actividad, que puede ser la anomalía, no se ve.
+
+```prolog
+?- hora_del_dia(registros('2026-10-01.log'), 10, M).
+M = m(98, 62, 0, 3.173641000000001).
+```
+
+Los informes siguen la idea de Triska: los datos no cambian, y cada
+informe es un predicado nuevo sobre ellos. `escribir_metricas/1` escribe
+la tabla con las columnas de `format/2`: `~t` rellena y `~N|` fija la
+columna donde termina el campo, así que los números quedan alineados a
+la derecha.
+
+<!-- ejemplo: capitulo-85/informes.pl predicado: escribir_metricas/1 informe/1 -->
+```prolog
+%!  escribir_metricas(+Horas:list) is det.
+%
+%   Escribe una tabla con las métricas de cada hora.
+escribir_metricas(Horas) :-
+    format("hora  pedidos  fallos  404    cpu~n"),
+    forall(member(hora(H, m(N, F, X, C)), Horas),
+           format("~t~d~2| h~t~d~13|~t~d~21|~t~d~26|~t~2f~33|~n",
+                  [H, N, F, X, C])).
+
+%!  informe(+Archivo) is det.
+%
+%   Escribe la tabla de las métricas por hora del registro Archivo.
+informe(Archivo) :-
+    leer_registro(Archivo, Pedidos),
+    metricas(Pedidos, Horas),
+    escribir_metricas(Horas).
+```
+
+```text
+?- informe(registros('2026-10-01.log')).
+hora  pedidos  fallos  404    cpu
+ 8 h       30       3    0   0.37
+ 9 h       30       0    0   0.23
+10 h       98      62    0   3.17
+11 h       29       5    0   0.46
+12 h       25       2    0   2.86
+13 h       43       6    0   0.57
+14 h       46      24    0   1.32
+15 h       59       8    0   0.74
+16 h       36       5    0   0.46
+17 h        0       0    0   0.00
+18 h        0       0    0   0.00
+19 h       23       1    0   0.16
+true.
+```
+
+### Anomalías con límites fijos
+
+El modelo más simple de Denning es el **operacional**: un valor es
+anómalo si pasa un límite fijo, que la experiencia asocia con un
+problema. Su ejemplo es el de las contraseñas: más de 10 fallos en un
+período breve, «digamos», sugieren un intento de intrusión. Los límites
+son una lista de pares `Metrica-Limite`, y una anomalía es una hora en la
+que alguna métrica queda fuera de su límite:
+
+<!-- ejemplo: capitulo-85/informes.pl predicado: umbrales_fijos/1 anomalia/3 fuera/2 -->
+```prolog
+%!  umbrales_fijos(-Umbrales:list) is det.
+%
+%   Los límites de cada métrica, escritos a mano: Metrica-mayor(L) si los
+%   valores mayores que L son anómalos, Metrica-menor(L) si lo son los
+%   menores.
+umbrales_fijos([ fallos-mayor(10),
+                 no_encontradas-mayor(5),
+                 pedidos-menor(5),
+                 cpu-mayor(1.5)
+               ]).
+
+%!  anomalia(+Umbrales:list, +Horas:list, -Anomalia) is nondet.
+%
+%   Anomalia es anomalia(H, Metrica, Valor, Limite): en la hora H, la
+%   Metrica vale Valor, fuera del Limite que le da Umbrales.
+anomalia(Umbrales, Horas, anomalia(H, Metrica, Valor, Limite)) :-
+    member(hora(H, Metricas), Horas),
+    member(Metrica-Limite, Umbrales),
+    metrica(Metrica, Metricas, Valor),
+    fuera(Limite, Valor).
+
+% fuera(Limite, Valor): Valor pasa el Limite.
+fuera(mayor(L), V) :-
+    V > L.
+fuera(menor(L), V) :-
+    V < L.
+```
+
+Una anomalía dice qué hora y qué métrica, pero no por qué. Las reglas de
+`causa/3` la explican con los pedidos de esa hora: el cliente con más
+fallos, la ruta que más CPU usó. Son las reglas de actividad de Denning,
+que se disparan con un registro de anomalía y lo relacionan con una
+intrusión posible. `causa/3` despacha por la métrica a `causa/5`, cuyo
+primer argumento la indexa, para no dejar alternativas pendientes:
+
+<!-- ejemplo: capitulo-85/informes.pl predicado: causa/3 causa/5 causa_pedidos/4 mayor_cliente/5 anomalias/3 -->
+```prolog
+%!  causa(+Pedidos:list, +Anomalia, -Causa) is semidet.
+%
+%   Causa explica la Anomalia con los Pedidos del día: para los fallos, las
+%   rutas inexistentes y el exceso de pedidos, cliente(Ip, K), el cliente
+%   con más pedidos de esa clase en la hora, K; para el tiempo de CPU,
+%   ruta(R, Segundos), la ruta que más tiempo usó; para una hora con pocos
+%   pedidos, sin_trafico.
+causa(Pedidos, anomalia(H, Metrica, _, Limite), Causa) :-
+    causa(Metrica, Limite, Pedidos, H, Causa).
+
+% causa(Metrica, Limite, Pedidos, H, Causa): causa/3 para la Metrica.
+causa(fallos, _, Pedidos, H, cliente(Ip, K)) :-
+    mayor_cliente(Pedidos, H, pedido(_, _, post, '/sesion', 401, _), Ip, K).
+causa(no_encontradas, _, Pedidos, H, cliente(Ip, K)) :-
+    mayor_cliente(Pedidos, H, pedido(_, _, _, _, 404, _), Ip, K).
+causa(cpu, _, Pedidos, H, ruta(Ruta, Segundos)) :-
+    findall(R-C,
+            ( member(pedido(I, _, _, R, _, C), Pedidos),
+              number(C),
+              hora(I, H) ),
+            Pares),
+    keysort(Pares, Ordenados),
+    group_pairs_by_key(Ordenados, Grupos),
+    maplist(sumar_grupo, Grupos, Sumas),
+    transpose_pairs(Sumas, PorSegundos),
+    last(PorSegundos, Segundos-Ruta).
+causa(pedidos, Limite, Pedidos, H, Causa) :-
+    causa_pedidos(Limite, Pedidos, H, Causa).
+
+% causa_pedidos(Limite, Pedidos, H, Causa): causa/3 para los pedidos.
+causa_pedidos(mayor(_), Pedidos, H, cliente(Ip, K)) :-
+    mayor_cliente(Pedidos, H, pedido(_, _, _, _, _, _), Ip, K).
+causa_pedidos(menor(_), _, _, sin_trafico).
+
+% mayor_cliente(Pedidos, H, Patron, Ip, K): Ip es el cliente con más
+% pedidos que unifican con Patron en la hora H, K pedidos. Falla si no hay
+% ninguno.
+mayor_cliente(Pedidos, H, Patron, Ip, K) :-
+    findall(I,
+            ( member(Patron, Pedidos),
+              Patron = pedido(Instante, I, _, _, _, _),
+              hora(Instante, H) ),
+            Ips),
+    msort(Ips, Ordenadas),
+    clumped(Ordenadas, Cuentas),
+    transpose_pairs(Cuentas, PorCuenta),
+    last(PorCuenta, K-Ip).
+
+%!  anomalias(+Pedidos:list, +Umbrales:list, -Registros:list) is det.
+%
+%   Registros son las anomalías de los Pedidos de un día con los
+%   Umbrales, cada una con su causa: anomalia(H, M, V, L)-Causa, en el
+%   orden de las horas. Una anomalía sin causa conocida lleva desconocida.
+anomalias(Pedidos, Umbrales, Registros) :-
+    metricas(Pedidos, Horas),
+    findall(A-C,
+            ( anomalia(Umbrales, Horas, A),
+              (   causa(Pedidos, A, C0)
+              ->  C = C0
+              ;   C = desconocida
+              ) ),
+            Registros).
+```
+
+`escribir_anomalias/1` escribe una línea por anomalía, e
+`informe_anomalias/2` lee un día y las escribe. Con los límites fijos, el
+jueves:
+
+```text
+?- umbrales_fijos(_U), informe_anomalias(registros('2026-10-01.log'), _U).
+10 h  fallos 62 > 10          203.0.113.7, 60 pedidos
+10 h  cpu 3.17 > 1.50         /sesion, 3.11 s
+12 h  cpu 2.86 > 1.50         /sesion, 2.49 s
+14 h  fallos 24 > 10          198.51.100.61, 17 pedidos
+17 h  pedidos 0 < 5           sin tráfico
+18 h  pedidos 0 < 5           sin tráfico
+```
+
+A las 10, 203.0.113.7 probó 60 contraseñas; a las 14, 198.51.100.61 probó
+17; entre las 17 y las 19 el servidor estuvo caído. Las dos horas de
+fallos son también horas de mucha CPU, y la causa es la misma:
+`/sesion` calcula el resumen de la contraseña con PBKDF2, que el
+[capítulo 83](../capitulo-83-proyecto-criptografia/index.md#834-version-2-las-contrasenas)
+eligió costoso a propósito, y cada intento le cuesta al servidor 45
+milésimas de segundo. La hora de las 12 es distinta: tiene pocos pedidos y
+mucha CPU, y `/sesion` es la ruta que más usó solo porque es la más cara;
+todos los pedidos de esa hora tardaron nueve veces lo normal. El
+miércoles, los límites encuentran un cliente que pidió diez rutas
+inexistentes, como `/wp-login.php` y `/.env`, en dos minutos:
+
+```text
+?- umbrales_fijos(_U), informe_anomalias(registros('2026-09-30.log'), _U).
+11 h  no_encontradas 10 > 5   203.0.113.50, 10 pedidos
+```
+
+Los límites fijos tienen dos problemas. El primero es de dónde salen: el
+10 de Denning es un ejemplo, y 1,5 segundos de CPU por hora dependen de la
+máquina; con un servidor el doble de rápido, el límite deja de detectar
+la hora lenta. El segundo es lo que no ven. El miércoles, entre las 16 y
+las 17, un cliente probó ocho contraseñas, cinco en una hora y tres en la
+siguiente, y esas horas tienen 10 fallos cada una: justo en el límite, sin
+pasarlo.
+
+!!! example "Patrón 92 — Límites como argumento"
+    **Problema.** Una regla decide si el valor de una métrica es anómalo
+    comparándolo con un límite, y los límites tienen varios orígenes: se
+    fijan de manera explícita, se ajustan con días anteriores o con el mismo día
+    que se examina, o se aprenden de incidentes ya investigados. La
+    regla, y las que buscan la causa, son las mismas para todos.
+
+    **Versión ingenua.** Escribir el límite dentro de la regla, como
+    `Fallos > 10`, o un predicado de anomalías por cada origen de los
+    límites: cambiar de límite obliga a reescribir la regla, y comparar
+    dos orígenes sobre el mismo día obliga a mantener dos copias.
+
+    **Patrón.** Las reglas reciben las métricas y un argumento con los
+    límites, una lista de pares `Metrica-mayor(L)` o `Metrica-menor(L)`:
+    `anomalia/3` toma un par de la lista y `fuera/2` lo aplica. La lista
+    dice también qué métricas se examinan, y quien la produce queda
+    afuera de las reglas: `umbrales_fijos/1` aquí, y
+    `umbrales_de_referencia/2` y `umbrales_del_dia/3` en la
+    [sección 85.6](aprendido.md#856-version-4-umbrales-ajustados-a-partir-de-los-datos).
+    `anomalias/3` e `informe_anomalias/2` las usan sin cambios, y el
+    jueves se examina con los tres juegos de límites, una consulta cada
+    uno. Los pesos del perceptrón de la versión 5 no caben en la forma
+    `mayor(L)`, porque son una recta sobre dos métricas, pero siguen la
+    misma idea: `sospechosos/3` los recibe como argumento. Es pariente
+    del [Patrón 64](../patrones.md#64-superioridad-como-parametro), en
+    el que una lista argumento da el criterio que resuelve los conflictos
+    entre reglas, y del
+    [Patrón 69](../patrones.md#69-descripcion-del-mundo-como-parametro),
+    en el que el algoritmo es fijo y lo que varía son los datos sobre los
+    que razona: aquí lo que varía es la frontera entre lo normal y lo
+    anómalo.
+
+    **Cuándo no usarlo.** Cuando el límite es uno solo y lo fija una
+    especificación que no cambia, como un tiempo de respuesta acordado:
+    el argumento agrega una indirección sin beneficio. Y cuando el límite
+    depende del período, como un tráfico normal distinto a las 8 y a las
+    15: una sola lista para todas las horas no lo expresa, y los pares
+    necesitan la hora en la clave, o el argumento pasa a ser un predicado
+    que da el límite de cada hora.
+
+!!! question "Actividad"
+    Predecir qué anomalías informa `informe_anomalias/2` el martes,
+    `registros('2026-09-29.log')`, con los límites fijos. Comprobarlo, y
+    explicar con `hora_del_dia/3` por qué la hora de la CPU queda tan cerca
+    de su límite.
+
+El capítulo continúa en la página
+[Umbrales ajustados a los datos y un umbral aprendido](aprendido.md#856-version-4-umbrales-ajustados-a-partir-de-los-datos),
+con la pregunta que los límites fijos dejan abierta, de dónde salen: la
+versión 4 los ajusta a partir de los datos, y la versión 5 los aprende
+con el perceptrón.
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio. Los ejercicios que piden código se resuelven en archivos
+que cargan los del capítulo, sin modificarlos.
+
+1. ★ **(1)** Con el registro del jueves cargado por `cargar_hechos/2`,
+   predecir cuántas respuestas tiene `par_hechos(M, 5, C)` y cuántas
+   `sin_respuesta_hechos(M, 397)`. Comprobarlo. Construir después, con
+   `paso/4` y una lista de términos escrita a mano, un caso en que
+   `sin_respuesta_hechos/2` no encuentra un pedido pendiente que
+   `leer_registro/3` sí encuentra.
+2. ★ **(2)** Escribir `por_recurso(+Archivo, -Filas)`: una fila
+   `fila(Recurso, Pedidos, Cpu)` por recurso del registro, el primer
+   segmento de la ruta (`/alumnos` para `/alumnos/123`), con la cantidad
+   de pedidos y el tiempo de CPU medio, ordenadas de más a menos pedidos, y
+   `escribir_por_recurso/1`, que las escribe en una tabla alineada como la
+   de `escribir_metricas/1`. Aplicarlo al jueves.
+3. **(2)** El formato combinado agrega al formato común dos campos entre
+   comillas: la página de la que viene el pedido y el programa del
+   cliente. Escribir `linea_combinada//1`, que reconozca las dos formas y
+   dé el mismo `pedido/6`, y comprobar que acepta
+   `1.2.3.4 - - [01/Oct/2026:08:00:00 -0300] "GET /a HTTP/1.1" 200 9 "-" "curl/8.0"`.
+4. **(1)** Denning distingue el ataque que prueba muchas contraseñas
+   contra una cuenta del que prueba una contraseña contra muchas
+   cuentas. Explicar por qué los registros del capítulo no permiten
+   distinguirlos, y qué campo debería registrar el servicio para que
+   `causa/3` lo hiciera.
+
+## Referencias
+
+- Markus Triska, *The Power of Prolog*, capítulo «Prolog Business Cases»,
+  secciones «Analyzing events and anomalies» y «Rule-based reporting».
+  [Edición en línea](https://www.metalevel.at/prolog/business). Esta
+  página toma de allí el registro de `library(http/http_log)` como una
+  serie de hechos, la consulta de los pedidos sin respuesta, la idea de
+  convertir cualquier otro formato en hechos, y los informes como reglas
+  sobre datos que no cambian, escritos con las columnas de `format/2`. La
+  carga como programa y su problema con los rearranques del servidor no
+  están en la fuente.
+- Dorothy E. Denning, «An Intrusion-Detection Model», *IEEE Transactions
+  on Software Engineering*, volumen SE-13, número 2, 1987, páginas
+  222–232. [Copia de la autora](https://faculty.nps.edu/dedennin/publications/IDS%20model.pdf).
+  Esta página toma de allí las métricas por período (contadores de
+  eventos y medidas de recursos); el modelo operacional, con el límite de
+  diez contraseñas fallidas de su ejemplo; la advertencia de contar los
+  períodos sin eventos; los registros de anomalía y las reglas que buscan
+  su causa; y la traducción de cada formato a uno uniforme con un filtro.
+- Attila Csenki, *Applications of Prolog*, Ventus Publishing (Bookboon),
+  2009 — capítulo «Text Processing».
+  [Página de la editorial, copia de archivo](https://web.archive.org/web/20260216182045/https://bookboon.com/en/applications-of-prolog-ebook).
+  La editorial ya no ofrece el libro;
+  [Google Libros](https://books.google.com/books?id=copBGLD4LKwC) muestra
+  páginas seleccionadas. Esta página lo toma a través del
+  [capítulo 84](../capitulo-84-proyecto-procesamiento-textos/index.md),
+  del que viene la forma del paso por línea.
+- W3C, «Logging in W3C httpd», sección «Common Logfile Format»:
+  [documentación en línea](https://www.w3.org/Daemon/User/Config/Logging.html#common-logfile-format);
+  y Apache Software Foundation, *Apache HTTP Server Documentation*,
+  «Log Files», sección «Common Log Format»:
+  [documentación en línea](https://httpd.apache.org/docs/2.4/logs.html#common).
+  De allí vienen los campos de la versión 2, la forma de la fecha y el
+  guion para un dato que falta.
+- *SWI-Prolog Reference Manual* y la documentación de
+  `library(http/http_log)`:
+  [manual en línea](https://www.swi-prolog.org/pldoc/man?section=httplog).
+  El formato de `request/3`, `completed/5` y `server/2` se verificó con un
+  servidor de prueba en SWI-Prolog 9.2.9.

@@ -1,9 +1,15 @@
 # Las sentencias que cambian las tablas
 
-Esta página contiene la [sección 87.9](index.md#879-version-7-las-sentencias-que-cambian-las-tablas) del
-[capítulo 87](index.md): `CREATE TABLE`, `DROP TABLE`, `INSERT`, `DELETE` y `UPDATE` sobre la instantánea del estado anterior, y la conversación con que Kluźniak y Szpakowicz presentan Toy-Sequel. El código está en `modificaciones.pl` y `minisql.pl`, en `ejemplos/capitulo-87/`, con sus pruebas.
+Esta página continúa la página
+[El resultado entero](resultado.md#878-version-6-el-resultado-entero) del
+[capítulo 87](index.md), con la sección
+[87.9](#879-version-7-las-sentencias-que-cambian-las-tablas): `CREATE TABLE`,
+`DROP TABLE`, `INSERT`, `DELETE` y `UPDATE` sobre la instantánea del
+estado anterior, y la conversación con que Kluźniak y Szpakowicz
+presentan Toy-Sequel. El código está en `modificaciones.pl` y
+`minisql.pl`, en `ejemplos/capitulo-87/`, con sus pruebas.
 
-## Las sentencias que cambian las tablas
+## 87.9 Versión 7: las sentencias que cambian las tablas
 
 `modificaciones.pl` ejecuta `CREATE TABLE`, `DROP TABLE`, `INSERT`,
 `DELETE` y `UPDATE`. `CREATE TABLE` agrega una relación al catálogo y
@@ -52,7 +58,7 @@ actualización del
 [capítulo 21](../capitulo-21-base-de-datos-dinamica/index.md#213-la-vista-logica-de-actualizacion),
 el recorrido no vuelve a ver las tuplas nuevas, pero una subconsulta de
 la condición, que se ejecuta de nuevo en cada fila, ve la tabla a medio
-cambiar ([ejercicio 5](index.md#ejercicios)). SQL exige que la sentencia entera
+cambiar ([ejercicio 8](#ejercicios)). SQL exige que la sentencia entera
 vea el estado anterior, y `findall/3` lo obtiene: junta todas las filas
 nuevas antes de cambiar la primera. Si una fila no cumple una
 restricción, la sentencia lanza el error antes de tocar la tabla, y no
@@ -192,3 +198,43 @@ Mgr = EMP` se escribe con subconsultas correlacionadas, que nombran la
 fila que se actualiza como `empleados.depto`. La prueba
 `minisql:conversacion` ejecuta la conversación con `guion/2` y verifica
 cada resultado.
+
+El capítulo continúa en la página
+[Las vistas](vistas.md#8710-version-8-las-vistas), con `CREATE VIEW` compilada en una
+cláusula de Prolog.
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio. Los ejercicios que piden código se resuelven en archivos
+que cargan los del capítulo, sin modificarlos.
+
+8. ★ **(2)** Escribir `actualizar_tupla(+Texto, -N)`, que ejecuta un
+   `UPDATE` como Toy-Sequel: retira y agrega cada tupla dentro del
+   recorrido. Con la tabla `s(n, x)` y las filas `a 1000`, `b 1100` y
+   `c 1200`, comparar el resultado de `UPDATE s SET x = x + 200 WHERE
+   x = (SELECT MAX(x) FROM s) - 100` con el de `sql/2` y con el de SQLite,
+   que deja `c` en 1 200, y explicar la diferencia.
+9. **(2)** Escribir `insertar_verificado(+Texto, -Resultado)`, que
+   ejecuta un `INSERT` y verifica después las referencias del esquema
+   del [capítulo 43](../capitulo-43-prolog-y-sql/restricciones.md#claves-restricciones-y-actualizaciones)
+   con `violacion/1`; si alguna no se cumple, repone el estado anterior y
+   lanza el error.
+10. **(3)** Escribir `recursiva(+Tabla, +Crear, +Base, +Paso, -Rondas)`,
+    que calcula una consulta recursiva en una tabla: la crea, la llena con
+    el `SELECT` Base y repite `INSERT INTO Tabla Paso EXCEPT SELECT * FROM
+    Tabla` hasta que no agrega nada. Calcular los requisitos de `bd`, el
+    par 35 del [capítulo 43](../capitulo-43-prolog-y-sql/recursion.md#consultas-recursivas),
+    y relacionar las rondas con la evaluación de abajo hacia arriba.
+
+## Referencias
+
+- Feliks Kluźniak y Stanisław Szpakowicz, *Prolog for Programmers*,
+  Academic Press, 1985 — «Two Case Studies», apartado 8.2,
+  «Prolog and Relational Data Bases», con el listado 8.4, «Toy-Sequel
+  Interpreter». Sin edición en línea de acceso libre verificada.
+  Esta página toma de allí la actualización de Toy-Sequel dentro del bucle
+  de falla y la conversación de la
+  [sección 87.9](#879-version-7-las-sentencias-que-cambian-las-tablas).

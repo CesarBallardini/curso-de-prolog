@@ -1,14 +1,14 @@
 # Kalah
 
-Esta página contiene las secciones
-[79.9](index.md#799-kalah-version-1-el-tablero-y-la-siembra) y
-[79.10](index.md#7910-kalah-version-2-el-jugador-con-alfa-beta) del
-[capítulo 79](index.md): el tablero y la siembra de Kalah, y el jugador
+Esta página continúa el [capítulo 79](index.md) después de la
+[sección 79.8](mastermind.md#798-mastermind-version-3-restricciones), con
+las secciones [79.9](#799-kalah-version-1-el-tablero-y-la-siembra) y
+[79.10](#7910-kalah-version-2-el-jugador-con-alfa-beta): el tablero y la siembra de Kalah, y el jugador
 con la poda alfa-beta del [capítulo 42](../capitulo-42-juegos/index.md).
 El ejemplo está en `kalah.pl`, en `ejemplos/capitulo-79/`, con sus
 pruebas.
 
-## Kalah, versión 1: el tablero y la siembra
+## 79.9 Kalah, versión 1: el tablero y la siembra
 
 Kalah se juega en un tablero con dos filas de seis hoyos y, a la derecha
 de cada fila, un hoyo mayor, el **kalah** de su dueño. Los dos jugadores
@@ -234,7 +234,7 @@ los hoyos 2 a 6.
     todas las jugadas de `turno_completo/3` y el tablero después de cada
     una, y comprobarlo con `findall/3`.
 
-## Kalah, versión 2: el jugador con alfa-beta
+## 79.10 Kalah, versión 2: el jugador con alfa-beta
 
 Para la búsqueda del [capítulo 42](../capitulo-42-juegos/index.md), la posición es `k(Tablero, Jugador)`,
 con el tablero visto desde el que mueve; sur es max. Una jugada es un
@@ -360,7 +360,7 @@ solo cuenta lo que ya está en los kalahs, y una búsqueda de profundidad
 par termina con la jugada del rival, que ve capturas que el jugador ya no
 tiene tiempo de contestar: es el efecto horizonte del
 [capítulo 42](../capitulo-42-juegos/evaluacion.md#funciones-de-evaluacion-y-orden-de-las-jugadas).
-El [ejercicio 10](index.md#ejercicios) prueba una evaluación que cuenta también
+El [ejercicio 11](#ejercicios) prueba una evaluación que cuenta también
 las piedras de cada lado.
 
 La estrategia `tiempo(S)` usa la profundización progresiva del
@@ -440,3 +440,93 @@ partida:leer_jugada(kalah(_), _, Linea, Hoyos) :-
     split_string(Linea, " ", " ", Partes),
     maplist(number_string, Hoyos, Partes).
 ```
+
+!!! success "Criterios de calidad"
+    | Criterio | En este capítulo |
+    |---|---|
+    | C1 | cada predicado declara modos y determinación; `siguiente/2` y `siguiente_clp/2` aclaran que el intento debe llegar libre, y `turno_completo/3` que enumera los turnos |
+    | C2 | representaciones limpias: `sacar(K, M)`, `r(Intento, Toros, Vacas)`, `tablero/4` y `k/2`; el texto de la terminal se arma aparte del núcleo |
+    | C3 | la búsqueda del [capítulo 42](../capitulo-42-juegos/index.md) juega Nim y Kalah sin cambios, a través del puente; las estrategias son argumentos de `partida/5` |
+    | C4 | `sembrar/4`, `capturar/3` y `barrer/2` deciden con si-entonces-sino y no dejan alternativas; `jugada_ganadora/2` y `una_ficha/2` usan `once/1` |
+    | C6 | `partida/5` es pura; solo `jugar/4` y `jugar/1` leen y escriben, y sus pruebas leen de cadenas |
+    | C7 | 109 pruebas en siete archivos, y 21 más sobre las soluciones; las tres versiones de Mastermind se comparan entre sí, la búsqueda de Nim con la suma, y la suma con los teoremas de Bouton |
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio. Los ejercicios que piden código se resuelven en archivos
+que cargan los del capítulo, sin modificarlos.
+
+10. ★ **(1)** Predecir el resultado de `sembrar/4` desde el hoyo 3 con 13
+    piedras en `tablero([0, 0, 13, 0, 0, 0], 0, [0, 0, 0, 0, 2, 0], 0)` y
+    el de `capturar/3` a continuación. Comprobarlo, y decir qué haría el
+    programa del libro en el mismo caso.
+11. **(3)** Escribir un juego `kalah_piedras(N)` que delegue en `kalah(N)`
+    y evalúe con la diferencia de kalahs más la mitad de la diferencia de
+    las piedras que cada uno tiene en sus hoyos. Jugar las profundidades
+    2, 3 y 4 de cada evaluación contra las de la otra, como sur y como
+    norte, y comparar los puntos.
+
+## Resumen
+
+| | |
+|---|---|
+| **suma de Nim** | el o exclusivo de los tamaños de las pilas; el que mueve pierde si es 0 |
+| **posición segura** | la de suma de Nim 0: toda jugada desde ella deja una insegura, y desde una insegura hay una jugada que deja una segura |
+| **forma de una posición** | la posición sin lo que no cambia el resultado, para que la tabla junte las posiciones equivalentes |
+| **jugada consistente** | un intento que, de ser el secreto, habría recibido todas las respuestas ya recibidas |
+| **toros y vacas** | dígitos comunes en la misma posición y en otra posición |
+| **siembra** | repartir las piedras de un hoyo de a una en sentido antihorario, salteando el kalah del rival |
+| **estrategia como argumento** | un predicado que elige la jugada, que la partida recibe y llama con `call/4` |
+| **cláusulas en un módulo cargado** | predicados declarados `multifile` antes de cargar el archivo, a los que otros archivos agregan cláusulas con el módulo delante |
+| `sacar/3`, `ganadora/1`, `ganadora_tabulada/1`, `forma/2`, `posiciones/1` | las reglas de Nim y su búsqueda |
+| `jugada_ganadora/2`, `una_ficha/2`, `tabulada/3` | el jugador de Nim |
+| `suma_nim/2`, `segura/1`, `jugada_segura/2`, `elegir/2` | la suma de Nim |
+| `codigo/1`, `respuesta/4`, `consistente/2`, `siguiente/2`, `adivinar/2`, `medir/4` | Mastermind, versión 1 |
+| `candidatos/1`, `filtrar/5`, `quedan/2`, `adivinar_candidatos/2` | Mastermind, versión 2 |
+| `siguiente_clp/2`, `adivinar_clp/2` | Mastermind, versión 3 |
+| `sembrar/4`, `capturar/3`, `barrer/2`, `turno_completo/3`, `girar/2`, `kalahs/4` | Kalah |
+| `partida/5`, `partida/6`, `profundidad/4`, `tiempo/4`, `primera/3`, `jugar/4` | partidas entre estrategias y contra una persona |
+| `xor` | el o exclusivo bit a bit de dos enteros, en `is/2` |
+| **[Patrón 79](../patrones.md#79-clausulas-para-un-modulo-cargado)** | cláusulas para un módulo cargado |
+| **[Patrón 80](../patrones.md#80-estrategia-como-argumento)** | estrategia como argumento |
+| `strip_module/3` | separa un objetivo calificado en su módulo y el objetivo |
+
+## Temas que se retoman
+
+| Tema | Se retoma en |
+|---|---|
+| Un lenguaje de consejos para el ajedrez: metas y restricciones sobre las jugadas en lugar de una evaluación numérica | [capítulo 80](../capitulo-80-proyecto-lenguaje-consejos-ajedrez/index.md) |
+
+## Referencias
+
+- Leon Sterling y Ehud Shapiro, *The Art of Prolog: Advanced Programming
+  Techniques*, 2.ª edición, MIT Press, 1994 — capítulo «Game-Playing
+  Programs», sección «Kalah» (programa 21.3), y del capítulo «Search
+  Techniques», el marco para jugar (programa 20.8) y la poda alfa-beta
+  (programa 20.11).
+  [Edición en línea](https://archive.org/details/artofprologadvan00ster).
+  Esta página toma de allí las reglas de Kalah, el tablero visto desde el
+  que mueve y girado al terminar el turno, la jugada como lista de hoyos,
+  la evaluación por la diferencia de kalahs y la profundidad 2. Al
+  contrastar el programa de Kalah con el libro aparecen tres diferencias
+  con sus reglas: el empate no se reconoce, porque su `game_over/3` usa
+  números donde van las listas de hoyos; el turno extra después de una
+  vuelta completa no se da; y la captura no se examina cuando la siembra
+  da la vuelta.
+- James R. Slagle y John K. Dixon, «Experiments with some programs that
+  search game trees», *Journal of the ACM*, volumen 16, número 2, 1969,
+  páginas 189–207. [Edición en línea](https://doi.org/10.1145/321510.321511).
+  Sterling y Shapiro lo citan como uno de los primeros trabajos que
+  tomaron Kalah como banco de prueba de la búsqueda en árboles de juego,
+  y de él viene la elección de Kalah para la poda alfa-beta.
+
+El código del capítulo es propio, escrito para el curso: los programas
+del libro se reescribieron con otra representación (respuestas en una
+lista en lugar de `assert`, `xor` en lugar de listas de dígitos binarios,
+la siembra como un anillo de trece casillas) y se corrigieron las
+diferencias con las reglas; la búsqueda tabulada de Nim, las versiones 2
+y 3 de Mastermind, el puente al [capítulo 42](../capitulo-42-juegos/index.md), las partidas entre
+estrategias y las mediciones no tienen equivalente en las fuentes.

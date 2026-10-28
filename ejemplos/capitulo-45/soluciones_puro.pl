@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 45 - Solución del ejercicio 10: el núcleo con el estado en
+% Capítulo 45 - Solución del ejercicio 3: el núcleo con el estado en
 % argumentos, para mirar, ir, tomar y dejar.
 %
 % El estado es la lista ordenada de hechos que da instantanea/1. paso/4 no

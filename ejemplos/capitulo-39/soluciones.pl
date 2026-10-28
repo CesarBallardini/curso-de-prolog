@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 39 - Soluciones de los ejercicios 1, 2, 3, 9, 10, 11, 12, 13 y
+% Capítulo 39 - Soluciones de los ejercicios 1, 2, 7, 9, 10, 11, 12, 13 y
 % 14: modelos, base de Herbrand, estratos, semántica bien fundada, modelos
 % estables y evaluación semi-ingenua. Usa los evaluadores de semantica.pl,
 % y nombra con generado/2 los programas que construye como datos.

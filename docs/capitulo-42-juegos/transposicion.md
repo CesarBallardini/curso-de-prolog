@@ -1,12 +1,14 @@
 # Tablas de transposición con tabulación
 
-Esta página contiene la sección
-[42.6](index.md#426-tablas-de-transposicion-con-tabulacion) del
-[capítulo 42](index.md): minimax con las posiciones ya buscadas guardadas en
-tablas. El ejemplo está en `transposicion.pl`, en `ejemplos/capitulo-42/`,
-con sus pruebas, y corre en SWISH.
+Esta página continúa la página
+[Profundización progresiva con límite de tiempo](profundizacion.md#425-profundizacion-progresiva-con-limite-de-tiempo)
+del [capítulo 42](index.md), con la sección
+[42.6](#426-tablas-de-transposicion-con-tabulacion): minimax con las
+posiciones ya buscadas guardadas en tablas. El ejemplo está en
+`transposicion.pl`, en `ejemplos/capitulo-42/`, con sus pruebas, y corre en
+SWISH.
 
-## Tablas de transposición con tabulación
+## 42.6 Tablas de transposición con tabulación
 
 Una **transposición** es una posición a la que se llega por más de un
 orden de jugadas: x en 1, o en 2 y x en 5 lleva al mismo tablero que x en
@@ -160,6 +162,31 @@ poda descarta. Los programas de ajedrez usan las dos cosas a la vez: la
 tabla guarda, junto con el valor, si es exacto o una cota, y con qué
 profundidad se obtuvo. La tabulación de Prolog guarda respuestas a
 llamadas, y con las cotas como argumentos cada intervalo distinto es otra
-variante; el [ejercicio 11](index.md#ejercicios) lo mide. El
-[ejercicio 10](index.md#ejercicios) reduce las tablas del ta-te-ti
+variante; el [ejercicio 12](#ejercicios) lo mide. El
+[ejercicio 11](#ejercicios) reduce las tablas del ta-te-ti
 tabulando una sola posición por cada grupo de posiciones simétricas.
+
+El capítulo continúa en la página
+[El ta-te-ti completo, en la terminal](terminal.md#427-el-ta-te-ti-completo-en-la-terminal),
+con una partida contra la computadora a pantalla completa.
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio, y los capítulos siguientes los dan por hechos.
+
+11. ★ **(3)** Una posición del ta-te-ti y sus giros y reflejos tienen el
+    mismo valor. Escribir `valor_simetrico/3`, tabulado sobre una forma
+    canónica de la posición —la menor, en el orden estándar, de sus ocho
+    simetrías—, y contar cuántas posiciones distintas quedan.
+12. **(2)** Tabular la poda: escribir `acotado_tabulado/5`, con las cotas
+    como argumentos de la tabla, y contar las tablas que deja la búsqueda
+    completa del tablero vacío, contra las 5 478 de `valor/3`. Explicar la
+    diferencia.
+
+## Referencias
+
+- *SWI-Prolog Reference Manual*, sección de la tabulación:
+  [manual en línea](https://www.swi-prolog.org/pldoc/doc_for?object=manual).

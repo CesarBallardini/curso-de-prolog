@@ -1,12 +1,128 @@
-# Heurísticas: A\* e IDA\*
+# Profundización iterativa y heurísticas: A\* e IDA\*
 
-Esta página contiene la sección [41.5](index.md#415-heuristicas-a-e-ida) del
-[capítulo 41](index.md): la búsqueda voraz, A\* e IDA\* sobre el rompecabezas
-de 8, y la comparación medida de las estrategias del capítulo. El ejemplo
-está en `puzzle8.pl`, en `ejemplos/capitulo-41/`, con sus pruebas, y corre
-en SWISH.
+Esta página continúa la página
+[Ciclos y visitados](visitados.md#413-ciclos-y-visitados) del
+[capítulo 41](index.md), con las secciones
+[41.4](#414-profundidad-limitada-y-profundizacion-iterativa) y
+[41.5](#415-heuristicas-a-e-ida): la profundidad limitada y la
+profundización iterativa, que encuentran el plan más corto con la memoria
+de un solo camino; y la búsqueda voraz, A\* e IDA\* sobre el rompecabezas de
+8, con la comparación medida de las estrategias del capítulo. Los ejemplos
+están en `profundizacion.pl` y `puzzle8.pl`, en `ejemplos/capitulo-41/`, con
+sus pruebas, y corren en SWISH.
 
-## Heurísticas: A\* e IDA\*
+## 41.4 Profundidad limitada y profundización iterativa
+
+La búsqueda en anchura encuentra el plan más corto, pero su frontera guarda
+un nivel entero del árbol, que crece exponencialmente con la profundidad. La
+de profundidad guarda un solo camino, pero no termina o no da el plan más
+corto. La **profundidad limitada** corta cada rama a una longitud fija, y la
+**profundización iterativa** repite la búsqueda con límites 0, 1, 2… hasta
+encontrar un plan. `profundizacion.pl` escribe las dos con la recursión de
+Prolog, sin frontera:
+
+<!-- ejemplo: capitulo-41/profundizacion.pl predicado: con_limite/3 hasta/4 iterativo/2 desde/3 consulta: iterativo(jarras(4, 3, 2), Plan). -->
+```prolog
+%!  con_limite(+Problema, +Limite:integer, -Plan:list) is nondet.
+%
+%   Plan lleva del estado inicial de Problema a un estado meta con a lo sumo
+%   Limite acciones.
+con_limite(Problema, Limite, Plan) :-
+    inicial(Problema, Estado),
+    hasta(Problema, Estado, Limite, Plan).
+
+%!  hasta(+Problema, +Estado, +Limite:integer, -Plan:list) is nondet.
+%
+%   Plan lleva de Estado a un estado meta con a lo sumo Limite acciones.
+hasta(Problema, Estado, _, []) :-
+    meta(Problema, Estado).
+hasta(Problema, Estado, Limite, [Accion|Plan]) :-
+    Limite > 0,
+    Limite1 is Limite - 1,
+    sucesor(Problema, Estado, Accion, Siguiente, _),
+    hasta(Problema, Siguiente, Limite1, Plan).
+
+%!  iterativo(+Problema, -Plan:list) is nondet.
+%
+%   Plan lleva del estado inicial de Problema a un estado meta. Los planes
+%   se obtienen de menor a mayor longitud, y el primero es uno de los más
+%   cortos. Si Problema no tiene solución, no termina; después de la última
+%   respuesta, tampoco.
+iterativo(Problema, Plan) :-
+    inicial(Problema, Estado),
+    length(Plan, _),
+    desde(Problema, Estado, Plan).
+
+%!  desde(+Problema, +Estado, ?Plan:list) is nondet.
+%
+%   Plan lleva de Estado a un estado meta de Problema. Con la longitud de
+%   Plan fijada, termina.
+desde(Problema, Estado, []) :-
+    meta(Problema, Estado).
+desde(Problema, Estado, [Accion|Plan]) :-
+    sucesor(Problema, Estado, Accion, Siguiente, _),
+    desde(Problema, Siguiente, Plan).
+```
+
+`iterativo/2` no lleva un límite: `length(Plan, _)` con la lista libre da
+listas de longitud 0, 1, 2…, y `desde/3` con la longitud del plan fijada
+termina en cada una. Es la forma que *The Power of Prolog* de Markus Triska
+recomienda para la profundización iterativa, y la misma técnica que la
+[sección 34.5](../capitulo-34-introspeccion-y-metainterpretes/index.md#345-limites-de-profundidad-y-profundizacion-iterativa) aplicó al
+intérprete.
+
+```prolog
+?- con_limite(jarras(4, 3, 2), 5, Plan).
+Plan = [llenar(2), pasar(2, 1), llenar(2), pasar(2, 1)] ;
+Plan = [llenar(2), pasar(2, 1), llenar(2), pasar(2, 1), vaciar(1)] ;
+false.
+
+?- con_limite(jarras(4, 3, 2), 3, Plan).
+false.
+
+?- limit(3, iterativo(jarras(4, 3, 2), Plan)).
+Plan = [llenar(2), pasar(2, 1), llenar(2), pasar(2, 1)] ;
+Plan = [llenar(2), pasar(2, 1), llenar(2), pasar(2, 1), vaciar(1)] ;
+Plan = [llenar(1), llenar(2), vaciar(1), pasar(2, 1), llenar(2), pasar(2, 1)].
+```
+
+`iterativo/2` tiene infinitos planes, porque los ciclos alargan cualquier
+plan tanto como se quiera; `limit/2`
+([capítulo 18](../capitulo-18-todas-las-soluciones/index.md#187-librarysolution_sequences)) toma los tres primeros.
+
+La profundidad limitada termina siempre, aun en un espacio con ciclos, y no
+encuentra lo que está más allá del límite. La profundización iterativa da
+los planes de menor a mayor longitud, como la anchura, con la memoria de un
+camino, como la profundidad. Tiene dos límites. Si el problema no tiene
+solución, no termina: prueba longitudes sin fin (Csenki lo señala en el
+apartado «Iterative Deepening»). Y repite el trabajo de las iteraciones anteriores; con un
+factor de ramificación b, la última iteración cuesta b veces la anterior, y
+la suma de todas es del orden de la última. Sin registro de visitados, lo
+que crece con la longitud es el número de caminos, no el de estados:
+
+```text
+jarras(11, 4, 1), plan de 6 acciones:     6,457 inferences
+jarras(9, 2, 1),  plan de 8 acciones:    36,485 inferences
+jarras(8, 3, 4),  plan de 10 acciones:  305,613 inferences
+jarras(13, 5, 1), plan de 12 acciones: 2,570,372 inferences
+```
+
+Cada dos acciones más, el costo se multiplica por un factor de seis a
+ocho; la búsqueda en
+anchura con visitados resuelve las cuatro con unas 43 000 inferencias, casi
+todas de la carga de `library(assoc)`, porque cada una recorre menos de
+treinta estados. La profundización iterativa conviene cuando el espacio es
+enorme y el plan corto, o cuando la memoria es el límite; y su versión con
+una cota sobre el costo estimado, IDA\*, es la que resuelve el rompecabezas
+de la sección siguiente con poca memoria.
+
+!!! question "Actividad"
+    Predecir, sin ejecutarlas, si terminan `con_limite(jarras(4, 2, 1), 10,
+    P)` e `iterativo(jarras(4, 2, 1), P)`, y cuántas respuestas da
+    `con_limite(jarras(4, 3, 2), 4, P)`. Comprobarlo, la segunda con
+    `call_with_inference_limit/3`.
+
+## 41.5 Heurísticas: A\* e IDA\*
 
 El **rompecabezas de 8** tiene ocho fichas numeradas y un hueco en un marco
 de 3 × 3; cada acción desliza al hueco una ficha vecina. Un estado es la
@@ -295,3 +411,55 @@ algo más de un segundo.
     devuelve un plan más largo o más corto que con `manhattan`, y si A\*
     con la heurística `cero` expande más o menos nodos que la anchura.
     Comprobarlo con `buscar/5`.
+
+El capítulo continúa en la página
+[Planificación](planificacion.md#416-planificacion-operadores-strips-y-analisis-de-medios-y-fines),
+con los operadores STRIPS y el análisis de medios y fines.
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio, y los capítulos siguientes los dan por hechos.
+
+6. **(1)** Resolver `jarras(5, 3, 4)` con las tres estrategias de
+   `visitados.pl` y con `iterativo/2`. ¿Cuáles dan el mismo plan? ¿Cuál
+   mueve menos agua?
+7. ★ **(2)** Agregar al bucle con visitados la estrategia `anchura_lista`,
+   con la frontera como una lista cerrada a la que los hijos se agregan con
+   `append/3`, y medir con `time/1` las dos anchuras en
+   `jarras(3001, 2999, 1)` y en el rompecabezas de 8 desde
+   `ejemplo(medio, E)`, con la heurística `cero`. Explicar por qué la
+   diferencia aparece en un problema y no en el otro, con la
+   [sección 35.6](../capitulo-35-estructuras-incompletas-y-listas-diferencia/index.md#356-cuanto-se-gana).
+8. **(2)** Escribir `mas_cortos(Problema, Planes)`: la lista de todos los
+   planes de longitud mínima de un problema, con la idea de `iterativo/2`.
+   Escribir el encabezado con el modo y la determinación, y explicar qué
+   hace el predicado con un problema sin solución.
+9. ★ **(2)** Agregar la heurística `doble`, el doble de `manhattan`, que no
+   es admisible. Predecir si A\* con `doble` sobre `ejemplo(dificil, E)`
+   expande más o menos nodos que con `manhattan`, y si el plan sigue siendo
+   de 26 acciones; comprobarlo y explicar el resultado.
+
+## Referencias
+
+- Attila Csenki, *Applications of Prolog*, Ventus Publishing (Bookboon),
+  2009 — capítulos «Blind Search» (con los apartados «Bounded Depth First
+  Search», «Iterative Deepening» y «Application: The Eight Puzzle») e
+  «Informed Search» (con «Iterative Deepening A\* and its ε-Admissible
+  Version» y «Case Study: The Eight Puzzle Revisited»).
+  [Página de la editorial, copia de archivo](https://web.archive.org/web/20260216182045/https://bookboon.com/en/applications-of-prolog-ebook).
+  La editorial ya no ofrece el libro;
+  [Google Libros](https://books.google.com/books?id=copBGLD4LKwC) muestra
+  páginas seleccionadas.
+  Esta página toma de allí la profundidad limitada y la profundización
+  iterativa, el rompecabezas de 8 como caso de estudio, IDA\* y la
+  observación de que la profundización iterativa no termina sin solución.
+- Ivan Bratko, *Prolog Programming for Artificial Intelligence*,
+  Addison-Wesley, 1986 — capítulo «Best-first: A Heuristic Search
+  Principle». Sin edición en línea de acceso libre. De allí vienen la
+  admisibilidad de A\* y su demostración.
+- Markus Triska, *The Power of Prolog*.
+  [En línea](https://www.metalevel.at/prolog). Esta página toma la
+  profundización iterativa escrita con `length/2` sobre la lista del plan.

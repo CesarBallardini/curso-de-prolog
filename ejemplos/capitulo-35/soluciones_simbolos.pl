@@ -1,10 +1,10 @@
 :- encoding(utf8).
 
-% Capítulo 35 - Soluciones de los ejercicios 13 y 14.
+% Capítulo 35 - Soluciones de los ejercicios 14 y 15.
 %
-% El ensamblador de simbolos.pl, con dos cambios. Ejercicio 13: una marca
+% El ensamblador de simbolos.pl, con dos cambios. Ejercicio 14: una marca
 % de etiqueta repetida produce un error de permiso, en lugar de hacer
-% fallar el ensamblado. Ejercicio 14: asignar/3 reemplaza el nombre de cada
+% fallar el ensamblado. Ejercicio 15: asignar/3 reemplaza el nombre de cada
 % variable de cargar/1 y guardar/1 por una dirección de memoria, con otro
 % diccionario incompleto.
 %
@@ -112,7 +112,7 @@ buscar(Clave, [Clave0-Valor0|Resto], Valor) :-
     ;   buscar(Clave, Resto, Valor)
     ).
 
-% --- Ejercicio 13 ---
+% --- Ejercicio 14 ---
 
 %!  marcar(+E, ?Tabla, +Dir:integer) is det.
 %
@@ -125,7 +125,7 @@ marcar(E, Tabla, Dir) :-
     ;   permission_error(marcar, etiqueta, E)
     ).
 
-% --- Ejercicio 14 ---
+% --- Ejercicio 15 ---
 
 %!  asignar(+Codigo:list, -Codigo1:list, -N:integer) is det.
 %

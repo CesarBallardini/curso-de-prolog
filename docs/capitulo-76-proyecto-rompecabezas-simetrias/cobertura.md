@@ -60,3 +60,12 @@ El lazo que cubre las 72 casillas es este:
 │             │
 O─────────────┘
 ```
+
+## Referencias
+
+- Attila Csenki, *Applications of Prolog*, Ventus Publishing (Bookboon),
+  2009 — apartado «Application: A Loop Puzzle» del capítulo «Blind
+  Search».
+  [Página de la editorial, copia de archivo](https://web.archive.org/web/20260216182045/https://bookboon.com/en/applications-of-prolog-ebook).
+  Esta página toma de allí la exigencia de cobertura y los datos del
+  tablero `csenki2`.

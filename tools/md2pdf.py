@@ -61,8 +61,8 @@ SITE_URL = re.search(r'^site_url:\s*(\S+)', MKDOCS, re.M).group(1)
 def chapter_pages(source):
     """The pages of the chapter whose index.md is `source`, in the order of the nav.
 
-    A long chapter moves some sections out of index.md into pages of their own,
-    which the nav lists after «Soluciones». They are part of the chapter, so its
+    A long chapter continues on pages of its own, which the nav lists after index.md
+    and before «Soluciones», in reading order. They are part of the chapter, so its
     PDF carries them after index.md. The solutions page has its own PDF, and any
     other source is a PDF of one page.
     """

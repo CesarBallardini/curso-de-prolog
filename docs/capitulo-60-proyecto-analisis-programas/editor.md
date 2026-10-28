@@ -1,13 +1,14 @@
 # Un editor de cláusulas
 
-Esta página contiene la [sección 60.7](index.md#607-un-editor-de-clausulas) del
-[capítulo 60](index.md): el primero de los tres programas del apéndice de
-Kluźniak y Szpakowicz, un editor de las cláusulas de un predicado, escrito con
-lo que SWI-Prolog ofrece hoy. El ejemplo es `editor.pl`, en
-`ejemplos/capitulo-60/`, con sus pruebas; lee comandos de un stream y cambia la
-base dinámica, y se ejecuta localmente.
+Esta página continúa la página
+[Comparación con prolog_xref](xref.md#606-comparacion-con-libraryprolog_xref) del
+[capítulo 60](index.md), con la [sección 60.7](#607-un-editor-de-clausulas): el
+primero de los tres programas del apéndice de Kluźniak y Szpakowicz, un editor
+de las cláusulas de un predicado, escrito con lo que SWI-Prolog ofrece hoy. El
+ejemplo es `editor.pl`, en `ejemplos/capitulo-60/`, con sus pruebas; lee
+comandos de un stream y cambia la base dinámica, y se ejecuta localmente.
 
-## Un editor de cláusulas
+## 60.7 Un editor de cláusulas
 
 El editor del libro se invoca con `edit(Nombre/Aridad)` y trabaja sobre las
 cláusulas que el intérprete tiene en memoria. Cada invocación tiene un
@@ -121,7 +122,7 @@ del predicado, y `make/0` vuelve a cargar lo que cambió, como explica la
 [sección 14.1](../capitulo-14-el-entorno-de-trabajo/index.md#141-el-toplevel-como-herramienta).
 El editor de cláusulas sirve para lo que no está en un archivo: los
 predicados dinámicos que un programa construye mientras se ejecuta. El
-[ejercicio 12](index.md#ejercicios) agrega el comando del libro que inserta
+[ejercicio 12](#ejercicios) agrega el comando del libro que inserta
 las cláusulas de un archivo.
 
 !!! question "Actividad"
@@ -129,3 +130,73 @@ las cláusulas de un archivo.
     con los tres hechos originales de `nota/2`: dónde queda el cursor después
     de cada `b`, y qué hace el tercero. Comprobarlo, y volver a cargar
     `editor.pl` para recuperar los hechos.
+
+!!! success "Criterios de calidad"
+    | Criterio | En este capítulo |
+    |---|---|
+    | C1 | cada predicado declara modos y determinación; la revisión de estilo de la cuarta versión verifica el encabezado de cada predicado, y los once archivos de *Inscripciones* y los del capítulo pasan sin avisos |
+    | C4 | `llamadas_de/3` con el predicado ligado no deja alternativas pendientes: usa `memberchk/2` en lugar de `member/2`, y las pruebas sin `nondet` lo verifican |
+    | C6 | los análisis que terminan en `_de` son puros sobre listas de cláusulas y de términos leídos, y las formas que reciben el nombre del programa solo agregan `clausulas/2` y `raices/2`; leen archivos solo `leer_archivo/2` y `leer_programa/3`, escriben solo `escribir_arbol_de/2`, `informe_de/1` y `referencias_de/2`, y solo el intérprete de `perfil.pl` y `grabar/1` del editor modifican la base de datos; los comandos del editor son puros sobre su estado |
+    | C7 | 137 pruebas en trece archivos, más una prueba de carga por cada archivo de la copia de *Inscripciones*; cada resultado se compara con otra fuente: el intérprete con la fórmula $n(n+1)/2$, las variables singulares con `read_term/3`, los predicados sin llamadas con `prolog_xref` |
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio.
+
+12. **(1)** El editor del libro tiene un comando que inserta después del
+    cursor las cláusulas de un archivo. Escribir
+    `insertar_archivo(+Archivo, +Estado0, -Estado)` con `comando/3` y
+    `grabar/1` del editor, y explicar cómo se agrega a la sesión como el
+    comando `f(Archivo)`.
+
+## Resumen
+
+| | |
+|---|---|
+| **programa como datos** | una lista de cláusulas `Cabeza :- Cuerpo`, o de términos leídos con su posición, sus nombres de variables y sus comentarios |
+| **metas de un cuerpo** | se atraviesan las construcciones de control y se entra en los argumentos de las metallamadas, con los argumentos que cada una agrega |
+| **grafo de llamadas** | un arco `P-Q` si una cláusula de `P` llama a `Q`; en `library(ugraphs)`, pares `Vertice-Sucesores` |
+| **indefinido** | se llama, no se define y no es predefinido |
+| **no usado** | definido y no alcanzable desde los puntos de entrada; distinto de «nadie lo llama» |
+| **componente fuertemente conexa** | los predicados que se alcanzan entre sí; con un ciclo, recursión propia o mutua |
+| **puntos de entrada** | lo que exporta cada módulo, las directivas como `'<carga>'/0`, las cláusulas para otro módulo y los ganchos de las bibliotecas |
+| **conocimiento del sistema** | predefinidos y metallamadas, primero como tablas y después según el módulo `externo`; lo que falta produce falsos positivos |
+| **árbol de llamadas** | preorden desde una raíz, un número por predicado y `(ver N)` para las repeticiones |
+| **revisión de estilo** | singulares, repetidas, cláusulas separadas, encabezados y comentarios |
+| **perfil** | un metaintérprete que cuenta las llamadas y escribe las de los predicados espiados |
+| **dos formas de cada análisis** | la que termina en `_de` recibe la lista de cláusulas; la otra, el nombre del programa, y obtiene sus cláusulas y sus puntos de entrada con `clausulas/2` y `raices/2` |
+| `metas/2`, `llamadas_de/3`, `llama_de/3`, `arcos/2` | la primera versión |
+| `grafo/2`, `indefinidos_de/2`, `no_usados_de/3`, `componentes_de/2`, `arbol/3` | la segunda |
+| `leer_archivo/2`, `programa/3`, `leer_programa/3`, `termino_leido/2` | la tercera |
+| `revisar/2`, `revisar_archivos/2`, `revisar_texto_de/2` | la cuarta |
+| `perfil/3`, `espiar/1`, `no_espiar/1` | la quinta |
+| `informe_de/1`, `referencias_de/2` | el programa terminado |
+| `vertices_edges_to_ugraph/3`, `vertices/2`, `edges/2`, `neighbours/3`, `reachable/3`, `transitive_closure/2`, `top_sort/2` | `library(ugraphs)` |
+| `read_term/3`, `stream_position_data/3`, `dcg_translate_rule/2`, `open_string/2`, `set_module/1` | leer un programa sin cargarlo, y el módulo `externo` |
+| `xref_source/2`, `xref_defined/3`, `xref_exported/2`, `xref_called/3` | `library(prolog_xref)` |
+| `comando/3`, `grabar/1`, `editar/1` | el editor de cláusulas: el estado y sus comandos, la base y la sesión |
+| `xref_clean/1` | descarta lo que `xref_source/2` registró de un archivo; en las pruebas |
+
+## Temas que se retoman
+
+| Tema | Se retoma en |
+|---|---|
+| Un intérprete de Prolog sobre una máquina con pila de metas y puntos de elección, que ejecuta los programas que este capítulo lee | [capítulo 62](../capitulo-62-proyecto-maquina-prolog/index.md) |
+| El grafo de dependencias de un programa Datalog y sus componentes, para evaluarlo por estratos | [capítulo 86](../capitulo-86-proyecto-motor-datalog/index.md) |
+
+## Referencias
+
+- Feliks Kluźniak y Stanisław Szpakowicz, con Janusz S. Bień, *Prolog for
+  Programmers*, Academic Press, 1985 — apéndice «Three Useful Programs»: «A
+  simple editor».
+  [Edición en línea en el sitio del coautor](https://www.site.uottawa.ca/~szpak/pub/P4P/Prolog_for_Programmers_neat.pdf).
+  Del editor, la [sección 60.7](#607-un-editor-de-clausulas) toma el cursor, sus
+  comandos, la inserción hasta `end.` y la instancia anidada que relee el
+  predicado al volver.
+
+El código del capítulo es propio, escrito para el curso: los programas del
+apéndice dependen de primitivas del intérprete Toy-Prolog del libro, y se
+tomaron de ellos las ideas y el formato del árbol de llamadas, no el código.

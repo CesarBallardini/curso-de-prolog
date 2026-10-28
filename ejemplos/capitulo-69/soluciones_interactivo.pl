@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 69 - Solución del ejercicio 14: el lazo interactivo de la
+% Capítulo 69 - Solución del ejercicio 7: el lazo interactivo de la
 % eliminación de candidatos.
 %
 % El lazo lee ejemplos de la entrada actual con read_term/2, uno por

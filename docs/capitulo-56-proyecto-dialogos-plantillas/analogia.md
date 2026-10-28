@@ -1,12 +1,44 @@
 # ANALOGY
 
-Esta página contiene la sección
-[56.7](index.md#567-analogy-analogias-geometricas) del
-[capítulo 56](index.md): el programa que resuelve analogías geométricas,
-`analogia.pl`. El archivo está en `ejemplos/capitulo-56/`, con sus pruebas;
-no es un módulo ni carga otros archivos, y corre en SWISH.
+Esta página continúa la página
+[Una agenda en castellano y una conversación con ELIZA](agenda.md#566-version-5-la-agenda-y-eliza-en-una-conversacion) del
+[capítulo 56](index.md), con la [sección 56.7](#567-analogy-analogias-geometricas): el
+programa que resuelve analogías geométricas, `analogia.pl`. El archivo está
+en `ejemplos/capitulo-56/`, con sus pruebas; no es un módulo ni carga otros
+archivos, y corre en SWISH.
 
-## ANALOGY: analogías geométricas
+## 56.7 ANALOGY: analogías geométricas
+
+El programa ANALOGY, de Thomas Evans (1963), resolvía los problemas de los
+tests de inteligencia que muestran tres diagramas A, B y C, y preguntan cuál
+de varias respuestas es a C lo que B es a A. La reconstrucción de Sterling y
+Shapiro representa cada diagrama como un término, `inside(square,
+triangle)`, y usa el mismo predicado dos veces: con A y B encuentra la
+operación que convierte uno en el otro, y con la operación y C construye la
+respuesta. Es la plantilla de las versiones anteriores sobre otros datos: el
+diagrama es el patrón, y la unificación lo empareja.
+
+`analogia.pl` generaliza esa reconstrucción: seis operaciones en lugar de una
+y sucesiones de operaciones en lugar de una sola, buscadas de la más corta a
+la más larga:
+
+<!-- ejemplo: capitulo-56/analogia.pl predicado: analogia/3 -->
+```prolog
+%!  analogia(+Par1, +Par2, +Respuestas:list) is semidet.
+%
+%   Par1 es A es_a B y Par2 es C es_a X: X es la respuesta de Respuestas a
+%   la que la sucesión más corta de operaciones que convierte A en B, de
+%   hasta tres, convierte C. Entre las sucesiones de igual largo, la
+%   primera que se encuentra.
+analogia(A es_a B, C es_a X, Respuestas) :-
+    analogia(A es_a B, C es_a X, Respuestas, _).
+```
+
+```prolog
+?- analogia(dentro(cuadrado, triangulo) es_a encima(triangulo, cuadrado), dentro(circulo, rombo) es_a X, [encima(circulo, rombo), dentro(rombo, circulo), encima(rombo, circulo)], Ops).
+X = encima(rombo, circulo),
+Ops = [invertir, relacion(encima)].
+```
 
 Un problema de analogía muestra tres diagramas, A, B y C, y una lista de
 respuestas, y pregunta: «A es a B como C es a cuál». Evans resolvía el
@@ -95,7 +127,7 @@ interior, y aquí las dos cambian: hace falta una sucesión de dos operaciones.
 **Sucesiones de operaciones.** `transforma/3` aplica una lista de
 operaciones en orden. `analogia/4` busca la sucesión más corta con
 `length/2` y `between/3`, la profundización iterativa de la
-[sección 41.4](../capitulo-41-busqueda-y-planificacion/index.md#414-profundidad-limitada-y-profundizacion-iterativa):
+[sección 41.4](../capitulo-41-busqueda-y-planificacion/heuristicas.md#414-profundidad-limitada-y-profundizacion-iterativa):
 primero todas las operaciones sueltas, después los pares, después las
 ternas. La sucesión más corta es la explicación más simple de lo que pasa
 entre A y B, y el corte final se queda con la primera que lleva a una de las
@@ -168,3 +200,35 @@ prefería la que conservaba más detalle.
     `encima(rombo, circulo)`. Comprobarlo con `analogia/4`, y explicar cada
     resultado con el orden en que `transforma/3` genera las sucesiones de
     dos operaciones.
+
+El capítulo continúa en la página [Guiones: una historia y el guion DOCTOR](guiones.md#568-guiones-completar-una-historia), con los
+guiones que completan una historia y el guion DOCTOR de Weizenbaum.
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio. Los ejercicios extienden los programas: cada solución es un
+archivo que carga los del capítulo, sin modificarlos.
+
+10. **(3)** Extender ANALOGY a diagramas anidados, como
+    `dentro(circulo, encima(cuadrado, triangulo))`: una operación
+    `en_exterior(Op)` aplica la operación `Op` a la segunda parte de una
+    relación. Resolver con ella un problema en el que A es
+    `dentro(circulo, encima(cuadrado, triangulo))` y B es
+    `dentro(circulo, encima(triangulo, cuadrado))`.
+
+## Referencias
+
+- Leon Sterling y Ehud Shapiro, *The Art of Prolog: Advanced Programming
+  Techniques*, 2.ª edición, MIT Press, 1994 — apartado 14.3, «Artificial
+  Intelligence Classics: ANALOGY, ELIZA, and McSAM». 1.ª edición (1986) en
+  [préstamo en el Internet Archive](https://archive.org/details/artofprologadvan00ster).
+  El capítulo toma la analogía como una operación que se encuentra y se aplica
+  con el mismo predicado; el programa de Thomas Evans se conoce a través de esta
+  reconstrucción.
+- Thomas G. Evans, «A Program for the Solution of Geometric-Analogy Intelligence
+  Test Questions», en Marvin Minsky (ed.), *Semantic Information Processing*,
+  MIT Press, 1968. Es la descripción de ANALOGY que cita *The Art of Prolog*; el
+  capítulo conoce el programa a través de esa reconstrucción.

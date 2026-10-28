@@ -1,10 +1,11 @@
 # La medición y las pruebas alfa
 
-Esta página continúa el [capítulo 65](index.md): la
-[sección 65.6](index.md#656-version-5-el-ciclo-sobre-la-red) deja el ciclo
-sobre la red funcionando, con los mismos resultados que el
-[capítulo 64](../capitulo-64-proyecto-sistema-produccion/index.md); aquí se
-mide y se corrige lo que la medición encuentra.
+Esta página continúa el [capítulo 65](index.md) después de la
+[sección 65.6](index.md#656-version-5-el-ciclo-sobre-la-red), que deja el
+ciclo sobre la red funcionando, con los mismos resultados que el
+[capítulo 64](../capitulo-64-proyecto-sistema-produccion/index.md), con las
+secciones [65.7](#657-version-6-la-medicion) y [65.8](#658-version-7-las-pruebas-de-un-solo-hecho-en-la-red-alfa): aquí se mide y se corrige lo que la
+medición encuentra.
 
 ## 65.7 Versión 6: la medición
 
@@ -12,7 +13,7 @@ mide y se corrige lo que la medición encuentra.
 [capítulo 64](../capitulo-64-proyecto-sistema-produccion/index.md) y de la red, y en la red separa la **carga** de la memoria inicial de los
 **ciclos**. Con el configurador y el pedido de 8 núcleos, 32 GB y video, y
 `K` memorias más en el catálogo que ninguna placa admite, como en la
-[sección 64.6](../capitulo-64-proyecto-sistema-produccion/index.md#646-version-5-el-costo-del-reconocimiento):
+[sección 64.6](../capitulo-64-proyecto-sistema-produccion/configurador.md#646-version-5-el-costo-del-reconocimiento):
 
 <!-- contexto: capitulo-65/medida.pl -->
 ```prolog
@@ -83,7 +84,7 @@ millones de inferencias lo que al [capítulo 64](../capitulo-64-proyecto-sistema
 Dos decisiones de la versión 3 son parte de estas cifras. Un nodo cuyo padre
 no tiene tokens no se activa por la derecha, porque no tiene con qué unir el
 hecho: sin ese control, cargar el catálogo costaría una activación por cada
-objeto y cada uno de los doce nodos que leen `objeto/3` ([ejercicio 7](index.md#ejercicios)).
+objeto y cada uno de los doce nodos que leen `objeto/3` ([ejercicio 8](#ejercicios)).
 Doorenbos llama a esas activaciones inútiles *null right activations* y
 dedica un capítulo de su tesis, «Adding Right Unlinking to Rete», a
 evitarlas desconectando el nodo de su memoria alfa mientras el padre está
@@ -213,3 +214,62 @@ ciclos más baratos.
     `mostrar_pasos(configurador, descartar_caro)`, y explicar por qué la
     memoria alfa de sus dos patrones `objeto/3` guarda todos los objetos del
     catálogo, y por qué eso no encarece sus uniones.
+
+El capítulo continúa en la página
+[Cinco extensiones de la red](extensiones.md#659-la-herencia-en-los-patrones),
+con cinco temas que las fuentes tratan y las siete versiones dejan afuera.
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio. Los ejercicios extienden los programas: cada solución es un
+archivo que carga los del capítulo, sin modificarlos.
+
+8. **(2)** Escribir una versión de `activar_derecha/6` que activa el nodo
+   aunque su padre no tenga tokens, y medir con ella la carga del
+   configurador con 0 y 400 memorias agregadas. Explicar la diferencia.
+9. **(1)** `red_de/2` está tabulada. Agregar, en una sesión, una cláusula
+   nueva de `programa/2` para un nombre ya compilado es imposible, pero sí
+   puede cambiar un predicado que una prueba `{Meta}` llama. Explicar qué
+   parte de la red queda desactualizada cuando cambia un marco que usa
+   `es_de_clase/2` en la versión 7, y qué hace falta para compilarla de
+   nuevo.
+10. **(2)** Contar con `tokens_guardados/3` los tokens de la red de
+    `familia` al terminar la cadena de 10, 20 y 40 generaciones, y
+    relacionarlos con la cantidad de hechos `antepasado/2` de la memoria.
+    Explicar qué parte de la memoria del programa ocupa la red.
+11. **(3)** Escribir `pasos_forzados/2`, un agrupador que mueve al nodo alfa
+    todas las pruebas que siguen a un patrón, sin mirar sus variables.
+    Encontrar una regla del configurador cuyo resultado cambia con él, y
+    explicar el cambio con `solo_del_hecho/3`.
+12. **(2)** Con las filas de la
+    [sección 65.8](medicion.md#658-version-7-las-pruebas-de-un-solo-hecho-en-la-red-alfa),
+    calcular cuántos ciclos tendría que hacer el configurador sobre el
+    catálogo de 828 hechos para que la red con pruebas alfa costara menos
+    que el [capítulo 64](../capitulo-64-proyecto-sistema-produccion/index.md), suponiendo que cada ciclo agregado cuesta lo que el
+    promedio de los medidos. Discutir si la suposición es razonable.
+
+## Referencias
+
+- Dennis Merritt, *Building Expert Systems in Prolog*, Springer-Verlag,
+  1989 — capítulo «Performance», apartado «Design Tradeoffs».
+  [Edición en línea](https://www.amzi.com/ExpertSystemsInProlog/08performance.php),
+  de Amzi!. Esta página toma de allí el intercambio entre memoria y
+  velocidad, y la red que indexa por el patrón completo, con la que se
+  compara la versión 7. La licencia de esa edición no permite obras
+  derivadas: se toman las ideas, no el código.
+- Charles L. Forgy, «Rete: A Fast Algorithm for the Many Pattern/Many
+  Object Pattern Match Problem», *Artificial Intelligence* 19 (1), 1982.
+  [DOI 10.1016/0004-3702(82)90020-0](https://doi.org/10.1016/0004-3702(82)90020-0).
+  Esta página toma de allí la división entre los rasgos de un solo
+  elemento, que prueban los nodos de una entrada, y los rasgos entre
+  elementos, que prueban los de dos entradas, que la versión 7 aplica.
+- Robert B. Doorenbos, *Production Matching for Large Learning Systems*,
+  tesis doctoral, Carnegie Mellon University, 1995 (informe
+  CMU-CS-95-113).
+  [Edición en línea](http://reports-archive.adm.cs.cmu.edu/anon/1995/CMU-CS-95-113.pdf),
+  del archivo de informes técnicos de la universidad. Esta página toma del
+  capítulo «Adding Right Unlinking to Rete» el nombre de las activaciones
+  nulas por la derecha, las que la versión 6 cuenta.

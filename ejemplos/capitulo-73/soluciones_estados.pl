@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 73 - Solución del ejercicio 8: estados sin lo que ya no importa.
+% Capítulo 73 - Solución del ejercicio 3: estados sin lo que ya no importa.
 %
 % El estado de la versión 2 guarda el fin de cada tarea empezada, pero ese
 % fin solo sirve mientras quede pendiente alguna sucesora de la tarea.

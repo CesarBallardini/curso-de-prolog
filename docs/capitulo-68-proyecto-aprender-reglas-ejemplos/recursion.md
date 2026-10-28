@@ -1,14 +1,23 @@
 # La mejor cláusula y la recursión
 
-Esta página contiene la sección
-[68.6](index.md#686-version-5-la-mejor-clausula-y-la-recursion) del
-[capítulo 68](index.md): la búsqueda que elige la cláusula que cubre más
+Esta página continúa el [capítulo 68](index.md) después de la
+[sección 68.5](index.md#685-version-4-induccion-descendente), con la sección
+[68.6](#686-version-5-la-mejor-clausula-y-la-recursion): la búsqueda que elige la cláusula que cubre más
 ejemplos, el aprendizaje de una definición recursiva y dos maneras de
 obtener una hipótesis equivocada. El ejemplo está en `recursion.pl`, en
 `ejemplos/capitulo-68/`, con sus pruebas; carga las versiones anteriores y
 se ejecuta localmente.
 
-## La mejor cláusula
+## 68.6 Versión 5: la mejor cláusula y la recursión
+
+La quinta versión cambia la búsqueda: por niveles, y en el primer nivel
+con cláusulas consistentes elige la que cubre más positivos. Con ella el
+programa aprende la regla esperada de `abuelo/2` y la definición
+recursiva de `antepasado/2`, y muestra dos maneras de equivocarse: con
+pocos negativos, y con la cobertura extensional de una cláusula
+recursiva.
+
+### La mejor cláusula
 
 La búsqueda de la versión 4 termina con la primera cláusula consistente
 que encuentra, y el orden del lenguaje decide cuál es. La versión 5
@@ -64,7 +73,7 @@ el nivel 2 se genera completo. Pero la hipótesis tiene una sola cláusula,
 que cubre los tres positivos: en el nivel 2, «padre de un progenitor»
 cubre tres, y «padre de un padre», dos.
 
-## Una definición recursiva
+### Una definición recursiva
 
 `antepasado/2` se define con `progenitor/2` y consigo misma, como en el
 [capítulo 6](../capitulo-06-recursion/index.md). Para que el programa pueda proponer una cláusula
@@ -118,7 +127,7 @@ cubriría, aunque la definición completa sí lo deduzca. Por eso, la
 hipótesis terminada se prueba sin los ejemplos, en forma **intensional**.
 Hay dos maneras. La primera es la de la versión 3: el modelo mínimo del
 fondo con las cláusulas aprendidas, calculado de abajo hacia arriba como
-en la [sección 39.6](../capitulo-39-semantica-de-los-programas-logicos/index.md#396-evaluacion-de-abajo-hacia-arriba):
+en la [sección 39.6](../capitulo-39-semantica-de-los-programas-logicos/negacion.md#396-evaluacion-de-abajo-hacia-arriba):
 
 ```prolog
 ?- aprender_rec(antepasado, H, _), evaluar(antepasado, H, A, FP, FN).
@@ -169,7 +178,7 @@ más de tres generaciones.
     Comprobarlo, y comparar la cantidad de cláusulas generadas con la de
     `abuelo/2`.
 
-## Cuando la cobertura extensional engaña
+### Cuando la cobertura extensional engaña
 
 Con la relación en el lenguaje, la cobertura extensional puede aceptar
 una cláusula que no define nada. `hermano/2` necesita cuatro literales sin
@@ -196,7 +205,7 @@ cobertura extensional es la que permite aprender cada cláusula por
 separado, y la intensional es la que dice si la hipótesis define la
 relación; un programa que aprende necesita las dos.
 
-## Pocos negativos
+### Pocos negativos
 
 Los negativos son lo único que impide generalizar de más. Con la regla
 más general, `abuelo(A, B)`, todo par de personas es un abuelo y su
@@ -251,5 +260,51 @@ varón y no es abuelo de ana, y `varon(A)` deja de ser consistente. Desde
 ahí la hipótesis es la esperada. Catorce negativos no enseñan nada que
 `varon(A)` no cumpla, y el decimoquinto enseña lo que faltaba: lo que
 cuenta es qué negativos se dan, no cuántos. El
-[ejercicio 8](index.md#ejercicios) muestra que uno solo, bien elegido,
+[ejercicio 8](#ejercicios) muestra que uno solo, bien elegido,
 alcanza, y que otro, solo, lleva a una hipótesis peor que `varon(A)`.
+
+El capítulo continúa en la página
+[Otras formas de inducir](otras-formas.md#687-version-6-otras-formas-de-inducir), con cuatro ideas del
+capítulo de Flach que las versiones anteriores no usan.
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio.
+
+8. ★ **(2)** Aprender `abuelo/2` con `inductivo/7`, todos los
+   positivos y un solo negativo: primero `abuelo(pedro, eva)`, después
+   `abuelo(juan, ana)`. Medir los falsos positivos de cada hipótesis con
+   `evaluar_en/6` y explicar, con los niveles de la búsqueda, por qué uno
+   de los dos negativos alcanza y el otro no.
+9. **(1)** Aprender `hermano/2` con `inductivo/7` sin la relación en el
+   lenguaje y con límite 4, y comparar la cantidad de cláusulas generadas
+   con la de la [sección 68.5](index.md#685-version-4-induccion-descendente).
+10. **(3)** `cubre/3` prueba los literales del cuerpo en su orden.
+    Escribir una versión que pruebe primero el literal que unifica con
+    menos átomos del modelo, y la reducción que la usa. Medir con
+    `time/1` las dos reducciones en `aprender_asc/3` para `abuelo/2` y
+    `hermano/2`, y en la rlgg de `antepasado(juan, luis)` y
+    `antepasado(pedro, sofia)` con los positivos en el modelo, con un
+    límite de tiempo.
+11. **(3)** Reemplazar en `mejor_clausula/9` la búsqueda por niveles
+    completa por una **búsqueda en haz**: en cada nivel se conservan solo
+    las K cláusulas que cubren más positivos. Medir, con K = 1, 3 y 10,
+    las cláusulas generadas y el resultado para `antepasado/2` y
+    `hermano/2`.
+
+## Referencias
+
+- Peter Flach, *Simply Logical: Intelligent Reasoning by Example*, John
+  Wiley & Sons, 1994 — capítulo «Inductive reasoning».
+  [Edición en línea](https://book.simply-logical.space/src/text/3_part_iii/9.1.html).
+  Esta página toma de allí la cobertura extensional e intensional, y de
+  su ejercicio final la búsqueda en haz del ejercicio 11.
+- J. Ross Quinlan, «Learning logical definitions from relations»,
+  *Machine Learning* 5(3), 1990, págs. 239–266,
+  [doi:10.1007/BF00117105](https://doi.org/10.1007/BF00117105). Es la
+  referencia de Flach para guiar la búsqueda descendente con una
+  heurística. La versión 5 usa un criterio mucho más simple, la cantidad
+  de positivos cubiertos, y no la ganancia de información del artículo.

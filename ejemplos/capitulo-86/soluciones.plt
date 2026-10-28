@@ -46,7 +46,7 @@ test(suplementarios, [true(R1 == R2)]) :-
     respuestas(Cs, sd(_, _), R1, _),
     respuestas(Ss, sd(_, _), R2, _).
 
-% Ejercicio 4. Las derivaciones se comparan con su valor exacto; las
+% Ejercicio 6. Las derivaciones se comparan con su valor exacto; las
 % inferencias, a propósito, con una banda del 10 % alrededor de la cifra
 % impresa, porque cambian de una versión de SWI-Prolog a otra.
 test(suplementarios_sd, [true(D-D1 == 49-159)]) :-

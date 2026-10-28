@@ -1,13 +1,13 @@
 :- encoding(utf8).
 
-% Capítulo 36 - Soluciones de los ejercicios 3 a 8 y 15.
+% Capítulo 36 - Soluciones de los ejercicios 3 a 8 y 13.
 %
 % El archivo repite traducir/2 de gramatica.pl y desplegar/4 y plegar/4 de
 % desplegar.pl, para cargarse solo. Contiene la expansión de tabla/2
 % (ejercicio 3), las dos expansiones corregidas de escribir/1 y anotar/1
 % (ejercicio 4), el traductor con cadenas y pushback (ejercicios 5 y 6), y
 % las derivaciones de ultimo/2 y suma_longitud/3 (ejercicios 7 y 8) y la de
-% rotar_dif/2 (ejercicio 15).
+% rotar_dif/2 (ejercicio 13).
 %
 %?- capital(peru, C).
 %?- traducir((siguiente(C), [C] --> [C]), R).
@@ -245,7 +245,7 @@ longitud([_|Xs], N) :-
     longitud(Xs, N0),
     N is N0 + 1.
 
-% Ejercicio 15
+% Ejercicio 13
 
 % programa_concatenar(P): concatenar_dif/3 como datos.
 programa_concatenar([ (concatenar_dif(L-M, M-F, L-F) :- []) ]).

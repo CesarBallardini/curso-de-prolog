@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 60 - Soluciones de los ejercicios 2, 3 y 11: más metallamadas,
+% Capítulo 60 - Soluciones de los ejercicios 2, 3 y 9: más metallamadas,
 % los predicados sin llamadas y el orden de un programa por capas.
 %
 % solo-local: carga problemas.pl.
@@ -80,7 +80,7 @@ sin_llamadas_hasta_el_fin(Programa, Ps) :-
     raices(Programa, Raices),
     sin_llamadas_hasta_el_fin_de(Clausulas, Raices, Ps).
 
-% Ejercicio 11: el programa por capas.
+% Ejercicio 9: el programa por capas.
 
 %!  capas_de(+Clausulas:list, -Capas:list(list)) is det.
 %

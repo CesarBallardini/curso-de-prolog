@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 62 - Solución del ejercicio 9: puntos de elección que guardan
+% Capítulo 62 - Solución del ejercicio 8: puntos de elección que guardan
 % el almacén.
 %
 % El módulo sin_rastro es una versión de la máquina para ejecutar/5 de

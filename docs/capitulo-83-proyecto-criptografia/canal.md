@@ -1,13 +1,13 @@
 # El canal cifrado
 
-Esta página contiene la sección
-[83.8](index.md#838-version-6-un-secreto-acordado-y-un-canal-cifrado) del
-[capítulo 83](index.md): el acuerdo de un secreto entre dos partes que
-nunca se vieron, la derivación de claves y un canal cifrado y
-autenticado. El ejemplo está en `acuerdo.pl`, en `ejemplos/capitulo-83/`,
-con sus pruebas.
+Esta página continúa la página [RSA y la entrega firmada](firmas.md#837-version-5-la-entrega-firmada)
+del [capítulo 83](index.md), con la sección
+[83.8](#838-version-6-un-secreto-acordado-y-un-canal-cifrado), la última:
+el acuerdo de un secreto entre dos partes que nunca se vieron, la
+derivación de claves y un canal cifrado y autenticado. El ejemplo está en
+`acuerdo.pl`, en `ejemplos/capitulo-83/`, con sus pruebas.
 
-## Canal, versión 6: un secreto acordado y un canal cifrado
+## 83.8 Versión 6: un secreto acordado y un canal cifrado
 
 Las versiones anteriores protegen la integridad y la autenticidad, pero
 todo lo que viaja se lee: la contraseña de `POST /sesion`, la ficha, las
@@ -101,7 +101,7 @@ El grupo `rfc3526_14` es el de 2048 bits del RFC 3526, que define P a
 partir de los dígitos de π. Es un **primo seguro**: (P−1)/2 también es
 primo, lo que deja sin subgrupos pequeños donde el secreto quedaría
 atrapado. Las pruebas lo comprueban con `primo/1` de la
-[versión 4](firmas.md#firmas-version-4-rsa-con-enteros). `compartido/4`
+[versión 4](firmas.md#836-version-4-rsa-con-enteros). `compartido/4`
 rechaza los valores públicos 1 y P−1, cuyas potencias son siempre 1 o
 ±1: un atacante que los inyectara fijaría el secreto.
 
@@ -340,7 +340,7 @@ devolver el texto, y `ecdsa_sign/4` también lo termina. Por eso el
 capítulo no ejecuta esos predicados y escribe su propio canal. La
 biblioteca tampoco tiene Ed25519 ni X25519, las firmas y el acuerdo
 sobre la curva 25519 que usa Triska con Scryer Prolog; el
-[ejercicio 10](index.md#ejercicios) hace el acuerdo sobre la curva
+[ejercicio 10](#ejercicios) hace el acuerdo sobre la curva
 `prime256v1` con `crypto_curve_scalar_mult/4`.
 
 !!! question "Actividad"
@@ -348,3 +348,105 @@ sobre la curva 25519 que usa Triska con Scryer Prolog; el
     sellaran «Pagar 100 pesos a Ana» y «Pagar 500 pesos a Ana»: qué se
     obtiene combinando por o exclusivo los dos cifrados, y qué parte de
     los textos revela. Comprobarlo con `cifrar/4` y un nonce fijo.
+
+!!! success "Criterios de calidad"
+    | Criterio | En este capítulo |
+    |---|---|
+    | C1 | cada predicado declara modos y determinación; `resumen/2` y `resumen_archivo/2` declaran también el modo con el resumen ligado, y `privada/2` y `firmar_texto/3` que fallan sin clave privada |
+    | C2 | `validar/4` falla con cualquier ficha mal formada, en lugar de dar un error; `compartido/4` rechaza los valores públicos que fijarían el secreto |
+    | C3 | `resumen/2`, `mac/3` y `euclides/5` calculan en una variable nueva y unifican después ([Patrón 88](../patrones.md#88-calcular-y-despues-comparar)): `crypto_data_hash/3` da un error con la salida ligada, y la primera versión de `euclides/5` dividía por cero |
+    | C4 | `iguales/2`, `verificar/3` y `comprobar_entrega/4` deciden con si-entonces-sino; `fuerza_bruta/3` usa `once/1` |
+    | C6 | el núcleo de las sesiones, `iniciar_sesion/4` y `ficha_del_pedido/3`, recibe el instante como argumento; solo los manejadores leen el reloj y el pedido HTTP |
+    | C7 | 116 pruebas en siete archivos, y 15 más sobre las soluciones: los resúmenes y el HMAC contra valores de referencia (FIPS 180-2, RFC 4231 y el módulo `hmac` de Python), la primalidad contra la división por tentativa y los números de Carmichael, el primo del grupo 14 como primo seguro, y cada alteración detectada |
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio. Los ejercicios que piden código se resuelven en archivos
+que cargan los del capítulo, sin modificarlos.
+
+10. **(2)** Repetir el acuerdo de la versión 6 sobre la curva elíptica
+    `prime256v1`, con `crypto_name_curve/2`, `crypto_curve_generator/2`
+    y `crypto_curve_scalar_mult/4` en lugar de `powm`, y derivar las
+    claves de sesión de la coordenada x del punto común.
+11. **(3)** Un atacante en medio del canal intercepta los valores públicos
+    de A y de B y los reemplaza por los suyos. Escribir
+    `acordar_con_intermediario/4`, que devuelva las claves de A, de B y
+    las dos del intermediario, y mostrar que el intermediario lee y
+    reenvía un mensaje sellado sin que `abrir/3` lo detecte. Proponer cómo
+    impedirlo con las firmas de la versión 5.
+
+## Resumen
+
+| | |
+|---|---|
+| **resumen criptográfico** | una cadena de longitud fija calculada de los datos, de la que es inviable volver a los datos o encontrar otros con el mismo resumen |
+| **manifiesto** | la lista de los archivos de un directorio con el resumen de cada uno |
+| **sal** | bytes aleatorios combinados con la contraseña, distintos en cada registro |
+| **costo** | la cantidad de iteraciones del resumen de una contraseña, que encarece cada intento |
+| **código de autenticación (HMAC)** | un resumen que depende de los datos y de un secreto |
+| **ficha de sesión** | un texto que el servicio entrega al comprobar la contraseña y comprueba en cada pedido |
+| **comparación en tiempo constante** | la que examina todos los caracteres, para no revelar con la demora dónde está la primera diferencia |
+| **firma digital** | un valor que solo produce el dueño de la clave privada y que cualquiera comprueba con la pública |
+| **relleno** | el formato fijo que recibe el resumen antes de firmarlo o el mensaje antes de cifrarlo |
+| **huella de una clave** | unos pocos dígitos del resumen de la clave pública, para compararla por otro canal |
+| **acuerdo de claves** | el intercambio con el que dos partes llegan al mismo secreto por un canal público |
+| **cifrar y después autenticar** | el código de autenticación se calcula sobre el texto cifrado y se comprueba antes de descifrar |
+| **[Patrón 88](../patrones.md#88-calcular-y-despues-comparar)** | calcular y después comparar |
+| **[Patrón 89](../patrones.md#89-comprobar-antes-de-usar)** | comprobar antes de usar |
+| `crypto_data_hash/3`, `crypto_file_hash/3` | el resumen de un texto y el de un archivo; con `hmac(Clave)`, el HMAC |
+| `crypto_password_hash/2,3` | el registro de una contraseña con PBKDF2 o bcrypt, y su comprobación |
+| `crypto_n_random_bytes/2`, `hex_bytes/2` | bytes aleatorios criptográficos; la conversión entre bytes y hexadecimal |
+| `crypto_generate_prime/3`, `rsa_sign/4`, `rsa_verify/4` | los primos de una clave RSA, la firma y su verificación |
+| `crypto_data_hkdf/4` | la derivación de claves a partir de un secreto |
+| `utf8_codes//1` | con `phrase/2`, los bytes UTF-8 de los códigos de un texto, y al revés |
+| `crypto_name_curve/2`, `crypto_curve_generator/2`, `crypto_curve_order/2`, `crypto_curve_scalar_mult/4` | una curva elíptica por su nombre, su generador, su orden y el producto de un punto por un escalar (solución 10) |
+| `copy_directory/2` | copia un directorio con su contenido; en las pruebas |
+| `powm`, `popcount`, `lsb`, `msb` | la potencia modular y tres funciones de bits, en `is/2` |
+| `resumen/2`, `bits_distintos/3`, `manifiesto/2`, `verificar/3`, `intacto/2` | la versión 1 |
+| `tabla_simple/1`, `atacar_diccionario/2`, `fuerza_bruta/3`, `registrar/3`, `comprobar/2` | la versión 2 |
+| `mac/3`, `emitir/4`, `validar/4`, `iguales/2`, `iniciar_sesion/4`, `ficha_del_pedido/3` | la versión 3 |
+| `generar/2`, `importar/2`, `huella/2`, `firmar_texto/3`, `verificar_texto/3`, `bloque_firmado/3`, `publicar/3`, `comprobar_entrega/4` | la versión 5 |
+
+## Temas que se retoman
+
+| Tema | Se retoma en |
+|---|---|
+| Los registros de un servicio, donde los inicios de sesión rechazados con 401 aparecen como anomalías | [capítulo 85](../capitulo-85-proyecto-analisis-registros/index.md) |
+
+## Referencias
+
+- Markus Triska, *The Power of Prolog*, capítulo «Cryptography with
+  Prolog». [Edición en línea](https://www.metalevel.at/prolog/cryptography).
+  Esta página toma de allí el ejemplo del mensaje cifrado y alterado sin
+  autenticación; la derivación de claves con HKDF y la etiqueta `info/1`,
+  y el acuerdo de claves de Diffie y Hellman seguido de HKDF. Triska
+  trabaja con Scryer Prolog: la `library(crypto)` de SWI-Prolog 9.2.9 no
+  tiene X25519, y la página lo reemplaza por el grupo de 2048 bits del
+  RFC 3526; ChaCha20-Poly1305 está disponible a través de
+  `crypto_data_encrypt/6`, y la subsección
+  [El cifrado de la biblioteca](#el-cifrado-de-la-biblioteca) explica por
+  qué el capítulo no lo ejecuta.
+- Whitfield Diffie y Martin E. Hellman, «New directions in cryptography»,
+  *IEEE Transactions on Information Theory*, volumen 22, número 6, 1976,
+  páginas 644–654. [Edición en línea](https://doi.org/10.1109/TIT.1976.1055638).
+  Esta página toma el acuerdo de claves de la versión 6.
+- RFC 2104, «HMAC: Keyed-Hashing for Message Authentication», 1997
+  ([en línea](https://www.rfc-editor.org/rfc/rfc2104)); RFC 3526, los
+  grupos de Diffie y Hellman de 1536 a 8192 bits, 2003
+  ([en línea](https://www.rfc-editor.org/rfc/rfc3526)); RFC 5869, HKDF,
+  2010 ([en línea](https://www.rfc-editor.org/rfc/rfc5869)). Esta página
+  toma de ellos los algoritmos que implementa la biblioteca y el primo del
+  grupo 14.
+- *SWI-Prolog Reference Manual*, la documentación de `library(crypto)` y
+  la función aritmética `powm`:
+  [manual en línea](https://www.swi-prolog.org/pldoc/doc/_SWI_/library/ext/ssl/crypto.pl).
+
+El código del capítulo es propio, escrito para el curso. De Triska se
+toman las ideas y la interfaz de la biblioteca, pero ningún programa: los
+ejemplos de su capítulo usan predicados de Scryer Prolog que SWI-Prolog
+no tiene, y los de este capítulo (el manifiesto, los ataques, las fichas,
+RSA con enteros, el llavero, la entrega firmada y el canal) no tienen
+equivalente en la fuente.

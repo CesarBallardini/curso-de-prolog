@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 54 - Solución del ejercicio 7: el voseo.
+% Capítulo 54 - Solución del ejercicio 6: el voseo.
 %
 % La persona vos tiene sus terminaciones en el presente (contás, comés,
 % vivís) y usa las de tú en el pretérito (contaste). Como las del presente

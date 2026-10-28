@@ -1,13 +1,13 @@
 # Soluciones del capítulo 49 — Proyecto: circuitos lógicos
 
-Los ejercicios 1 y 13 se resuelven con los archivos del capítulo,
+Los ejercicios 1 y 12 se resuelven con los archivos del capítulo,
 `compuertas.pl` y `retardos.pl`. Las soluciones de los demás están en
 `ejemplos/capitulo-49/`, en tres archivos que cargan otros y se ejecutan
-localmente: `soluciones.pl`, para los ejercicios 2 a 9 y 11, carga los
+localmente: `soluciones.pl`, para los ejercicios 2 a 10, carga los
 módulos del proyecto (`circuitos.pl`, `formulas.pl`, `verificar.pl`,
 `secuenciales.pl` y `estados.pl`) y agrega sus circuitos con cláusulas
-`multifile`; `soluciones_vectores.pl`, para el 12, carga el módulo
-`vectores`; y `soluciones_cmos.pl`, para el 10 y el 14, carga
+`multifile`; `soluciones_vectores.pl`, para el 11, carga el módulo
+`vectores`; y `soluciones_cmos.pl`, para el 13 y el 14, carga
 `transistores.pl`. Cada archivo tiene sus pruebas en el `.plt` del mismo
 nombre.
 
@@ -139,77 +139,6 @@ préstamo 1.
 
 ## Ejercicio 3
 
-<!-- ejemplo: capitulo-49/soluciones.pl fragmento: circuitos:circuito(mux, .. circuitos:componente(mux_nand, n4, nand, [u, v], [z]). -->
-```prolog
-circuitos:circuito(mux, [s, a, b], [z]).
-circuitos:componente(mux, i1, inv, [s], [ns]).
-circuitos:componente(mux, y1, and, [ns, a], [u]).
-circuitos:componente(mux, y2, and, [s, b], [v]).
-circuitos:componente(mux, o1, or, [u, v], [z]).
-
-circuitos:circuito(mux_nand, [s, a, b], [z]).
-circuitos:componente(mux_nand, n1, nand, [s, s], [ns]).
-circuitos:componente(mux_nand, n2, nand, [ns, a], [u]).
-circuitos:componente(mux_nand, n3, nand, [s, b], [v]).
-circuitos:componente(mux_nand, n4, nand, [u, v], [z]).
-```
-
-En `mux_nand`, la compuerta `n1` con sus dos entradas unidas es un
-inversor, y las tres restantes forman una suma de dos productos: la NAND de
-dos NAND es la disyunción de las conjunciones, por De Morgan.
-
-```prolog
-?- tabla_de_verdad(mux, Filas).
-Filas = [[0, 0, 0]-[0], [0, 0, 1]-[0], [0, 1, 0]-[1], [0, 1, 1]-[1], [1, 0, 0]-[0], [1, 0, 1]-[1], [1, 1, 0]-[0], [1, 1, 1]-[1]].
-
-?- formula(mux, z, F), suma_de_productos(F, Ps).
-F = ~s*a+s*b,
-Ps = [[a, ~s], [b, s]] ;
-false.
-
-?- equivalentes(mux, mux_nand).
-true.
-```
-
-Las filas con s = 0 copian a, y las filas con s = 1 copian b. La suma de
-productos es a·¬s + b·s.
-
-## Ejercicio 4
-
-<!-- ejemplo: capitulo-49/soluciones.pl fragmento: circuitos:circuito(inv_nand, .. circuitos:componente(or1, g1, or, [a, b], [z]). -->
-```prolog
-circuitos:circuito(inv_nand, [a], [z]).
-circuitos:componente(inv_nand, n1, nand, [a, a], [z]).
-
-circuitos:circuito(and_nand, [a, b], [z]).
-circuitos:componente(and_nand, n1, nand, [a, b], [t]).
-circuitos:componente(and_nand, n2, nand, [t, t], [z]).
-
-circuitos:circuito(or_nand, [a, b], [z]).
-circuitos:componente(or_nand, n1, nand, [a, a], [na]).
-circuitos:componente(or_nand, n2, nand, [b, b], [nb]).
-circuitos:componente(or_nand, n3, nand, [na, nb], [z]).
-
-circuitos:circuito(inv1, [a], [z]).
-circuitos:componente(inv1, g1, inv, [a], [z]).
-
-circuitos:circuito(and1, [a, b], [z]).
-circuitos:componente(and1, g1, and, [a, b], [z]).
-
-circuitos:circuito(or1, [a, b], [z]).
-circuitos:componente(or1, g1, or, [a, b], [z]).
-```
-
-```prolog
-?- equivalentes(inv_nand, inv1), equivalentes(and_nand, and1), equivalentes(or_nand, or1).
-true.
-```
-
-El inversor es una NAND con las entradas unidas; la AND, una NAND seguida
-de un inversor; la OR, por De Morgan, la NAND de las dos entradas negadas.
-
-## Ejercicio 5
-
 La conducta recibe la ruta de la falla y su valor antes de los cuatro
 argumentos que agrega `simular/4`:
 
@@ -255,7 +184,7 @@ mismo que el que funciona, y una prueba que use solo esas entradas no la
 detecta. El [capítulo 50](../capitulo-50-proyecto-diagnostico-abduccion/index.md) resuelve el problema inverso: dadas las entradas y
 las salidas observadas, qué compuertas pueden estar fallando.
 
-## Ejercicio 6
+## Ejercicio 4
 
 <!-- ejemplo: capitulo-49/soluciones.pl predicado: minterminos/3 literal/3 -->
 ```prolog
@@ -298,9 +227,9 @@ cuatro productos de tres literales, uno por fila, y la de
 `suma_de_productos/2`, tres, porque `[a, b]` reúne las filas 110 y 111. Los
 mintérminos son una forma canónica —dos funciones iguales tienen los mismos—,
 pero su tamaño crece con la tabla de verdad, que es lo que la
-[sección 49.4](index.md#494-verificar-con-libraryclpb) evita.
+[sección 49.4](verificacion.md#494-verificar-con-libraryclpb) evita.
 
-## Ejercicio 7
+## Ejercicio 5
 
 <!-- ejemplo: capitulo-49/soluciones.pl predicado: simplificar_consenso/2 cerrar/2 consenso/3 -->
 ```prolog
@@ -363,117 +292,78 @@ resultado es la suma de los **implicantes primos**, los productos que no se
 pueden acortar; la prueba `consenso_minterminos` verifica que desde los
 cuatro mintérminos se llega al mismo resultado.
 
-## Ejercicio 8
+## Ejercicio 6
 
-El bit menos significativo cambia cuando e = 1, y el más significativo,
-cuando e = 1 y el menos significativo es 1: un semisumador que suma e al
-contador.
-
-<!-- ejemplo: capitulo-49/soluciones.pl fragmento: secuenciales:secuencial(contador2, .. circuitos:componente(contador2_c, x2, xor, [b1, c], [n1]). -->
+<!-- ejemplo: capitulo-49/soluciones.pl fragmento: circuitos:circuito(mux, .. circuitos:componente(mux_nand, n4, nand, [u, v], [z]). -->
 ```prolog
-secuenciales:secuencial(contador2, contador2_c, 2).
+circuitos:circuito(mux, [s, a, b], [z]).
+circuitos:componente(mux, i1, inv, [s], [ns]).
+circuitos:componente(mux, y1, and, [ns, a], [u]).
+circuitos:componente(mux, y2, and, [s, b], [v]).
+circuitos:componente(mux, o1, or, [u, v], [z]).
 
-% Con e = 1 el contador suma 1; con e = 0, n0 = b0 y n1 = b1.
-circuitos:circuito(contador2_c, [e, b0, b1], [b0, b1, n0, n1]).
-circuitos:componente(contador2_c, x1, xor, [b0, e], [n0]).
-circuitos:componente(contador2_c, y1, and, [b0, e], [c]).
-circuitos:componente(contador2_c, x2, xor, [b1, c], [n1]).
+circuitos:circuito(mux_nand, [s, a, b], [z]).
+circuitos:componente(mux_nand, n1, nand, [s, s], [ns]).
+circuitos:componente(mux_nand, n2, nand, [ns, a], [u]).
+circuitos:componente(mux_nand, n3, nand, [s, b], [v]).
+circuitos:componente(mux_nand, n4, nand, [u, v], [z]).
 ```
 
+En `mux_nand`, la compuerta `n1` con sus dos entradas unidas es un
+inversor, y las tres restantes forman una suma de dos productos: la NAND de
+dos NAND es la disyunción de las conjunciones, por De Morgan.
+
 ```prolog
-?- ejecutar(contador2, [0, 0], [[1], [1], [0], [1], [0], [1]], Ss).
-Ss = [[0, 0], [1, 0], [0, 1], [0, 1], [1, 1], [1, 1]] ;
+?- tabla_de_verdad(mux, Filas).
+Filas = [[0, 0, 0]-[0], [0, 0, 1]-[0], [0, 1, 0]-[1], [0, 1, 1]-[1], [1, 0, 0]-[0], [1, 0, 1]-[1], [1, 1, 0]-[0], [1, 1, 1]-[1]].
+
+?- formula(mux, z, F), suma_de_productos(F, Ps).
+F = ~s*a+s*b,
+Ps = [[a, ~s], [b, s]] ;
 false.
 
-?- aggregate_all(count, alcanzable(contador2, [0, 0], _), N).
-N = 4.
-```
-
-Cada salida es el estado antes del pulso: 0, 1, 2, 2, 3, 3. Después del
-tercer y el quinto pulso, con e = 0, el estado no cambia.
-
-## Ejercicio 9
-
-<!-- ejemplo: capitulo-49/soluciones.pl fragmento: secuenciales:secuencial(detector, .. (Z =< X)). -->
-```prolog
-secuenciales:secuencial(detector, detector_c, 2).
-
-% El estado es [q1, q2]: la entrada anterior y la de antes. La salida es 1
-% si x = 1, q1 = 0 y q2 = 1; el estado siguiente es [x, q1].
-circuitos:circuito(detector_c, [x, q1, q2], [z, x, q1]).
-circuitos:componente(detector_c, i1, inv, [q1], [nq1]).
-circuitos:componente(detector_c, y1, and, [x, nq1], [t]).
-circuitos:componente(detector_c, y2, and, [t, q2], [z]).
-
-%!  detector_correcto is semidet.
-%
-%   En todo arco alcanzable del detector, la salida es 1 solo si la
-%   entrada es 1.
-detector_correcto :-
-    siempre(detector, [0, 0], [_, [X], [Z], _]>>(Z =< X)).
-```
-
-```prolog
-?- ejecutar(detector, [0, 0], [[1], [0], [1], [0], [1], [1], [0], [1]], Ss).
-Ss = [[0], [0], [1], [0], [1], [0], [0], [1]] ;
-false.
-
-?- detector_correcto.
+?- equivalentes(mux, mux_nand).
 true.
 ```
 
-La salida es 1 en los pulsos 3, 5 y 8, donde terminan las apariciones de
-1 0 1; la del pulso 5 comparte su primer 1 con la del pulso 3. La propiedad
-se verifica en los ocho arcos del grafo, cuatro estados por dos entradas,
-sin elegir una sucesión.
+Las filas con s = 0 copian a, y las filas con s = 1 copian b. La suma de
+productos es a·¬s + b·s.
 
-## Ejercicio 10
+## Ejercicio 7
 
-Las dos ramas de la NAND se escriben como en el inversor de la
-[sección 49.9](index.md#499-compuertas-hechas-con-transistores): los dos
-transistores p en paralelo comparten la fuente, en 1, y el drenador, la
-salida; los dos n en serie están unidos por un cable interno, W, que no
-aparece en la cabeza.
-
-<!-- ejemplo: capitulo-49/soluciones_cmos.pl predicado: nand_cmos/3 -->
+<!-- ejemplo: capitulo-49/soluciones.pl fragmento: circuitos:circuito(inv_nand, .. circuitos:componente(or1, g1, or, [a, b], [z]). -->
 ```prolog
-%!  nand_cmos(?A, ?B, ?Z) is nondet.
-%
-%   Z es la salida de la compuerta NAND CMOS con entradas A y B: dos
-%   transistores p en paralelo entre el 1 y la salida, y dos n en serie
-%   entre la salida y el 0, unidos por el cable interno W.
-nand_cmos(A, B, Z) :-
-    ptran(1, A, Z),
-    ptran(1, B, Z),
-    ntran(Z, A, W),
-    ntran(W, B, 0).
+circuitos:circuito(inv_nand, [a], [z]).
+circuitos:componente(inv_nand, n1, nand, [a, a], [z]).
+
+circuitos:circuito(and_nand, [a, b], [z]).
+circuitos:componente(and_nand, n1, nand, [a, b], [t]).
+circuitos:componente(and_nand, n2, nand, [t, t], [z]).
+
+circuitos:circuito(or_nand, [a, b], [z]).
+circuitos:componente(or_nand, n1, nand, [a, a], [na]).
+circuitos:componente(or_nand, n2, nand, [b, b], [nb]).
+circuitos:componente(or_nand, n3, nand, [na, nb], [z]).
+
+circuitos:circuito(inv1, [a], [z]).
+circuitos:componente(inv1, g1, inv, [a], [z]).
+
+circuitos:circuito(and1, [a, b], [z]).
+circuitos:componente(and1, g1, and, [a, b], [z]).
+
+circuitos:circuito(or1, [a, b], [z]).
+circuitos:componente(or1, g1, or, [a, b], [z]).
 ```
 
 ```prolog
-?- nand_cmos(A, B, Z).
-A = B, B = 0,
-Z = 1 ;
-A = 0,
-B = Z, Z = 1 ;
-A = Z, Z = 1,
-B = 0 ;
-A = B, B = 1,
-Z = 0.
-
-?- nand_cmos(A, B, 0).
-A = B, B = 1 ;
-false.
+?- equivalentes(inv_nand, inv1), equivalentes(and_nand, and1), equivalentes(or_nand, or1).
+true.
 ```
 
-Las cuatro respuestas son la tabla de `nand/3`, y la prueba `nand` de
-`soluciones_cmos.plt` verifica que cada combinación de entradas tiene una
-sola salida. La segunda consulta usa la salida como dato y obtiene las
-entradas: el modelo describe estados estables, una relación entre los
-valores de los cables, y no distingue qué cable impone su valor a cuál.
-Spivey observa que por eso el modelo es más permisivo que el hardware, donde
-un transistor no puede llevar su compuerta a un valor desde el drenador.
+El inversor es una NAND con las entradas unidas; la AND, una NAND seguida
+de un inversor; la OR, por De Morgan, la NAND de las dos entradas negadas.
 
-## Ejercicio 11
+## Ejercicio 8
 
 <!-- ejemplo: capitulo-49/soluciones.pl fragmento: % gi = ai .. circuitos:componente(sumador3_anticipado, oc3, or, [t5, t4], [c]). -->
 ```prolog
@@ -536,7 +426,71 @@ sumador de n bits la diferencia crece con n, porque la cadena de acarreos
 crece y la fórmula anticipada no la recorre. La equivalencia se demuestra
 sin recorrer las 64 combinaciones.
 
-## Ejercicio 12
+## Ejercicio 9
+
+El bit menos significativo cambia cuando e = 1, y el más significativo,
+cuando e = 1 y el menos significativo es 1: un semisumador que suma e al
+contador.
+
+<!-- ejemplo: capitulo-49/soluciones.pl fragmento: secuenciales:secuencial(contador2, .. circuitos:componente(contador2_c, x2, xor, [b1, c], [n1]). -->
+```prolog
+secuenciales:secuencial(contador2, contador2_c, 2).
+
+% Con e = 1 el contador suma 1; con e = 0, n0 = b0 y n1 = b1.
+circuitos:circuito(contador2_c, [e, b0, b1], [b0, b1, n0, n1]).
+circuitos:componente(contador2_c, x1, xor, [b0, e], [n0]).
+circuitos:componente(contador2_c, y1, and, [b0, e], [c]).
+circuitos:componente(contador2_c, x2, xor, [b1, c], [n1]).
+```
+
+```prolog
+?- ejecutar(contador2, [0, 0], [[1], [1], [0], [1], [0], [1]], Ss).
+Ss = [[0, 0], [1, 0], [0, 1], [0, 1], [1, 1], [1, 1]] ;
+false.
+
+?- aggregate_all(count, alcanzable(contador2, [0, 0], _), N).
+N = 4.
+```
+
+Cada salida es el estado antes del pulso: 0, 1, 2, 2, 3, 3. Después del
+tercer y el quinto pulso, con e = 0, el estado no cambia.
+
+## Ejercicio 10
+
+<!-- ejemplo: capitulo-49/soluciones.pl fragmento: secuenciales:secuencial(detector, .. (Z =< X)). -->
+```prolog
+secuenciales:secuencial(detector, detector_c, 2).
+
+% El estado es [q1, q2]: la entrada anterior y la de antes. La salida es 1
+% si x = 1, q1 = 0 y q2 = 1; el estado siguiente es [x, q1].
+circuitos:circuito(detector_c, [x, q1, q2], [z, x, q1]).
+circuitos:componente(detector_c, i1, inv, [q1], [nq1]).
+circuitos:componente(detector_c, y1, and, [x, nq1], [t]).
+circuitos:componente(detector_c, y2, and, [t, q2], [z]).
+
+%!  detector_correcto is semidet.
+%
+%   En todo arco alcanzable del detector, la salida es 1 solo si la
+%   entrada es 1.
+detector_correcto :-
+    siempre(detector, [0, 0], [_, [X], [Z], _]>>(Z =< X)).
+```
+
+```prolog
+?- ejecutar(detector, [0, 0], [[1], [0], [1], [0], [1], [1], [0], [1]], Ss).
+Ss = [[0], [0], [1], [0], [1], [0], [0], [1]] ;
+false.
+
+?- detector_correcto.
+true.
+```
+
+La salida es 1 en los pulsos 3, 5 y 8, donde terminan las apariciones de
+1 0 1; la del pulso 5 comparte su primer 1 con la del pulso 3. La propiedad
+se verifica en los ocho arcos del grafo, cuatro estados por dos entradas,
+sin elegir una sucesión.
+
+## Ejercicio 11
 
 La cobertura prueba los subconjuntos de los implicantes primos por tamaño
 creciente, de modo que el primero que cubre todas las filas es uno de los
@@ -590,10 +544,10 @@ la segunda b · c, y el resultado es b · c + a · ¬b. La búsqueda prueba hast
 primero los **esenciales**, los que son los únicos que cubren alguna fila,
 y reduce así la búsqueda, que en general es un problema difícil.
 
-## Ejercicio 13
+## Ejercicio 12
 
 `retardar/3`, de la página
-[Retardos en cascada](secuenciales.md#retardos-en-cascada), recorre los
+[Retardos en cascada](vectores.md#498-retardos-en-cascada), recorre los
 pulsos con `retardo/4`:
 
 <!-- ejemplo: capitulo-49/retardos.pl predicado: retardar/3 -->
@@ -624,6 +578,52 @@ mismas salidas. `desplazamiento(N)` alcanza los 2ᴺ estados: con una sola
 entrada, en N pulsos se puede escribir en el registro cualquier sucesión de
 N bits, y el registro no tiene otros estados. Lo verifica la prueba
 `alcanzables` de `retardos.plt` para N = 3.
+
+## Ejercicio 13
+
+Las dos ramas de la NAND se escriben como en el inversor de la
+[sección 49.9](transistores.md#499-compuertas-hechas-con-transistores): los dos
+transistores p en paralelo comparten la fuente, en 1, y el drenador, la
+salida; los dos n en serie están unidos por un cable interno, W, que no
+aparece en la cabeza.
+
+<!-- ejemplo: capitulo-49/soluciones_cmos.pl predicado: nand_cmos/3 -->
+```prolog
+%!  nand_cmos(?A, ?B, ?Z) is nondet.
+%
+%   Z es la salida de la compuerta NAND CMOS con entradas A y B: dos
+%   transistores p en paralelo entre el 1 y la salida, y dos n en serie
+%   entre la salida y el 0, unidos por el cable interno W.
+nand_cmos(A, B, Z) :-
+    ptran(1, A, Z),
+    ptran(1, B, Z),
+    ntran(Z, A, W),
+    ntran(W, B, 0).
+```
+
+```prolog
+?- nand_cmos(A, B, Z).
+A = B, B = 0,
+Z = 1 ;
+A = 0,
+B = Z, Z = 1 ;
+A = Z, Z = 1,
+B = 0 ;
+A = B, B = 1,
+Z = 0.
+
+?- nand_cmos(A, B, 0).
+A = B, B = 1 ;
+false.
+```
+
+Las cuatro respuestas son la tabla de `nand/3`, y la prueba `nand` de
+`soluciones_cmos.plt` verifica que cada combinación de entradas tiene una
+sola salida. La segunda consulta usa la salida como dato y obtiene las
+entradas: el modelo describe estados estables, una relación entre los
+valores de los cables, y no distingue qué cable impone su valor a cuál.
+Spivey observa que por eso el modelo es más permisivo que el hardware, donde
+un transistor no puede llevar su compuerta a un valor desde el drenador.
 
 ## Ejercicio 14
 

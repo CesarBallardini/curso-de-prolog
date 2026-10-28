@@ -47,7 +47,7 @@ test(cuantas, [true(K-N-Total == 12-3135-27352)]) :-
     max_member(N, Ns),
     memberchk(K-N, Pares).
 
-% Ejercicio 9: sin no torre_expuesta, ningún árbol pierde la torre.
+% Ejercicio 11: sin no torre_expuesta, ningún árbol pierde la torre.
 test(sin_cuidado_no_pierde, [true(N == 0)]) :-
     posiciones(blancas, Ps),
     aggregate_all(count,
@@ -57,7 +57,7 @@ test(sin_cuidado_no_pierde, [true(N == 0)]) :-
                     memberchk(_-falla(torre_perdida), S) ),
                   N).
 
-% Ejercicio 11: la otra corrección también asegura las posiciones del
+% Ejercicio 12: la otra corrección también asegura las posiciones del
 % ahogado.
 test(meta_mejor, [forall(member(P, [pos(blancas, 1-3, 2-2, 1-1),
                                     pos(blancas, 7-5, 7-1, 7-8)])),

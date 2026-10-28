@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 69 - Solución del ejercicio 9: is/2 como predefinido.
+% Capítulo 69 - Solución del ejercicio 10: is/2 como predefinido.
 %
 % Copias de explicar/4 y ebg/5 con is/2 entre los predefinidos, y una
 % teoría pesado con su ejemplo. Las copias usan la teoría de este archivo

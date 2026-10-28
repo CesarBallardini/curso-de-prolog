@@ -1,17 +1,21 @@
 # Autómatas de pila y máquinas de Turing
 
-Esta página contiene la
-[sección 52.8](index.md#528-automatas-de-pila-y-maquinas-de-turing) del
-[capítulo 52](index.md): un intérprete de autómatas de pila y uno de
-máquinas de Turing, los dos modelos que siguen al autómata finito en la
-jerarquía de los lenguajes. Los ejemplos están en `maquinas.pl`, en
+Esta página continúa la página [Transductores](transductores.md#527-transductores)
+del [capítulo 52](index.md), con la
+[sección 52.8](#528-automatas-de-pila-y-maquinas-de-turing): un intérprete de
+autómatas de pila y uno de máquinas de Turing, los dos modelos que siguen al
+autómata finito en la jerarquía de los lenguajes; después, la aceptación por
+pila vacía, las máquinas de varias cintas, y los algoritmos de Markov y los
+sistemas de Post, que computan reescribiendo la palabra. Los ejemplos están en `maquinas.pl`, en
 `ejemplos/capitulo-52/`, con sus pruebas; el archivo no es un módulo, no
 depende de los anteriores, y corre en SWISH. Los intérpretes siguen los de
 Hein (*Prolog Experiments*, capítulo «Computability», apartados
 «Pushdown Automata» y «Turing Machines»), con otra representación y otros
 ejemplos.
 
-## Autómatas de pila
+## 52.8 Autómatas de pila y máquinas de Turing
+
+### Autómatas de pila
 
 Un autómata finito tiene una memoria acotada: sus estados. Para reconocer
 las sucesiones de paréntesis bien anidadas hay que recordar cuántos quedan
@@ -118,7 +122,7 @@ reconoce los paréntesis anidados con la pila de llamadas.
     `acepta_pila(palindromo, [a, b, a, b])`. Comprobarlo con
     `aggregate_all(count, …, N)` y explicar el primer número.
 
-## Aceptación por pila vacía
+### Aceptación por pila vacía
 
 Un autómata de pila tiene una segunda manera de aceptar: por **pila
 vacía**. Acepta W si, leída toda la palabra, la pila quedó vacía, en el
@@ -212,7 +216,7 @@ las pruebas lo verifican con todas las palabras de longitud 4 de
 nuevo debajo del de M y un estado final al que se pasa al verlo aparecer:
 la pila de M quedó vacía.
 
-## Máquinas de Turing
+### Máquinas de Turing
 
 Un autómata de pila reconoce aⁿbⁿ, pero no aⁿbⁿcⁿ: la pila compara la
 cantidad de a con la de b y, al hacerlo, la pierde. Una **máquina de
@@ -351,7 +355,7 @@ y las máquinas de Turing, todo lo que se puede reconocer con un
 procedimiento efectivo; aⁿbⁿ separa los dos primeros niveles, y aⁿbⁿcⁿ, los
 dos siguientes.
 
-## Máquinas de varias cintas
+### Máquinas de varias cintas
 
 Una máquina de Turing de **varias cintas** tiene un cabezal en cada una.
 Una transición lee un símbolo en cada cinta, escribe uno en cada una y
@@ -436,8 +440,8 @@ Con n símbolos, la máquina hace 3n + 3 pasos: n para copiar, n para volver
 y n para comparar, más los de los extremos. Una máquina de una sola cinta
 que reconoce el mismo lenguaje tiene que ir y volver de un extremo al otro
 por cada par de símbolos que compara; el
-[ejercicio 11](index.md#ejercicios) la escribe, y el
-[ejercicio 15](index.md#ejercicios) compara las dos. Las cintas adicionales
+[ejercicio 13](#ejercicios) la escribe, y el
+[ejercicio 15](#ejercicios) compara las dos. Las cintas adicionales
 cambian la cantidad de pasos, pero no lo que se puede reconocer: una
 máquina de una cinta simula k cintas escribiendo en cada celda una tupla de
 k símbolos con la marca de dónde está cada cabezal, y cada paso de la
@@ -447,7 +451,7 @@ temporal sobre máquinas de varias cintas, probaron con esa simulación que
 lo que k cintas hacen en T(n) pasos, una sola lo hace en a lo sumo T(n)²:
 el costo de quitar cintas es, como mucho, elevar al cuadrado el tiempo.
 
-## Algoritmos de Markov y sistemas de Post
+### Algoritmos de Markov y sistemas de Post
 
 Los dos últimos modelos del capítulo «Computability» de Hein no tienen
 estados ni cabezal: transforman una palabra reescribiéndola, y tienen el
@@ -608,3 +612,114 @@ Izquierda con una palabra es lo que hace la unificación con una lista
 parcial: la diferencia es que una variable de Post representa un segmento
 de longitud cualquiera, y una variable de Prolog en una lista, un solo
 elemento.
+
+!!! success "Criterios de calidad"
+    | Criterio | En este capítulo |
+    |---|---|
+    | C1 | cada predicado declara modos y determinación; `acepta/2` es `semidet` porque recorre conjuntos de estados, y `reconoce/2` es `nondet`, una respuesta por camino |
+    | C2 | las construcciones son nombres de autómata, `det(M)`, `min(M)`, `er(Texto)`, con reglas para las mismas cinco relaciones: se componen sin límite y nada se genera ni se copia; la clausura, los estados alcanzables y la relación de distinguibles son relaciones puras, tabuladas |
+    | C3 | `transducir/3` se consulta en los dos sentidos, y las pruebas lo verifican con `gray`, `plural` y el sumador serie |
+    | C5 | los estados de Thompson se nombran por posición y no por subexpresión, y la representación de las expresiones es limpia: cada clase de nodo tiene su functor |
+    | C7 | 248 pruebas en catorce archivos; las respuestas de las tablas se comparan ordenadas; cada construcción se compara con otra por equivalencia (el determinista con el original, el mínimo con el determinista, la expresión con el autómata escrito a mano, la expresión obtenida de un autómata con el autómata, `vacia(M)` con M), el analizador léxico con el del [capítulo 46](../capitulo-46-proyecto-compilador/index.md), y los circuitos con `ejecutar/4` del [capítulo 49](../capitulo-49-proyecto-circuitos-logicos/index.md) |
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio, y el [capítulo 54](../capitulo-54-proyecto-morfologia-castellano/index.md)
+los da por hechos.
+
+12. **(2)** Escribir para `maquinas.pl` un autómata de pila `iguales` que
+    acepte las palabras sobre {a, b} con tantas a como b, en cualquier
+    orden, y verificar para todas las palabras de longitud hasta 8 que lo
+    que acepta coincide con la cuenta de letras.
+13. **(3)** Escribir para `maquinas.pl` una máquina de Turing determinista,
+    con estados sin parámetros y δ como hechos, que acepte los palíndromos
+    sobre {a, b}, de cualquier longitud: borra el primer símbolo, recorre
+    hasta el último, lo compara y lo borra, y vuelve. Verificarla contra
+    `reverse/2` para todas las palabras de longitud hasta 6, y comparar la
+    cantidad de pasos con la longitud de la palabra.
+14. **(2)** Escribir, en un archivo que cargue `cintas.pl`, la
+    construcción inversa de `vacia/1`: `final_de(M)` acepta por estado
+    final lo que M acepta por pila vacía. Verificar que `final_de(anbn)` y
+    `anbn` aceptan las mismas palabras de longitud hasta 6, y que
+    `vacia(final_de(anbn))` acepta otra vez las de `anbn`.
+15. **(2)** Con la máquina del ejercicio 13 y `palindromo_2c`, tabular los
+    pasos con los que cada una acepta la palabra de n letras a, para n
+    igual a 2, 4, 8 y 16. Explicar el crecimiento de cada columna con el
+    recorrido que hace cada máquina sobre sus cintas.
+16. ★ **(2)** Escribir un algoritmo de Markov `unario`, de tres reglas,
+    que convierta un número binario escrito con 0 y 1, el bit más
+    significativo primero, en tantas `i` como su valor: [1, 0, 1] en
+    [i, i, i, i, i]. Verificarlo con todos los números de hasta 5 bits.
+    Una pista: una i que pasa hacia la derecha por un 0 vale el doble.
+
+## Resumen
+
+| | |
+|---|---|
+| **autómata como hechos** | `alfabeto/2`, `inicial/2`, `final/2`, `delta/4` y `epsilon/3`, con el nombre del autómata como primer argumento |
+| **no determinismo** | una palabra se acepta si algún camino llega a un estado final; Prolog prueba los caminos con retroceso |
+| **clausura ε** | los estados a los que se llega con cero o más transiciones ε; con ciclos, termina si está tabulada |
+| **construcción de subconjuntos** | `det(M)`: los estados son conjuntos cerrados por ε, alcanzables desde el inicial; el conjunto vacío es el sumidero |
+| **construcción como nombre** | `det(M)`, `complemento(M)`, `interseccion(M1, M2)`, `min(M)`, `er(Texto)`: reglas para las mismas relaciones, que se componen |
+| **decisión** | vacío, inclusión y equivalencia de lenguajes regulares, sobre los estados alcanzables del producto; el contraejemplo más corto |
+| **minimización** | fundir los estados indistinguibles; la relación de distinguibles es recursiva, tabulada, y se calcula hacia atrás |
+| **construcción de Thompson** | un fragmento con un inicial y un final por subexpresión; los estados se nombran por posición |
+| **coincidencia más larga** | el analizador léxico toma el prefijo más largo, y ante un empate, la primera regla |
+| **transductor** | un autómata sobre pares `Entrada:Salida`; `transducir/3` en los dos sentidos |
+| **máquina de Mealy** | un transductor que lee un símbolo y escribe uno; un circuito secuencial es una |
+| **de autómata a expresión** | R(I, J, K), las palabras de I a J sin pasar por estados de número K o mayor, tabulada; la expresión obtenida es correcta, no la más corta |
+| **máquina de Moore** | la salida está en los estados; `mealy(M)` es la máquina de Mealy que escribe lo mismo |
+| **aceptación por pila vacía** | equivalente a la aceptación por estado final; `vacia(M)` convierte una en la otra |
+| **varias cintas** | un cabezal por cinta; reconocen lo mismo que una sola, y una cinta las simula con a lo sumo el cuadrado de los pasos |
+| **reescritura de palabras** | algoritmos de Markov, con reglas ordenadas aplicadas a la primera aparición, y sistemas de Post, con producciones que tienen variables |
+| `acepta/2`, `reconoce/2`, `palabras/3`, `clausura/3`, `mover/4`, `alcanzable/2`, `estados/2`, `tabla/2` | el módulo `automatas` |
+| `vacio/1`, `incluido/2`, `equivalentes/2`, `contraejemplo/3`, `distinguible/3`, `distinguibles/4` | las decisiones y la minimización |
+| `expresion/2`, `componentes/2`, `prefijo_mas_largo/3` | las expresiones regulares y el analizador léxico |
+| `expresion_de/2`, `expresion_texto/2` | de un autómata a una expresión regular |
+| `transducir/3`, `inversa/1`, `compuesta/2`, `identidad/1`, `moore/3` | los transductores y las máquinas de Moore |
+| `acepta_pila/2`, `acepta_vacia/2`, `turing/4`, `turing_cintas/4` | los autómatas de pila y las máquinas de Turing |
+| `markov/4`, `post/4` | los algoritmos de Markov y los sistemas de Post |
+| `number_chars/2` | convierte entre un número y la lista de sus caracteres: el valor de un lexema |
+
+## Temas que se retoman
+
+| Tema | Se retoma en |
+|---|---|
+| Las máquinas de Turing en la notación de Turing (1936): estados con parámetros y funciones de configuración, ejecutadas por reescritura perezosa de términos | [capítulo 53](../capitulo-53-proyecto-interprete-perezoso-reescritura-terminos/index.md) |
+| Transductores de pares de letras y morfología de dos niveles, con el módulo `transductores` | [capítulo 54](../capitulo-54-proyecto-morfologia-castellano/index.md) |
+
+## Referencias
+
+- James L. Hein, *Prolog Experiments in Discrete Mathematics, Logic, and
+  Computability*, Jones and Bartlett, 2009 ([edición en línea](https://samples.jbpub.com/9780763772062/PrologLabBook09.pdf)) — «Computability»
+  (autómatas de pila, máquinas de Turing, algoritmos de Markov y de Post).
+  Esta página toma de allí la forma de los intérpretes de cada modelo, con
+  la cinta de la máquina de Turing como dos listas alrededor del cabezal, el
+  algoritmo de Markov que intercambia las a y las b, y dos experimentos que
+  el libro propone y no resuelve (la aceptación por pila vacía, con el
+  autómata de aⁿbⁿ, y el intérprete de varias cintas).
+- Juris Hartmanis y Richard E. Stearns, «On the computational complexity
+  of algorithms», *Transactions of the American Mathematical Society* 117,
+  1965, págs. 285–306.
+  [Edición de la AMS](https://www.ams.org/journals/tran/1965-117-00/S0002-9947-1965-0170805-7/).
+  Define la complejidad temporal sobre máquinas de Turing de varias cintas
+  y prueba que una de una sola cinta las simula con a lo sumo el cuadrado
+  de los pasos: la relación que
+  [Máquinas de varias cintas](#maquinas-de-varias-cintas)
+  enuncia y el ejercicio 15 mide.
+- Andréi A. Markov, *Teoría de los algoritmos* (en ruso), *Trudy del
+  Instituto Matemático Steklov* 42, 1954; traducción inglesa, *Theory of
+  Algorithms*, Israel Program for Scientific Translations, 1961. Define los
+  algoritmos normales, los de
+  [Algoritmos de Markov y sistemas de Post](#algoritmos-de-markov-y-sistemas-de-post).
+- Emil L. Post, «Formal reductions of the general combinatorial decision
+  problem», *American Journal of Mathematics* 65 (2), 1943, págs. 197–215.
+  Define los sistemas canónicos, de los que vienen las producciones con
+  variables de la misma página.
+
+El código del capítulo es propio del curso: los programas de los libros
+se reescribieron con la representación de este capítulo, y ninguno se
+copió.

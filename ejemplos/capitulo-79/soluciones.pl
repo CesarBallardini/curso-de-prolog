@@ -3,7 +3,7 @@
 % Capítulo 79 - Soluciones de los ejercicios.
 %
 % Carga nim.pl, candidatos.pl (que carga mastermind.pl) y kalah.pl sin
-% modificarlos. Los juegos nuevos de los ejercicios 3 y 10 agregan sus
+% modificarlos. Los juegos nuevos de los ejercicios 3 y 11 agregan sus
 % cláusulas al módulo capitulo42, como nim.pl y kalah.pl.
 %
 % solo-local: carga otros archivos.
@@ -103,7 +103,20 @@ valor_suma(Pilas, J, Valor) :-
     ;   Valor = -50
     ).
 
-% --- Ejercicio 5: la partición de un intento ---------------------------------
+% --- Ejercicio 5: el texto de una jugada de Nim ------------------------------
+
+%!  jugada_nim_texto(+Jugada, -Texto:string) is det.
+%
+%   Texto describe la jugada sacar(K, M) de la computadora.
+jugada_nim_texto(sacar(K, M), Texto) :-
+    (   M =:= 1
+    ->  format(string(Texto), "La computadora saca 1 ficha de la pila ~d.",
+               [K])
+    ;   format(string(Texto),
+               "La computadora saca ~d fichas de la pila ~d.", [M, K])
+    ).
+
+% --- Ejercicio 6: la partición de un intento ---------------------------------
 
 %!  particion(+Intento:list, +Codigos:list, -Clases:list) is det.
 %
@@ -123,7 +136,7 @@ particion(Intento, Clases) :-
     candidatos(Codigos),
     particion(Intento, Codigos, Clases).
 
-% --- Ejercicio 6: el intento que deja menos códigos en el peor caso ----------
+% --- Ejercicio 7: el intento que deja menos códigos en el peor caso ----------
 
 %!  adivinar_minimax(+Secreto:list, -Intentos:list) is det.
 %
@@ -163,7 +176,7 @@ peor_clase(Codigos, Intento, Mayor) :-
     pairs_values(Clases, Ks),
     max_list(Ks, Mayor).
 
-% --- Ejercicio 7: el Mastermind comercial ------------------------------------
+% --- Ejercicio 8: el Mastermind comercial ------------------------------------
 
 %!  codigo_colores(-Codigo:list(integer)) is multi.
 %
@@ -230,7 +243,7 @@ medir_colores(Cuantos, Media) :-
     findall(C, codigo_colores(C), Secretos),
     medir(adivinar_colores, Secretos, Cuantos, Media).
 
-% --- Ejercicio 8: la primera contradicción -----------------------------------
+% --- Ejercicio 9: la primera contradicción -----------------------------------
 
 %!  primera_contradiccion(+Respuestas:list, -K:integer) is semidet.
 %
@@ -253,7 +266,7 @@ contradiccion([r(Intento, T, V)|Respuestas], I, Codigos0, K) :-
         contradiccion(Respuestas, I1, Codigos, K)
     ).
 
-% --- Ejercicio 10: Kalah con las piedras de cada lado ------------------------
+% --- Ejercicio 11: Kalah con las piedras de cada lado ------------------------
 
 % kalah_piedras(N) es kalah(N) con otra evaluación: la diferencia de
 % kalahs más la mitad de la diferencia de las piedras en los hoyos.
@@ -348,16 +361,3 @@ puntaje(empate, GS, GN, G, 0.5) :-
 %   Par es G-Total, con Total la suma de los puntos del Grupo G-Ps.
 sumar_grupo(G-Ps, G-Total) :-
     sum_list(Ps, Total).
-
-% --- Ejercicio 11: el texto de una jugada de Nim -----------------------------
-
-%!  jugada_nim_texto(+Jugada, -Texto:string) is det.
-%
-%   Texto describe la jugada sacar(K, M) de la computadora.
-jugada_nim_texto(sacar(K, M), Texto) :-
-    (   M =:= 1
-    ->  format(string(Texto), "La computadora saca 1 ficha de la pila ~d.",
-               [K])
-    ;   format(string(Texto),
-               "La computadora saca ~d fichas de la pila ~d.", [M, K])
-    ).

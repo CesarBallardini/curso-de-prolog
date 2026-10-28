@@ -3,9 +3,9 @@
 % Capítulo 41 - Soluciones de los ejercicios 3, 4, 5, 7 y 8.
 %
 % El archivo repite el bucle con visitados de visitados.pl, con una
-% estrategia más, anchura_lista (ejercicio 5), y el problema de las jarras,
+% estrategia más, anchura_lista (ejercicio 7), y el problema de las jarras,
 % para cargarse solo. Los problemas nuevos son rio (ejercicio 3) y
-% misioneros (ejercicio 4). recorrido_caballo/2 (ejercicio 7) usa la lista
+% misioneros (ejercicio 4). recorrido_caballo/2 (ejercicio 5) usa la lista
 % de las casillas que quedan, y mas_cortos/2 (ejercicio 8) la idea de
 % iterativo/2.
 %
@@ -126,7 +126,7 @@ a_salvo(M, C) :-
 %
 %   Plan lleva del estado inicial de Problema a un estado meta con costo
 %   Costo; Expandidos es la cantidad de nodos que la búsqueda expandió.
-%   Estrategia es profundidad, anchura, anchura_lista (ejercicio 5: la
+%   Estrategia es profundidad, anchura, anchura_lista (ejercicio 7: la
 %   cola como lista cerrada) o mejor(costo). Falla si la frontera se vacía
 %   sin llegar a una meta.
 buscar(Estrategia, Problema, Plan, Costo, Expandidos) :-
@@ -264,7 +264,7 @@ desencolar(X, cola(N, [X|Frente], Fondo), cola(N1, Frente, Fondo)) :-
     N1 is N - 1.
 
 
-% --- Ejercicio 7: el recorrido del caballo ------------------------------------
+% --- Ejercicio 5: el recorrido del caballo ------------------------------------
 
 %!  recorrido_caballo(+N:integer, -Recorrido:list) is nondet.
 %

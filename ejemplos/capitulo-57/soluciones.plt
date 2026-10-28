@@ -122,7 +122,7 @@ test(argumentos_real, [ setup(muestra(D)),
 test(argumentos_simulados, T == "Se ejecutaría hola.pl con los argumentos a b.") :-
     oracion(simulada(ejecutar_con("hola.pl", ["a", "b"])), T).
 
-% Ejercicio 7: en qué etapa se detiene cada orden.
+% Ejercicio 9: en qué etapa se detiene cada orden.
 test(seguridad, Rs == [ plan([rechazo(ya_existe("notas.txt"))]),
                         plan([rechazo(fuera_de_la_carpeta("informes/../."))]),
                         plan([rechazo(fuera_de_la_carpeta("/etc/passwd"))]),

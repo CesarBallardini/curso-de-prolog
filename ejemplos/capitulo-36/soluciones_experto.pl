@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 36 - Soluciones de los ejercicios 13 y 14: experto.pl con la
+% Capítulo 36 - Soluciones de los ejercicios 14 y 15: experto.pl con la
 % regla r13, y la compilación de las reglas escrita sin el evaluador
 % parcial.
 %
@@ -101,7 +101,7 @@ term_expansion(regla(R, si Condiciones entonces Meta),
 
 :- discontiguous regla/2, concluir/4.
 
-% Ejercicio 13: las reglas y las hipótesis se pueden agregar al ejecutar.
+% Ejercicio 14: las reglas y las hipótesis se pueden agregar al ejecutar.
 :- dynamic regla/2, hipotesis/1.
 
 %!  concluir(?Meta, +Fuente, +Pila:list, -Arbol) is nondet.
@@ -170,7 +170,7 @@ identificar_casos(Identificar, Veces) :-
              call(Identificar, Observaciones, _) ),
            true).
 
-% Ejercicio 14
+% Ejercicio 15
 
 %!  compilar_regla(+Regla, -Clausula) is det.
 %

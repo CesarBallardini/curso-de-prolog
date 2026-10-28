@@ -1,17 +1,19 @@
 # Explicar un ejemplo y generalizar la explicación
 
-Esta página contiene las secciones
-[69.5](index.md#695-version-5-explicar-un-ejemplo) y
-[69.6](index.md#696-version-6-generalizar-la-explicacion) del
-[capítulo 69](index.md): la teoría del dominio, la explicación de un
-ejemplo con un metaintérprete con árbol de prueba, y la generalización de
-esa explicación en una regla. Los ejemplos están en `teorias.pl`,
-`explicacion.pl` y `ebg.pl`, en `ejemplos/capitulo-69/`, con sus pruebas;
-cargan archivos de otros capítulos y se ejecutan localmente.
+Esta página continúa el [capítulo 69](index.md) después de la
+[sección 69.4](index.md#694-version-4-preguntar-antes-de-converger), con
+las secciones [69.5](#695-version-5-explicar-un-ejemplo) y
+[69.6](#696-version-6-generalizar-la-explicacion): la teoría del dominio,
+la explicación de un solo ejemplo con un metaintérprete con árbol de
+prueba, y la generalización de esa explicación en una regla. Los ejemplos
+están en `teorias.pl`, `explicacion.pl` y `ebg.pl`, en
+`ejemplos/capitulo-69/`, con sus pruebas; cargan archivos de otros
+capítulos y se ejecutan localmente.
 
-## Versión 5: explicar un ejemplo
+## 69.5 Versión 5: explicar un ejemplo
 
-Las entradas del aprendizaje por explicación, en la formulación de
+La quinta versión cambia de enfoque: un solo ejemplo, con una teoría del
+dominio que dice qué hace falta para que un objeto sirva de taza. Las entradas del aprendizaje por explicación, en la formulación de
 DeJong y Mooney, son un concepto, un ejemplo, una teoría del dominio y un
 criterio de operacionalidad. El dominio de la taza viene de Winston y
 sus colegas, a través de Mitchell, Keller y Kedar-Cabelli.
@@ -116,7 +118,7 @@ esta versión es que la explicación habla de `taza1`, `asa1` y
 `cuerpo1`: para reconocer otra taza hay que recorrer la teoría otra vez,
 con sus reglas intermedias y sus alternativas.
 
-## Versión 6: generalizar la explicación
+## 69.6 Versión 6: generalizar la explicación
 
 La **generalización basada en la explicación**, en la forma de
 Kedar-Cabelli y McCarty que siguen Luger y Stubblefield, prueba dos
@@ -261,3 +263,79 @@ el espacio de versiones conserva todas las hipótesis de un lenguaje fijo
 hasta que los ejemplos las reducen a una; la generalización por
 explicación no aprende nada que la teoría no sepa, pero lo deja en una
 forma que se usa sin buscar.
+
+El capítulo continúa en la página
+[Otras generalizaciones e incorporar las reglas](otras-generalizaciones.md#697-version-7-otras-generalizaciones-e-incorporar-las-reglas),
+con las operaciones de generalización que las versiones anteriores no usan
+y con las reglas aprendidas guardadas en la base.
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio.
+
+8. ★ **(1)** Predecir la regla que se aprende de `taza1` con `tiene_asa/1`
+   y `estable/1` agregados a los operacionales de la teoría, y cuántas
+   condiciones tiene. Comprobarlo con `mostrar_aprendida_con/4`.
+9. ★ **(2)** Aprender reglas de `abuelo/2` con la teoría `familia` a
+   partir de cada positivo de `ejemplos/3` del [capítulo 68](../capitulo-68-proyecto-aprender-reglas-ejemplos/index.md), quitar
+   las que otra subsume con `subsume/2` del mismo capítulo, y contar
+   cuántos positivos y cuántos negativos cubren las restantes. Comparar
+   con la hipótesis de `aprender_asc/3`.
+10. **(2)** Agregar `is/2` a los predefinidos del intérprete, en una copia
+    de `explicacion.pl` y `ebg.pl`, y una teoría `pesado` con la regla
+    `pesado(X) :- peso(X, P), volumen(X, V), D is P / V, D > 1`. Aprender
+    una regla del ejemplo `bloque1`, descrito por su peso y su volumen, y
+    explicar qué parte del cálculo queda en ella.
+11. **(3)** Aprender una regla de cada una de las cuatro tazas de la
+    población, quitar las repetidas con `subsume/2`, y medir las
+    inferencias de `reconocidas/3` con 1, 2, 4 y 8 reglas, repitiendo las
+    mismas si hace falta. Explicar qué muestra la medición sobre el
+    costo de acumular reglas aprendidas.
+12. **(2)** Escribir `relevantes(T, E, Meta, Hs)`, los hechos de la
+    descripción de E que usa la primera explicación de Meta, e
+    `irrelevantes/4`, los que no usa, con los encabezados de PlDoc de los
+    dos predicados; elegir sus
+    modos y su determinación es parte del ejercicio. Aplicarlo a `taza1`
+    y a `abuelo(juan, luis)`.
+
+## Referencias
+
+- George F. Luger y William A. Stubblefield, *AI Algorithms, Data
+  Structures, and Idioms in Prolog, Lisp, and Java*, Pearson
+  Addison-Wesley, 2009 — capítulo «Machine Learning Algorithms in Prolog»,
+  secciones «Machine Learning: Version Space Search» y «Explanation Based
+  Learning in Prolog».
+  [Edición en línea del autor](https://www.cs.unm.edu/~luger/ai-final2/CH7_Machine%20Learning%20Algorithms%20in%20Prolog.pdf).
+  Esta página toma de allí la generalización basada en la explicación
+  como prueba simultánea del ejemplo y de su copia general, el corte en
+  los nodos operacionales y el dominio de la taza. Las referencias
+  siguientes son las que Luger y Stubblefield citan para esas ideas.
+- Tom M. Mitchell, Richard M. Keller y Smadar T. Kedar-Cabelli,
+  «Explanation-based generalization: a unifying view», *Machine Learning*
+  1(1), 1986, págs. 47–80,
+  [doi:10.1007/BF00116250](https://doi.org/10.1007/BF00116250), de acceso
+  abierto. Formula la generalización basada en la explicación con la
+  regresión de la meta, y adapta a ella el dominio de la taza: la
+  versión 6.
+- Gerald DeJong y Raymond Mooney, «Explanation-based learning: an
+  alternative view», *Machine Learning* 1(2), 1986, págs. 145–176,
+  [doi:10.1007/BF00114116](https://doi.org/10.1007/BF00114116), de acceso
+  abierto. Da las cuatro entradas del aprendizaje por explicación que usa
+  la versión 5: el concepto, el ejemplo, la teoría del dominio y el
+  criterio de operacionalidad.
+- Smadar T. Kedar-Cabelli y L. Thorne McCarty, «Explanation-based
+  generalization as resolution theorem proving», en *Proceedings of the
+  Fourth International Workshop on Machine Learning*, Morgan Kaufmann,
+  1987. Sin edición en línea de acceso libre verificada. Construye la
+  prueba del ejemplo y la de su copia general a la vez, en un
+  metaintérprete: es la forma de la versión 6.
+- Patrick H. Winston, Thomas O. Binford, Boris Katz y Michael Lowry,
+  «Learning physical descriptions from functional definitions, examples,
+  and precedents», en *Proceedings of the National Conference on
+  Artificial Intelligence (AAAI-83)*, 1983, págs. 433–439.
+  [Edición en línea de AAAI](https://cdn.aaai.org/AAAI/1983/AAAI83-060.pdf).
+  Plantea el problema de la taza: reconocer un objeto por una descripción
+  funcional y un ejemplo.

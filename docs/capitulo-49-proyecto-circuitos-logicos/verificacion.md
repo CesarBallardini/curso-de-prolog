@@ -1,13 +1,14 @@
 # Verificar con library(clpb)
 
-Esta página contiene la sección [49.4](index.md#494-verificar-con-libraryclpb) del
-[capítulo 49](index.md): la tercera conducta de la descripción de los circuitos,
+Esta página continúa el [capítulo 49](index.md) después de la
+[sección 49.3](index.md#493-que-calcula-un-circuito), con la sección
+[49.4](#494-verificar-con-libraryclpb): la tercera conducta de la descripción de los circuitos,
 que convierte cada compuerta en una restricción booleana, y la verificación de
 equivalencias con `library(clpb)`. El ejemplo está en `verificar.pl`, en
 `ejemplos/capitulo-49/`, con sus pruebas; carga los módulos `circuitos` y
 `formulas`, y se ejecuta localmente.
 
-## Verificar con `library(clpb)`
+## 49.4 Verificar con `library(clpb)`
 
 `library(clpb)` representa cada fórmula con un diagrama de decisión binario,
 una forma **canónica**: dos fórmulas equivalentes tienen el mismo diagrama.
@@ -147,3 +148,48 @@ dependen solo de las entradas del momento. El biestable de la
 [sección 49.1](index.md#491-compuertas-como-tablas-circuitos-como-reglas) mostró que un circuito con realimentación puede guardar un bit,
 pero `simular/3` solo enumera sus estados estables, y `formula/3` lo
 rechaza. Falta el tiempo.
+
+El capítulo continúa en la página
+[Circuitos secuenciales](secuenciales.md#495-circuitos-secuenciales), con
+los circuitos que agregan el tiempo.
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio, y el [capítulo 50](../capitulo-50-proyecto-diagnostico-abduccion/index.md) los da por hechos.
+
+6. ★ **(2)** Describir un multiplexor de dos entradas, `mux`: entradas s, a
+   y b; la salida es a cuando s = 0 y b cuando s = 1. Usar un inversor, dos
+   AND y una OR. Obtener su tabla de verdad y su suma de productos, describir
+   una segunda versión, `mux_nand`, solo con compuertas NAND, y demostrar con
+   `equivalentes/2` que las dos calculan lo mismo.
+7. **(2)** Las compuertas NAND alcanzan para construir cualquier otra.
+   Describir `inv_nand`, `and_nand` y `or_nand` solo con compuertas NAND,
+   describir tres circuitos de una sola compuerta, `inv1`, `and1` y `or1`,
+   como el `xor1` de `verificar.pl`, y demostrar las tres equivalencias.
+8. **(3)** El sumador de tres bits espera en cada etapa el acarreo de la
+    anterior. Un sumador con **acarreo anticipado** calcula cada acarreo
+    directamente de las entradas: con gᵢ = aᵢ·bᵢ y pᵢ = aᵢ ⊕ bᵢ, el
+    acarreo c₁ es g₀, c₂ es g₁ + p₁·g₀, y c₃ es g₂ + p₂·g₁ + p₂·p₁·g₀.
+    Describirlo como `sumador3_anticipado`, con la misma interfaz que
+    `sumador3`, demostrar que son equivalentes y comparar la cantidad de
+    compuertas de los dos.
+
+## Referencias
+
+- *SWI-Prolog Reference Manual* —
+  «[library(clpb): CLP(B): Constraint Logic Programming over Boolean
+  Variables](https://www.swi-prolog.org/pldoc/man?section=clpb)». La
+  verificación de equivalencias usa `sat/1`, `taut/2` y `labeling/1`, y los
+  operadores de fórmulas, de esa biblioteca.
+- Markus Triska, «The Boolean Constraint Solver of SWI-Prolog: System
+  Description», en *Functional and Logic Programming (FLOPS 2016)*, LNCS
+  9613, Springer, 2016, págs. 45–61
+  ([versión del autor](https://www.metalevel.at/swiclpb.pdf)). Es la
+  descripción de `library(clpb)` que cita su manual: las fórmulas se
+  representan con diagramas de decisión binarios reducidos y ordenados,
+  la forma canónica que la
+  [sección 49.4](#494-verificar-con-libraryclpb) usa para decidir si dos
+  circuitos son equivalentes.

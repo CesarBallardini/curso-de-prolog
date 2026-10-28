@@ -9,7 +9,7 @@ el capítulo declara `multifile` —`verbo/2`, `pedido//1`, `objeto//2` y
 `reservada/1` en la gramática; `plan/3` y `seleccion/3` en el planificador;
 `realizar/6` en la ejecución; `oracion/2` en las respuestas— o definen
 predicados nuevos que usan los del capítulo. Es `% solo-local`, porque
-carga otros archivos. Los ejercicios 1, 2, 3 y 7 se resuelven con los
+carga otros archivos. Los ejercicios 1, 2, 3 y 9 se resuelven con los
 archivos del capítulo.
 
 ## 1
@@ -260,92 +260,6 @@ que va después de «hay».
 
 ## 7
 
-| Orden | Se detiene en | Resultado |
-|---|---|---|
-| «Copia notas.txt a ..» | el planificador | `ya_existe("notas.txt")`: el punto final de la oración se quita de «..», que queda «.», la carpeta de trabajo |
-| «Lista los archivos de informes/../..» | el planificador | `fuera_de_la_carpeta("informes/../.")` |
-| «Borra /etc/passwd» | el planificador | `fuera_de_la_carpeta("/etc/passwd")`: es una ruta absoluta |
-| «Copia notas.txt a c:/x» | la gramática | `:` no puede estar en un nombre |
-| «Busca ../*.txt» | la gramática | `*` no puede estar en un nombre, y el patrón con asteriscos solo va después de «los archivos» |
-| «Copia notas.txt de .. a respaldo» | el planificador | `fuera_de_la_carpeta("../notas.txt")`: la ruta la arma la gramática con `atomics_to_string/2`, y el planificador la examina ya armada |
-
-La prueba `seguridad` de `soluciones.plt` comprueba la tabla. Con el código
-del capítulo, ninguna orden llega a `ruta_real/3` con una ruta que salga de
-la carpeta: todas las rutas del plan salen de strings del significado, que
-el planificador ya examinó, o de unir un nombre de esos strings a una
-carpeta del modelo. La segunda verificación protege de lo que el
-planificador no ve: una extensión que construya rutas dentro de `plan/3`,
-como las de los ejercicios, o un error en el propio planificador.
-
-## 8
-
-<!-- ejemplo: capitulo-57/soluciones.pl fragmento: reservada("total"). .. format(string(T), "Hay ~s en total.", [Q]). -->
-```prolog
-reservada("total").
-
-pedido(contar_todo) -->
-    ["cuantos"],
-    sustantivo(archivo, _, pl),
-    ["hay", "en", "total"].
-
-plan(contar_todo, M, [informar(total(N))]) :-
-    aggregate_all(count, member(archivo(_, _, _), M), N).
-
-oracion(total(0), "No hay ningún archivo.") :-
-    !.
-oracion(total(N), T) :-
-    cantidad(N, archivo, m, Q),
-    format(string(T), "Hay ~s en total.", [Q]).
-```
-
-```prolog
-?- entender("¿Cuántos archivos hay en total?", O), planificar_ejemplo(O, P).
-O = contar_todo,
-P = [informar(total(6))].
-```
-
-Sin `reservada("total")`, la regla de `contar` del capítulo, que está antes
-que la nueva, analiza «en total» como «en» y la carpeta «total»: el
-significado sería `contar("total", todos)` y el plan, el rechazo
-`no_existe("total")`. Declarar la palabra como reservada hace fallar a
-`nombre//1`, y la orden llega a la regla nueva.
-
-## 9
-
-<!-- ejemplo: capitulo-57/soluciones.pl fragmento: pedido(mayor(C)) .. format(string(T), "El archivo más grande es ~s, con ~s.", [R, Q]). -->
-```prolog
-pedido(mayor(C)) -->
-    ["cual", "es"],
-    determinante(G, sg),
-    sustantivo(archivo, G, sg),
-    ["mas", "grande"],
-    de_carpeta(C).
-
-plan(mayor(C), M, [informar(mayor(R, B))]) :-
-    seleccion(archivos(C, todos), M, Rs),
-    findall(B0-R0, ( member(R0, Rs),
-                     memberchk(archivo(R0, B0, _), M) ),
-            Pares),
-    max_member(B-R, Pares).
-
-oracion(mayor(R, B), T) :-
-    cantidad(B, byte, m, Q),
-    format(string(T), "El archivo más grande es ~s, con ~s.", [R, Q]).
-```
-
-```prolog
-?- entender("¿Cuál es el archivo más grande de informes?", O), planificar_ejemplo(O, P).
-O = mayor("informes"),
-P = [informar(mayor("informes/resumen.pdf", 2048))].
-```
-
-La selección usa `seleccion/3` con el objeto `archivos(C, todos)`, y
-hereda su rechazo: para `respaldo`, que está vacía, el plan es
-`[rechazo(ninguno("respaldo", todos))]`, y la respuesta, «En la carpeta
-respaldo no hay archivos.».
-
-## 10
-
 <!-- ejemplo: capitulo-57/soluciones.pl predicado: entender_varias/2 varias//1 planificar_varias/3 planificar_varias_ejemplo/2 aplicar/3 aplicar_accion/3 -->
 ```prolog
 %!  entender_varias(+Texto:string, -Ordenes:list) is semidet.
@@ -427,7 +341,7 @@ notas.txt como apuntes.txt y borra notas.txt», el segundo paso se rechaza,
 porque en el modelo actualizado `notas.txt` ya no existe; la prueba
 `varias_rechazo` lo comprueba.
 
-## 11
+## 8
 
 <!-- ejemplo: capitulo-57/soluciones.pl predicado: palabras_con_mayusculas/2 palabra_conservada/2 parece_nombre/1 entender_con_mayusculas/2 -->
 ```prolog
@@ -481,6 +395,92 @@ Siguen sin poder escribirse los nombres que no tienen punto, barra ni
 dígito —una carpeta `Respaldo` se sigue leyendo como `respaldo`—, los que
 llevan tilde o eñe fuera de esas condiciones, y los que contienen un blanco,
 porque las palabras se separan por blancos.
+
+## 9
+
+| Orden | Se detiene en | Resultado |
+|---|---|---|
+| «Copia notas.txt a ..» | el planificador | `ya_existe("notas.txt")`: el punto final de la oración se quita de «..», que queda «.», la carpeta de trabajo |
+| «Lista los archivos de informes/../..» | el planificador | `fuera_de_la_carpeta("informes/../.")` |
+| «Borra /etc/passwd» | el planificador | `fuera_de_la_carpeta("/etc/passwd")`: es una ruta absoluta |
+| «Copia notas.txt a c:/x» | la gramática | `:` no puede estar en un nombre |
+| «Busca ../*.txt» | la gramática | `*` no puede estar en un nombre, y el patrón con asteriscos solo va después de «los archivos» |
+| «Copia notas.txt de .. a respaldo» | el planificador | `fuera_de_la_carpeta("../notas.txt")`: la ruta la arma la gramática con `atomics_to_string/2`, y el planificador la examina ya armada |
+
+La prueba `seguridad` de `soluciones.plt` comprueba la tabla. Con el código
+del capítulo, ninguna orden llega a `ruta_real/3` con una ruta que salga de
+la carpeta: todas las rutas del plan salen de strings del significado, que
+el planificador ya examinó, o de unir un nombre de esos strings a una
+carpeta del modelo. La segunda verificación protege de lo que el
+planificador no ve: una extensión que construya rutas dentro de `plan/3`,
+como las de los ejercicios, o un error en el propio planificador.
+
+## 10
+
+<!-- ejemplo: capitulo-57/soluciones.pl fragmento: reservada("total"). .. format(string(T), "Hay ~s en total.", [Q]). -->
+```prolog
+reservada("total").
+
+pedido(contar_todo) -->
+    ["cuantos"],
+    sustantivo(archivo, _, pl),
+    ["hay", "en", "total"].
+
+plan(contar_todo, M, [informar(total(N))]) :-
+    aggregate_all(count, member(archivo(_, _, _), M), N).
+
+oracion(total(0), "No hay ningún archivo.") :-
+    !.
+oracion(total(N), T) :-
+    cantidad(N, archivo, m, Q),
+    format(string(T), "Hay ~s en total.", [Q]).
+```
+
+```prolog
+?- entender("¿Cuántos archivos hay en total?", O), planificar_ejemplo(O, P).
+O = contar_todo,
+P = [informar(total(6))].
+```
+
+Sin `reservada("total")`, la regla de `contar` del capítulo, que está antes
+que la nueva, analiza «en total» como «en» y la carpeta «total»: el
+significado sería `contar("total", todos)` y el plan, el rechazo
+`no_existe("total")`. Declarar la palabra como reservada hace fallar a
+`nombre//1`, y la orden llega a la regla nueva.
+
+## 11
+
+<!-- ejemplo: capitulo-57/soluciones.pl fragmento: pedido(mayor(C)) .. format(string(T), "El archivo más grande es ~s, con ~s.", [R, Q]). -->
+```prolog
+pedido(mayor(C)) -->
+    ["cual", "es"],
+    determinante(G, sg),
+    sustantivo(archivo, G, sg),
+    ["mas", "grande"],
+    de_carpeta(C).
+
+plan(mayor(C), M, [informar(mayor(R, B))]) :-
+    seleccion(archivos(C, todos), M, Rs),
+    findall(B0-R0, ( member(R0, Rs),
+                     memberchk(archivo(R0, B0, _), M) ),
+            Pares),
+    max_member(B-R, Pares).
+
+oracion(mayor(R, B), T) :-
+    cantidad(B, byte, m, Q),
+    format(string(T), "El archivo más grande es ~s, con ~s.", [R, Q]).
+```
+
+```prolog
+?- entender("¿Cuál es el archivo más grande de informes?", O), planificar_ejemplo(O, P).
+O = mayor("informes"),
+P = [informar(mayor("informes/resumen.pdf", 2048))].
+```
+
+La selección usa `seleccion/3` con el objeto `archivos(C, todos)`, y
+hereda su rechazo: para `respaldo`, que está vacía, el plan es
+`[rechazo(ninguno("respaldo", todos))]`, y la respuesta, «En la carpeta
+respaldo no hay archivos.».
 
 ## 12
 

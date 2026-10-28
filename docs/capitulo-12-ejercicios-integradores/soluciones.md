@@ -579,7 +579,7 @@ false.
 
 `vertice/2` da cada vértice tantas veces como aristas lo tocan; `vertices/2`
 arma con la
-[estrategia para recolectar soluciones](../capitulo-10-negacion-como-falla/recolectar.md#estrategia-para-recolectar-soluciones)
+[estrategia para recolectar soluciones](../capitulo-10-negacion-como-falla/recolectar.md#109-estrategia-para-recolectar-soluciones)
 la lista en la que aparece una sola vez, primero los orígenes y después los
 destinos que faltan. `grado_salida/3` toma cada vértice de esa lista, de modo
 que también `e`, que no tiene aristas salientes, tiene grado 0. `salientes/3`
@@ -890,7 +890,7 @@ enunciado.
 **a.** `gano/2` describe el partido ganado por una selección, como primer o como
 segundo equipo; `victorioso/1` aplica la doble negación, y
 `jugadores_victoriosos/1` arma la lista con la
-[estrategia para recolectar soluciones](../capitulo-10-negacion-como-falla/recolectar.md#estrategia-para-recolectar-soluciones),
+[estrategia para recolectar soluciones](../capitulo-10-negacion-como-falla/recolectar.md#109-estrategia-para-recolectar-soluciones),
 con `victorioso/1` como generador.
 
 <!-- ejemplo: capitulo-12/campeonato.pl predicado: gano/2 victorioso/1 jugadores_victoriosos/1 armar_victoriosos/2 consulta: jugadores_victoriosos(Js). -->

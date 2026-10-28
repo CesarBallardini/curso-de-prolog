@@ -1,11 +1,11 @@
 # Soluciones del capítulo 69 — Proyecto: espacios de versiones y generalización por explicación
 
-Las soluciones de los ejercicios 2 a 8, 10 y 11 están en
+Las soluciones de los ejercicios 2 a 6, 8, 9, 11 y 12 están en
 `ejemplos/capitulo-69/soluciones.pl`, que carga las versiones 4
 (`preguntas.pl`) y 6 (`ebg.pl`), como `proyecto.pl`, y la versión 3 del
-[capítulo 68](../capitulo-68-proyecto-aprender-reglas-ejemplos/index.md) para comparar con la inducción. La del ejercicio 9 está
-en `soluciones_ebg.pl`, las de los ejercicios 12 y 13 en
-`soluciones_v7.pl` y la del ejercicio 14 en `soluciones_interactivo.pl`.
+[capítulo 68](../capitulo-68-proyecto-aprender-reglas-ejemplos/index.md) para comparar con la inducción. La del ejercicio 10 está
+en `soluciones_ebg.pl`, las de los ejercicios 13 y 14 en
+`soluciones_v7.pl` y la del ejercicio 7 en `soluciones_interactivo.pl`.
 Las pruebas de cada archivo están en el `.plt` del mismo nombre.
 
 ## Ejercicio 1
@@ -250,326 +250,6 @@ de versiones distingue cuál de los dos es el equivocado.
 
 ## Ejercicio 7
 
-<!-- contexto: capitulo-69/ebg.pl -->
-La consulta `operacionales(taza, Ops), mostrar_aprendida_con(taza, [tiene_asa/1, estable/1|Ops], taza1, taza(taza1))` escribe:
-
-```prolog
-taza(A) :-
-    peso(A, B),
-    B<400,
-    tiene_asa(A),
-    parte(A, C),
-    concava(C),
-    abierta_arriba(C),
-    estable(A).
-```
-
-Siete condiciones en lugar de diez: `tiene_asa/1` y `estable/1` quedan
-enteras y reemplazan a las dos o tres condiciones de cada una, y
-`se_levanta/1`, que no es operacional, se sigue desplegando.
-
-## Ejercicio 8
-
-<!-- ejemplo: capitulo-69/soluciones.pl predicado: reglas_abuelo/1 sin_subsumidas/2 cobertura_abuelo/2 -->
-```prolog
-%!  reglas_abuelo(-Rs:list) is det.
-%
-%   Rs son las reglas de abuelo/2 aprendidas de cada positivo de
-%   ejemplos/3, sin las que otra regla de la lista subsume.
-reglas_abuelo(Rs) :-
-    ejemplos(abuelo, Pos, _),
-    findall(R, ( member(E, Pos),
-                 aprender(familia, familia, E, R) ), Rs0),
-    sin_subsumidas(Rs0, Rs).
-
-%!  sin_subsumidas(+Rs0:list, -Rs:list) is det.
-%
-%   Rs son las reglas de Rs0, en su orden, salvo las que una regla
-%   anterior de Rs subsume.
-sin_subsumidas(Rs0, Rs) :-
-    foldl(agregar_si_nueva, Rs0, [], Inv),
-    reverse(Inv, Rs).
-
-%!  cobertura_abuelo(-P:integer, -N:integer) is det.
-%
-%   P es la cantidad de positivos y N la de negativos de abuelo/2 que
-%   cubre alguna regla de reglas_abuelo/1.
-cobertura_abuelo(P, N) :-
-    reglas_abuelo(Rs),
-    ejemplos(abuelo, Pos, Negs),
-    hechos(familia, Hs),
-    aggregate_all(count, ( member(E, Pos), cubierto(Rs, Hs, E) ), P),
-    aggregate_all(count, ( member(E, Negs), cubierto(Rs, Hs, E) ), N).
-```
-
-La consulta `forall((reglas_abuelo(Rs), member(R, Rs)), mostrar(R))` escribe:
-
-```prolog
-abuelo(A, B) :-
-    varon(A),
-    padre(A, C),
-    padre(C, B).
-abuelo(A, B) :-
-    varon(A),
-    padre(A, C),
-    madre(C, B).
-```
-
-```prolog
-?- cobertura_abuelo(P, N).
-P = 3,
-N = 0.
-```
-
-Los positivos `abuelo(juan, eva)` y `abuelo(juan, luis)` dan la misma
-regla, que se subsumen entre sí; `abuelo(pedro, sofia)` da la segunda.
-Las dos cubren los tres positivos y ningún negativo, como la hipótesis de
-`aprender_asc/3`, que también es exacta en la familia. La diferencia está
-en lo que cada una necesitó: la inducción, los 46 negativos y ninguna
-teoría; la generalización por explicación, ningún negativo y la teoría
-del [capítulo 3](../capitulo-03-reglas-y-conjunciones/index.md), de la que las dos reglas son casos particulares.
-
-## Ejercicio 9
-
-<!-- ejemplo: capitulo-69/soluciones_ebg.pl predicado: regla_is/1 hechos_is/2 predefinido_is/1 generalizar_is//3 -->
-```prolog
-% regla_is(R): R es una regla de la teoría pesado.
-regla_is((pesado(X) :- peso(X, P), volumen(X, V), D is P / V, D > 1)).
-
-% hechos_is(E, Hs): Hs es la descripción del ejemplo E.
-hechos_is(bloque1, [peso(bloque1, 3000), volumen(bloque1, 1000),
-                    color(bloque1, gris)]).
-hechos_is(corcho1, [peso(corcho1, 240), volumen(corcho1, 1000)]).
-
-% predefinido_is(G): el intérprete ejecuta G con ejecutar_is/1.
-predefinido_is(_ is _).
-predefinido_is(_ < _).
-predefinido_is(_ > _).
-
-%!  generalizar_is(+Hs:list, +G, ?GG)// is nondet.
-%
-%   Como generalizar//5 de ebg.pl, con la teoría pesado.
-generalizar_is(Hs, G, GG) -->
-    (   { predefinido_is(G) }
-    ->  { ejecutar_is(G) },
-        [GG]
-    ;   { operacionales_is(Ops),
-          functor(G, Nombre, Aridad),
-          memberchk(Nombre/Aridad, Ops) }
-    ->  { explicar_is(Hs, G) },
-        [GG]
-    ;   { regla_is(R),
-          copy_term(R, (G :- Cuerpo)),
-          copy_term(R, (GG :- CuerpoG)) },
-        generalizar_cuerpo_is(Hs, Cuerpo, CuerpoG)
-    ).
-```
-
-```prolog
-?- aprender_is(bloque1, pesado(bloque1), R).
-R = (pesado(_A):-[peso(_A, _B), volumen(_A, _C), _D is _B/_C, _D>1]).
-```
-
-El cálculo queda entero en la regla: `D is B/C` con las variables
-generales, no el valor 3 que dio la prueba de `bloque1`. En la prueba
-particular `is/2` se ejecuta, porque la comparación que sigue necesita
-el número; en la general se registra como condición, porque sus datos
-dependen del objeto al que se aplique la regla. La regla no reconoce
-`corcho1`, cuya densidad es 0,24.
-
-## Ejercicio 10
-
-<!-- ejemplo: capitulo-69/soluciones.pl predicado: reglas_de_tazas/1 costo_con/2 -->
-```prolog
-%!  reglas_de_tazas(-Rs:list) is det.
-%
-%   Rs son las reglas aprendidas de cada taza de la población, sin las
-%   que una regla anterior subsume.
-reglas_de_tazas(Rs) :-
-    poblacion(Os),
-    clasificar_con_teoria(taza, Tazas),
-    findall(R, ( member(O, Tazas),
-                 memberchk(O-Hs, Os),
-                 operacionales(taza, Ops),
-                 once(ebg(taza, Ops, Hs, taza(O), R)) ), Rs0),
-    sin_subsumidas(Rs0, Rs).
-
-%!  costo_con(+K:integer, -N:integer) is det.
-%
-%   N son las inferencias de reconocidas/3 con K reglas: las de
-%   reglas_de_tazas/1 repetidas en ciclo hasta completar K.
-costo_con(K, N) :-
-    reglas_de_tazas(Rs),
-    length(Rs, L),
-    findall(R, ( between(1, K, J),
-                 I is (J - 1) mod L,
-                 nth0(I, Rs, R) ), Reglas),
-    ebg:inferencias(reconocidas(taza, Reglas, _), N).
-```
-
-```prolog
-?- costo_con(1, N1), costo_con(2, N2), costo_con(4, N4), costo_con(8, N8).
-N1 = 7284,
-N2 = 12756,
-N4 = 21707,
-N8 = 39609.
-```
-
-De las cuatro tazas salen dos reglas distintas. Con una sola regla el
-costo es menor, pero se reconocen solo dos tazas. A partir de dos, cada
-regla agregada no reconoce nada nuevo y el costo crece casi en
-proporción: cada objeto que no es taza se prueba contra todas las reglas.
-Es el **problema de la utilidad**: acumular reglas aprendidas puede hacer
-más lento al programa que las usa, y conviene quitar las redundantes, como
-hace `sin_subsumidas/2`, o medir cuánto se usa cada una.
-
-## Ejercicio 11
-
-<!-- ejemplo: capitulo-69/soluciones.pl predicado: relevantes/4 irrelevantes/4 hoja/2 -->
-```prolog
-%!  relevantes(+T, +E, +Meta, -Usados:list) is semidet.
-%
-%   Usados son los hechos de la descripción del ejemplo E que son hojas
-%   de la primera explicación de Meta con la teoría T, en el orden de la
-%   descripción. Falla si Meta no tiene explicación.
-relevantes(T, E, Meta, Usados) :-
-    hechos(E, Hs),
-    once(explicar(T, Hs, Meta, Arbol)),
-    findall(H, hoja(Arbol, H), Hojas),
-    include(usado(Hojas), Hs, Usados).
-
-%!  irrelevantes(+T, +E, +Meta, -Otros:list) is semidet.
-%
-%   Otros son los hechos de la descripción de E que la primera
-%   explicación de Meta con la teoría T no usa.
-irrelevantes(T, E, Meta, Otros) :-
-    hechos(E, Hs),
-    relevantes(T, E, Meta, Usados),
-    exclude(usado(Usados), Hs, Otros).
-
-%!  hoja(+Arbol, -H) is nondet.
-%
-%   H es un hecho que aparece como hoja prueba(H, []) del árbol Arbol.
-hoja(prueba(H, []), H).
-hoja(prueba(_, [A|As]), H) :-
-    member(B, [A|As]),
-    hoja(B, H).
-```
-
-```prolog
-?- irrelevantes(taza, taza1, taza(taza1), O).
-O = [material(taza1, loza), color(taza1, blanco), color(cuerpo1, blanco)].
-
-?- relevantes(familia, familia, abuelo(juan, luis), U).
-U = [varon(juan), padre(juan, pedro), padre(pedro, luis)].
-```
-
-Los dos predicados reciben la teoría, el ejemplo y el objetivo, y
-devuelven una lista: los tres primeros argumentos son `+` y el cuarto
-`-`. Son `semidet` y no `det`: fallan si el objetivo no tiene
-explicación, como `taza(vaso1)`. Usan la primera explicación, con
-`once/1`, porque otra explicación podría usar otros hechos, y el
-resultado de un objetivo con varias pruebas no está definido por una
-sola. De los 21 hechos del modelo de la familia, la explicación de
-`abuelo(juan, luis)` usa tres.
-
-## Ejercicio 12
-
-<!-- ejemplo: capitulo-69/soluciones_v7.pl predicado: disyunciones/2 sin_variantes/2 -->
-```prolog
-%!  disyunciones(+Nombre, -Ds:list) is det.
-%
-%   Ds son las disyunciones distintas que da disyuncion_de/2 con cada
-%   orden de los positivos de la secuencia Nombre, seguidos de los
-%   negativos.
-disyunciones(Nombre, Ds) :-
-    ejemplos_de(Nombre, Ejs),
-    findall(pos(I), member(pos(I), Ejs), Pos),
-    findall(neg(I), member(neg(I), Ejs), Negs),
-    findall(D, ( permutation(Pos, Pos1),
-                 append(Pos1, Negs, Ejs1),
-                 disyuncion_de(Ejs1, D) ), Ds0),
-    sin_variantes(Ds0, Ds).
-
-%!  sin_variantes(+Ts:list, -Us:list) is det.
-%
-%   Us son los términos de Ts sin variantes repetidas, en el orden de su
-%   primera aparición.
-sin_variantes([], []).
-sin_variantes([T|Ts], [T|Us]) :-
-    exclude(=@=(T), Ts, Ts1),
-    sin_variantes(Ts1, Us).
-```
-
-```prolog
-?- disyunciones(esferas_y_cubos_verdes, Ds), length(Ds, N).
-Ds = [[pieza(esfera, _, _, _), pieza(cubo, verde, grande, metal)], [pieza(_, _, grande, metal), pieza(esfera, rojo, chico, madera)]],
-N = 2.
-
-?- disyunciones(rojo_o_esfera, Ds).
-Ds = [[pieza(esfera, verde, chico, madera), pieza(cubo, rojo, chico, madera)], [pieza(cubo, rojo, chico, madera), pieza(esfera, verde, chico, madera)]].
-```
-
-Los seis órdenes de los tres positivos de `esferas_y_cubos_verdes` dan
-dos disyunciones distintas, según cuál de dos piezas llega antes. Si la
-esfera roja llega antes que el cubo verde, las dos esferas se
-generalizan juntas en `pieza(esfera, _, _, _)` y el cubo verde queda
-solo. Si el cubo verde llega antes que la esfera roja, la esfera azul se
-generaliza con él en `pieza(_, _, grande, metal)`, que tampoco cubre
-ningún negativo, y la esfera roja queda sola: no se generaliza con ese
-disyunto sin liberar los cuatro atributos. Las dos disyunciones son consistentes y clasifican
-distinto a otras instancias: la primera acepta cualquier esfera, la
-segunda cualquier pieza grande de metal.
-
-El orden importa cuando un positivo se puede generalizar, sin cubrir
-negativos, con más de un disyunto o con más de un positivo: el
-procesamiento es voraz y toma la primera generalización consistente,
-sin volver atrás. Con `rojo_o_esfera` ninguna generalización de los dos
-positivos es consistente, y el orden solo cambia el orden de los
-disyuntos.
-
-## Ejercicio 13
-
-<!-- ejemplo: capitulo-69/soluciones_v7.pl predicado: costos_incorporar/3 -->
-```prolog
-%!  costos_incorporar(-Recorrer:integer, -Teoria:integer,
-%!      -Segunda:integer) is det.
-%
-%   Inferencias que usa reconocer las tazas de la población: Recorrer con
-%   recorrer/2, que empieza sin reglas; Teoria con la teoría sola; y
-%   Segunda en una segunda pasada, con las reglas que dejó la primera.
-costos_incorporar(Recorrer, Teoria, Segunda) :-
-    inferencias(recorrer(taza, _), Recorrer),
-    inferencias(clasificar_con_teoria(taza, _), Teoria),
-    recorrer(taza, _),
-    poblacion(Os),
-    inferencias(maplist(reconocer(taza), Os, _), Segunda).
-```
-
-```prolog
-?- costos_incorporar(Recorrer, Teoria, Segunda).
-Recorrer = 25855,
-Teoria = 15390,
-Segunda = 24735.
-```
-
-La primera pasada cuesta casi el doble que la teoría sola, y la segunda,
-con las dos reglas ya guardadas, apenas menos que la primera. De los 48
-objetos, 44 no son tazas, y para concluirlo `reconocer/3` agota primero
-las reglas aprendidas y después la teoría: las reglas se suman al costo
-de la teoría en lugar de reemplazarlo. Solo las cuatro tazas se
-benefician, y en la segunda pasada las cuatro se reconocen con una regla,
-lo que explica la diferencia entre `Recorrer` y `Segunda`.
-
-Guardar las reglas abarataría el reconocimiento en una población donde
-la mayoría de los objetos son tazas por las razones que las reglas ya
-cubren: cada una se reconocería con una regla operacional, sin la
-búsqueda de la teoría. Es otra forma del problema de la utilidad del
-[ejercicio 10](#ejercicio-10): una regla aprendida conviene si el ahorro
-en los casos que reconoce supera lo que cuesta probarla en los que no.
-
-## Ejercicio 14
-
 <!-- ejemplo: capitulo-69/soluciones_interactivo.pl predicado: aprender_interactivo/1 lazo/2 leer/1 paso/3 ejemplo_valido/1 -->
 ```prolog
 %!  aprender_interactivo(-EV) is det.
@@ -762,3 +442,323 @@ El indicador `ejemplo: ` lo escribe el sistema solo cuando la entrada es
 la terminal: `prompt/2` lo cambia y `setup_call_cleanup/3` restituye el
 anterior. Con la entrada tomada de una cadena no se escribe, y la salida
 que comparan las pruebas no lo incluye.
+
+## Ejercicio 8
+
+<!-- contexto: capitulo-69/ebg.pl -->
+La consulta `operacionales(taza, Ops), mostrar_aprendida_con(taza, [tiene_asa/1, estable/1|Ops], taza1, taza(taza1))` escribe:
+
+```prolog
+taza(A) :-
+    peso(A, B),
+    B<400,
+    tiene_asa(A),
+    parte(A, C),
+    concava(C),
+    abierta_arriba(C),
+    estable(A).
+```
+
+Siete condiciones en lugar de diez: `tiene_asa/1` y `estable/1` quedan
+enteras y reemplazan a las dos o tres condiciones de cada una, y
+`se_levanta/1`, que no es operacional, se sigue desplegando.
+
+## Ejercicio 9
+
+<!-- ejemplo: capitulo-69/soluciones.pl predicado: reglas_abuelo/1 sin_subsumidas/2 cobertura_abuelo/2 -->
+```prolog
+%!  reglas_abuelo(-Rs:list) is det.
+%
+%   Rs son las reglas de abuelo/2 aprendidas de cada positivo de
+%   ejemplos/3, sin las que otra regla de la lista subsume.
+reglas_abuelo(Rs) :-
+    ejemplos(abuelo, Pos, _),
+    findall(R, ( member(E, Pos),
+                 aprender(familia, familia, E, R) ), Rs0),
+    sin_subsumidas(Rs0, Rs).
+
+%!  sin_subsumidas(+Rs0:list, -Rs:list) is det.
+%
+%   Rs son las reglas de Rs0, en su orden, salvo las que una regla
+%   anterior de Rs subsume.
+sin_subsumidas(Rs0, Rs) :-
+    foldl(agregar_si_nueva, Rs0, [], Inv),
+    reverse(Inv, Rs).
+
+%!  cobertura_abuelo(-P:integer, -N:integer) is det.
+%
+%   P es la cantidad de positivos y N la de negativos de abuelo/2 que
+%   cubre alguna regla de reglas_abuelo/1.
+cobertura_abuelo(P, N) :-
+    reglas_abuelo(Rs),
+    ejemplos(abuelo, Pos, Negs),
+    hechos(familia, Hs),
+    aggregate_all(count, ( member(E, Pos), cubierto(Rs, Hs, E) ), P),
+    aggregate_all(count, ( member(E, Negs), cubierto(Rs, Hs, E) ), N).
+```
+
+La consulta `forall((reglas_abuelo(Rs), member(R, Rs)), mostrar(R))` escribe:
+
+```prolog
+abuelo(A, B) :-
+    varon(A),
+    padre(A, C),
+    padre(C, B).
+abuelo(A, B) :-
+    varon(A),
+    padre(A, C),
+    madre(C, B).
+```
+
+```prolog
+?- cobertura_abuelo(P, N).
+P = 3,
+N = 0.
+```
+
+Los positivos `abuelo(juan, eva)` y `abuelo(juan, luis)` dan la misma
+regla, que se subsumen entre sí; `abuelo(pedro, sofia)` da la segunda.
+Las dos cubren los tres positivos y ningún negativo, como la hipótesis de
+`aprender_asc/3`, que también es exacta en la familia. La diferencia está
+en lo que cada una necesitó: la inducción, los 46 negativos y ninguna
+teoría; la generalización por explicación, ningún negativo y la teoría
+del [capítulo 3](../capitulo-03-reglas-y-conjunciones/index.md), de la que las dos reglas son casos particulares.
+
+## Ejercicio 10
+
+<!-- ejemplo: capitulo-69/soluciones_ebg.pl predicado: regla_is/1 hechos_is/2 predefinido_is/1 generalizar_is//3 -->
+```prolog
+% regla_is(R): R es una regla de la teoría pesado.
+regla_is((pesado(X) :- peso(X, P), volumen(X, V), D is P / V, D > 1)).
+
+% hechos_is(E, Hs): Hs es la descripción del ejemplo E.
+hechos_is(bloque1, [peso(bloque1, 3000), volumen(bloque1, 1000),
+                    color(bloque1, gris)]).
+hechos_is(corcho1, [peso(corcho1, 240), volumen(corcho1, 1000)]).
+
+% predefinido_is(G): el intérprete ejecuta G con ejecutar_is/1.
+predefinido_is(_ is _).
+predefinido_is(_ < _).
+predefinido_is(_ > _).
+
+%!  generalizar_is(+Hs:list, +G, ?GG)// is nondet.
+%
+%   Como generalizar//5 de ebg.pl, con la teoría pesado.
+generalizar_is(Hs, G, GG) -->
+    (   { predefinido_is(G) }
+    ->  { ejecutar_is(G) },
+        [GG]
+    ;   { operacionales_is(Ops),
+          functor(G, Nombre, Aridad),
+          memberchk(Nombre/Aridad, Ops) }
+    ->  { explicar_is(Hs, G) },
+        [GG]
+    ;   { regla_is(R),
+          copy_term(R, (G :- Cuerpo)),
+          copy_term(R, (GG :- CuerpoG)) },
+        generalizar_cuerpo_is(Hs, Cuerpo, CuerpoG)
+    ).
+```
+
+```prolog
+?- aprender_is(bloque1, pesado(bloque1), R).
+R = (pesado(_A):-[peso(_A, _B), volumen(_A, _C), _D is _B/_C, _D>1]).
+```
+
+El cálculo queda entero en la regla: `D is B/C` con las variables
+generales, no el valor 3 que dio la prueba de `bloque1`. En la prueba
+particular `is/2` se ejecuta, porque la comparación que sigue necesita
+el número; en la general se registra como condición, porque sus datos
+dependen del objeto al que se aplique la regla. La regla no reconoce
+`corcho1`, cuya densidad es 0,24.
+
+## Ejercicio 11
+
+<!-- ejemplo: capitulo-69/soluciones.pl predicado: reglas_de_tazas/1 costo_con/2 -->
+```prolog
+%!  reglas_de_tazas(-Rs:list) is det.
+%
+%   Rs son las reglas aprendidas de cada taza de la población, sin las
+%   que una regla anterior subsume.
+reglas_de_tazas(Rs) :-
+    poblacion(Os),
+    clasificar_con_teoria(taza, Tazas),
+    findall(R, ( member(O, Tazas),
+                 memberchk(O-Hs, Os),
+                 operacionales(taza, Ops),
+                 once(ebg(taza, Ops, Hs, taza(O), R)) ), Rs0),
+    sin_subsumidas(Rs0, Rs).
+
+%!  costo_con(+K:integer, -N:integer) is det.
+%
+%   N son las inferencias de reconocidas/3 con K reglas: las de
+%   reglas_de_tazas/1 repetidas en ciclo hasta completar K.
+costo_con(K, N) :-
+    reglas_de_tazas(Rs),
+    length(Rs, L),
+    findall(R, ( between(1, K, J),
+                 I is (J - 1) mod L,
+                 nth0(I, Rs, R) ), Reglas),
+    ebg:inferencias(reconocidas(taza, Reglas, _), N).
+```
+
+```prolog
+?- costo_con(1, N1), costo_con(2, N2), costo_con(4, N4), costo_con(8, N8).
+N1 = 7284,
+N2 = 12756,
+N4 = 21707,
+N8 = 39609.
+```
+
+De las cuatro tazas salen dos reglas distintas. Con una sola regla el
+costo es menor, pero se reconocen solo dos tazas. A partir de dos, cada
+regla agregada no reconoce nada nuevo y el costo crece casi en
+proporción: cada objeto que no es taza se prueba contra todas las reglas.
+Es el **problema de la utilidad**: acumular reglas aprendidas puede hacer
+más lento al programa que las usa, y conviene quitar las redundantes, como
+hace `sin_subsumidas/2`, o medir cuánto se usa cada una.
+
+## Ejercicio 12
+
+<!-- ejemplo: capitulo-69/soluciones.pl predicado: relevantes/4 irrelevantes/4 hoja/2 -->
+```prolog
+%!  relevantes(+T, +E, +Meta, -Usados:list) is semidet.
+%
+%   Usados son los hechos de la descripción del ejemplo E que son hojas
+%   de la primera explicación de Meta con la teoría T, en el orden de la
+%   descripción. Falla si Meta no tiene explicación.
+relevantes(T, E, Meta, Usados) :-
+    hechos(E, Hs),
+    once(explicar(T, Hs, Meta, Arbol)),
+    findall(H, hoja(Arbol, H), Hojas),
+    include(usado(Hojas), Hs, Usados).
+
+%!  irrelevantes(+T, +E, +Meta, -Otros:list) is semidet.
+%
+%   Otros son los hechos de la descripción de E que la primera
+%   explicación de Meta con la teoría T no usa.
+irrelevantes(T, E, Meta, Otros) :-
+    hechos(E, Hs),
+    relevantes(T, E, Meta, Usados),
+    exclude(usado(Usados), Hs, Otros).
+
+%!  hoja(+Arbol, -H) is nondet.
+%
+%   H es un hecho que aparece como hoja prueba(H, []) del árbol Arbol.
+hoja(prueba(H, []), H).
+hoja(prueba(_, [A|As]), H) :-
+    member(B, [A|As]),
+    hoja(B, H).
+```
+
+```prolog
+?- irrelevantes(taza, taza1, taza(taza1), O).
+O = [material(taza1, loza), color(taza1, blanco), color(cuerpo1, blanco)].
+
+?- relevantes(familia, familia, abuelo(juan, luis), U).
+U = [varon(juan), padre(juan, pedro), padre(pedro, luis)].
+```
+
+Los dos predicados reciben la teoría, el ejemplo y el objetivo, y
+devuelven una lista: los tres primeros argumentos son `+` y el cuarto
+`-`. Son `semidet` y no `det`: fallan si el objetivo no tiene
+explicación, como `taza(vaso1)`. Usan la primera explicación, con
+`once/1`, porque otra explicación podría usar otros hechos, y el
+resultado de un objetivo con varias pruebas no está definido por una
+sola. De los 21 hechos del modelo de la familia, la explicación de
+`abuelo(juan, luis)` usa tres.
+
+## Ejercicio 13
+
+<!-- ejemplo: capitulo-69/soluciones_v7.pl predicado: disyunciones/2 sin_variantes/2 -->
+```prolog
+%!  disyunciones(+Nombre, -Ds:list) is det.
+%
+%   Ds son las disyunciones distintas que da disyuncion_de/2 con cada
+%   orden de los positivos de la secuencia Nombre, seguidos de los
+%   negativos.
+disyunciones(Nombre, Ds) :-
+    ejemplos_de(Nombre, Ejs),
+    findall(pos(I), member(pos(I), Ejs), Pos),
+    findall(neg(I), member(neg(I), Ejs), Negs),
+    findall(D, ( permutation(Pos, Pos1),
+                 append(Pos1, Negs, Ejs1),
+                 disyuncion_de(Ejs1, D) ), Ds0),
+    sin_variantes(Ds0, Ds).
+
+%!  sin_variantes(+Ts:list, -Us:list) is det.
+%
+%   Us son los términos de Ts sin variantes repetidas, en el orden de su
+%   primera aparición.
+sin_variantes([], []).
+sin_variantes([T|Ts], [T|Us]) :-
+    exclude(=@=(T), Ts, Ts1),
+    sin_variantes(Ts1, Us).
+```
+
+```prolog
+?- disyunciones(esferas_y_cubos_verdes, Ds), length(Ds, N).
+Ds = [[pieza(esfera, _, _, _), pieza(cubo, verde, grande, metal)], [pieza(_, _, grande, metal), pieza(esfera, rojo, chico, madera)]],
+N = 2.
+
+?- disyunciones(rojo_o_esfera, Ds).
+Ds = [[pieza(esfera, verde, chico, madera), pieza(cubo, rojo, chico, madera)], [pieza(cubo, rojo, chico, madera), pieza(esfera, verde, chico, madera)]].
+```
+
+Los seis órdenes de los tres positivos de `esferas_y_cubos_verdes` dan
+dos disyunciones distintas, según cuál de dos piezas llega antes. Si la
+esfera roja llega antes que el cubo verde, las dos esferas se
+generalizan juntas en `pieza(esfera, _, _, _)` y el cubo verde queda
+solo. Si el cubo verde llega antes que la esfera roja, la esfera azul se
+generaliza con él en `pieza(_, _, grande, metal)`, que tampoco cubre
+ningún negativo, y la esfera roja queda sola: no se generaliza con ese
+disyunto sin liberar los cuatro atributos. Las dos disyunciones son consistentes y clasifican
+distinto a otras instancias: la primera acepta cualquier esfera, la
+segunda cualquier pieza grande de metal.
+
+El orden importa cuando un positivo se puede generalizar, sin cubrir
+negativos, con más de un disyunto o con más de un positivo: el
+procesamiento es voraz y toma la primera generalización consistente,
+sin volver atrás. Con `rojo_o_esfera` ninguna generalización de los dos
+positivos es consistente, y el orden solo cambia el orden de los
+disyuntos.
+
+## Ejercicio 14
+
+<!-- ejemplo: capitulo-69/soluciones_v7.pl predicado: costos_incorporar/3 -->
+```prolog
+%!  costos_incorporar(-Recorrer:integer, -Teoria:integer,
+%!      -Segunda:integer) is det.
+%
+%   Inferencias que usa reconocer las tazas de la población: Recorrer con
+%   recorrer/2, que empieza sin reglas; Teoria con la teoría sola; y
+%   Segunda en una segunda pasada, con las reglas que dejó la primera.
+costos_incorporar(Recorrer, Teoria, Segunda) :-
+    inferencias(recorrer(taza, _), Recorrer),
+    inferencias(clasificar_con_teoria(taza, _), Teoria),
+    recorrer(taza, _),
+    poblacion(Os),
+    inferencias(maplist(reconocer(taza), Os, _), Segunda).
+```
+
+```prolog
+?- costos_incorporar(Recorrer, Teoria, Segunda).
+Recorrer = 25855,
+Teoria = 15390,
+Segunda = 24735.
+```
+
+La primera pasada cuesta casi el doble que la teoría sola, y la segunda,
+con las dos reglas ya guardadas, apenas menos que la primera. De los 48
+objetos, 44 no son tazas, y para concluirlo `reconocer/3` agota primero
+las reglas aprendidas y después la teoría: las reglas se suman al costo
+de la teoría en lugar de reemplazarlo. Solo las cuatro tazas se
+benefician, y en la segunda pasada las cuatro se reconocen con una regla,
+lo que explica la diferencia entre `Recorrer` y `Segunda`.
+
+Guardar las reglas abarataría el reconocimiento en una población donde
+la mayoría de los objetos son tazas por las razones que las reglas ya
+cubren: cada una se reconocería con una regla operacional, sin la
+búsqueda de la teoría. Es otra forma del problema de la utilidad del
+[ejercicio 11](#ejercicio-11): una regla aprendida conviene si el ahorro
+en los casos que reconoce supera lo que cuesta probarla en los que no.

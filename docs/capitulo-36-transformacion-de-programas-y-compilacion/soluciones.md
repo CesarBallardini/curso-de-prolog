@@ -5,7 +5,7 @@ El código de esta página está en `ejemplos/capitulo-36/soluciones.pl`,
 pasa sus pruebas. `soluciones.pl` repite `traducir/2` de `gramatica.pl` y
 `desplegar/4` y `plegar/4` de `desplegar.pl`, para cargarse solo;
 `soluciones_parcial.pl` carga `parcial.pl`, y `soluciones_experto.pl` es
-`experto.pl` con los cambios de los ejercicios 13 y 14.
+`experto.pl` con los cambios de los ejercicios 14 y 15.
 
 ## 1
 
@@ -391,89 +391,6 @@ archivo pequeño, tocando el fuente después de compilarlo.
 
 ## 13
 
-<!-- ejemplo: capitulo-36/soluciones_experto.pl fragmento: regla(r13, si mamifero y vuela entonces murcielago). .. regla(r13, si mamifero y vuela entonces murcielago). consulta: caso(6, Obs), identificar_compilado(Obs, Animal). -->
-```prolog
-regla(r13, si mamifero y vuela entonces murcielago).
-```
-
-La regla se agrega a las demás, `hipotesis(murcielago)` a las hipótesis y
-`caso(6, [tiene_pelo, vuela])` a los casos. Al cargar, la expansión produce:
-
-```text
-concluir(murcielago, A, B, deducido(murcielago, r13, C y observado(vuela))) :-
-    concluir(mamifero, A, [r13-murcielago|B], C),
-    observar(A, vuela, [r13-murcielago|B]).
-```
-
-```prolog
-?- caso(6, Obs), identificar_compilado(Obs, Animal).
-Obs = [tiene_pelo, vuela],
-Animal = murcielago.
-```
-
-Con `regla/2` estática, como en `experto.pl`, `assertz/1` produce un error
-de permiso: `No permission to modify static procedure regla/2`.
-`soluciones_experto.pl` declara `regla/2` e `hipotesis/1` dinámicas. Una
-regla agregada así la usa el intérprete, que busca las reglas en cada
-consulta, y no la versión compilada, cuyas cláusulas se generaron al cargar
-el archivo:
-
-```prolog
-?- assertz(regla(r14, si ave y nada entonces pato)), assertz(hipotesis(pato)), identificar([tiene_plumas, nada], A).
-A = pato.
-
-?- assertz(regla(r14, si ave y nada entonces pato)), assertz(hipotesis(pato)), identificar_compilado([tiene_plumas, nada], A).
-false.
-```
-
-La prueba `regla_agregada` de `soluciones_experto.plt` hace las dos
-comparaciones.
-
-## 14
-
-<!-- ejemplo: capitulo-36/soluciones_experto.pl predicado: compilar_regla/2 compilar_condicion/5 consulta: regla(r7, R), compilar_regla(regla(r7, R), C). -->
-```prolog
-%!  compilar_regla(+Regla, -Clausula) is det.
-%
-%   Clausula es la cláusula de concluir/4 para Regla, traducida
-%   directamente, sin evaluar parcialmente el intérprete.
-compilar_regla(regla(R, si Condiciones entonces Meta),
-               (concluir(Meta, Fuente, Pila, deducido(Meta, R, Arbol)) :-
-                    Cuerpo)) :-
-    compilar_condicion(Condiciones, Fuente, [R-Meta|Pila], Arbol, Cuerpo).
-
-%!  compilar_condicion(+Condicion, ?Fuente, ?Pila, -Arbol, -Cuerpo) is det.
-%
-%   Cuerpo prueba Condicion con las observaciones de Fuente, y Arbol es su
-%   prueba. Una cláusula por cada cláusula de demostrar/4 que el control
-%   de la expansión conserva.
-compilar_condicion(A y B, Fuente, Pila, ArbolA y ArbolB, (CuerpoA, CuerpoB)) :-
-    !,
-    compilar_condicion(A, Fuente, Pila, ArbolA, CuerpoA),
-    compilar_condicion(B, Fuente, Pila, ArbolB, CuerpoB).
-compilar_condicion(X > Y, _, _, X > Y, X > Y) :-
-    !.
-compilar_condicion(X < Y, _, _, X < Y, X < Y) :-
-    !.
-compilar_condicion(C, Fuente, Pila, observado(C), observar(Fuente, C, Pila)) :-
-    observable(C),
-    !.
-compilar_condicion(C, Fuente, Pila, Arbol, concluir(C, Fuente, Pila, Arbol)).
-```
-
-Cada cláusula de `compilar_condicion/5` es una cláusula de `demostrar/4`
-que el control de [las reglas compiladas](experto.md) conserva, ya desplegada: la
-conjunción, las dos comparaciones, la observación y, para lo demás, la
-llamada a `concluir/4` en la que el control se detiene. La prueba
-`sin_evaluador` compara, regla por regla, la cláusula de `compilar_regla/2`
-con la que cargó la expansión, y son iguales. El evaluador parcial y el
-control producen el compilador; escribirlo a mano da el mismo resultado,
-pero hay que mantenerlo de acuerdo con el intérprete cada vez que este
-cambia. Es la versión ingenua del
-[Patrón 50](../patrones.md#50-especializar-el-interprete).
-
-## 15
-
 <!-- ejemplo: capitulo-36/soluciones.pl fragmento: % programa_concatenar(P): concatenar_dif/3 como datos. .. rotar_dif([X|Xs]-[X|F], Xs-F). consulta: derivar_rotar(Cs). -->
 ```prolog
 % programa_concatenar(P): concatenar_dif/3 como datos.
@@ -537,3 +454,86 @@ que hace el código con listas diferencia de la
 `concatenar_dif/3`, sino que escribe en los argumentos lo que esa llamada
 haría por unificación: la lista del subárbol izquierdo termina en `[X|M]`, y
 M es el comienzo de la del derecho.
+
+## 14
+
+<!-- ejemplo: capitulo-36/soluciones_experto.pl fragmento: regla(r13, si mamifero y vuela entonces murcielago). .. regla(r13, si mamifero y vuela entonces murcielago). consulta: caso(6, Obs), identificar_compilado(Obs, Animal). -->
+```prolog
+regla(r13, si mamifero y vuela entonces murcielago).
+```
+
+La regla se agrega a las demás, `hipotesis(murcielago)` a las hipótesis y
+`caso(6, [tiene_pelo, vuela])` a los casos. Al cargar, la expansión produce:
+
+```text
+concluir(murcielago, A, B, deducido(murcielago, r13, C y observado(vuela))) :-
+    concluir(mamifero, A, [r13-murcielago|B], C),
+    observar(A, vuela, [r13-murcielago|B]).
+```
+
+```prolog
+?- caso(6, Obs), identificar_compilado(Obs, Animal).
+Obs = [tiene_pelo, vuela],
+Animal = murcielago.
+```
+
+Con `regla/2` estática, como en `experto.pl`, `assertz/1` produce un error
+de permiso: `No permission to modify static procedure regla/2`.
+`soluciones_experto.pl` declara `regla/2` e `hipotesis/1` dinámicas. Una
+regla agregada así la usa el intérprete, que busca las reglas en cada
+consulta, y no la versión compilada, cuyas cláusulas se generaron al cargar
+el archivo:
+
+```prolog
+?- assertz(regla(r14, si ave y nada entonces pato)), assertz(hipotesis(pato)), identificar([tiene_plumas, nada], A).
+A = pato.
+
+?- assertz(regla(r14, si ave y nada entonces pato)), assertz(hipotesis(pato)), identificar_compilado([tiene_plumas, nada], A).
+false.
+```
+
+La prueba `regla_agregada` de `soluciones_experto.plt` hace las dos
+comparaciones.
+
+## 15
+
+<!-- ejemplo: capitulo-36/soluciones_experto.pl predicado: compilar_regla/2 compilar_condicion/5 consulta: regla(r7, R), compilar_regla(regla(r7, R), C). -->
+```prolog
+%!  compilar_regla(+Regla, -Clausula) is det.
+%
+%   Clausula es la cláusula de concluir/4 para Regla, traducida
+%   directamente, sin evaluar parcialmente el intérprete.
+compilar_regla(regla(R, si Condiciones entonces Meta),
+               (concluir(Meta, Fuente, Pila, deducido(Meta, R, Arbol)) :-
+                    Cuerpo)) :-
+    compilar_condicion(Condiciones, Fuente, [R-Meta|Pila], Arbol, Cuerpo).
+
+%!  compilar_condicion(+Condicion, ?Fuente, ?Pila, -Arbol, -Cuerpo) is det.
+%
+%   Cuerpo prueba Condicion con las observaciones de Fuente, y Arbol es su
+%   prueba. Una cláusula por cada cláusula de demostrar/4 que el control
+%   de la expansión conserva.
+compilar_condicion(A y B, Fuente, Pila, ArbolA y ArbolB, (CuerpoA, CuerpoB)) :-
+    !,
+    compilar_condicion(A, Fuente, Pila, ArbolA, CuerpoA),
+    compilar_condicion(B, Fuente, Pila, ArbolB, CuerpoB).
+compilar_condicion(X > Y, _, _, X > Y, X > Y) :-
+    !.
+compilar_condicion(X < Y, _, _, X < Y, X < Y) :-
+    !.
+compilar_condicion(C, Fuente, Pila, observado(C), observar(Fuente, C, Pila)) :-
+    observable(C),
+    !.
+compilar_condicion(C, Fuente, Pila, Arbol, concluir(C, Fuente, Pila, Arbol)).
+```
+
+Cada cláusula de `compilar_condicion/5` es una cláusula de `demostrar/4`
+que el control de [las reglas compiladas](experto.md) conserva, ya desplegada: la
+conjunción, las dos comparaciones, la observación y, para lo demás, la
+llamada a `concluir/4` en la que el control se detiene. La prueba
+`sin_evaluador` compara, regla por regla, la cláusula de `compilar_regla/2`
+con la que cargó la expansión, y son iguales. El evaluador parcial y el
+control producen el compilador; escribirlo a mano da el mismo resultado,
+pero hay que mantenerlo de acuerdo con el intérprete cada vez que este
+cambia. Es la versión ingenua del
+[Patrón 50](../patrones.md#50-especializar-el-interprete).

@@ -1,7 +1,11 @@
 # Cuatro ampliaciones del intérprete
 
-Esta página continúa el [capítulo 66](index.md) con cuatro temas que las
-fuentes del capítulo tratan y las seis versiones dejan afuera. Tres vienen
+Esta página continúa la página
+[Tres lecturas de una regla con excepciones](comparacion.md#668-tres-lecturas-de-una-regla-con-excepciones) del
+[capítulo 66](index.md), con las secciones
+[66.9](#669-conclusiones-incompatibles) a
+[66.12](#6612-el-programa-pretendido): cuatro temas que las fuentes del
+capítulo tratan y las seis versiones dejan afuera. Tres vienen
 del capítulo «Defeasible Prolog» de Covington: las conclusiones
 incompatibles que no son una la negación de la otra, las utilidades de
 d-Prolog para examinar una base entera, y la persistencia en el tiempo con
@@ -392,13 +396,13 @@ arma se descargue durante la espera, que el disparo no mate, o que el
 muerto deje de estarlo. La derivación rebatible con especificidad elige la
 que se espera. Una sola regla de persistencia tiene un límite: solo lleva
 hacia adelante lo que vale, no lo que no vale; el
-[ejercicio 12](index.md#ejercicios) lo muestra con un evento más.
+[ejercicio 12](#ejercicios) lo muestra con un evento más.
 
 ## 66.12 El programa pretendido
 
 El apartado 8.2 de Flach da a la negación como falla una lectura
 declarativa con una idea que la
-[sección 39.3](../capitulo-39-semantica-de-los-programas-logicos/index.md#393-negacion-como-falla-la-complecion-de-clark-y-sldnf)
+[sección 39.3](../capitulo-39-semantica-de-los-programas-logicos/resolucion.md#393-negacion-como-falla-la-complecion-de-clark-y-sldnf)
 no plantea en esos términos. Un programa con `\+` tiene en general varios
 modelos, y la negación como falla elige uno sin decir cuál. Flach
 transforma el programa en otro, el **programa pretendido**, que sea
@@ -431,7 +435,7 @@ generado(gusta_mas,
 
 `modelo_minimo/2` agrega las cabezas de las instancias cuyos cuerpos ya
 están en el modelo, como el operador $T_P$ de la
-[sección 39.6](../capitulo-39-semantica-de-los-programas-logicos/index.md#396-evaluacion-de-abajo-hacia-arriba),
+[sección 39.6](../capitulo-39-semantica-de-los-programas-logicos/negacion.md#396-evaluacion-de-abajo-hacia-arriba),
 y `cwa/2` da los átomos de la base que el supuesto niega:
 
 <!-- ejemplo: capitulo-66/complecion.pl predicado: cwa/2 base/2 -->
@@ -482,7 +486,7 @@ El supuesto solo vale para programas sin negaciones. En el de Tweety,
 modelos.
 
 La **compleción** de Clark sí admite negaciones. La
-[sección 39.3](../capitulo-39-semantica-de-los-programas-logicos/index.md#393-negacion-como-falla-la-complecion-de-clark-y-sldnf)
+[sección 39.3](../capitulo-39-semantica-de-los-programas-logicos/resolucion.md#393-negacion-como-falla-la-complecion-de-clark-y-sldnf)
 la construye para un predicado con `complecion_de/3`; para el programa
 pretendido hay que aplicarla a todos, incluidos los que se usan en un
 cuerpo sin definirse, cuya compleción es `falso`. `completar/2` lo hace con
@@ -628,7 +632,7 @@ que quien no es docente es sabio, y que si Pedro es sabio, es docente; su
 compleción no tiene ningún modelo. Suponer que Pedro no es docente lleva a
 que es sabio, y de ahí a que es docente: es una recursión a través de la
 negación, lo que la estratificación de la
-[sección 39.4](../capitulo-39-semantica-de-los-programas-logicos/index.md#394-estratificacion)
+[sección 39.4](../capitulo-39-semantica-de-los-programas-logicos/negacion.md#394-estratificacion)
 excluye. En un programa estratificado, la compleción nunca es
 inconsistente, y la negación como falla es correcta respecto de ella: lo
 que se prueba con resolución SLDNF es consecuencia lógica de la
@@ -640,3 +644,125 @@ La recíproca vale solo para clases restringidas de programas. La
 derivación rebatible del capítulo toma otro camino: en lugar de completar
 el programa, separa lo que se concluye con una negación fuerte de lo que
 solo se supone, y decide los conflictos con un criterio explícito.
+
+!!! success "Criterios de calidad"
+    | Criterio | En este capítulo |
+    |---|---|
+    | C1 | cada predicado declara modos y determinación; `derivable/2` es `nondet`, y `respuesta/3`, que resume la búsqueda con `->`, es `det` y exige una meta sin variables |
+    | C2 | la base es de datos: hechos, cláusulas y términos `:~` y `:^` que el intérprete examina; los datos de *Inscripciones* son los del [capítulo 32](../capitulo-32-ejecutables-y-distribucion/index.md), cargados sin cambios, y el `experto.pl` del [capítulo 40](../capitulo-40-tabulacion/index.md) también |
+    | C5 | `derivable/2`, `derivacion/3` y `por_que_no/3` validan el criterio y la meta con `must_be/2`: un criterio desconocido produce un error de tipo, no una respuesta vacía |
+    | C6 | el intérprete no cambia de la versión 1 a la 3: la especificidad y la superioridad son un argumento, los refutadores, una cláusula de `rival/4` que una base sin refutadores no usa, y la anticipación, un elemento más del criterio; las explicaciones son un módulo aparte |
+    | C7 | 158 pruebas en veinte archivos; `derivacion/3` se compara con `derivable/2`, e `inscripcion_rebatible/3` con `inscripcion_posible/3` en las 49 combinaciones, donde solo dos difieren |
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio.
+
+11. **(2)** En una base con individuos, agregar la regla estricta
+    contrapuesta de «los pingüinos no vuelan», `neg pinguino(X) :- vuela(X)`.
+    Predecir qué responde la base sobre un ave que nada y vuela, y sobre una
+    que solo nada, y explicar el resultado de la segunda con la
+    observación de Covington sobre los ciclos entre reglas.
+12. **(2)** Agregar al disparo de Yale de la
+    [sección 66.11](#6611-la-persistencia-el-disparo-de-yale)
+    un evento `descarga`, después del cual el arma normalmente no está
+    cargada, y mostrar la historia de los eventos `descarga`, `espera` y
+    `disparo` con la especificidad. Explicar por qué la especificidad no
+    decide entre la regla de la descarga y la persistencia, resolver el
+    conflicto con la superioridad declarada, y explicar qué regla falta
+    para que el arma siga descargada después de la espera.
+13. **(2)** Escribir `completo(Nombre, Modelo)`, que tiene éxito si la
+    compleción del programa Nombre de la
+    [sección 66.12](#6612-el-programa-pretendido) tiene un
+    único modelo. Aplicarlo al programa de Flach en que Pedro es amistoso
+    si no lo es, a `p :- p`, y a `antepasado/2` sobre dos hechos de
+    `progenitor/2`, y explicar cada resultado.
+
+## Resumen
+
+| | |
+|---|---|
+| **regla rebatible** | `Cabeza :~ Cuerpo`: si Cuerpo, normalmente Cabeza; otra regla puede derrotarla |
+| **regla estricta** | una cláusula común: no admite excepciones, y solo la derrota otra regla estricta o un hecho |
+| **presunción** | una regla rebatible de cuerpo `true` |
+| **refutador** | `Cabeza :^ Cuerpo`: no concluye su cabeza, solo impide aplicar una regla rebatible de cabeza contraria |
+| **negación fuerte** | `neg Atomo`: se concluye con reglas, a diferencia de `\+`, que solo comprueba que no se puede probar |
+| **refutar, socavar** | derrotar una regla concluyendo lo contrario, o mostrando que podría no aplicarse |
+| **especificidad** | una regla es más específica si el cuerpo de la otra se deriva del suyo y no a la inversa, sin usar los hechos |
+| **anticipación** | un rival rebatible o un refutador deja de derrotar si una regla que lo supera lo refuta |
+| **[Patrón 64](../patrones.md#64-superioridad-como-parametro)** | superioridad como parámetro |
+| **no monotonía** | agregar información puede quitar conclusiones |
+| `estricto/1`, `derivable/2`, `respuesta/3` | la derivación estricta, la rebatible y su resumen en seis valores |
+| `rival/4`, `supera/3` | lo que derrota a una regla, y el criterio de superioridad |
+| `derivacion/3`, `supuestos/2`, `por_que_no/3` | el árbol de una derivación, lo que da por supuesto, y lo que derrotó a cada regla |
+| `inscripcion_rebatible/3` | la inscripción de *Inscripciones* con excepciones en las correlativas |
+| **conclusiones incompatibles** | dos literales que se excluyen sin ser uno la negación del otro: `incompatible/2`; con el complemento, los **contrarios** |
+| **contradicción** | un literal y un contrario derivados los dos en forma estricta: algún hecho o regla de la base es falso |
+| **persistencia** | lo que vale en una situación normalmente sigue valiendo después de un evento: el único axioma de marco |
+| **programa pretendido** | un programa completo, con un solo modelo, que se obtiene del original con el supuesto de mundo cerrado o con la compleción |
+| `respuestas/3`, `contradicciones/1` | la consulta exhaustiva sobre cada instancia con evidencia, y las contradicciones de la base |
+| `cwa/2`, `completar/2`, `modelos/2` | los átomos que el supuesto de mundo cerrado niega, la compleción del programa entero, y sus modelos |
+
+## Temas que se retoman
+
+| Tema | Se retoma en |
+|---|---|
+| La fuerza de una conclusión en grados, en lugar de definitiva o presumible | [capítulo 67](../capitulo-67-proyecto-evidencia-arboles-decision/index.md) |
+
+## Referencias
+
+- Michael A. Covington, Donald Nute y André Vellino, *Prolog Programming
+  in Depth*, Prentice Hall, 1997 — capítulo «Defeasible Prolog».
+  [Edición en PDF de los autores](https://www.covingtoninnovations.com/books/PPID.pdf).
+  Esta página toma las conclusiones incompatibles y el ciclo de Ping
+  (apartado 11.4, `incompatible/2`), la consulta exhaustiva `@@`, el
+  diccionario y la búsqueda de contradicciones (apartados 11.11 a 11.16), y
+  la persistencia temporal con su versión del disparo de Yale (apartado
+  11.21).
+- Peter Flach, *Simply Logical: Intelligent Reasoning by Example*, John
+  Wiley & Sons, 1994 — apartados 8.1, «Default reasoning», y 8.2, «The
+  semantics of incomplete information».
+  [Edición en línea](https://book.simply-logical.space/src/text/3_part_iii/8.1.html).
+  Esta página toma del apartado 8.2 el programa pretendido, el supuesto de
+  mundo cerrado como transformación, la compleción del programa entero y
+  sus ejemplos (los alumnos de Pedro, Tweety, el sabio y el docente), sin
+  el código del apéndice B.2.
+- Raymond Reiter, «On Closed World Data Bases», en H. Gallaire y J. Minker
+  (eds.), *Logic and Data Bases*, Plenum Press, 1978, págs. 55–76.
+  [DOI 10.1007/978-1-4684-3384-5_3](https://doi.org/10.1007/978-1-4684-3384-5_3).
+  La formulación del supuesto de mundo cerrado, que Flach cita y que el
+  capítulo escribe como una presunción negativa.
+- Keith L. Clark, «Negation as Failure», en H. Gallaire y J. Minker
+  (eds.), *Logic and Data Bases*, Plenum Press, 1978, págs. 293–322.
+  [DOI 10.1007/978-1-4684-3384-5_11](https://doi.org/10.1007/978-1-4684-3384-5_11).
+  La compleción de un programa, que la
+  [sección 66.12](#6612-el-programa-pretendido) aplica al
+  programa entero con el `complecion_de/3` del
+  [capítulo 39](../capitulo-39-semantica-de-los-programas-logicos/index.md).
+- John McCarthy y Patrick J. Hayes, «Some Philosophical Problems from the
+  Standpoint of Artificial Intelligence», en B. Meltzer y D. Michie
+  (eds.), *Machine Intelligence 4*, Edinburgh University Press, 1969,
+  págs. 463–502.
+  [Versión en el sitio de McCarthy](http://jmc.stanford.edu/articles/mcchay69.html).
+  El cálculo de situaciones y el problema del marco, que Covington cita.
+- Drew McDermott, «We've Been Framed: Or, Why AI Is Innocent of the Frame
+  Problem», en Z. Pylyshyn (ed.), *The Robot's Dilemma: The Frame Problem
+  in Artificial Intelligence*, Ablex, 1987, págs. 113–122. La regla de
+  persistencia como único axioma de marco, según Covington.
+- Steve Hanks y Drew McDermott, «Nonmonotonic Logic and Temporal
+  Projection», *Artificial Intelligence* 33 (3), 1987, págs. 379–412.
+  [DOI 10.1016/0004-3702(87)90043-9](https://doi.org/10.1016/0004-3702(87)90043-9).
+  El problema del disparo de Yale, que la
+  [sección 66.11](#6611-la-persistencia-el-disparo-de-yale)
+  resuelve en la versión de Covington.
+
+El código del capítulo es propio, escrito para el curso: de Covington se
+toman el diseño de d-Prolog y sus ejemplos, no su código, con otra
+notación (`:~` en lugar de `:=`); de Flach, ideas y ejemplos. Las
+excepciones de *Inscripciones*, las explicaciones y la comparación con la
+semántica bien fundada son del curso, como las utilidades, el disparo de
+Yale y la compleción de la página de ampliaciones, escritos a partir de
+las descripciones de las fuentes.

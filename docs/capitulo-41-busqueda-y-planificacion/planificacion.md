@@ -1,13 +1,16 @@
 # Planificación
 
-Esta página contiene la sección [41.6](index.md#416-planificacion-operadores-strips-y-analisis-de-medios-y-fines)
-del [capítulo 41](index.md): los operadores STRIPS, el análisis de medios y
+Esta página continúa la página
+[Profundización iterativa y heurísticas: A\* e IDA\*](heuristicas.md#415-heuristicas-a-e-ida) del
+[capítulo 41](index.md), con la sección
+[41.6](#416-planificacion-operadores-strips-y-analisis-de-medios-y-fines):
+los operadores STRIPS, el análisis de medios y
 fines y la anomalía de Sussman, sobre el mundo de bloques del
 [capítulo 23](../capitulo-23-estructuras-de-datos-de-la-biblioteca/index.md#2310-un-estado-como-termino-el-mundo-de-bloques). El
 ejemplo está en `strips.pl`, en `ejemplos/capitulo-41/`, con sus pruebas, y
 corre en SWISH.
 
-## Planificación: operadores STRIPS y análisis de medios y fines
+## 41.6 Planificación: operadores STRIPS y análisis de medios y fines
 
 Las búsquedas de las secciones anteriores eligen acciones según el
 estado: prueban todas las que se pueden aplicar. Un **planificador** las
@@ -138,7 +141,7 @@ antes de aplicarlo, y otra para las metas, después. Las dos pueden elegir
 otra vez el mismo operador, y la recursión sobre las precondiciones puede no
 terminar. `planificar/3` fija antes la longitud del plan con `length/2`,
 como `iterativo/2` en la
-[sección 41.4](index.md#414-profundidad-limitada-y-profundizacion-iterativa), y el
+[sección 41.4](heuristicas.md#414-profundidad-limitada-y-profundizacion-iterativa), y el
 `append/3` del principio de `lograr/4` reparte esa longitud entre el plan
 previo y el posterior: cada rama termina, y el primer plan es uno de los más
 cortos que el método puede construir. Es la organización que usa Bratko en
@@ -192,3 +195,47 @@ Szpakowicz presentan WARPLAN, de David Warren (1974), que resuelve la anomalía 
 hacia atrás, **regresando** cada meta a través de las acciones ya
 planificadas, y protege las metas logradas. El
 [capítulo 71](../capitulo-71-proyecto-planificacion-regresion/index.md) lo construye.
+
+El capítulo continúa en la página
+[La vuelta del Wumpus y el Buscaminas](aplicaciones.md#417-la-vuelta-a-casa-del-wumpus),
+con dos problemas de capítulos anteriores planteados como búsqueda.
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio, y los capítulos siguientes los dan por hechos.
+
+10. **(2)** En otra versión del mundo de bloques no hay pinza: la acción
+    `mover(B, De, A)` lleva el bloque libre B desde De a A, un bloque libre
+    o la mesa. Escribir los operadores STRIPS de esa versión y el plan de
+    la anomalía de Sussman con `planificar/3`. ¿Cuántas acciones tiene?
+11. **(2)** Con cuatro bloques, invertir una torre: de d sobre c sobre b
+    sobre a, a a sobre b sobre c sobre d. Comparar la longitud del plan y
+    las inferencias de `planificar/3` con las de `plan/3` del
+    [capítulo 23](../capitulo-23-estructuras-de-datos-de-la-biblioteca/index.md).
+
+## Referencias
+
+- Ivan Bratko, *Prolog Programming for Artificial Intelligence*, 4.ª
+  edición, Pearson, 2012 — capítulo «Planning». Sin edición en línea de
+  acceso libre. De allí viene el reparto de la longitud del plan entre el
+  plan previo y el posterior en el análisis de medios y fines.
+- Neil C. Rowe, *Artificial Intelligence through Prolog*, Prentice-Hall,
+  1988 — capítulo «Abstraction in search»
+  ([en línea](https://faculty.nps.edu/ncrowe/book/chap11.html)). Esta
+  página toma de allí el análisis de medios y fines.
+- Feliks Kluźniak y Stanisław Szpakowicz, *Prolog for Programmers*,
+  Academic Press, 1985 — apartado 8.1, «Planning».
+  [Edición en línea](https://www.site.uottawa.ca/~szpak/pub/P4P/Prolog_for_Programmers_neat.pdf).
+  Presenta WARPLAN, de David Warren, y la planificación por regresión de
+  metas que la [sección 41.6](#416-planificacion-operadores-strips-y-analisis-de-medios-y-fines)
+  menciona y el [capítulo 71](../capitulo-71-proyecto-planificacion-regresion/index.md)
+  construye.
+- Richard E. Fikes y Nils J. Nilsson, «STRIPS: A New Approach to the
+  Application of Theorem Proving to Problem Solving», *Artificial
+  Intelligence* 2(3–4), 1971, y Gerald J. Sussman, *A Computational Model
+  of Skill Acquisition*, tesis doctoral, MIT, 1973: el origen de los
+  operadores STRIPS y de la anomalía de Sussman, citados a través de los
+  libros anteriores.

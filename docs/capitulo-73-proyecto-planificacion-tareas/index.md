@@ -74,7 +74,7 @@ Al terminar el capítulo, el lector puede:
 !!! info "Tiempo estimado"
     Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **2:50 h**.
     Resolver los 5 ejercicios marcados con ★: **1:15 h**.
-    Resolver los 12 ejercicios del final: **3:45 h**.
+    Resolver los 12 ejercicios del capítulo: **3:45 h**.
 
 ## 73.1 El problema y su representación
 
@@ -368,7 +368,7 @@ que termina en 4. La planificación por lista nunca deja un procesador
 ocioso si hay una tarea lista, así que `t6` y `t7` ocupan los dos
 procesadores hasta el momento 13, y una de las dos tareas de 20 unidades
 empieza recién entonces. El calendario de 24 deja el procesador 2 ocioso
-entre 2 y 4 para empezar `t4` apenas termina `t1`. El ejercicio 2 prueba
+entre 2 y 4 para empezar `t4` apenas termina `t1`. El ejercicio 1 prueba
 las 5 040 prioridades posibles del proyecto: ninguna baja de 33.
 
 En `casa` la misma prioridad `orden` da 28, que es el óptimo. La
@@ -381,7 +381,7 @@ que 2 − 1/n veces el de la mejor lista. El teorema vale para todo
 proyecto, y su demostración está en el artículo citado en las
 referencias; el capítulo no la reproduce. Los programas del capítulo
 solo muestran casos que la respetan: en `coffman` las 5 040 listas del
-ejercicio 2 dan la misma duración, y el peor ejemplo de la página de las
+ejercicio 1 dan la misma duración, y el peor ejemplo de la página de las
 anomalías se alarga 16/12, menos que 5/3. Ver la cota cumplida en los
 ejemplos no es una prueba: cubre esos casos, no todos.
 En `coffman` todas las listas dan 33, y el óptimo de 24 está fuera de su
@@ -553,7 +553,7 @@ memoria. La tabla de la versión 4 reúne estas mediciones. Es la limitación qu
 Una heurística admisible se obtiene **relajando** el problema: quitándole
 restricciones hasta que el costo óptimo del problema relajado se calcule
 sin buscar
-([capítulo 41](../capitulo-41-busqueda-y-planificacion/heuristicas.md#heuristicas-a-e-ida)).
+([capítulo 41](../capitulo-41-busqueda-y-planificacion/heuristicas.md#415-heuristicas-a-e-ida)).
 Como el problema relajado admite todas las soluciones del original y
 algunas más, su óptimo nunca es mayor, y la heurística nunca estima de
 más. Que A\* con una heurística así da el óptimo es el teorema de
@@ -617,180 +617,14 @@ suma 27 unidades y que ningún reparto acorta, y la heurística la ignora.
     explicar por qué con cuatro cuadrillas la estimación está todavía más
     lejos del óptimo.
 
-## 73.6 Versión 4: el camino crítico
-
-La otra relajación conserva las precedencias y supone procesadores de
-sobra. La **cola** de una tarea es su duración más la mayor cola de las
-tareas que la esperan, y la cadena de colas máximas es el **camino
-crítico** del proyecto. Una tarea pendiente no puede terminar antes de
-empezar lo antes posible y recorrer su cola, y la mayor de esas cotas es
-la heurística `camino/3`; `combinada/3` es el máximo entre ella y el
-reparto. La página [El camino crítico](camino.md#version-4-el-camino-critico)
-escribe las dos, mide los estados que expande A\* con cada heurística en
-todos los proyectos de ejemplo y compara A\* con la búsqueda voraz. En la
-obra `casa`, el camino crítico baja la búsqueda de 231 estados a 16; la
-combinada resuelve `coffman` con 9 y `taller(16)` con 28, donde el camino
-crítico solo pasa de cien millones de inferencias.
-
-## 73.7 Versión 5: el planificador
-
-La versión 4 resuelve los proyectos chicos, pero el costo de A\* puede
-crecer de un proyecto al siguiente sin aviso. El planificador terminado
-combina las versiones anteriores y empieza por lo barato:
-
-1. arma tres calendarios por lista, con las prioridades `orden`, `larga`
-   y la de mayor cola primero, y se queda con el más corto;
-2. calcula la estimación de la heurística combinada en el estado inicial:
-   una **cota inferior** de la duración óptima;
-3. si el calendario por lista llega a la cota, es óptimo y no hace falta
-   buscar;
-4. si no, ejecuta A\* con la heurística combinada dentro de
-   `call_with_inference_limit/3`
-   ([capítulo 16](../capitulo-16-control/index.md)), y si termina dentro
-   del límite, el calendario es óptimo;
-5. si la búsqueda pasa del límite, devuelve el calendario por lista con
-   la garantía `entre(Cota, D)`: la duración óptima está entre la cota y
-   la del calendario.
-
-Antes de todo eso, `orden_topologico/2` rechaza los proyectos cuyas
-precedencias forman un ciclo, para los que `cola/3` no termina.
-
-<!-- ejemplo: capitulo-73/planificador.pl predicado: planificar/4 cota_inferior/2 -->
-```prolog
-%!  planificar(+Proyecto, +Limite:integer, -Calendario:list, -Garantia)
-%!      is semidet.
-%
-%   Calendario es un calendario de Proyecto. Garantia es optima(Metodo)
-%   si es óptimo, con Metodo por_lista cuando el mejor calendario por
-%   lista llega a la cota inferior y a_estrella cuando lo halló A* sin
-%   pasar de Limite inferencias. Si A* pasa del límite, Garantia es
-%   entre(Cota, D): Calendario es el mejor calendario por lista, dura D, y
-%   ningún calendario dura menos que Cota. Falla si las precedencias
-%   forman un ciclo.
-planificar(Proyecto, Limite, Calendario, Garantia) :-
-    orden_topologico(Proyecto, _),
-    mejor_por_lista(Proyecto, PorLista),
-    duracion(PorLista, D),
-    cota_inferior(Proyecto, Cota),
-    (   D =:= Cota
-    ->  Calendario = PorLista,
-        Garantia = optima(por_lista)
-    ;   call_with_inference_limit(optimo(Proyecto, combinada, Optimo, _),
-                                  Limite, Resultado),
-        Resultado \== inference_limit_exceeded
-    ->  Calendario = Optimo,
-        Garantia = optima(a_estrella)
-    ;   Calendario = PorLista,
-        Garantia = entre(Cota, D)
-    ).
-
-%!  cota_inferior(+Proyecto, -Cota:integer) is det.
-%
-%   Cota es lo que estima la heurística combinada en el estado inicial:
-%   ningún calendario de Proyecto dura menos.
-cota_inferior(Proyecto, Cota) :-
-    inicial(datos(Proyecto, combinada), Estado),
-    combinada(Proyecto, Estado, Cota).
-```
-
-<!-- contexto: capitulo-73/planificador.pl -->
-```prolog
-?- informe_de(taller(14), 1000).
-P1 t1----------------------t10---------t12---------------------
-P2 t3--------------t8----------------------t2----t4--------t11-
-P3 t6--------------t14-------------t5--------t7----t13---t9--
-duración: 30
-es la duración óptima (por_lista)
-true.
-
-?- planificar_ejemplo(taller(13), 1000000, D, G).
-D = 28,
-G = entre(27, 28).
-
-?- planificar_ejemplo(taller(13), 3000000, D, G).
-D = 27,
-G = optima(a_estrella).
-```
-
-`taller(14)`, que a A\* le cuesta casi diez millones de inferencias, se
-resuelve sin buscar: el mejor calendario por lista dura 30, lo mismo que
-la cota, y la respuesta completa cuesta 3 757 inferencias. En
-`taller(13)` la lista da 28 y la cota 27; con un millón de inferencias
-A\* no termina, y el planificador responde con la garantía; con tres
-millones encuentra un calendario de 27 y prueba que es óptimo. Las
-mediciones de la versión 5 con un límite de un millón de inferencias:
-
-| Proyecto | Duración | Garantía | Inferencias |
-|---|---|---|---|
-| `coffman` | 24 | óptima, por A\* | 16 532 |
-| `casa` | 28 | óptima, por A\* | 23 517 |
-| `taller(13)` | 28 | entre 27 y 28 | 1 003 519 |
-| `taller(14)` | 30 | óptima, por lista | 3 757 |
-| `taller(20)` | 42 | óptima, por lista | 5 661 |
-| `taller(40)` | 82 | entre 81 y 82 | 1 013 216 |
-
-El planificador nunca gasta más que el límite, más lo que cuestan los
-calendarios por lista y la cota, y cuando no puede probar el óptimo dice
-cuánto puede faltar. Bratko cierra su capítulo recordando, con la obra de
-Garey y Johnson sobre problemas intratables, que para muchos problemas de
-planificación ninguna heurística general asegura a la vez la eficiencia y
-la admisibilidad en todos los casos; la garantía es la manera de informar
-lo que se sabe cuando el límite corta la búsqueda.
-
-!!! example "Patrón 71 — Resultado con garantía"
-    **Problema.** Una búsqueda exacta, como A\* con una heurística
-    admisible, da el óptimo, pero su costo puede crecer de un caso al
-    siguiente sin aviso, y es necesario responder siempre dentro de un
-    presupuesto.
-
-    **Versión ingenua.** Ejecutar la búsqueda exacta sin límite, como
-    `optimo/4`, que en `taller(14)` cuesta casi diez millones de
-    inferencias; o cortarla con un límite y, si se alcanza, fallar o
-    devolver una solución heurística sin decir cuánto puede alejarse del
-    óptimo.
-
-    **Patrón.** Empezar por lo barato: una solución rápida, el mejor
-    calendario por lista, y una **cota inferior** probada, la estimación
-    admisible en el estado inicial que calcula `cota_inferior/2`. Si
-    coinciden, la solución es óptima sin buscar. Si no, la búsqueda exacta
-    corre dentro de `call_with_inference_limit/3`; si termina, su
-    resultado es óptimo, y si pasa del límite, `planificar/4` devuelve la
-    solución rápida junto con `entre(Cota, D)`. La respuesta dice qué se
-    sabe: en `taller(13)`, con un millón de inferencias, un calendario de
-    28 que no puede mejorarse en más de una unidad; con tres millones,
-    el de 27, `optima(a_estrella)`. La garantía es un término que el
-    llamador examina, no un mensaje.
-
-    **Cuándo no usarlo.** Cuando no hay una cota inferior barata y
-    probada: una estimación que no es admisible convierte la garantía en
-    una afirmación falsa. Cuando la cota es tan débil que el intervalo no
-    informa nada. Y cuando el costo de la búsqueda exacta está acotado de
-    antemano, como en los proyectos chicos: el límite y la cota agregan
-    trabajo a una respuesta que igual llega.
-
-!!! success "Criterios de calidad"
-    | Criterio | En este capítulo |
-    |---|---|
-    | C1 | cada predicado declara modos y determinación; `tarea/3` es `nondet` en general y, con la tarea instanciada, usa `memberchk/2` para no dejar alternativas en los recorridos de las heurísticas |
-    | C2 | representaciones limpias: el proyecto, el calendario, el estado y la garantía son términos con un functor cada uno; `valido/2` verifica cualquier calendario sin importar la versión que lo produjo |
-    | C4 | `armar/5` se compromete en cada paso con `->`, y las heurísticas reúnen sus cotas con `findall/3` y `max_list/2`, de modo que las pruebas no encuentran alternativas pendientes |
-    | C6 | el núcleo es puro: `lineas/3` devuelve el dibujo como cadenas y solo `mostrar/2` e `informe/2` escriben |
-    | C7 | 154 pruebas en doce archivos, incluidos calendarios inválidos de cada clase, un proyecto con un ciclo y el problema mínimo que prueba el puente con la búsqueda del [capítulo 41](../capitulo-41-busqueda-y-planificacion/index.md) |
-
-## 73.8 Anomalías, consistencia y holguras
-
-Tres temas de las fuentes quedan fuera de las cinco versiones, y la página
-[Anomalías, consistencia y holguras](extensiones.md) los agrega.
-`anomalias.pl` reproduce el ejemplo de Graham (1969) en el que agregar un
-procesador, quitar precedencias o acortar todas las tareas alarga el
-calendario por lista de 12 hasta 16 unidades, mientras la duración óptima
-no crece. `consistencia.pl` recorre el espacio de estados completo de los
-proyectos chicos y verifica que las heurísticas del capítulo son
-**consistentes**: la estimación nunca baja de un estado al siguiente más
-de lo que cuesta el paso, y A\* no necesita expandir un estado dos veces.
-`holguras.pl` calcula con dos pasadas sobre el orden topológico las
-fechas tempranas y tardías de cada tarea y su **holgura**, cuánto puede
-demorarse sin demorar el proyecto.
+El capítulo continúa en la página
+[El camino crítico y el planificador](camino.md#736-version-4-el-camino-critico), con la
+otra relajación, que conserva las precedencias, y con el planificador
+terminado; la página siguiente,
+[Anomalías, consistencia y holguras](extensiones.md#738-anomalias-consistencia-y-holguras),
+lo termina con tres temas de las fuentes que las cinco versiones no
+desarrollan. Antes, los [ejercicios](#ejercicios) de esta página
+practican las versiones 1 a 3.
 
 ## Ejercicios
 
@@ -800,97 +634,28 @@ Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
 tiene de propio. Los ejercicios que piden código se resuelven en archivos
 que cargan los del capítulo, sin modificarlos.
 
-1. ★ **(1)** Con la obra `casa` y tres cuadrillas en lugar de dos,
-   predecir la estimación de `reparto/3` y de `camino/3` en el estado
-   inicial, la cota inferior y la duración óptima. Comprobarlo con un
-   predicado `con_procesadores(Proyecto0, N, Proyecto)` y con
-   `planificar/4`, y decir qué garantía da y por qué.
-2. ★ **(2)** Escribir `mejor_de_todas(Proyecto, D)`: D es la menor
+1. ★ **(2)** Escribir `mejor_de_todas(Proyecto, D)`: D es la menor
    duración que da la planificación por lista entre todas las
    prioridades posibles. Comprobar que en `coffman` es 33 y explicar por
    qué ninguna prioridad alcanza el calendario de 24.
-3. **(2)** La **cabeza** de una tarea es el momento más temprano en que
-   puede empezar si sobran procesadores. Escribir `cabeza/3` y
-   `criticas(Proyecto, Tareas)`, las tareas cuya cabeza más cola es la
-   mayor cola del proyecto, con sus cabeceras PlDoc: modos, determinación
-   y una descripción que diga qué significa que una tarea sea crítica.
-   Obtener las tareas críticas de `coffman` y de `casa`.
-4. ★ **(2)** La heurística `suma/3` estima la suma de las duraciones de
+2. ★ **(2)** La heurística `suma/3` estima la suma de las duraciones de
    las tareas pendientes. Escribirla, usarla con `optimo/4` en `coffman` y
    en `casa`, y explicar la duración y la cantidad de estados que se
    obtienen con la definición de admisibilidad.
-5. **(2)** Escribir `comparar_voraz(Ns, Filas)`, que compara la búsqueda
-   voraz con A\* sobre `taller(N)` para cada N de `Ns`, las dos con la
-   heurística combinada: duración y estados expandidos. Medir con N = 6 y
-   N = 12 y explicar el resultado.
-6. **(3)** El [capítulo 41](../capitulo-41-busqueda-y-planificacion/index.md) también escribió IDA\*. Escribir
-   `optimo_ida(Proyecto, Heuristica, D, K)` con `ida_estrella/4` y
-   `busqueda.pl`, y comparar sus estados expandidos con los de A\* para
-   `reparto` y `combinada` en `coffman` y en `casa`. Explicar por qué IDA\*
-   expande menos en un caso y muchos más en otro.
-7. ★ **(2)** Escribir `curva(Proyecto, Ns, Duraciones)`, la duración
-   óptima con cada cantidad de procesadores de `Ns`. Obtenerla para `casa`
-   y para `coffman` con uno a cuatro procesadores y explicar a partir de
-   qué cantidad la duración deja de bajar.
-8. **(3)** El estado guarda el fin de cada tarea empezada, pero ese fin
+3. **(3)** El estado guarda el fin de cada tarea empezada, pero ese fin
    solo sirve mientras quede pendiente alguna sucesora. Definir otro
    problema para `busqueda.pl` que delegue en el espacio de estados de la
    versión 2 y borre de cada estado los fines que ya no sirven. Medir los
    estados expandidos con `cero` en `coffman` y en `casa`.
-9. **(2)** Escribir `regla(D, Linea)`, una línea con el número de cada
+4. **(2)** Escribir `regla(D, Linea)`, una línea con el número de cada
    múltiplo de 5 hasta D en la columna de ese momento, y
    `mostrar_con_regla/2`, que la escribe arriba del diagrama.
-10. ★ **(2)** Escribir `errores(Proyecto, Errores)`, que revisa la
+5. ★ **(2)** Escribir `errores(Proyecto, Errores)`, que revisa la
     representación de un proyecto: tareas repetidas, duraciones que no son
     enteros positivos, tareas de las precedencias que no existen, una
     cantidad de procesadores que no es un entero positivo y precedencias
     que forman un ciclo. Probarlo con un proyecto que tenga un error de
     cada clase.
-11. **(1)** Predecir qué garantía da `planificar/4` para `casa` con límites
-    de 1 000, 10 000 y 100 000 inferencias, y comprobarlo con
-    `planificar_ejemplo/4`.
-12. **(2)** Escribir `por_colas(Proyecto, D)`: D es la duración del
-    calendario por lista de Proyecto con la prioridad de mayor cola
-    primero. Obtenerla para las cinco variantes de `anomalias.pl`,
-    compararla con `anomalias/1` y explicar por qué esa prioridad evita
-    las anomalías del ejemplo de Graham. Comprobar con `coffman` que no
-    las evita en general.
-
-## Resumen
-
-| | |
-|---|---|
-| **proyecto** | tareas con duración, precedencias `antes(A, B)` y una cantidad de procesadores idénticos; una tarea empezada no se interrumpe |
-| **calendario** | una lista de `asignada(Tarea, Procesador, Inicio, Fin)`; se verifica con `valido/2`, sin importar cómo se obtuvo |
-| **planificación por lista** | asignar las tareas en el orden de una prioridad, sin volver atrás; nunca deja un procesador ocioso a propósito, y por eso puede no alcanzar el óptimo |
-| **espacio de estados de la planificación** | tareas pendientes, momentos en que se liberan los procesadores y fines de las empezadas; el primer procesador libre empieza una tarea lista o espera hasta que se libera otro |
-| **costo como aumento de la duración** | la suma de los costos de un plan es la duración del calendario, y A\* devuelve el más corto |
-| **relajación** | quitar restricciones al problema; el óptimo del problema relajado es una heurística que nunca estima de más |
-| **reparto** | el trabajo pendiente y el asignado divididos entre los procesadores: relaja las precedencias y la indivisibilidad de las tareas |
-| **camino crítico** | la cadena de tareas de mayor cola: relaja la cantidad de procesadores |
-| **máximo de heurísticas** | el máximo de dos heurísticas admisibles es admisible y al menos tan informado como cada una |
-| **garantía** | la cota inferior y la duración del calendario obtenido: el óptimo está entre las dos |
-| **anomalía de la planificación por lista** | un cambio favorable (más procesadores, menos precedencias, tareas más cortas) que alarga el calendario por lista sin alargar el óptimo |
-| **heurística consistente** | la estimación no baja de un estado al siguiente más que el costo del paso; A\* no expande un estado dos veces |
-| **holgura** | la fecha tardía menos la temprana: cuánto puede demorarse una tarea sin demorar el proyecto, con procesadores de sobra |
-| **puente a otra búsqueda** | incluir un archivo que no es un módulo y agregarle una cláusula que delega en otro módulo |
-| `ejemplo/2`, `valido/2`, `duracion/2`, `repartir/3`, `orden_topologico/2` | la representación, en `tareas.pl` |
-| `por_lista/3` | la versión 1 |
-| `optimo/4`, `voraz/4`, `cero/3` | la versión 2 |
-| `reparto/3`, `camino/3`, `combinada/3` | las heurísticas de las versiones 3 y 4 |
-| `planificar/4`, `cota_inferior/2`, `informe/2` | el planificador |
-| `variante/3`, `anomalias/1` | las anomalías de Graham |
-| `alcanzables/2`, `consistente/2`, `salteada/3` | la consistencia |
-| `fechas/3`, `holguras/2`, `camino_critico/2` | las holguras |
-| **[Patrón 71](../patrones.md#71-resultado-con-garantia)** | resultado con garantía |
-| **[Patrón 72](../patrones.md#72-verificar-una-propiedad-en-todo-el-espacio-de-estados-de-un-caso-chico)** | verificar una propiedad en todo el espacio de estados de un caso chico |
-| `empty_nb_set/1`, `add_nb_set/2,3`, `nb_set_to_list/2`, `size_nb_set/2` | un conjunto de términos que no se deshace al retroceder: crearlo, agregar un elemento, la lista y la cantidad de elementos |
-
-## Temas que se retoman
-
-| Tema | Se retoma en |
-|---|---|
-| Horarios de exámenes y de clases de *Inscripciones* sobre la misma representación de tareas y recursos, con búsqueda y con restricciones | [capítulo 74](../capitulo-74-proyecto-horarios-inscripciones/index.md) |
 
 ## Referencias
 
@@ -902,21 +667,17 @@ que cargan los del capítulo, sin modificarlos.
   calendarios de 24 y de 33, la observación de que el óptimo exige tiempo
   ocioso, la construcción del calendario de izquierda a derecha con una
   espera que dura solo hasta que termina otra tarea, el costo de una
-  transición como aumento de la duración, la heurística que olvida las
-  precedencias y reparte el trabajo entre los procesadores, y la
-  propuesta final de buscar heurísticas mejores, que la versión 4
-  desarrolla con el camino crítico.
+  transición como aumento de la duración, y la heurística que olvida las
+  precedencias y reparte el trabajo entre los procesadores.
 - Peter E. Hart, Nils J. Nilsson y Bertram Raphael, «A formal basis for
   the heuristic determination of minimum cost paths», *IEEE Transactions
   on Systems Science and Cybernetics* SSC-4(2), 1968, pp. 100–107.
   [Copia de Nilsson](https://ai.stanford.edu/~nilsson/OnlinePubs-Nils/PublishedPapers/astar.pdf).
   El artículo de A\* y del teorema de admisibilidad, al que Bratko
   remite: con una estimación que nunca supera el costo restante, la
-  búsqueda da el óptimo. El capítulo lo usa para justificar que las
-  heurísticas de las versiones 3 y 4, obtenidas por relajación, dan
-  calendarios óptimos, y que la estimación en el estado inicial es una
-  cota inferior que el planificador puede informar. De allí viene también
-  la condición de consistencia que verifica `consistencia.pl`.
+  búsqueda da el óptimo. Esta página lo usa para justificar que la
+  heurística de la versión 3, obtenida por relajación, da calendarios
+  óptimos.
 - Ronald L. Graham, «Bounds for certain multiprocessing anomalies», *The
   Bell System Technical Journal* 45(9), 1966, pp. 1563–1581.
   [Edición en Internet Archive](https://archive.org/details/bstj45-9-1563).
@@ -925,33 +686,8 @@ que cargan los del capítulo, sin modificarlos.
   de una lista de prioridades), muestra sus anomalías y prueba que cambiar
   la lista no alarga el calendario más que 2 − 1/n veces. Es el método de
   la versión 1, y la cota que la
-  [sección 73.3](#733-version-1-la-planificacion-por-lista) cita; la
-  cota 1 + (n − 1)/n′ para los cuatro cambios a la vez se cita en la
-  página de las anomalías.
-- Ronald L. Graham, «Bounds on multiprocessing timing anomalies», *SIAM
-  Journal on Applied Mathematics* 17(2), 1969, pp. 416–429.
-  [Copia del autor](https://mathweb.ucsd.edu/~ronspubs/69_02_multiprocessing.pdf).
-  Presenta el proyecto de nueve tareas y tres procesadores con el que la
-  página [Anomalías, consistencia y holguras](extensiones.md) muestra que
-  otra lista, menos precedencias, tareas más cortas o un procesador más
-  alargan el calendario por lista; `anomalias.pl` reproduce sus cinco
-  calendarios y sus duraciones, 12, 14, 16, 13 y 15.
-- Michael R. Garey y David S. Johnson, *Computers and Intractability: A
-  Guide to the Theory of NP-Completeness*, W. H. Freeman, 1979. Sin
-  edición en línea de acceso libre. Bratko remite a esta obra para los
-  límites de las heurísticas en los problemas de planificación; el
-  capítulo la cita en la
-  [sección 73.7](#737-version-5-el-planificador) como razón del
-  planificador con garantía.
+  [sección 73.3](#733-version-1-la-planificacion-por-lista) cita.
 - E. G. Coffman y P. J. Denning, *Operating Systems Theory*,
   Prentice-Hall, 1973 — el ejemplo de siete tareas y tres procesadores,
   tomado a través de Bratko, que lo cita. Sin edición en línea de acceso
   libre.
-
-El código del capítulo es propio, escrito para el curso: la
-representación, la planificación por lista, el espacio de estados sobre
-la búsqueda del [capítulo 41](../capitulo-41-busqueda-y-planificacion/index.md),
-la heurística del camino crítico, el planificador con límite y garantía,
-la verificación de la consistencia, el cálculo de las holguras y las
-mediciones son nuevos, y del libro de Bratko se toman las ideas y el
-ejemplo, no el programa.

@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 35 - Soluciones de los ejercicios 1 a 12, 15 y 16.
+% Capítulo 35 - Soluciones de los ejercicios 1 a 13 y 16.
 %
 % El archivo repite las definiciones de los ejemplos que usan los
 % ejercicios, para cargarse solo: conocidos/2 de abiertas.pl,
@@ -258,7 +258,7 @@ hojas_lista([A|As]) -->
     hojas(A),
     hojas_lista(As).
 
-% --- Ejercicio 15 ---
+% --- Ejercicio 16 ---
 
 %!  nivelar(+Arbol, -Nivelado) is det.
 %
@@ -280,7 +280,7 @@ nivelar(n(Izq, X, Der), M, n(Izq1, M, Der1), Max0, Max) :-
     nivelar(Izq, M, Izq1, Max1, Max2),
     nivelar(Der, M, Der1, Max2, Max).
 
-% --- Ejercicio 16 ---
+% --- Ejercicio 13 ---
 
 %!  sumandos(+Suma, -Dif) is det.
 %

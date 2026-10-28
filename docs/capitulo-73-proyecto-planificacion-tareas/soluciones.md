@@ -4,39 +4,13 @@ El código de esta página está en `ejemplos/capitulo-73/soluciones.pl`, con
 sus pruebas en `soluciones.plt`. El archivo carga `planificador.pl` (que
 reexporta `camino.pl`, `reparto.pl`, `espacio.pl` y la representación,
 `tareas.pl`), `lista.pl` y `busqueda.pl`, sin modificarlos. La solución
-del ejercicio 8 está en `soluciones_estados.pl`, porque define otro
+del ejercicio 3 está en `soluciones_estados.pl`, porque define otro
 espacio de estados. Los dos
 archivos son `% solo-local`, porque cargan otros archivos. Las consultas
 reúnen los resultados con `findall/3` para no mostrar los proyectos
 completos.
 
 ## 1
-
-Con tres cuadrillas, las 36 unidades de trabajo divididas por tres dan 12:
-el reparto queda muy por debajo del camino crítico de la obra, que suma
-27 (cimientos, paredes, techo, revoque y pintura). La cota inferior es el
-máximo, 27. La tercera cuadrilla permite hacer el agua, la luz y las
-aberturas al mismo tiempo que el techo, así que la duración óptima es 27,
-y el mejor calendario por lista ya la alcanza: el planificador no busca y
-responde `optima(por_lista)`.
-
-<!-- ejemplo: capitulo-73/soluciones.pl predicado: con_procesadores/3 -->
-```prolog
-%!  con_procesadores(+Proyecto0, +N:integer, -Proyecto) is det.
-%
-%   Proyecto tiene las tareas y las precedencias de Proyecto0, con N
-%   procesadores.
-con_procesadores(proyecto(Tareas, Precedencias, _), N,
-                 proyecto(Tareas, Precedencias, N)).
-```
-
-<!-- contexto: capitulo-73/soluciones.pl -->
-```prolog
-?- findall(H-B-G, (ejemplo(casa, P0), con_procesadores(P0, 3, P), inicial(datos(P, combinada), E), member(H0, [reparto, camino]), call(H0, P, E, H), cota_inferior(P, B), planificar(P, 1000000, _, G)), L).
-L = [12-27-optima(por_lista), 27-27-optima(por_lista)].
-```
-
-## 2
 
 Una prioridad es una permutación de las tareas, y `permutation/2` las
 genera todas; `aggregate_all/3` se queda con la menor duración.
@@ -70,58 +44,7 @@ así que `t6` y `t7` ocupan los dos procesadores libres hasta 13, y una de
 las tareas de 20 unidades no puede empezar antes de 13: el final llega a
 33. El calendario de 24 necesita dejar un procesador ocioso entre 2 y 4.
 
-## 3
-
-La cabeza es la simétrica de la cola: se calcula hacia atrás, por las
-predecesoras. Una tarea es crítica si su cabeza más su cola es la mayor
-cola: el camino más largo del proyecto pasa por ella, de modo que
-demorarla demora el final aunque sobren procesadores. Las dos cabeceras
-declaran `det`: con el proyecto y la tarea instanciados hay exactamente
-una respuesta, y `findall/3` con `max_list/2` no dejan alternativas. El
-modo exige el proyecto instanciado (`+`); la tarea de `cabeza/3` también,
-porque sin ella `precede/3` enumeraría pares de cualquier tarea.
-
-<!-- ejemplo: capitulo-73/soluciones.pl predicado: cabeza/3 criticas/2 -->
-```prolog
-%!  cabeza(+Proyecto, +Tarea, -Cabeza:integer) is det.
-%
-%   Cabeza es el momento más temprano en que puede empezar Tarea si sobran
-%   procesadores: 0 si no tiene predecesoras y, si las tiene, el mayor fin
-%   más temprano de ellas.
-cabeza(Proyecto, Tarea, Cabeza) :-
-    findall(F,
-            ( precede(Proyecto, Antes, Tarea),
-              cabeza(Proyecto, Antes, C),
-              tarea(Proyecto, Antes, D),
-              F is C + D ),
-            Fines),
-    max_list([0|Fines], Cabeza).
-
-%!  criticas(+Proyecto, -Tareas:list) is det.
-%
-%   Tareas son las tareas críticas de Proyecto: aquellas cuya cabeza más
-%   cola es la mayor cola del proyecto, de modo que demorar cualquiera de
-%   ellas demora el final aunque sobren procesadores.
-criticas(Proyecto, Tareas) :-
-    findall(C, ( tarea(Proyecto, T, _), cola(Proyecto, T, C) ), Colas),
-    max_list(Colas, Largo),
-    findall(T,
-            ( tarea(Proyecto, T, _),
-              cabeza(Proyecto, T, Cabeza),
-              cola(Proyecto, T, Cola),
-              Cabeza + Cola =:= Largo ),
-            Tareas).
-```
-
-```prolog
-?- findall(N-Ts, (member(N, [coffman, casa]), ejemplo(N, P), criticas(P, Ts)), L).
-L = [coffman-[t1, t4, t5], casa-[cimientos, paredes, techo, revoque, pintura]].
-```
-
-En `coffman` hay dos caminos críticos de 24, `t1`–`t4` y `t1`–`t5`, y la
-lista reúne sus tareas.
-
-## 4
+## 2
 
 <!-- ejemplo: capitulo-73/soluciones.pl predicado: suma/3 sumar/4 -->
 ```prolog
@@ -159,107 +82,7 @@ pesa mucho más que el costo acumulado, y la búsqueda se comporta casi como
 la voraz: expande solo 7 estados y termina con un calendario de 33. En `casa` llega a 28, el óptimo, pero por
 casualidad: nada en la búsqueda lo prueba.
 
-## 5
-
-<!-- ejemplo: capitulo-73/soluciones.pl predicado: comparar_voraz/2 fila_voraz/2 -->
-```prolog
-%!  comparar_voraz(+Ns:list, -Filas:list) is det.
-%
-%   Filas tiene, para cada N de Ns, un término
-%   N-voraz(D1, K1)-optimo(D2, K2) con la duración y los estados
-%   expandidos de la búsqueda voraz y de A* sobre taller(N), las dos con
-%   la heurística combinada.
-comparar_voraz(Ns, Filas) :-
-    maplist(fila_voraz, Ns, Filas).
-
-%!  fila_voraz(+N:integer, -Fila) is det.
-%
-%   Fila compara la búsqueda voraz con A* sobre taller(N).
-fila_voraz(N, N-voraz(D1, K1)-optimo(D2, K2)) :-
-    ejemplo(taller(N), P),
-    voraz(P, combinada, C1, K1),
-    duracion(C1, D1),
-    optimo(P, combinada, C2, K2),
-    duracion(C2, D2).
-```
-
-```prolog
-?- comparar_voraz([6, 12], F).
-F = [6-voraz(16, 23)-optimo(15, 29), 12-voraz(30, 15)-optimo(26, 43)].
-```
-
-La búsqueda voraz expande menos estados en `taller(12)` (15 contra 43),
-pero su calendario dura 30 contra 26; en `taller(6)` expande 23 contra
-29 y termina en 16 en lugar de 15. La
-búsqueda voraz no garantiza el óptimo con ninguna heurística; A\* sí, si
-la heurística nunca estima de más.
-
-## 6
-
-`ida_estrella/4` recibe el mismo término `problema(espacio, Datos)` que
-`buscar/5`. La heurística se califica con el módulo `soluciones`, porque
-el espacio de estados la llama con `call/4` desde su propio módulo.
-
-<!-- ejemplo: capitulo-73/soluciones.pl predicado: optimo_ida/4 -->
-```prolog
-%!  optimo_ida(+Proyecto, +Heuristica, -D:integer, -Expandidos:integer)
-%!      is semidet.
-%
-%   D es la duración óptima de Proyecto según IDA* del capítulo 41, con
-%   Heuristica, el nombre de un predicado visible en este módulo;
-%   Expandidos cuenta los estados expandidos en todas las iteraciones.
-optimo_ida(Proyecto, Heuristica, D, Expandidos) :-
-    ida_estrella(problema(espacio, datos(Proyecto, soluciones:Heuristica)),
-                 _, D, Expandidos).
-```
-
-```prolog
-?- findall(N-D-K, (member(N, [coffman, casa]), member(H, [reparto, combinada]), ejemplo(N, P), optimo_ida(P, H, D, K)), L).
-L = [coffman-24-11, coffman-24-9, casa-28-1022, casa-28-24].
-```
-
-En `coffman` con el reparto, IDA\* expande 11 estados contra 21 de A\*:
-la estimación inicial, 24, ya es el óptimo, y la primera iteración
-recorre en profundidad un solo camino hasta un calendario que la
-alcanza. En `casa` con el reparto la estimación inicial es 18 y el óptimo
-28: IDA\* repite la búsqueda con cotas crecientes y, sin conjunto de
-visitados, vuelve a expandir los mismos estados en cada iteración y por
-cada camino que lleva a ellos: 1 022 contra 231. Con la combinada, que
-empieza en 27 en `casa`, la diferencia se reduce a 24 contra 16.
-
-## 7
-
-<!-- ejemplo: capitulo-73/soluciones.pl predicado: curva/3 duracion_con/3 -->
-```prolog
-%!  curva(+Proyecto, +Ns:list, -Duraciones:list) is det.
-%
-%   Duraciones tiene, para cada cantidad de procesadores N de Ns, un par
-%   N-D con la duración óptima D de Proyecto con N procesadores.
-curva(Proyecto, Ns, Duraciones) :-
-    maplist(duracion_con(Proyecto), Ns, Duraciones).
-
-%!  duracion_con(+Proyecto, +N:integer, -Par) is det.
-%
-%   Par es N-D, con D la duración óptima de Proyecto con N procesadores.
-duracion_con(Proyecto0, N, N-D) :-
-    con_procesadores(Proyecto0, N, Proyecto),
-    optimo(Proyecto, combinada, C, _),
-    duracion(C, D).
-```
-
-```prolog
-?- findall(N-L, (member(N, [casa, coffman]), ejemplo(N, P), curva(P, [1, 2, 3, 4], L)), Ls).
-Ls = [casa-[1-36, 2-28, 3-27, 4-27], coffman-[1-70, 2-35, 3-24, 4-24]].
-```
-
-Con un procesador la duración es la suma de todas las tareas: 36 y 70.
-Cada procesador que se agrega reparte mejor el trabajo, hasta que la
-duración llega al camino crítico, que ningún procesador acorta: 27 en
-`casa`, a partir de tres cuadrillas, y 24 en `coffman`, a partir de tres
-procesadores. Con dos, `coffman` dura 35, la mitad de 70: el reparto es
-la cota que manda.
-
-## 8
+## 3
 
 <!-- ejemplo: capitulo-73/soluciones_estados.pl predicado: sucesor/5 normalizar/3 sirve/3 -->
 ```prolog
@@ -302,7 +125,7 @@ predecesoras de las tareas pendientes. La mejora es modesta porque la
 mayor parte de los estados distintos difieren en los momentos en que se
 liberan los procesadores, no en fines viejos.
 
-## 9
+## 4
 
 <!-- ejemplo: capitulo-73/soluciones.pl predicado: regla/2 multiplo_de_5/1 marca/3 mostrar_con_regla/2 -->
 ```prolog
@@ -352,7 +175,7 @@ duración: 28
 true.
 ```
 
-## 10
+## 5
 
 Cada clase de error se reúne con su propio `findall/3`, y la lista final
 los concatena en el orden del enunciado. El ciclo solo se busca cuando
@@ -405,6 +228,183 @@ E = [repetida(a), duracion(b, 0), desconocida(x), procesadores(0)].
 ?- errores(proyecto([tarea(a, 1), tarea(b, 2)], [antes(a, b), antes(b, a)], 2), E).
 E = [ciclo].
 ```
+
+## 6
+
+Con tres cuadrillas, las 36 unidades de trabajo divididas por tres dan 12:
+el reparto queda muy por debajo del camino crítico de la obra, que suma
+27 (cimientos, paredes, techo, revoque y pintura). La cota inferior es el
+máximo, 27. La tercera cuadrilla permite hacer el agua, la luz y las
+aberturas al mismo tiempo que el techo, así que la duración óptima es 27,
+y el mejor calendario por lista ya la alcanza: el planificador no busca y
+responde `optima(por_lista)`.
+
+<!-- ejemplo: capitulo-73/soluciones.pl predicado: con_procesadores/3 -->
+```prolog
+%!  con_procesadores(+Proyecto0, +N:integer, -Proyecto) is det.
+%
+%   Proyecto tiene las tareas y las precedencias de Proyecto0, con N
+%   procesadores.
+con_procesadores(proyecto(Tareas, Precedencias, _), N,
+                 proyecto(Tareas, Precedencias, N)).
+```
+
+<!-- contexto: capitulo-73/soluciones.pl -->
+```prolog
+?- findall(H-B-G, (ejemplo(casa, P0), con_procesadores(P0, 3, P), inicial(datos(P, combinada), E), member(H0, [reparto, camino]), call(H0, P, E, H), cota_inferior(P, B), planificar(P, 1000000, _, G)), L).
+L = [12-27-optima(por_lista), 27-27-optima(por_lista)].
+```
+
+## 7
+
+La cabeza es la simétrica de la cola: se calcula hacia atrás, por las
+predecesoras. Una tarea es crítica si su cabeza más su cola es la mayor
+cola: el camino más largo del proyecto pasa por ella, de modo que
+demorarla demora el final aunque sobren procesadores. Las dos cabeceras
+declaran `det`: con el proyecto y la tarea instanciados hay exactamente
+una respuesta, y `findall/3` con `max_list/2` no dejan alternativas. El
+modo exige el proyecto instanciado (`+`); la tarea de `cabeza/3` también,
+porque sin ella `precede/3` enumeraría pares de cualquier tarea.
+
+<!-- ejemplo: capitulo-73/soluciones.pl predicado: cabeza/3 criticas/2 -->
+```prolog
+%!  cabeza(+Proyecto, +Tarea, -Cabeza:integer) is det.
+%
+%   Cabeza es el momento más temprano en que puede empezar Tarea si sobran
+%   procesadores: 0 si no tiene predecesoras y, si las tiene, el mayor fin
+%   más temprano de ellas.
+cabeza(Proyecto, Tarea, Cabeza) :-
+    findall(F,
+            ( precede(Proyecto, Antes, Tarea),
+              cabeza(Proyecto, Antes, C),
+              tarea(Proyecto, Antes, D),
+              F is C + D ),
+            Fines),
+    max_list([0|Fines], Cabeza).
+
+%!  criticas(+Proyecto, -Tareas:list) is det.
+%
+%   Tareas son las tareas críticas de Proyecto: aquellas cuya cabeza más
+%   cola es la mayor cola del proyecto, de modo que demorar cualquiera de
+%   ellas demora el final aunque sobren procesadores.
+criticas(Proyecto, Tareas) :-
+    findall(C, ( tarea(Proyecto, T, _), cola(Proyecto, T, C) ), Colas),
+    max_list(Colas, Largo),
+    findall(T,
+            ( tarea(Proyecto, T, _),
+              cabeza(Proyecto, T, Cabeza),
+              cola(Proyecto, T, Cola),
+              Cabeza + Cola =:= Largo ),
+            Tareas).
+```
+
+```prolog
+?- findall(N-Ts, (member(N, [coffman, casa]), ejemplo(N, P), criticas(P, Ts)), L).
+L = [coffman-[t1, t4, t5], casa-[cimientos, paredes, techo, revoque, pintura]].
+```
+
+En `coffman` hay dos caminos críticos de 24, `t1`–`t4` y `t1`–`t5`, y la
+lista reúne sus tareas.
+
+## 8
+
+<!-- ejemplo: capitulo-73/soluciones.pl predicado: comparar_voraz/2 fila_voraz/2 -->
+```prolog
+%!  comparar_voraz(+Ns:list, -Filas:list) is det.
+%
+%   Filas tiene, para cada N de Ns, un término
+%   N-voraz(D1, K1)-optimo(D2, K2) con la duración y los estados
+%   expandidos de la búsqueda voraz y de A* sobre taller(N), las dos con
+%   la heurística combinada.
+comparar_voraz(Ns, Filas) :-
+    maplist(fila_voraz, Ns, Filas).
+
+%!  fila_voraz(+N:integer, -Fila) is det.
+%
+%   Fila compara la búsqueda voraz con A* sobre taller(N).
+fila_voraz(N, N-voraz(D1, K1)-optimo(D2, K2)) :-
+    ejemplo(taller(N), P),
+    voraz(P, combinada, C1, K1),
+    duracion(C1, D1),
+    optimo(P, combinada, C2, K2),
+    duracion(C2, D2).
+```
+
+```prolog
+?- comparar_voraz([6, 12], F).
+F = [6-voraz(16, 23)-optimo(15, 29), 12-voraz(30, 15)-optimo(26, 43)].
+```
+
+La búsqueda voraz expande menos estados en `taller(12)` (15 contra 43),
+pero su calendario dura 30 contra 26; en `taller(6)` expande 23 contra
+29 y termina en 16 en lugar de 15. La
+búsqueda voraz no garantiza el óptimo con ninguna heurística; A\* sí, si
+la heurística nunca estima de más.
+
+## 9
+
+`ida_estrella/4` recibe el mismo término `problema(espacio, Datos)` que
+`buscar/5`. La heurística se califica con el módulo `soluciones`, porque
+el espacio de estados la llama con `call/4` desde su propio módulo.
+
+<!-- ejemplo: capitulo-73/soluciones.pl predicado: optimo_ida/4 -->
+```prolog
+%!  optimo_ida(+Proyecto, +Heuristica, -D:integer, -Expandidos:integer)
+%!      is semidet.
+%
+%   D es la duración óptima de Proyecto según IDA* del capítulo 41, con
+%   Heuristica, el nombre de un predicado visible en este módulo;
+%   Expandidos cuenta los estados expandidos en todas las iteraciones.
+optimo_ida(Proyecto, Heuristica, D, Expandidos) :-
+    ida_estrella(problema(espacio, datos(Proyecto, soluciones:Heuristica)),
+                 _, D, Expandidos).
+```
+
+```prolog
+?- findall(N-D-K, (member(N, [coffman, casa]), member(H, [reparto, combinada]), ejemplo(N, P), optimo_ida(P, H, D, K)), L).
+L = [coffman-24-11, coffman-24-9, casa-28-1022, casa-28-24].
+```
+
+En `coffman` con el reparto, IDA\* expande 11 estados contra 21 de A\*:
+la estimación inicial, 24, ya es el óptimo, y la primera iteración
+recorre en profundidad un solo camino hasta un calendario que la
+alcanza. En `casa` con el reparto la estimación inicial es 18 y el óptimo
+28: IDA\* repite la búsqueda con cotas crecientes y, sin conjunto de
+visitados, vuelve a expandir los mismos estados en cada iteración y por
+cada camino que lleva a ellos: 1 022 contra 231. Con la combinada, que
+empieza en 27 en `casa`, la diferencia se reduce a 24 contra 16.
+
+## 10
+
+<!-- ejemplo: capitulo-73/soluciones.pl predicado: curva/3 duracion_con/3 -->
+```prolog
+%!  curva(+Proyecto, +Ns:list, -Duraciones:list) is det.
+%
+%   Duraciones tiene, para cada cantidad de procesadores N de Ns, un par
+%   N-D con la duración óptima D de Proyecto con N procesadores.
+curva(Proyecto, Ns, Duraciones) :-
+    maplist(duracion_con(Proyecto), Ns, Duraciones).
+
+%!  duracion_con(+Proyecto, +N:integer, -Par) is det.
+%
+%   Par es N-D, con D la duración óptima de Proyecto con N procesadores.
+duracion_con(Proyecto0, N, N-D) :-
+    con_procesadores(Proyecto0, N, Proyecto),
+    optimo(Proyecto, combinada, C, _),
+    duracion(C, D).
+```
+
+```prolog
+?- findall(N-L, (member(N, [casa, coffman]), ejemplo(N, P), curva(P, [1, 2, 3, 4], L)), Ls).
+Ls = [casa-[1-36, 2-28, 3-27, 4-27], coffman-[1-70, 2-35, 3-24, 4-24]].
+```
+
+Con un procesador la duración es la suma de todas las tareas: 36 y 70.
+Cada procesador que se agrega reparte mejor el trabajo, hasta que la
+duración llega al camino crítico, que ningún procesador acorta: 27 en
+`casa`, a partir de tres cuadrillas, y 24 en `coffman`, a partir de tres
+procesadores. Con dos, `coffman` dura 35, la mitad de 70: el reparto es
+la cota que manda.
 
 ## 11
 

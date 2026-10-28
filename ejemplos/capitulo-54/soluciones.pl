@@ -1,6 +1,6 @@
 :- encoding(utf8).
 
-% Capítulo 54 - Soluciones de los ejercicios 2, 3, 5, 6, 8 y 9.
+% Capítulo 54 - Soluciones de los ejercicios 2, 4, 5, 7, 8 y 9.
 %
 % Carga la versión 4 y agrega palabras al léxico sin modificarlo: el
 % léxico declara multifile sus predicados, y la versión 2, sus clases de
@@ -15,23 +15,23 @@
 :- use_module(lexico).
 :- ensure_loaded(paralelo).
 
-% Ejercicio 2: palabras nuevas, sin reglas nuevas.
+% Ejercicio 7: palabras nuevas, sin reglas nuevas.
 lexico:nombre("nariz", femenino).
 lexico:nombre("razón", femenino).
 lexico:nombre("origen", masculino).
 lexico:adjetivo("cortés", invariable).
 
-% Ejercicio 3: un cambio de la raíz y un cambio ortográfico juntos.
+% Ejercicio 2: un cambio de la raíz y un cambio ortográfico juntos.
 lexico:verbo("empezar", e_ie).
 lexico:verbo("colgar", o_ue).
 
-% Ejercicio 6: la u de jugar diptonga.
+% Ejercicio 5: la u de jugar diptonga.
 lexico:verbo("jugar", u_ue).
 reglas:diptongo(u_ue, u, [u, e]).
 
 %!  escribir_antes(?Subyacente:list, ?Escrita:list) is nondet.
 %
-%   Ejercicio 5: escribir/2 reducida a la letra k, con cada condición
+%   Ejercicio 4: escribir/2 reducida a la letra k, con cada condición
 %   antes de la llamada recursiva. Genera bien; en sentido inverso no
 %   encuentra la forma subyacente de «tocar».
 escribir_antes([], []).

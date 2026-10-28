@@ -1,13 +1,27 @@
 # Una colección de estampillas
 
-Esta página contiene la
-[sección 82.6](index.md#826-una-coleccion-de-estampillas) del
-[capítulo 82](index.md): el álbum de estampillas de Csenki, primero
-guardado en la base de datos dinámica y después como un valor que pasan
-de una relación a otra. El programa es `estampillas.pl`, en
-`ejemplos/capitulo-82/`, con sus pruebas.
+Esta página continúa el [capítulo 82](index.md) después de la
+[sección 82.5](moleculas.md#825-moleculas), con la sección
+[82.6](#826-una-coleccion-de-estampillas): el álbum de estampillas de
+Csenki, primero guardado en la base de datos dinámica y después como un
+valor que pasan de una relación a otra. El programa es `estampillas.pl`,
+en `ejemplos/capitulo-82/`, con sus pruebas.
 
-## El álbum
+## 82.6 Una colección de estampillas
+
+Esta sección escribe el álbum de Csenki: un sello es `sello(Pais, Serie, Anio,
+Valor)`, cada hecho `album/1` guarda una serie en orden de valor, y un
+**patrón**, un sello con variables, elige los sellos con los que unifica sin
+quedar ligado. La versión 1 vende y compra cambiando la base de datos en medio
+del cálculo; el `sell/1` del libro, ejecutado, solo vende cuando el primer sello
+de la serie cumple el patrón. La versión 2 escribe vender y comprar como
+relaciones puras entre un álbum, una lista de series, y el siguiente, y deja la
+base de datos en una capa de un solo predicado, `operar/1`. Es el [Patrón
+86](../patrones.md#86-el-estado-como-valor-la-base-de-datos-como-capa), el
+estado como valor y la base de datos como capa: las relaciones se prueban con
+álbumes escritos en la prueba, sin guardar ni restaurar la base de datos.
+
+### El álbum
 
 Un sello es `sello(Pais, Serie, Anio, Valor)`, y cada hecho `album/1`
 guarda una serie: los sellos de un mismo país y una misma serie, en orden
@@ -38,7 +52,7 @@ album([ sello(alemania, castillos, 1885, 10),
       ]).
 ```
 
-## Versión 1: el álbum en la base de datos
+### Versión 1: el álbum en la base de datos
 
 Un **patrón** es un sello con variables, y elige los sellos con los que
 unifica. `coleccion/2` devuelve la lista de esos sellos; la plantilla del
@@ -179,7 +193,7 @@ estampilla de cada serie, que en los poetas es de 1978. Solo vende cuando
 el primer sello de la serie cumple el patrón, y solo en la primera serie
 que lo cumple.
 
-## Versión 2: el álbum como valor
+### Versión 2: el álbum como valor
 
 `vender/1` y `comprar/1` mezclan dos cosas: qué álbum resulta de una
 operación, y el cambio de la base de datos. La primera se puede escribir
@@ -283,3 +297,32 @@ consultas.
     de datos indexaría los hechos. Y cuando el estado no tiene que
     persistir entre consultas: entonces no hace falta la capa, y el
     valor pasa de una relación a otra en los argumentos.
+
+El capítulo continúa en la página
+[Reglas de tránsito y marcos](transito-y-marcos.md#827-reglas-de-transito),
+con dos programas de Neil Rowe que representan conocimiento con reglas:
+los semáforos y los marcos. Antes, los [ejercicios](#ejercicios) de esta
+página practican las dos versiones del álbum.
+
+## Ejercicios
+
+Las soluciones están en [la página de soluciones](soluciones.md). La dificultad
+va de 1 (se resuelve consultando el capítulo) a 3 (requiere elaboración propia).
+Los marcados con ★ son los que no conviene saltear: cubren lo que el capítulo
+tiene de propio. Los ejercicios que piden código se resuelven en archivos
+que cargan los del capítulo, sin modificarlos.
+
+7. **(2)** Escribir `valor_total(?Patron, -Total)`, la suma de los
+   valores de los sellos que unifican con un patrón, y `por_pais(-Pares)`,
+   el valor del álbum por país.
+8. **(1)** Predecir qué series quedan en el álbum después de
+   `vender(sello(_, _, 1885, _))`, y qué haría el `sell/1` del libro con
+   el mismo pedido.
+
+## Referencias
+
+- Attila Csenki, *Prolog Techniques*, Ventus Publishing (Bookboon), 2009
+  — apartado «Miniproject: Modelling a Stamp Collection» (3.1.6).
+  [Página de la editorial, copia de archivo](https://web.archive.org/web/20220123025207/https://bookboon.com/en/prolog-techniques-applications-of-prolog-ebook?mediaType=ebook).
+  El capítulo toma el álbum de estampillas, sus datos y sus cinco
+  operaciones.
