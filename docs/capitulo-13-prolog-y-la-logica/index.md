@@ -58,7 +58,7 @@ Al terminar el capítulo, el lector puede:
   lógica.
 
 !!! info "Tiempo estimado"
-    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **2:35 h**.
+    Leer el capítulo, ejecutar sus ejemplos y hacer las actividades: **2:47 h**.
     Resolver los 7 ejercicios marcados con ★: **2:25 h**.
     Resolver los 25 ejercicios del final: **7:40 h**.
 
@@ -866,6 +866,22 @@ tiene de propio, y los capítulos siguientes los dan por hechos.
   Kristina Striegnitz, [*Learn Prolog Now!*](https://lpn.swi-prolog.org/),
   2006, §1.1; el
   [glosario del manual de SWI-Prolog](https://www.swi-prolog.org/pldoc/man?section=glossary).
+- John Alan Robinson, «A Machine-Oriented Logic Based on the Resolution
+  Principle», *Journal of the ACM* 12(1), 1965, pp. 23–41, DOI
+  [10.1145/321250.321253](https://doi.org/10.1145/321250.321253): el origen de
+  la regla general de la subsección «La resolución de Robinson» de la
+  [sección 13.7](inferencia.md#la-resolucion-de-robinson); el resolvente con
+  varios literales, que incluye la factorización, está en las definiciones 5.10
+  y 5.11, página 33.
+- Para la regla de resolución de esa subsección: Zbigniew Kluzniak y Stanislaw
+  Szpakowicz, *Prolog for Programmers*, Academic Press, 1985, §2.4, el
+  enunciado y sus casos particulares; Peter Flach, *Simply Logical*, Wiley,
+  1994, cap. 2, «Proof theory», las derivaciones, la prueba por refutación
+  y la incompletitud para las consecuencias; Michael Spivey, *An Introduction
+  to Logic Programming through Prolog*, Prentice Hall, 1996, §6.2, la regla con
+  variables y su corrección, y la factorización como ejercicio; Leon Sterling y
+  Ehud Shapiro, *The Art of Prolog*, 2.ª edición, 1994, §4.3, el origen de la
+  unificación en el artículo de Robinson.
 - Robert Kowalski, «Algorithm = Logic + Control», 1979 — citado a través de la
   obra anterior: la ecuación que resume la [sección 13.11](evaluacion.md#1311-el-interprete-no-determinista-y-las-estrategias-de-evaluacion).
 - Christopher J. Hogger, *Introduction to Logic Programming*, 1984 — el
