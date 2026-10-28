@@ -129,12 +129,12 @@ tiene su propia `X`:
 
 ```mermaid
 flowchart TD
-    A["pertenece(X, [ana, luis, eva])"] -- "R1. θ₁ = {&nbsp;X/ana, X₁/ana, _/[luis, eva]&nbsp;}" --> S1(["1.ª respuesta<br/>X = ana"])
-    A -- "R2. θ₂ = {&nbsp;X₁/X, _/ana, Resto₁/[luis, eva]&nbsp;}" --> B["pertenece(X, [luis, eva])"]
-    B -- "R1. θ₃ = {&nbsp;X/luis, X₂/luis, _/[eva]&nbsp;}" --> S2(["2.ª respuesta<br/>X = luis"])
-    B -- "R2. θ₄ = {&nbsp;X₂/X, _/luis, Resto₂/[eva]&nbsp;}" --> C["pertenece(X, [eva])"]
-    C -- "R1. θ₅ = {&nbsp;X/eva, X₃/eva, _/[]&nbsp;}" --> S3(["3.ª respuesta<br/>X = eva"])
-    C -- "R2. θ₆ = {&nbsp;X₃/X, _/eva, Resto₃/[]&nbsp;}" --> D["pertenece(X, [])"]
+    A["pertenece(X, [ana, luis, eva])"] -- "R1. θ₁ = {&nbsp;X/ana,<br/>X₁/ana,<br/>_/[luis, eva]&nbsp;}" --> S1(["1.ª respuesta<br/>X = ana"])
+    A -- "R2. θ₂ = {&nbsp;X₁/X,<br/>_/ana,<br/>Resto₁/[luis, eva]&nbsp;}" --> B["pertenece(X, [luis, eva])"]
+    B -- "R1. θ₃ = {&nbsp;X/luis,<br/>X₂/luis,<br/>_/[eva]&nbsp;}" --> S2(["2.ª respuesta<br/>X = luis"])
+    B -- "R2. θ₄ = {&nbsp;X₂/X,<br/>_/luis,<br/>Resto₂/[eva]&nbsp;}" --> C["pertenece(X, [eva])"]
+    C -- "R1. θ₅ = {&nbsp;X/eva,<br/>X₃/eva,<br/>_/[]&nbsp;}" --> S3(["3.ª respuesta<br/>X = eva"])
+    C -- "R2. θ₆ = {&nbsp;X₃/X,<br/>_/eva,<br/>Resto₃/[]&nbsp;}" --> D["pertenece(X, [])"]
     D --> F(["falla"])
 ```
 
@@ -162,9 +162,9 @@ por eso las dos hojas de éxito dicen `true`:
 ```mermaid
 flowchart TD
     A["pertenece(ana, [ana, ana])"] -- "R1. θ₁ = {&nbsp;X/ana, _/[ana]&nbsp;}" --> S1(["1.ª respuesta<br/>true"])
-    A -- "R2. θ₂ = {&nbsp;X/ana, _/ana, Resto/[ana]&nbsp;}" --> B["pertenece(ana, [ana])"]
+    A -- "R2. θ₂ = {&nbsp;X/ana,<br/>_/ana,<br/>Resto/[ana]&nbsp;}" --> B["pertenece(ana, [ana])"]
     B -- "R1. θ₃ = {&nbsp;X₂/ana, _/[]&nbsp;}" --> S2(["2.ª respuesta<br/>true"])
-    B -- "R2. θ₄ = {&nbsp;X₂/ana, _/ana, Resto₂/[]&nbsp;}" --> C["pertenece(ana, [])"]
+    B -- "R2. θ₄ = {&nbsp;X₂/ana,<br/>_/ana,<br/>Resto₂/[]&nbsp;}" --> C["pertenece(ana, [])"]
     C --> F(["falla"])
 ```
 
@@ -249,12 +249,12 @@ resto de la lista buscando otra `ana`:
 ```mermaid
 %%{init: {"flowchart": {"rankSpacing": 30, "nodeSpacing": 25}}}%%
 flowchart TD
-    A["todos_estan([ana, eva], [ana, luis, eva])"] -- "R4. θ₁ = {&nbsp;X/ana, Resto/[eva], L/[ana, luis, eva]&nbsp;}" --> B["pertenece(ana, [ana, luis, eva]),<br/>todos_estan([eva], [ana, luis, eva])"]
-    B -- "R1. θ₂ = {&nbsp;X₂/ana, _/[luis, eva]&nbsp;}" --> C["todos_estan([eva], [ana, luis, eva])"]
-    B -- "R2. θ₉ = {&nbsp;X₂/ana, _/ana, Resto₂/[luis, eva]&nbsp;}" --> P["pertenece(ana, [luis, eva]),<br/>todos_estan([eva], [ana, luis, eva])"]
+    A["todos_estan([ana, eva], [ana, luis, eva])"] -- "R4. θ₁ = {&nbsp;X/ana,<br/>Resto/[eva],<br/>L/[ana, luis, eva]&nbsp;}" --> B["pertenece(ana, [ana, luis, eva]),<br/>todos_estan([eva], [ana, luis, eva])"]
+    B -- "R1. θ₂ = {&nbsp;X₂/ana,<br/>_/[luis, eva]&nbsp;}" --> C["todos_estan([eva], [ana, luis, eva])"]
+    B -- "R2. θ₉ = {&nbsp;X₂/ana,<br/>_/ana,<br/>Resto₂/[luis, eva]&nbsp;}" --> P["pertenece(ana, [luis, eva]),<br/>todos_estan([eva], [ana, luis, eva])"]
     C --> V["⋮<br/>sigue en el árbol siguiente"]
-    P -- "R2. θ₁₀ = {&nbsp;X₇/ana, _/luis, Resto₇/[eva]&nbsp;}" --> Q["pertenece(ana, [eva]),<br/>todos_estan([eva], [ana, luis, eva])"]
-    Q -- "R2. θ₁₁ = {&nbsp;X₈/ana, _/eva, Resto₈/[]&nbsp;}" --> R["pertenece(ana, []),<br/>todos_estan([eva], [ana, luis, eva])"]
+    P -- "R2. θ₁₀ = {&nbsp;X₇/ana,<br/>_/luis,<br/>Resto₇/[eva]&nbsp;}" --> Q["pertenece(ana, [eva]),<br/>todos_estan([eva], [ana, luis, eva])"]
+    Q -- "R2. θ₁₁ = {&nbsp;X₈/ana,<br/>_/eva,<br/>Resto₈/[]&nbsp;}" --> R["pertenece(ana, []),<br/>todos_estan([eva], [ana, luis, eva])"]
     R --> F2(["falla"])
     classDef abierto fill:none,stroke:none;
     class V abierto;
@@ -267,11 +267,11 @@ sigue con la pertenencia de `eva`:
 %%{init: {"flowchart": {"rankSpacing": 30, "nodeSpacing": 25}}}%%
 flowchart TD
     C["todos_estan([eva], [ana, luis, eva])"]
-    C -- "R4. θ₃ = {&nbsp;X₃/eva, Resto₃/[], L₃/[ana, luis, eva]&nbsp;}" --> D["pertenece(eva, [ana, luis, eva]),<br/>todos_estan([], [ana, luis, eva])"]
-    D -- "R2. θ₄ = {&nbsp;X₄/eva, _/ana, Resto₄/[luis, eva]&nbsp;}" --> E["pertenece(eva, [luis, eva]),<br/>todos_estan([], [ana, luis, eva])"]
-    E -- "R2. θ₅ = {&nbsp;X₅/eva, _/luis, Resto₅/[eva]&nbsp;}" --> F["pertenece(eva, [eva]),<br/>todos_estan([], [ana, luis, eva])"]
+    C -- "R4. θ₃ = {&nbsp;X₃/eva,<br/>Resto₃/[],<br/>L₃/[ana, luis, eva]&nbsp;}" --> D["pertenece(eva, [ana, luis, eva]),<br/>todos_estan([], [ana, luis, eva])"]
+    D -- "R2. θ₄ = {&nbsp;X₄/eva,<br/>_/ana,<br/>Resto₄/[luis, eva]&nbsp;}" --> E["pertenece(eva, [luis, eva]),<br/>todos_estan([], [ana, luis, eva])"]
+    E -- "R2. θ₅ = {&nbsp;X₅/eva,<br/>_/luis,<br/>Resto₅/[eva]&nbsp;}" --> F["pertenece(eva, [eva]),<br/>todos_estan([], [ana, luis, eva])"]
     F -- "R1. θ₆ = {&nbsp;X₆/eva, _/[]&nbsp;}" --> G["todos_estan([], [ana, luis, eva])"]
-    F -- "R2. θ₈ = {&nbsp;X₆/eva, _/eva, Resto₆/[]&nbsp;}" --> H["pertenece(eva, []),<br/>todos_estan([], [ana, luis, eva])"]
+    F -- "R2. θ₈ = {&nbsp;X₆/eva,<br/>_/eva,<br/>Resto₆/[]&nbsp;}" --> H["pertenece(eva, []),<br/>todos_estan([], [ana, luis, eva])"]
     G -- "R3. θ₇ = {&nbsp;_/[ana, luis, eva]&nbsp;}" --> S(["consulta vacía<br/>true"])
     H --> F1(["falla"])
 ```
@@ -349,9 +349,9 @@ la consulta crece, y el ascenso, en el que se reduce.
 
 ```mermaid
 flowchart TD
-    A["longitud([ana, luis, eva], Cuantos)"] -- "R2. θ₁ = {&nbsp;_/ana, Resto/[luis, eva], N/Cuantos&nbsp;}" --> B["longitud([luis, eva], Faltan),<br/>Cuantos is Faltan + 1"]
-    B -- "R2. θ₂ = {&nbsp;_/luis, Resto₂/[eva], N₂/Faltan&nbsp;}" --> C["longitud([eva], Faltan₂),<br/>Faltan is Faltan₂ + 1,<br/>Cuantos is Faltan + 1"]
-    C -- "R2. θ₃ = {&nbsp;_/eva, Resto₃/[], N₃/Faltan₂&nbsp;}" --> D["longitud([], Faltan₃),<br/>Faltan₂ is Faltan₃ + 1,<br/>Faltan is Faltan₂ + 1,<br/>Cuantos is Faltan + 1"]
+    A["longitud([ana, luis, eva], Cuantos)"] -- "R2. θ₁ = {&nbsp;_/ana,<br/>Resto/[luis, eva],<br/>N/Cuantos&nbsp;}" --> B["longitud([luis, eva], Faltan),<br/>Cuantos is Faltan + 1"]
+    B -- "R2. θ₂ = {&nbsp;_/luis,<br/>Resto₂/[eva],<br/>N₂/Faltan&nbsp;}" --> C["longitud([eva], Faltan₂),<br/>Faltan is Faltan₂ + 1,<br/>Cuantos is Faltan + 1"]
+    C -- "R2. θ₃ = {&nbsp;_/eva,<br/>Resto₃/[],<br/>N₃/Faltan₂&nbsp;}" --> D["longitud([], Faltan₃),<br/>Faltan₂ is Faltan₃ + 1,<br/>Faltan is Faltan₂ + 1,<br/>Cuantos is Faltan + 1"]
     D --> V["⋮<br/>sigue en el árbol siguiente"]
     classDef abierto fill:none,stroke:none;
     class V abierto;
@@ -412,9 +412,9 @@ La hoja compone las tres sustituciones para obtener la respuesta, como en la
 
 ```mermaid
 flowchart TD
-    A["concatenar([ana, luis], [eva], Todos)"] -- "R2. θ₁ = {&nbsp;X/ana, RestoA/[luis], B/[eva], Todos/[ana|RestoC]&nbsp;}" --> B["concatenar([luis], [eva], RestoC)"]
-    B -- "R2. θ₂ = {&nbsp;X₂/luis, RestoA₂/[], B₂/[eva], RestoC/[luis|RestoC₂]&nbsp;}" --> C["concatenar([], [eva], RestoC₂)"]
-    C -- "R1. θ₃ = {&nbsp;B₃/[eva], RestoC₂/[eva]&nbsp;}" --> S(["consulta vacía<br/>Todos = [ana|RestoC] = [ana, luis|RestoC₂] = [ana, luis, eva]"])
+    A["concatenar([ana, luis], [eva], Todos)"] -- "R2. θ₁ = {&nbsp;X/ana,<br/>RestoA/[luis],<br/>B/[eva],<br/>Todos/[ana|RestoC]&nbsp;}" --> B["concatenar([luis], [eva], RestoC)"]
+    B -- "R2. θ₂ = {&nbsp;X₂/luis,<br/>RestoA₂/[],<br/>B₂/[eva],<br/>RestoC/[luis|RestoC₂]&nbsp;}" --> C["concatenar([], [eva], RestoC₂)"]
+    C -- "R1. θ₃ = {&nbsp;B₃/[eva],<br/>RestoC₂/[eva]&nbsp;}" --> S(["consulta vacía<br/>Todos = [ana|RestoC] = [ana, luis|RestoC₂] = [ana, luis, eva]"])
 ```
 
 En el segundo nodo ya existe `[ana|RestoC]`, un resultado parcial con el resto
@@ -469,13 +469,13 @@ propia `B`:
 
 ```mermaid
 flowchart TD
-    A["concatenar(A, B, [ana, luis, eva])"] -- "R1. θ₁ = {&nbsp;A/[], B₁/B, B/[ana, luis, eva]&nbsp;}" --> S1(["1.ª respuesta<br/>A = [],<br/>B = [ana, luis, eva]"])
+    A["concatenar(A, B, [ana, luis, eva])"] -- "R1. θ₁ = {&nbsp;A/[],<br/>B₁/B,<br/>B/[ana, luis, eva]&nbsp;}" --> S1(["1.ª respuesta<br/>A = [],<br/>B = [ana, luis, eva]"])
     A -- "R2. θ₂ = {&nbsp;A/[ana|RestoA₁], B₁/B,<br/>X₁/ana, RestoC₁/[luis, eva]&nbsp;}" --> B["concatenar(RestoA₁, B, [luis, eva])"]
-    B -- "R1. θ₃ = {&nbsp;RestoA₁/[], B₂/B, B/[luis, eva]&nbsp;}" --> S2(["2.ª respuesta<br/>A = [ana|RestoA₁] = [ana],<br/>B = [luis, eva]"])
+    B -- "R1. θ₃ = {&nbsp;RestoA₁/[],<br/>B₂/B,<br/>B/[luis, eva]&nbsp;}" --> S2(["2.ª respuesta<br/>A = [ana|RestoA₁] = [ana],<br/>B = [luis, eva]"])
     B -- "R2. θ₄ = {&nbsp;RestoA₁/[luis|RestoA₂], B₂/B,<br/>X₂/luis, RestoC₂/[eva]&nbsp;}" --> C["concatenar(RestoA₂, B, [eva])"]
-    C -- "R1. θ₅ = {&nbsp;RestoA₂/[], B₃/B, B/[eva]&nbsp;}" --> S3(["3.ª respuesta<br/>A = [ana, luis|RestoA₂] = [ana, luis],<br/>B = [eva]"])
+    C -- "R1. θ₅ = {&nbsp;RestoA₂/[],<br/>B₃/B,<br/>B/[eva]&nbsp;}" --> S3(["3.ª respuesta<br/>A = [ana, luis|RestoA₂] = [ana, luis],<br/>B = [eva]"])
     C -- "R2. θ₆ = {&nbsp;RestoA₂/[eva|RestoA₃], B₃/B,<br/>X₃/eva, RestoC₃/[]&nbsp;}" --> D["concatenar(RestoA₃, B, [])"]
-    D -- "R1. θ₇ = {&nbsp;RestoA₃/[], B₄/B, B/[]&nbsp;}" --> S4(["4.ª respuesta<br/>A = [ana, luis, eva|RestoA₃] = [ana, luis, eva],<br/>B = []"])
+    D -- "R1. θ₇ = {&nbsp;RestoA₃/[],<br/>B₄/B,<br/>B/[]&nbsp;}" --> S4(["4.ª respuesta<br/>A = [ana, luis, eva|RestoA₃] = [ana, luis, eva],<br/>B = []"])
 ```
 
 En cada nivel, R1 está a la izquierda y produce una partición: `A` recibe lo
@@ -524,10 +524,10 @@ cabeza unifica:
 
 ```mermaid
 flowchart TD
-    A["ultimo([ana, luis, eva], U)"] -- "R2. θ₁ = {&nbsp;_/ana, Resto/[luis, eva], X/U&nbsp;}" --> B["ultimo([luis, eva], U)"]
-    B -- "R2. θ₂ = {&nbsp;_/luis, Resto₂/[eva], X₂/U&nbsp;}" --> C["ultimo([eva], U)"]
+    A["ultimo([ana, luis, eva], U)"] -- "R2. θ₁ = {&nbsp;_/ana,<br/>Resto/[luis, eva],<br/>X/U&nbsp;}" --> B["ultimo([luis, eva], U)"]
+    B -- "R2. θ₂ = {&nbsp;_/luis,<br/>Resto₂/[eva],<br/>X₂/U&nbsp;}" --> C["ultimo([eva], U)"]
     C -- "R1. θ₃ = {&nbsp;X₃/eva, U/eva&nbsp;}" --> S(["consulta vacía<br/>U = eva"])
-    C -- "R2. θ₄ = {&nbsp;_/eva, Resto₃/[], X₃/U&nbsp;}" --> D["ultimo([], U)"]
+    C -- "R2. θ₄ = {&nbsp;_/eva,<br/>Resto₃/[],<br/>X₃/U&nbsp;}" --> D["ultimo([], U)"]
     D --> F(["falla"])
 ```
 
@@ -553,11 +553,11 @@ antes de descender por ella:
 ```mermaid
 flowchart TD
     A["ultimo(L, eva)"] -- "R1. θ₁ = {&nbsp;L/[eva], X/eva&nbsp;}" --> S1(["1.ª respuesta<br/>L = [eva]"])
-    A -- "R2. θ₂ = {&nbsp;L/[_|Resto], X/eva&nbsp;}" --> B["ultimo(Resto, eva)"]
-    B -- "R1. θ₃ = {&nbsp;Resto/[eva], X₂/eva&nbsp;}" --> S2(["2.ª respuesta<br/>L = [_|Resto] = [_, eva]"])
-    B -- "R2. θ₄ = {&nbsp;Resto/[_|Resto₂], X₂/eva&nbsp;}" --> C["ultimo(Resto₂, eva)"]
-    C -- "R1. θ₅ = {&nbsp;Resto₂/[eva], X₃/eva&nbsp;}" --> S3(["3.ª respuesta<br/>L = [_, _|Resto₂] = [_, _, eva]"])
-    C -- "R2. θ₆ = {&nbsp;Resto₂/[_|Resto₃], X₃/eva&nbsp;}" --> D["⋮<br/>la rama no termina"]
+    A -- "R2. θ₂ = {&nbsp;L/[_|Resto],<br/>X/eva&nbsp;}" --> B["ultimo(Resto, eva)"]
+    B -- "R1. θ₃ = {&nbsp;Resto/[eva],<br/>X₂/eva&nbsp;}" --> S2(["2.ª respuesta<br/>L = [_|Resto] = [_, eva]"])
+    B -- "R2. θ₄ = {&nbsp;Resto/[_|Resto₂],<br/>X₂/eva&nbsp;}" --> C["ultimo(Resto₂, eva)"]
+    C -- "R1. θ₅ = {&nbsp;Resto₂/[eva],<br/>X₃/eva&nbsp;}" --> S3(["3.ª respuesta<br/>L = [_, _|Resto₂] = [_, _, eva]"])
+    C -- "R2. θ₆ = {&nbsp;Resto₂/[_|Resto₃],<br/>X₃/eva&nbsp;}" --> D["⋮<br/>la rama no termina"]
     classDef abierto fill:none,stroke:none;
     class D abierto;
 ```

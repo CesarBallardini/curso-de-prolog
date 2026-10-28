@@ -203,7 +203,7 @@ después de las del segundo árbol.
 
 ```mermaid
 flowchart TD
-    A["hermana_con_progenitor(ana, Quien)"] -- "R27. θ₁ = {&nbsp;A/ana, B/Quien&nbsp;}" --> B["mujer(ana),<br/>progenitor(P, ana),<br/>progenitor(P, Quien),<br/>ana \== Quien"]
+    A["hermana_con_progenitor(ana, Quien)"] -- "R27. θ₁ = {&nbsp;A/ana,<br/>B/Quien&nbsp;}" --> B["mujer(ana),<br/>progenitor(P, ana),<br/>progenitor(P, Quien),<br/>ana \== Quien"]
     B -- "R6. θ₂ = {&nbsp;}" --> C["progenitor(P, ana),<br/>progenitor(P, Quien),<br/>ana \== Quien"]
     C -- "R17. θ₃ = {&nbsp;P₁/P, H₁/ana&nbsp;}" --> D["padre(P, ana),<br/>progenitor(P, Quien),<br/>ana \== Quien"]
     C -- "R18. θ₉ = {&nbsp;P₁/P, H₁/ana&nbsp;}" --> E["madre(P, ana),<br/>progenitor(P, Quien),<br/>ana \== Quien"]
@@ -220,8 +220,8 @@ El segundo árbol es la rama de `P = juan`, y empieza en su último nodo:
 ```mermaid
 flowchart TD
     G["progenitor(juan, Quien),<br/>ana \== Quien"]
-    G -- "R17. θ₅ = {&nbsp;P₂/juan, H₂/Quien&nbsp;}" --> I["padre(juan, Quien),<br/>ana \== Quien"]
-    G -- "R18. θ₈ = {&nbsp;P₂/juan, H₂/Quien&nbsp;}" --> J["madre(juan, Quien),<br/>ana \== Quien"]
+    G -- "R17. θ₅ = {&nbsp;P₂/juan,<br/>H₂/Quien&nbsp;}" --> I["padre(juan, Quien),<br/>ana \== Quien"]
+    G -- "R18. θ₈ = {&nbsp;P₂/juan,<br/>H₂/Quien&nbsp;}" --> J["madre(juan, Quien),<br/>ana \== Quien"]
     I -- "R9. θ₆ = {&nbsp;Quien/ana&nbsp;}" --> K["ana \== ana"]
     I -- "R10. θ₇ = {&nbsp;Quien/pedro&nbsp;}" --> L["ana \== pedro"]
     K --> F1(["falla"])
@@ -234,8 +234,8 @@ El tercero es la rama de `P = marta`:
 ```mermaid
 flowchart TD
     H["progenitor(marta, Quien),<br/>ana \== Quien"]
-    H -- "R17. θ₁₁ = {&nbsp;P₂/marta, H₂/Quien&nbsp;}" --> I["padre(marta, Quien),<br/>ana \== Quien"]
-    H -- "R18. θ₁₂ = {&nbsp;P₂/marta, H₂/Quien&nbsp;}" --> J["madre(marta, Quien),<br/>ana \== Quien"]
+    H -- "R17. θ₁₁ = {&nbsp;P₂/marta,<br/>H₂/Quien&nbsp;}" --> I["padre(marta, Quien),<br/>ana \== Quien"]
+    H -- "R18. θ₁₂ = {&nbsp;P₂/marta,<br/>H₂/Quien&nbsp;}" --> J["madre(marta, Quien),<br/>ana \== Quien"]
     I --> F1(["falla"])
     J -- "R13. θ₁₃ = {&nbsp;Quien/ana&nbsp;}" --> K["ana \== ana"]
     J -- "R14. θ₁₄ = {&nbsp;Quien/pedro&nbsp;}" --> L["ana \== pedro"]
@@ -381,8 +381,8 @@ tiene una `H`.
 
 ```mermaid
 flowchart TD
-    A["progenitor(marta, H),<br/>varon(H)"] -- "R16. θ₁ = {&nbsp;P₁/marta, H₁/H&nbsp;}" --> B["padre(marta, H),<br/>varon(H)"]
-    A -- "R17. θ₂ = {&nbsp;P₂/marta, H₂/H&nbsp;}" --> C["madre(marta, H),<br/>varon(H)"]
+    A["progenitor(marta, H),<br/>varon(H)"] -- "R16. θ₁ = {&nbsp;P₁/marta,<br/>H₁/H&nbsp;}" --> B["padre(marta, H),<br/>varon(H)"]
+    A -- "R17. θ₂ = {&nbsp;P₂/marta,<br/>H₂/H&nbsp;}" --> C["madre(marta, H),<br/>varon(H)"]
     B --> F1(["falla"])
     C -- "R12. θ₃ = {&nbsp;H/ana&nbsp;}" --> D["varon(ana)"]
     C -- "R13. θ₄ = {&nbsp;H/pedro&nbsp;}" --> E["varon(pedro)"]

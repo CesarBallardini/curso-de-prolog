@@ -454,10 +454,10 @@ con otra notación:
 ```mermaid
 %%{init: {"flowchart": {"wrappingWidth": 320}}}%%
 flowchart TD
-    A["abuelo(Quien, luis)<br/>¬abuelo(Quien, luis)"] -- "R4. θ₁ = {&nbsp;A/Quien, N/luis&nbsp;}" --> B["padre(Quien, P), padre(P, luis)<br/>¬padre(Quien, P) ∨ ¬padre(P, luis)"]
-    B -- "R1. θ₂ = {&nbsp;Quien/juan, P/ana&nbsp;}" --> C["padre(ana, luis)<br/>¬padre(ana, luis)"]
-    B -- "R2. θ₃ = {&nbsp;Quien/juan, P/pedro&nbsp;}" --> D["padre(pedro, luis)<br/>¬padre(pedro, luis)"]
-    B -- "R3. θ₅ = {&nbsp;Quien/pedro, P/luis&nbsp;}" --> E["padre(luis, luis)<br/>¬padre(luis, luis)"]
+    A["abuelo(Quien, luis)<br/>¬abuelo(Quien, luis)"] -- "R4. θ₁ = {&nbsp;A/Quien,<br/>N/luis&nbsp;}" --> B["padre(Quien, P), padre(P, luis)<br/>¬padre(Quien, P) ∨ ¬padre(P, luis)"]
+    B -- "R1. θ₂ = {&nbsp;Quien/juan,<br/>P/ana&nbsp;}" --> C["padre(ana, luis)<br/>¬padre(ana, luis)"]
+    B -- "R2. θ₃ = {&nbsp;Quien/juan,<br/>P/pedro&nbsp;}" --> D["padre(pedro, luis)<br/>¬padre(pedro, luis)"]
+    B -- "R3. θ₅ = {&nbsp;Quien/pedro,<br/>P/luis&nbsp;}" --> E["padre(luis, luis)<br/>¬padre(luis, luis)"]
     C --> F(["falla<br/>no se resuelve con ninguna cláusula"])
     D -- "R3. θ₄ = {&nbsp;}" --> G(["consulta vacía: □<br/>Quien = juan"])
     E --> H(["falla<br/>no se resuelve con ninguna cláusula"])
@@ -733,11 +733,11 @@ queda ligada a `[b|RestoA₄]` y `RestoA₄` a `[]`, de modo que `X` es
 ```mermaid
 %%{init: {"flowchart": {"wrappingWidth": 340}}}%%
 flowchart TD
-    A["concatenar(X, Y, [a, b])"] -- "R1. θ₁ = {&nbsp;X/[], B₁/[a, b], Y/[a, b]&nbsp;}" --> B(["consulta vacía<br/>X = [], Y = [a, b]"])
-    A -- "R2. θ₂ = {&nbsp;X/[a|RestoA₂], Y/B₂, X₂/a, RestoC₂/[b]&nbsp;}" --> C["concatenar(RestoA₂, B₂, [b])"]
-    C -- "R1. θ₃ = {&nbsp;RestoA₂/[], B₂/[b], B₃/[b]&nbsp;}" --> D(["consulta vacía<br/>X = [a], Y = [b]"])
-    C -- "R2. θ₄ = {&nbsp;RestoA₂/[b|RestoA₄], B₂/B₄, X₄/b, RestoC₄/[]&nbsp;}" --> E["concatenar(RestoA₄, B₄, [])"]
-    E -- "R1. θ₅ = {&nbsp;RestoA₄/[], B₄/[], B₅/[]&nbsp;}" --> F(["consulta vacía<br/>X = [a, b], Y = []"])
+    A["concatenar(X, Y, [a, b])"] -- "R1. θ₁ = {&nbsp;X/[],<br/>B₁/[a, b],<br/>Y/[a, b]&nbsp;}" --> B(["consulta vacía<br/>X = [], Y = [a, b]"])
+    A -- "R2. θ₂ = {&nbsp;X/[a|RestoA₂],<br/>Y/B₂,<br/>X₂/a,<br/>RestoC₂/[b]&nbsp;}" --> C["concatenar(RestoA₂, B₂, [b])"]
+    C -- "R1. θ₃ = {&nbsp;RestoA₂/[],<br/>B₂/[b],<br/>B₃/[b]&nbsp;}" --> D(["consulta vacía<br/>X = [a], Y = [b]"])
+    C -- "R2. θ₄ = {&nbsp;RestoA₂/[b|RestoA₄],<br/>B₂/B₄,<br/>X₄/b,<br/>RestoC₄/[]&nbsp;}" --> E["concatenar(RestoA₄, B₄, [])"]
+    E -- "R1. θ₅ = {&nbsp;RestoA₄/[],<br/>B₄/[],<br/>B₅/[]&nbsp;}" --> F(["consulta vacía<br/>X = [a, b], Y = []"])
 ```
 
 En el último nodo R2 no abre arco, y por eso el árbol es finito. Prolog, que
@@ -786,7 +786,7 @@ es:
 
 ```mermaid
 flowchart TD
-    A["ascendiente(juan, Quien)"] -- "R1. θ₁ = {&nbsp;A/juan, D/Quien&nbsp;}" --> B["ascendiente(juan, X₁),<br/>progenitor(X₁, Quien)"]
+    A["ascendiente(juan, Quien)"] -- "R1. θ₁ = {&nbsp;A/juan,<br/>D/Quien&nbsp;}" --> B["ascendiente(juan, X₁),<br/>progenitor(X₁, Quien)"]
     B -- "R1. θ₂ = {&nbsp;A₂/juan, D₂/X₁&nbsp;}" --> C["ascendiente(juan, X₂),<br/>progenitor(X₂, X₁),<br/>progenitor(X₁, Quien)"]
     C -- "R1. θ₃ = {&nbsp;A₃/juan, D₃/X₂&nbsp;}" --> D["⋮<br/>la rama no termina"]
     A -- "R2" --- pA@{ shape: sm-circ } -.- nA["nunca llega<br/>a pasar por aquí"]

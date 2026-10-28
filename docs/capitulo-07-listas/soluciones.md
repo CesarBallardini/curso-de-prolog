@@ -105,11 +105,11 @@ segundo `gato`:
 
 ```mermaid
 flowchart TD
-    A["cuantos_gatos([gato, perro, gato], N)"] -- "R2. θ₁ = {&nbsp;Resto₁/[perro, gato], N₁/N&nbsp;}" --> B["cuantos_gatos([perro, gato], Faltan₁),<br/>N is Faltan₁ + 1"]
-    B -- "R3. θ₂ = {&nbsp;Otro₂/perro, Resto₂/[gato], N₂/Faltan₁&nbsp;}" --> C["perro \== gato,<br/>cuantos_gatos([gato], Faltan₁),<br/>N is Faltan₁ + 1"]
+    A["cuantos_gatos([gato, perro, gato], N)"] -- "R2. θ₁ = {&nbsp;Resto₁/[perro, gato],<br/>N₁/N&nbsp;}" --> B["cuantos_gatos([perro, gato], Faltan₁),<br/>N is Faltan₁ + 1"]
+    B -- "R3. θ₂ = {&nbsp;Otro₂/perro,<br/>Resto₂/[gato],<br/>N₂/Faltan₁&nbsp;}" --> C["perro \== gato,<br/>cuantos_gatos([gato], Faltan₁),<br/>N is Faltan₁ + 1"]
     C --> D["cuantos_gatos([gato], Faltan₁),<br/>N is Faltan₁ + 1"]
     D --> V["⋮<br/>sigue en el árbol siguiente"]
-    A -- "R3. θ₈ = {&nbsp;Otro₁/gato, Resto₁/[perro, gato], N₁/N&nbsp;}" --> X1["gato \== gato,<br/>cuantos_gatos([perro, gato], N)"]
+    A -- "R3. θ₈ = {&nbsp;Otro₁/gato,<br/>Resto₁/[perro, gato],<br/>N₁/N&nbsp;}" --> X1["gato \== gato,<br/>cuantos_gatos([perro, gato], N)"]
     X1 --> F1(["falla"])
     classDef abierto fill:none,stroke:none;
     class V abierto;
@@ -120,11 +120,11 @@ El segundo árbol empieza en el último nodo del primero:
 ```mermaid
 flowchart TD
     D["cuantos_gatos([gato], Faltan₁),<br/>N is Faltan₁ + 1"]
-    D -- "R2. θ₃ = {&nbsp;Resto₃/[], N₃/Faltan₁&nbsp;}" --> E["cuantos_gatos([], Faltan₃),<br/>Faltan₁ is Faltan₃ + 1,<br/>N is Faltan₁ + 1"]
+    D -- "R2. θ₃ = {&nbsp;Resto₃/[],<br/>N₃/Faltan₁&nbsp;}" --> E["cuantos_gatos([], Faltan₃),<br/>Faltan₁ is Faltan₃ + 1,<br/>N is Faltan₁ + 1"]
     E -- "R1. θ₄ = {&nbsp;Faltan₃/0&nbsp;}" --> G["Faltan₁ is 0 + 1,<br/>N is Faltan₁ + 1"]
     G -- "is. θ₅ = {&nbsp;Faltan₁/1&nbsp;}" --> H["N is 1 + 1"]
     H -- "is. θ₆ = {&nbsp;N/2&nbsp;}" --> S(["consulta vacía<br/>N = 2"])
-    D -- "R3. θ₇ = {&nbsp;Otro₃/gato, Resto₃/[], N₃/Faltan₁&nbsp;}" --> X2["gato \== gato,<br/>cuantos_gatos([], Faltan₁),<br/>N is Faltan₁ + 1"]
+    D -- "R3. θ₇ = {&nbsp;Otro₃/gato,<br/>Resto₃/[],<br/>N₃/Faltan₁&nbsp;}" --> X2["gato \== gato,<br/>cuantos_gatos([], Faltan₁),<br/>N is Faltan₁ + 1"]
     X2 --> F2(["falla"])
 ```
 
@@ -215,8 +215,8 @@ pero la rama de R2 muere en la prueba `a \== a`, que no se cumple:
 
 ```mermaid
 flowchart TD
-    A["sacar(a, [a, b, a], R)"] -- "R1. θ₁ = {&nbsp;X/a, Resto/[b, a], R/[b, a]&nbsp;}" --> S(["consulta vacía<br/>R = [b, a]"])
-    A -- "R2. θ₂ = {&nbsp;X/a, Otro/a, Resto/[b, a], R/[a|RestoR]&nbsp;}" --> B["a \== a,<br/>sacar(a, [b, a], RestoR)"]
+    A["sacar(a, [a, b, a], R)"] -- "R1. θ₁ = {&nbsp;X/a,<br/>Resto/[b, a],<br/>R/[b, a]&nbsp;}" --> S(["consulta vacía<br/>R = [b, a]"])
+    A -- "R2. θ₂ = {&nbsp;X/a,<br/>Otro/a,<br/>Resto/[b, a],<br/>R/[a|RestoR]&nbsp;}" --> B["a \== a,<br/>sacar(a, [b, a], RestoR)"]
     B --> F(["falla"])
 ```
 
@@ -381,14 +381,14 @@ hoja de falla:
 ```mermaid
 %%{init: {"flowchart": {"rankSpacing": 30, "nodeSpacing": 25}}}%%
 flowchart TD
-    A["duplicar(L, [a, b])"] -- "R2. θ₁ = {&nbsp;L/[X|Resto], Nueva/[a, b]&nbsp;}" --> B["duplicar(Resto, Otros),<br/>append([X, X], Otros, [a, b])"]
-    B -- "R1. θ₂ = {&nbsp;Resto/[], Otros/[]&nbsp;}" --> C["append([X, X], [], [a, b])"]
+    A["duplicar(L, [a, b])"] -- "R2. θ₁ = {&nbsp;L/[X|Resto],<br/>Nueva/[a, b]&nbsp;}" --> B["duplicar(Resto, Otros),<br/>append([X, X], Otros, [a, b])"]
+    B -- "R1. θ₂ = {&nbsp;Resto/[],<br/>Otros/[]&nbsp;}" --> C["append([X, X], [], [a, b])"]
     C --> F1(["falla"])
-    B -- "R2. θ₃ = {&nbsp;Resto/[X₂|Resto₂], Nueva₂/Otros&nbsp;}" --> D["duplicar(Resto₂, Otros₂),<br/>append([X₂, X₂], Otros₂, Otros),<br/>append([X, X], Otros, [a, b])"]
-    D -- "R1. θ₄ = {&nbsp;Resto₂/[], Otros₂/[]&nbsp;}" --> E["append([X₂, X₂], [], Otros),<br/>append([X, X], Otros, [a, b])"]
+    B -- "R2. θ₃ = {&nbsp;Resto/[X₂|Resto₂],<br/>Nueva₂/Otros&nbsp;}" --> D["duplicar(Resto₂, Otros₂),<br/>append([X₂, X₂], Otros₂, Otros),<br/>append([X, X], Otros, [a, b])"]
+    D -- "R1. θ₄ = {&nbsp;Resto₂/[],<br/>Otros₂/[]&nbsp;}" --> E["append([X₂, X₂], [], Otros),<br/>append([X, X], Otros, [a, b])"]
     E -- "append. θ₅ = {&nbsp;Otros/[X₂, X₂]&nbsp;}" --> G["append([X, X], [X₂, X₂], [a, b])"]
     G --> F2(["falla"])
-    D -- "R2. θ₆ = {&nbsp;Resto₂/[X₃|Resto₃], Nueva₃/Otros₂&nbsp;}" --> V["⋮<br/>la rama no termina"]
+    D -- "R2. θ₆ = {&nbsp;Resto₂/[X₃|Resto₃],<br/>Nueva₃/Otros₂&nbsp;}" --> V["⋮<br/>la rama no termina"]
     classDef abierto fill:none,stroke:none;
     class V abierto;
 ```
@@ -437,8 +437,8 @@ desarma. En el último nodo R2 no abre arco, porque `[]` no unifica con
 
 ```mermaid
 flowchart TD
-    A["duplicar(L, [a, a, b, b])"] -- "R2. θ₁ = {&nbsp;L/[a|Resto], X/a, Otros/[b, b]&nbsp;}" --> B["duplicar(Resto, [b, b])"]
-    B -- "R2. θ₂ = {&nbsp;Resto/[b|Resto₂], X₂/b, Otros₂/[]&nbsp;}" --> C["duplicar(Resto₂, [])"]
+    A["duplicar(L, [a, a, b, b])"] -- "R2. θ₁ = {&nbsp;L/[a|Resto],<br/>X/a,<br/>Otros/[b, b]&nbsp;}" --> B["duplicar(Resto, [b, b])"]
+    B -- "R2. θ₂ = {&nbsp;Resto/[b|Resto₂],<br/>X₂/b,<br/>Otros₂/[]&nbsp;}" --> C["duplicar(Resto₂, [])"]
     C -- "R1. θ₃ = {&nbsp;Resto₂/[]&nbsp;}" --> S(["consulta vacía<br/>L = [a|Resto] = [a, b|Resto₂] = [a, b]"])
 ```
 
@@ -476,9 +476,9 @@ a `concatenar(RestoA₂, [b], [])`, donde ninguna cabeza unifica:
 
 ```mermaid
 flowchart TD
-    A["concatenar(A, [b], [a, b])"] -- "R2. θ₁ = {&nbsp;A/[a|RestoA], X/a, B/[b], RestoC/[b]&nbsp;}" --> B["concatenar(RestoA, [b], [b])"]
-    B -- "R1. θ₂ = {&nbsp;RestoA/[], B₂/[b]&nbsp;}" --> S(["consulta vacía<br/>A = [a|RestoA] = [a]"])
-    B -- "R2. θ₃ = {&nbsp;RestoA/[b|RestoA₂], X₂/b, B₂/[b], RestoC₂/[]&nbsp;}" --> C["concatenar(RestoA₂, [b], [])"]
+    A["concatenar(A, [b], [a, b])"] -- "R2. θ₁ = {&nbsp;A/[a|RestoA],<br/>X/a,<br/>B/[b],<br/>RestoC/[b]&nbsp;}" --> B["concatenar(RestoA, [b], [b])"]
+    B -- "R1. θ₂ = {&nbsp;RestoA/[],<br/>B₂/[b]&nbsp;}" --> S(["consulta vacía<br/>A = [a|RestoA] = [a]"])
+    B -- "R2. θ₃ = {&nbsp;RestoA/[b|RestoA₂],<br/>X₂/b,<br/>B₂/[b],<br/>RestoC₂/[]&nbsp;}" --> C["concatenar(RestoA₂, [b], [])"]
     C --> F(["falla"])
 ```
 

@@ -285,7 +285,7 @@ cláusula.
 ```mermaid
 %%{init: {"flowchart": {"wrappingWidth": 320}}}%%
 flowchart TD
-    A["abuelo(juan, Quien)<br/>¬abuelo(juan, Quien)"] -- "R4. θ₁ = {&nbsp;A/juan, N/Quien&nbsp;}" --> B["padre(juan, P), padre(P, Quien)<br/>¬padre(juan, P) ∨ ¬padre(P, Quien)"]
+    A["abuelo(juan, Quien)<br/>¬abuelo(juan, Quien)"] -- "R4. θ₁ = {&nbsp;A/juan,<br/>N/Quien&nbsp;}" --> B["padre(juan, P), padre(P, Quien)<br/>¬padre(juan, P) ∨ ¬padre(P, Quien)"]
     B -- "R1. θ₂ = {&nbsp;P/ana&nbsp;}" --> C["padre(ana, Quien)<br/>¬padre(ana, Quien)"]
     B -- "R2. θ₃ = {&nbsp;P/pedro&nbsp;}" --> D["padre(pedro, Quien)<br/>¬padre(pedro, Quien)"]
     C --> E(["falla<br/>no se resuelve con ninguna cláusula"])

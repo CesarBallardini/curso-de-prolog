@@ -151,12 +151,12 @@ continuación de las anteriores:
 ```mermaid
 %%{init: {"flowchart": {"wrappingWidth": 360}}}%%
 flowchart TD
-    A["armar_lista_personas(L, [andres])"] -- "R10. θ₁ = {&nbsp;L/[X₁|L₁], YaIncluidas₁/[andres]&nbsp;}" --> B["persona(X₁),<br/>\+ pertenece(X₁, [andres]),<br/>!,<br/>concatenar([andres], [X₁], YaIncluidasConX₁),<br/>armar_lista_personas(L₁, YaIncluidasConX₁)"]
+    A["armar_lista_personas(L, [andres])"] -- "R10. θ₁ = {&nbsp;L/[X₁|L₁],<br/>YaIncluidas₁/[andres]&nbsp;}" --> B["persona(X₁),<br/>\+ pertenece(X₁, [andres]),<br/>!,<br/>concatenar([andres], [X₁], YaIncluidasConX₁),<br/>armar_lista_personas(L₁, YaIncluidasConX₁)"]
     B -- "R1. θ₂ = {&nbsp;X₁/andres&nbsp;}" --> C["\+ pertenece(andres, [andres]),<br/>!,<br/>concatenar([andres], [andres], YaIncluidasConX₁),<br/>armar_lista_personas(L₁, YaIncluidasConX₁)"]
     C === s1
     subgraph s1 ["árbol subordinado de pertenece(andres, [andres])"]
         direction TB
-        C1["pertenece(andres, [andres])"] -- "R5. θ₃ = {&nbsp;X₂/andres, _/[]&nbsp;}" --> S1(["consulta vacía"])
+        C1["pertenece(andres, [andres])"] -- "R5. θ₃ = {&nbsp;X₂/andres,<br/>_/[]&nbsp;}" --> S1(["consulta vacía"])
         C1 -- "R6" --- p3@{ shape: sm-circ } -.- n3["podada por el \+"]
     end
     s1 --> F1(["falla"])
@@ -164,13 +164,13 @@ flowchart TD
     D === s2
     subgraph s2 ["árbol subordinado de pertenece(maria, [andres])"]
         direction TB
-        D1["pertenece(maria, [andres])"] -- "R6. θ₅ = {&nbsp;X₃/maria, _/andres, Resto₃/[]&nbsp;}" --> D2["pertenece(maria, [])"]
+        D1["pertenece(maria, [andres])"] -- "R6. θ₅ = {&nbsp;X₃/maria,<br/>_/andres,<br/>Resto₃/[]&nbsp;}" --> D2["pertenece(maria, [])"]
         D2 --> F2(["falla"])
     end
     s2 --> H["!,<br/>concatenar([andres], [maria], YaIncluidasConX₁),<br/>armar_lista_personas(L₁, YaIncluidasConX₁)"]
     H --> I["concatenar([andres], [maria], YaIncluidasConX₁),<br/>armar_lista_personas(L₁, YaIncluidasConX₁)"]
-    I -- "R8. θ₆ = {&nbsp;X₄/andres, RestoA₄/[], B₄/[maria], YaIncluidasConX₁/[andres|RestoC₄]&nbsp;}" --> K["concatenar([], [maria], RestoC₄),<br/>armar_lista_personas(L₁, [andres|RestoC₄])"]
-    K -- "R7. θ₇ = {&nbsp;B₅/[maria], RestoC₄/[maria]&nbsp;}" --> J["armar_lista_personas(L₁, [andres, maria])"]
+    I -- "R8. θ₆ = {&nbsp;X₄/andres,<br/>RestoA₄/[],<br/>B₄/[maria],<br/>YaIncluidasConX₁/[andres|RestoC₄]&nbsp;}" --> K["concatenar([], [maria], RestoC₄),<br/>armar_lista_personas(L₁, [andres|RestoC₄])"]
+    K -- "R7. θ₇ = {&nbsp;B₅/[maria],<br/>RestoC₄/[maria]&nbsp;}" --> J["armar_lista_personas(L₁, [andres, maria])"]
     J --> V["⋮<br/>L₁ = [lucas], L = [maria, lucas]"]
     B -- "R3" --- p1@{ shape: sm-circ } -.- n1["podada por el corte"]
     A -- "R11" --- p2@{ shape: sm-circ } -.- n2["podada por el corte"]

@@ -396,7 +396,7 @@ V = 68.
 
 ```mermaid
 flowchart TD
-    A["valor(#quot;68#quot;, V)"] -- "R1. θ₁ = {&nbsp;Cadena/#quot;68#quot;, Numero/V&nbsp;}" --> B["atom_string(Atomo, #quot;68#quot;),<br/>atom_number(Atomo, V),<br/>!"]
+    A["valor(#quot;68#quot;, V)"] -- "R1. θ₁ = {&nbsp;Cadena/#quot;68#quot;,<br/>Numero/V&nbsp;}" --> B["atom_string(Atomo, #quot;68#quot;),<br/>atom_number(Atomo, V),<br/>!"]
     B -- "atom_string. θ₂ = {&nbsp;Atomo/'68'&nbsp;}" --> C["atom_number('68', V),<br/>!"]
     C -- "atom_number. θ₃ = {&nbsp;V/68&nbsp;}" --> D["!"]
     D --> S(["consulta vacía<br/>V = 68"])
@@ -417,10 +417,10 @@ V = juan.
 
 ```mermaid
 flowchart TD
-    A["valor(#quot;juan#quot;, V)"] -- "R1. θ₁ = {&nbsp;Cadena/#quot;juan#quot;, Numero/V&nbsp;}" --> B["atom_string(Atomo, #quot;juan#quot;),<br/>atom_number(Atomo, V),<br/>!"]
+    A["valor(#quot;juan#quot;, V)"] -- "R1. θ₁ = {&nbsp;Cadena/#quot;juan#quot;,<br/>Numero/V&nbsp;}" --> B["atom_string(Atomo, #quot;juan#quot;),<br/>atom_number(Atomo, V),<br/>!"]
     B -- "atom_string. θ₂ = {&nbsp;Atomo/juan&nbsp;}" --> C["atom_number(juan, V),<br/>!"]
     C --> F(["falla"])
-    A -- "R2. θ₃ = {&nbsp;Cadena/#quot;juan#quot;, Atomo/V&nbsp;}" --> D["atom_string(V, #quot;juan#quot;)"]
+    A -- "R2. θ₃ = {&nbsp;Cadena/#quot;juan#quot;,<br/>Atomo/V&nbsp;}" --> D["atom_string(V, #quot;juan#quot;)"]
     D -- "atom_string. θ₄ = {&nbsp;V/juan&nbsp;}" --> S(["consulta vacía<br/>V = juan"])
 ```
 
@@ -612,7 +612,7 @@ primer `sub_atom/5` abre más de una rama, una por aparición de `na`, como
 
 ```mermaid
 flowchart TD
-    A["alrededor(banana, na, A, D)"] -- "R1. θ₁ = {&nbsp;Palabra/banana, Fragmento/na, Antes/A, Despues/D&nbsp;}" --> B["sub_atom(banana, LargoAntes, _, LargoDespues, na),<br/>sub_atom(banana, 0, LargoAntes, _, A),<br/>sub_atom(banana, _, LargoDespues, 0, D)"]
+    A["alrededor(banana, na, A, D)"] -- "R1. θ₁ = {&nbsp;Palabra/banana,<br/>Fragmento/na,<br/>Antes/A,<br/>Despues/D&nbsp;}" --> B["sub_atom(banana, LargoAntes, _, LargoDespues, na),<br/>sub_atom(banana, 0, LargoAntes, _, A),<br/>sub_atom(banana, _, LargoDespues, 0, D)"]
     B -- "sub_atom. θ₂ = {&nbsp;LargoAntes/2, LargoDespues/2&nbsp;}" --> C["sub_atom(banana, 0, 2, _, A),<br/>sub_atom(banana, _, 2, 0, D)"]
     C -- "sub_atom. θ₃ = {&nbsp;A/ba&nbsp;}" --> C2["sub_atom(banana, _, 2, 0, D)"]
     C2 -- "sub_atom. θ₄ = {&nbsp;D/na&nbsp;}" --> S1(["1.ª respuesta<br/>A = ba, D = na"])

@@ -143,13 +143,13 @@ El árbol de `mayor_de_edad(Quien)` tiene una rama por cada hecho de `edad/2`:
 %%{init: {"flowchart": {"nodeSpacing": 25}}}%%
 flowchart TD
     A["mayor_de_edad(Quien)"] -- "R7. θ₁ = {&nbsp;P/Quien&nbsp;}" --> B["edad(Quien, A),<br/>A >= 18"]
-    B -- "R1. θ₂ = {&nbsp;Quien/juan, A/68&nbsp;}" --> C1["68 >= 18"]
+    B -- "R1. θ₂ = {&nbsp;Quien/juan,<br/>A/68&nbsp;}" --> C1["68 >= 18"]
     C1 --> S1(["1.ª respuesta<br/>Quien = juan"])
-    B -- "R2. θ₃ = {&nbsp;Quien/ana, A/41&nbsp;}" --> C2["41 >= 18"]
+    B -- "R2. θ₃ = {&nbsp;Quien/ana,<br/>A/41&nbsp;}" --> C2["41 >= 18"]
     C2 --> S2(["2.ª respuesta<br/>Quien = ana"])
-    B -- "R3. θ₄ = {&nbsp;Quien/pedro, A/45&nbsp;}" --> C3["45 >= 18"]
+    B -- "R3. θ₄ = {&nbsp;Quien/pedro,<br/>A/45&nbsp;}" --> C3["45 >= 18"]
     C3 --> S3(["3.ª respuesta<br/>Quien = pedro"])
-    B -- "R4. θ₅ = {&nbsp;Quien/luis, A/12&nbsp;}" --> C4["12 >= 18"]
+    B -- "R4. θ₅ = {&nbsp;Quien/luis,<br/>A/12&nbsp;}" --> C4["12 >= 18"]
     C4 --> F4(["falla"])
     B -- "R5. θ₆ = {&nbsp;Quien/eva, A/8&nbsp;}" --> C5["8 >= 18"]
     C5 --> F5(["falla"])
@@ -512,8 +512,8 @@ Total = 7.
 ```mermaid
 %%{init: {"flowchart": {"rankSpacing": 25}}}%%
 flowchart TD
-    A["suma_lista([3, 4], Total)"] -- "R2. θ₁ = {&nbsp;X/3, Resto/[4], S/Total&nbsp;}" --> B["suma_lista([4], Faltan),<br/>Total is Faltan + 3"]
-    B -- "R2. θ₂ = {&nbsp;X₂/4, Resto₂/[], S₂/Faltan&nbsp;}" --> C["suma_lista([], Faltan₂),<br/>Faltan is Faltan₂ + 4,<br/>Total is Faltan + 3"]
+    A["suma_lista([3, 4], Total)"] -- "R2. θ₁ = {&nbsp;X/3,<br/>Resto/[4],<br/>S/Total&nbsp;}" --> B["suma_lista([4], Faltan),<br/>Total is Faltan + 3"]
+    B -- "R2. θ₂ = {&nbsp;X₂/4,<br/>Resto₂/[],<br/>S₂/Faltan&nbsp;}" --> C["suma_lista([], Faltan₂),<br/>Faltan is Faltan₂ + 4,<br/>Total is Faltan + 3"]
     C -- "R1. θ₃ = {&nbsp;Faltan₂/0&nbsp;}" --> D["Faltan is 0 + 4,<br/>Total is Faltan + 3"]
     D -- "is. θ₄ = {&nbsp;Faltan/4&nbsp;}" --> E["Total is 4 + 3"]
     E -- "is. θ₅ = {&nbsp;Total/7&nbsp;}" --> S(["consulta vacía<br/>Total = 7"])
@@ -528,12 +528,12 @@ regla R5 tiene una variable `Total`, como la consulta, y en el árbol se escribe
 ```mermaid
 %%{init: {"flowchart": {"rankSpacing": 25}}}%%
 flowchart TD
-    A["suma_con_acumulador([3, 4], Total)"] -- "R3. θ₁ = {&nbsp;L/[3, 4], S/Total&nbsp;}" --> B["sumando([3, 4], 0, Total)"]
-    B -- "R5. θ₂ = {&nbsp;X/3, Resto/[4], Hasta/0, Total₁/Total&nbsp;}" --> C["Ahora is 0 + 3,<br/>sumando([4], Ahora, Total)"]
+    A["suma_con_acumulador([3, 4], Total)"] -- "R3. θ₁ = {&nbsp;L/[3, 4],<br/>S/Total&nbsp;}" --> B["sumando([3, 4], 0, Total)"]
+    B -- "R5. θ₂ = {&nbsp;X/3,<br/>Resto/[4],<br/>Hasta/0,<br/>Total₁/Total&nbsp;}" --> C["Ahora is 0 + 3,<br/>sumando([4], Ahora, Total)"]
     C -- "is. θ₃ = {&nbsp;Ahora/3&nbsp;}" --> D["sumando([4], 3, Total)"]
-    D -- "R5. θ₄ = {&nbsp;X₂/4, Resto₂/[], Hasta₂/3, Total₂/Total&nbsp;}" --> E["Ahora₂ is 3 + 4,<br/>sumando([], Ahora₂, Total)"]
+    D -- "R5. θ₄ = {&nbsp;X₂/4,<br/>Resto₂/[],<br/>Hasta₂/3,<br/>Total₂/Total&nbsp;}" --> E["Ahora₂ is 3 + 4,<br/>sumando([], Ahora₂, Total)"]
     E -- "is. θ₅ = {&nbsp;Ahora₂/7&nbsp;}" --> F["sumando([], 7, Total)"]
-    F -- "R4. θ₆ = {&nbsp;Total₃/7, Total/7&nbsp;}" --> S(["consulta vacía<br/>Total = 7"])
+    F -- "R4. θ₆ = {&nbsp;Total₃/7,<br/>Total/7&nbsp;}" --> S(["consulta vacía<br/>Total = 7"])
 ```
 
 Aquí los nodos tienen siempre el mismo ancho: cada `is` se evalúa en el arco
@@ -656,11 +656,11 @@ la [sección 8.5](#85-acumuladores) —R6 a R8 son las de `longitud/2` y
 ```mermaid
 %%{init: {"flowchart": {"rankSpacing": 25}}}%%
 flowchart TD
-    A["reversa([ana, luis, eva], AlReves)"] -- "R9. θ₁ = {&nbsp;L/[ana, luis, eva], R/AlReves&nbsp;}" --> B["invirtiendo([ana, luis, eva], [], AlReves)"]
-    B -- "R11. θ₂ = {&nbsp;X/ana, Resto/[luis, eva], Hasta/[], R/AlReves&nbsp;}" --> C["invirtiendo([luis, eva], [ana], AlReves)"]
-    C -- "R11. θ₃ = {&nbsp;X₂/luis, Resto₂/[eva], Hasta₂/[ana], R₂/AlReves&nbsp;}" --> D["invirtiendo([eva], [luis, ana], AlReves)"]
-    D -- "R11. θ₄ = {&nbsp;X₃/eva, Resto₃/[], Hasta₃/[luis, ana], R₃/AlReves&nbsp;}" --> E["invirtiendo([], [eva, luis, ana], AlReves)"]
-    E -- "R10. θ₅ = {&nbsp;R₄/[eva, luis, ana], AlReves/[eva, luis, ana]&nbsp;}" --> S(["consulta vacía<br/>AlReves = [eva, luis, ana]"])
+    A["reversa([ana, luis, eva], AlReves)"] -- "R9. θ₁ = {&nbsp;L/[ana, luis, eva],<br/>R/AlReves&nbsp;}" --> B["invirtiendo([ana, luis, eva], [], AlReves)"]
+    B -- "R11. θ₂ = {&nbsp;X/ana,<br/>Resto/[luis, eva],<br/>Hasta/[],<br/>R/AlReves&nbsp;}" --> C["invirtiendo([luis, eva], [ana], AlReves)"]
+    C -- "R11. θ₃ = {&nbsp;X₂/luis,<br/>Resto₂/[eva],<br/>Hasta₂/[ana],<br/>R₂/AlReves&nbsp;}" --> D["invirtiendo([eva], [luis, ana], AlReves)"]
+    D -- "R11. θ₄ = {&nbsp;X₃/eva,<br/>Resto₃/[],<br/>Hasta₃/[luis, ana],<br/>R₃/AlReves&nbsp;}" --> E["invirtiendo([], [eva, luis, ana], AlReves)"]
+    E -- "R10. θ₅ = {&nbsp;R₄/[eva, luis, ana],<br/>AlReves/[eva, luis, ana]&nbsp;}" --> S(["consulta vacía<br/>AlReves = [eva, luis, ana]"])
 ```
 
 No hay ninguna evaluación aritmética: todo el trabajo lo hace la unificación

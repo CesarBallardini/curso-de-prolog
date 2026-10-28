@@ -320,10 +320,10 @@ es R6:
 %%{init: {"flowchart": {"nodeSpacing": 25}}}%%
 flowchart TD
     A["mayor_de(Quien, 40)"] -- "R6. θ₁ = {&nbsp;P/Quien, N/40&nbsp;}" --> B["edad(Quien, A),<br/>A > 40"]
-    B -- "R1. θ₂ = {&nbsp;Quien/juan, A/68&nbsp;}" --> C1["68 > 40"]
-    B -- "R2. θ₃ = {&nbsp;Quien/ana, A/41&nbsp;}" --> C2["41 > 40"]
-    B -- "R3. θ₄ = {&nbsp;Quien/pedro, A/39&nbsp;}" --> C3["39 > 40"]
-    B -- "R4. θ₅ = {&nbsp;Quien/luis, A/12&nbsp;}" --> C4["12 > 40"]
+    B -- "R1. θ₂ = {&nbsp;Quien/juan,<br/>A/68&nbsp;}" --> C1["68 > 40"]
+    B -- "R2. θ₃ = {&nbsp;Quien/ana,<br/>A/41&nbsp;}" --> C2["41 > 40"]
+    B -- "R3. θ₄ = {&nbsp;Quien/pedro,<br/>A/39&nbsp;}" --> C3["39 > 40"]
+    B -- "R4. θ₅ = {&nbsp;Quien/luis,<br/>A/12&nbsp;}" --> C4["12 > 40"]
     B -- "R5. θ₆ = {&nbsp;Quien/eva, A/8&nbsp;}" --> C5["8 > 40"]
     C1 --> S1(["consulta vacía<br/>Quien = juan"])
     C2 --> S2(["consulta vacía<br/>Quien = ana"])

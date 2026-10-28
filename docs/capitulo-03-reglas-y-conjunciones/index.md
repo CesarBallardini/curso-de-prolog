@@ -303,10 +303,10 @@ se numeran en el orden del archivo: los tres hechos de `varon/1` son R1 a R3
 ```mermaid
 flowchart TD
     A["es_padre(Quien)"] -- "R15. θ₁ = {&nbsp;P/Quien&nbsp;}" --> B["padre(Quien, _)"]
-    B -- "R8. θ₂ = {&nbsp;Quien/juan, _/ana&nbsp;}" --> S1(["consulta vacía<br/>Quien = juan"])
-    B -- "R9. θ₃ = {&nbsp;Quien/juan, _/pedro&nbsp;}" --> S2(["consulta vacía<br/>Quien = juan"])
-    B -- "R10. θ₄ = {&nbsp;Quien/pedro, _/luis&nbsp;}" --> S3(["consulta vacía<br/>Quien = pedro"])
-    B -- "R11. θ₅ = {&nbsp;Quien/pedro, _/eva&nbsp;}" --> S4(["consulta vacía<br/>Quien = pedro"])
+    B -- "R8. θ₂ = {&nbsp;Quien/juan,<br/>_/ana&nbsp;}" --> S1(["consulta vacía<br/>Quien = juan"])
+    B -- "R9. θ₃ = {&nbsp;Quien/juan,<br/>_/pedro&nbsp;}" --> S2(["consulta vacía<br/>Quien = juan"])
+    B -- "R10. θ₄ = {&nbsp;Quien/pedro,<br/>_/luis&nbsp;}" --> S3(["consulta vacía<br/>Quien = pedro"])
+    B -- "R11. θ₅ = {&nbsp;Quien/pedro,<br/>_/eva&nbsp;}" --> S4(["consulta vacía<br/>Quien = pedro"])
 ```
 
 La regla reemplaza el objetivo por su cuerpo, y `padre(Quien, _)` unifica con
@@ -355,8 +355,8 @@ Con las dos cláusulas numeradas a continuación de las de `reglas.pl`:
 
 ```mermaid
 flowchart TD
-    A["progenitor(Quien, sofia)"] -- "R16. θ₁ = {&nbsp;P/Quien, H/sofia&nbsp;}" --> B["padre(Quien, sofia)"]
-    A -- "R17. θ₂ = {&nbsp;P/Quien, H/sofia&nbsp;}" --> C["madre(Quien, sofia)"]
+    A["progenitor(Quien, sofia)"] -- "R16. θ₁ = {&nbsp;P/Quien,<br/>H/sofia&nbsp;}" --> B["padre(Quien, sofia)"]
+    A -- "R17. θ₂ = {&nbsp;P/Quien,<br/>H/sofia&nbsp;}" --> C["madre(Quien, sofia)"]
     B --> F(["falla"])
     C -- "R14. θ₃ = {&nbsp;Quien/eva&nbsp;}" --> S(["consulta vacía<br/>Quien = eva"])
 ```
@@ -614,7 +614,7 @@ la rama de `Quien = ana` termina en una comparación que no se cumple:
 
 ```mermaid
 flowchart TD
-    A["hermana_de_verdad(ana, Quien)"] -- "R10. θ₁ = {&nbsp;A/ana, B/Quien&nbsp;}" --> B["mujer(ana),<br/>padre(P, ana),<br/>padre(P, Quien),<br/>ana \== Quien"]
+    A["hermana_de_verdad(ana, Quien)"] -- "R10. θ₁ = {&nbsp;A/ana,<br/>B/Quien&nbsp;}" --> B["mujer(ana),<br/>padre(P, ana),<br/>padre(P, Quien),<br/>ana \== Quien"]
     B -- "R2. θ₂ = {&nbsp;}" --> C["padre(P, ana),<br/>padre(P, Quien),<br/>ana \== Quien"]
     C -- "R5. θ₃ = {&nbsp;P/juan&nbsp;}" --> D["padre(juan, Quien),<br/>ana \== Quien"]
     D -- "R5. θ₄ = {&nbsp;Quien/ana&nbsp;}" --> E["ana \== ana"]

@@ -194,15 +194,15 @@ para distinguirla de ella—:
 ```mermaid
 %%{init: {"flowchart": {"rankSpacing": 30}}}%%
 flowchart TD
-    A["cuantos_mayores([41, 8], N)"] -- "R2. θ₁ = {&nbsp;X/41, Resto/[8], N₁/N&nbsp;}" --> B["41 > 18,<br/>cuantos_mayores([8], Faltan),<br/>N is Faltan + 1"]
+    A["cuantos_mayores([41, 8], N)"] -- "R2. θ₁ = {&nbsp;X/41,<br/>Resto/[8],<br/>N₁/N&nbsp;}" --> B["41 > 18,<br/>cuantos_mayores([8], Faltan),<br/>N is Faltan + 1"]
     B --> C["cuantos_mayores([8], Faltan),<br/>N is Faltan + 1"]
-    C -- "R2. θ₂ = {&nbsp;X₂/8, Resto₂/[], N₂/Faltan&nbsp;}" --> D["8 > 18,<br/>cuantos_mayores([], Faltan₂),<br/>Faltan is Faltan₂ + 1,<br/>N is Faltan + 1"]
+    C -- "R2. θ₂ = {&nbsp;X₂/8,<br/>Resto₂/[],<br/>N₂/Faltan&nbsp;}" --> D["8 > 18,<br/>cuantos_mayores([], Faltan₂),<br/>Faltan is Faltan₂ + 1,<br/>N is Faltan + 1"]
     D --> F1(["falla"])
-    C -- "R3. θ₃ = {&nbsp;X₃/8, Resto₃/[], N₃/Faltan&nbsp;}" --> E["8 =< 18,<br/>cuantos_mayores([], Faltan),<br/>N is Faltan + 1"]
+    C -- "R3. θ₃ = {&nbsp;X₃/8,<br/>Resto₃/[],<br/>N₃/Faltan&nbsp;}" --> E["8 =< 18,<br/>cuantos_mayores([], Faltan),<br/>N is Faltan + 1"]
     E --> G["cuantos_mayores([], Faltan),<br/>N is Faltan + 1"]
     G -- "R1. θ₄ = {&nbsp;Faltan/0&nbsp;}" --> H["N is 0 + 1"]
     H -- "is. θ₅ = {&nbsp;N/1&nbsp;}" --> S(["consulta vacía<br/>N = 1"])
-    A -- "R3. θ₆ = {&nbsp;X₄/41, Resto₄/[8], N₄/N&nbsp;}" --> I["41 =< 18,<br/>cuantos_mayores([8], N)"]
+    A -- "R3. θ₆ = {&nbsp;X₄/41,<br/>Resto₄/[8],<br/>N₄/N&nbsp;}" --> I["41 =< 18,<br/>cuantos_mayores([8], N)"]
     I --> F2(["falla"])
 ```
 

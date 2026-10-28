@@ -1,0 +1,52 @@
+/* Buttons that hide the left (course navigation) and right (page contents) columns, and the extra
+   width the text takes when they are hidden (docs/javascripts/sidebars.js). Below 76.25em Material
+   already turns the left column into a drawer, so the buttons only exist on wide windows. */
+.sidebar-toggle {
+  display: none;
+}
+
+@media screen and (min-width: 76.25em) {
+  .sidebar-toggle {
+    display: block;
+    position: fixed;
+    top: 3.4rem;
+    z-index: 3;
+    width: 1.5rem;
+    height: 1.5rem;
+    padding: 0;
+    border: 1px solid var(--md-default-fg-color--lightest);
+    border-radius: 0.2rem;
+    background: var(--md-default-bg-color);
+    color: var(--md-default-fg-color--light);
+    font: inherit;
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .sidebar-toggle:hover,
+  .sidebar-toggle:focus-visible {
+    color: var(--md-accent-fg-color);
+    border-color: var(--md-accent-fg-color);
+  }
+
+  .sidebar-toggle--left {
+    left: 0.4rem;
+  }
+
+  .sidebar-toggle--right {
+    right: 0.4rem;
+  }
+
+  html.sidebar-left-hidden .md-sidebar--primary,
+  html.sidebar-right-hidden .md-sidebar--secondary {
+    display: none;
+  }
+
+  /* Material centres the three columns in a grid of 61rem; with a column hidden the text takes
+     the room left. */
+  html.sidebar-left-hidden .md-main .md-grid,
+  html.sidebar-right-hidden .md-main .md-grid {
+    max-width: none;
+  }
+}

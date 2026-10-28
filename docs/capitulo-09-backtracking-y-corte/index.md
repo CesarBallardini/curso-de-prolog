@@ -93,9 +93,9 @@ es R6— y las tres cláusulas de `categoria_sin_corte/2` a continuación:
 
 ```mermaid
 flowchart TD
-    A["categoria_sin_corte(sofia, C)"] -- "R7. θ₁ = {&nbsp;P/sofia, C/bebe&nbsp;}" --> B["edad(sofia, A),<br/>A < 4"]
-    A -- "R8. θ₃ = {&nbsp;P/sofia, C/chico&nbsp;}" --> C["edad(sofia, A),<br/>A < 13"]
-    A -- "R9. θ₅ = {&nbsp;P/sofia, C/adulto&nbsp;}" --> D["edad(sofia, _)"]
+    A["categoria_sin_corte(sofia, C)"] -- "R7. θ₁ = {&nbsp;P/sofia,<br/>C/bebe&nbsp;}" --> B["edad(sofia, A),<br/>A < 4"]
+    A -- "R8. θ₃ = {&nbsp;P/sofia,<br/>C/chico&nbsp;}" --> C["edad(sofia, A),<br/>A < 13"]
+    A -- "R9. θ₅ = {&nbsp;P/sofia,<br/>C/adulto&nbsp;}" --> D["edad(sofia, _)"]
     B -- "R6. θ₂ = {&nbsp;A/3&nbsp;}" --> B2["3 < 4"]
     B2 --> S1(["1.ª respuesta<br/>C = bebe"])
     C -- "R6. θ₄ = {&nbsp;A/3&nbsp;}" --> C2["3 < 13"]
@@ -158,7 +158,7 @@ como en 9.1 —R1 a R6 los hechos de `edad/2`, R7 a R9 las de `categoria/2`—:
 
 ```mermaid
 flowchart TD
-    A["categoria(sofia, C)"] -- "R7. θ₁ = {&nbsp;P/sofia, C/bebe&nbsp;}" --> B["edad(sofia, A),<br/>A < 4,<br/>!"]
+    A["categoria(sofia, C)"] -- "R7. θ₁ = {&nbsp;P/sofia,<br/>C/bebe&nbsp;}" --> B["edad(sofia, A),<br/>A < 4,<br/>!"]
     B -- "R6. θ₂ = {&nbsp;A/3&nbsp;}" --> B2["3 < 4,<br/>!"]
     B2 --> B3["!"]
     B3 --> S(["consulta vacía<br/>C = bebe"])
@@ -426,8 +426,8 @@ consulta, y en el árbol se escriben `N₁` y `N₂` para distinguirlas de ella�
 
 ```mermaid
 flowchart TD
-    A["primer_multiplo(7, 20, N)"] -- "R2. θ₁ = {&nbsp;De/7, Desde/20, N₁/N&nbsp;}" --> B["multiplo(7, 20, N),<br/>!"]
-    B -- "R1. θ₂ = {&nbsp;De/7, Desde/20, N₂/N&nbsp;}" --> C["between(20, 200, N),<br/>0 =:= N mod 7,<br/>!"]
+    A["primer_multiplo(7, 20, N)"] -- "R2. θ₁ = {&nbsp;De/7,<br/>Desde/20,<br/>N₁/N&nbsp;}" --> B["multiplo(7, 20, N),<br/>!"]
+    B -- "R1. θ₂ = {&nbsp;De/7,<br/>Desde/20,<br/>N₂/N&nbsp;}" --> C["between(20, 200, N),<br/>0 =:= N mod 7,<br/>!"]
     C -- "θ₃ = {&nbsp;N/20&nbsp;}" --> D["0 =:= 20 mod 7,<br/>!"]
     D --> F(["falla"])
     C -- "θ₄ = {&nbsp;N/21&nbsp;}" --> E["0 =:= 21 mod 7,<br/>!"]

@@ -349,7 +349,7 @@ flowchart TD
     A["categoria(luis, C)"] -- "R7. θ₁ = {&nbsp;P/luis, C/bebe&nbsp;}" --> B["edad(luis, A),<br/>A < 4,<br/>!"]
     B -- "R4. θ₂ = {&nbsp;A/12&nbsp;}" --> B2["12 < 4,<br/>!"]
     B2 --> F(["falla"])
-    A -- "R8. θ₃ = {&nbsp;P/luis, C/chico&nbsp;}" --> C["edad(luis, A),<br/>A < 13,<br/>!"]
+    A -- "R8. θ₃ = {&nbsp;P/luis,<br/>C/chico&nbsp;}" --> C["edad(luis, A),<br/>A < 13,<br/>!"]
     C -- "R4. θ₄ = {&nbsp;A/12&nbsp;}" --> C2["12 < 13,<br/>!"]
     C2 --> C3["!"]
     C3 --> S(["consulta vacía<br/>C = chico"])
@@ -390,10 +390,10 @@ variables de cada cláusula llevan el número del uso desde el primero —`X₁`
 flowchart TD
     A["primer_par([1, 3, 4, 6], X)"] -- "R1. θ₁ = {&nbsp;X₁/1, X/1&nbsp;}" --> A1["0 =:= 1 mod 2,<br/>!"]
     A1 --> F1(["falla"])
-    A -- "R2. θ₂ = {&nbsp;Resto₁/[3, 4, 6], X₁/X&nbsp;}" --> B["primer_par([3, 4, 6], X)"]
+    A -- "R2. θ₂ = {&nbsp;Resto₁/[3, 4, 6],<br/>X₁/X&nbsp;}" --> B["primer_par([3, 4, 6], X)"]
     B -- "R1. θ₃ = {&nbsp;X₂/3, X/3&nbsp;}" --> B1["0 =:= 3 mod 2,<br/>!"]
     B1 --> F2(["falla"])
-    B -- "R2. θ₄ = {&nbsp;Resto₂/[4, 6], X₂/X&nbsp;}" --> C["primer_par([4, 6], X)"]
+    B -- "R2. θ₄ = {&nbsp;Resto₂/[4, 6],<br/>X₂/X&nbsp;}" --> C["primer_par([4, 6], X)"]
     C -- "R1. θ₅ = {&nbsp;X₃/4, X/4&nbsp;}" --> C1["0 =:= 4 mod 2,<br/>!"]
     C1 --> C2["!"]
     C2 --> S(["consulta vacía<br/>X = 4"])
@@ -453,7 +453,7 @@ C = negativo.
 
 ```mermaid
 flowchart TD
-    A["clasificar(-2, C)"] -- "R1. θ₁ = {&nbsp;N/-2, C/negativo&nbsp;}" --> B["-2 < 0,<br/>!"]
+    A["clasificar(-2, C)"] -- "R1. θ₁ = {&nbsp;N/-2,<br/>C/negativo&nbsp;}" --> B["-2 < 0,<br/>!"]
     B --> B2["!"]
     B2 --> S(["consulta vacía<br/>C = negativo"])
     A -- "R3" --- p@{ shape: sm-circ } -.- n["podada por el corte"]
